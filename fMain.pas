@@ -150,6 +150,7 @@
          11104    build 4.2.4.25 one unit many fixes and new functions asn1 back - globallock
          11125    build 4.2.4.60 new stream concept - WMI - RegSvr  - Utilsmax5 - webtop - webbox - shorts
          11160     build 4.2.4.80 second units dragdrop tcontrol  ocean7 dateutil - dateutils  -win32find - locale
+         11171     build 4.2.4.80 II unicode dosextend checksystem    
                   [the last one before V4.5 in 2016]  V4.5   in  March 2017
 
  ************************************************************************************* }
@@ -2179,8 +2180,11 @@ uses
   uPSI_dateutil,      //real
   uPSI_dateext4,      //4.2.4.80_2
   uPSI_locale,
+  uPSI_Strings,
+  uPSI_crc_checks,
+  uPSI_extdos,        //4.2.4.80_3
 
-
+  
   uPSI_St2DBarC,
   uPSI_FmxUtils,
   uPSI_CustomDrawTreeView,
@@ -3470,6 +3474,10 @@ begin
   SIRegister_dateutil(X);
   SIRegister_dateext4(X);
   SIRegister_locale(X);
+  SIRegister_Strings(X);
+  SIRegister_crc(X);
+  SIRegister_extdos(X);
+
 
      SIRegister_dbTvRecordList(X);
     SIRegister_TreeVwEx(X);
@@ -5076,6 +5084,9 @@ begin
   RIRegister_dateutil_Routines(Exec);
   RIRegister_dateext4_Routines(Exec);
   RIRegister_locale_Routines(Exec);
+    RIRegister_Strings_Routines(Exec);
+  RIRegister_crc_Routines(Exec);
+  RIRegister_extdos_Routines(Exec);
 
 
   RIRegister_DebugBox(X);
