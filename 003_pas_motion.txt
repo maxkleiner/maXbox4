@@ -1,0 +1,47 @@
+program motion;
+
+// third interpreter of runmax _03
+// shows subroutines, #locs=46
+//#sign:Max: MAXBOX10: 27/05/2016 10:16:31 
+
+var ifrom, ito, mdelta: byte;
+    stime: integer;
+
+procedure initrange;
+begin
+  memo2.font.size:= 11;
+  ifrom:= 40;
+  ito:= 190;
+  mdelta:= (ito - ifrom);
+  stime:= 2 
+end;
+
+procedure startmotion;
+var i,a,ia, ordFromChr : byte;
+    ctmp: string;
+begin
+  for ia:= 1 to 1 do begin
+    ctmp:= '';
+    for i:= ifrom to ito do begin
+      ctmp:= ctmp + chr(i);
+      ordFromChr:= ord(chr(i))   //solution
+      //memo1.lines.add(ctmp);
+      writeln(ctmp +' ord is:' +intToStr(ordFromChr));
+      sleep(stime);
+    end;
+    for i:= 1 to (mdelta) do begin
+      //if i < then 
+      delete(ctmp, mdelta + 2-i, 1)
+      sleep(stime);
+      //memo1.lines.add(ctmp);
+      writeln(ctmp);
+    end;
+  end;  
+    //sleep(200);
+end;
+
+begin
+  initrange;
+  startmotion
+end.
+

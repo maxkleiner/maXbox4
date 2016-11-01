@@ -1,0 +1,1004 @@
+{***************************************************************
+ *            Starfield Clock
+ * Project  : boolean logic education system bITbox
+ * Unit Name: 308_bitbox3.txt  - 326_world_analogclock.txt
+ * Purpose  : Demonstrates all boolean circuits and all 16 boolean logics
+ * Date     : 18/10/2012  -  14:38:5 loc's=465, 35 intf
+ *          : 012/2012  - add a clock and starfield
+            : #sign:Max: MAXBOX10: 21/05/2016 21:45:59 
+ ****************************************************************}
+//shows structure of procedure types, max@kleiner.com ex. _2
+//compilerswitch $N- turns the coprocessor off, {$mode objfpc}{$H+} loc's =1
+
+PROGRAM Animation_Starfield;
+
+//6. TimeZones
+function GetXRTLGetTimeZones: TXRTLTimeZones; forward;           
+
+
+Const MILLISECONDS = 50; //for timer, sync with trackbar 1000/50= position 20
+ 
+type
+  TBoolean_func = Function(a,b: boolean): boolean; 
+  
+var 
+  aFrm: TForm;
+  btnb: TBitBtn;
+  btnabool,btnbbool: boolean;
+  statbar: TStatusbar;
+  sfield: TJvStarfield;
+  firstclock, secondclock, thirdclock, fourthclock: TJvAnalogClock; 
+
+   
+procedure DrawRosette2;
+var m,p: TPoint;
+  rho,phi: real;
+  i,r: integer;
+begin
+   with afrm.Canvas do begin
+     Pen.Width:= 2;
+     Pen.Color:= clred;
+     //Brush.Color:= clblue;
+     Brush.Style:= bsClear;
+     //compute centerpoint and draw circle
+     m.x:=170; m.y:=330; r:=75;
+     rho:=360/18;
+     for i:=1 to 18 do begin
+       phi:=i*rho*pi/180;
+       p.x:=m.x+round(r*cos(phi));
+       p.y:=m.y+round(r*sin(phi));
+       Ellipse(p.x-r,p.y-r,p.x+r,p.y+r);
+       Ellipse(p.x-3,p.y-3,p.x+3,p.y+3);
+     end;
+     //application.processMessages;
+  end;
+end;
+
+
+// FindInPaths
+//
+function FindInPaths2(const fileName, paths : String) : String;
+var
+   p : Integer;
+   buf : String;
+   sl : TStringList;
+begin
+   if FileExists(fileName) then begin
+      Result:=fileName;
+      Exit;
+   end;
+   buf:=paths;
+   sl:=TStringList.Create;
+   try
+      p:=Pos(';', buf);
+      while p>0 do begin
+         sl.Add(Copy(buf, 1, p-1));
+         buf:=Copy(buf, p+1, Maxint);
+         p:=Pos(';', buf);
+      end;
+      sl.Add(buf);
+      for p:=0 to sl.Count-1 do begin
+         buf:=sl[p];
+         if Copy(buf, 1, Length(buf))<>'\' then
+            buf:=Buf+'\';
+         buf:=buf+fileName;
+         if FileExists(buf) then begin
+            Result:=buf;
+            Exit;
+         end;
+      end;
+   finally
+      sl.Free;
+   end;
+   Result:='';
+end;
+
+
+
+  function GetXRTLGetTimeZones: TXRTLTimeZones;
+  var mzone: TXRTLTimeZones;
+      i: integer;
+  begin
+     //mzone:= TXRTLTimeZones.Create; //not cause of interface func
+     mzone:= XRTLGetTimeZones;  
+     for i:= 1 to mzone.Count-1 do 
+        writeln(mzone.item[i].display);
+     //mzone.Free;         
+  end;         
+
+
+//**************************Event Handlers*******************************
+
+
+procedure TFrm1_FormPaint(Sender: TObject);
+begin
+  Drawrosette2;
+  //application.processMessages;
+end;
+
+
+procedure TFrm1_closeForm(Sender: TObject; var Action: TCloseAction);
+begin
+  ///afrm.Free;  
+  action:= caFree;
+  afrm:= NIL;
+  //sField.Free;
+end;
+
+procedure TFrm1_CloseClick(Sender: TObject);
+begin
+  afrm.Close;
+end;
+
+procedure TFrm1_PauseClick(Sender: TObject);
+begin
+  firstclock.clockEnabled:= NOT firstclock.clockEnabled;
+  secondclock.clockEnabled:= NOT secondclock.clockEnabled;
+  thirdclock.clockEnabled:= NOT thirdclock.clockEnabled;
+  fourthclock.clockEnabled:= NOT fourthclock.clockEnabled;
+  sfield.active:= NOT sfield.active;
+end;
+
+procedure testcodesnippets;
+begin
+ //AllDigitsDifferent(N: Int64): Boolean;
+ //DecimalToFraction(Decimal: Extended; out FractionNumerator: Extended;
+  //ColorToHTML2(const Color: Graphics.TColor): string;
+  //DOSCommand(const CommandLine: string; const CmdShow:integer;
+    //        const WaitUntilComplete: Boolean; const WorkingDir: string = ''): Boolean;
+  //GetDosOutput(CommandLine: string; Work: string = 'C:\'): string;
+  //CaptureConsoleOutput(DosApp : string;AMemo : TMemo); 
+   //ExecuteCommandDOS(CommandLine:string):string;
+  //DOSCommandRedirect(const CommandLine: string;
+                 //const OutStream: Classes.TStream): Boolean; overload;     //8
+
+  //SendKeysToWindow(const HWnd: Windows.HWND; const Text: string);
+   //IsRunningOnBattery: Boolean;
+   //IsHexStr(const S: string): Boolean;
+   //IsCharInSet(const Ch: Char; const Chars: TCharSet): Boolean;
+   //StreamHasWatermark(const Stm: Classes.TStream;
+      //                       const Watermark: array of Byte): Boolean;
+   //ReadBigEndianWord(Stm: Classes.TStream): Word;
+   //DownloadURLToFile(const URL, FileName: string): Boolean;
+   //ExtractURIQueryString(const URI: string): string;
+   //GetBiosVendor: string;
+   //GetIEVersionStr: string;         //18
+
+   //FloatToFixed(const Value: Extended; const DecimalPlaces: Byte;
+                                //const SeparateThousands: Boolean): string;
+   //IntToFixed(const Value: Integer;
+                              //const SeparateThousands: Boolean): string;
+   //Int64ToFixed(const Value: Int64;
+     //                           const SeparateThousands: Boolean): string;
+   //IntToNumberText2(const Value: Integer): string;     //22
+     //
+   //IsLibraryInstalled2(const LibFileName: string): Boolean;
+   //RemainingBatteryPercent: Integer;
+   //SetLockKeyState(KeyCode: Integer; IsOn: Boolean);
+   //IsLockKeyOn(const KeyCode: Integer): Boolean;
+   //PostKeyEx322(const Key: Word; const Shift: Classes.TShiftState;
+     //                           const SpecialKey: Boolean = False);
+   //TerminateProcessByID(ProcessID: Cardinal): Boolean;
+   //GetWindowProcessName(const Wnd: Windows.HWND): string;
+   //GetProcessName(const PID: Windows.DWORD): string;
+   //GetWindowProcessID(const Wnd: Windows.HWND): Windows.DWORD;
+   //IsAppResponding(const Wnd: Windows.HWND): Boolean;
+   //IsTabletOS: Boolean;
+   //ProgIDInstalled(const PID: string): Boolean;
+   //GetProcessorName: string;
+   //GetProcessorIdentifier: string;                   //36
+   //EmptyKeyQueue;
+   //TrimAppMemorySize;
+   //GetEnvironmentBlockSize: Cardinal;
+   //GetDefaultPrinterName: string;                    //40
+   //ListDrives(const List: Classes.TStrings);
+   //MultiSzToStrings(const MultiSz: PChar;
+     //       const Strings: Classes.TStrings);
+   //BrowseURL(const URL: string): Boolean;
+   //IsValidURLProtocol(const URL: string): Boolean;
+   //ExecAssociatedApp(const FileName: string): Boolean;   //45
+   //CheckInternetConnection(AHost: PAnsiChar): Boolean;
+   //MakeSafeHTMLText(TheText: string): string;
+   //RemoveURIQueryString(const URI: string): string;
+   //GetRegistryString(const RootKey: Windows.HKEY;
+     //                              const SubKey, Name: string): string;
+   //RefreshEnvironment2(const Timeout: Cardinal = 5000);  //50
+
+end;
+
+
+
+//**************************Form Builder*******************************
+function loadForm: boolean;
+begin
+  aFrm:= TForm.Create(self);
+  btnabool:= false; btnbbool:= false; //init
+  result:= false;
+  //mt.free;  in on close
+  with aFrm do begin
+    caption:= '************ Box Clock Animation ************';  
+    height:= 750;
+    width:= 950;
+    Position:= poScreenCenter;
+    onClose:= @TFrm1_closeForm;
+    onPaint:= @TFrm1_FormPaint;
+    Canvas.Pen.color:= clBlue;
+    Canvas.Pen.Width:= 15;
+    Show;
+  end;
+  
+  btnb:= TBitBtn.Create(aFrm);
+  with btnb do begin
+    Parent:= aFrm;
+    setbounds(750, 640,150, 55);
+    caption:= 'Warp Pause';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'CL_MPPAUSE'); 
+    mXButton(02,02,width,50,5,5,handle);
+    onclick:= @TFrm1_PauseClick;
+  end;
+  firstclock:= TJvAnalogClock.Create(aFrm);
+  with firstclock do begin 
+    parent:= aFrm;
+    colormin:= clred;
+    //visible
+    //spiderclock:= true;
+    setBounds(180,10,160,160);
+    centercol:= clred;
+    //Show;
+  end;  
+  secondclock:= TJvAnalogClock.Create(aFrm);
+  with secondclock do begin 
+    parent:= aFrm;
+    colormin:= clgreen;
+    timeoffSet:= 120;
+    //visible
+    //spiderclock:= true;
+    setBounds(350,10,160,160);
+    centercol:= clred;
+  end;  
+  thirdclock:= TJvAnalogClock.Create(aFrm);
+  with thirdclock do begin 
+    parent:= aFrm;
+    colormin:= clblue;
+    timeoffSet:= 300;
+    //visible
+    //spiderclock:= true;
+    setBounds(520,10,160,160);
+    //hourstyle:= hsNumber;
+    centercol:= clred;
+  end;  
+  fourthclock:= TJvAnalogClock.Create(aFrm);
+  with fourthclock do begin 
+    parent:= aFrm;
+    colormin:= clyellow;
+    timeoffSet:= 420;
+    //visible
+    //spiderclock:= true;
+    setBounds(690,10,160,160);
+    centercol:= clred;
+  end;  
+  with TJvAnalogClock.Create(aFrm) do begin 
+    parent:= aFrm;
+    colormin:= clred;
+    //timeoffSet:= -420;
+    align:= alleft;
+    centercol:= clyellow;
+  end;  
+ with TVirtListBox.Create(aFrm) do begin 
+    parent:= aFrm;
+    //colormin:= clred;
+    //timeoffSet:= -420;
+    numcols:= 5;
+    numrows:= 42;
+    defcolwidth:= 40;
+    colors.header:= clyellow;  
+    colors.gridvert:= clred;
+    colors.gridhoriz:= clblue;
+    
+    
+    align:= alleft;
+    //centercol:= clyellow;
+  end;  
+   with TJvAnalogClock.Create(aFrm) do begin 
+    parent:= aFrm;
+    //borderwidth
+    //bevelwidth
+    colormin:= clblue;
+    timeoffSet:= -420;
+    //align:= alclient;
+    ColorHr:= clRed;
+    //ColorHrIn:= clRed;
+    ColorHandHr:= clRed;
+    ColorHandMin:= clRed;
+    ColorHandSec:= clWhite;
+    //width
+    color:= clblack;
+    setBounds(520,210,160,160);
+    centercol:= clyellow;
+    //onexit
+  end;  
+  with TJvAnalogClock.Create(aFrm) do begin 
+    parent:= aFrm;
+    //borderwidth
+    //bevelwidth
+    colormin:= clblue;
+    //timeoffSet:= -480;
+    align:= alclient;
+    ColorHr:= clRed;
+    //ColorMin:= clTeal;
+    ColorMinIn:= clTeal;
+    //minutesize:= 20;
+    //ColorHrIn:= clRed;
+    ColorHandHr:= clRed;
+    ColorHandMin:= clTeal;
+    ColorHandSec:= clWhite;
+    widthhr:= 20;
+    widthmin:= 1;
+    WidthHandHr:= 16;
+    WidthHandMin:= 16;
+    //caption:= 'Clock Rock';
+    //hourStyle:= hsNumberInCircle;
+    spiderclock:= True;
+    color:= clblack;
+    setBounds(520,380,160,160);
+    centercol:= cldarkblue32;
+    centersize:= 24;
+    //onexit
+  end;  
+ 
+  {sfield:= TJvStarfield.Create(aFrm)
+  with sfield do begin
+    parent:= aFrm;
+    stars:= 850;
+    maxSpeed:= 14;
+    setBounds(200,200,730,500);
+    active:= true; 
+  end;}  
+  
+  statbar:= TStatusBar.create(aFrm);
+  with statbar do begin
+    parent:= aFrm;
+    //simplepanel:= true;
+    showhint:= true;
+    hint:= 'LED Logger States';
+     Panels.add;
+     panels.items[0].width:= 200;
+     panels.items[0].text:= 'LED Clock Log';
+     Panels.add;
+     panels.items[1].width:= 150;
+     panels.items[1].text:= 'Logic Clock Logger State';
+  end;
+  result:= true;
+end;          
+
+   var mANode : INode;
+       onode: TNode;
+       netw: TIdNetworkCalculator;
+       //idbase: TIdBaseComponent;
+
+  //main form list call  
+  Begin
+    maxform1.color:= clpurple;
+    //calls some test functions
+    printF('this is %.18f ',[maxCalc('ln(2)^e')]);
+    printF('this is %.18f ',[maxCalc('sqr(cos(ln(2)^e))')]);
+    printF('this is %.4f ',[maxCalc('sqrt(e^(ln(2)))')]);
+    writeln(getVersionString(exepath+'maxbox4.exe'));
+   //GetXRTLGetTimeZones;   
+   // CreateBrowserOnForm(aFrm, 'www.kleiner.ch')
+    
+ 
+ //--------------------------Main Topic--------------------------
+    if loadForm then
+      //sleep(4500);
+    //SaveCanvas(afrm.canvas,Exepath+'worldclocksave.png'); 
+     Writeln(FindInPaths2(Exepath+'maxbox4.exe',Exepath));    
+     Writeln(FindInPaths(Exepath+'maxbox4.exe',Exepath)); 
+     
+    //CreateBrowserOnForm(aFrm, 'www.kleiner.ch')
+    
+    with TPEMFile.create do begin
+      //LoadFromFile(exepath+'examples\sd_pki_ca.pem')
+      
+      loadfromfile('C:\maXbox\www.postfinance.ch.crt.pem')
+      {property CertificateCount: Integer read GetCertificateCount;
+      property Certificate[const Idx: Integer]: AnsiString read GetCertificate;
+      property RSAPrivateKey: AnsiString read FRSAPrivateKey;}
+      writeln('CertificateCount: '+itoa(CertificateCount));   
+      writeln('length Certificate: '+itoa(length(certificate[0])));
+      
+      writeln('Certificate '+certificate[0]);
+      writeln('Certificate '+sha1tohex(certificate[0]));
+      writeln('strtohex')
+      writeln('Certificate '+Cstrtohex(certificate[0]));
+      writeln('stringtohex')
+      writeln('Certificate '+stringtohex(certificate[0]));
+      //strtohex2
+  
+      writeln('RSA private Key: '+RSAPrivateKey);
+      free;
+    end;  
+    
+    //CL.AddDelphiFunction('Function NodeToXML( ANode : INode) : String');
+    manode:= XMLLoadFromFile('C:\maXbox\stutils.xml');
+    onode:= TNode.create('maxxml',ntText);
+    //onode.instance;
+    manode:= NodeCreate('maxxmlnode',nttext);
+    //XMLSaveToFile(manode,'C:\maXbox\stutilscopy.xml');
+    writeln('nodetoXML '+nodetoXML(manode));  
+    writeln('nodetoXML '+nodetoXML(onode)); 
+    //selftestasn1 
+    //gnIPAddress
+       //strtohex1
+    //onode.Free;
+End.
+
+
+  TJvStarfield = class(TGraphicControl)
+  private
+    FAboutJVCL: TJVCLAboutInfo;
+    FStarfield: array of TJvStars;
+    FThread: TJvImageDrawThread;
+    FActive: Boolean;
+    FDelay: Cardinal;
+    FStars: Word;
+    FMaxSpeed: Byte;
+    FBmp: TBitmap;
+    procedure Refresh(Sender: TObject);
+    procedure SetActive(const Value: Boolean);
+    procedure SetDelay(const Value: Cardinal);
+    procedure SetStars(const Value: Word);
+  protected
+    procedure Paint; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Resize; override;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property Align;
+    property Anchors;
+    property Constraints;
+    property Delay: Cardinal read FDelay write SetDelay default 50;
+    property Active: Boolean read FActive write SetActive default False;
+    property Stars: Word read FStars write SetStars default 100;
+    property MaxSpeed: Byte read FMaxSpeed write FMaxSpeed default 10;
+  end;
+
+
+
+
+Proposal for Abreviation Symbol:
+
+  01 FALSE    //Contradiction
+
+  02 AND      //Conjunction x*y
+
+  03 INHIB    //Inhibition x*^y
+
+  04 PRAEP    //Praependence x
+
+  05 PRAE     //Praesection ^x*y
+
+  06 POST     //Postpendence y
+
+  07 XOR      //Exclusive OR x*^y+^x*y
+
+  08 OR       //Disjunction OR = x+y
+
+  09 NOR      //Rejection
+
+  10 AEQ      //Aequivalence x<-->y, ^x*^y+x*y
+
+  11 NEGY     //YNegation ^y
+
+  12 IMPY     //YImplication y-->x; x+^y
+
+  13 NEGX     //Xnegation ^x
+
+  14 IMPX     //XImplication x-->y; ^x+y
+
+  15 NAND     //Exclusion
+
+  16 TRUE     //TRUE Tautologic
+  
+
+//////////// Clock Code 
+unit JvAnalogClock;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls,
+  JvComponent;
+
+type
+  TJvNotifyTime = procedure(Sender: TObject; Hour, Min, Sec: Integer) of object;
+  TJvHourStyle = (hsLine, hsCircle, hsNumber, hsNumberInCircle);
+  TJvHourMarks = (hmNone, hmFour, hmAll);
+
+  TJvAnalogClock = class(TJvCustomPanel)
+  private
+    FHourStyle: TJvHourStyle;
+    FMinuteStyle: TJvHourStyle;
+    FHourMarks: TJvHourMarks;
+    FHourSize: Integer;
+    FMinuteSize: Integer;
+    FMinuteFontSize: Integer;
+
+    OldS: Word;
+
+    plSekunde: Boolean;
+    plEnabled: Boolean;
+    plSpider: Boolean;
+    plSecJump: Boolean;
+    pdUra: TDateTime;
+    pnOffs: Integer;
+    plDate: Boolean;
+
+    plMinMarks: Boolean;
+    plColHr: TColor;
+    plColHrIn: TColor;
+    plColMin: TColor;
+    plColMinIn: TColor;
+    plColHandHr: TColor;
+    plColHandMin: TColor;
+    plColHandSec: TColor;
+
+    pnWidthHandMin: Byte;
+    pnWidthHandHr: Byte;
+    pnWidthHandSec: Byte;
+    pnWidthHr: Byte;
+    pnWidthMin: Byte;
+
+    pnCenterSize: Byte;
+    pnCenterCol: TColor;
+
+    FTimer: TTimer;
+    lSekOver: Boolean;
+
+    nDeli: Integer;
+    nUraM: Integer;
+    nUraU: Integer;
+    nUraS: Integer;
+    npx, npy: Integer;
+    npxk, npyk, npk, npy23: Integer;
+
+    OldHour, OldMin, OldSec: Integer;
+    datrT: TRect;
+    OldDate: string;
+    DateBottom: Boolean;
+
+    FOnChangeSec: TJvNotifyTime;
+    FOnChangeMin: TJvNotifyTime;
+    FOnChangeHour: TJvNotifyTime;
+    FOnSameTime: TNotifyEvent;
+
+//    pfMinFont :TFont;
+    procedure SetlDate(Value: Boolean);
+    procedure SetlSecJump(Value: Boolean);
+    procedure SetlSpider(Value: Boolean);
+    procedure SetlEnabled(Value: Boolean);
+    procedure SetlMinMarks(Value: Boolean);
+    procedure SetHourStyle(Value: TJvHourStyle);
+    procedure SetMinuteStyle(Value: TJvHourStyle);
+    procedure SetHourMarks(Value: TJvHourMarks);
+    procedure SetHourSize(Value: Integer);
+    procedure SetMinSize(Value: Integer);
+    procedure SetMinFontSize(Value: Integer);
+    procedure SetdUra(Value: TDateTime);
+    procedure SetnOffs(Value: Integer);
+    procedure SetlColHr(Value: TColor);
+    procedure SetlColHrIn(Value: TColor);
+    procedure SetlColMin(Value: TColor);
+    procedure SetlColMinIn(Value: TColor);
+
+    procedure SetlColHandHr(Value: TColor);
+    procedure SetlColHandMin(Value: TColor);
+    procedure SetlColHandSec(Value: TColor);
+
+    procedure SetnWidthHandMin(Value: Byte);
+    procedure SetnWidthHandHr(Value: Byte);
+    procedure SetnWidthHandSec(Value: Byte);
+    procedure SetnWidthHr(Value: Byte);
+    procedure SetnWidthMin(Value: Byte);
+
+    procedure InternalPaint;
+  protected
+    procedure Loaded; override;
+    procedure Resize; override;
+    procedure Paint; override;
+    procedure ActTimer(Sender: TObject);
+
+    procedure DoAlarm;
+    procedure DoChangeSec(nHr, nMin, nSec: Integer);
+    procedure DoChangeMin(nHr, nMin, nSec: Integer);
+    procedure DoChangeHour(nHr, nMin, nSec: Integer);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property Date: Boolean read plDate write SetlDate default False;
+    property ClockEnabled: Boolean read plEnabled write SetlEnabled default True;
+    property TimeSet: TDateTime read pdUra write SetdUra;
+    property TimeOffset: Integer read pnOffs write SetnOffs default 0;
+    property SpiderClock: Boolean read plSpider write SetlSpider default False;
+    property SecJump: Boolean read plSecJump write SetlSecJump default False;
+    property Seconds: Boolean read plSekunde write plSekunde default True;
+    property MinMarks: Boolean read plMinMarks write SetlMinMarks default True;
+    property HourStyle: TJvHourStyle read FHourStyle write SetHourStyle default hsLine;
+    property MinuteStyle: TJvHourStyle read FMinuteStyle write SetMinuteStyle default hsLine;
+    property HourMarks: TJvHourMarks read FHourMarks write SetHourMarks default hmAll;
+    property HourSize: Integer read FHourSize write SetHourSize default 12;
+    property MinuteSize: Integer read FMinuteSize write SetMinSize default 7;
+    property MinuteFontSize: Integer read FMinuteFontSize write SetMinFontSize default 7;
+    property ColorHr: TColor read plColHr write SetlColHr default clBlack;
+    property ColorHrIn: TColor read plColHrIn write SetlColHrIn default clBlack;
+    property ColorMin: TColor read plColMin write SetlColMin default clBlack;
+    property ColorMinIn: TColor read plColMinIn write SetlColMinIn default  clBlack;
+    property ColorHandHr: TColor read plColHandHr write SetlColHandHr default clBlack;
+    property ColorHandMin: TColor read plColHandMin write SetlColHandMin default clBlack;
+    property ColorHandSec: TColor read plColHandSec write SetlColHandSec default clBlack;
+
+    property WidthHandSec: Byte read pnWidthHandSec write SetnWidthHandSec default 1;
+    property WidthHandMin: Byte read pnWidthHandMin write SetnWidthHandMin default 3;
+    property WidthHandHr: Byte read pnWidthHandHr write SetnWidthHandHr default 5;
+    property WidthHr: Byte read pnWidthHr write SetnWidthHr default 2;
+    property WidthMin: Byte read pnWidthMin write SetnWidthMin default 1;
+
+//    property MinFont :TFont read pfMinFont write pfMinFont;
+
+    property CenterSize: Byte read pnCenterSize write pnCenterSize default 5;
+    property CenterCol: TColor read pnCenterCol write pnCenterCol default clBlack;
+
+    property Align;
+    property Color default clBtnFace;
+    property Cursor;
+    property DragCursor;
+    property DragMode;
+    property ParentColor;
+    property Font;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+
+    property OnChangeSec: TJvNotifyTime read FOnChangeSec write FOnChangeSec;
+    property OnChangeMin: TJvNotifyTime read FOnChangeMin write FOnChangeMin;
+    property OnChangeHour: TJvNotifyTime read FOnChangeHour write FOnChangeHour;
+
+    property OnSameTime: TNotifyEvent read FOnSameTime write FOnSameTime;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDrag;
+
+    property Width default 137;
+    property Height default 137;
+    property BevelWidth;
+    property BevelInner default bvRaised;
+    property BevelOuter default bvLowered;
+  end;
+
+implementation
+
+{.$R *.res}
+
+constructor TJvAnalogClock.Create(AOwner: TComponent);
+var
+  h, m, s, hund: Word;
+begin
+  inherited Create(AOwner);
+  BevelInner := bvRaised;
+  BevelOuter := bvLowered;
+  FHourSize := 12;
+  FMinuteSize := 7;
+  FMinuteFontSize := 7;
+
+  plSpider := True;
+  plSecJump := False;
+  plEnabled := True;
+
+  FTimer := TTimer.Create(Self);
+  FTimer.Enabled := plEnabled;
+  FTimer.Interval := 100;
+  FTimer.OnTimer := ActTimer;
+
+  Color := clBtnFace;
+  Width := 137;
+  Height := 137;
+  Caption := ' ';
+  plSekunde := True;
+  plMinMarks := True;
+  nDeli := 50;
+
+  FHourStyle := hsLine;
+  FMinuteStyle := hsLine;
+  FHourMarks := hmAll;
+
+  plColHr := clBlack;
+  plColHrIn := clBlack;
+  plColMin := clBlack;
+  plColMinIn := clBlack;
+  plColHandHr := clBlack;
+  plColHandMin := clBlack;
+  plColHandSec := clBlack;
+
+  pnWidthHandSec := 1;
+  pnWidthHandMin := 3;
+  pnWidthHandHr := 5;
+  pnWidthHr := 2;
+  pnWidthMin := 1;
+
+  pnCenterCol := clBlack;
+  pnCenterSize := 5;
+
+//  pfMinFont := TFont.Create;
+//  pfMinFont := TTextAttributes.Create;
+//  pfMinFont.Assign(Font);
+//  pfMinFont.Charset := Font.Charset;
+//  pfMinFont.Name := Font.Name;
+//  pfMinFont.Color := Font.Color;
+//  pfMinFont.Size := Font.Size;
+//  pfMinFont.Style := Font.Style;
+//  pfMinFont.Pitch := Font.Pitch;
+//  pfMinFont.FontAdapter := Font.FontAdapter;
+//  pfMinFont.OnChange := Font.OnChange;
+ //InternalPaint;
+
+  DecodeTime(Now, h, m, s, hund);
+  OldMin := m;
+  OldHour := h;
+  OldSec := s;
+end;
+
+destructor TJvAnalogClock.Destroy;
+begin
+  FTimer.Free;
+//  pfMinFont.Free;
+  inherited Destroy;
+end;
+
+
+ //ShellExecute in W64
+    //ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxbox391.exe C:\maxbook\maxbox3\maxbox3.exe')
+ //  ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxboxdef1.ini C:\maxbook\maxbox3\maxboxdef2.ini')
+   
+
+getRulesbyContract  
+
+TBaseVirtListBox = class(TCustomControl)
+  protected
+    FColumnCount: Integer;
+    FRecCount: Integer;
+    FItemIndex: Integer;
+    FPrevItemIndex: Integer;
+    FBlockBeginIndex: Integer;
+    FSelCount: Integer;
+    FTopIndex: Integer;
+    FBorderStyle: TBorderStyle;
+    FGridLineWidth: Integer;
+    FScrollBars: TScrollStyle;
+    FColors: TLBColors;
+    FOldFontChange: TNotifyEvent;
+    FFontHeader: TFont;
+    FOptions: TVirtListBoxOptions;
+    FOWnerDrawHeader: Boolean;
+    FOwnerDraw: Boolean;
+    FMultiSelect: Boolean;
+    FMouseDragging: Boolean;
+    FDefColWidth: Integer;
+    FRowHeight: Integer;  {height of one row}
+    FHeaderHeight: Integer; {height of the header row}
+    FHalfRow: TZeroOrOne; {number of rows partially visible at the bottom}
+    FVisibleRows: Integer; {number of full rows visible in window}
+    FVSHigh: Integer; {vertical scroll limit}
+    FHSHigh: Integer; {horizontal scroll limit}
+    FHDelta: Integer; {horizontal scroll delta = leftmost field index}
+    FHaveHorzScroll: Boolean; {do we have a horizontal scroll bar?}
+    FHaveVertScroll: Boolean; {do we have a vertical scroll bar?}
+    FHorizDivisor,
+    FVertDivisor: Integer; {divisor for scroll bar position calculation}
+    FCapture: Boolean; {if True, we have the capture}
+    FOnChange: TOnChangeEvent;
+    FOnTopIndexChanged : TTopIndexChangedEvent;
+    FOnIsSelected: TIsSelectedEvent;
+    FOnSelect: TSelectEvent;
+    FQuerySplitter: TQuerySplitterEvent;
+    FQueryItem: TQueryItemEvent;
+    FQueryHeader: TQueryHeaderEvent;
+    FQueryFieldAttr: TQueryFieldAttrEvent;
+    FQuerySelection: TQuerySelectionEvent;
+    FResizeColumn: TResizeColumnEvent;
+    FDrawItem: TDrawItemEvent;
+    FLeftOffset: Integer; {distance between v-splitter and text}
+    FWheelDelta: Integer;
+    FOnSelectionChange: TSelectionChangeEvent;
+    FOnBeforePaint,
+    FOnAfterPaint: TControlPaintEvent;
+    FOnAfterPaintRow: TRowPaintEvent;
+    FOnBeforePaintRow: TRowPaintEvent;
+    FOnHeaderClick: THeaderClickEvent;
+    FOnAfterDrawItem: TBeforeAfterDrawItemEvent;
+    FOnBeforeDrawItem: TBeforeAfterDrawItemEvent;
+    FOnMouseWheel: TMouseWheelEvent;
+  protected
+    class function ScaleDown(ANumber, ADivisor : Integer): Integer;
+    class function ScaleUp(ANumber, ADivisor: Integer): Integer;
+    procedure SetLeftOffset(const Value: Integer);
+    procedure SetMultiSelect(Value : Boolean); virtual;
+    procedure ColorsChange(AnIndex: TLBColorIndex; AColor: TColor);
+    procedure FontChange(Sender: TObject);
+    function HaveHScroll: Boolean;
+    function HaveVScroll: Boolean;
+    procedure InitScrollInfo;
+    procedure SetVScrollRange;
+    procedure SetVScrollPos;
+    procedure SetHScrollRange;
+    procedure SetHScrollPos;
+    procedure ScrollRight;
+    procedure ScrollLeft;
+    procedure Redraw(PrevIndex: Integer);
+    procedure DrawSelection(PrevSel: Integer);
+    procedure DrawLeftAt(R: TRect; X, NextCol: Integer; const S: AnsiString);
+    procedure DrawRightAt(R: TRect; X, NextCol: Integer; const S: AnsiString);
+
+    procedure DrawLeftAt2(R: TRect; X, YOffset: Integer; const S: AnsiString);
+    procedure DrawRightAt2(R: TRect; X, YOffset: Integer; const S: AnsiString);
+
+    procedure SetDefColWidth(const Value: Integer);
+    procedure DrawHeaderTrailer;
+    function QueryDragHandle(X: Integer): Integer;
+    function IsInHeader(Y: Integer): Boolean;
+    procedure SetNumRows(ANumber: Integer);
+    procedure SetNumCols(ANumber: Integer); virtual;
+    function GetNumCols: Integer; virtual;
+    procedure SetLeftColIndex(const Value: Integer);
+    function GetItemIndex: Integer;
+    procedure SetItemIndex(Index: Integer);
+    procedure SetTopIndex(Index: Integer);
+    procedure SetBorderStyle(Value: TBorderStyle);
+    procedure SetScrollBars(Value: TScrollStyle);
+    procedure SetRowHeight(ANumber: Integer);
+    procedure SetHeaderHeight(ANumber: Integer);
+    procedure SetFontHeader(AFont: TFont);
+    procedure SetOptions(Value: TVirtListBoxOptions);
+    function EffectiveHeaderHeight: Integer;
+    function GetItemRect(AnIndex: Integer): TRect;
+    function GetHeaderRect: TRect;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWnd; override;
+    procedure Paint; override;
+    procedure Click; override;
+    procedure DrawHeader;
+    procedure DrawHeaderSection(AIndex: Integer; Depressed: Boolean = False);
+    procedure DrawItem(AnIndex: Integer);
+    procedure CalcRows;
+    procedure UpdateRows;
+    function QuerySplitter(AnIndex: Integer): Integer; virtual;
+    function QueryItem(RecNum, FldNum: Integer): AnsiString; virtual;
+    procedure DoQuerySelection(RecNum: Integer; var Selected: Boolean); virtual;
+    function QueryHeader(FldNum: Integer): AnsiString; virtual;
+    procedure DoQueryField(RecNum, FieldNum: Integer;
+      Selected: Boolean; var Align: TAlignment); virtual;
+    procedure DoOnChange(Index: Integer); virtual;
+    procedure DoOnTopIndexChanged(NewTopIndex : LongInt); virtual;
+    procedure DoHeaderClick(Col: Integer); virtual;
+    procedure DoResizeColumn(SplitNum: Integer; NewPos: Integer); virtual;
+    procedure DoOnMouseWheel(Shift : TShiftState;
+      Delta, XPos, YPos: SmallInt); virtual;
+    procedure DoSelectionChange(RecNum: Integer; SelChange:TSelectionChange);virtual;
+  protected
+    procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SetCursor;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
+    procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    procedure WMEraseBkgnd(var msg: TWMEraseBkgnd); message WM_EraseBkgnd;
+    procedure WMLButtonDown(var Msg: TWMMouse); message WM_LBUTTONDOWN;
+    procedure WMLButtonUp(var Msg: TWMMouse); message WM_LBUTTONUP;
+    procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
+    procedure WMKeyDown(var Msg: TWMKeyDown); message WM_KeyDown;
+    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
+    procedure WMCreate(var Msg: TWMCreate); message WM_Create;
+    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
+    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
+    procedure WMMouseWheel(var Msg : TMessage); message WM_MOUSEWHEEL;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function ClientToRow(Y: Integer): Integer;
+    function ClientToCol(X: Integer): Integer;
+    procedure ClientToGrid(APoint: TPoint; var Col, Row: Integer);
+    function GridRect(Col, Row: Integer): TRect;
+    function ClientToGridRect(APoint: TPoint): TRect;
+    procedure Clear;
+    procedure InvalidateRows;
+    function IsHeaderVisible: Boolean;
+    procedure DeselectAll;
+    procedure SelectAll;
+    procedure BlockSelect(IndexFrom, IndexTo: Integer; Select: TSelectionChange);
+    function DefaultQueryItem(RecNum, FldNum: Integer): AnsiString;
+    function DefaultQueryHeader(FldNum: Integer): AnsiString;
+    function DefaultQuerySplitter(AnIndex: Integer): Integer;
+  public
+    property BorderStyle: TBorderStyle
+      read FBorderStyle write SetBorderStyle default bsSingle;
+    property ScrollBars: TScrollStyle
+      read FScrollBars write SetScrollBars;
+    property RecCount: Integer read FRecCount write SetNumRows;
+    property NumRows: Integer read FRecCount write SetNumRows;
+    property NumItems: Integer read FRecCount write SetNumRows;
+    property NumCols: Integer read GetNumCols write SetNumCols;
+    property ColCOunt: Integer read GetNumCols write SetNumCols;
+    property ItemRect[AnIndex: Integer]: TRect read GetItemRect;
+    property HeaderRect: TRect read GetHeaderRect;
+    property RowHeight: Integer read FRowHeight write SetRowHeight default 15;
+    property HeaderHeight: Integer read FHeaderHeight write SetHeaderHeight default 18;
+    property Colors: TLBColors read FColors write FColors;
+    property Options: TVirtListBoxOptions read FOptions write SetOptions default[oHeaderButton];
+    property FontHeader: TFont read FFontHeader write SetFontHeader;
+    property TopIndex: Integer read FTopIndex write SetTopIndex;
+    property ItemIndex: Integer read GetItemIndex write SetItemIndex;
+    property SelCount: Integer read FSelCount;
+    property LeftColIndex: Integer read FHDelta write SetLeftColIndex; {!!!}
+    property OwnerDrawHeader: Boolean read FOwnerDrawHeader write FOwnerDrawHeader;
+    property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw;
+    property OnBeforeDrawItem: TBeforeAfterDrawItemEvent
+      read FOnBeforeDrawItem write FOnBeforeDrawItem;
+    property OnAfterDrawItem: TBeforeAfterDrawItemEvent
+      read FOnAfterDrawItem write FOnAfterDrawItem;
+    property OnDrawItem: TDrawItemEvent
+      read FDrawItem write FDrawItem;
+    property DefColWidth: Integer
+      read FDefColWidth write SetDefColWidth default 90;
+    property LeftOffset: Integer
+      read FLeftOffset write SetLeftOffset default 5;
+    property Canvas;
+    property OnChange: TOnChangeEvent
+      read FOnChange write FOnChange;
+    property OnSelectionChange: TSelectionChangeEvent
+      read FOnSelectionChange write FOnSelectionChange;
+    property OnTopIndexChanged: TTopIndexChangedEvent
+      read FOnTopIndexChanged write FOnTopiNdexChanged;
+    property OnQuerySplitter: TQuerySplitterEvent
+      read FQuerySplitter write FQuerySplitter;
+    property OnQueryItem: TQueryItemEvent
+      read FQueryItem write FQueryItem;
+    property OnQuerySelection: TQuerySelectionEvent
+      read FQuerySelection write FQuerySelection;
+    property OnQueryHeader: TQueryHeaderEvent
+      read FQueryHeader write FQueryHeader;
+    property OnQueryField : TQueryFieldAttrEvent
+      read FQueryFieldAttr write FQueryFieldAttr;
+    property OnResizeColumn: TResizeColumnEvent
+      read FResizeColumn write FResizeColumn;
+    property OnAfterPaintRow: TRowPaintEvent
+      read FOnAfterPaintRow write FOnAFterPAintRow;
+    property OnBeforePaintRow: TRowPaintEvent
+      read FOnBeforePaintRow write FOnBeforePAintRow;
+    property OnAfterPaint: TControlPaintEvent
+      read FOnAfterPaint write FOnAFterPAint;
+    property OnBeforePaint: TControlPaintEvent
+      read FOnBeforePaint write FOnBeforePAint;
+    property OnHeaderClick: THeaderClickEvent
+      read FOnHeaderClick write FOnHeaderClick;
+    property WheelDelta: Integer
+      read FWheelDelta write FWheelDelta default 3;
+    property MultiSelect: Boolean
+      read FMultiSelect write FMultiSelect;
+    property OnMouseWheel : TMouseWheelEvent
+      read FOnMouseWheel write FOnMouseWheel;
+  end;

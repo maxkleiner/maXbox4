@@ -1,0 +1,1596 @@
+{***************************************************************
+ * Project  : Console Expressions and Strips Routines with REGEX
+ * App Name : 550_Expressions.TXT, 530_3DLab.TXT, #locs=840
+ * Purpose  : Demonstrates Console out to box, STExpression adding func() at runtime!
+ * Date     : #sign>4:59 Max: MAXBOX10: 23/05/2016 14:33:15  PM 
+ ****************************************************************}
+
+ //TODO: transfer the strip to a REGEX funcrvalue
+ //ref: maXbox3/source/REST/uPSI_StExpr.pas
+ 
+ //  http://delphidabbler.com/tips/61
+   
+ Program DOSConsoleCapture;
+                        
+ {Formats a StripTag Position of HTML in function or REGEX match selection}
+
+  function ReadUntil(const ReadFrom, len: Integer; const C: Char; s: string): Integer;
+  var
+    j: Integer;
+  begin
+    for j := ReadFrom to Len do
+      if (s[j] = C) then begin
+        Result := j;
+        Exit;
+      end;
+    Result := Len+1;
+  end;
+ 
+function StripTags2(const S: string): string;
+var
+  Len: Integer;
+  i, APos: Integer;
+begin
+  Len := Length(S);
+  i := 0;
+  Result := '';
+  while (i <= Len) do begin
+    Inc(i);
+    APos := ReadUntil(i, len, '<', s);
+    Result := Result + Copy(S, i, APos-i);
+    i := ReadUntil(APos+1,len, '>',s);
+  end;
+end;
+
+FUNCTION Strip(const SubString: String; MainString: String): String;
+{ =================================================================== }
+VAR i,j: Integer;
+
+BEGIN{Strip}
+    j := length(SubString);
+    If j <> 0 Then Begin
+       i := Pos(SubString,MainString);
+       While i <> 0 Do Begin
+           Delete(MainString, i, j);
+           i := Pos(SubString,MainString);
+       End;
+   End;
+   result:= MainString;
+END{Strip};
+
+
+FUNCTION StripAny(const SubString: String; MainString: String): String;
+{ =================================================================== }
+VAR i,j: Integer;
+      s: char;
+BEGIN{Strip}
+    //j := Ord(SubString[0]);
+     j := length(SubString);
+    While j > 0 Do Begin
+       s := SubString[j];
+       i := Pos(s,MainString);
+       While i <> 0 Do Begin
+           Delete(MainString,i,1);
+           i := Pos(s,MainString);
+       End;
+       Dec(j);
+   End;
+   result:= MainString;
+END{Strip};
+
+  
+procedure AppendValueToStrings(const SL: TStrings; StartingValue: Integer);
+var i: Integer;
+begin
+  Assert(Assigned(SL),'not assigned');  // Make sure valid TStrings has been passed in
+  for i := 0 to SL.Count - 1 do begin
+    SL[i] := IntToStr(StartingValue) + ' ' + SL[i];
+    Inc(StartingValue);
+  end;
+end;
+
+function GrabLine2(const s: string; ALine: Integer): string;
+var sl: TStringList;
+begin
+  sl:= TStringList.Create;
+  try
+    sl.LoadFromFile(s);
+    Result:= sl[ALine - 1]; // index off by one
+  finally
+    sl.Free;
+  end;
+end;
+
+function GetLinesCount(sFileName : String): Integer;
+var oSL : TStringlist;
+begin
+   oSL:= TStringlist.Create;
+   oSL.LoadFromFile(sFileName);
+   result:= oSL.Count;
+   oSL.Free;
+end; //[/DELPHI]
+
+
+procedure STEXpressionPattern;
+begin
+    with TStExpression.create(self) do begin
+      AddConstant('MPI',3.14159);
+      srlist:= TStringlist.create;
+      GetIdentList(srlist);
+      for it:= 0 to srlist.count-1 do 
+        writeln(srlist.strings[it]);
+      srlist.Free;  
+      Expression:= '2^10 * ln(8 +MPI)';
+      writeln(floattoStr(AnalyzeExpression))
+      free;
+    end;  
+end;   
+
+procedure TForm1Findwindow;
+var
+  wnd: HWND;
+  i: Integer;
+  s: string;
+begin
+  wnd := FindWindow('notepad', '');
+  if wnd <> 0 then begin
+    wnd := FindWindowEx(wnd, 0, 'Edit', '');
+    // Write Text in Notepad.
+    // Text ins Notepad schreiben.
+    s := 'Hello';
+    for i := 1 to Length(s) do
+      //SendMessage(wnd, WM_CHAR, word(s[i]), 0);
+    // Simulate Return Key.
+    PostMessage(wnd, WM_KEYDOWN, VK_RETURN, 0);
+    // Simulate Space.
+    PostMessage(wnd, WM_KEYDOWN, VK_SPACE, 0);
+  end;
+end; 
+
+// function to add in expression at runtime
+
+  Function superPI(Value1: TStFloat): TStFloat;
+  begin
+    result:= value1 * PI;
+  end;  
+  
+  
+  procedure TForm1_Button1Click(Sender: TObject);
+var
+  H: HWND; 
+  ClientWidth: integer;
+begin
+ ClientWidth:= 300; 
+  H := FindWindow('ConsoleWindowClass', 'C:\Windows\system32\cmd.exe');
+  if H<>0 then begin
+    {WinApi.Windows.}SetParent(H, Memo2.Handle);
+    SetWindowPos(H, 0, 0, 0, ClientWidth, ClientWidth, SWP_ASYNCWINDOWPOS);
+  end;
+end;
+
+procedure BitmapToMetafile(const Bmp: {Graphics.}TBitmap;
+  const EMF: {Graphics.}TMetafile);
+var
+  MetaCanvas: {Graphics.}TMetafileCanvas; // canvas for drawing on metafile
+begin
+  EMF.Height := Bmp.Height;
+  EMF.Width := Bmp.Width;
+  MetaCanvas := {Graphics.}TMetafileCanvas.Create(EMF, 0);
+  try
+    MetaCanvas.Draw(0, 0, Bmp);
+  finally
+    MetaCanvas.Free;
+  end;
+end;
+
+procedure ExtractRGB(const Color: {Graphics.}TColor; out Red, Green, Blue: Byte);
+var
+  RGB: {Windows.}TColorREf; // RGB equivalent of given Colour
+begin
+  RGB := {Graphics.}ColorToRGB(Color);  // ensures system Colours are converted
+  Red := {Windows.}synGetRValue(RGB);
+  Green := {Windows.}synGetGValue(RGB);
+  Blue := {Windows.}synGetBValue(RGB);
+end;
+
+function ColorToRGBTriple(const Color: {Graphics.}TColor): {Windows.}TRGBTriple;
+begin
+  ExtractRGB(Color, Result.rgbtRed, Result.rgbtGreen, Result.rgbtBlue);
+end;
+
+
+type
+  TPNGSig = array[0..7] of Byte;  // png signature byte array
+var
+  // png signature
+  cValidSig: TPNGSig; //integer; //TPNGSig = ($89, $50, $4E, $47, $0D, $0A, $1A, $0A);
+
+
+function GetPNGSize(const FileName: string): {Types.}TSize;
+var
+  Sig: TPNGSig;             // png signature read from file
+  FS: {Classes.}TFileStream;  // stream onto png file
+  X: Integer;               // loops through bytes of signature
+begin
+  Result.cx := 0;
+  Result.cy := 0;
+  if (FileName = '') or not {SysUtils.}FileExists(FileName) then
+    Exit;
+  FS := {Classes.}TFileStream.Create(
+    FileName, {SysUtils.}fmOpenRead or {SysUtils.}fmShareDenyNone
+  );
+  try
+    // Check signature
+    //FillChar(Sig, SizeOf(Sig), #0);
+    //FS.Read(Sig[0], SizeOf(Sig));
+    for X := Low(Sig) to High(Sig) do
+      if Sig[X] <> cValidSig[X] then
+        Exit;
+    // Signature valid: get dimensions
+    //FS.Seek(18, {Classes.}soFromBeginning);
+    //Result.cx := ReadBigEndianWord(FS);
+    //FS.Seek(22, Classes.soFromBeginning);
+    //Result.cy := ReadBigEndianWord(FS);
+  finally
+    FS.Free;
+  end;
+end;
+
+(*function ReadBigEndianWord(Stm: Classes.TStream): Word;
+type
+  // Record used to hack big endian word
+  TBigEndianWord = packed record
+    case Byte of
+      0: (Value: Word);         // value as word
+      1: (Byte1, Byte2: Byte);  // value as bytes
+  end;
+var
+  BEW: TBigEndianWord;  // record read from stream
+begin
+  FillChar(BEW, SizeOf(BEW), 0);
+  Stm.Read(BEW.Byte2, SizeOf(Byte));
+  Stm.Read(BEW.Byte1, SizeOf(Byte));
+  Result := BEW.Value;
+end;
+  *)
+  
+  
+
+const
+  cEscChar = '\';       // the C escape character
+
+  function IsValidCEscapedStr(const S, ValidEscChars: string): Boolean;
+var
+  Idx: Integer;         // loops thru chars in string
+  EscCharPos: Integer;  // position of esc char in ValidEscChars
+begin
+  // Assume we fail
+  Result := False;
+  // Scan through all string
+  Idx := 1;
+  while Idx <= Length(S) do begin
+    if (S[Idx] = cEscChar) then begin
+      // We have an escape char
+      if Idx = Length(S) then
+        Exit; // error: esc symbol is at end of string
+      // skip over escape symbol and test escape char
+      Inc(Idx);
+      EscCharPos := {SysUtils.}AnsiPos(S[Idx], ValidEscChars);
+      if EscCharPos = 0 then
+        Exit; // error: esc char is not recognised
+    end;
+    Inc(Idx);
+  end;
+  // Everything is OK
+  Result := True;
+end;
+
+
+procedure SendKeysToWindowX(const HWnd: {Windows.}HWND; const Text: string);
+var
+  Idx: Integer;     // current position in input string
+  Ch: Char;         // current character in input string
+  WParam: LongInt;  // WParam to WM_KEYxxx and WM_CHAR messages
+  LParam: LongInt;  // LParam to WM_KEYxxx and WM_CHAR messages
+  ScanCode: Byte;   // scan code of virtual key code
+  OEMScan: Word;    // OEM scan code equivalent of virtual key code
+begin
+  for Idx := 1 to Length(Text) do begin
+    // Record current char and its ordinal value
+    Ch := Text[Idx];
+    WParam := Ord(Ch);
+    // Send WM_KEYDOWN message
+    ScanCode := {Windows.}MapVirtualKey(WParam, 0);
+    LParam := 1 or (ScanCode shl 16) or $40000001; // sets bits 1 & 30
+    {Windows.}SendMessage(HWnd, {Messages.}WM_KEYDOWN, WParam, LParam);
+    // Send WM_CHAR message
+    OEMScan := {Windows.}LoByte({Windows.}VkKeyScan(Ch));
+    ScanCode := {Windows.}MapVirtualKey(OEMScan, 0);
+    LParam := 1 + (ScanCode shl 16) or $00000001;   // sets bit 1
+    {Windows.}SendMessage(HWnd, {Messages.}WM_CHAR, WParam, LParam);
+    // Send WM_KEYUP message
+    ScanCode := {Windows.}MapVirtualKey(WParam, 0);
+    LParam := 1 or (ScanCode shl 16) or $C0000001;  // sets bits 1, 30 & 31
+    {Windows.}SendMessage(HWnd, {Messages.}WM_KEYUP, WParam, LParam);
+  end;
+end;
+
+function LastPos(const SubStr, Str: string): Integer;
+var
+  Idx: Integer; // an index of SubStr in Str
+begin
+  Result := 0;
+  Idx := {StrUtils.}PosEx(SubStr, Str,1);
+  if Idx = 0 then
+    Exit;
+  while Idx > 0 do
+  begin
+    Result := Idx;
+    Idx := {StrUtils.}PosEx(SubStr, Str, Idx + 1);
+  end;
+end;
+
+procedure RemoveDuplicateStrings(const Strings: TStrings);
+var
+  TempStrings: {Classes.}TStringList;
+  Cnt: Integer;
+begin
+  if Strings.Count <= 1 then
+    Exit;
+  TempStrings := {Classes.}TStringList.Create;
+  try
+    TempStrings.Sorted := True;
+    TempStrings.Duplicates := {Classes.}dupIgnore;
+    for Cnt := 0 to Strings.Count - 1 do
+      TempStrings.Add(Strings[Cnt]);
+    Strings.Assign(TempStrings);
+  finally
+    TempStrings.Free;
+  end;
+end;
+
+function DownloadURLToFile(const URL, FileName: string): Boolean;
+begin
+  // URLDownloadFile returns true if URL exists even if file not created
+  // hence we also check file has been created.
+  Result := {Windows.}Succeeded(
+    {UrlMon.}URLDownloadToFile(nil, PChar(URL), PChar(FileName), 0, nil)
+  ) and {SysUtils.}FileExists(FileName);
+end;
+
+procedure PlaySoundX(const AFilename: string);
+begin
+  //{MMSystem.}SndPlaySound(
+    //PChar(AFilename), MMSystem.SND_ASYNC or MMSystem.SND_NODEFAULT
+  //);
+end;
+
+function GetIEVersionStr: string;
+var
+  Reg: {Registry.}TRegistry; // registry access object
+begin
+  Result := '';
+  Reg := {Registry.}TRegistry.Create;
+  try
+    Reg.RootKey := {Windows.}HKEY_LOCAL_MACHINE;
+    if Reg.OpenKeyReadOnly('Software\Microsoft\Internet Explorer') then begin
+      if Reg.ValueExists('Version') then
+        Result := Reg.ReadString('Version');
+    end;
+  finally
+    Reg.Free;
+  end;
+end;
+
+function GetBiosVendor: string;
+var
+  Reg: TRegistry;
+begin
+  Result := '';
+  Reg := TRegistry.Create1(KEY_READ);
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if not Reg.OpenKey('HARDWARE\DESCRIPTION\System\Bios\', False) then
+      Exit;
+    Result := Reg.ReadString('BIOSVendor');
+    Reg.CloseKey;
+  finally
+    Reg.Free;
+  end;
+end;
+
+function ExtractURIQueryString(const URI: string): string;
+var
+  QueryStart: Integer;
+  QueryEnd: Integer;
+begin
+  Result := '';
+  QueryStart := {SysUtils.}AnsiPos('?', URI);
+  if QueryStart = 0 then
+    Exit;
+  Inc(QueryStart);
+  QueryEnd := {SysUtils.}AnsiPos('#', URI);
+  if QueryEnd < QueryStart then
+    QueryEnd := Length(URI)
+  else
+    Dec(QueryEnd);
+  Result := Copy(URI, QueryStart, QueryEnd - QueryStart + 1);
+end;
+
+function TerminateProcessByIDX(ProcessID: Cardinal): Boolean;
+var
+  HProcess : THandle;
+begin
+  Result := False;
+  HProcess := {Windows.}OpenProcess(PROCESS_TERMINATE, False, ProcessID);
+  if HProcess > 0 then
+  try
+    Result := {SysUtils.}Win32Check(TerminateProcess(HProcess, 0));
+  finally
+    {Windows.}CloseHandle(HProcess);
+  end;
+end;
+
+function GetWindowProcessName(const Wnd: {Windows.}HWND): string;
+begin
+  Result := GetProcessName(GetWindowProcessID(Wnd));
+end;
+
+function ResourceExists(const Module: HMODULE;
+  const ResName, ResType: PChar): Boolean;
+begin
+  Result := {Windows.}FindResource(Module, ResName, ResType) <> 0;
+end;
+
+//const
+  //SM_MEDIACENTER = 87; // metrics flag not defined in Windows unit
+
+function IsMediaCenterOS: Boolean;
+begin
+  Result := {Windows.}GetSystemMetrics(SM_MEDIACENTER) <> 0;
+end;
+
+//const
+  //SM_TABLETPC = 86; // metrics flag not defined in Windows unit
+
+function IsTabletOS: Boolean;
+begin
+  Result := GetSystemMetrics(SM_TABLETPC) <> 0;
+end;
+
+function GetProcessorName: string;
+var
+  Reg: TRegistry;
+begin
+  Result := '';
+  Reg := TRegistry.Create1(KEY_READ);
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if not Reg.OpenKey(
+      'HARDWARE\DESCRIPTION\System\CentralProcessor\0\', False
+    ) then
+      Exit;
+    Result := Reg.ReadString('ProcessorNameString');
+    Reg.CloseKey;
+  finally
+    Reg.Free;
+  end;
+end;
+
+
+//const
+  // float format specifiers
+  var
+  cFmtSpec : array[0..1] of Char; // = ('f', 'n');
+
+ function FloatToFixed2(const Value: Extended; const DecimalPlaces: Byte;
+  const SeparateThousands: byte{Boolean}): string;
+begin
+  Result := {SysUtils.}Format(
+    '%.*' + cFmtSpec[SeparateThousands], [DecimalPlaces, Value]
+  );
+end;
+
+function Int64ToFixed(const Value: Int64;
+  const SeparateThousands: Boolean): string;
+begin
+  Result := FloatToFixed(Value, 0, SeparateThousands);
+end;
+
+function RemainingBatteryPercent: Integer;
+var
+  Stat: {Windows.}TSystemPowerStatus;
+begin
+  {Windows.}GetSystemPowerStatus(Stat);
+  Result := Stat.BatteryLifePercent;
+  if (Result < 0) or (Result > 100) then
+    Result := -1;
+end;
+
+function GetProcessorIdentifier: string;
+var
+  Reg: TRegistry;
+begin
+  Result := '';
+  Reg := TRegistry.Create1(KEY_READ);
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if not Reg.OpenKey(
+      'HARDWARE\DESCRIPTION\System\CentralProcessor\0\', False
+    ) then
+      Exit;
+    Result := Reg.ReadString('Identifier');
+    Reg.CloseKey;
+  finally
+    Reg.Free;
+  end;
+end;
+
+procedure ListDrives(const List: {Classes.}TStrings);
+var
+  Drives: PChar;    // buffer for list of drives
+  BufSize: Integer; // size of drive buffer
+begin
+  // Get buffer size and allocate it
+  BufSize := GetLogicalDriveStrings(0, 'nil');
+  //GetMem(Drives, BufSize * SizeOf(Char));
+  try
+    // Get #0 delimited drives list and convert to string list
+    if {Windows.}GetLogicalDriveStrings(BufSize, Drives) = 0 then
+      {SysUtils.}RaiseLastOSError;
+    MultiSzToStrings(Drives, List);    //}
+  finally
+    //FreeMem(Drives);
+  end;
+end;
+
+function MakeSafeHTMLText(TheText: string): string;
+var
+  Idx: Integer; // loops thru characters of TheText
+  Ch: Char;     // each charactor in TheText
+begin
+  Result := '';
+  for Idx := 1 to Length(TheText) do
+  begin
+    Ch := TheText[Idx];
+    case Ch of
+      '<': Result := Result + '&lt;';
+      '>': Result := Result + '&gt;';
+      '&': Result := Result + '&amp;';
+      '"': Result := Result + '&quot;';
+      else
+      begin
+        if (Ch < #32) or (Ch >= #127) then
+          Result := Result + '&#' + IntToStr(Ord(Ch)) + ';'
+        else
+          Result := Result + Ch;
+      end;
+    end;
+  end;
+end;
+
+
+function IsASCIIDigit(const Ch: Char): Boolean;
+begin
+  //Result := Ord(Ch) in [Ord('0')..Ord('9')];
+  Result:= (Ord(Ch) >= Ord('0')) And (ord(ch) <= Ord('9'));
+end;
+
+procedure GetChunk(Source: string; var Pos: Integer; out Dest: string);
+  var
+    IsNum: Boolean; // flags if string chunk is numeric
+    DP: Integer;    // cursor into Source string
+  begin
+    if Pos > Length(Source) then 
+      Dest := ''
+    else begin
+      IsNum := IsASCIIDigit(Source[Pos]);
+      DP := 0;
+      while (Pos + DP <= Length(Source))
+        and (IsASCIIDigit(Source[Pos + DP]) = IsNum) do
+        Inc(DP);
+      Dest := Copy(Source, Pos, DP);
+      Pos := Pos + DP;
+    end;
+  end;
+  
+  const LOCALE_ITIME = 1;
+  
+  function Is24HourTimeFormat: Boolean;
+var
+  DefaultLCID: {Windows.}LCID;  // thread's default locale
+begin
+  DefaultLCID := {Windows.}GetThreadLocale;
+  Result := 0 <> {SysUtils.}StrToIntDef(
+    {SysUtils.}GetLocaleStr(DefaultLCID, {Windows.}LOCALE_ITIME, '0'),
+    0
+  );
+end;
+
+ const
+  cPercent = '%';
+ function CountPercent(const S: UTF8String): Integer;
+  var
+    Idx: Integer; // loops thru all octets of S
+  begin
+    Result := 0;
+    for Idx := 1 to Length(S) do
+      if S[Idx] = cPercent then
+        Inc(Result);
+  end;
+  
+const
+  ccOneMB = 1024 * 1024;  // a megabyte in bytes
+
+  Function BytesToMB(const Bytes: Int64): Extended;
+begin
+  Result := Bytes / cOneMB;
+end;
+  
+  function BytesToMBStr(const Bytes: Int64; const DecimalPlaces: Byte;
+  const SeparateThousands: Boolean): string;
+begin
+  Result := FloatToFixed(BytesToMB(Bytes), DecimalPlaces, SeparateThousands);
+end;
+
+function MemoCursorPos(const Memo: TCustomMemo): TPoint;
+var
+  Row, Col: Integer;  // row and column containing cursor
+begin
+  Row := SendMessage(
+    Memo.Handle, EM_LINEFROMCHAR, Memo.SelStart, 0
+  );
+  Col := Memo.SelStart - SendMessage(
+    Memo.Handle, EM_LINEINDEX, Row, 0
+  );
+  Result.X := Col;
+  Result.Y := Row;
+end;
+ 
+
+
+Const FName = 'maxboxlog2.log'; //'firstdemo3.txt';
+      Testtext = 'this is CODEsign to mine!..?';
+var   FormLab3D: TFormLab3D;
+      myfunc: TStMethod1Param;
+       idt: TIdThread;
+
+Begin   //main
+
+//OpenDoc(exepath+FName)
+ {Memo1.Lines.LoadFromFile(YourFileNameHere);
+ AppendValueToStrings(Memo1.Lines, 10);
+ Memo1.Lines.SaveToFile(YourFileNameHere);}
+  //maxform1.N3dlab1click(self);
+
+  writeln(Strip('<br/>','<p>This is text.<br/>This is line 2</p>'))
+  writeln(StripString('<p>This is text.<br/>This is line 2</p>','<br/>'))
+  writeln(StripAny('<br/>','<p>This is text.<br/>This is line 2</p>'))
+  
+  writeln(Strip('!',testtext));
+  writeln(StripAny('!,.?',testtext));
+ 
+  sr:= StripTags2('<p>This is text.<br/> This is line 2</p>');
+  //ShowMessage(s);   // will display 'This is text.This is line 2'
+  writeln(sr);   // will display 'This is text.This is line 2'
+  writeln(StripTags('<p>This is text.<br/> This is line 2</p>'));
+  
+  Writeln(ReplaceRegExpr ('([</pbr>])*',
+                          '<p>This is text.<br/> This is line 2</p>','', True))
+  Writeln(ReplaceRegExpr ('<[^>]*>',
+                          '<p>This is text.<br/> This is line 2</p>','', True))
+ //CL.AddDelphiFunction('Function AnalyzeExpr( const Expr : AnsiString) : Double');
+    
+    writeln(floattostr(AnalyzeExpr('2^10 * ln(8)')))
+    
+    //add a function at runtime!
+    with TStExpression.create(self) do begin
+      AddConstant('MPI',3.14159);
+      {srlist:= TStringlist.create;
+      GetIdentList(srlist);
+      for it:= 0 to srlist.count-1 do 
+        writeln(srlist.strings[it]);
+      srlist.Free;}
+      myfunc:= @superPI;
+      AddMethod1Param('getsuperpi', myfunc);  
+      Expression:= '2^10 * ln(8 +MPI)';
+      writeln(floattoStr(AnalyzeExpression))
+      Expression:= '2^10 * ln(8 +MPI)+ getsuperpi(42)';
+      writeln(floattoStr(AnalyzeExpression))
+      free;
+    end;
+    
+     { srlist:= TStringlist.create;
+      //ConsoleCapture('C:\', 'cmd.exe', '/c dir *.* /s',srlist);
+      ConsoleCapture('C:\', 'cmd.exe', '/c dir *.*',srlist);
+      writeln(srlist.text)
+      srlist.Free;
+      }
+      
+      srlist:= TStringlist.create;
+      //ConsoleCapture('C:\', 'cmd.exe', '/c dir *.* /s',srlist);
+      //ConsoleCapture('C:\', 'cmd.exe', '/k java -version',srlist);
+      ConsoleCapture('C:\', 'cmd.exe', '/c ipconfig',srlist);
+    //  ConsoleCapture('C:\', 'cmd.exe', '/c netstat',srlist);
+   
+     // ConsoleCapture('C:\', 'cmd.exe', '/c ping 127.0.0.1',srlist);
+     
+    // CaptureConsoleOutput('java -version',memo2);
+    
+      writeln(srlist.text)
+      srlist.Free;
+   
+   //http://delphi.wikia.com/wiki/Capture_Console_Output_Realtime_To_Memo
+   //  CaptureConsoleOutput('/c java -version',memo2);
+     //Function GetDosOutput( CommandLine : string; Work : string) : string');
+     //writeln('GetDosOutput '+GetDosOutput('cmd.exe','/c java -version'));
+     
+     //http://delphidabbler.com/tips/61
+     writeln('GetDosOutput1: '+GetDosOutput('help dir','c:\'));
+     writeln('')
+     writeln('GetDosOutput2: '+GetDosOutput('java -version','c:\'));
+  
+     //srlist:= TStringlist.create;
+      //ConsoleCapture('C:\', 'cmd.exe', '/c dir *.* /s',srlist);
+      //ConsoleCapture('C:\', 'cmd.exe', '/k java -version',srlist);
+      //ConsoleCapture('C:\', 'cmd.exe', '/c java -version',sr);
+    
+      //writeln(sr)
+      //srlist.Free;
+      
+     //ExecuteShell('cmd','/c rundll32.exe url.dll,TelnetProtocolHandler 172.134.77.119')
+      // ExecuteShell('cmd','/c rundll32.exe url.dll,MailToProtocolHandler max@kleiner.ch')
+      //ExecuteShell('cmd','/c rundll32.exe url.dll,NewsProtocolHandler borland.public.delphi.objectpascal')
+ 
+       //rundll32.exe url.dll,NewsProtocolHandler borland.public.delphi.objectpascal
+    SendCopyMessage('this is from outer box','TMaxForm1');
+    //SendCopyMessage('this is from outer box','MainForm');
+    
+        writeln('comSpec '+getenvironmentvariable('ComSpec'))
+  //    function ExecuteProcess(FileName: string;Visibility:Integer; BitMask:Integer; Synch:Boolean):Longword;
+    //bitmask ---> 2 means on second CPU, sync or async possible!
+  { if ExecuteProcess('notepad.exe', SW_SHOW, 1, true) = 0 then 
+      writeln('Multiprocessing Runs on CPU 1');
+      
+   if ExecuteMultiProcessor('notepad.exe', SW_SHOW, 2, true) = 0 then 
+      writeln('Multiprocessing Runs on CPU 2');
+   }   
+      writeln('NUMBER_OF_PROCESSORS: '
+             +getEnvironmentVariable('NUMBER_OF_PROCESSORS'))
+      
+      writeln(DecimalSeparator);        
+      writeln(getDecimalSeparator);
+      //SysErrorMessage(GetLastError());
+    //  ShowMessage(SysErrorMessage(GetLastError))  
+      
+        //RaiseException(erCustomError,'Your message goes here');
+// The following line will not be executed because of the exception!
+  //MsgBox('You will not see this.', 'mbInformation', MB_OK);
+  
+ { with Application do begin
+    NormalizeTopMosts;
+    MessageBox('This should be on top.', 'Look', MB_OK);    // [smbOK]
+    RestoreTopMosts;
+  end;
+  }
+  
+  TForm1_Button1Click(self)
+     sr:= '';
+    writeln(botostr(CreateDOSProcessRedirected('cmd /c dir *.*','',sr)))
+    writeln('this dos '+sr)
+    
+ //GetExceptionMessage
+ 
+ //BitmapToMetafile
+ 
+ ColorToRGBTriple(1234567)
+ 
+ //ExecuteCommandDOS       1
+ //CaptureConsoleOutput    2
+ //GetDosOutput            3
+ //SendKeysToWindow        4
+ //IsRunningOnBattery      5
+ // DOSCommand             6
+ //DOSCommandRedirect      7
+ //DownloadURLToFile       8
+ //DecimalToFraction       9
+ 
+ //IsRunningOnBattery
+ 
+ //ishexstr
+ 
+ //IsCharInSet
+ 
+ {if DownloadURLToFile('http://www.softwareschule.ch/maxboxnews.htm',
+             exepath+'localwebstore.txt') then
+ opendoc(exepath+'localwebstore.txt');
+  }
+ writeln(GetBiosVendor)
+ 
+ //hashofstring
+ 
+ //IntToNumberText2
+ 
+ //IsLibraryInstalled
+   //PostKeyEx32
+   
+   //TerminateProcessByID
+   writeln(itoa(RemainingBatteryPercent))
+   
+   writeln(GetProcessorName)
+   writeln(GetProcessorIdentifier)
+   
+  // openweb('http://snippets.delphidabbler.com/#')
+   
+   //GetRegistryString
+   //RefreshEnvironment
+    //function IsKeyPressed2(const VirtKeyCode: Integer): Boolean;
+   //IsKeyPressed2(const VirtKeyCode: Integer): Boolean;
+     //SizeOfFile64
+     //IShellLink
+     //TIdThread
+     //openweb
+     //openbrowser
+       //openurl
+     writeln(botostr(IsASCIIDigit('6'))) 
+     
+     ShowShellPropertiesDlg(exepath+'maxbox4.exe') 
+       
+       
+End.  // ConsoleCapt Code Snippets REGEX StripUtils
+
+
+
+Ref:
+
+
+function AllDigitsDifferent(N: Int64): Boolean;
+var
+  UsedDigits: array[0..9] of Boolean; // records which digits have been used
+  I: 0..9;  // loops through elements of UsedDigits
+  M: 0..9;  // modulus after dividing by 10
+begin
+  N := Abs(N);
+  Result := False;
+  for I := 0 to 9 do
+    UsedDigits[I] := False;
+  while N > 0 do
+  begin
+    M := N mod 10;
+    if UsedDigits[M] then
+      Exit;
+    UsedDigits[M] := True;
+    N := N div 10;
+  end;
+  Result := True; // if we get here all digits are unique
+end;
+
+
+procedure DecimalToFraction(Decimal: Extended; out FractionNumerator: Extended;
+  out FractionDenominator: Extended; const AccuracyFactor: Extended);
+var
+  DecimalSign: Extended;
+  Z: Extended;
+  PreviousDenominator: Extended;
+  ScratchValue: Extended;
+{$IFDEF FPC}
+const
+{$ELSE}
+resourcestring
+{$ENDIF}
+  sTooSmall = 'Decimal too small to convert to fraction';
+  sTooLarge = 'Decimal too large to convert to fraction';
+const
+  LargestDecimal: Extended = 1.0E+19;
+  SmallestDecimal: Extended = 1.0E-19;
+begin
+  if Decimal < 0.0 then
+    DecimalSign := -1.0
+  else
+    DecimalSign := 1.0;
+  Decimal := Abs(Decimal);
+  if Math.SameValue(Decimal, Int(Decimal)) then
+  begin
+    FractionNumerator := Decimal * DecimalSign;
+    FractionDenominator := 1.0;
+    Exit;
+  end;
+  if (Decimal < SmallestDecimal) then // X = 0 already taken care of
+    raise SysUtils.EConvertError.Create(sTooSmall);
+  if (Decimal > LargestDecimal) then
+    raise SysUtils.EConvertError.Create(sTooLarge);
+  Z := Decimal;
+  PreviousDenominator := 0.0;
+  FractionDenominator := 1.0;
+  repeat
+    Z := 1.0 / (Z - Int(Z));
+    ScratchValue := FractionDenominator;
+    FractionDenominator := FractionDenominator * Int(Z) + PreviousDenominator;
+    PreviousDenominator := ScratchValue;
+    FractionNumerator := Int(Decimal * FractionDenominator + 0.5) // Rounding
+  until
+    (
+      Abs(
+        Decimal - (FractionNumerator / FractionDenominator)
+      ) < AccuracyFactor
+    )
+    or (Z = Int(Z));
+  FractionNumerator := DecimalSign * FractionNumerator;
+end;
+
+function ColorToHTML(const Color: Graphics.TColor): string;
+var
+  ColorRGB: Integer;
+begin
+  ColorRGB := Graphics.ColorToRGB(Color);
+  Result := SysUtils.Format(
+    '#%0.2X%0.2X%0.2X',
+    [Windows.GetRValue(ColorRGB),
+    Windows.GetGValue(ColorRGB),
+    Windows.GetBValue(ColorRGB)]
+  );
+end;
+
+function DOSCommand(const CommandLine: string; const CmdShow: Integer;
+  const WaitUntilComplete: Boolean; const WorkingDir: string = ''): Boolean;
+var
+ ComSpec: array[0..Pred(Windows.MAX_PATH)] of Char;
+ FullCommandLine: string;
+ PWorkingDir: PChar;
+ SI: Windows.TStartupInfo;
+ PI: Windows.TProcessInformation;
+begin
+  FillChar(SI, SizeOf(SI), #0);
+  SI.cb := SizeOf(SI);
+  SI.dwFlags := Windows.STARTF_USESHOWWINDOW; // needed to use wShowWindow
+  SI.wShowWindow := CmdShow;
+  Windows.GetEnvironmentVariable('COMSPEC', ComSpec, SizeOf(ComSpec));
+  FullCommandLine := ComSpec + ' /C ' + CommandLine;
+  if WorkingDir <> '' then
+    PWorkingDir := PChar(WorkingDir)
+  else
+    PWorkingDir := nil;
+  Result := Windows.CreateProcess(
+    nil,
+    PChar(FullCommandLine),
+    nil,
+    nil,
+    False,
+    Windows.NORMAL_PRIORITY_CLASS,
+    nil,
+    PWorkingDir,
+    SI,
+    PI
+  );
+  if Result then
+  begin
+    if WaitUntilComplete then
+      Windows.WaitforSingleObject(PI.hProcess, Windows.INFINITE);
+    Windows.CloseHandle(PI.hProcess);
+    Windows.CloseHandle(PI.hThread );
+  end;
+end;
+
+function DOSCommandRedirect(const CommandLine: string;
+  const OutStream: Classes.TStream): Boolean; overload;
+var
+  SA: Windows.TSecurityAttributes;
+  SI: Windows.TStartupInfo;
+  PI: Windows.TProcessInformation;
+  ComSpec: array[0..Pred(Windows.MAX_PATH)] of Char;
+  FullCommandLine: string;
+  StdOutPipeRead, StdOutPipeWrite: THandle;
+  WasOK: Boolean;
+  Buffer: array[0..8*1024-1] of Char;
+  BytesRead: Cardinal;
+begin
+  Windows.GetEnvironmentVariable('COMSPEC', ComSpec, SizeOf(ComSpec));
+  FullCommandLine := ComSpec + ' /C ' + CommandLine;
+  with SA do
+  begin
+    nLength := SizeOf(SA);
+    bInheritHandle := True;
+    lpSecurityDescriptor := nil;
+  end;
+  Windows.CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SA, 0);
+  try
+    with SI do
+    begin
+      FillChar(SI, SizeOf(SI), 0);
+      cb := SizeOf(SI);
+      dwFlags := Windows.STARTF_USESHOWWINDOW or Windows.STARTF_USESTDHANDLES;
+      wShowWindow := Windows.SW_HIDE;
+      // don't redirect stdin
+      hStdInput := Windows.GetStdHandle(Windows.STD_INPUT_HANDLE);
+      hStdOutput := StdOutPipeWrite;
+      hStdError := StdOutPipeWrite;
+    end;
+    Result := Windows.CreateProcess(
+      nil, PChar(FullCommandLine), nil, nil, True, 0, nil, nil, SI, PI
+    );
+    Windows.CloseHandle(StdOutPipeWrite);
+    if Result then
+    try
+      repeat
+        WasOK := Windows.ReadFile(
+          StdOutPipeRead, Buffer, SizeOf(Buffer), BytesRead, nil
+        );
+        if BytesRead > 0 then
+          OutStream.Write(Buffer[0], BytesRead);
+      until not WasOK or (BytesRead = 0);
+    finally
+      Windows.CloseHandle(PI.hThread);
+      Windows.CloseHandle(PI.hProcess);
+    end;
+  finally
+    Windows.CloseHandle(StdOutPipeRead);
+  end;
+end;
+
+
+function IsRunningOnBattery: Boolean;
+var
+  Stat: Windows.TSystemPowerStatus;
+begin
+  Windows.GetSystemPowerStatus(Stat);
+  Result := Stat.ACLineStatus = 0;
+end;
+
+
+procedure SendKeysToWindow(const HWnd: Windows.HWND; const Text: string);
+var
+  Idx: Integer;     // current position in input string
+  Ch: Char;         // current character in input string
+  WParam: LongInt;  // WParam to WM_KEYxxx and WM_CHAR messages
+  LParam: LongInt;  // LParam to WM_KEYxxx and WM_CHAR messages
+  ScanCode: Byte;   // scan code of virtual key code
+  OEMScan: Word;    // OEM scan code equivalent of virtual key code
+begin
+  for Idx := 1 to Length(Text) do
+  begin
+    // Record current char and its ordinal value
+    Ch := Text[Idx];
+    WParam := Ord(Ch);
+    // Send WM_KEYDOWN message
+    ScanCode := Windows.MapVirtualKey(WParam, 0);
+    LParam := 1 or (ScanCode shl 16) or $40000001; // sets bits 1 & 30
+    Windows.SendMessage(HWnd, Messages.WM_KEYDOWN, WParam, LParam);
+    // Send WM_CHAR message
+    OEMScan := Windows.LoByte(Windows.VkKeyScan(Ch));
+    ScanCode := Windows.MapVirtualKey(OEMScan, 0);
+    LParam := 1 + (ScanCode shl 16) or $00000001;   // sets bit 1
+    Windows.SendMessage(HWnd, Messages.WM_CHAR, WParam, LParam);
+    // Send WM_KEYUP message
+    ScanCode := Windows.MapVirtualKey(WParam, 0);
+    LParam := 1 or (ScanCode shl 16) or $C0000001;  // sets bits 1, 30 & 31
+    Windows.SendMessage(HWnd, Messages.WM_KEYUP, WParam, LParam);
+  end;
+end;
+
+http://www.swissdelphicenter.ch/en/showcode.php?id=770
+
+function TForm1.RunCaptured(const _dirName, _exeName, _cmdLine: string): Boolean;
+var
+  start: TStartupInfo;
+  procInfo: TProcessInformation;
+  tmpName: string;
+  tmp: Windows.THandle;
+  tmpSec: TSecurityAttributes;
+  res: TStringList;
+  return: Cardinal;
+begin
+  Result := False;
+  try
+    { Setze ein Temporäres File }
+    { Set a temporary file }
+    tmpName := 'Test.tmp';
+    FillChar(tmpSec, SizeOf(tmpSec), #0);
+    tmpSec.nLength := SizeOf(tmpSec);
+    tmpSec.bInheritHandle := True;
+    tmp := Windows.CreateFile(PChar(tmpName),
+           Generic_Write, File_Share_Write,
+           @tmpSec, Create_Always, File_Attribute_Normal, 0);
+    try
+      FillChar(start, SizeOf(start), #0);
+      start.cb          := SizeOf(start);
+      start.hStdOutput  := tmp;
+      start.dwFlags     := StartF_UseStdHandles or StartF_UseShowWindow;
+      start.wShowWindow := SW_Minimize;
+      { Starte das Programm }
+      { Start the program }
+      if CreateProcess(nil, PChar(_exeName + ' ' + _cmdLine), nil, nil, True,
+                       0, nil, PChar(_dirName), start, procInfo) then
+      begin
+        SetPriorityClass(procInfo.hProcess, Idle_Priority_Class);
+        WaitForSingleObject(procInfo.hProcess, Infinite);
+        GetExitCodeProcess(procInfo.hProcess, return);
+        Result := (return = 0);
+        CloseHandle(procInfo.hThread);
+        CloseHandle(procInfo.hProcess);
+        Windows.CloseHandle(tmp);
+        { Die Ausgaben hinzufügen }
+        { Add the output }
+        res := TStringList.Create;
+        try
+          res.LoadFromFile(tmpName);
+          Memo1.Lines.AddStrings(res);
+        finally
+          res.Free;
+        end;
+        Windows.DeleteFile(PChar(tmpName));
+      end
+      else
+      begin
+        Application.MessageBox(PChar(SysErrorMessage(GetLastError())),
+          'RunCaptured Error', MB_OK);
+      end;
+    except
+      Windows.CloseHandle(tmp);
+      Windows.DeleteFile(PChar(tmpName));
+      raise;
+    end;
+  finally
+  end;
+end;
+
+
+function ReadBigEndianWord(Stm: Classes.TStream): Word;
+type
+  // Record used to hack big endian word
+  TBigEndianWord = packed record
+    case Byte of
+      0: (Value: Word);         // value as word
+      1: (Byte1, Byte2: Byte);  // value as bytes
+  end;
+var
+  BEW: TBigEndianWord;  // record read from stream
+begin
+  FillChar(BEW, SizeOf(BEW), 0);
+  Stm.Read(BEW.Byte2, SizeOf(Byte));
+  Stm.Read(BEW.Byte1, SizeOf(Byte));
+  Result := BEW.Value;
+end;
+
+function StreamHasWatermark(const Stm: Classes.TStream;
+  const Watermark: array of Byte): Boolean;
+var
+  StmPos: Int64;
+  Buf: array of Byte;
+  I: Integer;
+begin
+  Assert(Length(Watermark) > 0, 'No "watermark" specified');
+  Result := False;
+  StmPos := Stm.Position;
+  try
+    if Stm.Size - StmPos < Length(Watermark) then
+      Exit;
+    SetLength(Buf, Length(Watermark));
+    Stm.ReadBuffer(Pointer(Buf)^, Length(Buf));
+    for I := Low(Buf) to High(Buf) do
+      if Buf[I] <> Watermark[I] then
+        Exit;
+    Result := True;
+  finally
+    Stm.Position := StmPos;
+  end;
+end;
+
+
+function IsCharInSet(const Ch: Char; const Chars: TCharSet): Boolean;
+begin
+  {$IFDEF UNICODE}
+  Result := SysUtils.CharInSet(Ch, Chars);
+  {$ELSE}
+  Result := Ch in Chars;
+  {$ENDIF}
+end;
+
+function IsHexStr(const S: string): Boolean;
+  {Returns true if string S contains only valid hex digits, false otherwise}
+const
+  cHexChars = ['0'..'9', 'A'..'F', 'a'..'f']; // set of valid hex digits
+var
+  Idx: Integer; // loops thru all characters in string
+begin
+  Result := True;
+  for Idx := 1 to Length(S) do
+    if not IsCharInSet(S[Idx], cHexChars) then
+    begin
+      Result := False;
+      Break;
+    end;
+end;
+
+
+
+function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
+var
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+  SecAtrrs: TSecurityAttributes;
+  hInputFile, hOutputFile: THandle;
+begin
+  Result := False;
+  hInputFile := CreateFile(PChar(InputFile), GENERIC_READ, FILE_SHARE_READ,
+    CreateInheritable(SecAtrrs), OPEN_EXISTING, FILE_ATTRIBUTE_TEMPORARY, 0);
+  if hInputFile <> INVALID_HANDLE_VALUE then
+  begin
+    hOutputFile := CreateFile(PChar(OutPutFile), GENERIC_READ or GENERIC_WRITE,
+      FILE_SHARE_READ, CreateInheritable(SecAtrrs), CREATE_ALWAYS,
+      FILE_ATTRIBUTE_TEMPORARY, 0);
+    if hOutputFile <> INVALID_HANDLE_VALUE then
+    begin
+      FillChar(StartupInfo, SizeOf(StartupInfo), #0);
+      StartupInfo.cb := SizeOf(StartupInfo);
+      StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+      StartupInfo.wShowWindow := SW_HIDE;
+      StartupInfo.hStdOutput := hOutputFile;
+      StartupInfo.hStdInput := hInputFile;
+      Result := CreateProcess(nil, PChar(CommandLine), nil, nil, True,
+        CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo,
+        ProcessInfo);
+      if Result then
+      begin
+        WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+        CloseHandle(ProcessInfo.hProcess);
+        CloseHandle(ProcessInfo.hThread);
+      end;
+      CloseHandle(hOutputFile);
+    end;
+    CloseHandle(hInputFile);
+  end;
+end;
+
+
+procedure SIRegister_TStExpression(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TStComponent', 'TStExpression') do
+  with CL.AddClassN(CL.FindClass('TStComponent'),'TStExpression') do
+  begin
+    RegisterMethod('Constructor Create( AOwner : TComponent)');
+    RegisterMethod('Function AnalyzeExpression : TStFloat');
+    RegisterMethod('Procedure AddConstant( const Name : AnsiString; Value : TStFloat)');
+    RegisterMethod('Procedure AddFunction0Param( const Name : AnsiString; FunctionAddr : TStFunction0Param)');
+    RegisterMethod('Procedure AddFunction1Param( const Name : AnsiString; FunctionAddr : TStFunction1Param)');
+    RegisterMethod('Procedure AddFunction2Param( const Name : AnsiString; FunctionAddr : TStFunction2Param)');
+    RegisterMethod('Procedure AddFunction3Param( const Name : AnsiString; FunctionAddr : TStFunction3Param)');
+    RegisterMethod('Procedure AddInternalFunctions');
+    RegisterMethod('Procedure AddMethod0Param( const Name : AnsiString; MethodAddr : TStMethod0Param)');
+    RegisterMethod('Procedure AddMethod1Param( const Name : AnsiString; MethodAddr : TStMethod1Param)');
+    RegisterMethod('Procedure AddMethod2Param( const Name : AnsiString; MethodAddr : TStMethod2Param)');
+    RegisterMethod('Procedure AddMethod3Param( const Name : AnsiString; MethodAddr : TStMethod3Param)');
+    RegisterMethod('Procedure AddVariable(const Name: AnsiString;VariableAddr: PStFloat)');
+    RegisterMethod('Procedure ClearIdentifiers');
+    RegisterMethod('Procedure GetIdentList( S : TStrings)');
+    RegisterMethod('Procedure RemoveIdentifier( const Name : AnsiString)');
+    RegisterProperty('AsInteger', 'Integer', iptr);
+    RegisterProperty('AsFloat', 'TStFloat', iptr);
+    RegisterProperty('AsString', 'AnsiString', iptr);
+    RegisterProperty('ErrorPosition', 'Integer', iptr);
+    RegisterProperty('Expression', 'AnsiString', iptrw);
+    RegisterProperty('LastError', 'Integer', iptr);
+    RegisterProperty('AllowEqual', 'Boolean', iptrw);
+    RegisterProperty('OnAddIdentifier', 'TNotifyEvent', iptrw);
+    RegisterProperty('OnGetIdentValue', 'TStGetIdentValueEvent', iptrw);
+  end;
+end;
+
+
+//#sign:4:59 Max: MAXBOX10: 23/05/2016 14:33:15  PM 
+//#tech:.2.98perf: 0:0:1.181 threads: 7 192.168.56.1 14:33:15 4.2.2.98898
+
+
+ref:
+
+http://stackoverflow.com/questions/11229831/regular-expression-to-remove-html-tags-from-a-string
+
+http://www.delphipages.com/forum/showthread.php?t=201629
+http://useruploadedfiles.programmersheaven.com/48584/NMEA.pas
+
+
+    Program SpammersAreParasites;
+    var l1,l2: Srting;
+    begin
+      l1:='70';
+      l2:='0';
+      Bxo:=l1 + l2;
+      Bxo:=(Bxo)
+    (*
+      l1:=97;
+      l2:=9
+     Bxo:=(l1 + l2);
+    *)
+    //end.
+
+(*? Value of Bxo:    *)
+
+{"There is a theory which states that if ever anybody discovers
+exactly what the Universe is for and why it is here, it will
+instantly disappear and be replaced by something even more
+bizarre and inexplicable. There is another theory which states
+that this has already happened."
+-- Douglas Adams }
+
+
+0.)ou open a script and compile it before.7.you go to ?-ptions?"ave Bytecode? and the console writes(
++++++,-+??/&%?!& ?,-?? mX#+++++$34#8438+++++??/&%?!& saved as4 %4\maXboo5\maxbox3\mX3(((\maxbox3\examples\287_eventhandling2_primewordcount.psb +++++6F,-?
+ 
+3.
+you load the bytecode by ?-ptions?=oad Bytecode...
+6F,-???? mX3 b?te code executed4 $0.0'.20$" $34"3420 9untime4 0404$."77 :emor?load4 '0; use??te%ode -uccess :essage o<4 287_eventhandling2_primewordcount.psb
+
+
+function GetDosOutput(CommandLine: string; Work: string = 'C:\'): string;
+var
+  SA: TSecurityAttributes;
+  SI: TStartupInfo;
+  PI: TProcessInformation;
+  StdOutPipeRead, StdOutPipeWrite: THandle;
+  WasOK: Boolean;
+  Buffer: array[0..255] of AnsiChar;
+  BytesRead: Cardinal;
+  WorkDir: string;
+  Handle: Boolean;
+begin
+  Result := '';
+  with SA do begin
+    nLength := SizeOf(SA);
+    bInheritHandle := True;
+    lpSecurityDescriptor := nil;
+  end;
+  CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SA, 0);
+  try
+    with SI do
+    begin
+      FillChar(SI, SizeOf(SI), 0);
+      cb := SizeOf(SI);
+      dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+      wShowWindow := SW_HIDE;
+      hStdInput := GetStdHandle(STD_INPUT_HANDLE); // don't redirect stdin
+      hStdOutput := StdOutPipeWrite;
+      hStdError := StdOutPipeWrite;
+    end;
+    WorkDir := Work;
+    Handle := CreateProcess(nil, PChar('cmd.exe /C ' + CommandLine),
+                            nil, nil, True, 0, nil,
+                            PChar(WorkDir), SI, PI);
+    CloseHandle(StdOutPipeWrite);
+    if Handle then
+      try
+        repeat
+          WasOK := ReadFile(StdOutPipeRead, Buffer, 255, BytesRead, nil);
+          if BytesRead > 0 then
+          begin
+            Buffer[BytesRead] := #0;
+            Result := Result + Buffer;
+          end;
+        until not WasOK or (BytesRead = 0);
+        WaitForSingleObject(PI.hProcess, INFINITE);
+      finally
+        CloseHandle(PI.hThread);
+        CloseHandle(PI.hProcess);
+      end;
+  finally
+    CloseHandle(StdOutPipeRead);
+  end;
+end;
+
+
+procedure CaptureConsoleOutput(DosApp : string;AMemo : TMemo); 
+
+const 
+
+  ReadBuffer = 1048576;  // 1 MB Buffer 
+
+var 
+
+  Security            : TSecurityAttributes; 
+
+  ReadPipe,WritePipe  : THandle; 
+
+  start               : TStartUpInfo; 
+
+  ProcessInfo         : TProcessInformation; 
+
+  Buffer              : Pchar; 
+
+  TotalBytesRead, 
+
+  BytesRead           : DWORD; 
+
+  Apprunning,n, 
+
+  BytesLeftThisMessage, 
+
+  TotalBytesAvail : integer; 
+
+begin 
+
+  with Security do 
+
+  begin 
+
+    nlength              := SizeOf(TSecurityAttributes); 
+
+    binherithandle       := true; 
+
+    lpsecuritydescriptor := nil; 
+
+  end; 
+
+
+
+  if CreatePipe (ReadPipe, WritePipe, @Security, 0) then 
+
+  begin 
+
+    // Redirect In- and Output through STARTUPINFO structure 
+
+
+
+    Buffer  := AllocMem(ReadBuffer + 1); 
+
+    FillChar(Start,Sizeof(Start),#0); 
+
+    start.cb          := SizeOf(start); 
+
+    start.hStdOutput  := WritePipe; 
+
+    start.hStdInput   := ReadPipe; 
+
+    start.dwFlags     := STARTF_USESTDHANDLES + STARTF_USESHOWWINDOW; 
+
+    start.wShowWindow := SW_HIDE; 
+
+
+
+    // Create a Console Child Process with redirected input and output 
+
+
+
+    if CreateProcess(nil      ,PChar(DosApp), 
+
+                     @Security,@Security, 
+
+                     true     ,CREATE_NO_WINDOW or NORMAL_PRIORITY_CLASS, 
+
+                     nil      ,nil, 
+
+                     start    ,ProcessInfo) then 
+
+    begin 
+
+      n:=0; 
+
+      TotalBytesRead:=0; 
+
+      repeat 
+
+        // Increase counter to prevent an endless loop if the process is dead 
+
+        Inc(n,1); 
+
+         
+
+        // wait for end of child process 
+
+        Apprunning := WaitForSingleObject(ProcessInfo.hProcess,100); 
+
+        Application.ProcessMessages; 
+
+
+
+        // it is important to read from time to time the output information 
+
+        // so that the pipe is not blocked by an overflow. New information 
+
+        // can be written from the console app to the pipe only if there is 
+
+        // enough buffer space. 
+
+
+
+        if not PeekNamedPipe(ReadPipe        ,@Buffer[TotalBytesRead], 
+
+                             ReadBuffer      ,@BytesRead, 
+
+                             @TotalBytesAvail,@BytesLeftThisMessage) then break 
+
+        else if BytesRead > 0 then 
+
+          ReadFile(ReadPipe,Buffer[TotalBytesRead],BytesRead,BytesRead,nil); 
+
+        TotalBytesRead:=TotalBytesRead+BytesRead; 
+
+      until (Apprunning <> WAIT_TIMEOUT) or (n > 150); 
+
+
+
+      Buffer[TotalBytesRead]:= #0; 
+
+      OemToChar(Buffer,Buffer); 
+
+      AMemo.Text := AMemo.text + StrPas(Buffer); 
+
+    end; 
+
+    FreeMem(Buffer); 
+
+    CloseHandle(ProcessInfo.hProcess); 
+
+    CloseHandle(ProcessInfo.hThread); 
+
+    CloseHandle(ReadPipe); 
+
+    CloseHandle(WritePipe); 
+
+  end; 
+
+end; 
+
+
+var
+Form1: TForm1;
+mCommand: string;
+mOutputs: string;
+
+
+implementation
+
+//{$R *.dfm}
+function ExecuteCommandDOS(CommandLine:string):string;
+var
+PROC: TProcessInformation;
+Ret: LongBool;
+START: TStartupInfo;
+SA: TSecurityAttributes;
+hReadPipe: THandle;
+hWritePipe: THandle;
+dBytesRead: DWORD;
+sBuff: array[0..255] of Char;
+begin
+if Length(CommandLine) > 0 then
+mCommand := CommandLine;
+if Length(mCommand) = 0 then begin
+MessageBox(0, PChar('Command Line empty.'), PChar('Error'), MB_ICONEXCLAMATION);
+Exit;
+end;
+SA.nLength := SizeOf(TSecurityAttributes);
+SA.bInheritHandle := TRUE;
+SA.lpSecurityDescriptor := nil;
+Ret := CreatePipe(hReadPipe, hWritePipe, @SA, 0);
+if not Ret then begin
+MessageBox(0, PChar('CreatePipe() failed.'), PChar('Error'), MB_ICONEXCLAMATION);
+Exit;
+end;
+FillChar(START ,Sizeof(TStartupInfo), #0);
+START.cb := SizeOf(TStartupInfo);
+START.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
+START.hStdOutput := hWritePipe;
+START.hStdError := hWritePipe;
+Ret := CreateProcess(nil, PChar(mCommand), @SA, @SA, TRUE, NORMAL_PRIORITY_CLASS, nil, nil, START, PROC);
+if Ret <> TRUE then begin
+MessageBox(0, PChar('File or command not found.'), PChar('Error'), MB_ICONEXCLAMATION);
+Exit;
+end;
+Ret := CloseHandle(hWritePipe);
+mOutputs := '';
+repeat
+
+
+Ret := ReadFile(hReadPipe, sBuff, 255, dBytesRead, nil);
+mOutputs := mOutputs + Copy(sBuff, 1, dBytesRead);
+until Ret = FALSE;
+Ret := CloseHandle(PROC.hProcess);
+Ret := CloseHandle(PROC.hThread);
+Ret := CloseHandle(hReadPipe);
+ExecuteCommand := mOutputs
+end;
+
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+ShowMessage(ExecuteCommand('netstat'));
+end;
+end.
+

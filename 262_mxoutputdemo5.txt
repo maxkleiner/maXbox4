@@ -1,0 +1,149 @@
+{****************************************************************
+ *
+ * Project  : Information Series for SWS of OpenTools API
+ * Unit Name: 262_mxdocudemo4, #locs=140
+ * Purpose  : Introduction and Demo to the mX3 environment options
+ * Uncomment // {$Define Voice when no OLE Sound Speech
+ ****************************************************************}
+
+program maXbox_Output_Demo_5;
+
+{$DEFINE VOICE}
+
+function  MessageBeep(para: integer): byte;
+     external 'MessageBeep@user32.dll stdcall'; //DLL Functiontype 
+     
+const     
+   REGPATH3= '\Software\Microsoft\Internet Explorer\TypedURLs';  
+   REGROOT3= HKEY_CURRENT_USER;
+     
+var
+  myTimeStamp: TDateTime;
+  
+Procedure PerformanceCounter;
+var time: longint;
+begin
+  time:= GetTickCount;
+  //Put the commands to measure...
+  CaptureScreenPNG(ExePath+'screenshotperftest.png');
+  SearchAndOpenDoc(ExePath+'screenshotperftest.png');
+  Sleep(500)
+  //maxform1.StatusBar1.SimpleText:= ('Time Diff: '+IntToStr(GetTickCount-time));
+  Writeln('Time Performance Diff: '+IntToStr(GetTickCount-time));
+end;
+
+begin
+  Writeln(DateTimeGMTToHttpStr(Now))
+  writeln('machine or host name is: '+getHostName)
+  writeln('user name is: '+getUserName+' Is Admin: '+botoStr(isAdmin))
+  writeln('domain name is: '+domainname('localhost'));
+  writeln('Check ProcessID : '+intToStr(CurrentProcessID))
+  Writeln('Processor Numbers: '+intToStr(GetNumberOfProcessors))
+  Writeln('Page Size: '+intToStr(GetPageSize))
+  Writeln('Internet Test with IP Address of: '
+                     +GetHostByName('www.softwareschule.ch'));
+  writeln('IP Address of own Host: '+GetHostByName(getHostName));
+  writeln('Services File Path is: '+ServicesFilePath);
+  Writeln('Network Volume Name is: '+NetworkVolume('C')); 
+  mytimestamp:= GetFileCreationTime(exepath+'maxbox4.exe')
+  writeln(DateTimeToStr(myTimeStamp)+' Creation Date of maXbox4')
+  Writeln('SHA1 Hash of maXbox: '+SHA1(exepath+'maxbox4.exe'))
+  writeln('Shell Version is: '+intToStr(GetShellVersion));
+  WriteLog(ExePath+'systemchecklog5.txt',memo2.text)
+  //PerformanceCounter;
+  
+  {$IFNDEF VOICE}
+   Showmessage(' in maXbox you can set your own styles: ')
+  {$ELSE}
+   Speak('Programming for Change with max box ')
+   Speak('in max box you can get your own output: ')
+  {$ENDIF}
+  maxform1.Console1Click(self);
+  maxForm1.color:= clRed;
+ 
+ 
+  {$IFNDEF VOICE}  
+    Showmessage('You can decompile your code to study the bytecode closer: ');
+  {$ELSE}
+    Speak(' You can decompile also your code to study the byte code closer: ');
+  {$ENDIF}
+  maxform1.Decompile1Click(self);
+
+  {$IFNDEF VOICE}  
+    Showmessage('You can count your components: ');
+  {$ELSE}
+    Speak(' You can count your components: ');
+  {$ENDIF}
+  maxform1.ComponentCount1Click(self);
+
+ {$IFNDEF VOICE}  
+   Showmessage('and also count your modules out of the app: ');
+  {$ELSE}
+   Speak(' and also count your modules out of the app: ');
+ {$ENDIF}
+  maxform1.ModulesCount1Click(self);
+
+  {$IFNDEF VOICE}  
+   Showmessage('with a modeler to see your UML packages: ');
+  {$ELSE}
+   Speak(' with a modeler to see your UML packages:');
+ {$ENDIF}
+  maxform1.DependencyWalker1click(self);             //UnitsExplorer1Click(self);
+
+  {$IFNDEF VOICE}  
+    Showmessage('or check your own include library: ');
+  {$ELSE}
+    Speak(' or check your own include library: ');
+  {$ENDIF}
+  maxform1.Include1Click(self);
+
+  {$IFNDEF VOICE}  
+    Showmessage('and if something went wrong, see the last exceptions: ');
+  {$ELSE}
+    Speak('and if something went wrong, see the last exceptions: ');
+  {$ENDIF}
+    maxform1.ShowLastException1Click(self);
+  
+  {$IFNDEF VOICE}  
+    Showmessage('If you want more information about your app open a program info: ');
+  {$ELSE}
+    Speak(' If you want more information concerning your app open a program info: ');
+  {$ENDIF}
+  maxform1.Info1Click(self);
+
+   
+  {$IFNDEF VOICE}  
+    Showmessage('you can also program add ons like a crypto box: ')
+  {$ELSE}
+    Speak(' you can also program add ons like a crypto box: ');
+  {$ENDIF}
+    maxform1.cryptobox1Click(self);
+    //maxform1.tutorial1Click(self); 
+
+  {$IFNDEF VOICE}  
+    Showmessage('or check your syntax before run the application:'+#10#13+
+              'You see, this tool is more efficient and easy to use! ')
+  {$ELSE}
+    Speak(' or check your syntax before run the application: ');
+    Speak(' You see, this tool is more efficient and easy to use!');
+  {$ENDIF}
+
+  maxform1.SyntaxCheck1Click(self);
+  //Speak('So this tool is more efficient and easy to use!');
+  
+  //maxform1.delphisite1Click(self);
+  //sleep(5000)
+    //RemoveTempInstallDir
+    //WindowsVersionAtLeast GetShellFolder
+  //CaptureScreenPNG(exepath+'mytutors.png');
+  //SearchAndOpenFile(exepath+'mytutors.png')  
+End.   
+
+*******************************************************
+There is no place like 127.0.0.1 
+
+ref:
+ http://sourceforge.net/projects/maxbox/files/Examples/
+http://www.digitallycreated.net/Blog/38/using-makecert-to-create-certificates-for-development
+
+

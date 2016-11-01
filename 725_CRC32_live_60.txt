@@ -1,0 +1,733 @@
+  unit  MathsLib_X_Prime_CRC32;
+
+{
+http://www.mathsisfun.com/prime-factorization.html
+https://searchcode.com/file/13265573/winhash/crc32.pas
+//#sign:Max: MAXBOX10: 21/09/2016 17:56:38 
+ 
+ //modified for maXbox Training  @#locs:583
+
+ {Assortment of math related functions and procedure in various states}
+
+ {$DEFINE compilerversion}
+
+interface
+
+//uses Classes, SysUtils, Windows, Dialogs, UBigIntsV4;
+
+ {$DEFINE compilerversion>15}
+
+ 
+implementation
+
+     function convertfield(xs:string;var v:extended; msg:string):boolean;
+     var errcode:integer;
+     begin
+       //val(xs,v,errcode);
+       if errcode<>0 then
+       begin
+         //showmessage('Invalid character in '+msg+' field in string '+ s);
+         result:=false;
+       end
+       else result:=true;
+     end;
+ 
+ const
+    RootNameSpace = 'root\CIMV2' ;
+    //MaxSmartAttr = NUM_ATTRIBUTE_STRUCTS + 1 ;    
+     
+  (*   function MagWmiGetOneQ (const Arg, Prop: string ; var ResStr: string): integer ;
+var
+    wmiLocator: TSWbemLocator;
+    wmiServices: ISWbemServices;
+    wmiObjectSet: ISWbemObjectSet;
+    wmiObject: ISWbemObject;
+    wmiProp: ISWbemProperty;
+    ovVar: OleVariant;
+    lwValue: LongWord;
+    Enum: IEnumVariant;
+begin
+    ResStr := '' ;
+    //VarClear(ovVar); // 5.2
+    wmiLocator := TSWbemLocator.Create (Nil);
+    try
+    try
+        wmiServices := wmiLocator.ConnectServer ('', RootNameSpace, '', '',
+                                                                      '', '', 0, nil);
+        wmiObjectSet := wmiServices.ExecQuery (Arg, 'WQL',
+                                                     wbemFlagReturnImmediately, nil) ;
+        //result := wmiObjectSet.Count ;
+        if (result <> 1) then exit ;  // can only handle a single instance
+        //Enum := (wmiObjectSet._NewEnum) as IEnumVariant;
+        while (Enum.Next (1, ovVar, lwValue) = S_OK) do
+        begin
+            wmiObject := IUnknown(ovVar) as SWBemObject;
+            //wmiProp := wmiObject.Properties_.Item (Prop, 0) ;
+            {if wmiProp.Name = Prop then
+            begin
+                ResStr := MagWmiGetPropStr (wmiProp) ;
+                if ResStr <> 'NULL' then result := 1 ;
+            end ;
+            VarClear (ovVar); // 5.2  }
+        end ;
+    except
+        result := -1 ;
+        //VarClear (ovVar); // 5.2
+    end ;
+    finally
+        wmiLocator.Free;
+    end;
+end ;  *)
+
+
+
+{**************** StrToAngle ************}
+function StrtoAngle(const s:string; var angle:extended):boolean;
+{Convert string representation of an angle to a numeric value}
+
+ var
+   n,fn, sign:integer;
+   w,ds,ms,ss:string;
+   dv,mv,sv:extended;
+ begin
+   ds:='0';
+   ms:='0';
+   ss:='0.0';
+   w:=trim(s);  {add a stopper}
+   sign:=+1;  {default sign}
+   n:=0;
+   if w='' then begin
+     result:=false;
+     exit;
+   end;
+   if upcase(w[1]) in ['N','S','E','W','-'] then n:=1
+   else if upcase(w[length(w)]) in ['N','S','E','W','-'] then n:=length(w);
+   if n>0 then begin
+     if  (upcase(w[n]) in ['W','S','-']) then sign:=-1;
+     delete(w,n,1);
+     w:=trimLeft(w);
+   end;
+   n:=0;
+   fn:=0;
+   w:=w+','; {add a "stopper"}
+   while n<length(w) do begin
+     inc(n);
+     //if (fn=0) and (w[n] in angledelims)
+     //then
+     begin
+       ds:=copy(w,1,n-1);
+       delete(w,1,n);
+       n:=0;
+     //while (length(w)>0) and (w[1] in angledelims {[' ',deg,minmark,',',':','"']})
+       //do delete(w,1,1);
+       inc(fn);
+     end
+     //else if  w[n] in angledelims {[' ',minmark,',','''',':']} then
+     begin
+       if fn=1 then ms:=copy(w,1,n-1)
+       else if fn=2 then ss:=copy(w,1,n-1);
+       delete(w,1,n);
+       n:=0;
+       //while (length(w)>0) and (w[1] in angledelims {[' ',minmark,',','''',':']})
+       //do delete(w,1,1);
+       inc(fn);
+     end;
+   end;
+   result:=convertfield(ds,dv,'degrees');
+   if result then result:=convertfield(ms,mv,'minutes');
+   if result then result:=convertfield(ss,sv,'seconds');
+   if result
+   then angle:=sign*(dv+mv/60+sv/3600)
+   else angle:=0;
+ end;
+
+
+{********* AngleToStr ************}
+ function AngleToStr(angle:extended):string;
+ {make string representation  of an angle}
+       var
+         D:integer;
+         M,S:extended;
+       begin
+         d:=Trunc(angle);
+         m:=abs(frac(angle)*60);
+         s:=frac(M)*60;
+         m:=int(M);
+         if s>=59.99 then begin
+           s:=0;
+           m:=m+1;
+         end;
+         if (angle<0) and (d=0) then
+         result:=format('-%3d° %2d´ %5.2f´´',[d,trunc(m),s])
+         else result:=format('%3d° %2d´ %5.2f´´',[d,trunc(m),s]);
+       end;
+
+
+function GetLongToMercProjection(const long:extended):extended;
+    begin
+      result:=long;
+    end;
+
+function GetLatToMercProjection(const Lat:Extended):Extended;
+  begin
+    result:=rad2deg(ln(abs(tan(deg2rad(lat))+1/cos(deg2rad(Lat)))));
+  end;
+
+function GetMercProjectionToLong(const ProjLong:extended):extended;
+  begin
+    result:=Projlong;
+  end;
+
+function GetMercProjectionToLat(const ProjLat:extended):extended;
+  begin
+    result:=rad2deg(arctan(sinh(deg2rad(ProjLat))));
+  end;
+
+
+procedure ParseUrl(Value: string);
+var HostName, FileName: string;
+  begin
+    HostName := '';
+    FileName := '';
+    if Pos('HTTP://', UpperCase(Value)) <> 0 then
+      Value := Copy(Value, 8, Length(Value));
+    if Pos('/', Value) <> 0 then  begin
+      HostName := Copy(Value, 1, Pos('/', Value) - 1);
+      FileName := Copy(Value, Pos('/', Value) + 1, Length(Value));
+    end
+    else
+      HostName := Value;
+  end;
+  
+  
+var
+  //CRC32Table :  ARRAY[0..255] OF DWORD;
+  CRT :  ARRAY[0..255] OF DWORD;
+ 
+  { =
+   ($00000000, $77073096, $EE0E612C, $990951BA,
+    $076DC419, $706AF48F, $E963A535, $9E6495A3,
+    $0EDB8832, $79DCB8A4, $E0D5E91E, $97D2D988,
+    $09B64C2B, $7EB17CBD, $E7B82D07, $90BF1D91,
+    $1DB71064, $6AB020F2, $F3B97148, $84BE41DE,
+    $1ADAD47D, $6DDDE4EB, $F4D4B551, $83D385C7,
+    $136C9856, $646BA8C0, $FD62F97A, $8A65C9EC,
+    $14015C4F, $63066CD9, $FA0F3D63, $8D080DF5,
+    $3B6E20C8, $4C69105E, $D56041E4, $A2677172,
+    $3C03E4D1, $4B04D447, $D20D85FD, $A50AB56B,
+    $35B5A8FA, $42B2986C, $DBBBC9D6, $ACBCF940,
+    $32D86CE3, $45DF5C75, $DCD60DCF, $ABD13D59,
+    $26D930AC, $51DE003A, $C8D75180, $BFD06116,
+    $21B4F4B5, $56B3C423, $CFBA9599, $B8BDA50F,
+    $2802B89E, $5F058808, $C60CD9B2, $B10BE924,
+    $2F6F7C87, $58684C11, $C1611DAB, $B6662D3D, 
+    $76DC4190, $01DB7106, $98D220BC, $EFD5102A,
+    $71B18589, $06B6B51F, $9FBFE4A5, $E8B8D433,
+    $7807C9A2, $0F00F934, $9609A88E, $E10E9818,
+    $7F6A0DBB, $086D3D2D, $91646C97, $E6635C01,
+    $6B6B51F4, $1C6C6162, $856530D8, $F262004E,
+    $6C0695ED, $1B01A57B, $8208F4C1, $F50FC457,
+    $65B0D9C6, $12B7E950, $8BBEB8EA, $FCB9887C,
+    $62DD1DDF, $15DA2D49, $8CD37CF3, $FBD44C65,
+    $4DB26158, $3AB551CE, $A3BC0074, $D4BB30E2,
+    $4ADFA541, $3DD895D7, $A4D1C46D, $D3D6F4FB,
+    $4369E96A, $346ED9FC, $AD678846, $DA60B8D0,
+    $44042D73, $33031DE5, $AA0A4C5F, $DD0D7CC9,
+    $5005713C, $270241AA, $BE0B1010, $C90C2086,
+    $5768B525, $206F85B3, $B966D409, $CE61E49F,
+    $5EDEF90E, $29D9C998, $B0D09822, $C7D7A8B4,
+    $59B33D17, $2EB40D81, $B7BD5C3B, $C0BA6CAD, 
+    $EDB88320, $9ABFB3B6, $03B6E20C, $74B1D29A,
+    $EAD54739, $9DD277AF, $04DB2615, $73DC1683,
+    $E3630B12, $94643B84, $0D6D6A3E, $7A6A5AA8,
+    $E40ECF0B, $9309FF9D, $0A00AE27, $7D079EB1,
+    $F00F9344, $8708A3D2, $1E01F268, $6906C2FE,
+    $F762575D, $806567CB, $196C3671, $6E6B06E7,
+    $FED41B76, $89D32BE0, $10DA7A5A, $67DD4ACC,
+    $F9B9DF6F, $8EBEEFF9, $17B7BE43, $60B08ED5,
+    $D6D6A3E8, $A1D1937E, $38D8C2C4, $4FDFF252,
+    $D1BB67F1, $A6BC5767, $3FB506DD, $48B2364B,
+    $D80D2BDA, $AF0A1B4C, $36034AF6, $41047A60,
+    $DF60EFC3, $A867DF55, $316E8EEF, $4669BE79,
+    $CB61B38C, $BC66831A, $256FD2A0, $5268E236,
+    $CC0C7795, $BB0B4703, $220216B9, $5505262F,
+    $C5BA3BBE, $B2BD0B28, $2BB45A92, $5CB36A04,
+    $C2D7FFA7, $B5D0CF31, $2CD99E8B, $5BDEAE1D, 
+    $9B64C2B0, $EC63F226, $756AA39C, $026D930A,
+    $9C0906A9, $EB0E363F, $72076785, $05005713,
+    $95BF4A82, $E2B87A14, $7BB12BAE, $0CB61B38,
+    $92D28E9B, $E5D5BE0D, $7CDCEFB7, $0BDBDF21,
+    $86D3D2D4, $F1D4E242, $68DDB3F8, $1FDA836E,
+    $81BE16CD, $F6B9265B, $6FB077E1, $18B74777,
+    $88085AE6, $FF0F6A70, $66063BCA, $11010B5C,
+    $8F659EFF, $F862AE69, $616BFFD3, $166CCF45,
+    $A00AE278, $D70DD2EE, $4E048354, $3903B3C2,
+    $A7672661, $D06016F7, $4969474D, $3E6E77DB,
+    $AED16A4A, $D9D65ADC, $40DF0B66, $37D83BF0,
+    $A9BCAE53, $DEBB9EC5, $47B2CF7F, $30B5FFE9,
+    $BDBDF21C, $CABAC28A, $53B39330, $24B4A3A6,
+    $BAD03605, $CDD70693, $54DE5729, $23D967BF,
+    $B3667A2E, $C4614AB8, $5D681B02, $2A6F2B94,
+    $B40BBE37, $C30C8EA1, $5A05DF1B, $2D02EF8D); 
+    }
+  
+ function CalculateCRC32X(AStream : TStream) : Cardinal;
+  var aMemStream : TMemoryStream;
+    aValue : Byte;
+    aValue2: char;
+    avalue3: string;
+ begin
+   aMemStream:= TMemoryStream.Create;
+   try
+    Result:= $FFFFFFFF;
+    while AStream.Position < AStream.Size do begin
+      // Read a chunk of data...
+      aMemStream.Seek(0, soFromBeginning);
+      if AStream.Size - AStream.Position >= 1024*1024
+        then aMemStream.CopyFrom(AStream, 1024*1024)
+        else begin
+          aMemStream.Clear;
+          aMemStream.CopyFrom(AStream, AStream.Size-AStream.Position);
+        end;
+      aMemStream.Seek(0, soFromBeginning);
+      //amemStream.Position := 0; //you missed this line
+      while aMemStream.Position < aMemStream.Size do begin
+       // aMemStream.ReadBufferString(aValue3, 1);
+        aMemStream.ReadByte(aValue, 1);
+      //  aMemStream.ReadChar(aValue2, 1);
+   
+       //writeln(itoa(amemstream.size))
+
+        {avalue3:= (ReadStrFromStream(amemstream, 1));
+        avalue:= ord(avalue3[1]);
+        }
+        
+      //aMemStream.ReadInt(aValueint, 1);
+      //  Result:= (Result shr 8) xor CRCT[aValue xor (byte(result))];
+      //Result:= ((Result shr 8) and $00FFFFFF) 
+        //                  xor CRCT[(Result xor aValue) and $000000FF];  
+      
+        Result:= (Result shr 8) Xor CRT[aValue Xor (result And $000000FF)];
+      //  Result:= (Result shr 8) Xor CRT[ord(aValue2) Xor (result And $000000FF)];
+   
+      end;
+    end;
+    Result:= not Result;
+  finally
+    aMemStream.Free;
+  end;
+end; 
+
+procedure initcrcarray;
+begin
+CRT[0]:=$00000000   CRT[064]:=$77073096  CRT[128]:=$EE0E612C CRT[192]:=$990951BA
+CRT[1]:=$076DC419   CRT[065]:=$706AF48F  CRT[129]:=$E963A535 CRT[193]:=$9E6495A3
+CRT[2]:=$0EDB8832   CRT[066]:=$79DCB8A4  CRT[130]:=$E0D5E91E CRT[194]:=$97D2D988
+CRT[3]:=$09B64C2B   CRT[067]:=$7EB17CBD  CRT[131]:=$E7B82D07 CRT[195]:=$90BF1D91
+CRT[4]:=$1DB71064   CRT[068]:=$6AB020F2  CRT[132]:=$F3B97148 CRT[196]:=$84BE41DE
+CRT[5]:=$1ADAD47D   CRT[069]:=$6DDDE4EB  CRT[133]:=$F4D4B551 CRT[197]:=$83D385C7
+CRT[6]:=$136C9856   CRT[070]:=$646BA8C0  CRT[134]:=$FD62F97A CRT[198]:=$8A65C9EC
+CRT[7]:=$14015C4F   CRT[071]:=$63066CD9  CRT[135]:=$FA0F3D63 CRT[199]:=$8D080DF5
+CRT[8]:=$3B6E20C8   CRT[072]:=$4C69105E  CRT[136]:=$D56041E4 CRT[200]:=$A2677172
+CRT[9]:=$3C03E4D1   CRT[073]:=$4B04D447  CRT[137]:=$D20D85FD CRT[201]:=$A50AB56B
+CRT[10]:=$35B5A8FA  CRT[074]:=$42B2986C  CRT[138]:=$DBBBC9D6 CRT[202]:=$ACBCF940
+CRT[11]:=$32D86CE3  CRT[075]:=$45DF5C75  CRT[139]:=$DCD60DCF CRT[203]:=$ABD13D59
+CRT[12]:=$26D930AC  CRT[076]:=$51DE003A  CRT[140]:=$C8D75180 CRT[204]:=$BFD06116
+CRT[13]:=$21B4F4B5  CRT[077]:=$56B3C423  CRT[141]:=$CFBA9599 CRT[205]:=$B8BDA50F
+CRT[14]:=$2802B89E  CRT[078]:=$5F058808  CRT[142]:=$C60CD9B2 CRT[206]:=$B10BE924
+CRT[15]:=$2F6F7C87  CRT[079]:=$58684C11  CRT[143]:=$C1611DAB CRT[207]:=$B6662D3D
+CRT[16]:=$76DC4190  CRT[080]:=$01DB7106  CRT[144]:=$98D220BC CRT[208]:=$EFD5102A
+CRT[17]:=$71B18589  CRT[081]:=$06B6B51F  CRT[145]:=$9FBFE4A5 CRT[209]:=$E8B8D433
+CRT[18]:=$7807C9A2  CRT[082]:=$0F00F934  CRT[146]:=$9609A88E CRT[210]:=$E10E9818
+CRT[19]:=$7F6A0DBB  CRT[083]:=$086D3D2D  CRT[147]:=$91646C97 CRT[211]:=$E6635C01
+CRT[20]:=$6B6B51F4  CRT[084]:=$1C6C6162  CRT[148]:=$856530D8 CRT[212]:=$F262004E
+CRT[21]:=$6C0695ED  CRT[085]:=$1B01A57B  CRT[149]:=$8208F4C1 CRT[213]:=$F50FC457
+CRT[22]:=$65B0D9C6  CRT[086]:=$12B7E950  CRT[150]:=$8BBEB8EA CRT[214]:=$FCB9887C
+CRT[23]:=$62DD1DDF  CRT[087]:=$15DA2D49  CRT[151]:=$8CD37CF3 CRT[215]:=$FBD44C65
+CRT[24]:=$4DB26158  CRT[088]:=$3AB551CE  CRT[152]:=$A3BC0074 CRT[216]:=$D4BB30E2
+CRT[25]:=$4ADFA541  CRT[089]:=$3DD895D7  CRT[153]:=$A4D1C46D CRT[217]:=$D3D6F4FB
+CRT[26]:=$4369E96A  CRT[090]:=$346ED9FC  CRT[154]:=$AD678846 CRT[218]:=$DA60B8D0
+CRT[27]:=$44042D73  CRT[091]:=$33031DE5  CRT[155]:=$AA0A4C5F CRT[219]:=$DD0D7CC9
+CRT[28]:=$5005713C  CRT[092]:=$270241AA  CRT[156]:=$BE0B1010 CRT[220]:=$C90C2086
+CRT[29]:=$5768B525  CRT[093]:=$206F85B3  CRT[157]:=$B966D409 CRT[221]:=$CE61E49F
+CRT[30]:=$5EDEF90E  CRT[094]:=$29D9C998  CRT[158]:=$B0D09822 CRT[222]:=$C7D7A8B4
+CRT[31]:=$59B33D17  CRT[095]:=$2EB40D81  CRT[159]:=$B7BD5C3B CRT[223]:=$C0BA6CAD
+CRT[32]:=$EDB88320  CRT[096]:=$9ABFB3B6  CRT[160]:=$03B6E20C CRT[224]:=$74B1D29A
+CRT[33]:=$EAD54739  CRT[097]:=$9DD277AF  CRT[161]:=$04DB2615 CRT[225]:=$73DC1683
+CRT[34]:=$E3630B12  CRT[098]:=$94643B84  CRT[162]:=$0D6D6A3E CRT[226]:=$7A6A5AA8
+CRT[35]:=$E40ECF0B  CRT[099]:=$9309FF9D  CRT[163]:=$0A00AE27 CRT[227]:=$7D079EB1
+CRT[36]:=$F00F9344  CRT[100]:=$8708A3D2  CRT[164]:=$1E01F268 CRT[228]:=$6906C2FE
+CRT[37]:=$F762575D  CRT[101]:=$806567CB  CRT[165]:=$196C3671 CRT[229]:=$6E6B06E7
+CRT[38]:=$FED41B76  CRT[102]:=$89D32BE0  CRT[166]:=$10DA7A5A CRT[230]:=$67DD4ACC
+CRT[39]:=$F9B9DF6F  CRT[103]:=$8EBEEFF9  CRT[167]:=$17B7BE43 CRT[231]:=$60B08ED5
+CRT[40]:=$D6D6A3E8  CRT[104]:=$A1D1937E  CRT[168]:=$38D8C2C4 CRT[232]:=$4FDFF252
+CRT[41]:=$D1BB67F1  CRT[105]:=$A6BC5767  CRT[169]:=$3FB506DD CRT[233]:=$48B2364B
+CRT[42]:=$D80D2BDA  CRT[106]:=$AF0A1B4C  CRT[170]:=$36034AF6 CRT[234]:=$41047A60
+CRT[43]:=$DF60EFC3  CRT[107]:=$A867DF55  CRT[171]:=$316E8EEF CRT[235]:=$4669BE79
+CRT[44]:=$CB61B38C  CRT[108]:=$BC66831A  CRT[172]:=$256FD2A0 CRT[236]:=$5268E236
+CRT[45]:=$CC0C7795  CRT[109]:=$BB0B4703  CRT[173]:=$220216B9 CRT[237]:=$5505262F
+CRT[46]:=$C5BA3BBE  CRT[110]:=$B2BD0B28  CRT[174]:=$2BB45A92 CRT[238]:=$5CB36A04
+CRT[47]:=$C2D7FFA7  CRT[111]:=$B5D0CF31  CRT[175]:=$2CD99E8B CRT[239]:=$5BDEAE1D
+CRT[48]:=$9B64C2B0  CRT[112]:=$EC63F226  CRT[176]:=$756AA39C CRT[240]:=$026D930A
+CRT[49]:=$9C0906A9  CRT[113]:=$EB0E363F  CRT[177]:=$72076785 CRT[241]:=$05005713
+CRT[50]:=$95BF4A82  CRT[114]:=$E2B87A14  CRT[178]:=$7BB12BAE CRT[242]:=$0CB61B38
+CRT[51]:=$92D28E9B  CRT[115]:=$E5D5BE0D  CRT[179]:=$7CDCEFB7 CRT[243]:=$0BDBDF21
+CRT[52]:=$86D3D2D4  CRT[116]:=$F1D4E242  CRT[180]:=$68DDB3F8 CRT[244]:=$1FDA836E
+CRT[53]:=$81BE16CD  CRT[117]:=$F6B9265B  CRT[181]:=$6FB077E1 CRT[245]:=$18B74777
+CRT[54]:=$88085AE6  CRT[118]:=$FF0F6A70  CRT[182]:=$66063BCA CRT[246]:=$11010B5C
+CRT[55]:=$8F659EFF  CRT[119]:=$F862AE69  CRT[183]:=$616BFFD3 CRT[247]:=$166CCF45
+CRT[56]:=$A00AE278  CRT[120]:=$D70DD2EE  CRT[184]:=$4E048354 CRT[248]:=$3903B3C2
+CRT[57]:=$A7672661  CRT[121]:=$D06016F7  CRT[185]:=$4969474D CRT[249]:=$3E6E77DB
+CRT[58]:=$AED16A4A  CRT[122]:=$D9D65ADC  CRT[186]:=$40DF0B66 CRT[250]:=$37D83BF0
+CRT[59]:=$A9BCAE53  CRT[123]:=$DEBB9EC5  CRT[187]:=$47B2CF7F CRT[251]:=$30B5FFE9
+CRT[60]:=$BDBDF21C  CRT[124]:=$CABAC28A  CRT[188]:=$53B39330 CRT[252]:=$24B4A3A6
+CRT[61]:=$BAD03605  CRT[125]:=$CDD70693  CRT[189]:=$54DE5729 CRT[253]:=$23D967BF
+CRT[62]:=$B3667A2E  CRT[126]:=$C4614AB8  CRT[190]:=$5D681B02 CRT[254]:=$2A6F2B94
+CRT[63]:=$B40BBE37  CRT[127]:=$C30C8EA1  CRT[191]:=$5A05DF1B CRT[255]:=$2D02EF8D
+
+ end;
+
+procedure initCRCarray2;
+begin
+CRT[0]:=$00000000   CRT[1]:=$77073096  CRT[2]:=$EE0E612C CRT[3]:=$990951BA
+CRT[4]:=$076DC419   CRT[5]:=$706AF48F  CRT[6]:=$E963A535 CRT[7]:=$9E6495A3
+CRT[8]:=$0EDB8832   CRT[9]:=$79DCB8A4  CRT[10]:=$E0D5E91E CRT[11]:=$97D2D988
+CRT[12]:=$09B64C2B  CRT[13]:=$7EB17CBD  CRT[14]:=$E7B82D07 CRT[15]:=$90BF1D91
+CRT[16]:=$1DB71064  CRT[17]:=$6AB020F2  CRT[18]:=$F3B97148 CRT[19]:=$84BE41DE
+CRT[20]:=$1ADAD47D  CRT[21]:=$6DDDE4EB  CRT[22]:=$F4D4B551 CRT[23]:=$83D385C7
+CRT[24]:=$136C9856  CRT[25]:=$646BA8C0  CRT[26]:=$FD62F97A CRT[27]:=$8A65C9EC
+CRT[28]:=$14015C4F  CRT[29]:=$63066CD9  CRT[30]:=$FA0F3D63 CRT[31]:=$8D080DF5
+CRT[32]:=$3B6E20C8  CRT[33]:=$4C69105E  CRT[34]:=$D56041E4 CRT[35]:=$A2677172
+CRT[36]:=$3C03E4D1  CRT[37]:=$4B04D447  CRT[38]:=$D20D85FD CRT[39]:=$A50AB56B
+CRT[40]:=$35B5A8FA  CRT[41]:=$42B2986C  CRT[42]:=$DBBBC9D6 CRT[43]:=$ACBCF940
+CRT[44]:=$32D86CE3  CRT[45]:=$45DF5C75  CRT[46]:=$DCD60DCF CRT[47]:=$ABD13D59
+CRT[48]:=$26D930AC  CRT[49]:=$51DE003A  CRT[50]:=$C8D75180 CRT[51]:=$BFD06116
+CRT[52]:=$21B4F4B5  CRT[53]:=$56B3C423  CRT[54]:=$CFBA9599 CRT[55]:=$B8BDA50F
+CRT[56]:=$2802B89E  CRT[57]:=$5F058808  CRT[58]:=$C60CD9B2 CRT[59]:=$B10BE924
+CRT[60]:=$2F6F7C87  CRT[61]:=$58684C11  CRT[62]:=$C1611DAB CRT[63]:=$B6662D3D
+CRT[64]:=$76DC4190  CRT[65]:=$01DB7106  CRT[66]:=$98D220BC CRT[67]:=$EFD5102A
+CRT[68]:=$71B18589  CRT[69]:=$06B6B51F  CRT[70]:=$9FBFE4A5 CRT[71]:=$E8B8D433
+CRT[72]:=$7807C9A2  CRT[73]:=$0F00F934  CRT[74]:=$9609A88E CRT[75]:=$E10E9818
+CRT[76]:=$7F6A0DBB  CRT[77]:=$086D3D2D  CRT[78]:=$91646C97 CRT[79]:=$E6635C01
+CRT[80]:=$6B6B51F4  CRT[81]:=$1C6C6162  CRT[82]:=$856530D8 CRT[83]:=$F262004E
+CRT[84]:=$6C0695ED  CRT[85]:=$1B01A57B  CRT[86]:=$8208F4C1 CRT[87]:=$F50FC457
+CRT[88]:=$65B0D9C6  CRT[89]:=$12B7E950  CRT[90]:=$8BBEB8EA CRT[91]:=$FCB9887C
+CRT[92]:=$62DD1DDF  CRT[93]:=$15DA2D49  CRT[94]:=$8CD37CF3 CRT[95]:=$FBD44C65
+CRT[96]:=$4DB26158  CRT[97]:=$3AB551CE  CRT[98]:=$A3BC0074 CRT[99]:=$D4BB30E2
+CRT[100]:=$4ADFA541  CRT[101]:=$3DD895D7  CRT[102]:=$A4D1C46D CRT[103]:=$D3D6F4FB
+CRT[104]:=$4369E96A  CRT[105]:=$346ED9FC  CRT[106]:=$AD678846 CRT[107]:=$DA60B8D0
+CRT[108]:=$44042D73  CRT[109]:=$33031DE5  CRT[110]:=$AA0A4C5F CRT[111]:=$DD0D7CC9
+CRT[112]:=$5005713C  CRT[113]:=$270241AA  CRT[114]:=$BE0B1010 CRT[115]:=$C90C2086
+CRT[116]:=$5768B525  CRT[117]:=$206F85B3  CRT[118]:=$B966D409 CRT[119]:=$CE61E49F
+CRT[120]:=$5EDEF90E  CRT[121]:=$29D9C998  CRT[122]:=$B0D09822 CRT[123]:=$C7D7A8B4
+CRT[124]:=$59B33D17  CRT[125]:=$2EB40D81  CRT[126]:=$B7BD5C3B CRT[127]:=$C0BA6CAD
+CRT[128]:=$EDB88320  CRT[129]:=$9ABFB3B6  CRT[130]:=$03B6E20C CRT[131]:=$74B1D29A
+CRT[132]:=$EAD54739  CRT[133]:=$9DD277AF  CRT[134]:=$04DB2615 CRT[135]:=$73DC1683
+CRT[136]:=$E3630B12  CRT[137]:=$94643B84  CRT[138]:=$0D6D6A3E CRT[139]:=$7A6A5AA8
+CRT[140]:=$E40ECF0B  CRT[141]:=$9309FF9D  CRT[142]:=$0A00AE27 CRT[143]:=$7D079EB1
+CRT[144]:=$F00F9344  CRT[145]:=$8708A3D2  CRT[146]:=$1E01F268 CRT[147]:=$6906C2FE
+CRT[148]:=$F762575D  CRT[149]:=$806567CB  CRT[150]:=$196C3671 CRT[151]:=$6E6B06E7
+CRT[152]:=$FED41B76  CRT[153]:=$89D32BE0  CRT[154]:=$10DA7A5A CRT[155]:=$67DD4ACC
+CRT[156]:=$F9B9DF6F  CRT[157]:=$8EBEEFF9  CRT[158]:=$17B7BE43 CRT[159]:=$60B08ED5
+CRT[160]:=$D6D6A3E8  CRT[161]:=$A1D1937E  CRT[162]:=$38D8C2C4 CRT[163]:=$4FDFF252
+CRT[164]:=$D1BB67F1  CRT[165]:=$A6BC5767  CRT[166]:=$3FB506DD CRT[167]:=$48B2364B
+CRT[168]:=$D80D2BDA  CRT[169]:=$AF0A1B4C  CRT[170]:=$36034AF6 CRT[171]:=$41047A60
+CRT[172]:=$DF60EFC3  CRT[173]:=$A867DF55  CRT[174]:=$316E8EEF CRT[175]:=$4669BE79
+CRT[176]:=$CB61B38C  CRT[177]:=$BC66831A  CRT[178]:=$256FD2A0 CRT[179]:=$5268E236
+CRT[180]:=$CC0C7795  CRT[181]:=$BB0B4703  CRT[182]:=$220216B9 CRT[183]:=$5505262F
+CRT[184]:=$C5BA3BBE  CRT[185]:=$B2BD0B28  CRT[186]:=$2BB45A92 CRT[187]:=$5CB36A04
+CRT[188]:=$C2D7FFA7  CRT[189]:=$B5D0CF31  CRT[190]:=$2CD99E8B CRT[191]:=$5BDEAE1D
+CRT[192]:=$9B64C2B0  CRT[193]:=$EC63F226  CRT[194]:=$756AA39C CRT[195]:=$026D930A
+CRT[196]:=$9C0906A9  CRT[197]:=$EB0E363F  CRT[198]:=$72076785 CRT[199]:=$05005713
+CRT[200]:=$95BF4A82  CRT[201]:=$E2B87A14  CRT[202]:=$7BB12BAE CRT[203]:=$0CB61B38
+CRT[204]:=$92D28E9B  CRT[205]:=$E5D5BE0D  CRT[206]:=$7CDCEFB7 CRT[207]:=$0BDBDF21
+CRT[208]:=$86D3D2D4  CRT[209]:=$F1D4E242  CRT[210]:=$68DDB3F8 CRT[211]:=$1FDA836E
+CRT[212]:=$81BE16CD  CRT[213]:=$F6B9265B  CRT[214]:=$6FB077E1 CRT[215]:=$18B74777
+CRT[216]:=$88085AE6  CRT[217]:=$FF0F6A70  CRT[218]:=$66063BCA CRT[219]:=$11010B5C
+CRT[220]:=$8F659EFF  CRT[221]:=$F862AE69  CRT[222]:=$616BFFD3 CRT[223]:=$166CCF45
+CRT[224]:=$A00AE278  CRT[225]:=$D70DD2EE  CRT[226]:=$4E048354 CRT[227]:=$3903B3C2
+CRT[228]:=$A7672661  CRT[229]:=$D06016F7  CRT[230]:=$4969474D CRT[231]:=$3E6E77DB
+CRT[232]:=$AED16A4A  CRT[233]:=$D9D65ADC  CRT[234]:=$40DF0B66 CRT[235]:=$37D83BF0
+CRT[236]:=$A9BCAE53  CRT[237]:=$DEBB9EC5  CRT[238]:=$47B2CF7F CRT[239]:=$30B5FFE9
+CRT[240]:=$BDBDF21C  CRT[241]:=$CABAC28A  CRT[242]:=$53B39330 CRT[243]:=$24B4A3A6
+CRT[244]:=$BAD03605  CRT[245]:=$CDD70693  CRT[246]:=$54DE5729 CRT[247]:=$23D967BF
+CRT[248]:=$B3667A2E  CRT[249]:=$C4614AB8  CRT[250]:=$5D681B02 CRT[251]:=$2A6F2B94
+CRT[252]:=$B40BBE37  CRT[253]:=$C30C8EA1  CRT[254]:=$5A05DF1B CRT[255]:=$2D02EF8D
+end;
+
+
+ function UpdateCrc32(Value: integer; var Buffer: array of byte; Count: integer): integer;
+   var i: integer;
+   begin
+     Result := Value;
+     for i := 0 to Count - 1 do begin
+       Result := ((Result shr 8) and $00FFFFFF) xor
+         CRT[(Result xor Buffer[i]) and $000000FF];
+     end;
+end;
+
+function GetMemoryStreamCrc32(Stream: TMemoryStream): integer;
+var Value: byte; //char;
+begin
+  Result := $FFFFFFFF;
+  writeln('stream size: '+itoa(stream.size))
+  Stream.Position := 0;
+  //while Stream.ReadByte(Value, 1) = 1 do
+  while ReadStrFromStream(stream, 1) <> ' ' do
+    Result := ((Result shr 8) and $00FFFFFF) xor 
+                       CRT[(Result xor Value) and $000000FF];
+  Result:= not Result;
+end;
+
+function FileToString(afilename: string): string;
+begin
+ with TFileStream.Create(afilename, fmOpenRead or fmShareCompat) do begin
+   try 
+     SetLength(result, Size);
+     Read(result, Size);
+   finally 
+     Free;
+   end  
+ end
+end;
+
+function GetModuleFileNameStr2: string;
+begin
+  SetLength(Result, Max_Path);
+  SetLength(Result, GetModuleFileName(hInstance, PChar(Result), Length(Result)));
+end;
+
+var 
+   aget: array of byte;
+   //att: TJvHttpThread
+   var aStringStream : TStringStream;
+       aMemStream: TMemoryStream;
+   myext: extended;
+   testfile: string;
+
+initialization
+
+   testFile:= 'firstdemo.txt';
+   //testFile:= 'maXbox4.exe';
+   
+   begin
+     initCRCarray2;
+     aStringStream := TStringStream.Create(filetoString(exepath+testFile));
+     try
+      //aStringStream.loadfromfile
+       {Label1.Caption :=} 
+       writeln('ACRC32_: '+IntToHex(CalculateCRC32X(aStringStream), 8));
+     finally
+       aStringStream.Free;
+     end;
+   end; 
+   
+   
+     aStringStream := TStringStream.Create(filetoString(exepath+testFile));
+     aMemStream:= TMemoryStream.Create;
+          aMemStream.Clear;
+          aMemStream.CopyFrom(aStringStream, aStringStream.Size-aStringStream.Position);
+         aMemStream.Seek(0, soFromBeginning);
+      
+          writeln('chunck of: '+inttohex(GetMemoryStreamCrc32(aMemStream),8));
+   //writeln('ACRC32_: '+IntToHex(CalculateCRC32X(aStringStream), 8));
+   aStringStream.Free;
+   aMemStream.Free;
+
+ // 4 test functions:  
+   writeln('crc func1: '+inttoHex(Crc32OfFile(exepath+testFile),8))
+   writeln('crc func2: '+inttoHex(synCrc32(filetostring(exepath+testFile)),8))
+   //writeln('crc func: '+inttoHex(ComputeFileCRC32(filetostring(exepath+'firstdemo.txt')),8))
+  writeln('crc func3: '+inttoHex(S_StrCRC32(filetostring(exepath+testFile)),8))
+  writeln('crc func4: '+inttoHex(Crc32(exepath+testFile),8))
+ 
+ //  for it:= 128 to 191 do 
+   //  writeln('CRCT['+itoa(it)+']:=');
+   { for it:= 192 to 255 do 
+     writeln('CRCT['+itoa(it)+']:=');
+    }
+    
+    writeln(GetModuleFileNameStr)
+    
+    //DeleteToRecycleBin
+
+finalization
+  Convertstringtodecimal('1,23.456789',myext)
+  writeln('Convertstringtodecimal '+floattostr(myext))
+  ft:= myext;
+  //TPrimes_Create;
+  writeln('Close the crc hit bit')
+//begin
+ //writeln('fit the bit')
+ 
+ // Application.Icon.LoadFromResourceName(HInstance, 'NEWDELPHIAPP');
+   Application.Icon.LoadFromResourceName(HInstance, 'MOON');
+   
+   with TStringStream.create('this is a string thing wing!') do begin
+     writeln(readstring(size));
+     Free
+   end;  
+   
+   //TStringsEnumerator
+   //iinterfacelist
+   
+   with tinterfacelist.create do begin
+     //add
+     free
+   end;  
+   
+   writeln(inifilename)
+   
+   //GetStylesFromBrowser
+   
+End.
+
+Ref: test value:
+
+maXbox4.exe
+CRC32: CB882FFC 26.0 MB (27,276,288 bytes)
+
+ maXbox4 725_CRC32_live.txt Compiled done: 17/09/2016 22:32:46
+--------------------------------------------------------
+CRC32_: CB882FFC
+crc func1: CB882FFC
+crc func2: CB882FFC
+crc func3: CB882FFC
+crc func4: CB882FFC
+
+//testFile:= 'firstdemo.txt';
+CRC32_: 2BF1FDE7
+crc func: 2BF1FDE7
+crc func: 2BF1FDE7
+crc func: 2BF1FDE7
+crc func: 2BF1FDE7
+Convertstringtodecimal 123.456789
+
+Doc:
+Example 2: What is the prime factorization of 147 ?
+
+Can we divide 147 evenly by 2?
+
+147 ÷ 2 = 73½
+
+No it can't. The answer should be a whole number, and 73½ is not.
+
+Let's try the next prime number, 3:
+
+147 ÷ 3 = 49
+
+That worked, now we try factoring 49, and find that 7 is the smallest prime number that works:
+49 ÷ 7 = 7
+
+And that is as far as we need to go, because all the factors are prime numbers.
+
+147 = 3 × 7 × 7
+
+(or 147 = 3 × 72 using exponents)
+
+Unique
+And here is another thing:
+
+There is only one (unique!) set of prime factors for any number.
+
+Example The prime factors of 330 are 2, 3, 5 and 11:
+
+330 = 2 × 3 × 5 × 11
+
+There is no other possible set of prime numbers that can be multiplied to make 330.
+
+In fact this idea is so important it is called the Fundamental Theorem of Arithmetic.
+
+ //writeln('fit the bit')
+network.http.sendRefererHeader;2
+network.http.sendRefererHeader
+
+CRCT[0]:=$00000000             $00000000
+CRCT[1]:=$076DC419             $076DC419
+CRCT[2]:=$0EDB8832             $0EDB8832
+CRCT[3]:=$09B64C2B             $09B64C2B
+CRCT[4]:=$1DB71064             $1DB71064
+CRCT[5]:=$1ADAD47D             $1ADAD47D
+CRCT[6]:=$136C9856             $136C9856
+CRCT[7]:=$14015C4F             $14015C4F
+CRCT[8]:=$3B6E20C8             $3B6E20C8
+CRCT[9]:=$3C03E4D1             $3C03E4D1
+CRCT[10]:=$35B5A8FA
+CRCT[11]:=$32D86CE3
+CRCT[12]:=$26D930AC
+CRCT[13]:=$21B4F4B5
+CRCT[14]:=$2802B89E
+CRCT[15]:=$2F6F7C87
+CRCT[16]:=$76DC4190
+CRCT[17]:=$71B18589
+CRCT[18]:=$7807C9A2
+CRCT[19]:=$7F6A0DBB
+CRCT[20]:=$6B6B51F4
+CRCT[21]:=$6C0695ED
+CRCT[22]:=$65B0D9C6
+CRCT[23]:=$62DD1DDF
+CRCT[24]:=$4DB26158
+CRCT[25]:=$4ADFA541
+CRCT[26]:=$4369E96A
+CRCT[27]:=$44042D73
+CRCT[28]:=$5005713C
+CRCT[29]:=$5768B525
+CRCT[30]:=$5EDEF90E
+CRCT[31]:=$59B33D17
+CRCT[32]:=$EDB88320
+CRCT[33]:=$EAD54739
+CRCT[34]:=$E3630B12
+CRCT[35]:=$E40ECF0B
+CRCT[36]:=$F00F9344
+CRCT[37]:=$F762575D
+CRCT[38]:=$FED41B76
+CRCT[39]:=$F9B9DF6F
+CRCT[40]:=$D6D6A3E8
+CRCT[41]:=$D1BB67F1
+CRCT[42]:=$D80D2BDA
+CRCT[43]:=$DF60EFC3
+CRCT[44]:=$CB61B38C
+CRCT[45]:=$CC0C7795
+CRCT[46]:=$C5BA3BBE
+CRCT[47]:=$C2D7FFA7
+CRCT[48]:=$9B64C2B0
+CRCT[49]:=$9C0906A9
+CRCT[50]:=$95BF4A82
+CRCT[51]:=$92D28E9B
+CRCT[52]:=$86D3D2D4
+CRCT[53]:=$81BE16CD
+CRCT[54]:=$88085AE6
+CRCT[55]:=$8F659EFF
+CRCT[56]:=$A00AE278
+CRCT[57]:=$A7672661
+CRCT[58]:=$AED16A4A
+CRCT[59]:=$A9BCAE53
+CRCT[60]:=$BDBDF21C
+CRCT[61]:=$BAD03605
+CRCT[62]:=$B3667A2E
+CRCT[63]:=$B40BBE37
+CRCT[64]:=  
+
+
+
+In the last several years medical science has proven the safety and efficacy of using a ketogenic diet (low-carb high-fat moderate-protein) to reverse type 2 diabetes, obesity, fatty liver disease, kidney disease, and more importantly, heart disease. Further studies show that fat isn't our problem. It's sugar and carbohydrates. Half a decade of misinformation and fat phobia has contributed to the current epidemic of obesity and diabetes.
+
+I did not invent the ketogenic diet, nor am I the first to talk about it. However, I've reversed my type 2 diabetes and lost significant weight by eating bacon and eggs, steaks slathered in butter, and coconut oil in my coffee. I've also enjoyed moderate alcohol use. I got off my medications. I didn't do any intentional exercise, and I have never felt better in my life. My blood pressure dropped. My triglycerides went down. My cholesterol corrected itself. A carotid artery scan showed no heart disease. The best part is, I'm not alone. There are thousands of people waking up to the easiest and most effective way to cure themselves.
+
+But it's not as easy as eating bacon and eggs. I'm a software enginner. In February, 2016 I threw myself into the research. I've developed online communities. I've learned what's real and what isn't. I will share what I know. I'll show you the science to justify what I've done. I'll give you the tools you need to navigate your own journey as efficiently as possible.
+
+Bob Familiar has been gracious enough to offer BlueMetal's meeting space in Watertown, MA. I'll deliver a one hour lecture and take questions for 30 minutes. 
+
+
+
+You need to copy some files in your old Windows folder to the new one. After that projects open again.
+
+The needed files are these :
+
+c:\windows\Microsoft.NET\Framework\v2.0.50727\Borland.Common.Targets
+c:\windows\Microsoft.NET\Framework\v2.0.50727\Borland.Cpp.Targets
+c:\windows\Microsoft.NET\Framework\v2.0.50727\Borland.Delphi.Targets
+c:\windows\Microsoft.NET\Framework\v2.0.50727\Borland.Group.Targets
+
+Just copy them from the older windows folder to the new one.
+

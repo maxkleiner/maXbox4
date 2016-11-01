@@ -1,0 +1,418 @@
+Program QR_Code_Direct_Indy3;
+
+//#sign  Max: MAXBOX10: 03/06/2016 10:20:33 
+//#path:ples\C:\Program Files (x86)\maxbox3\Import\maxbox4\examples\amples\
+//TODO: Save the QRCode to webserver_file, EEdition, #locs:117
+//http://theroadtodelphi.wordpress.com/2010/12/06/generating-qr-codes-with-delphi/
+                               
+Const
+   
+ URLGoogleQRCODE='http://chart.apis.google.com/chart?chs=%dx%d&cht=qr&chld=%s&chl=%s';
+   AFILENAME= 'mX3QRCode3.png';
+   //QDATA= 'this is maXland on a stream dream firebox';
+   QDATA= 'http://www.blaisepascal.eu/';
+
+Type TQrImage_ErrCorrLevel=(L,M,Q,H);
+   
+  
+{The API requires 3 simple fields be posted to it:
+cht=qr this tells Google to create a QR code;
+chld=M the error correction level of the QR code (see here for more info);
+chs=wxh the width and height of the image to return (eg chs=250x250);
+chl=text the URL encoded text to be inserted into the barcode.}
+
+//WinInet
+procedure GetQrCodeInet(Width,Height:Word; C_Level,apath:string;const Data:string);
+var
+  encodURL: string;
+  pngStream: TMemoryStream;
+begin
+  encodURL:= Format(URLGoogleQRCODE,[Width,Height, C_Level, HTTPEncode(Data)]);
+  pngStream:= TMemoryStream.create;
+  HttpGet(encodURL, pngStream);   //WinInet
+  with TLinearBitmap.Create do try
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    SaveToFile(apath);
+    OpenDoc(apath);
+  finally
+    Dispose;
+    Free;
+    pngStream.Free;
+  end;
+end;
+
+//Indy Socks
+procedure GetQrCodeIndy(Width,Height: Word; C_Level,apath: string; const Data: string);
+var
+  encodURL: string;
+  idhttp: TIdHttp;// THTTPSend;
+  pngStream: TMemoryStream;
+begin
+  encodURL:= Format(URLGoogleQRCODE,[Width,Height,C_Level, HTTPEncode(Data)]);
+  idHTTP:= TIdHTTP.Create(NIL)
+  pngStream:= TMemoryStream.create;
+  with TLinearBitmap.Create do try
+    idHTTP.Get1(encodURL, pngStream)
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    //aImage.Picture:= NIL; //AssignTo(aimage.picture.bitmap);
+    SaveToFile(apath);
+    OpenDoc(apath);
+  finally
+    Dispose;
+    Free;
+    idHTTP.Free
+    pngStream.Free;
+  end;
+end;
+
+//Internal mXLib
+procedure getQRCodeDirect;
+begin
+  GetQrCode3(250,250,'Q',QDATA, ExePath+AFILENAME);
+  //GetQrCode3(296,296,'Q',QDATA, ExePath+AFILENAME);
+  OpenDoc(ExePath+AFILENAME);
+end;  
+
+procedure Inet_TimeSetDemo;
+//run procedure in Admin mode to set sys time! 
+begin 
+  with TIdSNTP.Create(self) do
+  try
+    Host:= '0.debian.pool.ntp.org'
+    writeln('InternetTime: '+datetimetoStr(datetime));
+    if Synctime then
+      writeln('Op System Time sync now!');
+  finally
+    Speak('Your SysTime is now sync with Inet Time '
+            +TimeToStr(datetime))
+    Free;
+  end
+end;  
+
+
+//TODO:#1 Returns QR Code direct of last modification of the given File
+
+begin
+  Writeln(dateTimeToStr(FileTimeGMT(exepath+'maxbox4.exe')));
+  //GetQrCodeTest(150,150,'Q', 'this is maXland on the maXbox');
+
+  //1. call of script with Indy
+  GetQrCodeInet(150,150,'Q',ExePath+AFILENAME,QData);
+  
+  //2. call of script with WinInet
+  GetQrCodeIndy(150,150,'Q',ExePath+AFILENAME, QData);
+ 
+  //3. call of the Internal Lib
+  //GetQrCode2(150,150,'Q',QDATA, ExePath+AFILENAME);
+    getQRCodeDirect;
+  
+   If isAdmin then Inet_TimeSetDemo;
+   maxCalcF('SQRT(4296)');
+   PrintF('gcd %d * lcm %d = %d ',[gcd(4,6),lcm(4,6),4*6]);
+      writeln(getcomputername)
+      writeln(getmemInf)
+    
+End.  
+
+
+Doc:
+http://theroadtodelphi.wordpress.com/2010/12/06/generating-qr-codes-with-delphi/
+
+Using the Google Chart Tools / Image Charts (aka Chart API) you can easily generate QR codes, this kind of images are a special type of two-dimensional barcodes. They are also known as hardlinks or physical world hyperlinks.
+
+The QR Codes store up to 4,296 alphanumeric characters of arbitrary text. QR codes can be read by an optical device with the appropriate software. Such devices range from dedicated QR code readers to mobile phones.
+
+
+Using Delphi there are several ways you can generate QR codes - to encode any text (URL, phone number, simple message). QR Codes store up to 4,296 alphanumeric characters of arbitrary text.
+
+The 2D Barcode VCL components is a set of components designed for generating and printing barcode symbols in your Delphi or C++ Builder applications. Use the components set like any other VCL components.
+
+J4L Components includes the QR-code implementation featuring: auto, byte, alpha, numeric and kanji encoding.
+
+The Google Chart Tools (Chart API) also let you generate QR-code images using an HTTP POST or 
+
+All do you need to generate a QrCode is make a get request to this URI
+
+http://chart.apis.google.com/chart?chs=200x200&cht=qr&chld=M&chl=Go+Delphi+Go
+
+uses
+ PngImage,
+ HTTPApp,
+ WinInet;
+ 
+type
+TQrImage_ErrCorrLevel=(L,M,Q,H);
+ 
+const
+UrlGoogleQrCode='http://chart.apis.google.com/chart?chs=%dx%d&cht=qr&chld=%s&chl=%s';
+QrImgCorrStr   : array [TQrImage_ErrCorrLevel] of string=('L','M','Q','H');
+ 
+procedure WinInet_HttpGet(const Url: string;Stream:TStream);
+const
+BuffSize = 1024*1024;
+var
+  hInter   : HINTERNET;
+  UrlHandle: HINTERNET;
+  BytesRead: DWORD;
+  Buffer   : Pointer;
+begin
+  hInter := InternetOpen('', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+  if Assigned(hInter) then
+  begin
+    Stream.Seek(0,0);
+    GetMem(Buffer,BuffSize);
+    try
+      UrlHandle:=InternetOpenUrl(hInter,PChar(Url),nil,0,INTERNET_FLAG_RELOAD,0);
+        if Assigned(UrlHandle) then
+        begin
+          repeat
+            InternetReadFile(UrlHandle, Buffer, BuffSize, BytesRead);
+            if BytesRead>0 then
+             Stream.WriteBuffer(Buffer^,BytesRead);
+          until BytesRead = 0;
+          InternetCloseHandle(UrlHandle);
+        end;
+    finally
+      FreeMem(Buffer);
+    end;
+    InternetCloseHandle(hInter);
+  end
+end;
+ 
+//this function return a Stream (PngImage inside) with a Qr code.
+procedure GetQrCode(Width,Height:Word;Correction_Level:TQrImage_ErrCorrLevel;const Data:string;StreamImage : TMemoryStream);
+Var
+ encodURL  : string;
+begin
+  encodURL:=Format(UrlGoogleQrCode,[Width,Height,QrImgCorrStr[Correction_Level],HTTPEncode(Data)]);
+  WinInet_HttpGet(encodURL,StreamImage);
+end;
+
+http://www.delphi-central.com/callback.aspx
+
+ public
+    { Public-Deklarationen }
+    constructor Create(Owner:TComponent); override;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent);override;
+
+    procedure DrawBarcode(Canvas:TCanvas);
+    procedure DrawText(Canvas:TCanvas);
+    property CanvasHeight :Integer read GetCanvasHeight;
+    property CanvasWidth :Integer read GetCanvasWidth;
+  published
+    { Published-Deklarationen }
+   { Height of Barcode (Pixel)}
+    property Height : integer read FHeight write SetHeight;
+    property Text   : string read FText write SetText;
+    property Top    : Integer read FTop write SetTop;
+    property Left   : Integer read FLeft write SetLeft;
+   { Width of the smallest line in a Barcode }
+    property Modul  : integer read FModul  write SetModul;
+    property Ratio  : Double read FRatio write SetRatio;
+    property Typ    : TBarcodeType read FTyp write SetTyp default bcCode_2_5_interleaved;
+   { build CheckSum ? }
+    property Checksum:boolean read FCheckSum write SetCheckSum default FALSE;
+    property CheckSumMethod:TCheckSumMethod read FCheckSumMethod write FCheckSumMethod default csmModulo10;
+
+   { 0 - 360 degree }
+    property Angle  :double read FAngle write SetAngle;
+
+    property ShowText:TBarcodeOption read FShowText write SetShowTxt default bcoNone;
+    property ShowTextFont: TFont read FShowTextFont write SetShowTextFont;
+    property ShowTextPosition: TShowTextPosition read FShowTextPosition write SetShowTextPosition default stpTopLeft;
+    property Width : integer read GetWidth write SetWidth stored False;
+    property Color:TColor read FColor write FColor default clWhite;
+    property ColorBar:TColor read FColorBar write FColorBar default clBlack;
+      property OnChange:TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+function CheckSumModulo10(const data:string):string;
+
+function ConvertMmToPixelsX(const Value:Double):Integer;
+function ConvertMmToPixelsY(const Value:Double):Integer;
+function ConvertInchToPixelsX(const Value:Double):Integer;
+function ConvertInchToPixelsY(const Value:Double):Integer;
+
+TTarArchive Usage
+-----------------
+- Choose a constructor
+- Make an instance of TTarArchive                  TA := TTarArchive.Create (Filename);
+- Scan through the archive                         TA.Reset;
+                                                   WHILE TA.FindNext (DirRec) DO BEGIN
+- Evaluate the DirRec for each file                  ListBox.Items.Add (DirRec.Name);
+- Read out the current file                          TA.ReadFile (DestFilename);
+  (You can ommit this if you want to
+  read in the directory only)                        END;
+- You're done                                      TA.Free;
+
+
+TTarWriter Usage
+----------------
+- Choose a constructor
+- Make an instance of TTarWriter                   TW := TTarWriter.Create ('my.tar');
+- Add a file to the tar archive                    TW.AddFile ('foobar.txt');
+- Add a string as a file                           TW.AddString (SL.Text, 'joe.txt', Now);
+- Destroy TarWriter instance                       TW.Free;
+- Now your tar file is ready.
+
+
+
+The last slash might be optional. Right?
+
+How about something like this:
+
+$url =~ m|([^/]+)/?$|;
+my $end_of_url = $1;
+
+The $ on the end anchors the regular expression to the end of the string. The [^/] means anything that's not a slash and the + after means I want one or more things that are not slashes. Notice that this is in a capture group which are marked with parentheses.
+
+I end the regular expression with /? which means that there may or may not be a slash on the very end of the string. I've put my regular expression between m| and |, so I can use forward slashes without having to constantly escape them.
+
+The last part of the URL is now in $1 and I can set my own scalar variable to save this Result.
+share|improve this answer
+
+  
+procedure GetQrCodeImage(Width,Height: Word; Correct_Level: string;
+           const Data:string; aimage: TImage; apath: string);
+var
+  encodURL: string;
+  idhttp: TIdHttp;// THTTPSend;
+  pngStream: TMemoryStream;
+begin
+  encodURL:= Format(UrlGoogleQrCode,[Width,Height, Correct_Level, HTTPEncode(Data)]);
+  //WinInet_HttpGet(encodURL,StreamImage);
+  idHTTP:= TIdHTTP.Create(NIL)
+  pngStream:= TMemoryStream.create;
+  with TLinearBitmap.Create do try
+    idHTTP.Get1(encodURL, pngStream)
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    aImage.Picture:= NIL;
+    AssignTo(aimage.picture.bitmap);
+    SaveToFile(apath);
+    //OpenDoc(apath);
+  finally
+    Dispose;
+    Free;
+    idHTTP.Free
+    pngStream.Free;
+  end;
+end;
+
+procedure GetQrCode3(Width,Height: Word; Correct_Level: string;
+           const Data:string; apath: string);
+var
+  encodURL: string;
+  idhttp: TIdHttp;// THTTPSend;
+  png: TLinearBitmap;//TPNGObject;
+  pngStream: TMemoryStream;
+begin
+  encodURL:= Format(UrlGoogleQrCode,[Width,Height, Correct_Level, HTTPEncode(Data)]);
+  //WinInet_HttpGet(encodURL,StreamImage);
+  idHTTP:= TIdHTTP.Create(NIL)
+  pngStream:= TMemoryStream.create;
+  with TLinearBitmap.Create do try
+    idHTTP.Get1(encodURL, pngStream)
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    //aImage.Picture:= NIL;
+    //AssignTo(aimage.picture.bitmap);
+    SaveToFile(apath);
+    OpenDoc(apath);
+  finally
+    Dispose;
+    Free;
+    idHTTP.Free
+    pngStream.Free;
+  end;
+end;
+
+
+procedure CreateMyFastForm;
+ //diaform:= CreateMessageDialog('my fast form perform',mtconfirmation, []);
+var 
+    //dbform: TForm;
+    ard: TRadioGroup;
+    //mimg: TImage;
+begin
+   dbform:= CreateMessageDialog('My Fast Form Template - FFP',mtwarning,
+                                        [mball, mbyes, mbhelp, mbok]);
+   with dbform do begin
+     font.size:= 12;
+     caption:= 'FFP XML Demo';
+     setBounds(50,50,800,600)
+     FormStyle:= fsStayontop;
+     //Color:= 12234;  //clWebGold;//12234;
+     autoScroll:= true;
+   with TLabel.Create(self) do begin
+     parent:= dbform;
+     SetBounds(400,60,500,600)
+     font.size:= 18;
+     //dblist.Add('All Converted to...XML')
+     caption:= 'QRCode in a Stream Dream...';
+   end;  
+   with TRadioGroup.Create(self) do begin
+     parent:= dbform;
+     top:= 90;
+     left:= 60;
+     items.add('first entry of');
+     items.add('second entry off');
+     items.add('third entry off');
+     ItemIndex:= 2; 
+     //writeln(Items.Strings[ItemIndex]); 
+   end;
+  with TBitBtn.Create(self) do begin
+    Parent:= dbform;
+    setbounds(570, 490,190, 40);
+    caption:= 'File to Barcode';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TASBARCODE'); 
+    //onclick:= @GetMediaData2;
+  end;
+  with TBitBtn.Create(self) do begin
+    Parent:= dbform;
+    setbounds(570, 320,190, 150);
+    caption:= 'File to Barcode';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'JVGAMMAPANELCOLORS'); 
+    //onclick:= @GetMediaData2;
+  end;
+   Show;
+   Canvas.Draw(400,120,getBitMap(Exepath+'\examples\citymax.bmp'));
+
+  FImage:= TImage.create(self);
+  with FImage do begin
+   parent:= dbform;
+   setbounds(50,210,150,150)
+  end; 
+
+  with Barcode1 do begin
+    Top := 400;
+    Left := 50;
+    Height:= 130;
+    //Barcode1.Width:= 230;
+    //barcode1.assign
+    //Barcode1.Angle := 70;
+    Typ := bcCode_2_5_interleaved;
+    Showtext:= bcoBoth;
+    text:= '0123456789';
+    DrawBarcode(Canvas);
+    Typ := bcCodeEAN128C; //bcCode_2_5_interleaved;
+    Left:= 180;
+    text:= '0123456789';
+    DrawBarcode(Canvas);
+    Typ := bcCode128C; //bcCodePostNet; //,bcCodeEAN128C; //bcCode_2_5_interleaved;
+    Left:= 320;
+    text:= '0123456789';
+    DrawBarcode(Canvas);
+   end;
+    //Barcode1.DrawText(dbform.Canvas);  
+
+  end; //dbform
+   //SelectDirectory
+end;
+  
+----app_template_loaded_code----

@@ -1,0 +1,363 @@
+Program InetUtilsGEOs_MAP_BOX4;
+
+//#sign 7:18 Max: MAXBOX10: 03/06/2016 10:26:54  PM 
+//#path:x4\exC:\Program Files (x86)\maxbox3\Import\maxbox4\examples\amples\
+//TODO: Save the chart map to webserver_file, #locs:346
+//ref--> http://open.mapquestapi.com/nominatim/
+                               
+Const
+   AFILENAME2= 'maxmapfile.html';
+   
+   UrlGoogleQrCode3=
+    'http://chart.apis.google.com/chart?chs=300x160&cht=gom&chd=t:35&chl=mX4Connections';
+        //" alt="???"      
+   
+   UrlGoogleQrCode4='http://chart.apis.google.com/chart?cht=bhs&chd=t:86,68,62,59,55,51&chs=300x200&chxl=0:|0 wins|25 wins|50 wins|75 wins|100 wins|1:|Rickoos|Reefer|Dragon|maXbox|Aliboy|pb&chxt=x,y'; //"    
+   
+ 
+    
+  function InetDownloadmX4(const URL: String; Dest: TStream; const Setts: TNetUtilsSettings;
+  Callback: TInetDownloadCallback): Boolean; forward;
+  
+  procedure SetDefaultNetUtilsSettings4; forward;
+
+ 
+type
+  TFcntHook = function(Wnd:HWND; uiMsg:UINT; wParam: WPARAM; lParam:LPARAM):UINT_PTR;
+   //stdcall;
+   
+   inetDown = Function ( Downloaded, TotalSize : DWord) : Boolean;
+   function inetdownproc( Downloaded, TotalSize : DWord): boolean;
+   begin
+     writeln('total size of func get: '+itoa(totalsize)+ ' '+itoa(downloaded))
+   end;  
+
+
+type
+  TCryptStringToBinary = function (pszString: PChar; cchString: dword; dwFlags: dword;
+         pbBinary: ___pointer; var pcbBinary: dword; var pdwSkip: dword;
+         var pdwFlags: dword): boolean; //stdcall;
+
+  TCryptBinaryToString = function (pbBinary: ___pointer; cbBinary: dword; dwFlags: dword;
+         pszString: PChar; var pcchString: dword): boolean; //stdcall;
+
+const
+  Crypt32_DLL = 'crypt32.dll';
+
+var
+  Crypt32: HMODULE; // = 0;
+  CryptStringToBinary: TCryptStringToBinary;
+  CryptBinaryToString: TCryptBinaryToString;
+
+procedure DoNotUseCrypt32;
+begin
+  if Crypt32 <> 0 then
+  begin
+    FreeLibrary(Crypt32);
+    Crypt32 := 0;
+  end;
+  CryptStringToBinary := NIL;
+  CryptBinaryToString := NIL;
+end;
+
+
+
+function Assert(Success: Boolean; Msg: String): Boolean;
+begin
+  Result := Success;
+  if not Success then begin
+    WriteLn('Assertion failed: '+ Msg);
+    Writeln('');
+    //Halt(1)
+  end
+end;
+
+
+procedure AssertMatch(const MatchResult: TMaskMatchInfo; PosShouldBe, LengthShouldBe: Byte);
+  begin
+    Assert(MatchResult.Matched, 'MaskMatchInfo, Matched');
+    if LengthShouldBe <> 0 then
+      Assert(MatchResult.StrPos = PosShouldBe, 'MaskMatchInfo, StrPos');
+    Assert(MatchResult.MatchLength = LengthShouldBe, 'MaskMatchInfo, Length')
+  end;
+  
+  const
+  TestFileName = 'c:\dir\to\file.ext';
+  
+
+function MaskForBytes(const NumberOfBytes: Byte): DWord;
+begin
+  if NumberOfBytes < 4 then
+    Result := (1 shl (NumberOfBytes * 8)) - 1
+    else
+      Result := $FFFFFFFF;
+end;
+
+function IntToBinW(aInt: DWord; Digits: Byte; SpaceEach: Byte): String;
+var
+  Current: Byte;
+begin
+  Result := StringOfChar('0', Digits);
+  writeln('res '+result)
+  Current := Digits;
+  writeln(inttostr(current))
+  while aInt > 0 do begin
+    if aInt and 1 = 1 then
+      Result[current]:= '1';
+    Dec(Current);
+    aInt := aInt shr 1
+  end;
+  for aInt := 1 to (Digits - 1) div SpaceEach do
+    Insert(' ', Result, Digits - aInt * SpaceEach + 1)
+end;
+
+function ParamStrEx(CmdLine: WideString; Index: Integer; out Pos: Integer): WideString;
+var
+  CurrentIndex: Word;
+  Join: Boolean;
+begin
+  Result := '';
+  Join := False;
+  CurrentIndex := 0;
+  Pos := 1;
+  while Pos <= Length(CmdLine) do
+  begin
+    if CmdLine[Pos] = '"' then
+      Join := not Join
+      else if (CmdLine[Pos] = ' ') and not Join then begin
+        if (Pos >= Length(CmdLine)) or (CmdLine[Pos + 1] <> ' ') then
+          Inc(CurrentIndex)
+      end
+        else if CurrentIndex = Index then
+          Result := Result + CmdLine[Pos]
+          else if CurrentIndex > Index then
+            Exit;
+    Inc(Pos);
+  end;
+end;
+
+function ParamStrFrom(CmdLine: WideString; Index: Integer): WideString;
+var Pos: Integer;
+begin
+  Result := ParamStrEx(CmdLine, Index, Pos);
+end;
+
+
+var
+  NetUtilsSetts: TNetUtilsSettings;
+
+procedure GetQrCodeInet2(Wid,Heig:Word;C_Level,apath:string; const Data:string);
+var encodedURL: string;
+    pngStream: TMemoryStream;
+    //TInetDownloadCallback', ' Function ( Downloaded, TotalSize : DWord) : Boolean');
+begin
+  //AssertMatch(MaskMatchInfo('qwertyu', 'q*u', 1), 1, 7);
+  Assert(ChangeFileExt(TestFileName, '.new') = 'c:\dir\to\file.new', 'ChangeFileExt');
+  Assert(ChangeFileExt('', '.new') = '.new', 'ChangeFileExt');
+  Assert(ChangeFileExt('c:\', '.new') = 'c:\.new', 'ChangeFileExt');
+  //ChangeFileExt(
+  Assert(not MaskMatch('qwertyu', 'q *u'), 'MaskMatch');
+  //Assert(IntToBinW($1FFFF,32,8)       = '00000000 00000001 11111111 11111111', 'IntToBin');
+  Assert(IntToBinW($0103, 16, 3) = '0 000 000 100 000 011', 'IntToBin');         
+  //Assert(IntToBinw($0103, 2, 99) = '11', 'IntToBin');  
+  
+  Assert(ParamStrFrom('module.exe arg1 "arg 2" arg3', 0) = 'module.exe', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe arg1 "arg 2" arg3', 1) = 'arg1', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe arg1 "arg 2" arg3', 2) = 'arg 2', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe arg1 "arg 2" arg3', 3) = 'arg3', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe arg1 "arg 2" arg3', 4) = '', 'ParamStrFrom');
+                                                          
+   Assert(MaskForBytes(0) = 0, 'MaskForBytes');
+  Assert(MaskForBytes(1) = $FF, 'MaskForBytes');
+  Assert(MaskForBytes(2) = $FFFF, 'MaskForBytes');
+  Assert(MaskForBytes(3) = $FFFFFF, 'MaskForBytes');
+  Assert(MaskForBytes(4) = $FFFFFFFF, 'MaskForBytes');
+
+ // AssertMatch(MaskMatchInfo('qwertyu', 'q?????u',1), 1, 7);
+  //AssertMatch(MaskMatchInfo('qwertyu', 'q????*u',1), 1, 7);
+  //AssertMatch(MaskMatchInfo('1', '*?*',1), 1, 1);
+  //AssertMatch(MaskMatchInfo('12', '*?*',1), 2, 1);
+  //encodedURL:= Format(UrlGoogleQrCode,[Width,Height, C_Level, HTTPEncode(Data)]);
+  //encodedURL:= Format(UrlGoogleQrCode2,[HTTPEncode(Data)]);
+  encodedURL:= Format(UrlGoogleQrCode3,[]);
+  pngStream:= TMemoryStream.create;
+  //HttpGet(EncodedURL, pngStream);   //WinInet
+  //InetDownloadTo(exepath+'tempgo.html', 'http://google.com',Nil);
+  //opendoc(exepath+'tempgo.html')
+  SetDefaultNetUtilsSettings4;
+  try
+    //InetDownloadmX4(EncodedURL, pngStream, NetUtilsSetts, @inetdownproc)
+     writeln(botoStr(InetDownload(EncodedURL, pngStream, NIL)))
+  except
+    showmessage(InetGetLastErrorMsg)
+  end
+ //Function InetDownload(const URL:String; Dest:TStream; Callback:TInetDownloadCallback):Boolean;');
+ 
+  with TLinearBitmap.Create do try
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    //LoadFromFile(apath);
+    SaveToFile(apath);
+    OpenDoc(apath);
+  finally
+    Dispose;
+    Free;
+    pngStream.Free;
+  end;
+end;
+
+procedure GetQrCodeInet4(Wid,Heig:Word;C_Level,apath:string; const Data:string);
+var encodedURL: string;
+    pngStream: TMemoryStream;
+begin
+  encodedURL:= Format(UrlGoogleQrCode3,[]);
+  pngStream:= TMemoryStream.create;
+  //HttpGet(EncodedURL, pngStream);   //WinInet
+  SetDefaultNetUtilsSettings4;
+  //InetDownloadTo(exepath+'tempgo.html', 'http://google.com',Nil);
+  try
+    writeln(botoStr(InetDownloadmX4(EncodedURL, pngStream,NetUtilsSetts, @inetdownproc)))
+    //writeln(botoStr(InetDownload(EncodedURL, pngStream, @inetdownproc)))
+    //writeln(botoStr(InetDownload(EncodedURL, pngStream, NIL)))
+    writeln('inetdownload of inetutils 4 with wininet');
+  except
+    showmessage(InetGetLastErrorMsg)
+  end
+  with TLinearBitmap.Create do try
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    SaveToFile(apath);
+    OpenDoc(apath);
+  finally
+    Dispose;
+    Free;
+    pngStream.Free;
+  end;
+end;
+
+procedure SetDefaultNetUtilsSettings4;
+begin
+  //ZeroMemory(@NetUtilsSettings, SizeOf(NetUtilsSettings));
+  NetUtilsSetts.UserAgent:= ExtractFileName(ParamStr(0)) + '(D7mX4 InetUtils)';
+  //NetUtilsSettings.TrafficCounter := @NetUtilsGlobalTrafficCounter;
+  //NetUtilsSettings.UploadedCounter := @NetUtilsGlobalUploadedCounter;
+  NetUtilsSetts.ReadBufferSize:= 4096;
+end;
+
+function InetDownloadmX4(const URL: String; Dest: TStream; const Setts: TNetUtilsSettings;
+                                      Callback: TInetDownloadCallback): Boolean;
+var
+  InetHandle,URLHandle: HInternet;
+begin
+  InetHandle:= InternetOpen(PChar(Setts.UserAgent), INTERNET_OPEN_TYPE_PRECONFIG,
+                             PChar(Setts.ProxyURL), 'NIL', 0);
+  try
+    URLHandle:= 
+      InternetOpenURL2(InetHandle,PChar(URL),Nil,0,INTERNET_FLAG_NO_UI or Setts.OpenURLFlags,0);
+    try
+      Result:= False;
+      if IsResponseStatusOK(URLHandle) then begin
+        InetBufferedReadFrom(URLHandle, Dest, Setts, Callback);
+        Result:= True;
+      end;
+    finally
+      InternetCloseHandle(URLHandle);
+    end;
+  finally
+    InternetCloseHandle(InetHandle);
+  end;
+end;
+
+procedure TestParamStrFrom;
+begin
+  Assert(ParamStrFrom('module.exe arg1 "arg 2" arg3', 0) = 'module.exe', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe arg1 "arg 2" arg3', 1) = 'arg1', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe arg1 "arg 2" arg3', 2) = 'arg 2', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe arg1 "arg 2" arg3', 3) = 'arg3', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe arg1 "arg 2" arg3', 4) = '', 'ParamStrFrom');
+                                                          
+  Assert(ParamStrFrom('module.exe  arg1  "arg 2"  arg3', 0) = 'module.exe', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe  arg1  "arg 2"  arg3', 1) = 'arg1', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe  arg1  "arg 2"  arg3', 2) = 'arg 2', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe  arg1  "arg 2"  arg3', 3) = 'arg3', 'ParamStrFrom');
+  Assert(ParamStrFrom('module.exe  arg1  "arg 2"  arg3', 4) = '', 'ParamStrFrom');
+
+  Assert(ParamStrFrom('arg" 1', 0) = 'arg 1', 'ParamStrFrom');
+  Assert(ParamStrFrom('arg" 1" arg2', 0) = 'arg 1', 'ParamStrFrom');
+  Assert(ParamStrFrom('arg" 1" arg2', 1) = 'arg2', 'ParamStrFrom');
+  Assert(ParamStrFrom('arg1"" 2" arg"', 0) = 'arg1', 'ParamStrFrom');
+  Assert(ParamStrFrom('arg1"" 2" arg', 1) = '2 arg', 'ParamStrFrom');
+  Assert(ParamStrFrom('arg1"" 2" arg"', 1) = '2 arg', 'ParamStrFrom');
+end;
+
+
+function DownloadFile(SourceFile, DestFile: string): Boolean;
+begin
+  //TCIPStatus //TBindStatus
+  //TUrlZoneReg of URLMon
+  try
+    Result:= UrlDownloadToFile(Nil,PChar(SourceFile),PChar(DestFile),0,Nil)= 0;
+  except
+    Result:= False;
+  end;
+end;
+
+   
+//TODO:#1 Returns the QR Code direct of the last modification of the given File
+
+ var toppath: string;
+   acp: TCodepage;
+begin
+  Writeln(datetimetostr(FileTimeGMT(exepath+'maxbox4.exe')));
+   
+  //call of the script with a chart graphic on return
+  //GetQrCodeInet2(150,150,'Q',ExePath+'mX3QRCode2map3.png','123456789');
+
+  //GetQrCodeInet2(150,150,'Q',ExePath+'mX3QRCode2map333.png','123456789');
+  GetQrCodeInet4(250,250,'Q',ExePath+'mX3QRCodeMonitor4.png','123456789');
+
+  //GetMAP(150,150,'Q',ExePath+'cologne2map3.html','dom cologne');
+  //GetMAPScript('html',ExePath+'cologne2map345.html','cathedral cologne');
+  
+    topPath:= ExePath+'outputmap_3cologne.xml';
+ 
+   //internals
+  {OpenMapX('cathedral cologne');
+  
+  GetGeoMAP('html',ExePath+AFILENAME2,'dom cologne') 
+  if GetMAPX('html',ExePath+'cologne2mapX.html','cathedral cologne') then
+    writeln('cologne map found');
+   } 
+   //if GetMapXGeoReverse2('XML',topPath,'50.94133705','6.95812611100766') then
+     // writeln('reverse geocode map data found!');   
+     //writeln(GetMapXGeoReverse('XML','47.0397826','7.62914761277888'))
+  // writeln(GetMapXGeoReverse('XML','50.94134','6.95813'))
+   
+   //UrlDownloadToFile 
+  //wGetX(UrlGoogleQrCode6, exepath+'mapdatacologne.html');
+  //wGet2('http://max.kleiner.com/images/texturemap.jpg','texturemap7.jpg');
+  //DownloadFile('http://max.kleiner.com/images/texturemap.jpg','texturemap77.jpg')
+
+  maxCalcF('SQRT(PI)');
+  
+   TestParamStrFrom;
+   acp:= CharsetToID('Str: String');
+   writeln(itoa(acp))
+End.  
+
+Doc Ref:
+  http://open.mapquestapi.com/nominatim/
+  
+  https://github.com/ProgerXP/D7X/tree/master/Units
+  
+  	The following example demonstrates a simple search request for "Westminster Abbey" using Nominatim. Only three parameters are being requested:
+
+    format - Output format being called. [html/json/xml]
+    json_callback - Callback function used to display the results below.
+    q - Query string being searched.
+
+The JavaScript code which sends the request and displays the result can be viewed here. 
+
+https://www.google.com/finance?q=NYSE:BABA&ei=nAocVPjFL4nP8Aau6IHwBg
+  
+----app_template_loaded_code----

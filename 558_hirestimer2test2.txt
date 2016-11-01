@@ -1,0 +1,1063 @@
+{***************************************************************
+ *            Starfield
+ * Project  : boolean logic education system bITbox
+ * Unit Name: 558_hirestimer.txt  - 326_world_analogclock.txt
+ * Purpose  : Demonstrates all boolean circuits and all 16 boolean logics
+ * Date     : 18/10/2012  -  14:38:56, loc's=465, 35 intf
+ *          : 07/12/2012  - add a clock and starfield  #locs:473
+ ****************************************************************}
+//shows structure of procedure types, max@kleiner.com ex. _299
+//compilerswitch $N- turns the coprocessor off, {$mode objfpc}{$H+} loc's =1
+
+PROGRAM HiresTimer_Animation_Starfield;
+
+function  SetThreadPriority(hThread: THANDLE; nPriority: integer): boolean;
+   external 'SetThreadPriority@kernel32.dll stdcall';
+   
+
+//6. TimeZones
+function GetXRTLGetTimeZones: TXRTLTimeZones; forward;           
+
+
+Const MILLISECONDS = 50; //for timer, sync with trackbar 1000/50= position 20
+      //THREAD_PRIORITY_ABOVE_NORMAL = 1; 
+ 
+ 
+type
+  TBoolean_func = Function(a,b: boolean): boolean; 
+  
+var 
+  aFrm: TForm;
+  btnb: TBitBtn;
+  RunTest: TBitBtn;
+  btnabool,btnbbool: boolean;
+  statbar: TStatusbar;
+  sfield: TJvStarfield;
+  firstclock, secondclock, thirdclock, fourthclock: TJvAnalogClock; 
+  HighResTimer1: THighResTimer;
+  MeasureResult: TLabel;
+  lblCountFrequency: TLabel; 
+   
+procedure DrawRosette2;
+var m,p: TPoint;
+  rho,phi: real;
+  i,r: integer;
+begin
+   with afrm.Canvas do begin
+     Pen.Width:= 2;
+     Pen.Color:= clblack;
+     //Brush.Color:= clblue;
+     Brush.Style:= bsClear;
+     //compute centerpoint and draw circle
+     m.x:=170; m.y:=350; r:=75;
+     rho:=360/18;
+     for i:=1 to 18 do begin
+       phi:=i*rho*pi/180;
+       p.x:=m.x+round(r*cos(phi));
+       p.y:=m.y+round(r*sin(phi));
+       Ellipse(p.x-r,p.y-r,p.x+r,p.y+r);
+       Ellipse(p.x-3,p.y-3,p.x+3,p.y+3);
+     end;
+     //application.processMessages;
+  end;
+end;
+
+
+// FindInPaths
+//
+function FindInPaths2(const fileName, paths : String) : String;
+var
+   p : Integer;
+   buf : String;
+   sl : TStringList;
+begin
+   if FileExists(fileName) then begin
+      Result:=fileName;
+      Exit;
+   end;
+   buf:=paths;
+   sl:=TStringList.Create;
+   try
+      p:=Pos(';', buf);
+      while p>0 do begin
+         sl.Add(Copy(buf, 1, p-1));
+         buf:=Copy(buf, p+1, Maxint);
+         p:=Pos(';', buf);
+      end;
+      sl.Add(buf);
+      for p:=0 to sl.Count-1 do begin
+         buf:=sl[p];
+         if Copy(buf, 1, Length(buf))<>'\' then
+            buf:=Buf+'\';
+         buf:=buf+fileName;
+         if FileExists(buf) then begin
+            Result:=buf;
+            Exit;
+         end;
+      end;
+   finally
+      sl.Free;
+   end;
+   Result:='';
+end;
+
+
+
+  function GetXRTLGetTimeZones: TXRTLTimeZones;
+  var mzone: TXRTLTimeZones;
+      i: integer;
+  begin
+     //mzone:= TXRTLTimeZones.Create; //not cause of interface func
+     mzone:= XRTLGetTimeZones;  
+     for i:= 1 to mzone.Count-1 do 
+        writeln(mzone.item[i].display);
+     //mzone.Free;         
+  end;         
+
+
+//**************************Event Handlers*******************************
+
+
+procedure TFrm1_FormPaint(Sender: TObject);
+begin
+  Drawrosette2;
+  //application.processMessages;
+end;
+
+
+procedure TFrm1_closeForm(Sender: TObject; var Action: TCloseAction);
+begin
+  ///afrm.Free;  
+  HighResTimer1.Enabled:= false;
+  HighResTimer1.Free;
+  writeln('hirestimer close...and free')
+  action:= caFree;
+  afrm:= NIL;
+  //sField.Free;
+end;
+
+procedure TFrm1_CloseClick(Sender: TObject);
+begin
+  afrm.Close;
+end;
+
+procedure TFrm1_PauseClick(Sender: TObject);
+begin
+  firstclock.clockEnabled:= NOT firstclock.clockEnabled;
+  secondclock.clockEnabled:= NOT secondclock.clockEnabled;
+  thirdclock.clockEnabled:= NOT thirdclock.clockEnabled;
+  fourthclock.clockEnabled:= NOT fourthclock.clockEnabled;
+  sfield.active:= NOT sfield.active;
+end;
+
+
+procedure TFrm1_RunTestClick(Sender: TObject);
+var
+  WaitTime: Cardinal;
+begin
+  WaitTime:= 1000000; //StrToInt(Edit1.Text);
+  //Statbar.SimpleText := 'Starting test...';
+  Statbar.panels.items[0].text:= 'Starting test...'
+  Application.ProcessMessages;
+  MeasureResult.Caption := '';
+  HighResTimer1.Enabled := True;
+  HighResTimer1.StartTimeMeasure;
+  HighResTimer1.Wait(WaitTime);
+  HighResTimer1.StopTimeMeasure;
+  HighResTimer1.Enabled := False;
+  MeasureResult.Caption:= CRLF+FloatToStr(HighResTimer1.GetTimeDifference) + ' us';
+  writeln('HighResTimer1.GetTimeDifference: '
+                     +FloatToStr(HighResTimer1.GetTimeDifference) + ' us');
+  //StatBar.SimpleText := StatBar.SimpleText + 'finished';
+  Statbar.panels.items[0].text:= 'finished test...'
+end;
+
+procedure TFrm1_rbUseTimeStampCounterClick(Sender: TObject);
+begin
+  HighResTimer1.UseTSC:= true; //rbUseTimeStampCounter.Checked;
+  //StatusBar1.SimpleText := 'Calibrating...';
+  Application.ProcessMessages;
+  HighResTimer1.Calibrate(2000);
+  //StatusBar1.SimpleText := StatusBar1.SimpleText + 'finished';
+  lblCountFrequency.Caption:= FloatToStr(HighResTimer1.CountSpeed) + ' MHz';
+end;
+
+
+//**************************Form Builder*******************************
+function loadForm: boolean;
+begin
+  aFrm:= TForm.Create(self);
+  btnabool:= false; btnbbool:= false; //init
+  result:= false;
+  //mt.free;  in on close
+  with aFrm do begin
+    caption:= '************High Res Timer Star Animation************';  
+    height:= 750;
+    width:= 950;
+    Position:= poScreenCenter;
+    onClose:= @TFrm1_closeForm;
+    onPaint:= @TFrm1_FormPaint;
+    color:= clsilver;
+    Canvas.Pen.color:= clBlue;
+    Canvas.Pen.Width:= 15;
+    Show;
+  end;
+  
+  //MeasureResult.Caption := '';
+  if SetThreadPriority(GetCurrentThread, THREAD_PRIORITY_ABOVE_NORMAL) then 
+    writeln('SetThreadPriority OK');
+
+  btnb:= TBitBtn.Create(aFrm);
+  with btnb do begin
+    Parent:= aFrm;
+    setbounds(750, 630,150, 55);
+    caption:= 'Warp Pause';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'CL_MPPAUSE'); 
+    mXButton(02,02,width,50,5,5,handle);
+    onclick:= @TFrm1_PauseClick;
+  end;
+  firstclock:= TJvAnalogClock.Create(aFrm);
+  with firstclock do begin 
+    parent:= aFrm;
+    color:= clpurple;
+    colormin:= clred;
+    //visible
+    //spiderclock:= true;
+    setBounds(205,10,160,160);
+    centercol:= clred;
+    //Show;
+  end;  
+  secondclock:= TJvAnalogClock.Create(aFrm);
+  with secondclock do begin 
+    parent:= aFrm;
+    colormin:= clgreen;
+    timeoffSet:= 120;
+    setBounds(375,10,160,160);
+    centercol:= clred;
+  end;  
+  thirdclock:= TJvAnalogClock.Create(aFrm);
+  with thirdclock do begin 
+    parent:= aFrm;
+    colormin:= clblue;
+    timeoffSet:= 300;
+    //spiderclock:= true;
+    setBounds(545,10,160,160);
+    //hourstyle:= hsNumber;
+    centercol:= clred;
+  end;  
+  fourthclock:= TJvAnalogClock.Create(aFrm);
+  with fourthclock do begin 
+    parent:= aFrm;
+    color:= clpurple;
+    colormin:= clyellow;
+    timeoffSet:= 420;
+    //visible
+    //spiderclock:= true;
+    setBounds(715,10,160,160);
+    centercol:= clred;
+  end;  
+  with TJvAnalogClock.Create(aFrm) do begin 
+    parent:= aFrm;
+    color:= clpurple;
+    colormin:= clred;
+    timeoffSet:= -420;
+    //top:= 200;
+    //align:= alleft;
+    left:= 8;
+    top:= 282;
+    centercol:= clyellow;
+  end;  
+  {with TJvAnalogClock.Create(aFrm) do begin 
+    parent:= aFrm;
+    //borderwidth
+    bevelwidth:= 0;
+    colormin:= clblue;
+    timeoffSet:= -420;
+    //align:= alclient;
+    ColorHr:= clRed;
+    //ColorHrIn:= clRed;
+    ColorHandHr:= clRed;
+    ColorHandMin:= clRed;
+    ColorHandSec:= clWhite;
+    //width
+    color:= clblack;
+    setBounds(520,210,160,160);
+    centercol:= clyellow;
+    //onexit
+  end;}  
+  with TJvAnalogClock.Create(aFrm) do begin 
+    parent:= aFrm;
+    //borderwidth
+    //transparent
+    bevelwidth:= 0;
+    colormin:= clblue;
+    //timeoffSet:= -480;
+    //align:= alclient;
+    ColorHr:= clRed;
+    //ColorHrIn:= clRed;
+    ColorHandHr:= clRed;
+    ColorHandMin:= clRed;
+    ColorHandSec:= clWhite;
+    //width
+    widthhr:= 5;
+    widthmin:= 1;
+    WidthHandHr:= 12;
+    WidthHandMin:= 12;
+    color:= clblack;
+    setBounds(410,320,260,260);
+    centercol:= cldarkblue32; //clwebgold; //darkgreen32;//clyellow;
+    centersize:= 10;
+    //onexit
+  end;  
+ 
+  sfield:= TJvStarfield.Create(aFrm)
+  with sfield do begin
+    parent:= aFrm;
+    stars:= 850;
+    maxSpeed:= 14;
+    setBounds(200,190,740,500);
+    active:= true; 
+  end;  
+  
+  with TLabel.create(self) do begin
+    parent:= aFrm;
+    setbounds(8,64,70,13)
+    Caption:= 'Breaktime (us):'
+  end;
+  with TLabel.create(self) do begin
+    parent:= aFrm;
+    setbounds(8,88,72,13)
+    Caption:= 'Measured time:';
+  end;
+  
+  measureResult:= TLabel.create(self);
+  with measureResult do begin
+    parent:= aFrm;
+    font.size:= 14;
+    font.color:= clwhite;
+    setbounds(10,110,71,13)
+    Caption:= 'MeasureResult:'
+  end;
+  with TLabel.create(self) do begin
+      parent:= aFrm;
+    setbounds(8,18,84,13)
+    Caption:= 'Count Frequency:'
+  end;
+  
+  lblCountFrequency:= TLabel.create(self);
+  with lblCountFrequency do begin
+    parent:= aFrm;
+    font.size:= 12;
+    font.color:= clwhite;
+    setbounds(8,34,88,13)
+    Caption:= 'lblCountFrequency'
+  end;
+  
+  with TEdit.create(self) do begin
+    parent:= aFrm;
+    setbounds(8,166,65,21)
+    Text:= '10000000'
+  end;
+  RunTest:= TBitBtn.create(self);
+  with RunTest do begin
+    Parent:= aFrm;
+    setbounds(8, 200,180, 55);
+    caption:= 'Run Test';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TGPSCOMPASS'); 
+    OnClick:= @TFrm1_RunTestClick
+  end;
+
+  with TBitBtn.create(self) do begin
+    Parent:= aFrm;
+    setbounds(8, 450,180, 55);
+    caption:= 'TimeStampTest';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TGPSSATELLITESPOSITION'); 
+    OnClick:= @TFrm1_rbUseTimeStampCounterClick
+  end;
+
+  {object rbUseTimeStampCounter: TRadioButton
+    Left = 8
+    Top = 8
+    Width = 161
+    Height = 17
+    Caption = 'Time Stamp Counter'
+    TabOrder = 3
+    OnClick = rbUseTimeStampCounterClick
+  end }
+  {object rbUseHPCounter: TRadioButton
+    Left = 8
+    Top = 32
+    Width = 161
+    Height = 17
+    Caption = 'High Performance Counter'
+    TabOrder = 4
+    OnClick = rbUseTimeStampCounterClick
+  end}
+  
+  HighResTimer1:= THighResTimer.create(self);
+  with HighResTimer1 do begin
+    Accuracy:= 0;
+    Resolution:= 5;
+    ThreadPriority:= tpHighest
+    UseTSC:= True
+  end;
+  
+  statbar:= TStatusBar.create(aFrm);
+  with statbar do begin
+    parent:= aFrm;
+    //simplepanel:= true;
+    showhint:= true;
+    hint:= 'LED Logger States';
+     Panels.add;
+     panels.items[0].width:= 200;
+     panels.items[0].text:= 'LED Data Log';
+     Panels.add;
+     panels.items[1].width:= 150;
+     panels.items[1].text:= 'Logic Logger State';
+  end;
+  result:= true;
+end;  
+
+  //main form list call  
+  Begin
+    maxform1.color:= clpurple;
+    //calls some test functions
+    printF('this is %.18f ',[maxCalc('ln(2)^e')]);
+    printF('this is %.18f ',[maxCalc('sqr(cos(ln(2)^e))')]);
+    printF('this is %.4f ',[maxCalc('sqrt(e^(ln(2)))')]);
+    writeln(getVersionString(exepath+'maxbox4.exe'));
+   //GetXRTLGetTimeZones;   
+   GetCurrentThreadId;   
+ 
+ //--------------------------Main Topic--------------------------
+    if loadForm then
+      //sleep(4500);
+    //SaveCanvas(afrm.canvas,Exepath+'worldclocksave.png'); 
+     Writeln(FindInPaths2(Exepath+'maxbox4.exe',Exepath));    
+     Writeln(FindInPaths(Exepath+'maxbox4.exe',Exepath)); 
+     //GetExitCodeThread   
+     //GetThreadTimes
+     //GetThreadPriority
+     //varcopy
+     
+     {with tcontrol.create(self) do begin
+       action;
+       free
+     end }
+     
+     //TComponentState
+     //TComponentStyle
+
+       with tcomponent.create(self) do begin
+       //action;
+       //componentstyle;
+       //componentstate;
+       free
+     end;
+
+       with tlistbox.create(self) do begin
+       //action;
+       ondrawitem;
+       //componentstyle;
+       //componentstate;
+       free
+     end;
+     
+     //raiselastwin32;
+     //raiselastwin32_2('this is outbox');
+     //writeln(floattostr(getcpuspeed));
+
+End.
+
+Ref:
+
+unit uHRTimerTest;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, HighResTimer, ComCtrls, ExtCtrls;
+
+type
+  TForm1 = class(TForm)
+    Edit1: TEdit;
+    Label1: TLabel;
+    RunTest: TButton;
+    Label2: TLabel;
+    MeasureResult: TLabel;
+    HighResTimer1: THighResTimer;
+    StatusBar1: TStatusBar;
+    rbUseTimeStampCounter: TRadioButton;
+    rbUseHPCounter: TRadioButton;
+    Label3: TLabel;
+    lblCountFrequency: TLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure RunTestClick(Sender: TObject);
+    procedure rbUseTimeStampCounterClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+//{$R *.DFM}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  MeasureResult.Caption := '';
+  SetThreadPriority(GetCurrentThread, THREAD_PRIORITY_ABOVE_NORMAL);
+  rbUseTimeStampCounter.Enabled := HighResTimer1.TSC;
+  rbUseTimeStampCounter.Checked := HighResTimer1.TSC;
+  rbUseHPCounter.Checked := not HighResTimer1.TSC;
+end;
+
+procedure TForm1.RunTestClick(Sender: TObject);
+var
+  WaitTime: Cardinal;
+begin
+  WaitTime := StrToInt(Edit1.Text);
+  StatusBar1.SimpleText := 'Starting test...';
+  Application.ProcessMessages;
+  HighResTimer1.Enabled := True;
+  HighResTimer1.StartTimeMeasure;
+  HighResTimer1.Wait(WaitTime);
+  HighResTimer1.StopTimeMeasure;
+  HighResTimer1.Enabled := False;
+  MeasureResult.Caption := FloatToStr(HighResTimer1.GetTimeDifference) + ' us';
+  StatusBar1.SimpleText := StatusBar1.SimpleText + 'finished';
+end;
+
+procedure TForm1.rbUseTimeStampCounterClick(Sender: TObject);
+begin
+  HighResTimer1.UseTSC := rbUseTimeStampCounter.Checked;
+  StatusBar1.SimpleText := 'Calibrating...';
+  Application.ProcessMessages;
+  HighResTimer1.Calibrate(2000);
+  StatusBar1.SimpleText := StatusBar1.SimpleText + 'finished';
+  lblCountFrequency.Caption := FloatToStr(HighResTimer1.CountSpeed) + ' MHz';
+end;
+
+end.
+
+
+
+  TJvStarfield = class(TGraphicControl)
+  private
+    FAboutJVCL: TJVCLAboutInfo;
+    FStarfield: array of TJvStars;
+    FThread: TJvImageDrawThread;
+    FActive: Boolean;
+    FDelay: Cardinal;
+    FStars: Word;
+    FMaxSpeed: Byte;
+    FBmp: TBitmap;
+    procedure Refresh(Sender: TObject);
+    procedure SetActive(const Value: Boolean);
+    procedure SetDelay(const Value: Cardinal);
+    procedure SetStars(const Value: Word);
+  protected
+    procedure Paint; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Resize; override;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property Align;
+    property Anchors;
+    property Constraints;
+    property Delay: Cardinal read FDelay write SetDelay default 50;
+    property Active: Boolean read FActive write SetActive default False;
+    property Stars: Word read FStars write SetStars default 100;
+    property MaxSpeed: Byte read FMaxSpeed write FMaxSpeed default 10;
+  end;
+
+
+
+
+Proposal for Abreviation Symbol:
+
+  01 FALSE    //Contradiction
+
+  02 AND      //Conjunction x*y
+
+  03 INHIB    //Inhibition x*^y
+
+  04 PRAEP    //Praependence x
+
+  05 PRAE     //Praesection ^x*y
+
+  06 POST     //Postpendence y
+
+  07 XOR      //Exclusive OR x*^y+^x*y
+
+  08 OR       //Disjunction OR = x+y
+
+  09 NOR      //Rejection
+
+  10 AEQ      //Aequivalence x<-->y, ^x*^y+x*y
+
+  11 NEGY     //YNegation ^y
+
+  12 IMPY     //YImplication y-->x; x+^y
+
+  13 NEGX     //Xnegation ^x
+
+  14 IMPX     //XImplication x-->y; ^x+y
+
+  15 NAND     //Exclusion
+
+  16 TRUE     //TRUE Tautologic
+  
+
+//////////// Clock Code 
+unit JvAnalogClock;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls,
+  JvComponent;
+
+type
+  TJvNotifyTime = procedure(Sender: TObject; Hour, Min, Sec: Integer) of object;
+  TJvHourStyle = (hsLine, hsCircle, hsNumber, hsNumberInCircle);
+  TJvHourMarks = (hmNone, hmFour, hmAll);
+
+  TJvAnalogClock = class(TJvCustomPanel)
+  private
+    FHourStyle: TJvHourStyle;
+    FMinuteStyle: TJvHourStyle;
+    FHourMarks: TJvHourMarks;
+    FHourSize: Integer;
+    FMinuteSize: Integer;
+    FMinuteFontSize: Integer;
+
+    OldS: Word;
+
+    plSekunde: Boolean;
+    plEnabled: Boolean;
+    plSpider: Boolean;
+    plSecJump: Boolean;
+    pdUra: TDateTime;
+    pnOffs: Integer;
+    plDate: Boolean;
+
+    plMinMarks: Boolean;
+    plColHr: TColor;
+    plColHrIn: TColor;
+    plColMin: TColor;
+    plColMinIn: TColor;
+    plColHandHr: TColor;
+    plColHandMin: TColor;
+    plColHandSec: TColor;
+
+    pnWidthHandMin: Byte;
+    pnWidthHandHr: Byte;
+    pnWidthHandSec: Byte;
+    pnWidthHr: Byte;
+    pnWidthMin: Byte;
+
+    pnCenterSize: Byte;
+    pnCenterCol: TColor;
+
+    FTimer: TTimer;
+    lSekOver: Boolean;
+
+    nDeli: Integer;
+    nUraM: Integer;
+    nUraU: Integer;
+    nUraS: Integer;
+    npx, npy: Integer;
+    npxk, npyk, npk, npy23: Integer;
+
+    OldHour, OldMin, OldSec: Integer;
+    datrT: TRect;
+    OldDate: string;
+    DateBottom: Boolean;
+
+    FOnChangeSec: TJvNotifyTime;
+    FOnChangeMin: TJvNotifyTime;
+    FOnChangeHour: TJvNotifyTime;
+    FOnSameTime: TNotifyEvent;
+
+//    pfMinFont :TFont;
+    procedure SetlDate(Value: Boolean);
+    procedure SetlSecJump(Value: Boolean);
+    procedure SetlSpider(Value: Boolean);
+    procedure SetlEnabled(Value: Boolean);
+    procedure SetlMinMarks(Value: Boolean);
+    procedure SetHourStyle(Value: TJvHourStyle);
+    procedure SetMinuteStyle(Value: TJvHourStyle);
+    procedure SetHourMarks(Value: TJvHourMarks);
+    procedure SetHourSize(Value: Integer);
+    procedure SetMinSize(Value: Integer);
+    procedure SetMinFontSize(Value: Integer);
+    procedure SetdUra(Value: TDateTime);
+    procedure SetnOffs(Value: Integer);
+    procedure SetlColHr(Value: TColor);
+    procedure SetlColHrIn(Value: TColor);
+    procedure SetlColMin(Value: TColor);
+    procedure SetlColMinIn(Value: TColor);
+
+    procedure SetlColHandHr(Value: TColor);
+    procedure SetlColHandMin(Value: TColor);
+    procedure SetlColHandSec(Value: TColor);
+
+    procedure SetnWidthHandMin(Value: Byte);
+    procedure SetnWidthHandHr(Value: Byte);
+    procedure SetnWidthHandSec(Value: Byte);
+    procedure SetnWidthHr(Value: Byte);
+    procedure SetnWidthMin(Value: Byte);
+
+    procedure InternalPaint;
+  protected
+    procedure Loaded; override;
+    procedure Resize; override;
+    procedure Paint; override;
+    procedure ActTimer(Sender: TObject);
+
+    procedure DoAlarm;
+    procedure DoChangeSec(nHr, nMin, nSec: Integer);
+    procedure DoChangeMin(nHr, nMin, nSec: Integer);
+    procedure DoChangeHour(nHr, nMin, nSec: Integer);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property Date: Boolean read plDate write SetlDate default False;
+    property ClockEnabled: Boolean read plEnabled write SetlEnabled default True;
+    property TimeSet: TDateTime read pdUra write SetdUra;
+    property TimeOffset: Integer read pnOffs write SetnOffs default 0;
+    property SpiderClock: Boolean read plSpider write SetlSpider default False;
+    property SecJump: Boolean read plSecJump write SetlSecJump default False;
+    property Seconds: Boolean read plSekunde write plSekunde default True;
+    property MinMarks: Boolean read plMinMarks write SetlMinMarks default True;
+    property HourStyle: TJvHourStyle read FHourStyle write SetHourStyle default hsLine;
+    property MinuteStyle: TJvHourStyle read FMinuteStyle write SetMinuteStyle default hsLine;
+    property HourMarks: TJvHourMarks read FHourMarks write SetHourMarks default hmAll;
+    property HourSize: Integer read FHourSize write SetHourSize default 12;
+    property MinuteSize: Integer read FMinuteSize write SetMinSize default 7;
+    property MinuteFontSize: Integer read FMinuteFontSize write SetMinFontSize default 7;
+    property ColorHr: TColor read plColHr write SetlColHr default clBlack;
+    property ColorHrIn: TColor read plColHrIn write SetlColHrIn default clBlack;
+    property ColorMin: TColor read plColMin write SetlColMin default clBlack;
+    property ColorMinIn: TColor read plColMinIn write SetlColMinIn default  clBlack;
+    property ColorHandHr: TColor read plColHandHr write SetlColHandHr default clBlack;
+    property ColorHandMin: TColor read plColHandMin write SetlColHandMin default clBlack;
+    property ColorHandSec: TColor read plColHandSec write SetlColHandSec default clBlack;
+
+    property WidthHandSec: Byte read pnWidthHandSec write SetnWidthHandSec default 1;
+    property WidthHandMin: Byte read pnWidthHandMin write SetnWidthHandMin default 3;
+    property WidthHandHr: Byte read pnWidthHandHr write SetnWidthHandHr default 5;
+    property WidthHr: Byte read pnWidthHr write SetnWidthHr default 2;
+    property WidthMin: Byte read pnWidthMin write SetnWidthMin default 1;
+
+//    property MinFont :TFont read pfMinFont write pfMinFont;
+
+    property CenterSize: Byte read pnCenterSize write pnCenterSize default 5;
+    property CenterCol: TColor read pnCenterCol write pnCenterCol default clBlack;
+
+    property Align;
+    property Color default clBtnFace;
+    property Cursor;
+    property DragCursor;
+    property DragMode;
+    property ParentColor;
+    property Font;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+
+    property OnChangeSec: TJvNotifyTime read FOnChangeSec write FOnChangeSec;
+    property OnChangeMin: TJvNotifyTime read FOnChangeMin write FOnChangeMin;
+    property OnChangeHour: TJvNotifyTime read FOnChangeHour write FOnChangeHour;
+
+    property OnSameTime: TNotifyEvent read FOnSameTime write FOnSameTime;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDrag;
+
+    property Width default 137;
+    property Height default 137;
+    property BevelWidth;
+    property BevelInner default bvRaised;
+    property BevelOuter default bvLowered;
+  end;
+
+implementation
+
+{.$R *.res}
+
+constructor TJvAnalogClock.Create(AOwner: TComponent);
+var
+  h, m, s, hund: Word;
+begin
+  inherited Create(AOwner);
+  BevelInner := bvRaised;
+  BevelOuter := bvLowered;
+  FHourSize := 12;
+  FMinuteSize := 7;
+  FMinuteFontSize := 7;
+
+  plSpider := True;
+  plSecJump := False;
+  plEnabled := True;
+
+  FTimer := TTimer.Create(Self);
+  FTimer.Enabled := plEnabled;
+  FTimer.Interval := 100;
+  FTimer.OnTimer := ActTimer;
+
+  Color := clBtnFace;
+  Width := 137;
+  Height := 137;
+  Caption := ' ';
+  plSekunde := True;
+  plMinMarks := True;
+  nDeli := 50;
+
+  FHourStyle := hsLine;
+  FMinuteStyle := hsLine;
+  FHourMarks := hmAll;
+
+  plColHr := clBlack;
+  plColHrIn := clBlack;
+  plColMin := clBlack;
+  plColMinIn := clBlack;
+  plColHandHr := clBlack;
+  plColHandMin := clBlack;
+  plColHandSec := clBlack;
+
+  pnWidthHandSec := 1;
+  pnWidthHandMin := 3;
+  pnWidthHandHr := 5;
+  pnWidthHr := 2;
+  pnWidthMin := 1;
+
+  pnCenterCol := clBlack;
+  pnCenterSize := 5;
+
+//  pfMinFont := TFont.Create;
+//  pfMinFont := TTextAttributes.Create;
+//  pfMinFont.Assign(Font);
+//  pfMinFont.Charset := Font.Charset;
+//  pfMinFont.Name := Font.Name;
+//  pfMinFont.Color := Font.Color;
+//  pfMinFont.Size := Font.Size;
+//  pfMinFont.Style := Font.Style;
+//  pfMinFont.Pitch := Font.Pitch;
+//  pfMinFont.FontAdapter := Font.FontAdapter;
+//  pfMinFont.OnChange := Font.OnChange;
+ //InternalPaint;
+
+  DecodeTime(Now, h, m, s, hund);
+  OldMin := m;
+  OldHour := h;
+  OldSec := s;
+end;
+
+destructor TJvAnalogClock.Destroy;
+begin
+  FTimer.Free;
+//  pfMinFont.Free;
+  inherited Destroy;
+end;
+
+
+ //ShellExecute in W64
+    //ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxbox391.exe C:\maxbook\maxbox3\maxbox3.exe')
+ //  ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxboxdef1.ini C:\maxbook\maxbox3\maxboxdef2.ini')
+   
+
+getRulesbyContract  
+
+unit uMainSensors;
+interface
+uses
+Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.Sensors,
+System.Sensors.Components, Vcl.ExtCtrls;
+type
+TForm5 = class(TForm)
+GroupBox1: TGroupBox;
+GroupBox2: TGroupBox;
+GroupBox3: TGroupBox;
+lsLocation: TLocationSensor;
+msAccelerometr: TMotionSensor;
+osCompass: TOrientationSensor;
+osInclinometer: TOrientationSensor;
+tOrientation: TTimer;
+lCompass: TLabel;
+lInclinometr: TLabel;
+Button1: TButton;
+GroupBox4: TGroupBox;
+Panel1: TPanel;
+bSwitch: TButton;
+lCoordinates: TLabel;
+lAddress: TLabel;
+lGeoCoordinates: TLabel;
+tMotion: TTimer;
+lAccel: TLabel;
+procedure osCompassSensorChoosing(Sender: TObject;
+const Sensors: TSensorArray; var ChoseSensorIndex: Integer);
+procedure osInclinometerSensorChoosing(Sender: TObject;
+const Sensors: TSensorArray; var ChoseSensorIndex: Integer);
+procedure tOrientationTimer(Sender: TObject);
+procedure bSwitchClick(Sender: TObject);
+procedure lsLocationLocationChanged(Sender: TObject; const OldLocation,
+NewLocation: TLocationCoord2D);
+procedure msAccelerometrSensorChoosing(Sender: TObject;
+const Sensors: TSensorArray; var ChoseSensorIndex: Integer);
+procedure tMotionTimer(Sender: TObject);
+procedure FormCreate(Sender: TObject);
+private
+{ Private declarations }
+FGeocoder : TGeocoder;
+procedure OnGeocodeReverseEvent(const Address: TCivicAddress);
+procedure OnGeocodeEvent(const Coords: TArray<TLocationCoord2D>);
+public
+{ Public declarations }
+end;
+var
+Form5: TForm5;
+implementation
+//{$R *.dfm}
+procedure TForm5.bSwitchClick(Sender: TObject);
+begin
+if bSwitch.Caption = 'Turn On' then
+begin
+bSwitch.Caption := 'Turn off';
+lsLocation.Active := True;
+msAccelerometr.Active := True;
+osCompass.Active := True;
+osInclinometer.Active := True;
+end
+else
+begin
+bSwitch.Caption := 'Turn On';
+lsLocation.Active := False;
+msAccelerometr.Active := False;
+osCompass.Active := False;
+osInclinometer.Active := False;
+end;
+end;
+procedure TForm5.FormCreate(Sender: TObject);
+begin
+FGeocoder := TGeocoder.Current.Create;
+FGeocoder.OnGeocodeReverse := OnGeocodeReverseEvent;
+FGeocoder.OnGeocode := OnGeocodeEvent;
+end;
+procedure TForm5.lsLocationLocationChanged(Sender: TObject; const OldLocation,
+NewLocation: TLocationCoord2D);
+begin
+lCoordinates.Caption := Format('Latitude : %2.7f; Longitude : %2.7f', [NewLocation.Latitude, NewLocation.Longitude]);
+if FGeocoder <> nil then
+begin
+lAddress.Caption := 'Start geocoding';
+if FGeocoder.Supported then
+FGeocoder.GeocodeReverse(NewLocation)
+else
+lAddress.Caption := 'Geocoding not supporting';
+end
+else
+lAddress.Caption := 'Geocoder not found';
+end;
+procedure TForm5.msAccelerometrSensorChoosing(Sender: TObject;
+const Sensors: TSensorArray; var ChoseSensorIndex: Integer);
+var
+I : integer;
+begin
+for I := 0 to Length(Sensors) - 1 do
+if (Sensors[I] as TCustomMotionSensor).SensorType = TMotionSensorType.Accelerometer3D then
+begin
+ChoseSensorIndex := I;
+Break;
+end;
+end;
+procedure TForm5.OnGeocodeEvent(const Coords: TArray<TLocationCoord2D>);
+begin
+if Length(Coords) > 0 then
+lGeoCoordinates.Caption := Format('After geocoding address. Lat : %2.7f, Long : %2.7f',[Coords[0].Latitude, Coords[0].Longitude]);
+end;
+procedure TForm5.OnGeocodeReverseEvent(const Address: TCivicAddress);
+begin
+if Address <> nil then
+begin
+lAddress.Caption := 'After geocoding coords:' + Address.ToString;
+if FGeocoder <> nil then
+FGeocoder.Geocode(Address);
+end
+else
+lAddress.Caption := 'not found';
+end;
+procedure TForm5.osCompassSensorChoosing(Sender: TObject;
+const Sensors: TSensorArray; var ChoseSensorIndex: Integer);
+var
+I : integer;
+begin
+for I := 0 to Length(Sensors) - 1 do
+if (Sensors[I] as TCustomOrientationSensor).SensorType = TOrientationSensorType.Compass3D then
+begin
+ChoseSensorIndex := I;
+Break;
+end;
+end;
+procedure TForm5.osInclinometerSensorChoosing(Sender: TObject;
+const Sensors: TSensorArray; var ChoseSensorIndex: Integer);
+var
+I : integer;
+begin
+for I := 0 to Length(Sensors) - 1 do
+if (Sensors[I] as TCustomOrientationSensor).SensorType = TOrientationSensorType.Inclinometer3D then
+begin
+ChoseSensorIndex := I;
+Break;
+end;
+end;
+procedure TForm5.tMotionTimer(Sender: TObject);
+begin
+if msAccelerometr.Sensor <> nil then
+lAccel.Caption := Format('AccelX : %-1.5f'#13#10'AccelY : %-1.5f'#13#10'AccelZ : %-1.5f',
+[msAccelerometr.Sensor.AccelerationX, msAccelerometr.Sensor.AccelerationY, msAccelerometr.Sensor.AccelerationZ] )
+else
+lAccel.Caption := '';
+end;
+procedure TForm5.tOrientationTimer(Sender: TObject);
+begin
+if osCompass.Sensor <> nil then
+lCompass.Caption := Format('Heading : %3.1f',[osCompass.Sensor.CompMagHeading])
+else
+lCompass.Caption := '';
+if osInclinometer.Sensor <> nil then
+lInclinometr.Caption := Format('TiltX : %-3.5f '#13#10'TiltY : %-3.5f '#13#10'TiltZ : %-3.5f ',
+[osInclinometer.Sensor.TiltX, osInclinometer.Sensor.TiltY, osInclinometer.Sensor.TiltZ])
+else
+lInclinometr.Caption := '';
+end;
+end. 
+
+http://sourceforge.net/p/radstudiodemos/code/HEAD/tree/branches/RadStudio_XE6/Object%20Pascal/VCL/

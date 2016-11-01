@@ -1,0 +1,4010 @@
+PROGRAM Operatoren_App_TestDrive_Ref;
+//CONST  #tech:perf: 0:0:2.123 threads: 6 192.168.56.1 19:05:31 4.2.4.25
+//<Constant declarations>  #sign:Max: MAXBOX10: 05/06/2016 19:05:31 
+  //TEXTOUT = 'hi world of code'; #locs:1343
+
+  const
+             nb = 9; 
+                BITMAP = 'examples\citymax.bmp';
+
+{TYPE 
+<Type declarations>}
+ type
+   Tpermfeld = array[0..9] of integer; 
+     TLottozahlen = (a,b,c,d,e,f,g,r,zz);
+     ppform = Tform;
+     mt= TThread;
+     
+//type
+  //TVolumeLevel = 0..127;
+ 
+      
+  threadvar = integer;
+   
+   VAR 
+//<Variable declarations>
+  //i: integer;
+    quadrat, x, square: extended;
+    div_dbl: double;
+    incint, ab,cbb, i, j, bin1, bin2, bin3, count: integer;
+    wd, ein: word;
+    bigstring: string;
+    flable: shortstring;
+  Lottozahlen: set of TLottozahlen; 
+     ppform: integer;
+     mt: TThread;
+      mtl: TThreadList;
+     strs: TStringStream;
+     sa: TStreamAdapter;
+        mg: TDBGrid;
+  
+
+//<FUNCTION>
+//<PROCEDURE> 
+
+//uses
+  //MMSystem;
+
+Const
+  Mono       = $0001;
+  SampleRate = 11025; // 8000, 11025, 220 or 44100
+  RiffId     = 'RIFF';
+  WaveId     = 'WAVE';
+  FmtId      = 'fmt ';
+  DataId     = 'data';
+  
+  const
+  cExcelApplication = 'Excel.Application';
+  cReport = 'Report';
+  
+  
+procedure ExportDataSetToExcel(DataSet: TDataSet);
+var
+  XL: Variant;
+  Sheet: Variant;
+  I, RecNo, ColIndex: Integer;
+begin
+  try
+    XL := GetActiveOleObject(cExcelApplication);
+  except
+    XL := CreateOleObject(cExcelApplication);
+  end;
+
+  XL.Visible := True;
+  XL.WorkBooks.Add;
+  XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := cReport;
+  Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[cReport];
+  //  Sheet.SetBackgroundPicture(FileName:=ExtractFilePath(ParamStr(0))+'bg.JPG');
+
+   Sheet.Cells[1, 1] := 'Biblio'; Sheet.Cells[1, 1].Font.Bold := True; Sheet.Cells[1, 1].Font.Color := clWhite;
+   Sheet.Cells[2, 1] := 'Globus'; Sheet.Cells[2, 1].Font.Bold := True; Sheet.Cells[2, 1].Font.Color := clWhite;
+
+  RecNo := 1;
+  Sheet.Cells[RecNo, 2] := 'Document created on ' + DateToStr(Date) + '   ' + TimeToStr(Time);
+  Sheet.Cells[RecNo, 2].Font.Italic := True;
+  Inc(RecNo);
+  Sheet.Cells[RecNo, 2] := 'User: ' + ComputerName + ' / ' + UserName;
+  Sheet.Cells[RecNo, 2].Font.Italic := True;
+  Inc(RecNo);
+  Sheet.Cells[RecNo, 2] := 'Program: ' + ExtractFileName(ParamStr(0));
+  Sheet.Cells[RecNo, 2].Font.Italic := True;
+
+  // Øàïêà
+  { Header [translated] }
+  //Inc(RecNo, 3);
+  ColIndex := 0;
+  for I := 0 to DataSet.FieldCount - 1 do
+    if DataSet.Fields[I].Visible then
+    begin
+      if DataSet.Fields[I].DisplayLabel <> '' then
+        Sheet.Cells[RecNo, 2 + ColIndex] := DataSet.Fields[I].DisplayLabel
+      else
+        Sheet.Cells[RecNo, 2 + ColIndex] := DataSet.Fields[I].FieldName;
+      Sheet.Cells[RecNo, 2 + ColIndex].Font.Bold := True;
+      Sheet.Cells[RecNo, 2 + ColIndex].Font.Size := 10;
+      Inc(ColIndex);
+    end;
+
+  // Äàííûå ïîøëè
+  { Data has begun to pass in [translated] }
+  DataSet.First;
+  //Inc(RecNo, 3);
+  while not DataSet.Eof do begin
+    ColIndex := 0;
+    for I := 0 to DataSet.FieldCount - 1 do
+      if DataSet.Fields[I].Visible then
+      begin
+        Sheet.Cells[RecNo, 2 + ColIndex] := DataSet.Fields[I].AsString;
+        Inc(ColIndex);
+      end;
+    DataSet.Next;
+   // if Assigned(OnExportProgress) then
+     // OnExportProgress(Round((DataSet.RecNo * 100.0) / DataSet.RecordCount));
+    Inc(RecNo);
+  end;
+end;
+  
+
+procedure MakeSound(Frequency, Duration : integer);
+{writes tone to memory and plays it}
+var
+  WaveFormatEx : TWaveFormatEx;
+  MS           : TMemoryStream;
+  i, TempInt,
+  DataCount,
+  RiffCount    : integer;
+  SoundValue   : byte;
+  w, cbsize    : double; // omega ( 2 * pi * frequency)
+begin
+  with WaveFormatEx do begin
+    wFormatTag := WAVE_FORMAT_PCM;
+    nChannels := Mono;
+    nSamplesPerSec := SampleRate;
+    wBitsPerSample := $0008;
+    nAvgBytesPerSec := nSamplesPerSec * nBlockAlign;
+    nBlockAlign := (nChannels * wBitsPerSample) div 8;
+    cbSize := 0;
+  end; 
+  
+  //SND_ASYNC;
+  
+  GetActiveOleObject(cExcelApplication);
+  MS := TMemoryStream.Create;
+  with MS do begin
+    {Calculate length of sound data and of file data}
+    DataCount := (Duration *  SampleRate) div 1000;  // sound data
+    RiffCount := Length(WaveId) + Length(FmtId) //+ SizeOf(DWord)
+                 + SizeOf(WaveFormatEx)
+                 + Length(DataId) //+ SizeOf(DWord)
+                 + DataCount; // file data
+    {write out the wave header}
+    Write(RiffId[1], 4);                        // 'RIFF'
+    //Write(RiffCount, SizeOf(DWord));            // file data size
+    Write(WaveId[1], Length(WaveId));           // 'WAVE'
+    Write(FmtId[1], Length(FmtId));             // 'fmt '
+    //TempInt := SizeOf(TWaveFormatEx);
+    //Write(TempInt, SizeOf(DWord));              // TWaveFormat data size
+    //Write(WaveFormatEx, SizeOf(TWaveFormatEx)); // WaveFormatEx record
+    Write(DataId[1], Length(DataId));           // 'data'
+    //Write(DataCount, SizeOf(DWord));            // sound data size
+    {calculate and write out the tone signal}   // now the data values
+    w := 2 * Pi * Frequency;  // omega
+    for i := 0 to DataCount - 1 do begin
+      // wt = w *i /SampleRate
+      SoundValue := 127 + trunc(127 * sin(i * w / SampleRate));
+      //Write(SoundValue, SizeOf(Byte));
+    end;
+    // you could save the wave tone to file with :
+    // MS.Seek(0, soFromBeginning);
+    // MS.SaveToFile('C:\MyFile.wav');
+    // then reload and play them without having to
+    // construct them each time.
+    {now play the sound}
+    //PlaySound(MS.memory, SND_MEMORY or SND_SYNC);
+    MS.Free;
+  end;
+end; {Alan Lloyd}
+
+function GetBigIntDirect: string;
+  //unit mybigint
+var mbResult: TMyBigInt;
+     i: integer;
+begin
+  mbResult:= TMyBigInt.Create(1);
+  try
+    // Faktoren im Zaehler aufmultiplizieren
+    for i:= 1  to 70 do 
+      //mbResult.Multiply(mbresult, mbresult);
+   mbResult.Multiply1(mbresult, i);
+
+    Result:= mbResult.ToString;
+  finally 
+    //FreeAndNil(mbResult);
+    mbResult.Free;
+  end;
+      //writeln('float test '+(inttostr(('34'))));
+  
+end;
+
+function GetBigIntFact(aval: byte): string;
+  //unit mybigint
+var mbResult: TMyBigInt;
+     i: integer;
+begin
+  mbResult:= TMyBigInt.Create(1);
+  try
+    // Faktoren im Zaehler aufmultiplizieren
+    for i:= 1  to aval do 
+      //mbResult.Multiply(mbresult, mbresult);
+   mbResult.Multiply1(mbresult, i);
+
+    Result:= mbResult.ToString;
+  finally 
+    //FreeAndNil(mbResult);
+    mbResult.Free;
+  end;
+end;
+
+
+function GetBigIntPower(aval: integer): string;
+  //unit mybigint
+var mbResult: TMyBigInt;
+     i: integer;
+begin
+  mbResult:= TMyBigInt.Create(1);
+  try
+    // Faktoren im Zaehler aufmultiplizieren
+    for i:= 1 to aval do 
+      //mbResult.Multiply(mbresult, mbresult);
+   mbResult.Multiply1(mbresult, 2);
+    Result:= mbResult.ToString;
+  finally 
+    //FreeAndNil(mbResult);
+    mbResult.Free;
+  end;
+end;
+
+function GetBigInt2(aval: byte): string;
+  //unit mybigint
+var mbResult: TMyBigInt;
+     i: integer;
+begin
+  mbResult:= TMyBigInt.Create(1);
+  try
+    // Faktoren im Zaehler aufmultiplizieren
+    for i:= 1  to aval do 
+      //mbResult.Multiply(mbresult, mbresult);
+   mbResult.Multiply1(mbresult, i);
+
+    Result:= mbResult.ToString;
+  finally 
+    //FreeAndNil(mbResult);
+    mbResult.Free;
+  end;
+end;
+
+function GetMulu(aval: integer): string;
+  //unit mybigint
+var mbResult: TMyBigInt;
+     i: integer;
+begin
+  //mbResult:= TMyBigInt.Create(2000000000);
+  mbResult:= TMyBigInt.Create(1);
+
+  try
+    // Faktoren im Zaehler aufmultiplizieren
+    //for i:= 1  to aval do 
+      //mbResult.Multiply(mbresult, mbresult);
+   //mbresult.value
+   aval:= 13
+   for i:= 1  to aval do 
+     mbResult.Multiply1(mbresult, aval);
+
+    Result:= mbResult.ToString;
+  finally 
+    //FreeAndNil(mbResult);
+    mbResult.Free;
+  end;
+end;
+
+function GetMuluN(aval: integer): string;
+  //unit mybigint
+var mbResult: TMyBigInt;
+     i,z: integer;
+begin
+  //mbResult:= TMyBigInt.Create(2000000000);
+  mbResult:= TMyBigInt.Create(1);
+
+  try
+    // Faktoren im Zaehler aufmultiplizieren
+    //for i:= 1  to aval do 
+      //mbResult.Multiply(mbresult, mbresult);
+   //mbresult.value
+   //for z:= 1 to aval do begin
+     //aval:= z
+     for i:= 1  to aval do 
+       mbResult.Multiply1(mbresult, aval);
+       Result:= mbResult.ToString;
+   //end;    
+  finally 
+    //FreeAndNil(mbResult);
+    mbResult.Free;
+  end;
+end;
+
+
+function GetBigIntPowerBack(aval: integer): string;
+  //unit mybigint
+var mbResult: TMyBigInt;
+     i: integer;
+begin
+  mbResult:= TMyBigInt.Create(1);
+  try
+    // Faktoren im Zaehler aufmultiplizieren
+    for i:= 1 to aval do 
+      //mbResult.Multiply(mbresult, mbresult);
+   mbResult.Multiply1(mbresult, 1);
+    Result:= mbResult.ToString;
+  finally 
+    //FreeAndNil(mbResult);
+    mbResult.Free;         
+  end;
+end;
+
+procedure permu(p: Tpermfeld; k: integer);
+var (* hier werden lokale Variable deklariert,            *)
+    (* die nur inner halb dieser Prozedur genutzt werden. *)
+  i,h : integer;
+begin
+  //count:= 0;
+  Lottozahlen := [a, c, d];
+  Lottozahlen := Lottozahlen + [g, r, b];  // ergibt [2, 3, 5, 7, 11, 13]
+  //Lottozahlen := Lottozahlen - [3, 7];       // ergibt [2, 5, 11, 13]
+  //Lottozahlen := [1..4, 8, 16];              // ergibt [1, 2, 3, 4, 8, 16]
+  if k=nb then begin
+      (* Das Feld ausgeben *)
+      write(inttostr(count)+'. case: ')
+      for i := 0 to nb do write(inttostr(P[i])+' ');
+      writeln('');
+      inc(count)
+    end
+  else begin
+      for i := k to nb do begin
+        (* Vertausche Feldelement i mit Feldelement k *)
+        h := P[i];
+        P[i] := p[k];
+        P[k] := h;
+        (* Für das "neue" Feld bestimme alle Permutationen, *)
+        (* aber aber erst ab der "nächsten" Stelle k+1      *)
+        permu(p, k+1);
+      end; (* for *)
+  end; (* else *)
+end; (* procedure permut *)
+
+function DeleteSpaces(Str: string): string;
+var
+  i: Integer;
+begin
+  i:= 1;
+  while i<=Length(Str) do
+    if Str[i]=' ' then Delete(Str, i, 1)
+    else Inc(i);
+  Result:= Str;
+end;
+
+function StripHTML(S: string): string;
+var
+  TagBegin, TagEnd, TagLength: integer;
+begin
+  TagBegin := Pos( '<', S);      // search position of first < 
+
+  while (TagBegin > 0) do begin  // while there is a < in S
+    TagEnd := Pos('>', S);              // find the matching > 
+    TagLength := TagEnd - TagBegin + 1;
+    Delete(S, TagBegin, TagLength);     // delete the tag 
+    TagBegin:= Pos( '<', S);            // search for next <
+  end;
+  
+  Result := S;                   // give the result
+end;
+
+procedure TForm1_AutoSizeCol(Grid: TStringGrid; Column: integer);
+var
+  i, W, WMax: integer;
+begin
+  WMax := 0; 
+  for i := 0 to (Grid.RowCount - 1) do begin
+    W := Grid.Canvas.TextWidth(Grid.Cells[Column, i]);
+    if W > WMax then 
+      WMax := W;
+  end;
+  Grid.ColWidths[Column] := WMax + 5;
+end;
+
+
+procedure TForm1_Button1Click(Sender: TObject; aedit: Tedit; albl: TLabel);
+var
+  N: integer;
+begin
+  //scantime
+  //convertyearstring
+  N := StrToIntDef(aEdit.Text, 0); // if invalid, result is 0
+  albl.Caption := IntToStr(N);
+
+  N := StrToIntDef(aEdit.Text, 0);
+  albl.Caption := IntToStr(N);
+
+  // and so on...
+end;
+
+
+function CharInSet2B(const C: Char; const testSet: TSysCharSet): boolean;
+begin
+  Result := C in testSet;
+end;
+
+function CharIsDigit(const C: Char): Boolean;
+begin
+  Result := CharInSet(C, ['0','1','2','3','4','5','6','7','8','9']);
+end;
+
+
+
+procedure JVGUtils;
+var i1, i2: integer;
+   teststring: string;
+   currChar: char;
+   testset2: TsysCharSet;
+   testset3: TSetOfChar;
+   acanvas: TCanvas;
+   Cc: Char;
+begin
+//function IsEven(I: Integer): Boolean;
+//function InchesToPixels(DC: HDC; Value: Single; IsHorizontal: Boolean): Integer;
+//function CentimetersToPixels(DC: HDC; Value: Single; IsHorizontal: Boolean): Integer;
+
+i1:= 20; i2:= 50;
+  SwapInt2(I1, I2);
+  Writeln(Format('this is 1 %d + 2 %d',[I1,I2]));
+  teststring:= 'play box boy';
+//function Spaces(Count: Integer): string;
+  teststring:= Spaces(3);
+  writeln(teststring);
+  currChar:= '£';
+  testSet2:=  ['k','+','5'];
+  testSet3:=  ['k','+','5'];
+
+  //testSet2:=  [];
+  cc:= '4'
+  
+  CharInSet(Cc, ['0','1','2','3','4','5','6','7','8','9']);
+ 
+   //CharInSet(CurrChar, testset2);
+   if CharInSet('+',testset2)
+    then msg('first + is in set');
+   if CharInSet2('+',testset3)
+    then msg('second + is in set');
+
+   //if not CharInSet(CurrChar, ['0','9', ',', '.', '-', '+', '/', '*', '(', ')']) 
+   //then msg('not in set');
+ 
+  
+//function DupStr(const Str: string; Count: Integer): string;
+//function DupChar(C: Char; Count: Integer): string;
+//procedure Msg(const AMsg: string);
+  Msg('this is a play boy box');
+//function RectW(R: TRect): Integer;
+     //writeln('Null RectW '+inttoStr(RectW(aCanvas.ClipRect)))
+(*function RectH(R: TRect): Integer;
+function IncColor(AColor: Longint; AOffset: Byte): Longint;
+function DecColor(AColor: Longint; AOffset: Byte): Longint;
+function IsItAFilledBitmap(Bmp: TBitmap): Boolean;
+procedure DrawTextInRectWithAlign(DC: HDC; R: TRect; const Text: string;
+  HAlign: TglHorAlign; VAlign: TglVertAlign;
+  Style: TglTextStyle; Fnt: TFont; Flags: UINT);
+
+procedure DrawTextInRect(DC: HDC; R: TRect; const Text: string;
+  Style: TglTextStyle; Fnt: TFont; Flags: UINT);
+
+procedure ExtTextOutExt(DC: HDC; X, Y: Integer; R: TRect; const Text: string;
+  Style: TglTextStyle; ADelineated, ASupress3D: Boolean;
+  FontColor, DelinColor, HighlightColor, ShadowColor: TColor;
+  Illumination: TJvgIllumination; Gradient: TJvgGradient; Font: TFont);
+
+procedure DrawBox(DC: HDC; var R: TRect; Style: TglBoxStyle;
+  BackgrColor: Longint; ATransparent: Boolean);
+
+function DrawBoxEx(DC: HDC; ARect: TRect; Borders: TglSides;
+  BevelInner, BevelOuter: TPanelBevel; Bold: Boolean; BackgrColor: Longint;
+  ATransparent: Boolean): TRect;
+
+procedure GradientBox(DC: HDC; R: TRect; Gradient: TJvgGradient;
+  PenStyle, PenWidth: Integer);
+
+procedure ChangeBitmapColor(Bitmap: TBitmap; FromColor, ToColor: TColor);
+procedure DrawBitmapExt(DC: HDC; { DC - background & result}
+  SourceBitmap: TBitmap; R: TRect;
+  X, Y: Integer; //...X,Y _in_ rect!
+  BitmapOption: TglWallpaperOption; DrawState: TglDrawState;
+  ATransparent: Boolean; TransparentColor: TColor; DisabledMaskColor: TColor);
+procedure CreateBitmapExt(DC: HDC; { DC - background & result}
+  SourceBitmap: TBitmap; R: TRect;
+  X, Y: Integer; //...X,Y _in_ rect!
+  BitmapOption: TglWallpaperOption; DrawState: TglDrawState;
+  ATransparent: Boolean; TransparentColor: TColor; DisabledMaskColor: TColor);
+
+procedure BringParentWindowToTop(Wnd: TWinControl);
+function GetParentForm(Control: TControl): TForm;
+procedure GetWindowImageFrom(Control: TWinControl; X, Y: Integer; ADrawSelf, ADrawChildWindows: Boolean; DC: HDC);
+procedure GetWindowImage(Control: TWinControl; ADrawSelf, ADrawChildWindows: Boolean; DC: HDC);
+procedure GetParentImageRect(Control: TControl; Rect: TRect; DC: HDC);
+function CreateRotatedFont(F: TFont; Escapement: Integer): HFONT;
+function FindMainWindow(const AWndClass, AWndTitle: string): THandle;
+procedure CalcShadowAndHighlightColors(BaseColor: TColor; Colors: TJvgLabelColors);
+function CalcMathString(AExpression: string): Single;
+
+function IIF(AExpression: Boolean; IfTrue, IfFalse: Variant): Variant; overload;
+function IIF(AExpression: Boolean; const IfTrue, IfFalse: string): string; overload;
+
+function GetTransparentColor(Bitmap: TBitmap; AutoTrColor: TglAutoTransparentColor): TColor;
+procedure TypeStringOnKeyboard(const S: string);
+//function NextStringGridCell( Grid: TStringGrid ): Boolean;
+procedure DrawTextExtAligned(Canvas: TCanvas; const Text: string; R: TRect; Alignment: TglAlignment; WordWrap: Boolean);
+procedure LoadComponentFromTextFile(Component: TComponent; const FileName: string);
+procedure SaveComponentToTextFile(Component: TComponent; const FileName: string); *)
+//function ComponentToString(Component: TComponent): string;
+//procedure StringToComponent(Component: TComponent; const Value: string);
+//function PlayWaveResource(const ResName: string): Boolean;
+//function UserName: string;
+Writeln('user name '+username);
+{function ComputerName: string;
+function CreateIniFileName: string;
+function ExpandString(const Str: string; Len: Integer): string;
+function Transliterate(const Str: string; RusToLat: Boolean): string;
+function IsSmallFonts: Boolean;
+function SystemColorDepth: Integer;
+function GetFileType(const FileName: string): TglFileType;
+function FindControlAtPt(Control: TWinControl; Pt: TPoint; MinClass: TClass): TControl;
+function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar;)}
+end;
+
+
+procedure Button1Click(Sender: TObject);
+var
+  N: integer;
+begin
+  //scantime
+  //convertyearstring
+   showmessagebig('click from tick------------');
+  // and so on...
+end;
+
+
+
+function loadPForm(vx, vy: integer): TForm;
+var psize: integer;
+    ppform: TForm;
+    rgn: hrgn;
+begin
+  psize:= vx*vy
+  //constructor
+  ppform:= TForm.Create(self);
+  with ppform do begin
+    caption:= 'LEDBOX, click to edit, dblclick write out pattern'+
+                 ' Press <Return> to run the Sentence';  
+    width:= (vx*psize)+ 10 + 300;
+    height:= (vy*psize)+ 30;
+    BorderStyle:= bsDialog;
+    Position:= poScreenCenter;
+    //onKeyPress:= @FormKeyPress
+    //OnClick:= @Label1Click;
+    //OnClose:= @closeForm;
+    Show;
+  end;
+  
+  with TButton.create(self) do begin
+    parent:= ppform;
+    setbounds(10,10,140,40)
+    rgn:= createroundrectrgn(0,0,width,height,20,20);
+    setWindowRgn(handle, rgn, true);
+    onclick:= @button1click;
+   
+    caption:= 'round button';
+    //click;
+
+  end;  
+    
+  
+  result:= ppform;  
+end;
+
+
+procedure LetBitmaponForm(aform: TForm);
+var mbitmap: TBitMap;
+begin
+  mbitmap:= TBitmap.Create;
+  try
+    mbitmap.LoadFromFile(Exepath+BITMAP);
+    aform.Canvas.Draw(370,170, mbitmap);
+  finally
+    //aForm.Free;
+    mbitmap.Free;
+  end;
+end;  
+
+
+function DeleteSpaces2(Str: string): string;
+{const
+  mc: integer = 0;}
+var
+  i: Integer;
+    
+begin
+  i:= 1;
+  while i<=Length(Str) do
+    if Str[i]=' ' then Delete(Str, i, 1)
+    else Inc(i);
+  Result:= Str;
+end;
+
+  var form1: TForm;
+        radiogroup1: TRadioGroup;
+        x1,y: float;
+
+
+function Func(X : Float) : Float;
+{ Function to be plotted }
+  var ag, bb: float;
+      ubranch: boolean;
+begin
+  case RadioGroup1.ItemIndex of
+    0 : result:= Exp(X1);
+    1 : result := uExp2(X);
+    2 : result := uExp10(X);
+    3 : result := Power(X, Y);
+    4 : result := Log(X);
+    5 : result := Log2(X);
+    6 : result := Log10(X);
+    7 : result := Sin(X);
+    8 : result := Cos(X);
+    9 : result := Tan(X);
+   10 : result := ArcSin(X);
+   11 : result := ArcCos(X);
+   12 : result := ArcTan(X);
+   13 : result := Sinh(X);
+   14 : result := Cosh(X);
+   15 : result := Tanh(X);
+   16 : result := ArcSinh(X);
+   17 : result := ArcCosh(X);
+   18 : result := ArcTanh(X);
+   19 : result := Gamma(X);
+   20 : result := fIGamma(Ag,X);
+   21 : result := Beta(X, Y);
+   22 : result := IBeta(Ag, Bb, X);
+   23 : result := Erf(X);
+   24 : result := LambertW(X, UBranch, False);
+  else
+    result := 0.0
+  end;
+end;
+
+
+function FibonacciPrecisiontestE(n: integer): extended;
+var x0,x1: extended;
+begin
+  x0:= (1+sqrt(5))/2;
+  x1:= (1-sqrt(5))/2;
+  result:= (power(x0,n)-power(x1,n))/sqrt(5)
+end;  
+
+function FiboMaxE(n: byte): Extended;
+begin
+  result:= (pow((1+sqrt(5))/2,n)-pow((1-sqrt(5))/2,n))/sqrt(5)   
+end;  
+
+  
+function FibonacciPrecisiontestR(n: integer): Real;
+var x0,x1: real;
+begin
+  x0:= (1+sqrt(5))/2;
+  x1:= (1-sqrt(5))/2;
+  result:= (power(x0,n)-power(x1,n))/sqrt(5)
+end;  
+
+function FibonacciPrecisiontestS(n: integer): Single;
+var x0,x1: single;
+begin
+  x0:= (1+sqrt(5))/2;
+  x1:= (1-sqrt(5))/2;
+  result:= (power(x0,n)-power(x1,n))/sqrt(5)
+end; 
+
+function FibonacciPrecisiontestI(n: integer): longint;
+var x0,x1: longint;
+begin
+  x0:= round((1+sqrt(5))/2);
+  x1:= round((1-sqrt(5))/2);
+  result:= round((power(x0,n)-power(x1,n))/sqrt(5))
+end;  
+
+
+
+
+
+{type
+ threadvar = integer;}
+  
+
+//2,4,16,256
+const
+  aMAXInt64 = $7FFFFFFFFFFFFFFF;
+  MAXInt64m = -$7FFFFFFFFFFFFFFF;
+  
+  bige = 102E+8;
+
+
+
+var 
+pm : tpermfeld; 
+
+  npr, ncr: integer;
+  comp, floatvalue, myfloat, mf2, bigfloat: extended;
+  acomp: comp;
+  amss, mysha, mysha2: string;
+  mss2: integer;
+  xxl: int64;
+  //var
+  
+  //myps: TPSScript;
+   abb: TBits;
+   
+   ac : TCollection;
+   bc : TCollectionItem;
+   before, after, source, target: string;
+  // var
+  formatSettings : TFormatSettings;
+  zeta, bigdecadd: double;
+  tac: boolean;
+  mstd: TStDecimal;
+  acurr: currency;
+  amount : Currency;
+  fSettings : TFormatSettings;
+  ComTerminal : TCustomComTerminal;
+  
+  //ppwide: pansichar;
+  
+  //helper
+
+    fj: bytebool;
+   myimglist: TCustomimagelist;
+   
+   mdx: TImageIndex; 
+   //mtt: TRTLCriticalSection;
+   //hfg: systemtime;
+   
+   hgs: Twidestrings;
+   image1: TImage;
+
+BEGIN  //Main     no random values
+//<Executable statements>
+  {x:= 100;
+  quadrat:= power(x,2); 
+  writeln(format('%f', [quadrat]))
+  square:= sqrt(quadrat)
+  writeln(format('%f', [square]))
+   div_dbl:= 5.0 / 2.1; // 2.500000
+  writeln(format('%0.8f', [div_dbl]))
+  
+  div_dbl:= 20 mod 3; // 2.500000
+  writeln(format('%f', [div_dbl]))
+  incint:= 255;
+  inc(incint)
+  writeln(format('um eins erhöht %d',[incint]))
+   a:= 5
+   b:= 6
+   if not (A<>B) then writeln('gleich') else
+                    writeln('ungleich')   
+   if (A=B) then writeln('gleich') else
+                    writeln('ungleich') }  
+
+   // Ganze ASCII Tabelle
+   { writeln(Chr(67))
+   for i:= 0 to 255 do
+     writeln(format('wert %d %s',[i, Chr(i)]))}
+     
+     // thread save avoid local vars!
+ //    LetBitmaponForm(loadpform(8,8));
+     
+     //threadvar:= 234;
+   //  CreateThread(nil, 0, 
+   //roundrect
+     //invalidaterect
+   //ord
+       //mcf
+   //writeln(cr)
+   writeln(inttobin(1000))
+   
+   writeln(IntToBinWord(12335));
+    writeln(IntToBinWord(round(intpower(2,16-1)))); 
+    writeln(IntToBinWord(round(intpower(2,16)-1))); 
+     writeln(floattosTr(fibonacciprecisiontestE(39)))
+    writeln(floattosTr(fibonacciprecisiontestE(40)))
+    writeln(floattosTr(fiboMaxE(39)))
+    writeln(floattosTr(fiboMaxE(40)))
+    writeln(floattosTr(fiboMaxE(10)))
+    writeln(floattosTr(fiboMaxE(100)))
+   
+    writeln(floattostr(fibo(100)))
+    writeln(floattostr(fibo(40)))
+    writeln(floattosTr(fibonacciprecisiontestR(39)))
+    writeln(floattosTr(fibonacciprecisiontestR(40)))
+    writeln(floattosTr(fibonacciprecisiontestS(39)))
+    writeln(floattosTr(fibonacciprecisiontestS(40)))
+   
+   //createdc //canceldc  
+        //startpan
+   writeln(format('%s',[inttobin(97)]))
+   writeln(format('%s',[inttobin(223)]))
+   writeln(format('%s',[inttobin(97 XOR 223)]))
+    
+    bin1:= 97;
+    bin2:= 223;
+    bin3:= bin1 XOR bin2;
+    writeln(format('%s',[inttobin(bin3)]))
+    //strdup
+    //ColorRGoHLBTS
+      //LogMessage
+      //DosPathToUnixPath
+    //unixpathtodospath
+   //writeln(format('%s',[inttohex(223,2)]))
+    writeln(' ');
+    wd:= 150;
+    writeln(inttobin(wd))
+    wd:= wd SHL 1
+    writeln(inttobin(wd))
+    writeln(inttobin(wd XOR wd))
+    writeln(inttostr(wd))
+
+  //operator ist power
+  //operanden sind x und 2
+  //ausdruck ist power(x,2)
+  
+    for i:= 1 to 10 do
+       for j:= 1 to 10 do begin
+         //printf('%d',[j])
+           write(inttostr(j*i)+ '  ')
+           if j=10 then writeln('')
+        end;
+        writeln('')
+ 
+     {for i:= 1 to 10 do
+       for j:= 1 to 10 do begin
+         //printf('%d',[j])
+           ein:= j*i;
+           if (ein < 10) and (j<7) then
+             write(inttostr(ein)+ '    ')
+             else 
+             write(inttostr(ein)+ '  ')
+             
+           if j=10 then writeln('')
+        end}
+        
+        //big fact (60):
+        //8.3209871127413901442763411832234e+81
+        // fact 70 = 1.1978571669969891796072783721689e+100
+    
+        bigstring:= getbigintdirect;
+        writeln(inttostr(length(bigstring)))
+        //writeln(getbigintdirect)
+        writeln('getbigintfact: '+getbigintfact(70))
+        writeln(floattostr(fact(70)))
+
+//        2^100=
+//1267650600228229401496703205376
+        flable:= 'big int power';
+        writeln(flable)
+        i:= 1009;
+        bigstring:= getbigintpower(i);
+        writeln(inttostr(length(bigstring))) 
+        writeln(getbigintpower(i))
+        writeln('fact 9: '+floattostr(fact(9)));
+        //permutation
+        
+  {for i:= 0 to nb do pm[i]:= i; 
+  permu(pm,7); 
+  writeln('Permutations: '+inttostr(7) +' till '+inttostr(nb))}
+  // 5 of 10 = 120!
+  // 7 of 10 = 5
+  
+  // 3. Combination (binominal coefficient)= nCr = nPr / k!
+    //npr:= 45; ncr:= 6;
+    
+    //npr:= round(Fact(npr)/Fact(npr-ncr)/fact(ncr));
+    //ncr:= npr/round(fact(ncr))
+    
+    //4 of 20 = 4845 = NCR(20,4) on a calculator or a lotto 4 of 20
+
+    {writeln(inttostr(npr))
+    writeln(inttostr(ncr))
+     Writeln('All Permutations 4 of 10: '+intToStr(round(Fact(10)/Fact(10-4))))}
+
+    //for i:= 1 to 100 do 
+      //PrintF('nr %d  %s', [i, Getbigint2(i)])
+    
+    bigstring:= Getbigint2(100)
+    writeln(inttostr(length(bigstring))) 
+    Writeln(Getbigint2(100))
+    writeln('fact 100 '+format('%f',[fact(100)]))
+    writeln('fact 49 '+format('%f',[fact(49)]))
+  
+    //alta tensione - haute tension 2000000000 * 999999 = 99999900000
+    {for i:= 1 to 57 do begin
+    writeln('muluN     '+ inttostr(i)+' of ' +(getmuluN(i))) 
+      printf('extended %d of %f', [i,power(i,i)])     
+     end;
+    for i:= 1 to 157 do begin
+    writeln('muluO     '+ inttostr(i)+' of ' +(getmultiN(i))) 
+      printf('extended %d of %f', [i,power(i,i)])     
+     end;}
+     
+   for i:= 1 to 15 do
+      printf('extended %d of %f', [i,power(i,i)]);     
+         //TESTTTTTTTTTTTTTTTTTT
+        //1.92327924899313583E62 right of powerbig
+        //1.9232792489931358333837313998768e+62  calculator
+        //1.92327924899313583E62  mX right
+        //1.92327924899313632E62 false
+        //fact 70  1.1978571669969891796072783721689e+100
+   writeln(format('%.18f',[power(310,25)]));  
+   assert(format('%.18f',[power(310,25)])='1.92327924899313583E62','this is float false');    
+    //Writeln(inttostr(9 * 40320))
+    writeln('powerbig length (310,25) '+inttostr(length(powerbig(310,25))));
+    Writeln('powerbig(310,25) '+PowerBig(310,25))
+    printf('extended pf+ 310 h 25 %d of %f', [310,power(310,25)])     
+    writeln(format('extended  f+ 310 h 25 %d of %f', [310,power(310,25)]))     
+    //1.92327924899313583E62  mX right
+   
+    writeln('extended 310 of 25 '+floattostr(power(310,25)));
+    writeln('extended 310 of 25 '+floattostr(intpower(310,25))); //error inttostr no message
+ 
+    writeln('');
+    Writeln('GetMuluN '+GetMuluN(310))
+    Writeln('combination '+floatToStr(Combination(49,6)));
+    Writeln(FloatToStr(Fact(70)))
+    Writeln(Format('with Format %f',[Fact(70)]));
+    writeln(floattostr(power(11,600)))
+    writeln(floattostr(power(11,600)))
+                 //6.8487465541710012726533979001831e+624
+    //with Format  6.84874655417100127E624
+        Writeln(Format('with Format %f',[power(11,600)]));
+   
+    //6.84874655417099E624
+    //6.848746554171E624
+ 
+    Writeln('with Float:   '+FloatToStr(Fact(70)))
+    Writeln(Format('with Format %f',[Fact(70)]));
+     //writeln(getascii)
+    amss:= '345.456';
+      writeln('float test '+(floattostr(strtoint(('34')))));
+    Writeln('with Float:   '+FloatToStr(Fact(100)))
+    Writeln(Format('with Format %f',[Fact(100)]));
+    
+   { with TPasswordDlg.create(NIL) do begin
+    
+    showmodal;
+    free;
+    end;}
+    
+    abb:=TBits.Create;
+     abb.Size:= 10; {Access violation at runtime}
+     //abb.Free;
+    abb.Bits[10]:=true;
+    Println(IntToStr(abb.Size)); {returns 0 instead of 11 solved} 
+    abb.Free;
+    bc:= TCollectionItem.create(NIL);
+    ac:=TCollection.Create(bc);
+    //bc:=ac.Add; {***Access violation at runtime here***}
+    ac.Free;
+    xxl:= 2;
+    for i:= 1 to 6 do begin
+    if i <= 5 then
+      xxl:= xxl*xxl
+    else xxl:= ((xxl)*(xxl div 2)-1);
+    //9223372036854775807
+    
+    writeln('loop test '+inttostr64(xxl))
+    //writeln(inttostr64(xxl+xxl))
+    end;
+    if xxl = MaxInt64 then writeln (' true64 passed!');
+    xxl:= round(power(2,31)-1)
+    writeln('int64 '+inttostr64(xxl))
+    writeln(floattostr(power(2,64)))
+    
+    writeln('const direct '+intToStr64(MaxInt64))
+    xxl:= maxint64-7;
+    writeln(inttostr64(xxl))
+    //writeln(sha1(exepath+'maxbox3.exe'))
+    
+    //writeln(sha256(exepath+'maxbox3.exe','F'))
+    mysha:= sha256(exepath+'maxbox4.exe','F')
+      writeln('before '+mysha)
+      delete(mysha, pos('$',mysha),1)
+      writeln('deleted '+mysha)
+      //writeln(padding
+    Writeln('trim '+TrimAllOf(' ',mysha));    //??
+ 
+    Writeln('padded '+StringReplace(mysha, ' ', '', [rfReplaceAll, rfIgnoreCase]));     Writeln('del spaces '+DeleteSpaces(mysha));  
+ 
+  Writeln(Format('Decimal          = %d', [-123]));
+  Writeln(Format('Exponent         = %e', [12345.678]));
+  Writeln(Format('Fixed            = %f', [12345.678]));
+  Writeln(Format('General          = %g', [12345.678]));
+  Writeln(Format('Number           = %n', [12345.678]));
+  Writeln(Format('Money            = %m', [12345.678]));
+  //Writeln(Format('Pointer          = %p', [pointer(mysha)]));
+  Writeln(Format('String           = %s', ['Hello']));
+  Writeln(Format('Unsigned decimal = %u', [123]));
+  Writeln(Format('Hexadecimal      = %x', [140]));
+  println(Format('0 padded decimal  = <%.6d>', [1234]));
+
+  before := 'This is a way to live A big life';
+  after  := StringReplace(before, ' a ', ' THE ',
+                          [rfReplaceAll, rfIgnoreCase]);
+  writeln('Before = '+before);
+  writeln('After  = '+after);
+
+
+    //mysha2:= sha256(exepath+'maxbox3.exe','F')
+     // delete(mysha2, 1,50)
+      //writeln('deleted '+mysha2)
+      //writeln(sha512(exepath+'maxbox3.exe','F'))
+ 
+    writeln(inttoStr(computefilecrc32(exepath+'maxbox4.exe')))
+    
+    //writeln(inttoStr(crc32(exepath+'maxbox3.exe')))
+    
+    Writeln(inttoStr(S_StrCRC32(exepath+'maxbox4.exe')));
+    source := '123456789';
+    target := StuffString(source, 2, 4, '-inserted-');
+
+   writeln('Source = '+source);
+   writeln('Target = '+target);
+   before:= 'Ten = 10. Eleven = 11. One hundred = 100.';
+   after:= WrapText2(before, #13#10, ['.'], 1);
+   after:= WrapText(before, 10);
+   writeln(after)
+   
+   myfloat := 1234.567;
+   Writeln('##### : '+FormatFloat('#####', myfloat));
+ 
+   before:= '123.456E+002';
+   // Convert it to a floating point number
+    floatValue  := StrToFloat(before);
+   // And display the value
+    writeln(before+' = '+FloatToStr(floatValue));
+    
+    // Furnish the locale format settings record
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
+  writeln(formatsettings.timeAMString);
+  writeln(formatsettings.longDateFormat);
+  writeln(formatsettings.shortDateFormat);
+
+  // And use it in the thread safe form of CurrToStrF
+  writeln('1234.56 formats as = '+CurrToStr(1234.56));
+  
+  writeln('currtostrF 1234.56 formats as = '+
+             CurrToStrF(1234.5687654, fSettings, 4));
+    //         CurrToStrF(1234.56, formatSettings));
+
+  writeln('currtostrFS 1234.56 formats with setting as = '+
+             CurrToStrFS(1234.56, ffCurrency, 4, formatSettings));
+             writeln(FloatToStrF(1234.56, ffCurrency, 6, 6));
+
+  writeln('1234.56 formats setting as = '+
+             // CurrToStrF(1234.56, ffCurrency, 4, formatSettings));
+             FloatToStrFS(1234.56, ffCurrency, 6, 6, formatsettings));
+   writeln('roundfloat '+RoundFloatToStr(12334.457866,4))
+   //http://www.festra.com/eng/snip13.htm
+  {with TForm.Create(self) do begin
+    BorderStyle := bsNone;
+    WindowState := wsMaximized;
+    Show;
+  end;}    
+  
+  writeln(formatbigint(powerbig(10,22)))
+   // 10.000.000.000.000.000.000.000    //10 Zetta
+  //10‘000‘000‘000‘000‘000‘000‘000 sterne
+  // 1 000 000 000 000 000 000 000 000  10^24
+  
+  writeln(wraptext('this is my new line playbox or playboy', 17));
+  writeln(booltoStr(sametext('thisi','this'),true))
+  writeln('curr to str ' +currtostr(345.5))
+  writeln('str to curr '+floattostr(strtocurr('345.5')))
+  writeln(WrapText2('this is my ,new line playbox, or playboy', #13#10, [','], 1));
+  
+   for i:= 45 to 55 do
+     writeln(format('wert %d %s',[i, Chr(i)]));
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
+
+  writeln(format2('this is %m',[345.5],formatsettings));   
+  writeln(format2('this is %d',[strtocurr('345.5')],formatsettings));   
+
+  //isassembly
+    //renamefile
+      //fmtstr
+        //wideformat
+        //username      //computername
+          //IIF               //findmainwindow
+           // spaces            //iseven    //msg  
+    
+    writeln(strfillchar('A',30))
+    writeln(floattoStr(calcmathstring('(3*8)+4')));  
+    //JVGUtils;  
+    
+    Writeln(FloatToStrFS(StrtoFloat('23459.566'),ffcurrency,8,6,formatSettings))
+    Writeln(FloatToStr2(StrtoFloat('23459.566'),ffcurrency,8,6,formatSettings))
+
+    //StrEnd
+     // quotedstr  //ansiStrComp   //StrFind
+    //mindatetime
+    writeln(floattoStr(maxdatetime))
+    Writeln(booltoStr(strtobool('true'),True))
+    Writeln(FloatToStr1(234.56,formatsettings))
+    //FloatToStr2( Value : Extended; Format : TFloatFormat; Precision, Digits : Integer; //FormatSettings : TFormatSettings) : string;');
+ 
+    Writeln(FloatToStr2(23459.566,ffcurrency, 8,6,formatsettings))
+//function DateToStr2(const DateTime: TDateTime; const FormatSettings: TFormatSettings): string;
+     //depends on OS!
+    Writeln(DateToStr2(Now, formatsettings))
+    //Writeln(TimeToStr2(Now, formatsettings))
+    //Writeln(DateTimeToStr(now))
+    //WideStringToBytes
+    //writeln(format('last char %h ',[ansilastchar('true')]));
+    //ppform.create(self);
+    //ppform.free;
+    //writeln('thread locale ' +inttostr(GetThreadLocale))
+    //writeln('thread current ' +inttostr(GetCurrentThreadID))
+           //loadstring
+    writeln('GetCmdShow ' +inttostr(GetCmdShow))
+    //getsystemtime;
+    //bintochar
+    //chartobin
+    //strscan
+    //getcommandline
+    writeln(inttostr(getversion))
+    writeln(inttostr(getsystemmetrics(1)))
+    //writeln(inttostr(getcurrenttime))
+    writeln(format('%s',[inttobin(9 AND 9)]));
+    writeln(format('%d',[9 AND 3]));
+ 
+ //   writeln(   bintostr
+    writeln(format('%s',[inttobin(NOT 4)]));
+    writeln(inttostr(bintoint(inttobin(NOT 4))));
+    writeln(floattostr(maxcalc('1/1+1/2+1/3')))
+    writeln(floattostr(maxcalc('1/1+1/2+1/3+1/4')))
+     writeln(floattostr(maxcalc('1/1+1/2+1/3+1/4+1/5')))
+     writeln(floattostr(maxcalc('1/1+1/2+1/3+1/4+1/5+1/6')))
+     for i:= 1 to 100000 do 
+       zeta:= zeta + 1/i;
+       writeln(floattostr(zeta))  
+     zeta:= 0;
+    { for i:= 1 to 1024 do 
+       zeta:= zeta + 1/i;
+       writeln(floattostr(zeta))}  
+  
+     writeln(floattostr(maxcalc('2^10')))
+     writeln(floattostr(maxcalc('ln(e)')))
+     writeln(floattostr(maxcalc('e+10^6')))
+     //writeln(inttostr($6e10));
+     
+    (* zeta:= 0;
+     for i:= 1 to 50000 do 
+       if i mod 2 = 0 then
+         zeta:= zeta - 1/i else
+         zeta:= zeta + 1/i;
+       
+       writeln('harmonic alternate to ln(2): '+floattostr(zeta))  
+       writeln(floattostr(maxcalc('ln(2)')))
+       writeln(floattostr(ln2))    *)
+   
+     zeta:= 0;
+     tac:= true;
+     for i:= 1 to 50000 do 
+       if NOT (i mod 2 = 0) then begin 
+         tac:= not tac;
+         if tac then
+           zeta:= zeta - 1/i else
+         zeta:= zeta + 1/i;
+       end;  
+   
+       writeln('harmonic alternate leibniz formula to PI/4: '+floatToStr(zeta))  
+       writeln(floatToStr(maxcalc('PI/4')))
+       writeln(floatToStr(PIOn4))
+       //writeln(inttostr(bige));
+        //writeln(floattostr(maxcalc('PI')+2))
+       writeln(floatToStr(maxcalc('log(256)/log(2)')))
+       //3.9423034450092728479429282811133e+4889
+       //3.94230344500927284E4889 
+       writeln(floatToStr(maxcalc('9.5^5001')))
+       printF('big maxcalc %.18f ',[maxcalc('9.5^5001')])
+       printF('big maxcalc %.19f ',[power(9.5,5001)])
+       mf2:=  power(9.5,5001);
+       printF('big maxcalc %.19f ',[mf2])
+       
+      //writeln(getbigint2(5))
+       writeln(getbigintdirect)
+      printF('imaginary %.2f ',[maxcalc('sqr(sqrt(9))')])
+       
+      mstd:= TStDecimal.Create;
+      //mstd.addOne;
+      //writeln('big decimal '+mstd.asString);
+      //mstd.addOne;
+      //mstd.addOne;
+   
+      //mstd.add(mstd);
+      bigdecadd:= 2.5;
+      mstd.assignfromfloat(bigdecadd);
+      writeln('big decimal '+mstd.asString);
+    
+      mstd.RaiseToPower(55)
+      writeln('big decimal2 '+mstd.asstring);
+       printF('big dectest   %.18f ',[maxcalc('2.5^55')])
+     //7703719777548943412223.9117703397
+      mstd.Free;
+  
+       printF('addition theorem %.18f ',[maxcalc('sin(2.5/2)')])
+       printF('addition theorem %.18f ',[maxcalc('sqrt(1/2*(1-cos(2.5)))')])
+      printF('addition theorem2 %22.18f ',[maxcalc('cos(2.5/2)')])
+       printF('addition theorem2 %22.18f ',[maxcalc('sqrt(1/2*(1+cos(2.5)))')])
+            
+       //1.1 * 10^4932
+       bigfloat:= maxcalc('ln(1.0000*10^4932)/ln(2)');
+  
+       printF('limes extended %22.18f ',[bigfloat])
+       printF('limes extended int return %.18f ',[maxcalc('2^16383.749363984471100000')])
+   
+      printF('limes extended %22.18n ',[maxcalc('1.0*10^4932')])
+       //-2^63+1 .. 2^63-1
+       acomp:= maxint64;
+       //acomp:= maxint64m-1;
+        //922’337’203’685’477.5807  of currency
+       
+       printF('comp test %.18d ',[acomp])
+       acurr:= 9.223372036854775807;
+       writeln(CurrToStr(acurr));
+       printF('comp test currency %.18d ',[acurr])
+      bigfloat:= maxcalc('2^31-1');
+      writeln(inttostr(round(bigfloat)));
+       
+       printF('frac extended %22.16f ',[maXcalc('frac(6)+e^1')])
+       //printF('frac extended %22.2f ',[maxcalc('6!')])
+     zeta:= 0;
+     for i:= 1 to 1000 do 
+       zeta:= zeta + 1/fact(i);
+       writeln(floattostr(zeta+1))  
+    
+       printF('big extended %46.16f ',[maXcalc('1.2345*(10^2)')])
+       printF('big extended %45.16f ',[maXcalc('1.2345*(10^3)')])
+       printF('big extended %44.16f ',[maXcalc('1.2345*(10^4)')])
+       
+       //writeln(getmulu(2))
+       printF('round %44.2d ',[round(2.5)])
+       printF('round %44.2d ',[round(3.5)])
+       printF('comm round %44.2d ',[commercialround(2.5)])
+        amount:= 12.4;    // 12 pounds
+
+  // Display the amount using all 4 currency formats
+    GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, fSettings);
+    writeln(Format2('this is %d',[strtocurr('345.5')],fSettings)); 
+ 
+  {for i:= 0 to 3 do begin
+    //listseparator:= '.';
+    //CurrencyFormat:= i;
+    //formatsettings:= ffcurrency;
+    ShowMessage('Format '+IntToStr(i)+' = '+CurrToStr(amount));
+  end; }
+  
+  //fact
+        printF('log N extended range %22.4f ',[logn(2,power(10,4932))])
+        printF('log N maXcalc %.4f ',[maxcalc('fact(4)')])
+        printF('log N maXcalc %.4f ',[maxcalc('logn(4)')])
+ 
+    //getrgbcolor  //colortorgb
+    //jpower     //vartodatetime
+     // varisnull   //varfromdatetime  //urlhash
+       
+       writeln(inttobin(1000))
+       writeln(getversionstring(exepath+'maxbox4.exe'));
+       
+       //plotfunc(Image1.Canvas, TFunc(@Func), X1, 20, 10, 1)
+       //writeln(getAscii);
+       //writeln(version);
+       //TTCPHttpThrd
+    //unit uPSI_CPortTrmSet;
+    ComTerminal:= TCustomComTerminal.create(self);
+    //EditComTerminal(comterminal);  //TComTrmSetForm
+    comterminal.Free;
+    writeln(IntToHex(CRC32OfFile(exepath+'\maxbox4.exe' ) , 4) );
+    
+  {  I was developing a program that validate a CPF, a type of document of my country. I already did all the math. But in the input Edit1, the user will insert like:  123.456.789-00
+
+I have to get only the numbers, without the hyphen and the dots, to my calcs worth. 
+      }
+    sr := '123.456.789-00'
+    writeln(ReplaceRegExpr('\D',sr,'',true))
+    
+    it:= 10;
+    //printF('hash collision %22.16f ',
+      //  [maXcalc('e^(-77)')]);
+    printF('hash collision %22.16E ',
+        [maXcalc('e^(-77)')]);
+ 
+    printF('hash collision %22.16E ',
+        [maXcalc('e^(-'+itoa((it-1)*it)+')')]);
+    
+    it:= 109125;
+    printF('hash collision %22.16f ',
+        [maXcalc('1-(e^(('+itoa((it-1)*it)+')/(2*(2^(32)))))')])
+    it:= 109125;
+    printF('hash collision %22.16E ',
+        [maXcalc('1-(e^(('+itoa((it-1)*it)+')/(2*(2^(32)))))')])
+    it:= 109125;
+    printF('hash collision %22.16f ',
+        [maXcalc('1-(e^(('+itoa((it-1)*it)+')/(2*(2^(32)))))')])
+    
+   { if CompareFiles(exepath+'ibz_operatoren_testdrive42.txt',exepath+'ibz_operatoren_testdrive40.txt',NIL,NIL) then writeln('compare same success!');
+    
+    SymetricCompareFiles(exepath+'ibz_operatoren_testdrive42.txt',
+                    exepath+'ibz_operatoren_testdrive40.txt');
+                    
+    writeln(botoStr(BuffersEqual(exepath+'ibz_operatoren_testdrive40.txt',
+             exepath+'ibz_operatoren_testdrive40.txt',sizeof(sr))))
+   }
+END.
+
+doc news at mX4.2.0.80
+********** File 2: C:\maXbox\maxbox3\maxbox3\maXbox3\source\IFSI_WinForm1puzzle.pas
+  CL.AddTypeS('Long', 'Int64;');
+5940:   CL.AddTypeS('Pointer2', '___Pointer;');     //3.8.1
+  CL.AddTypeS('TFileCallbackProcedure','procedure(filename:string);');
+ CL.AddDelphiFunction('Function BuffersEqual( Buf1, Buf2 : ___Pointer; Size : Integer) : Boolean');
+ 93:  CL.AddDelphiFunction('Procedure ReadMessageData( const Message : TMessage; var Data : ___Pointer; var Size : Integer)');
+
+ Program Info: Uptime: OS Uptime: 4 Days 9 Hours 25 Minutes 18 Seconds
+ <Ctrl 3> to get the last modification (change tracker)
+ Add ons: FPlot_42 with multilayers and save to
+ CryptoBox4 Button Seq. Redesign
+ Add more Templates to bds_delphi.dci
+ 4% performance Gain on compile- and runtime
+
+ // ±
+ // †
+This Number:  135 is this ASCII  ‡
+  // †
+
+{Note: StDecMth declares and implements TStDecimal. This is a fixed-
+       point value with a total of 38 significant digits of which
+       16 are to the right of the decimal point.}
+
+type
+  TStRoundMethod = ( {different rounding methods...}
+    rmNormal,        {..normal (round away from zero if half way)}
+    rmTrunc,         {..truncate (always round to zero)}
+    rmBankers,       {..bankers (round to even digit if half way)}
+    rmUp);           {..force round up (always round from zero)}
+
+
+50000  = 0.6930659968
+100000 = 0.693142180584982
+500000 = 0.693146180561005
+10^6   = 0.693146680560255
+5*10^6 = 0.693147080560068
+50*10^6= 0.693147170560399    //Runtime: 0:28:22.422
+
+ln(2)  = 0.693147180559945
+
+Alternating harmonic series
+The first fourteen partial sums of the alternating harmonic series (black line segments) shown converging to the natural logarithm of 2 (red line).
+
+The series
+    \sum_{n = 1}^\infty \frac{(-1)^{n + 1}}{n} \;=\; 1 \,-\, \frac{1}{2} \,+\, \frac{1}{3} \,-\, \frac{1}{4} \,+\, \frac{1}{5} \,-\, \cdots 
+
+is known as the alternating harmonic series. This series converges by the alternating series test. In particular, the sum is equal to the natural logarithm of 2:
+    1 \,-\, \frac{1}{2} \,+\, \frac{1}{3} \,-\, \frac{1}{4} \,+\, \frac{1}{5} \,-\, \cdots \;=\; \ln 2.
+    1-1/2+1/3-1/4+1/5-1/6... = ln2
+
+This formula is a special case of the Mercator series, the Taylor series for the natural logarithm.
+A related series can be derived from the Taylor series for the arctangent:
+
+    \sum_{n = 0}^\infty \frac{(-1)^{n}}{2n+1} \;\;=\;\; 1 \,-\, \frac{1}{3} \,+\, \frac{1}{5} \,-\, \frac{1}{7} \,+\, \cdots \;\;=\;\; \frac{\pi}{4}. 
+
+This is known as the Leibniz formula for pi.
+
+A related series can be derived from the Taylor series for the arctangent:
+
+    \sum_{n = 0}^\infty \frac{(-1)^{n}}{2n+1} \;\;=\;\; 1 \,-\, \frac{1}{3} \,+\, \frac{1}{5} \,-\, \frac{1}{7} \,+\, \cdots \;\;=\;\; \frac{\pi}{4}.    pi/4
+
+This is known as the Leibniz formula for pi.
+
+Decimal          = -123
+   Exponent         = 1.23456780000000E+004
+   Fixed            = 12345.68
+   General          = 12345.678
+   Number           = 12,345,68
+   Money            = ?12,345.68
+   Pointer          = 0069FC90
+   String           = Hello
+   Unsigned decimal = 123
+   Hexadecimal      = 8C
+
+FA DA 73 38 5E 91 51 8E C5 4F C8 26 81 31 A9 E0 21 C7 55 72 
+
+//ÚÌÖÜ%#ZÎ,‘À¯L@ `^Ò÷ÒÖÆ…¢c³†k|C
+
+DA CC 04 D6 DC 25 23 5A CE 2C 91 C0 AF 4C 40 A0 60 5E D2 F7 D2 D6 C6 1D 85
+A2 63 B3 86 6B 7C 43
+
+D8 1E A3 21 DC D0 E5 C6 26 26 13 ED 95 B8 83 24 72 E1 00 07 49 6A 9C A3 A7
+36 25 45 B4 24 44 1E 5E 58 8B BB 4C DE BE 11 DF EC B6 A0 AB 13 0A 9B 03 86
+59 EB 27 0E 8C DD D6 58 0A FD 09 D9 1A C6
+
+
+//If you multiply x by x, you get to 2^64 in exactly 6 steps. (2, 4, 16, 256, 65536, 4294967296 and finally 18446744073709551616)
+
+Hello,
+Constructor of TCollection is not registered in PascalScript. You should do it manually:
+
+//We should create own constructor to create TCollection object with TCollectionItem items.
+type TMyCollection = class (TCollection)
+constructor Create();
+end;
+
+constructor TMyCollection.Create();
+begin
+inherited Create(TCollectionItem);
+end;
+
+// TPSScript.OnCompile
+procedure TForm1.psOnCompile(Sender: TPSScript);
+begin
+Sender.Comp.FindClass('TCollection').RegisterMethod('constructor Create');
+end;
+
+//TPSScript.OnExecImport
+procedure TForm1.psOnExecImport(Sender: TObject; se: TPSExec;
+x: TPSRuntimeClassImporter);
+begin
+with x.Add(TCollection) do
+begin
+RegisterConstructor(@TMYCOLLECTION.CREATE, 'CREATE');
+end;
+end; 
+
+As a workaround please modify uPSR_classes.pas file
+
+procedure TBITSSIZE_R(Self: TBITS; var T: INTEGER); begin T := Self.SIZE;end;
+procedure TBITSSIZE_W(Self: TBITS; T: INTEGER); begin Self.SIZE := T; end;  
+
+fact 100
+9.3326215443944152681699238856267e+157 -calculator
+9.33262154439441527E157 -type extended
+bigstring:
+9.3326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
+
+
+------------------------------------------------------------------------------------------
+
+Notices for 3.6.1 and more
+
+Work for 3.6.2
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+functions of 2050-2134 =85  page 25-37
+
+after 3.6.0.2 to 3.6.1 to 3.6.2
+
+add functions found in 241_RTL_SET.txt
+
+add functions like colortoRGB found in delphi 2 S. 514 prozeduren etc. --> O.K.
+
+by onclose() event with TAction the debugger stops
+
+ado.sql.add wont work it's twidestring of sql member 
+
+ clientdataset.FieldByName('Value').AsString := 'Paul Rigby'; is missing  -->OK.
+
+screen.cursors missing  -->OK.
+
+fillchar map the function with an array
+from gethinstance to hinstance with a mapping function  -->OK.
+
+add unit clientdatasetutils from hp-rechner  - cdutils.pas   -->OK.
+test component tanimate with an example -->OK.
+
+MyForm.Icon.LoadFromResourceName bzw MyForm.Icon.LoadFromResourceID is missing
+Application.Icon.LoadFromResourceName bzw Application.Icon.LoadFromResourceID is missing
+//Screen.Cursors[crMaletUp] := LoadCursor(HInstance, 'Malet'); geht nicht loadcoursor is missing --->OK.
+
+options function show all resource bitmap in a graphic list like memory game to choose from
+include in V4 the res_maxplorer.exe ?
+
+form.OnMinimize := @TSwatForm_Pause1Click;  is missing -->OK.
+
+  Application.OnRestore := @TSwatForm_Pause1Click; -->OK.
+
+
+FPC check the rtl manual on fpc
+   
+processpath dont work
+
+check bcd with a packed record in unit source -->O.K.
+
+make example of BCD from 241_RTL_SET.txt --> O.K.
+
+add functions in functionlist of upsi_provider and upsi_dbclient and upsi_dbplatform --> OK.
+
+function of tcomponent findcomponent -->OK.
+
+add property Count: Integer read FCount write SetCount; in tobjectlist, tcomponentlist etc.
+
+mini maXbox as less files
+
+change mbversion of toolsapi in addconstant to var! -->OK.
+
+FileSetDate( has two ways of parameters
+
+correction of bestof runtime2 cmdline etc. in examples -->OK.
+correction of examples with combination -->OK.
+
+add functions in functionlist (fahrenheit , createmessagedlg ...----->OK.
+
+original filename maxbox3_6.exe -->OK.
+
+make example fastform with createmessagedialog outline & calendar -->OK.  BCD
+
+  DlgType: TMsgDlgType;  is missing -->OK.
+ 
+
+opendialog can't execute maybe the constructor or the overload execute! -->OK.
+tsavedialog has also an execute() but with pointers!-->OK.
+
+types in strutils and dialogs dont match:$ -->OK.
+
+CL.AddTypeSTMsgDlgButtons','set of TMsgDlgBtn); -->OK.
+works with an empty set
+
+functions of unit controls/classes is missing -->OK.
+
+msecsperday     is missing --OK.
+
+copy file:
+file:///C:/maxbook/maxbox3/maxbox33/maxbox3/docs/36test/DelphiVCL_RTLOverview.html --->OK.
+
+check procedure Halt [ ( Exitcode: Integer) ];
+with exitcode
+
+
+fact 100
+9.3326215443944152681699238856267e+157 -calculator
+9.33262154439441527E157 -type extended
+bigstring:
+9.33262154439441526816992388562667004907159682643816214685929638952175999932299156089414639768286253697920827223758251185210916864000000000000000000000000
+
+
+  ein operand besteht aus operator und 
+  - name
+  - type
+  - scope 
+  - lifetime
+  - value
+     -type  is valid operator
+            memory need
+            range checking
+
+
+
+       (A<>B) not --> A=B
+        0 0 0 1       0 0
+        0 1 1 0
+        1 0 1 0
+        1 1 0 1       1 1
+        
+        19.8. um 16 Uhr PT1 Update
+        
+  XOR App      
+  0110 0001
+^ 1101 1111
+-----------
+  1011 1110
+        
+        
+  00000000000000000000000100101100 XOR
+  00000000000000000000000100101100
+                         000000000
+                         
+stat for v3.5 beta 24.7.2011
+
+examples 464
+source 456
+docs 62
+exercices 43                         
+
+to do from  netbook to sony
+- copy 172_pascal_triangle
+- make example of n^n
+- copy ...statements4.txt
+
+new correction/tips for V3.5
+- syntax check     -->OK
+- java syntax in context menu   -->OK
+- compute compile run time
+- compiling and codelines in same line (compiling lines count only to end.)
+- exception log string - space between machine name and message -->OK.
+   8/8/2011 9:39:48 AMV:3.5.0 beta[max]MAXBOX7Invalid pointer operation[at:  1258720pgf; mem:610096]
+   - exception log - last entry first
+- update window - update service place a graphic or sign in it --OK
+- implement id hash value --> OK
+- inithexarray;  -->gethexarray  -->OK
+                         
+Tips of the Day for Version V3.5
+-----------------------------
+
+Click on the maXbox Sign opens your work directory
+You can printout your scripts as a pdf-file
+You do have a context menu with the right mouse click
+With the UseCase Editor you can convert graphic formats too.
+On menu Options you find 4 Addons as compiled scripts 
+You don't need a moouse to handle maXbox
+With escape you can leave the box
+In /exercises you find a few compilats 
+Drag n' drop your scripts in the box
+Open in menu Outpout a new instance of the box to compare or prepare your scripts      you can get templates as a code completion with ctrl j in the editor like
+  classp or iinterface or ttimer
+in menu output you can set output menu in edit mode by unchecking read only memo     
+
+A file info you find in menu Program/Information 
+Make a screenshot in menu Output/Save Screenshot 
+Use a boot loader script 'maxbootscript.txt' (as auto start) to change the box each time you start it.
+
+----app_template_loaded----
+
+Corrections of V 3.5 beta
+
+cid:  182  winmemory: Twinmemory
+cid:  183  winmemory.#0: TLabel
+cid:  184  winmemory_1: Twinmemory
+cid:  185  winmemory_1.#0: TLabel
+
+deallocation of the form with self  --OK
+
+component count id reset to 0 --OK
+
+proposals from devc , file properties (size or date), full screen mode)
+
+a indy socket connection mode to get via ip addr. the text between machines
+--> /output send (ip addr.)
+
+print out on memo2:
+ mX3 executed on: 7/27/2011 1:06:18 AM --OK
+
+make function powerbig(n,n) with big integer n^n (see up in this script) -->OK
+
+
+inbuilt function split  --OK
+inbuilt function scanf  --OK
+inbuilt function combination --OK
+    npr:= 10; ncr:= 5;
+    
+    npr:= round(Fact(npr)/Fact(npr-ncr)/fact(ncr));
+
+
+add source mybigint source in mx3 and delphi3000.com  --OK
+
+add example 166_bigint_explain, 166? it depends -->OK
+add example 172 cexplain of pascal triangle
+
+add example pi.pas from /exercice
+add an example with sort mechanism and load the exe thread in /exercice
+  
+maxboxnews.htm of 3.3  OK:
+  
+remove idh....htm from /docs cause of tutorials  -->OK
+
+edit examplesindex.htm with 1..220 examples  
+
+maxboxfunctions new pdf -->OK
+
+new tutorial statistic programming -->OK
+
+add 4gewinnt.exe in excercies    --OK
+
+  
+  IIncomeInt  = interface (IUnknown)
+    ['{DBB42A04-E60F-41EC-870A-314D68B6913C}']
+    function GetIncome(const aNetto: Extended): Extended; stdcall;
+    function GetIncome2(const aNetto: Currency): Currency; stdcall;
+    function GetRate: Extended;
+    function queryDLLInterface(var queryList: TStringList): TStringList;
+            stdcall;
+    function queryDLLInterfaceTwo(var queryList: TStringList): TStringList;
+            stdcall;
+    procedure SetRate(const aPercent, aYear: integer); stdcall;
+    //property Rate: Double read GetRate;
+  end;
+
+
+  Dealing with Big Numbers (Integers)
+  -----------------------------------
+  
+  As you may know there's no simple solution to print or store big numbers, for example you want to compute fact(70), your calculator shows:
+  fact(70) = 1.1978571669969891796072783721689e+100
+  
+  but the maximum range on Delphi depends on your operating system types, means nowadays an int64 range is the big int.
+  Now that the "signed" Words are finally up-to-par with the unsigned integer types, Delphi 4 introduces a new 64-bits integer type, called Int64, with a whopping range of -2^63..2^63 - 1  
+
+ Another way is to use the type extended, but the limitation is precision like
+   
+        Writeln(FloatToStr(Fact(70)))
+ 
+    it only shows 
+    1.2E+0100
+
+With a BigInt Library (bigintlib) you'll see the full range of Fact(70):
+
+11978571669969891796072783721689098736458938142546425857555362864628009582789845319680000000000000000
+    
+The call respectively the calculation goes like this:
+
+function GetBigIntFact(aval: byte): string;
+//call of unit mybigint
+var mbRes: TMyBigInt;
+    i: integer;
+begin
+  mbRes:= TMyBigInt.Create(1);
+  try
+    //multiplication of factor
+    for i:= 1  to aval do 
+      mbRes.Multiply1(mbresult, i);
+    Result:= mbRes.ToString;
+  finally 
+    //FreeAndNil(mbResult);
+    mbRes.Free;
+  end;
+end;
+    
+Or you want the power of 100        
+2^100=
+1267650600228229401496703205376
+  
+The definition of the function could be the following:
+
+function GetBigIntPower(aval: integer): string;
+var mbResult: TMyBigInt;
+     i: integer;
+begin
+  mbResult:= TMyBigInt.Create(1);
+  try
+    for i:= 1 to aval do 
+      mbResult.Multiply1(mbresult, 2);
+    Result:= mbResult.ToString;
+  finally 
+    mbResult.Free;
+  end;
+end;
+  
+  
+At least one really big, it's 2^1000
+
+10715086071862673209484250490600018105614048117055336074437503883703510511249361224931983788156958581275946729175531468251871452856923140435984577574698574803934567774824230985421074605062371141877954182153046474983581941267398767559165543946077062914571196477686542167660429831652624386837205668069376
+
+
+the class of the unit from swiss delphi:
+
+  TMyBigInt = class
+  private
+    Len: Integer;
+    Value: AnsiString;
+    procedure Trim;
+    procedure Shift(k: Integer);
+    procedure MultiplyAtom(Multiplier1: TMyBigInt; Multiplier2: Integer);
+  public
+    constructor Create(iValue: Integer = 0);
+    procedure Add(Addend1, Addend2: TMyBigInt);
+    procedure Multiply(Multiplier1, Multiplier2: TMyBigInt); overload;
+    procedure Multiply(Multiplier1: TMyBigInt; Multiplier2: Integer); overload;
+    function ToString: string;
+    procedure CopyFrom(mbCopy: TMyBigInt);
+  end;
+
+  tbigint
+  classp
+  iinterface
+
+ mail to members of the EKON 15
+ Great to see you again, I would like to share an agile tool with you to get some feedback concerning usability and effiency:
+ 
+ maXbox (Delphi out of a box) on sourceforge
+ 
+ The open source tool needs no installation or administration, runs from a stick and is used for teaching, testing or administration tasks or just coding for fun. 
+ 
+
+open ssl mit delphi
+
+OpenSSL ist eine freie Implementierung des SSL/TLS-Protokolls und bietet darüber hinaus Funktionen zur Zertifikatsverwaltung einer PKI und zu unterschiedlichen kryptographischen Methoden und Standards. In dieser Session erfahren Sie Anwendung und Möglichkeiten mit Delphi und zudem weitere Geheimnisse. 
+
+
+Anbei der Abstract zu Open SSL mit Delphi:
+
+OpenSSL ist eine freie Implementierung des SSL/TLS-Protokolls und bietet darüber hinaus Funktionen zur Zertifikatsverwaltung einer PKI und zu diversen kryptographischen Methoden und Standards. In dieser Session erfahren Sie Anwendung und Möglichkeiten mit Delphi und zudem weitere Geheimnisse der Chiffrierung.
+
+Hast du meinen Input zu 64bit und GROSSEN Zahlen noch verarbeiten können ?
+
+es grüsst, Max
+
+
+http://www.softwareschule.ch/
+http://max.kleiner.com/
+
+*******************************************
+
+   ich hoffe es ist ok wenn ich Dich duze. Könntest du mir bitte noch, wenn möglich heute ein Abstract für die Session „Open SSL mit Delphi“ senden. Wir haben Dich für insgesamt 4 Sessions eingetragen. Danke!
+
+
+    Ja wie tel. besprochen hier der Abstract:
+
+
+    Metriken in Together
+    ---------------------------------
+
+
+    Das diskret integrierte Tool von Together, lässt sich bereits nach Minuten einsetzen. Der Model View ist ein Werkzeug, welches gemäß Metamodell und zugehörigen Metriken den Code in UML darstellt, aber auch prüft, analysiert und dokumentiert, bspw. ungenutzte Variablen oder private Felder checkt.
+    Die so generierte tabellarische Auswertung dient der Code-Optimierung und eignet sich für ein Systemhandbuch wie für sonstige Review Reports. Viel Expertenwissen bei einfacher Bedienung zeigt diese Session.
+
+
+    es grüsst, Max Kleiner
+
+
+    http://www.softwareschule.ch/
+    http://max.kleiner.com/
+
+    *******************************************
+
+
+        Die Highlights der Delphi RTL.
+        ---------------------------------------------------
+        Dieser Speak ist garantiert werbefrei, auch wenn RTL dahintersteht;).
+        Ich zeige die besten Funktionen und Prozeduren aus der Delphi Runtime Library, die stetig (vor allem seit D2009) enorm zugenommen
+        hat. In diesem Streifzug zeige ich krasse, exotische aber auch nützliche, mächtige Routinen aus der Bibliothek, die ja der Hauptlieferant
+        zur VCL und CLX hin ist.
+        Recht formlos zieht die Demo der Funktionen aus den Unit Kategorien von danen, die auch einige versteckte Routinen aus der System
+        und SysUtils aufdecken. Wir wagen zudem einen Blick auf die Indy- und Jedi RTL; einige Aussagen zu Packages, Lizenzen und 64bit-
+        Compiler runden die Session dann ab.
+
+
+        Kryptologie mit Delphi (Workshop)
+        ---------------------------------------------
+        Die Teilnehmer der Session erfahren die Fragestellung und Techniken der aktuellen Kryptografie und Analyse des Chiffrieren und Signieren.
+        Exemplarisch werden mit aktuellen Tools und Bibliotheken ein paar konkrete Kryptotechniken (z.B. Randomize, One-time Pad, Authentifizieren,
+        SHA-1, AES und RSA) vertieft und mit ihren Vor- und Nachteilen verglichen. Aufbauend sind praktische Übungen inklusive der
+        Schlüsselgenerierung und dem Datenaustausch im Workshop geplant.
+        Agenda
+         - Übersicht - Geschichte der Kryptologie - Symmetrische Verfahren - Asymmetrische Verfahren - Hybride Systeme - Schlüsselverwaltung
+        - Signaturen - Public Key Infrastructure (PKI) mit Zertifikaten, Smart Cards, SSL und IPSec, VPN.
+
+
+
+Kryptologie (Workshop)
+Die Teilnehmer der Session erfahren die Fragestellung und Techniken der aktuellen Kryptografie und Analyse des Chiffrieren und Signieren. Exemplarisch werden mit aktuellen Open Source Tools und Bibliotheken ein paar konkrete Kryptotechniken (z.B. Randomize, One-Time Pad, Authentifizieren, SHA-1, AES und RSA) vertieft und mit ihren Vor- und Nachteilen verglichen. Aufbauend sind praktische Übungen inklusive der Schlüsselgenerierung und dem Datenaustausch im Workshop geplant. Auch die Fähigkeit einer Zertifizierung wie Common Criteria oder FIPS und die Möglichkeit die Sourcen und deren Standards jederzeit zu analysieren runden das Thema ab.
+Agenda - Übersicht-Geschichte-Symm.- Asymmetrische Verfahren-Public Key Infrastructure(PKI)-SmartCards, SSL, IPSec, VPN.
+
+
+        Oder dann noch zusätzlich zum Workshop eine Session
+
+        Open SSL mit Delphi
+
+
+
+Nach einer Graphiker-Lehre beschritt Max Kleiner den zweiten Bildungsweg, der die eidgenossische Matura und ein Uni-Studium in Volkswirtschaftlehre mit Nebenfach Informatik beinhaltete. Die Gründung seiner Firma "kleiner kommunikation" (kleiner.ch) im Jahre 1995 gipfelte in diversen Informatik-Projekten von Grosskunden, wie SWISS TXT, IBZ Schulen und der Gruppe Rüstung. Seit 1999 arbeitet er als Projektingenieur bei der armasuisse. Sein beruflicher Schwerpunkt liegt im Bereich OOP, UML und Systemarchitektur, u.a. als Coach, Projektleiter und Publizist.
+
+
+       Track Delphi/OOP Fundamentals
+        Track Crossplatform/Mobile and Web
+        Track Datenbanken
+        Track IDE und Tools
+        Track Tips und Technics
+
+        Bei Interesse würde ich mich freuen wenn wir Ihre Themenvorschläge bis zum kommenden Mittwoch erhalten. Ich möchte das vollständige Programm gerne spätestens in zwei Wochen online setzen.
+
+         
+
+        Haben Sie Interesse als Speaker wieder dabei zu sein?
+
+
+        http://www.softwareschule.ch/
+        http://max.kleiner.com/
+
+        *******************************************
+
+
+        eMail ist virenfrei.
+        Von AVG überprüft - www.avg.de
+        Version: 10.0.1390 / Virendatenbank: 1516/3771 - Ausgabedatum: 17.07.2011
+
+    eMail ist virenfrei.
+    Von AVG überprüft - www.avg.de
+    Version: 10.0.1390 / Virendatenbank: 1518/3790 - Ausgabedatum: 26.07.2011
+
+   
+SWS am 18.8. um 10 uhr in Root bei Carsten
+
+«Ich hatte als Kind wohl zu viel Lego gespielt...»  	?
+	Viele Menschen, die ein Startup betreiben, wollen mit ihrer Idee die Welt verändern. Das Zürcher Startup Procedural hat sich dabei die Welt in 3D vorgenommen. Das ETH-Spin-off hat in dem Bereich die führende Software-Lösung für Filme, Städteplanung und Architektur entwickelt. Vor kurzem wurde es nun vom US-Unternehmen Esri aus Kalifornien übernommen. Wir haben mit dem venturelab-Alumni und CEO von Procedural Pascal Mueller ein Interview geführt.
+
+
+Social Networks
+
+
+100zakladok
+2 Tag
+2linkme
+7Live7.com
+A1-Webmarks
+A97abi
+Add.io
+Address Bar
+Adfty
+Adifni
+aero
+All My Faves
+Amazon
+Amen Me!
+Aol Lifestream
+AOL Mail
+Armenix
+Arto
+Aviary Capture
+Baang
+Baidu
+Bebo
+Bentio
+BiggerPockets
+Bit.ly
+bizSugar
+Bleetbox
+Blinklist
+Blip
+Blogger
+Bloggy
+Blogmarks
+Blogtrottr
+Blurpalicious
+Bobrdobr
+BonzoBox
+BookmarkingNet
+Bookmarky.cz
+Bookmerken
+Bordom
+Box.net
+Brainify
+Bryderi
+BuddyMarks
+Buzzzy
+Camyoo
+CardThis
+Care2
+Chiq
+Cirip
+CiteULike
+ClassicalPlace
+Cndig
+Colivia.de
+Communicate
+Connotea
+cOOtopia
+COSMiQ
+Curate.Us
+Delicious
+DesignBump
+Designmoo
+Dig This Webhost
+DigaCultura
+Digg
+Diggita
+diglog
+Digo
+Digzign
+Diigo
+Dipdive
+doMelhor
+Dosti
+DotNetKicks
+DotNetShoutout
+DotShare
+Douban
+Draugiem.lv
+Drimio
+Dropjack
+Dwellicious
+dzone
+edelight
+EFactor
+eKudos
+elefanta.pl
+Email
+Email App
+Embarkons
+euCliquei
+Evernote
+extraplay
+EzySpot
+Fab Design
+Fabulously40
+Facebook Like
+Fai Informazione
+Fark
+Farkinda
+Fashiolista
+FAVable
+Faves
+favlog
+Favoriten.de
+Favorites
+Favoritus
+Flaker
+Floss.pro
+Folkd
+Formspring
+FreeDictionary
+Fresqui
+FriendFeed
+Friendster
+funP
+fwisp
+Gabbr
+Gamekicker
+GiveALink
+GlobalGrind
+Gmail
+Go.vn
+Good Noows
+Google
+Google +1
+Google Buzz
+Google Reader
+Google Translate
+Gravee
+GreaterDebater
+Grono.net
+Haber.gen.tr
+Hacker News
+Hadash Hot
+Hatena
+Hedgehogs.net
+HelloTxt
+Historious
+Hitmarks
+Hot Bookmark
+Hotklix
+Hotmail
+HTML Validator
+Hyves
+ideaREF!
+Identica
+iGoogle
+ihavegot
+Index4
+Indexor
+Instapaper
+InvestorLinks
+iOrbix
+iSociety
+iWiW
+Jamespot
+Jappy Ticker
+JoliPrint
+Jumptags
+KaBlog
+Kaboodle
+Kaevur
+Kaixin Repaste
+Kindle It
+Kipup
+KiRTSY
+Kledy
+Kommenting
+La tafanera
+Laaikit
+Ladenzeile
+Librerio
+Link Ninja
+Link-a-Gogo
+Links Gutter
+LinkShares
+Linkuj.cz
+LiveJournal
+LockerBlogger
+Logger24.com
+Mail.ru
+Markme
+Mashbord
+Mawindo
+meinVZ
+Mekusharim
+Memonic
+Memori.ru
+MenÃ©ame
+Messenger
+Mindbodygreen
+Mister Wong
+Mister Wong DE
+Moemesto.ru
+Moikrug
+mototagz
+mRcNEtwORK
+Multiply
+myAOL
+MyHayastan
+mylinkvault
+Myspace
+N4G
+Nasza-klasa
+NetLog
+Netvibes
+Netvouz
+NewsMeBack
+NewsTrust
+Newsvine
+Nujij
+Odnoklassniki
+OKNOtizie
+oneview
+OnGoBee
+orkut
+OS X Dashboard
+Oyyla
+Packg
+pafnet.de
+PDF Online
+PDFmyURL
+PhoneFavs
+Ping.fm
+Planypus
+Plaxo
+Plurk
+Pochval.cz
+PopEdition
+Posteezy
+Posterous
+Prati.ba
+Print
+PrintFriendly
+Pusha
+QRF.in
+Quantcast
+Qzone
+Read It Later
+Reddit
+Rediff MyPage
+RedKum
+RideFix
+Scoop.at
+Scoop.it
+Sekoman
+Select2Gether
+Shaveh
+SheToldMe
+ShirIntarIn
+Simpy
+Sina Weibo
+Slashdot
+SMI
+SodaHead
+Sonico
+Speedtile
+Sphinn
+SpinSnap
+Spoken To You
+sportpost
+Spread.ly
+springpad
+Squidoo
+Startaid
+Startlap
+Story Follower
+studiVZ
+Stuffpit
+StumbleUpon
+Stumpedia
+Stylehive
+Svejo
+Symbaloo
+Taaza
+TagMarks.de
+Tagvn
+Tagza
+tarpipe
+TellMyPolitician
+The Web Blend
+Thinkfinity
+ThisNext
+Throwpile
+Tip'd
+TopSiteler
+Transferr
+Tuenti
+Tulinq
+Tumblr
+Tusul
+Tvinx
+TweetMeme
+TwitThis
+Typepad
+Upnews.it
+Urlaubswerk
+URLCapt
+Viadeo
+Virb
+Visitez Mon Site
+Vkontakte
+vKruguDruzei
+VOXopolis
+vybrali SME
+Vyoom
+Webnews
+Whois Lookup
+Windows Gadgets
+Windy Citizen
+WireFan
+Wordpress
+Worio
+Wykop
+Xanga
+Y! Bookmarks
+Y! Mail
+Yammer
+Yardbarker
+Yemle
+Yigg
+Yoolink
+Yorumcuyum
+Youblr.
+Youbookmarks
+YouMob
+Yuuby
+Zakladok.net
+Zanatic
+ZicZac
+ZingMe
+Zootool   
+
+Auch wenn das nicht zum Stoff gehört, wäre ich (wir) ob einem Feedback, Hinweis oder gefundenem Fehler froh, um das OpenSource Projekt vorantreiben zu können, nur so ensteht eben OpenSource, mit der Hilfe einer Community, wie die IBZ eben sein kann;) besten Dank noch, Max PS: maXbox3 Release erscheint dann im Februar 2011
+
+
+
+Changes to 3.6
+
+in versionbox of compiler exe write RemObjects instead of remobjects - ok
+form of SExplorer write Virtual maXbox Script Explorer -ok
+output/form output show window at first
+output/file output save show searchandopendoc(file)-ok
+firstdemo3 - start use case editor
+save the ini path of the template.txt after you has saved!
+fontsize is zero after new exe - only by new template -ok
+use case - load picture and save picture in capital letters Load Picture -ok
+decompile window set focus if renew or activate in menu
+line 2 in memo1 editor bug, deletes a number with 2 in it, e.g. 202- 250 you see after compile 0-50??
+with DirectoryListBox1 do begin     onclick:=  is missing! -ok
+all new form components like outline have no registerpublished properties -ok
+Function permutation see 172 as combination with result extended! -ok
+
+test the functions with a testfile from calwin called irgendwas mit fileor db ??--ok
+picture.image.loadfromfile dont work ??
+
+Change alle combination with extended as result type in examples: -->OK.
+
+copy asccii grid example from maxbook-ok-->OK.
+
+
+„Software wird schneller langsamer als Hardware schneller wird. “ (Niklaus Wirth, 1995)
+
+
+Bestenfalls ähnlich sind die von Android eingesetzten Java-Bibliotheken. Diese basieren auf Apache Harmony, einem Nachbau der Oracle-Bibliotheken auf Basis der Apache Licence. Android entfernt hier jedoch eine Reihe der in der Java SE normalerweise enthaltenen Pakete, insbesondere sind unter Android Swing und AWT nicht verfügbar. Im Gegenzug wurden einige für mobile Anwendungen hilfreiche Pakete hinzugefügt, beispielsweise die HttpComponents-Bibliothek von Apache. Insofern sollte man hier beim Einsatz von bestehenden Java-Bibliotheken grundsätzlich darauf achten, ob auch alle Klassen in Android verfügbar sind.
+
+Den größten Unterschied stellt die Laufzeitumgebung dar, bei der Google eine Eigenentwicklung namens Dalvik einsetzt. Diese verhält sich in aller Regel identisch zu Oracles Laufzeitumgebung, allerdings müssen für Java generierte Binärdateien (class oder jar-Dateien) zunächst in das Dalvik-Format konvertiert werden. Dazu liefert Google ein Tool namens dex, das von den Entwicklungsumgebungen jedoch für gewöhnlich automatisch ausgeführt wird.
+
+
+
+FireMonkey
+
+FireMonkey
+
+FireMonkey ist eigentlich cool und hätte das Potential zum VCL Nachfolger. Dazu sind aber massive Arbeiten nötig (die von Embarcadero wahrscheinlich unterschätzt werden)
+
+- Qualitätssicherung: Ich habe bereits in der BETA-Group zu diesem Thema diskutiert. Fazit war, dass sehr wenig QA stattfindet. Da muss (besonders bei den diversen Plattformen) ein massiver Fortschritt erzielt werden.
+
+- Architektur: Wie immer bei "russischer Software" ist die Architektur-Doku nicht vorhanden. Mir fehlt (und das ist eine Hauptschwäche von Firemonkey)  ein klares Layer-Konzept. Würde Ihnen bei den Demos auch helfen.
+
+- OpenGL Binding: für mich unbegreiflich, dass Firemonkey vom Konzept hart an OpenGL gebunden ist (Layer-Konzept?). Ich kenne ein Projekt bei EADS das mit genau diesem Vorgehen Millionen in den Sand gesetzt hat.
+
+- CITRIX/Remote-Desktop: Dass Firemonkey nur mit einer performanten GPU (Graphic Processor Unit) läuft ist weltfremd.
+Im Rahmen des Layerkonzepts hätte 2D=ohne GPU / 3D=nur mit GPU ein Ansatz bilden können.
+Falls VCL durch Firemonkey ersetzt werden soll muss dies irgendwie unterstützt werden
+
+- automatische Migration VCL->FireMonkey
+Wir (und diverse befreundete grösseren Delphi-Entwicklungsfirmen) haben x1000 DFMs auf VCL Basis. Eine Umstellung ist nur automatisch möglich. Dazu ist FireMonkey ja auch ziemlich kompatible aber eben nur ziemlich.
+
+
+- Zuviele Properties / Performance
+FireMonkey muss "Out of the box" performante Forms erzeugen. Es kann nicht sein, dass man irgendwelche Properties ständig verstellen muss, damit nicht 50% der Maschinen-Power gefressen wird.
+
+- Mapping der logischen Koordinaten / Printing: nochd viele offenen Fragen die wirkliche Killer darstellen
+
+Fazit: Ein Anfang und nun kommt die eigentliche Arbeit. Wäre FireMonkey mein Projekt würde nun eine Version 2.0 mit einem massiven Redesign und QA kommen.
+
+Ich habe viele Hoffnungen aber ob Embaradero genügend gute Köpfe, den Willen und die Ressourcen hat?
+
+
+DataBinding
+
+Eine verpasste Chance. Da gibt es im BETA-Forum oder auch auf der Quality-Centrale "QC 97444" genügend Details. Für richtige Projekte sind diese "magic string bindings" wirklich nicht geeignet. Es gibt genügend gute Beispiele im WPF und JAVA Umfeld und hier muss Delphi massiv nachbessern!  Schade . unter den BETA-Testern hätte es genug Knowhow um das Design massiv zu verbessern!
+
+
+OK . das waren meine Punkte. Für uns geht es um sehr viel Geld. Entweder bringt Embarcadero in vernünftiger Zeit wirklich markante Steigerungen oder wir sitzen zwischen "den veralteten VCLs" und "unbrauchbarem FireMonkey". Ich hoffe Sie können diese Aspekte an geeignetem Ort einspeisen. Ich bin jederzeit bereit, zu diesem Thema eingehender Lösungsansätze zu diskutieren. Ich bin gespannt, wie Sie die Situation einschätzen.
+
+
+Bugfix for V4.0 or 3.6.4
+
+Generell gilt, dass arithmetische Operationen mit Integer-Werten einen Wert des Typs Integer zurückliefern, der in der aktuellen Implementation mit dem 32-Bit-Longint identisch ist. Operationen liefern nur dann einen Wert vom Typ Int64, wenn sie für einen oder mehrere Int64-Operanden ausgeführt werden. 
+
+procedure TPSPascalCompiler.DefineStandardProcedures;
+var
+  p: TPSRegProc;
+begin
+//  {$IFNDEF PS_NOINT64}
+  AddFunction('function IntToStr(i: Int64): String;');
+  //{$ELSE}
+  AddFunction('function IntTostr(i: Integer): String;');
+  //{$ENDIF}
+
+//check all {$IFNDEF PS_NOINT64}
+
+check the type dword -->OK.
+
+declaration ansilength  
+
+bei write zuerst noch ein writeln('') davor, z.b. testem mit
+
+  for i:= 0 to 50 do
+     write(inttoStr(Ergebnis[i]))
+  //Writeln('Multi N')
+  //Writeln('');
+
+add stopwatch classe from bigint.zip -->OK.
+
+enhance the math unit with JCLMath.pas unit -->OK.
+
+enhance with statistics of JCL --OK.
+
+Translate tutorial biginteger on english
+
+? Zufrieden mit Support und Hotline?                      - War sehr gut und immer erreichbar.
+? Braucht die Software weitere Tools (Schnittstellen zu Office, CAD oder Reporting)- Wäre sicherlich hilfreich.
+? Gibt es ein Benutzerhandbuch der Funktionen oder ein Help?                                - Nein
+? Stehen Daten unter Datenschutz?                       - Nein
+? Wie wird geschult oder eingeführt (Ausbildung)?                                                   - Nein
+? Sind Bugs oder Fehler bekannt?         - Nein  Wenn ein Fehler vorlag,wurde er mit dem repair Programm beseitigt.Kam aber fast nie vor.    
+? Welche Version, Release hat die Software?            - Wir arbeiten mit einem alten Stand.Die Hellbeck Montagetechnik mit dem neusten. Version unbekannt. 
+? Gibt es neue Anforderungen oder Änderungen?  - Ausbau zu einem richtigen PPS System mit, wie z. B. Maschinenbelegung.  
+                                                         ANMERKUNG:Das WAS-System ist eine preiswerte und einfach zu erlernende PPS Software. 
+
+
+ 
+Darf ich Sie bitten mir noch kurz die Sicht des Anwenders darzustellen.
+Wie bereits bekannt, habe ich vorgängig noch einige Fragen betreffend Cargo Modul, ich werde Sie nach Eingang der Antworten dann kontaktieren.
+
+In den folgenden Fragen geht es mir um die
+• Modularisierung, Erweiterbarkeit, Flexibilität
+• Wartbarkeit, Wiederverwendung
+• Testbarkeit, Software-Qualität, Sicherheit (Datenschutz) und Stabilität
+der Software
+
+Anbei die Fragen:   
+                                     
+• Gibt es eine Installationsanweisung oder CD?
+• Zufrieden mit Support und Hotline?
+• Braucht die Software weitere Tools (Schnittstellen zu Office, CAD oder Reporting)?
+• Gibt es ein Benutzerhandbuch der Funktionen oder ein Help?
+• Stehen Daten unter Datenschutz?
+• Wie wird geschult (Ausbildung)?
+• Sind Bugs oder Fehler bekannt?
+• Welche Version hat die Software?
+• Gibt es neue Anforderungen?
+
+mit bestem Gruss, Max Kleiner
+
+
+http://www.softwareschule.ch/
+http://max.kleiner.com/
+
+*******************************************  
+
+
+http://en.wikipedia.org/wiki/Wikipedia_talk:Articles_for_creation/maXbox
+
+[[File:Max in Vienna.jpg|thumb|Add caption here]]
+
+http://commons.wikimedia.org/wiki/File:Max_in_Vienna.jpg
+
+[[File:Maxboxgui382.png|thumb|Add caption here]]
+
+http://commons.wikimedia.org/wiki/File:Maxboxgui382.png
+
+http://en.wikipedia.org/wiki/User:Maxkleiner    
+
+http://www.youtube.com/user/EntwicklerAkademie?feature=mhee#p/a/u/0/O5mO08ApPYo
+
+The following updates have been used for the test (all times in GMT):
+AntiVir	vdf_fusebundle.zip	2012-01-20	16:05
+Avast	av5db.zip	2012-01-20	10:20
+AVG	avg10cmd1191a4716.zip	2012-01-20	10:45
+BitDefender	bdc.zip	2012-01-20	17:20
+CA-AV	fv_nt86.exe	2012-01-20	09:00
+ClamAV	daily.cvd	2012-01-20	18:35
+Command	antivir-z-201201200045.zip	2012-01-20	03:40
+Command (Online)	antivir-z-201201200045.zip	2012-01-20	03:40
+Eset Nod32	minnt3.exe	2012-01-20	13:45
+Fortinet	vir_high	2012-01-20	16:25
+F-Prot	antivir.def	2012-01-19	16:15
+G Data	bd.zip	2012-01-20	18:15
+Ikarus	t3sigs.vdb	2012-01-20	17:25
+K7 Computing	K7Cmdline.zip	2012-01-20	15:25
+Kaspersky	kdb-i386-cumul.zip	2012-01-20	10:05
+Kaspersky (Online)	kdb-i386-cumul.zip	2012-01-20	10:05
+McAfee	avvdat-6595.zip	2012-01-20	17:05
+McAfee (BETA)	avvwin_netware_betadat.zip	2012-01-20	17:35
+McAfee (Online)	avvdat-6595.zip	2012-01-20	17:05
+McAfee GW Edition (Online)	mfegw-cmd-scanner-windows.zip	2012-01-20	18:05
+Microsoft	mpam-fe.exe	2012-01-20	13:35
+Norman	nvc5oem.zip	2012-01-20	09:15
+Panda	pav.zip	2012-01-20	13:55
+Panda (Online)	pav.zip	2012-01-20	13:55
+PC Tools	avdb.zip	2012-01-20	15:00
+QuickHeal	qhadvdef.zip	2012-01-20	17:50
+Rising	RavDef.zip	2012-01-18	06:55
+Sophos	ides.zip	2012-01-20	18:00
+Sophos (Online)	ides.zip	2012-01-20	18:00
+Sunbelt	CSE39VT-EN-11428-F.sbr.sgn	2012-01-20	18:15
+Symantec	streamset.zip	2012-01-20	18:55
+Symantec (BETA)	symrapidreleasedefsv5i32.exe	2012-01-20	18:25
+Trend Micro	lpt721.zip	2012-01-20	03:25
+Trend Micro (Cons.)	cvsapi721.zip	2012-01-20	04:35
+Trend Micro (CPR)	lpt722.zip	2012-01-20	16:45
+VBA32	vba32w-latest.rar	2012-01-19	13:00
+VirusBuster	vdb.zip	2012-01-19	23:10
+
+
+dj_skin_and_soul
+
+Werte Studenten
+
+Im Fach Analyse und Design benötigen wir ein Skript und ein Tool:
+Skript:
+IBZ Skript 09-1 AD_PT.pdf
+Tool:
+http://sourceforge.net/projects/maxbox/files/maxbox3.zip/download
+
+Das Skript lässt sich im IBZ Intranet downloaden, ebenfalls das Tool maXbox (Win, Mac, Linux).
+Das Tool einfach auspacken und die Exe starten, benötigt keine Installation oder Registrierung.
+
+mit bestem Gruss, Max Kleiner
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  AutoSizeCol(StringGrid1, 0);
+end;
+
+How to "autosize" all of the columns:
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  i: integer;
+begin
+  for i := 0 to StringGrid1.ColCount - 1 do
+    AutoSizeCol(StringGrid1, 0);
+end;
+
+Adapt the StringGrid column widths to the Header row
+
+Here's another interesting procedure, that adjusts the column widths to the column "headers". By headers we mean: the cells of the fixed row. Of course, only execute this procedure only after you've set some text into the fixed row cells.
+
+procedure TForm1.SizeColsToHeaders(Grid: TStringGrid);
+var
+  Col: integer;
+begin
+  for Col := 0 to (Grid.ColCount - 1) do
+    Grid.ColWidths[Col] := 
+      Grid.Canvas.TextWidth(Grid.Cells[Col, 0]) + 5;
+end;
+
+//-----------------------------------------Tester for mX3.9
+unit JcfStringUtils;
+
+{(*}
+(*------------------------------------------------------------------------------
+ Delphi Code formatter source code 
+
+The Original Code is JcfStringUtils, released October 2008.
+The Initial Developer of the Original Code is Paul Ishenin 
+Portions created by Paul Ishenin are Copyright (C) 1999-2008 Paul Ishenin
+All Rights Reserved. 
+Contributor(s): Anthony Steele. 
+
+The contents of this file are subject to the Mozilla Public License Version 1.1
+(the "License"). you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.mozilla.org/NPL/
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either express or implied.
+See the License for the specific language governing rights and limitations 
+under the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public License Version 2 or later (the "GPL") 
+See http://www.gnu.org/licenses/gpl.html
+------------------------------------------------------------------------------*)
+{*)}
+
+//{$I JcfGlobal.inc}
+
+{
+This unit contains string utility code
+For use when the JCL string functions are not avaialable
+}
+interface
+
+uses
+  SysUtils, Classes;
+
+const
+  NativeNull           = Char(#0);
+  NativeSoh            = Char(#1);
+  NativeStx            = Char(#2);
+  NativeEtx            = Char(#3);
+  NativeEot            = Char(#4);
+  NativeEnq            = Char(#5);
+  NativeAck            = Char(#6);
+  NativeBell           = Char(#7);
+  NativeBackspace      = Char(#8);
+  NativeTab            = Char(#9);
+  NativeLineFeed       = AnsiChar(#10);
+  NativeVerticalTab    = Char(#11);
+  NativeFormFeed       = Char(#12);
+  NativeCarriageReturn = AnsiChar(#13);
+  NativeCrLf           = AnsiString(#13#10);
+  NativeSo             = Char(#14);
+  NativeSi             = Char(#15);
+  NativeDle            = Char(#16);
+  NativeDc1            = Char(#17);
+  NativeDc2            = Char(#18);
+  NativeDc3            = Char(#19);
+  NativeDc4            = Char(#20);
+  NativeNak            = Char(#21);
+  NativeSyn            = Char(#22);
+  NativeEtb            = Char(#23);
+  NativeCan            = Char(#24);
+  NativeEm             = Char(#25);
+  NativeEndOfFile      = Char(#26);
+  NativeEscape         = Char(#27);
+  NativeFs             = Char(#28);
+  NativeGs             = Char(#29);
+  NativeRs             = Char(#30);
+  NativeUs             = Char(#31);
+  NativeSpace          = Char(' ');
+  NativeComma          = Char(',');
+  NativeBackslash      = Char('\');
+  NativeForwardSlash   = Char('/');
+
+  {$IFDEF MSWINDOWS}
+  NativeLineBreak = NativeCrLf;
+  PathSeparator    = '\';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  NativeLineBreak = NativeLineFeed;
+  PathSeparator    = '/';
+  {$ENDIF UNIX}
+  DirDelimiter = PathSeparator;
+  NativeHexDigits      = ['0'..'9', 'A'..'F', 'a'..'f'];
+  NativeWhiteSpace     = [NativeTab, NativeLineFeed, NativeVerticalTab,
+    NativeFormFeed, NativeCarriageReturn, NativeSpace];
+
+  NativeDoubleQuote = Char('"');
+  NativeSingleQuote = Char('''');
+
+
+function CharIsControl(const C: Char): Boolean;
+function CharIsAlpha(const C: Char): Boolean;
+function CharIsAlphaNum(const C: Char): Boolean;
+function CharIsDigit(const C: Char): Boolean;
+function CharIsReturn(const C: Char): Boolean;
+function CharIsWhiteSpace(const C: Char): Boolean;
+
+function CharUpper(const C: Char): Char; 
+
+function StrIsAlpha(const S: string): Boolean;
+function StrIsAlphaNum(const S: string): Boolean;
+
+function StrTrimQuotes(const S: string): string;
+
+function StrAfter(const SubStr, S: string): string;
+function StrBefore(const SubStr, S: string): string;
+function StrChopRight(const S: string; N: Integer): string;
+function StrLastPos(const SubStr, S: string): Integer;
+function StrIPos(const SubStr, S: string): integer;
+
+function StrLeft(const S: string; Count: Integer): string;
+function StrRestOf(const S: string; N: Integer ): string;
+function StrRight(const S: string; Count: Integer): string;
+
+function StrDoubleQuote(const S: string): string;
+function StrSmartCase(const S: string; Delimiters: TSysCharSet): string;
+
+function StrCharCount(const S: string; C: Char): Integer;
+function StrStrCount(const S, SubS: string): Integer;
+function StrRepeat(const S: string; Count: Integer): string;
+procedure StrReplace(var S: string; const Search, Replace: string; Flags: TReplaceFlags = []);
+function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer;
+
+function BooleanToStr(B: Boolean): string;
+function StrToBoolean(const S: string): Boolean;
+
+function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
+function StrIsOneOf(const S: string; const List: array of string): Boolean;
+
+procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True);
+
+function FileToString(const FileName: string): AnsiString;
+procedure StringToFile(const FileName: string; const Contents: AnsiString);
+function StrFillChar(const C: Char; Count: Integer): string;
+function IntToStrZeroPad(Value, Count: Integer): String;
+function StrPadLeft(const pcOriginal: string;
+  const piDesiredLength: integer; const pcPad: Char): string;
+
+function WideStringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags): WideString;
+
+function PathExtractFileNameNoExt(const Path: string): string;
+
+function PadNumber(const pi: integer): string;
+function StrHasAlpha(const str: String): boolean;
+
+type
+  EJcfConversionError = class(Exception)
+  end;
+
+implementation
+
+uses
+{$ifdef MSWINDOWS}
+  Windows, ShellApi
+{$endif}
+{$ifdef Unix}
+  Unix
+{$endif}
+{$ifdef fpc}
+  , LCLIntf, FileUtil
+{$endif};
+
+{$IFNDEF DELPHI12}
+
+// define  CharInSet for Delphi 2007 or earlier
+function CharInSet(const C: Char; const testSet: TSysCharSet): boolean;
+begin
+  Result := C in testSet;
+end;
+
+{$ENDIF}
+
+function CharIsAlpha(const C: Char): Boolean;
+begin
+  Result := CharInSet(C, ['a'..'z','A'..'Z']);
+end;
+
+function CharIsAlphaNum(const C: Char): Boolean;
+begin
+  Result := CharIsAlpha(C) or CharIsDigit(C);
+end;
+
+function CharIsControl(const C: Char): Boolean;
+begin
+  Result := C <= #31;
+end;
+
+function CharIsDigit(const C: Char): Boolean;
+begin
+  Result := CharInSet(C, ['0'..'9']);
+end;
+
+function CharIsReturn(const C: Char): Boolean;
+begin
+  Result := CharInSet(C, [NativeLineFeed, NativeCarriageReturn]);
+end;
+
+function CharIsWhiteSpace(const C: Char): Boolean;
+begin
+  Result := CharInSet(C, NativeWhiteSpace) ;
+end;
+
+function CharUpper(const C: Char): Char;
+begin
+  // Paul: original code used char case table
+  Result := UpCase(C);
+end;
+
+function StrIsAlpha(const S: string): Boolean;
+var
+  I, L: integer;
+begin
+  L := Length(S);
+  Result := L > 0;
+  for I := 1 to L do
+    if not CharIsAlpha(S[I]) then
+    begin
+      Result := False;
+      break;
+    end;
+end;
+
+function StrIsAlphaNum(const S: string): Boolean;
+var
+  I, L: integer;
+begin
+  L := Length(S);
+  Result := L > 0;
+  for I := 1 to L do
+    if not CharIsAlphaNum(S[I]) then
+    begin
+      Result := False;
+      break;
+    end;
+end;
+
+function StrTrimQuotes(const S: string): string;
+var
+  C1, C2: Char;
+  L: Integer;
+begin
+  Result := S;
+  L := Length(Result);
+  if L >= 2 then
+  begin
+    C1 := Result[1];
+    C2 := Result[L];
+    if (C1 = C2) and (CharInSet(C1, [NativeSingleQuote, NativeDoubleQuote])) then
+    begin
+      Delete(Result, L, 1);
+      Delete(Result, 1, 1);
+    end;
+  end;
+end;
+
+function StrAfter(const SubStr, S: string): string;
+var
+  P: Integer;
+begin
+  P := StrSearch(SubStr, S, 1);
+  if P > 0 then
+    Result := Copy(S, P + Length(SubStr), Length(S))
+  else
+    Result := '';
+end;
+
+function StrBefore(const SubStr, S: string): string;
+var
+  P: Integer;
+begin
+  P := StrSearch(SubStr, S, 1);
+  if P > 0 then
+    Result := Copy(S, 1, P - 1)
+  else
+    Result := S;
+end;
+
+function StrChopRight(const S: string; N: Integer): string;
+begin
+  Result := Copy(S, 1, Length(S) - N);
+end;
+
+function StrLastPos(const SubStr, S: string): Integer;
+var
+  NewPos: Integer;
+begin
+  Result := 0;
+  while Result < Length(S) do
+  begin
+    NewPos := StrSearch(SubStr, S, Result + 1);
+    if NewPos > 0 then
+      Result := NewPos
+    else
+      break;
+  end;
+end;
+
+{ case-insensitive "pos" }
+function StrIPos(const SubStr, S: string): integer;
+begin
+  // simple and inneficient implmentation
+  Result := Pos(UpperCase(SubStr), UpperCase(s));
+end;
+
+function StrLeft(const S: string; Count: Integer): string;
+begin
+  Result := Copy(S, 1, Count);
+end;
+
+function StrRestOf(const S: string; N: Integer ): string;
+begin
+  Result := Copy(S, N, (Length(S) - N + 1));
+end;
+
+function StrRight(const S: string; Count: Integer): string;
+begin
+  Result := Copy(S, Length(S) - Count + 1, Count);
+end;
+
+function StrDoubleQuote(const S: string): string;
+begin
+  Result := NativeDoubleQuote + S + NativeDoubleQuote;
+end;
+
+function StrSmartCase(const S: string; Delimiters: TSysCharSet): string;
+var
+  i: integer;
+begin
+  // if no delimiters passed then use default set
+  if Delimiters = [] then
+    Delimiters := NativeWhiteSpace;
+  Result := S;
+  for i := 1 to Length(Result) do
+    if (i = 1) or (CharInSet(Result[i - 1], Delimiters)) then
+      Result[i] := UpCase(Result[i]);
+end;
+
+function StrCharCount(const S: string; C: Char): Integer;
+var
+  i: integer;
+begin
+  Result := 0;
+  for i := 1 to Length(S) do
+    if S[i] = C then
+      inc(Result);
+end;
+
+function StrStrCount(const S, SubS: string): Integer;
+var
+  P: integer;
+begin
+  Result := 0;
+  P := 1;
+  while P < Length(S) do
+  begin
+    P := StrSearch(Subs, S, P);
+    if P > 0 then
+    begin
+      inc(Result);
+      inc(P);
+    end
+    else
+      break;
+  end;
+end;
+
+function StrRepeat(const S: string; Count: Integer): string;
+begin
+  Result := '';
+  while Count > 0 do
+  begin
+    Result := Result + S;
+    Dec(Count);
+  end;
+end;
+
+procedure StrReplace(var S: string; const Search, Replace: string; Flags: TReplaceFlags = []);
+begin
+  S := StringReplace(S, Search, Replace, Flags);
+end;
+
+function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer;
+begin
+  // Paul: I expect original code was more efficient :)
+  Result := Pos(SubStr, Copy(S, Index, Length(S)));
+
+  if Result > 0 then
+    Result := Result + Index - 1;
+end;
+
+function BooleanToStr(B: Boolean): string;
+const
+  BoolToStrMap: array[Boolean] of String =
+  (
+ { false } 'False',
+ { true  } 'True'
+  );
+begin
+  Result := BoolToStrMap[B];
+end;
+
+function StrToBoolean(const S: string): Boolean;
+var
+  LowerS: String;
+begin
+  LowerS := LowerCase(S);
+  if (LowerS = 'false') or (LowerS = 'no') or (LowerS = '0') then
+    Result := False
+  else
+  if (LowerS = 'true') or (LowerS = 'yes') or (LowerS = '1') or (LowerS = '-1') then
+    Result := True
+  else
+  raise EJcfConversionError.Create('Cannot convert string [' + S + '] to boolean');
+end;
+
+
+function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
+begin
+  // Paul: original code used comparision by char case table
+  Result := StrSearch(LowerCase(SubStr), LowerCase(S), Index);
+end;
+
+function StrIsOneOf(const S: string; const List: array of string): Boolean;
+var
+  i: integer;
+begin
+  for i := Low(List) to High(List) do
+    if CompareStr(List[i], S) = 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+  Result := False;
+end;
+
+procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True);
+var
+  i: integer;
+begin
+  if List <> nil then
+    for i := List.Count - 1 downto 0 do
+    begin
+      List[i] := Trim(List[i]);
+      if DeleteIfEmpty and (List[i] = '') then
+        List.Delete(i);
+    end;
+end;
+
+function FileToString(const FileName: string): AnsiString;
+var
+  S: TStream;
+begin
+  S := nil;
+  try
+    S := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
+    SetLength(Result, S.Size);
+    S.Read(PAnsiChar(Result)^, S.Size);
+  finally
+    S.Free;
+  end;
+end;
+
+procedure StringToFile(const FileName: string; const Contents: AnsiString);
+var
+  S: TStream;
+begin
+  S := nil;
+  try
+    S := TFileStream.Create(FileName, fmCreate);
+    S.Write(PAnsiChar(Contents)^, Length(Contents));
+  finally
+    S.Free;
+  end;
+end;
+
+function StrFillChar(const C: Char; Count: Integer): string;
+begin
+  SetLength(Result, Count);
+  if Count > 0 then
+    FillChar(Result[1], Count, C);
+end;
+
+function IntToStrZeroPad(Value, Count: Integer): String;
+begin
+  Result := IntToStr(Value);
+  while Length(Result) < Count do
+    Result := '0' + Result;
+end;
+
+{ pad the string on the left had side until it fits }
+function StrPadLeft(const pcOriginal: string;
+  const piDesiredLength: integer; const pcPad: Char): string;
+begin
+  Result := pcOriginal;
+
+  while (Length(Result) < piDesiredLength) do
+  begin
+    Result := pcPad + Result;
+  end;
+
+end;
+
+// Based on FreePascal version of StringReplace
+function WideStringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags): WideString;
+var
+  Srch, OldP, RemS: WideString; // Srch and Oldp can contain uppercase versions of S,OldPattern
+  P: Integer;
+begin
+  Srch := S;
+  OldP := OldPattern;
+  if rfIgnoreCase in Flags then
+  begin
+    Srch := WideUpperCase(Srch);
+    OldP := WideUpperCase(OldP);
+  end;
+  RemS := S;
+  Result := '';
+  while (Length(Srch) <> 0) do
+  begin
+    P := Pos(OldP, Srch);
+    if P = 0 then
+    begin
+      Result := Result + RemS;
+      Srch := '';
+    end
+    else
+    begin
+      Result := Result + Copy(RemS, 1, P - 1) + NewPattern;
+      P := P + Length(OldP);
+      RemS := Copy(RemS, P, Length(RemS) - P + 1);
+      if not (rfReplaceAll in Flags) then
+      begin
+        Result := Result + RemS;
+        Srch := '';
+      end
+      else
+        Srch := Copy(Srch, P, Length(Srch) - P + 1);
+    end;
+  end;
+end;
+
+function PadNumber(const pi: integer): string;
+begin
+  Result := IntToStrZeroPad(pi, 3);
+end;
+
+function StrHasAlpha(const str: String): boolean;
+var
+  liLoop: integer;
+begin
+  Result := False;
+
+  for liLoop := 1 to Length(str) do
+  begin
+    if CharIsAlpha(str[liLoop]) then
+    begin
+      Result := True;
+      break;
+    end;
+  end;
+end;
+
+{------------------------------------------------------
+  functions to manipulate file paths in strings }
+
+function PathRemoveExtension(const Path: string): string;
+var
+  p: Integer;
+begin
+  // from Lazarus FileUtil
+  Result := Path;
+  p := Length(Result);
+  while (p>0) do
+  begin
+    case Result[p] of
+      PathDelim: Exit;
+      '.': Result := copy(Result, 1, p-1);
+    end;
+    Dec(p);
+  end;
+end;
+
+function PathExtractFileNameNoExt(const Path: string): string;
+begin
+  Result := PathRemoveExtension(ExtractFileName(Path));
+end;
+
+function PathRemoveSeparator(const Path: string): string;
+begin
+  Result := Path;
+  if (Result <> '') and (Result[Length(Result)] = PathDelim) then
+    Delete(Result, Length(Result), 1);
+end;
+
+end.
+
+
+{$IFNDEF COMPILER4_UP}
+  TSysCharSet = set of Char;
+  {$ENDIF}
+  TCharSet = TSysCharSet;
+
+
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jvcl.svn.sourceforge.net/svnroot/jvcl/branches/JVCL3_34_PREPARATION/run/JvTurtle.pas $';
+    Revision: '$Revision: 11400 $';
+    Date: '$Date: 2007-06-28 23:24:06 +0200 (jeu., 28 juin 2007) $';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+
+
+Sehr geehrter Herr Kleiner,
+wie im Workshop besprochen sende ich Ihnen einen ersten Entwurf des Datei Headers für Quell- und Konfigurationsdateien des Systems. Unten habe ich die Ausführungen für C#, Java und XML beigefügt.
+Nachdem wir uns einig sind wie es aussehen soll, würden wir den Format Sinngemäss für andere Sprachen/Dateiformate umsetzten (z.B. PL/SQL) und die Entwicklungsrichtlinien-Dokumenten aktualisieren (und für den SAT im Rahmen der technischen Dokumentation bereitstellen).
+ 
+Inhaltliche/Funktionälle Informationen wie z.B. zweck der Klasse (bei wichtigen/komplexe Klassen) werden im jeweiligen Klassen-Header dokumentiert und nicht im Datei-Header (daraus wird automatisch Teil der technischen Dokumentation generiert).
+ 
+Quell-Code Change Management-/ Source-Control-/ Staging(&Betrieb)- und Dokumentations-Richtlinien für die Zeit nach der Abnahme sind zwischen ar/FUB-ZEO/Service Center/Ruag/Atos noch nicht abgestimmt worden. Bevor wir Quell-Code Änderungsmanagement Dokumentations-Richtlinien definieren, sollten die Anforderungen zwischen allen Stakeholdern diesbzgl. abgestimmt werden. 
+ 
+Wir werden auf alle Fälle für den SAT die vollwertige Continuous Integration / Build / Source-Control Umgebung bereitstellen (inkl. sämtliche für die Generierung des Systems notwendige Dateien) mit dem das Change Management und Source Control der Quell-Dateien sichergestellt werden kann.
+ 
+Ich freue mich auf Ihren Feedback und Verbesserungen - wenn Sie einen grösseren Diskussions/Änderungsbedarf sehen, können/sollten wir uns gern persönlich hören oder treffen.
+Ich freue mich auf Ihren Feedback und Verbesserungen - wenn Sie einen grösseren Diskussions/Änderungsbedarf sehen, können/sollten wir uns gern persönlich hören oder treffen.
+ 
+ 
+Thumbnail for Java Persistence... Java Persistence...
+von Christian Bauer,...
+4.3 von 5 Sternen (6) EUR 43,95
+Thumbnail for Let Over Lambda Let Over Lambda
+von Doug Hoyte
+4.7 von 5 Sternen (3) EUR 30,10
+Thumbnail for Clojure Programming Clojure Programming
+von Chas Emerick, Brian...
+EUR 27,95
+Thumbnail for [Closure: The... [Closure: The...
+von Michael Bolin
+Thumbnail for Closure: The... Closure: The...
+von Michael Bolin
+EUR 31,95
+> Bearbeiten Sie Ihren Buch-Suchverlauf
+Kunden kauften auch
+Seite 1 von 5
+Thumbnail for Spring & Hibernate:... Spring & Hibernate:...
+von Richard Oates,...
+4.2 von 5 Sternen (6) EUR 34,90
+Thumbnail for Spring 3: Framework... Spring 3: Framework...
+von Eberhard Wolff
+3.0 von 5 Sternen (24) EUR 39,90
+Thumbnail for JavaServer Faces... JavaServer Faces...
+von Martin Marinschek,...
+4.2 von 5 Sternen (8) EUR 38,00
+Thumbnail for EJB 3... EJB 3...
+von Oliver Ihns, Dierk...
+4.4 von 5 Sternen (11)
+Thumbnail for Die OSGI Service... Die OSGI Service...
+von Gerd Wütherich,...
+5.0 von 5 Sternen (10) EUR 44,00
+Thumbnail for Spring im Einsatz Spring im Einsatz
+von Ryan Breidenbach,...
+5.0 von 5 Sternen (2)
+Thumbnail for Konfigurationsmanag... Konfigurationsmanag...
+von Gunther Popp
+5.0 von 5 Sternen (4) EUR 39,00
+Thumbnail for Professional Apache... Professional Apache...
+von Vivek Chopra, Sing...
+5.0 von 5 Sternen (2) EUR 32,30
+Thumbnail for JBoss im Einsatz:... JBoss im Einsatz:...
+von Javid Jamae, Peter...
+2.0 von 5 Sternen (2) EUR 49,90
+Thumbnail for Struts 2 im Einsatz Struts 2 im Einsatz
+von Chad Michael Davis,...
+EUR 49,90
+Thumbnail for Wicket:... Wicket:...
+von Roland Förther,...
+4.0 von 5 Sternen (5) EUR 39,00
+Thumbnail for Hibernate Search in... Hibernate Search in...
+von Emmanuel Bernard,...
+EUR 40,99
+Thumbnail for Maven 2:... Maven 2:...
+von Martin Spiller
+5.0 von 5 Sternen (1) EUR 29,95
+Hinweise und Aktionen
+
+    Tipp für Studenten Ein Jahr Prime kostenlos und einen 20% erhöhten Eintauschwert auf Trade-In erhalten alle Studenten die bei Amazon Student angemeldet sind.
+
+Kunden, die diesen Artikel gekauft haben, kauften auch
+  Seite 1 von 7
+Zurück
+
+    Spring & Hibernate: Eine praxisbezogene Einführung von Richard Oates
+    4.2 von 5 Sternen (6)
+    EUR 34,90
+    Spring 3: Framework für die Java-Entwicklung von Eberhard Wolff
+    3.0 von 5 Sternen (24)
+    EUR 39,90
+    JavaServer Faces 2.0: Grundlagen und erweit... von Martin Marinschek
+    4.2 von 5 Sternen (8)
+    EUR 38,00
+    JPA mit Hibernate: Java Persistence API in der P... von Daniel Röder
+    3.3 von 5 Sternen (3)
+    EUR 34,90
+    EJB 3 professionell. Grundlagen- und Expertenwiss... von Oliver Ihns
+    4.4 von 5 Sternen (11)
+    Die OSGI Service Platform-Eine Einführung mit... von Gerd Wütherich
+    5.0 von 5 Sternen (10)
+    EUR 44,00
+    Spring im Einsatz von Ryan Breidenbach
+    5.0 von 5 Sternen (2)
+
+Weiter
+Produktinformation
+
+    Gebundene Ausgabe: 370 Seiten
+    Verlag: Galileo Computing; Auflage: 1 (28. August 2007)
+    Sprache: Deutsch
+    ISBN-10: 3898426351
+    ISBN-13: 978-3898426350
+    Größe und/oder Gewicht: 24,4 x 17,2 x 3 cm
+    Durchschnittliche Kundenbewertung: 3.6 von 5 Sternen  Alle Rezensionen anzeigen (5 Kundenrezensionen)
+    Amazon Bestseller-Rang: Nr. 466.922 in Bücher (Siehe Top 100 in Bücher)
+        Nr. 8 in Bücher > Computer & Internet > Datenbanken > Relationale Datenbanken
+
+     Möchten Sie die Produktinformationen aktualisieren oder Feedback zu den Produktabbildungen geben?
+
+     Ist der Verkauf dieses Produkts für Sie nicht akzeptabel?
+
+    Komplettes Inhaltsverzeichnis ansehen
+
+Mehr über den Autor
+Sebastian Hennebrüder
+Entdecken Sie Bücher, lesen Sie über Autoren und mehr
+
+› Besuchen Sie die Seite von Sebastian Hennebrüder auf Amazon
+Produktbeschreibungen
+Kurzbeschreibung
+Das Persistenz-Framework Hibernate nimmt Java-Entwicklern eine Menge Arbeit ab. Wer von dieser Technologie profitieren möchte, sollte sich etwas intensiver damit beschäftigen; es lohnt sich. Deshalb bietet Ihnen dieses Buch einen fundierten Einstieg, so umfangreich wie nötig, so praxisnah und verständlich wie möglich. Anhand zahlreicher umfassender Beispielprojekte werden alle zentralen Features von Hibernate behandelt. Nicht nur die Grundlagen, sondern auch die professionelle Anwendung und fortgeschrittene Themen wie Performance und Best Practices werden gezeigt. Strategien und Lösungsmöglichkeiten werden mit Vor- und Nachteilen erläutert. Besonderer Fokus liegt dabei auf den oft problematischen Bereichen wie z.B. Performance, Sessions, Lazy Initialization und Optimistic Locking. 
+
+Inhalt:
+
+Aus dem Inhalt: - Einführung in Hibernate - Fortgeschrittene Techniken - Best Practices und DAO - Session und Transaktionen - Daten abfragen - Performance - Fortgeschrittene Möglichkeiten - Konfiguration - Connection Pool - Caches - Annotation Mapping - XML Mapping - Mapping von Primärschlüsseln - Mapping von Beziehungen - Mapping von Komponenten - Vererbung - Hibernate und Spring - Hibernate und Struts - Hibernate und JSF/MyFaces - Integration in JBoss mit Hibernate Service Bean - JPA und EJB 3 - Annotation Reference - Hilfreiche Tools - Literaturverzeichnis
+Über den Autor
+Sebastian Hennebrüder ist als Trainer und Entwickler tätig. Er unterstützt Entwickler-Teams in Unternehmen und setzt mit hoch qualifizierten Partnern Java-basierte Software-Projekte um. Auf seiner Website www.laliluna.de finden Sie zahlreiche Tutorials, die jährlich von rund 1 Million Besuchern gelesen werden.
+Welche anderen Artikel kaufen Kunden, nachdem sie diesen Artikel angesehen haben?
+
+    Spring & Hibernate: Eine praxisbezogene Einführung  von Richard Oates Taschenbuch
+    4.2 von 5 Sternen (6)
+    EUR 34,90
+    Spring im Einsatz  von Craig Walls Taschenbuch
+    5.0 von 5 Sternen (2)
+    EUR 49,90
+    Der Weg zum Java-Profi: Konzepte und Techniken für die professionelle Java-Entwicklung  von Michael Inden Gebundene Ausgabe
+    4.8 von 5 Sternen (24)
+    EUR 49,90
+    Hibernate: Persistenz in Java-Systemen mit Hibernate 3.2 und dem Java Persistence API  von Robert F. Beeger Broschiert
+    3.6 von 5 Sternen (7)
+    EUR 39,00
+
+› Weitere Artikel entdecken
+In diesem Buch (Mehr dazu)
+Ausgewählte Seiten ansehen
+Buchdeckel | Copyright | Inhaltsverzeichnis | Auszug | Stichwortverzeichnis | Rückseite
+Hier reinlesen und suchen:
+Weitere mit "hibernate" getaggte Produkte
+Von anderen Kunden vorgeschlagene Artikel:
+Hibernate in Action: Practical Object/Relational Mapping
+Hibernate in Action: Practical Object/Relational Mapping von Christian Bauer
+4.5 von 5 Sternen (6)  
+Neu kaufen: EUR 35,99 EUR 29,95
+8 Angebote ab EUR 2,16
+Vorgeschlagen von 3 Kunden
+	JPA Praxiswissen mit Hibernate
+JPA Praxiswissen mit Hibernate von Alexander Kunkel
+5.0 von 5 Sternen (2)  
+1 Angebote ab EUR 22,90
+Vorgeschlagen von 3 Kunden
+	Beginning Hibernate: From Novice to Professional (Beginning: from Novice to Professional)
+Beginning Hibernate: From Novice to Professional (Beginning: from Novice to Professional) von Dave Minter
+3.0 von 5 Sternen (1)  
+Neu kaufen: EUR 38,51
+11 Angebote ab EUR 5,82
+Vorgeschlagen von 2 Kunden
+	Java Persistence with Hibernate
+Java Persistence with Hibernate von Christian Bauer
+4.3 von 5 Sternen (6)  
+Neu kaufen: EUR 43,95
+98 Angebote ab EUR 10,68
+Vorgeschlagen von 2 Kunden
+	JPA mit Hibernate: Java Persistence API in der Praxis
+JPA mit Hibernate: Java Persistence API in der Praxis von Daniel Röder
+3.3 von 5 Sternen (3)  
+Neu kaufen: EUR 34,90
+63 Angebote ab EUR 19,95
+Vorgeschlagen von 2 Kunden
+› 9 weitere ähnliche Artikel für "hibernate" anzeigen
+Vorgeschlagene Tags zu ähnlichen Produkten
+ (Was ist das?)
+Setzen Sie den ersten relevanten Tag hinzu (ein Schlüsselwort, das mit diesem Produkt in engem Zusammenhang steht).
+java(11)
+spring(7)
+jsf(8)
+java server faces(6)
+	
+framework(4)
+aop(3)
+web-framework(3)
+controller(2)
+	
+soap(2)
+profi(3)
+
+Ihre Tags:  	
+ 
+		
+Produkte mit folgendem Tag suchen:
+ 
+Beliebteste Tags anzeigen
+Eine digitale Version dieses Buchs im Kindle-Shop verkaufen
+Wenn Sie ein Verleger oder Autor sind und die digitalen Rechte an einem Buch haben, können Sie die digitale Version des Buchs in unserem Kindle-Shop verkaufen. Weitere Informationen
+ 
+Kundenrezensionen
+5 Rezensionen
+5 Sterne: 	
+	 (3)
+4 Sterne: 	  	 (0)
+3 Sterne: 	  	 (0)
+2 Sterne: 	
+	 (1)
+1 Sterne: 	
+	 (1)
+ 	
+ 
+Durchschnittliche Kundenbewertung
+3.6 von 5 Sternen (5 Kundenrezensionen)
+ 
+ 
+Sagen Sie Ihre Meinung zu diesem Artikel:
+Eigene Rezension erstellen
+Die hilfreichsten Kundenrezensionen
+
+2 von 2 Kunden fanden die folgende Rezension hilfreich
+2.0 von 5 Sternen Viel Wissen aber leider ohne Struktur, 26. September 2010
+Von 
+WM - Alle meine Rezensionen ansehen
+Rezension bezieht sich auf: Hibernate: Das Praxisbuch für Entwickler (Galileo Computing) (Gebundene Ausgabe)
+Ich habe schon zahlreiche Bücher zum Thema Java und Java-Framworks gelesen. Auch ist es nicht mein erstes Buch von Galileo Press. Bisher hat mir gerade die einfache und strukturierte Art und Weise gefallen in der die Bücher dieses Verlags mir neue Sachverhalte näher gebracht haben. Leider schafft das dieses Buch nicht. Direkt auf den ersten Seiten wurde ich mit vielen mir noch unbekannten Tatsachen konfrontiert, ohne das mir diese auch näher gebracht worden wären. Erst viele Seiten (oder gar ganze Kapitel) später konnte man die Zusammenhänge erkennen. Mir ist durch aus klar, dass es schwierig ist die ersten Schritte in einem neuen Framework zu beschreiben ohne das Wissen vorausgesetzt wird. Aber gerade dafür habe ich mir das Buch ja gekauft und habe nicht die unzähligen Online-Tutorials durchgearbeitet. Werden an einer Stelle Begriffe oder Techniken verwendet die ich noch nicht kennen kann, dann erwarte ich zumindest einen Verweis auf spätere Seite bzw. Kapitel. Hier lässt einen der Autor jedoch alleine.
+
+Ist man bereit, die einzelnen Kapitel mehrfach und in einer ungeordnete Reihenfolge mehrfach zu lesen, dann kommt man auch mit diesem Buch zum Ziel und erlernt Hibernate. Ich hätte mir es jedoch besser strukturier gewünscht.
+Helfen Sie anderen Kunden bei der Suche nach den hilfreichsten Rezensionen 
+War diese Rezension für Sie hilfreich? Ja Nein
+Missbrauch melden | Kommentar als Link
+Kommentar Kommentar
+
+
+5 von 7 Kunden fanden die folgende Rezension hilfreich
+5.0 von 5 Sternen Ein Buch vom Praktiker für Praktiker, 8. Januar 2008
+Von 
+U. Triltsch (Braunschweig) - Alle meine Rezensionen ansehen
+(REAL NAME)   
+Rezension bezieht sich auf: Hibernate: Das Praxisbuch für Entwickler (Galileo Computing) (Gebundene Ausgabe)
+Das Buch ist sehr verständlich geschrieben und ideal geeignet, um sich eine schnelle Übersicht über die Leistungsfähigkeit von Hibernate zu verschaffen. Aber auch der Fortgeschrittene Entwickler findet wertvolle Tipps für die tägliche Arbeit.
+Die Beispiele sind sehr verständlich und leicht nachvollziehbar. Sehr gut sind die Hinweise aus der Praxis. Wo andere Bücher erklären wie es theoretisch gehen soll, werden hier auch mal Workarounds für Probleme beschrieben, die im Einsatz vorkommen.
+Sehr hilfreich ist auch die Vorstellung von Best Practices und Design Patterns sowie die Integration andere Technologien wie Spring und Struts mit jeweils guten Beispielen.
+
+Das Buch ist empfehlenswert für alle die eine Referenz für Hibernate suchen. Durch die Beispiele ist es auf jeden Fall auch als Lehrwerk sehr gut geeignet.
+Helfen Sie anderen Kunden bei der Suche nach den hilfreichsten Rezensionen 
+War diese Rezension für Sie hilfreich? Ja Nein
+Missbrauch melden | Kommentar als Link
+Kommentar Kommentar
+
+
+5 von 7 Kunden fanden die folgende Rezension hilfreich
+5.0 von 5 Sternen Empfehlenswertes Buch zum Thema Hibernate, 31. Oktober 2007
+Von 
+H. Brade "supermario" - Alle meine Rezensionen ansehen
+(REAL NAME)   
+Rezension bezieht sich auf: Hibernate: Das Praxisbuch für Entwickler (Galileo Computing) (Gebundene Ausgabe)
+Tolles Buch. Mit Hilfe der beschriebenen Beispiele lässt sich Hibernate einfach lernen und anwenden. Es ist einfach zu lesen und alle wichtigen Themen werden gut erklärt. Wichtige Zusammenhänge sind in grauen Info-Kästen hervorgehoben. Hier findet man immer wieder auch schöne Tipps für die Benutzung der IDE in Kombination mit Hibernate.
+Das Buch richtet sich sowohl an Entwickler, die eine gute Einführung in Hibernate suchen als auch an fortgeschrittene Entwickler, da es ein Fülle von Praxistipps enthält.
+Praktisch ist auch die herausnehmbare Referenz, die alle Hibernate Annotations enthält.
+Das Buch ist auf jedem Fall als Lehrbuch und als Referenz zum Nachschlagen zu empfehlen.
+Helfen Sie anderen Kunden bei der Suche nach den hilfreichsten Rezensionen 
+War diese Rezension für Sie hilfreich? Ja Nein
+Missbrauch melden | Kommentar als Link
+Kommentar Kommentar
+
+Sagen Sie Ihre Meinung zu diesem Artikel: Eigene Rezension erstellen
+› Alle 5 Kundenrezensionen anzeigen...
+	
+
+Anzeige
+ 
+Die neuesten Kundenrezensionen
+
+5.0 von 5 Sternen aktuell das beste Hibernate Buch
+gerade auch im direkten Vergleich mit Harnessing Hibernate, ist Hibernate das Praxisbuch die aktuell beste Möglichkeit sich mit Hibernate bekanntzumachen
+
+für... Lesen Sie weiter...
+Veröffentlicht am 15. Februar 2009 von Michael Lange
+
+1.0 von 5 Sternen Unstrukturiert und wenig Einsteigerfreundlich
+Schon auf den ersten Seiten fällt einem negativ auf, dass der Autor permanent über sich spricht, sei es von seinen Erfahrungen, seinen Projekten oder ob er seine... Lesen Sie weiter...
+Veröffentlicht am 9. März 2008 von sendorian
+
+Kundenrezensionen suchen
+	
+Nur in den Rezensionen zu diesem Produkt suchen
+
+› Alle 5 Kundenrezensionen anzeigen...
+
+Kunden diskutieren
+Lieblingslisten
+
+    Alles fürs Geoinformatikstudium 	  	Alles fürs Geoinformatikstudium: Eine Liste von FordPrefect
+
+Legen Sie Ihre eigene Lieblingsliste an 	
+Suche Lieblingslisten
+	
+Ähnliche Artikel finden
+
+    Bücher > Computer & Internet > Datenbanken > Relationale Datenbanken
+    Bücher > Computer & Internet > Programmierung & Webdesign > Programmiersprachen > Java
+    Bücher > Fachbücher > Mathematik > Geschichte der Mathematik > Renaissance & Frühe Neuzeit
+
+Anhand des Sachgebietes nach ähnlichen Produkten suchen:
+Computers / General
+Programmiersprachen
+Computing & information technology
+Computers
+Datenbank
+General
+Java (EDV)
+Relational
+Hibernate
+Java
+Relationale Datenbank
+Informatik, EDV / Programmiersprachen
+
+
+Das bedeutet, jeder Titel/Artikel muss zu Sachgebiet 1 UND zu Sachgebiet 2 UND... gehören.
+Ihr Kommentar
+Möchten Sie die Produktinformationen aktualisieren oder Feedback zu den Produktabbildungen geben?
+
+Anzeige
+
+
+Für Sie dokumentiert (Was ist das?)
+
+	
+Über uns
+
+    Karriere bei Amazon
+    Pressemitteilungen
+    Amazon und unser Planet
+
+		
+Make Money mit Amazon
+
+    Jetzt verkaufen
+    Partnerprogramm
+    Versand durch Amazon
+    Ihr Buch veröffentlichen
+    › Alle anzeigen
+
+		
+Wir helfen Ihnen
+
+    Versand & Verfügbarkeit
+    Amazon Prime
+    Rücksendung leicht gemacht
+    Mein Kindle
+    Hilfe
+
+	
+amazon.de
+China | Frankreich | Großbritannien | Italien | Japan | Kanada | Österreich | Spanien | USA  Entdecken Sie: AbeBooks | Audible | Book Depository | BuyVIP | IMDb | Javari | LOVEFiLM | MYHABIT | Shopbop
+Unsere AGB | Datenschutzerklärung | Impressum | Cookies & Internet Werbung  © 1998-2012, Amazon.com, Inc. oder Tochtergesellschaften
+   
+
+
+
+/*
+@(#)File:           $RCSfile: stderr.c,v $
+@(#)Version:        $Revision: 8.29 $
+@(#)Last changed:   $Date: 2008/06/02 13:00:00 $
+@(#)Purpose:        Error reporting routines
+@(#)Author:         J Leffler
+@(#)Copyright:      (C) JLSS 1988-91,1996-99,2001,2003,2005-08
+@(#)Product:        :PRODUCT:
+*/
+
+
+
+
+
+// <copyright file="AuthenticationType.cs" company="SharpSTS">
+// Copyright (c) 2007, 2008 All Right Reserved, http://sharpsts.com/
+//
+// This source is subject to the Microsoft Permissive License.
+// Please see the License.txt file for more information.
+// All other rights reserved.
+//
+// THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY 
+// KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
+// PARTICULAR PURPOSE.
+//
+// </copyright>
+// <author>Barry Dorrans</author>
+// <email>barryd@idunno.org</email>
+// <date>2008-06-10</date>
+// <summary>Contains a base, abstract class for an AuthorisationPolicyProvider</summary>
+
+
+
+New Instance created of: ibz_operatoren_statements4_noticesfor_38.TXT
+
+public class SOAPHeaderHandler extends javax.xml.rpc.handler.GenericHandler {
+   ...
+   public boolean handleRequest(MessageContext arg) {
+	if (arg instanceof SOAPMessageContext) {
+		SOAPMessageContext context = (SOAPMessageContext)arg;
+		try {
+			SOAPHeader header = 
+           context.getMessage().getSOAPPart().getEnvelope().getHeader();
+			Iterator headers = 
+                        header.extractHeaderElements
+                        ("http://schemas.xmlsoap.org/soap/actor/next");
+			while (headers.hasNext()) {
+				SOAPHeaderElement he = 
+                                 (SOAPHeaderElement)headers.next();
+				// process the retrieved header element here
+			}	
+		} catch (SOAPException x) {
+			// insert error handling here
+		}
+	}
+	return true;
+   }
+}
+New Instance created of: ibz_operatoren_statements4_noticesfor_38.TXT
+
+
+Sehr geehrter Herr Kleiner,
+wie im Workshop besprochen sende ich Ihnen einen ersten Entwurf des Datei Headers für Quell- und Konfigurationsdateien des Systems. Unten habe ich die Ausführungen für C#, Java und XML beigefügt.
+Nachdem wir uns einig sind wie es aussehen soll, würden wir den Format Sinngemäss für andere Sprachen/Dateiformate umsetzten (z.B. PL/SQL) und die Entwicklungsrichtlinien-Dokumenten aktualisieren (und für den SAT im Rahmen der technischen Dokumentation bereitstellen).
+ 
+Inhaltliche/Funktionälle Informationen wie z.B. zweck der Klasse (bei wichtigen/komplexe Klassen) werden im jeweiligen Klassen-Header dokumentiert und nicht im Datei-Header (daraus wird automatisch Teil der technischen Dokumentation generiert).
+ 
+Quell-Code Change Management-/ Source-Control-/ Staging(&Betrieb)- und Dokumentations-Richtlinien für die Zeit nach der Abnahme sind zwischen ar/FUB-ZEO/Service Center/Ruag/Atos noch nicht abgestimmt worden. Bevor wir Quell-Code Änderungsmanagement Dokumentations-Richtlinien definieren, sollten die Anforderungen zwischen allen Stakeholdern diesbzgl. abgestimmt werden. 
+ 
+Wir werden auf alle Fälle für den SAT die vollwertige Continuous Integration / Build / Source-Control Umgebung bereitstellen (inkl. sämtliche für die Generierung des Systems notwendige Dateien) mit dem das Change Management und Source Control der Quell-Dateien sichergestellt werden kann.
+ 
+Ich freue mich auf Ihren Feedback und Verbesserungen - wenn Sie einen grösseren Diskussions/Änderungsbedarf sehen, können/sollten wir uns gern persönlich hören oder treffen.
+Ich freue mich auf Ihren Feedback und Verbesserungen - wenn Sie einen grösseren Diskussions/Änderungsbedarf sehen, können/sollten wir uns gern persönlich hören oder treffen.
+
+
+Sitzung Technische Dokumentation DIS
+
+- Infostand DIS
+- Hibernate und Persistenz (s. toolbox)
+- Anforderung Tech Doku (s. Tech Anforderung)
+- Vorschlag
+- Abstimmung
+
+Change Management oder AED 
+
+
+
+
+Gliederung DIS Dokumentation                   
+--------------------------------------
+ - IT Architektur DI
+ - Vergleich zu Hibernate als Framework
+ - OR Mapper - XML Mapping  statisch
+ - Mapping von Beziehungen  dynamisch
+ - Session und Transaktionen   (Patterns ?)
+ - Daten abfragen (Query Lang), HQL (SQL Editor)??
+ - Performance Benchmarks ?
+ - Konfiguration (Struktur)
+ - Connection Pool und Caches (Funktionsweise)
+ - Integration in Spring
+ - Best Practises und Problembereiche
+              Performance
+              Broken Sessions
+              Lazy Initialization
+              Optimistic Locking
+              Exceptions 
+
+ PreFAT  Befunde sind in Arbeit
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  - Annotation Mapping -  - Mapping von Primärschlüsseln- Mapping von Komponenten - Vererbung - Hibernate und Spring - Hibernate und Struts - Hibernate und JSF/MyFaces - Integration in JBoss mit Hibernate Service Bean - JPA und EJB 3 - Annotation Reference - Hilfreiche Tools 
+
+
+
+
+
+java(11)
+spring(7)
+jsf(8)
+java server faces(6)
+	
+framework(4)
+
+
+
+Werte Studenten, anbei die Testfragen:
+Testfragen Programmiertechnik Diplomprüfung
+
+1. Geg. ein Schachbrett mit 8 * 8 Felder
+Ges. Wie sieht eine mögliche Datenstruktur aus?
+
+2. Geg. Funktions Beispiel: max(X, Y, Max)
+Ges. Welche Typen haben die Parameter
+
+3. Was ist der Unterschied zwischen binären und logischen Operatoren?
+
+4. Definiere Konstanten, Variablen, Strukturen für eine Chiffrierfunktion:
+
+Chiffrat = F(Klartext, Key)
+
+5. Geg. Eine Routine heisst PlaySound()
+Ges. Art(Prozeudur oder Funktion), Parameter und Typen
+
+6. Wieviel Vergleiche (Schritte) braucht eine binäre Suche mit 20 Elementen? 
+
+
+
+Musterantworten:
+Testfragen Programmiertechnik Diplomprüfung 1. Geg. ein Schachbrett mit 8 * 8 Felder Ges. Wie sieht eine mögliche Datenstruktur aus?
+
+2 Dimensionales Array [0..7][0..7] of string
+oder [1..8] of Record
+
+2. Geg. Funktions Beispiel: max(X, Y, Max) Ges. Welche Typen haben die Parameter
+
+Einen grossen vorzeichenbehafteten Integer wie Int64 oder BigDecimal
+Zudem muss die variable max ein call by reference sein, da so der rückgabewert möglich wird.
+Alternativ max(X, Y): int64;
+
+
+3. Was ist der Unterschied zwischen binären und logischen Operatoren?
+
+Ein Logischer Operator (auch boolscher genannt) ist eine Funktion, die einen Wahrheitswert liefert, d.h. NUR true oder false.
+
+Bei binären (auch bitwise genannt) stehen zwischen zwei Werten und verknüpfen diese zu einem neuen Bit Wert.
+
+4. Definiere Konstanten, Variablen, Strukturen für eine Chiffrierfunktion: Chiffrat = F(Klartext, Key)
+Konstante als Key
+Variable als Chiffrat und Klartext
+Array of Byte als Struktur
+
+
+5. Geg. Eine Routine heisst PlaySound() Ges. Art(Prozeudur oder Funktion), Parameter und Typen
+
+function PlaySound(s: pchar; syncflag: integer): boolean;
+
+Die Überlegung ist hier die Funktion synchron oder asynchron auszuführen, bei async erfolgt der Rückgabewert sofort (man ist nicht blockiert), bei synchron erst wenn der sound fertig ist (man ist blockiert).
+
+6. Wieviel Vergleiche (Schritte) braucht eine binäre Suche mit 20 Elementen?
+
+log2(20) und dann abgerundet ist 4, da es keine halben schritte gibt
+round(log2(20)))) = 4
+  
+  
+  EKON 16
+  -------------------------
+  
+  
+  Hier mal meine vier Eingaben:
+
+
+1. Closures in Delphi
+
+Ein Closure ist ein funktionales Objekt, das sich Werte unabhängig seines Geltungsbereichs (Scope)
+merkt und zurückgibt. Andere meinen auch, es sei schlicht ein anonymer Code Block mit
+Widerverwendung. Wenn Sie jemals eine Funktion gebaut haben, die eine andere Funktion
+zurückgibt, haben Sie bereits mit der Closure oder Delegate Idee Kontakt geschlossen.
+Diese Session soll mit kleinen konkreten Bsp. Licht in die Welt der Closures bringen und so ganz nebenbei
+einige Tatsachen zur funktionalen Programmierung liefern (Back to Function).
+
+Ref.:
+
+http://www.softwareschule.ch/download/closures_report.pdf
+
+
+
+2. Exception Handling Konzepte
+
+Das Exception-Handling wird von vielen Entwicklern als notwendiges Übel gesehen und dementsprechend lausig behandelt.
+Exceptions ziehen sich hierarchisch durch den gesamten Code und ein nicht vorhandenes Prinzip auch.
+Hat man da kein durchdachtes Konzept, so wird eine spätere Integration sehr viel teurer. Es ist ja nicht möglich gar kein Error Handling
+durchzuführen, wenn es allerdings jeder auf seine Weise versucht (z.B. Checked vs. Unchecked), dann hat man den Salat.
+Wer sehen in der Session Ausnahmen, Früherkennung und Techniken mit zugehörigem Logger, welche für Benutzer, Admin und Entwickler zugleich von Interesse sind.
+
+Ref: http://www.softwareschule.ch/download/Closures_zurich2012_2.pdf
+
+
+3. Regular Expressions in Delphi
+
+Für Reguläre Ausdrücke gibt es jede Menge Einsatzgebiete, bei der alltäglichen Programmierarbeit sind sie quasi unverzichtbar. Man kann viel mehr die Eigenschaften, z.B. das Vorkommen bestimmter (Arten von) Zeichen, Reihenfolge, Häufigkeit, etc. des Textes oder einer Datenmenge allgemein beschreiben und dann danach suchen lassen. Die Session zeigt Einsatz und Beispiele aus den Gebieten Web, DB und Objektstrukturen.
+
+4. Scripting in Delphi
+
+Jede Anwendung lässt sich mit einer Skriptsprache erweitern um dazu den Wartungs- und Supportaufwand zu minimieren. Zudem erhöht Skripting den Benutzerkomfort und die Flexibilität einer App oder Distribution.
+
+Ref: http://sourceforge.net/apps/mediawiki/maxbox
+
+
+  
+--------------------------------//IBZ
+
+Die Abgabe der Testfragen und zugehörigen Antworten sind recht allgemein gehalten, das Abstraktionsniveau ein wenig hoch. Die Prüfung selbst orientiert sich dann an einem konkreteren Problem mit besprochener Fallstudie (LED). Jedoch werde ich das Niveau nicht senken, die Fragen sind aus Technischer wie logischer Sicht allsamt beantwortbar.
+Sicher wird dann bei der Bewertung Rücksicht auf den statistischen Klassenspiegel gelegt.
+
+Bei der Klasse (die mit 16 Studenten eh ein grosses Gefälle hat) hab ich eher den Eindruck, dass einige wohl berechtigterweise die Hürde nicht schaffen und sich nun auf die sichere Seite stellen wollen. Der Stoff wurde anhand des Skriptes und den vorhandenen Problemlösungen abgearbeitet, bei einigen musste ich ein Desinteresse am Programmieren und somit am Fach selbst feststellen.
+Jedoch die Semesterarbeit mit rund 7 Sprachen und diversen Tools und Techniken präsentiert hat einen guten Eindruck vermittelt, sobald sich mit dem Code etwas elektronisch bewegen lässt, steigt die Stimmung und der Lernwille; eine Teamarbeit mit dem Arduino Board und C/Pascal programmiert war sogar ausserordentlich.
+
+Ich werde bei der Präsentation der Case Study am 22.9. mit der Klasse die Einwände besprechen, die Prüfung selbst findet ja in der Woche v. 3. -5. Oktober statt.
+
+mit bestem Gruss, Max Kleiner
+  
+  
+  Oscilloscope
+  
+  http://delphiforfun.org/programs/Math_Topics/index.htm
+  
+  Suggestions for Further Study
+
+It seems like graphics would be nice to show the cannonballs, the problem is that after a few thousand shots, the pond and the field are covered with canon balls and not much is seen (also graphics would slow the program down by a lot).   So, having tried it,  I can't recommend graphics for this app.  
+
+Pi is an interesting number with lots of literature on the Web about it.  There are other techniques that converge to the true value of Pi much faster than the one presented here.   Another program in  this set, uses Buffon's Needles technique to estimate Pi.   Many series converge to some value related to Pi, for example pi /4 = 1 - 1/3 + 1/5 - 1/7 + .... or  pi/2 = 2/1 x 2/3 x 4/3 x 4/5 x 6/5 x 6/7 x 8/7 x 8/9 ...   I wonder which series converges fastest?   Or if that is even known?  
+  
+  
+  procedure TForm1.ScrollBox1MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  { Verify whether the right mouse button is pressed. If yes, start panning. }
+  if Button = mbLeft then
+    IMouse.StartPan(ScrollBox1.Handle, ScrollBox1);
+end;
+
+http://delphi.about.com/od/kbthread/a/delphi-thread-pool-example-using-asynccalls.htm
+
+http://pyscripter.googlecode.com/svn/trunk/AsyncCalls.pas
+
+..Töne über den Soundblaster ausgeben?
+Autor: Alan Lloyd
+[ Tip ausdrucken ]	 	 
+
+Tip Bewertung (39): 	 
+     
+
+
+uses
+  MMSystem;
+
+type
+  TVolumeLevel = 0..127;
+
+procedure MakeSound(Frequency{Hz}, Duration{mSec}: Integer; Volume: TVolumeLevel);
+  {writes tone to memory and plays it}
+var
+  WaveFormatEx: TWaveFormatEx;
+  MS: TMemoryStream;
+  i, TempInt, DataCount, RiffCount: integer;
+  SoundValue: byte;
+  w: double; // omega ( 2 * pi * frequency)
+const
+  Mono: Word = $0001;
+  SampleRate: Integer = 11025; // 8000, 11025, 22050, or 44100
+  RiffId: string = 'RIFF';
+  WaveId: string = 'WAVE';
+  FmtId: string = 'fmt ';
+  DataId: string = 'data';
+begin
+  if Frequency > (0.6 * SampleRate) then
+  begin
+    ShowMessage(Format('Sample rate of %d is too Low to play a tone of %dHz',
+      [SampleRate, Frequency]));
+    Exit;
+  end;
+  with WaveFormatEx do
+  begin
+    wFormatTag := WAVE_FORMAT_PCM;
+    nChannels := Mono;
+    nSamplesPerSec := SampleRate;
+    wBitsPerSample := $0008;
+    nBlockAlign := (nChannels * wBitsPerSample) div 8;
+    nAvgBytesPerSec := nSamplesPerSec * nBlockAlign;
+    cbSize := 0;
+  end;
+  MS := TMemoryStream.Create;
+  with MS do
+  begin
+    {Calculate length of sound data and of file data}
+    DataCount := (Duration * SampleRate) div 1000; // sound data
+    RiffCount := Length(WaveId) + Length(FmtId) + SizeOf(DWORD) +
+      SizeOf(TWaveFormatEx) + Length(DataId) + SizeOf(DWORD) + DataCount; // file data
+    {write out the wave header}
+    Write(RiffId[1], 4); // 'RIFF'
+    Write(RiffCount, SizeOf(DWORD)); // file data size
+    Write(WaveId[1], Length(WaveId)); // 'WAVE'
+    Write(FmtId[1], Length(FmtId)); // 'fmt '
+    TempInt := SizeOf(TWaveFormatEx);
+    Write(TempInt, SizeOf(DWORD)); // TWaveFormat data size
+    Write(WaveFormatEx, SizeOf(TWaveFormatEx)); // WaveFormatEx record
+    Write(DataId[1], Length(DataId)); // 'data'
+    Write(DataCount, SizeOf(DWORD)); // sound data size
+    {calculate and write out the tone signal} // now the data values
+    w := 2 * Pi * Frequency; // omega
+    for i := 0 to DataCount - 1 do
+    begin
+      SoundValue := 127 + trunc(Volume * sin(i * w / SampleRate)); // wt = w * i / SampleRate
+      Write(SoundValue, SizeOf(Byte));
+    end;
+    {now play the sound}
+    sndPlaySound(MS.Memory, SND_MEMORY or SND_SYNC);
+    MS.Free;
+  end;
+end;
+
+// How to call the function:
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  MakeSound(1200, 1000, 60);
+end;
+
+
+with save function
+
+
+uses
+  MMSystem;
+
+procedure MakeSound(Frequency, Duration : integer);
+{writes tone to memory and plays it}
+var
+  WaveFormatEx : TWaveFormatEx;
+  MS           : TMemoryStream;
+  i, TempInt,
+  DataCount,
+  RiffCount    : integer;
+  SoundValue   : byte;
+  w            : double; // omega ( 2 * pi * frequency)
+const
+  Mono       : Word = $0001;
+  SampleRate : integer = 11025; // 8000, 11025, 22050, or 44100
+  RiffId     : string = 'RIFF';
+  WaveId     : string = 'WAVE';
+  FmtId      : string = 'fmt ';
+  DataId     : string = 'data';
+begin
+  with WaveFormatEx do begin
+    wFormatTag := WAVE_FORMAT_PCM;
+    nChannels := Mono;
+    nSamplesPerSec := SampleRate;
+    wBitsPerSample := $0008;
+    nAvgBytesPerSec := nSamplesPerSec * nBlockAlign;
+    nBlockAlign := (nChannels * wBitsPerSample) div 8;
+    cbSize := 0;
+  end;
+  MS := TMemoryStream.Create;
+  with MS do begin
+    {Calculate length of sound data and of file data}
+    DataCount := (Duration *  SampleRate) div 1000;  // sound data
+    RiffCount := Length(WaveId)
+                 + Length(FmtId) + SizeOf(DWord)
+                 + SizeOf(TWaveFormatEx)
+                 + Length(DataId) + SizeOf(DWord)
+                 + DataCount; // file data
+    {write out the wave header}
+    Write(RiffId[1], 4);                        // 'RIFF'
+    Write(RiffCount, SizeOf(DWord));            // file data size
+    Write(WaveId[1], Length(WaveId));           // 'WAVE'
+    Write(FmtId[1], Length(FmtId));             // 'fmt '
+    TempInt := SizeOf(TWaveFormatEx);
+    Write(TempInt, SizeOf(DWord));              // TWaveFormat data size
+    Write(WaveFormatEx, SizeOf(TWaveFormatEx)); // WaveFormatEx record
+    Write(DataId[1], Length(DataId));           // 'data'
+    Write(DataCount, SizeOf(DWord));            // sound data size
+    {calculate and write out the tone signal}   // now the data values
+    w := 2 * Pi * Frequency;  // omega
+    for i := 0 to DataCount - 1 do begin
+      // wt = w *i /SampleRate
+      SoundValue := 127 + trunc(127 * sin(i * w / SampleRate));
+      Write(SoundValue, SizeOf(Byte));
+    end;
+    // you could save the wave tone to file with :
+    // MS.Seek(0, soFromBeginning);
+    // MS.SaveToFile('C:\MyFile.wav');
+    // then reload and play them without having to
+    // construct them each time.
+    {now play the sound}
+    sndPlaySound(MS.Memory, SND_MEMORY or SND_SYNC);
+    MS.Free;
+  end;
+end; {Alan Lloyd}
+
+
+
+Diese Assembler-Routinen von Gerd Kayser realisieren die Klangausgabe über direkte Portzugriffe und funktionieren daher nicht unter Windows NT. Die Prozedur "Sound" erzeugt einen Ton mit der Frequenz "Hz", die Prozedur "NoSound" stoppt die Klangausgabe. Die Funktion der Prozeduren wird in diesem Beispiel-Projekt demonstriert.
+
+
+function InPort(PortAddr:word): byte; assembler; stdcall;
+asm
+  mov dx,PortAddr
+  in al,dx
+end;
+
+procedure OutPort(PortAddr: word; Databyte: byte); assembler; stdcall;
+asm
+  mov al,Databyte
+  mov dx,PortAddr
+  out dx,al
+end;
+
+Procedure Sound(Hz : Word);
+var TmpW : Word;
+begin
+  OutPort($43,182);
+  TmpW :=InPort($61);
+  OutPort($61,TmpW or 3);
+  OutPort($42,lo(1193180 div hz));
+  OutPort($42, hi(1193180 div hz));
+end;
+
+Procedure NoSound;
+var TmpW : Word;
+begin
+  OutPort($43,182);
+  TmpW := InPort($61);
+  OutPort($61,TmpW and 3);
+end;
+
+Unter Windows NT geht es wesentlich einfacher mit der Beep-Funktion aus der Windows-Unit:
+
+
+Windows.Beep(Frequenz, Dauer);
+
+TSL ID 	TSL20160309-03
+Severity 	Moderate
+Description 	
+
+Trojan-Downloader.MSIL.Insupodev.A is a Trickler that targets the Windows platform. This malware sends out system information and accepts various commands from its control server. The supported commands would allow to download and execute files, install additional malware, update itself, and uninstall itself. The malware creates multiple Registry entries as well as a Startup file to achieve persistence on the infected computer.
+Affected Products 	
+
+    Microsoft Windows All Versions
+
+File Hashes 	
+MD5:
+
+    BAB9A2D2B066EB98CE3A36856247C7DE
+
+SHA1:
+
+    AE79BF94AA441FB4BAF3BEBE125CE1EA954D08FA
+
+Identifiers 	
+Kaspersky		
+
+    TROJAN.WIN32.SELFDEL.BUHS
+
+AVG		
+
+    MSIL9.CDWR
+
+Avira		
+
+    TR/SPECIAL.45056.34
+
+Baidu		
+
+    WIN32.TROJAN.WISDOMEYES.151026.9950.9986
+
+BitDefender		
+
+    TROJAN.GENERICKD.3089376
+
+ESET		
+
+    MSIL/AGENT.EV
+
+GData		
+
+    WIN32.TROJAN.AGENT.QL39GD

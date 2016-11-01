@@ -1,0 +1,1427 @@
+****************************************************************
+Release Notes maXbox 4.2.4.80 October 2016 Ocean7 mX4
+****************************************************************
+add 16 units + 420 functions- WMI Script Type Library - webbox
+
+1241 uPSI_wmiserv.pas {uPSI_SimpleSFTP.pas}
+1242 uPSI_WbemScripting_TLB.pas
+1243 unit uPSI_uJSON2;
+1244 uPSI_RegSvrUtils.pas
+1245 unit uPSI_osFileUtil;
+1246 unit uPSI_SHDocVw; //TWebbrowser
+1247 unit uPSI_SHDocVw_TLB;
+1248 uPSC_classes.pas V2
+1249 uPSR_classes.pas V2
+1250 uPSI_U_Oscilloscope4_2
+1251 unit uPSI_xutils.pas
+1252 uPSI_ietf.pas
+1253 uPSI_iso3166.pas
+1254 uPSI_dateutil_real.pas  //Optima ISO 8601
+1255 unit uPSI_dateext4.pas
+1256 uPSI_locale.pas
+
+SHA1: of 4.2.4.80 E101F7CA8FEBECCED8DA84B187B9CFB09A4D6BD5
+CRC32: DEFF39B1 26.4 MB (27,689,936 bytes)
+
+ function GetCachedFileFromURL(strUL: string; var strLocalFile: string): boolean;
+ function IAddrToHostName(const IP: string): string;
+ function GetIEHandle(WebBrowser: TWebbrowser; ClassName: string): HWND;
+ function GetTextFromHandle(WinHandle: THandle): string;
+ procedure Duplicate_Webbrowser(WB1, WB2: TWebbrowser);
+ function FillWebForm(WebBrowser:TWebBrowser;FieldName:string;Value:string):Bool; 
+ procedure WB_LoadHTML(WebBrowser: TWebBrowser; HTMLCode: string);
+ function NetSend(dest, Source, Msg: string): Longint; overload;
+ function RecordsetFromXML2(const XML: string): variant;');
+ function RecordsetToXML2(const Recordset: variant): string;');
+ Function GetCharEncoding( alias : string; var _name : string) : integer');
+ Function MicrosoftCodePageToMIMECharset( cp : word) : string');
+ Function MicrosoftLangageCodeToISOCode( langcode : integer) : string');
+ procedure CopyHTMLToClipBoard(const str: string; const htmlStr: string = '');
+ function RFC1123ToDateTime(Date: string): TDateTime;
+ function DateTimeToRFC1123(aDate: TDateTime): string;
+ procedure CopyHTMLToClipBoard(const str: string; const htmlStr: string);');
+ procedure DumpDOSHeader(const h: IMAGE_DOS_HEADER; Lines: TStrings);');
+ procedure DumpPEHeader(const h: IMAGE_FILE_HEADER; Lines: TStrings);');
+ procedure DumpOptionalHeader(const h: IMAGE_OPTIONAL_HEADER; Lines: TStrings);');
+
+****************************************************************
+Release Notes maXbox 4.2.4.25 June 2016 Ocean5 mX4
+****************************************************************
+add 16 units and 225 functions- Class Helper- KMemo RTF DOSOutput
+
+ 1224 uPSI_IdAntiFreeze.pas
+ 1225 uPSI_IdLogStream.pas
+ 1226 unit uPSI_IdThreadSafe;
+ 1227 unit uPSI_IdThreadMgr;
+ 1228 unit uPSI_IdAuthentication;
+ 1229 unit uPSI_IdAuthenticationManager;
+ 1230 uPSI_OverbyteIcsConApp
+ 1231 unit uPSI_KMemo;
+ 1232 unit uPSI_OverbyteIcsTicks64;
+ 1233 unit uPSI_OverbyteIcsSha1.pas
+ 1234 unit uPSI_KEditCommon.pas
+ 1235 unit uPSI_UtilsMax4.pas
+ 1237 unit uPSI_UWANTUtils;
+ 1238 unit uPSI_UtilsMax5.pas;
+ 1239 unit uPSI_OverbyteIcsAsn1Utils;
+ 1240 unit uPSI_IdHTTPHeaderInfo2; //mX response headers
+
+SHA1: of 4.2.4.25 A52ACF844808285D8EE978637365B74B3C7C342F
+CRC32: CB882FFC  26.0 MB (27,276,288 bytes) 
+
+****************************************************************
+Release Notes maXbox 4.2.2.95 Mai 2016 Ocean3 mX4
+****************************************************************
+add 12 units and 20 functions/object - minor bugfixes
+http://max.kleiner.com/boxart.htm
+
+ 1212 unit uPSI_MapFiles.pas //map stream of memory-mapped files
+ 1213 unit uPSI_BKPwdGen,    //Password Generator
+ 1214 unit uPSI_Kronos,      //big chrono date time library
+ 1215 unit uPSI_TokenLibrary2;
+ 1216 uPSI_KDialogs,
+ 1217 uPSI_Numedit,
+ 1218 unit uPSI_StSystem2;
+ 1219 unit uPSI_KGraphics;
+ 1220 uPSI_KGraphics_functions;
+ 1221 uPSI_umaxPipes.pas
+ 1222 unit uPSI_KControls;
+ 1223 unit SysUtils_max2;
+
+  function RunAsAdmin(hWnd: HWND; filename: string; Parameters: string): Boolean;
+  procedure SaveGraphicToStream(Graphic: TGraphic; Stream: TStream);
+  function LoadGraphicFromStream(Stream: TStream): TGraphic;
+  procedure CopyStreamToFile(S: TStream; F: THandle);
+  function BigPow(aone, atwo: integer): string;
+  PROCEDURE GetPelsPerMeter(CONST  Bitmap:  TBitmap;
+                            VAR xPelsPerMeter, yPelsPerMeter:  INTEGER);
+  PROCEDURE RainbowColor(CONST fraction:  Double; VAR R,G,B:  BYTE);
+  function GetNewGUID: string;
+  function FormatGUID(const GUID: string): string;
+  function GetNewFormatedGUID: string;
+  EnumerateFiles2(exepath,srlist, false, 0)
+  EnumerateDirectories2(exepath+'\',srlist, false, 0)
+  Sender.AddFunction(@mysetKeyPressed, 'procedure SetKeyPressed;');
+  CL.AddDelphiFunction('Function SetEvent( hEvent : THandle) : BOOL');
+  CL.AddTypeS('TPosProc','function(const Substr, S: string): Integer)');
+  function SplitStr(sInput:string; Delimiter:string): TStringArray;
+  function GetDataFromFile2(sFileName: AnsiString): AnsiString;
+  function ExtractFileNameWithoutExt(const FileName: string): string;
+  function SubstringCount (Substring : string; Str : string): Integer;
+  function loadForm(vx, vy: smallint): TForm;   //alias getForm()
+  procedure paintProcessingstar2(ppform: TForm);
+ 
+  SHA1: of 4.2.2.90: 1EEE461ACF78ACA461806D85488B87A4FA08F39F
+  CRC32: BCEDACF0,  Size of EXE: 26,920,960
+
+****************************************************************
+Release Notes maXbox 4.2.0.80 April 2016 Ocean mX4
+****************************************************************
+
+This is an upgrade to mX3 app files dir, if you want all examples/docs for this mX4 
+you have to download mX3 first and then copy mX4 files in it too.
+Otherwise you already own mX3 on disk just copy new files (save maxboxdef.ini first).
+All functions & object: maxbox_functions_all.pdf
+
+News:
+Add 5 Units, 1 Tutor, Pipe Libraray2, KLog, FPlot42
+
+1207 unit uPSI_CPUSpeed.pas
+1208 uPSI_RoboTracker.pas
+1209 unit uPSI_NamedPipesImpl.pas
+1210 unit uPSI_KLog.pas
+1211 unit uPSI_NamedPipeThreads.pas
+
+new added functions
+-----------------------------------------------------
+function CPUSpd: String;
+function CPUSpeed: String;
+function BigFib(n: integer): string;  //BigFibo
+function BigFac(n: integer): string;  //BigFact
+function UpTime: string;
+Function NetLogon( const Server, User, Password : WideString; out ErrorMessage : string) : Boolean');
+Function NetLogoff( const Server, User, Password : WideString) : Boolean');
+Procedure ErrorNamedPipe( const Message : string)');
+procedure BroadcastChange; //method that broadcasts the necessary message WM_SETTINGCHANGE
+Function WriteFile2( hFile : THandle; const Buffer, nNumberOfBytesToWrite : DWORD; var lpNumberOfBytesWritten : DWORD; lpOverlapped : Tobject) : BOOL');
+Function ReadFile2( hFile : THandle; var Buffer, nNumberOfBytesToRead : DWORD; var lpNumberOfBytesRead : DWORD; lpOverlapped : Tobject) : BOOL');
+// Security helper functions
+procedure InitializeSecurity(var SA: TSecurityAttributes);
+procedure FinalizeSecurity(var SA: TSecurityAttributes);
+// Pipe helper functions
+procedure CheckPipeName(Value: string);
+procedure ClearOverlapped(var Overlapped: TOverlapped; ClearEvent: Boolean);
+procedure CloseHandleClear(var Handle: THandle);
+function ComputerName2: string;
+procedure DisconnectAndClose(Pipe: HPIPE; IsServer: Boolean = True);
+function EnumConsoleWindows(Window: HWND; lParam: Integer): BOOL; stdcall;
+procedure FlushMessages;
+function IsHandle(Handle: THandle): Boolean;
+procedure RaiseWindowsError;
+function UpTime: string; //OS uptime
+function CharSetToCP(ACharSet: TFontCharSet): Integer;
+function CPToCharSet(ACodePage: Integer): TFontCharSet;
+function TwipsToPoints(AValue: Integer): Integer;
+function PointsToTwips(AValue: Integer): Integer;
+procedure LoadGraphicFromResource(Graphic: TGraphic; const ResName: string; ResType: PChar);
+
+///////////////////////////////////////////////////////////////////////////////
+// Object instance functions
+///////////////////////////////////////////////////////////////////////////////
+function AllocateHWnd(Method: TWndMethod): HWND;
+procedure DeallocateHWnd(Wnd: HWND);
+
+MessageBox(0,PChar('CPU speed is '+CPUSpd+' MHz'),'CPU Speed Check',MB_IconInformation+MB_OK);
+CL.AddTypeS('TKLogEvent', 'Procedure (Sender : TObject; Code : TKLogType; const Text : string)');
+AddRegisteredVariable('FormatSettings','TFormatSettings');  //at sysutils!
+AddRegisteredVariable('mouse','TMouse');  //at controls
+CL.AddTypeS('HPIPE', 'THandle');
+
+Amount of Functions: 16627
+Amount of Procedures: 9922
+Amount of Constructors: 1633
+Totals of Calls: 28182
+SHA1: of 4.2.0.80 638E7412750AB0ECF14F2A5515BC4A2DE561EAC2
+CRC32: 7C91FD2A   Exe size: 26,650,112  - 2604 dcu unit build
+
+https://www.virustotal.com/en/file/584ca53d6dd8f7de17d0a1959bf78aad04697cf0ad7b3f23aee90b5ff720ede1/analysis/1460194451/
+
+Update for Windows 10 Version 1511 for x64-based Systems (KB3140741)
+
+****************************************************************
+Release Notes maXbox 4.2.0.10 March 2016 Ocean mX4
+****************************************************************
+
+This is an upgrade to mX3 app files dir, if you want all examples/docs for this mX4 
+you have to download mX3 first and then copy mX4 files in it too.
+Otherwise you already have mX3 on disk just copy new files (save maxboxdef.ini first).
+All functions & object: maxbox_functions_all.pdf
+
+News:
+Add 9 Units, 1 Tutor, InetUtils, Chron, REXX funcs
+
+1198 unit uPSI_Simpat;
+1199 unit uPSI_Tooltips.pas
+1200 unit uPSI_StringGridLibrary.pas
+1201 unit uPSI_ChronCheck.pas
+1202 unit uPSI_REXX.pas
+1203 uPSI_SysImg.pas
+1204 unit uPSI_Tokens;
+1205 unit uPSI_KFunctions;
+1206 unit uPSI_KMessageBox;
+
+procedure SIRegister_REXX(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('TState', '( TrimLeader, StartToken, EndToken )');
+  CL.AddTypeS('TStrIndex', 'LongInt');
+  CL.AddTypeS('TTokIndex', 'WORD');
+  CL.AddTypeS('TStrIndexB', 'BYTE');
+  CL.AddTypeS('TTokIndexB', 'BYTE');
+  CL.AddClassN(CL.FindClass('TOBJECT'),'EConversionError');
+ Function Abbrev(const information,info: STRING; const nMatch: TStrIndex):BOOLEAN;
+ Function AllSame( const s : STRING; const c : CHAR) : BOOLEAN');
+ Function Capitalize( const s : STRING) : STRING');
+ Function Center( const s : STRING; const sLength : TStrIndex) : STRING');
+ Function Left( const s : STRING; const sLength : TStrIndex) : STRING');
+ Function Right( const s : STRING; const sLength : TStrIndex) : STRING');
+ Function Copies( const s : STRING; const n : TStrIndex) : STRING');
+ Function CountChar( const s : STRING; const c : CHAR) : TStrIndex');
+ Function DeleteStringrexx( const substring : STRING; const s : STRING) : STRING');
+ Function Overlay( const ovly, target : STRING; const n : TStrIndex) : STRING');
+ Function Plural(const n: LongInt; const singularform, pluralform: STRING):STRING;
+ Function Reverse( const s : STRING) : STRING');
+ Function Spacerexx( const s : STRING; const n : TStrIndex) : STRING');
+ Function Striprexx( const s : STRING; const option : STRING) : STRING');
+ Function TestString( const sLength : TStrIndex) : STRING');
+ Function Translate( const s, OutTable, InTable : STRING) : STRING');
+ Function XRange( const start, stop : BYTE) : STRING');
+ Function B2X( const b : BYTE) : STRING');
+ Function C2D( const s : STRING) : DOUBLE');
+ Function C2I( const s : STRING) : INTEGER');
+ Function C2L( const s : STRING) : LONGINT');
+ Function C2W( const s : STRING) : WORD');
+ Function C2X( const s : STRING) : STRING');
+ Function I2C( const i : INTEGER) : STRING');
+ Function I2X( const i : INTEGER) : STRING');
+ Function L2C( const i : LONGINT) : STRING');
+ Function L2X( const i : LONGINT) : STRING');
+ Function D2C( const x : DOUBLE; const d : BYTE) : STRING');
+ Function W2C( const w : WORD) : STRING');
+ Function W2X( const w : WORD) : STRING');
+ Function X2W( const s : STRING) : WORD');
+ Function JulianDate( const DateTime : TDateTime) : LongInt');
+ Function TimeDifference( const StartTime, StopTime : TDateTime) : DOUBLE');
+ Function Pwr( const x, y : DOUBLE) : DOUBLE');
+end;
+
+procedure SIRegister_StringGridLibrary(CL: TPSPascalCompiler);
+begin
+ Procedure ReadGridFile( var StringGrid : TStringGrid; GridFile : STRING)');
+ Procedure WriteGridFile( var StringGrid : TStringGrid; GridFile : STRING)');
+ Procedure AddBlankRowToTop( var StringGrid : TStringGrid)');
+ Procedure DeleteSelectedRow( var StringGrid : TStringGrid)');
+ Function StringGridSearch( const StringGrid : TStringGrid; const column : INTEGER; const target : STRING) : INTEGER');
+ Function XLeft( rect : TRect; canvas : TCanvas; s : STRING) : INTEGER');
+ Function XCenter( rect : TRect; canvas : TCanvas; s : STRING) : INTEGER');
+ Function XRight( rect : TRect; canvas : TCanvas; s : STRING) : INTEGER');
+ Function YCenter( rect : TRect; canvas : TCanvas; s : STRING) : INTEGER');
+end;
+
+ Procedure AdjustArray( var DWArray : array of DWord; const Delta : Integer; MinValueToAdjust : DWord)');
+ Function GetDroppedFileNames( const DropID : Integer) : TWideStringArray');
+ Function AreBytesEqual( const First, Second : array of Byte) : Boolean;');
+ Function AreBytesEqual1( const First, Second, Length : DWord) : Boolean;');
+ Function MaskForBytes( const NumberOfBytes : Byte) : DWord');
+ Function IntToBinByte( Int : Byte) : String;');
+ Function IntToBinWord( Int : Word) : String;');
+ Function IntToBinDWord( Int : DWord; Digits : Byte; SpaceEach : Byte) : String;');
+ Function WriteWS( const Stream : TStream; const Str : WideString) : Word');
+ Procedure WriteArray(const Stream: TStream; const WSArray: array of WideString);');
+ Procedure WriteArray6( const Stream : TStream; const DWArray : array of DWord);');
+ Function ReadWS( const Stream : TStream) : WideString;');
+ Function ReadWS8( const Stream : TStream; out Len : Word) : WideString;');
+ Procedure ReadArray( const Stream : TStream; var WSArray : array of WideString);');
+ Procedure ReadArray10( const Stream : TStream; var DWArray : array of DWord);');
+ Function ParamStrW( Index : Integer) : WideString');
+ Function ParamStrFrom( CmdLine : WideString; Index : Integer) : WideString');
+ Function ParamStrEx(CmdLine : WideString; Index : Integer; out Pos : Integer) : WideString');
+  Procedure FindMask( Mask : WideString; Result : TStringsW)');
+ Procedure FindAll( BasePath, Mask : WideString; Result : TStringsW)');
+ Procedure FindAllRelative( BasePath, Mask : WideString; Result : TStringsW)');
+ Function IsInvalidPathChar( const Char : WideChar) : Boolean');
+ Function MakeValidFileNameW(const Str: WideString; const SubstitutionChar: WideChar) : WideString');
+  Function ExtractFilePathW( FileName : WideString) : WideString');
+ Function ExtractFileNameW( Path : WideString) : WideString');
+ Function ExpandFileNameW( FileName : WideString) : WideString;');
+ Function ExpandFileName12( FileName, BasePath : WideString) : WideString;');
+ Function CurrentDirectory : WideString');
+ Function ChDirW( const ToPath : WideString) : Boolean');
+ Function ExtractFileExtW( FileName : WideString) : WideString');
+ Function ChangeFileExtW2( FileName, Extension : WideString) : WideString');
+ Function IncludeTrailingBackslashW( Path : WideString) : WideString');
+ Function ExcludeTrailingBackslashW( Path : WideString) : WideString');
+ Function IncludeTrailingPathDelimiterW( Path : WideString) : WideString');
+ Function ExcludeTrailingPathDelimiterW( Path : WideString) : WideString');
+ Function IncludeLeadingPathDelimiter( Path : WideString) : WideString');
+ Function ExcludeLeadingPathDelimiter( Path : WideString) : WideString');
+  Function FileInfo( Path : WideString) : TWin32FindData');
+ Function IsDirectoryW( Path : WideString) : Boolean');
+ Function FileAgeW( const FileName : WideString) : Integer');
+ Function FileExistsW( Path : WideString) : Boolean');
+ Function FileSizeW( Path : WideString) : DWord');
+ Function FileSize64( Path : WideString) : Int64');
+ Function DeleteFileW( Path : WideString) : Boolean');
+ Function CopyDirectoryW( Source, Destination : WideString) : Boolean');
+ Function RemoveDirectoryW( Path : WideString) : Boolean');
+ Function ForceDirectoriesW( Path : WideString) : Boolean');
+ Function MkDirW( Path : WideString) : Boolean');
+ Function GetEnvironmentVariableW( Name : WideString) : WideString');
+ Function ResolveEnvVars( Path : WideString; Callback : TEnvVarResolver; Unescape : Boolean) : WideString;');
+ Function ResolveEnvVars14( Path : WideString; Unescape : Boolean) : WideString;');
+ Function ReadRegValue( Root : DWord; const Path, Key : WideString) : WideString');
+  Function FadeSettings( Form : TForm; Step : ShortInt; Callback : TNotifyEvent) : TFormFadeSettings;');
+ Function FadeSettings17( Form : TForm; MinAlpha, MaxAlpha : Byte; Step : ShortInt) : TFormFadeSettings;');
+ 
+  procedure SIRegister_KFunctions(CL: TPSPascalCompiler);
+begin
+ SHFolderDll','String').SetString( 'SHFolder.dll');
+ CL.AddConstantN('KM_BASE','LongInt').SetInt( LM_USER + 1024);
+ CL.AddConstantN('KM_LATEUPDATE','LongInt').SetInt( KM_BASE + 1);
+ crHResize','LongInt').SetInt( TCursor ( 101 ));
+ CL.AddConstantN('crVResize','LongInt').SetInt( TCursor ( 102 ));
+ crDragHandFree','LongInt').SetInt( TCursor ( 103 ));
+ crDragHandGrip','LongInt').SetInt( TCursor ( 104 ));
+ cCheckBoxFrameSize','LongInt').SetInt( 13);
+ cCR','Char').SetString( #13);
+ cLF','Char').SetString( #10);
+ cTAB','Char').SetString( #9);
+ cSPACE','Char').SetString( #32);
+ cNULL','Char').SetString( #0);
+ {cWordBreaks','LongInt').Value.ts32 := ord(cNULL) or ord(cTAB) or ord(cSPACE);
+ cLineBreaks','LongInt').Value.ts32 := ord(cCR) or ord(cLF);
+ cEllipsis','String').SetString( '...');
+ cEOL','').SetString( cLF);
+ cFirstEOL','').SetString( cLF);
+ cFirstEOL','').SetString( cCR); }
+  CL.AddTypeS('TLMessage', 'TMessage');
+  CL.AddTypeS('TKkString', 'Widestring');
+  CL.AddTypeS('TKkChar', 'char');
+  //TKChar = TUTF8Char;
+  CL.AddTypeS('LONG_PTR2', 'Longint');
+  CL.AddTypeS('TKSysCharSet', 'set of AnsiChar');
+  CL.AddTypeS('TKCurrencyFormat', 'record CurrencyFormat : Byte; CurrencyDecima'
+   +'ls : Byte; CurrencyString : TKkString; DecimalSep : Char; ThousandSep : Cha'
+   +'r; UseThousandSep : Boolean; end');
+  {CL.AddTypeS('TKAppContext', 'record Application : TApplication; Screen : TScr'
+   +'een; GlobalNameSpace : IReadWriteSync; MainThreadID : LongWord; IntConstLi'
+   +'st : TThreadList; WidgetSet : TWidgetSet; DragManager : TDragManager; end');  }
+ // CL.AddTypeS('PKAppContext', '^TKAppContext // will not work');
+  //CL.AddTypeS('TKClipboardFormat', 'TClipboardFormat');
+  CL.AddTypeS('TKClipboardFormat', 'Word');
+  CL.AddTypeS('TKCellSpan', 'record ColSpan : Integer; RowSpan : Integer; end');
+ CL.AddDelphiFunction('Function AdjustDecimalSeparator( const S : string):string');
+ Function AnsiStringToString(const Text:AnsiString; CodePage:Cardinal):TKkString');
+ //Function BinarySearch( AData : string; ACount : Integer; KeyPtr : string; ACompareProc : TBSCompareProc; ASortedDown : Boolean) : Integer');
+ Procedure CallTrackMouseEvent( Control : TWinControl; var Status : Boolean)');
+ Procedure CenterWindowInWindow( CenteredWnd, BoundWnd : HWnd)');
+ Procedure CenterWindowOnScreen( CenteredWnd : HWnd)');
+ Function CharInSetEx( AChar : AnsiChar; const ASet : TKSysCharSet) : Boolean;');
+ Function CharInSetEx1( AChar : WideChar; const ASet : TKSysCharSet) : Boolean;');
+ Function ClipboardLoadStreamAs(const AFormat: string; AStream: TStream; var AText:TKkString):Boolean;
+ Function ClipboardSaveStreamAs(const AFormat:string; AStream:TStream;const AText:TKkString):Boolean;
+ Function CompareIntegers( I1, I2 : Integer) : Integer');
+ //Function CompareWideChars( W1, W2 : PWideChar; Locale : Cardinal) : Integer');
+// Function CompareChars( S1, S2 : PChar; Locale : Cardinal) : Integer');
+ Function CompareWideStrings( W1, W2 : WideString; Locale : Cardinal) : Integer');
+// Function CompareStrings( S1, S2 : string; Locale : Cardinal) : Integer');
+ Procedure ConvertTabsToSpaces( var AText : TKkString; ASpacesForTab : Integer)');
+ Function CreateMultipleDir( const Dir : string) : Boolean');
+ Function DigitToNibble( Digit : AnsiChar; var Nibble : Byte) : Boolean');
+ Function DivUp( Dividend, Divisor : Integer) : Integer');
+ Function DivDown( Dividend, Divisor : Integer) : Integer');
+ Function EditIsFocused( AMustAllowWrite : Boolean) : Boolean');
+ Function EditFocusedTextCanCopy : Boolean');
+ Function EditFocusedTextCanCut : Boolean');
+ Function EditFocusedTextCanDelete : Boolean');
+ Function EditFocusedTextCanPaste : Boolean');
+ Function EditFocusedTextCanUndo : Boolean');
+ Procedure EditUndoFocused');
+ Procedure EditDeleteFocused');
+ Procedure EditCutFocused');
+ Procedure EditCopyFocused');
+ Procedure EditPasteFocused');
+ Procedure EditSelectAllFocused');
+ Procedure EnableControls2(AParent: TWinControl; AEnabled,ARecursive : Boolean)');
+ Procedure EnsureLastPathSlash( var APath : string)');
+ Procedure Error2( const Msg : string)');
+ Function FillMessage(Msg : Cardinal; WParam: WPARAM; LParam:LPARAM) : TLMessage');
+ Function FormatCurrency(Value:Currency;const AFormat:TKCurrencyFormat):TKkString;
+ //Function GetAppContext( var Ctx : TKAppContext) : Boolean');
+ Function GetAppVersion( const ALibName : string; var MajorVersion, MinorVersion, BuildNumber, RevisionNumber : Word) : Boolean');
+ Function GetCharCount( const AText : TKkString; AChar : TKkChar) : Integer');
+ Function GetControlText( Value : TWinControl) : TKkString');
+ Function GetFormatSettings2 : TFormatSettings');
+ Function GetShiftState : TShiftState');
+ Function IntToAscii( Value : Int64; Digits : Integer) : string');
+ Function IntToBinStr(Value : Int64; Digits : Byte; const Suffix:string):string');
+ Function IntToBCD( Value : Cardinal) : Cardinal');
+ Function IntToDecStr( Value : Int64) : string');
+ Function IntToHexStr( Value : Int64; Digits : Byte; const Prefix, Suffix : string; UseLowerCase : Boolean) : string');
+ Function IntToOctStr( Value : Int64) : string');
+ Function IntToRoman2( Value : Integer; AUpperCase : Boolean) : string');
+ Function IntToLatin( Value : Integer; AUpperCase : Boolean) : string');
+ Function IntPowerInt( Value : Int64; Exponent : Integer) : Int64');
+ Function AsciiToInt( S : string; Digits : Integer) : Int64');
+ Function BCDToInt( Value : Cardinal) : Cardinal');
+ Function BinStrToInt2(S:string;Digits:Byte;Signed:Boolean;var Code:Integer):Int64;
+ Function DecStrToInt( S : string; var Code : Integer) : Int64');
+ Function HexStrToInt(S:string;Digits:Byte;Signed:Boolean;var Code:Integer):Int64;
+ Function OctStrToInt( S : string; var Code : Integer) : Int64');
+ Function KFormat14( const Format : string; const Args : array of const; const AFormatSettings : TFormatSettings) : string;');
+ Function KFormat15( const Format : WideString; const Args : array of const; const AFormatSettings : TFormatSettings) : WideString;');
+ Function MakeCellSpan( AColumns, ARows : Integer) : TKCellSpan');
+ Function MinMax16( Value, Min, Max : ShortInt) : ShortInt;');
+ Function MinMax17( Value, Min, Max : SmallInt) : SmallInt;');
+ Function MinMax18( Value, Min, Max : Integer) : Integer;');
+ Function MinMax19( Value, Min, Max : Int64) : Int64;');
+ Function MinMax20( Value, Min, Max : Single) : Single;');
+ Function MinMax21( Value, Min, Max : Double) : Double;');
+ Function MinMax22( Value, Min, Max : Extended) : Extended;');
+ Function NibbleToDigit( Nibble : Byte; UpperCase : Boolean) : AnsiChar');
+ Procedure OpenURLWithShell( const AText : TKkString)');
+ //Procedure QuickSortNR( AData : Pointer; ACount : Integer; ACompareProc : TQsCompareProc; AExchangeProc : TQsExchangeProc; ASortedDown : Boolean)');
+ //Procedure QuickSort( AData : Pointer; ACount : Integer; ACompareProc : TQsCompareProc; AExchangeProc : TQsExchangeProc; ASortedDown : Boolean)');
+ Procedure OffsetPoint23( var APoint : TPoint; AX, AY : Integer);');
+ Procedure OffsetPoint24( var APoint : TPoint; const AOffset : TPoint);');
+ Function RectInRect( Bounds, Rect : TRect) : Boolean');
+ Procedure OffsetRect25( var ARect : TRect; AX, AY : Integer);');
+ Procedure OffsetRect26( var ARect : TRect; const AOffset : TPoint);');
+ //Function SetAppContext( const Ctx : TKAppContext) : Boolean');
+ Procedure SetControlClipRect( AControl : TWinControl; const ARect : TRect)');
+ Procedure SetControlText( Value : TWinControl; const Text : TKkString)');
+ Procedure StripLastPathSlash( var APath : string)');
+ Function StrNextCharIndex( const AText : TKkString; Index : Integer) : Integer');
+ Function StrPreviousCharIndex( const AText : TKkString;Index: Integer):Integer');
+ Function StringCharBegin( const AText : TKkString; Index : Integer) : Integer');
+ Function StringLength( const AText : TKkString) : Integer');
+ Function StringCopy( const ASource : TKkString; At, Count : Integer) : TKkString');
+ Procedure StringDelete( var ASource : TKkString; At, Count : Integer)');
+ Procedure TrimWhiteSpaces27(const AText:TKkString; var AStart,ALen:Integer;const ASet:TKSysCharSet);
+ Procedure TrimWhiteSpaces28( var AText : TKkString; const ASet : TKSysCharSet);');
+ Procedure TrimWhiteSpaces29( var AText : AnsiString; const ASet : TKSysCharSet);');
+ Function StringToAnsiString(const AText:TKkString;CodePage:Cardinal):AnsiString');
+ Function StringToChar( const AText : TKkString; AIndex : Integer) : TKkChar');
+ Function GetWindowsFolder2( CSIDL : Cardinal; var APath : string) : Boolean');
+ Function RunExecutable( const AFileName : string; AWaitForIt : Boolean) : DWORD');
+ Function SystemCodePage : Integer');
+ Function NativeUTFToUnicode( const AText : TKkString) : WideChar');
+ Function UnicodeUpperCase2( const AText : TKkString) : TKkString');
+ Function UnicodeLowerCase2( const AText : TKkString) : TKkString');
+ Function UnicodeToNativeUTF( const AParam : WideChar) : TKkString');
+ Function UnicodeStringReplace( const AText, AOldPattern, ANewPattern : TKkString; AFlags : TReplaceFlags) : TKkString');
+ end;
+
+Amount of Functions: 16584
+Amount of Procedures: 9891
+Amount of Constructors: 1629
+Totals of Calls: 28104
+SHA1: of maXbox 4.2.0.10 15671711176CCEA92AEC355B44867D48B7C54575
+CRC32: 8C581C30
+https://www.virustotal.com/en/file/2dbbeea235d560b7bb2cefcadb05ec328e1d95f32490980894c07c1288123e13/analysis/
+Cumulative Update for Windows 10 Version 1511 for x64-based Systems (KB3140768)
+Update for Windows 10 Version 1511 for x64-based Systems (KB3139907)
+
+
+****************************************************************
+Release Notes maXbox 4.0.2.80 February 2016 Jupiter mX4
+****************************************************************
+
+This is an upgrade to mX3 app files dir, if you want all examples/docs for this mX4 
+you have to download mX3 first and then copy mX4 files in it too.
+Otherwise you already have mX3 on disk just copy new files (save maxboxdef.ini first).
+All functions & object: maxbox_functions_all.pdf
+Tutor about certfificate signing: 
+http: //sourceforge.net/projects/maxbox/files/Docu/maxbox_digital_signature_report.pdf/download
+
+News:
+Add 77 Units, 12 Tutors, ChangeTracker, CPP+, OLEUtils2, xmldom, Chess4, 3DFrame, XMLRPC, X509, InetUtils
+
+1121 unit uPSI_IndySockTransport.pas (+IdHTTPHeaderInfo)
+1122 unit uPSI_HTTPProd.pa
+1123 unit uPSI_CppParser.pas
+1124 unit uPSI_SynHighlighterCpp.pas
+1125 unit uPSI_CodeCompletion.pas
+1126 unit uPSI_U_IntList2.pas
+1127 unit uPSI_SockHTTP.pas
+1128 uPSI_SockAppNotify.pas
+1129 uPSI_NSToIS.pas
+1130 unit uPSI_DBOleCtl.pas
+1131 unit uPSI_xercesxmldom;
+1132 unit uPSI_xmldom;
+1133 unit uPSI_Midas;
+1134 unit uPSI_JclExprEval;
+1135 uPSI_Gameboard;
+1136 unit uPSI_ExtUtil;
+1137 unit uPSI_FCGIApp;
+1138 unit uPSI_ExtPascal;
+1139 unit uPSI_PersistSettings;
+1140 IdHTTPHeaderInfo.pas
+1141 uPSI_SynEditAutoComplete;
+1142 uPSI_SynEditTextBuffer.pas
+1143 unit uPSI_JclPCRE;
+1144 unit uPSI_ZConnection;
+1145 unit uPSI_ZSequence;
+1146 unit uPSI_ChessPrg;
+1147 unit uPSI_ChessBrd;
+1148 unit uPSI_Graph3D;
+1149 uPSI_SysInfoCtrls2.pas
+1150 unit uPSI_RegUtils;
+1151 unit uPSI_VariantRtn;
+1152 uPSI_StdFuncs,
+1153 unit uPSI_SqlTxtRtns;
+1154 unit uPSI_BSpectrum;
+1155 unit IPAddressControl;
+1156 unit uPSI_Paradox;
+1157 unit uPSI_Environ;
+1158 uPSI_GraphicsPrimitivesLibrary;
+1159 uPSI_DrawFigures,
+1160 unit uPSI_synadbg;
+1161 unit uPSI_BitStream;
+1162 unit uPSI_xrtl_util_FileVersion;
+1163 uPSI_XmlRpcCommon,
+1164 unit uPSI_XmlRpcClient;
+1165 unit uPSI_XmlRpcTypes;
+1166 unit uPSI_XmlRpcServer;
+1167 unit uPSI_SynAutoIndent;
+1168 unit uPSI_synafpc;
+1169 unit uPSI_RxNotify;
+1170 unit uPSI_SynAutoCorrect;
+1171 unit uPSI_rxOle2Auto;
+1172 unit uPSI_Spring_Utilsmx;
+1173 unit uPSI_ulogifit;
+1174 unit uPSI_HarmFade;
+1175 unit uPSI_SynCompletionProposal;
+1176 unit uPSI_rxAniFile;
+1177 uPSI_ulinfit,
+1178 uPSI_usvdfit;
+1179 unit uPSI_JclStringLists;
+1180 unit uPSI_ZLib;
+1181 unit uPSI_MaxTokenizers;
+1182 unit uPSI_MaxStrUtils;
+1183 unit uPSI_MaxXMLUtils;
+1184 unit uPSI_MaxUtils;
+1185 unit uPSI_VListBox;
+1186 unit uPSI_MaxDOM;
+1187 unit uPSI_MaxDOMDictionary;
+1188 unit uPSI_MaxDOMDictionary_Routines;
+1189 unit uPSI_cASN1;
+1190 unit uPSI_cX509Certificate;
+1191 unit uPSI_uCiaXml;
+1192 unit uPSI_StringsW;
+1193 unit uPSI_FileStreamW;  //WideString D7X
+1194 unit Drawingutils;
+1195 unit uPSI_InetUtilsUnified;
+1196 unit uPSI_FileMask;
+1197 unit uPSI_StrConv;
+
+
+//synacode?
+source of the new units: http://sourceforge.net/projects/maxbox/files/Docu/SourceV4/
+
+New Functions /Classes:
+
+ function DownloadJPGToBitmap(const URL : string; ABitmap: TBitmap): Boolean;)');
+ procedure GetImageLinks(AURL: string; AList: TStrings);');
+ procedure SaveByteCode;');
+ procedure ResetKeyPressed;');
+
+ RIRegister_HTTPProd_Routines(Exec);
+ Function ContentFromScriptStream( AStream : TStream; AWebModuleContext : TWebModuleContext; AStripParamQuotes : Boolean; AHandleTag : THandleTagProc; AHandleScriptTag : THandledTagProc; const AScriptEngine : string; '+
+                                 'ALocateFileService : ILocateFileService) : string');
+ Function ContentFromScriptFile( const AFileName : TFileName; AWebModuleContext : TWebModuleContext; AStripParamQuotes : Boolean; AHandleTag : THandleTagProc; AHandleScriptTag : THandledTagProc; '+
+                                'const AScriptEngine : string; ALocateFileService : ILocateFileService) : string');
+ Function FindComponentWebModuleContext( AComponent : TComponent) : TWebModuleContext');
+ Function GetTagID( const TagString : string) : TTag');
+ Function ContentFromStream( AStream : TStream; AStripParamQuotes:Boolean; AHandleTag : THandleTagProc; AHandledTag : THandledTagProc) : string');
+ Function ContentFromString( const AValue : string; AStripParamQuotes : Boolean; AHandleTag : THandleTagProc; AHandledTag : THandledTagProc) : string');
+
+ RIRegister_synacrypt_Routines(Exec);
+ function TestDes: boolean;
+ {:Call internal test of all 3DES encryptions. Returns @true if all is OK.}
+ function Test3Des: boolean;
+ {:Call internal test of all AES encryptions. Returns @true if all is OK.}
+ function TestAes: boolean;
+
+ Procedure LogMessage( const Fmt : string; const Params : array of const)');
+ Function UnixPathToDosPath2( const Path : string) : string');
+ Function DosPathToUnixPath2( const Path : string) : string');
+ Procedure InitISAPIApplicationList');
+ Procedure DoneISAPIAPplicationList');
+
+ RIRegister_xmldom_Routines(Exec);
+ Function IsPrefixed( const AName : DOMString) : Boolean');
+ Function IsPrefixedW( const AName : DOMStringW) : Boolean');
+ Function ExtractLocalName( const AName : DOMString) : DOMString');
+ Function ExtractLocalNameW( const AName : DOMStringW) : DOMStringW');
+ Function ExtractPrefixW( const AName : DOMStringW) : DOMStringW');
+ Function MakeNodeNameW( const Prefix, LocalName : DOMStringW) : DOMStringW');
+ Function ExtractPrefix( const AName : DOMString) : DOMString');
+ Function MakeNodeName( const Prefix, LocalName : DOMString) : DOMString');
+ Function SameNamespace(const Node:IDOMNode;const namespaceURI:WideString):Boolean;');
+ Function SameNamespace2( const URI1, URI2 : WideString) : Boolean;');
+ Function NodeMatches(const Node:IDOMNode; const TagName,NamespaceURI:DOMString): Bool;;
+ Function GetDOMNodeEx( const Node : IDOMNode) : IDOMNodeEx');
+ Procedure RegisterDOMVendor( const Vendor : TDOMVendor)');
+ Procedure UnRegisterDOMVendor( const Vendor : TDOMVendor)');
+ Function GetDOMVendor( VendorDesc : string) : TDOMVendor');
+ Function GetDOM( const VendorDesc : string) : IDOMImplementation');
+ Procedure DOMVendorNotSupported( const PropOrMethod, VendorName : string)');
+{ Function IsValidLocale( Locale : LCID; dwFlags : DWORD) : BOOL');
+ Function ConvertDefaultLocale( Locale : LCID) : LCID');
+ Function GetThreadLocale : LCID');
+ Function SetThreadLocale( Locale : LCID) : BOOL');
+ Function GetSystemDefaultLangID : LANGID');
+ Function GetUserDefaultLangID : LANGID');
+ Function GetSystemDefaultLCID : LCID');
+ Function GetUserDefaultLCID : LCID');
+ }
+ Function AbsInt( const B : integer) : integer');
+ Function AbsFloat( const B : double) : extended');
+
+ Procedure ReconcileDeltas( const cdsArray : array of TClientDataset; vDeltaArray : OleVariant)');
+ Procedure CDSApplyUpdates( ADatabase : TDatabase; var vDeltaArray : OleVariant; const vProviderArray : OleVariant; Local : Boolean)');
+  Sender.AddFunction(@CheckMemory, 'procedure CheckMemory;');
+  Sender.AddFunction(@GetMemoryInfo, 'function getMemoryInfo;');
+  Sender.AddFunction(@GetMemoryInfo, 'function getMemInf;');
+ Procedure RaiseLastWin32_2( const Text : string);');
+
+ RIRegister_Gameboard_Routines(Exec);
+ Function Opponent( Player : TPlayer) : TPlayer');
+ Procedure InitZobritsNumbers( var ZobristNumbers, Count : Integer)');
+ Procedure SaveStringToStream( const Str : String; Stream : TStream)');
+ Function LoadStringFromStream( Stream : TStream) : String');
+ Function WaitForSyncObject( SyncObject : THandle; Timeout : Cardinal; BlockInput : Boolean) : Cardinal');
+ Function ProcessMessage : Boolean');
+ Procedure ProcessMessages( Timeout : DWORD)');  //without application!
+
+ RIRegister_PersistSettings_Routines(Exec);
+ Procedure SetStorageHandler( AFunction : TStorageHandlerFunction);');
+ Procedure SetStorageHandler1( AMethod : TStorageHandlerMethod);');
+ Function GetStorage : TPersistStorage');
+ Procedure SaveComponents( Root : TComponent; Storage : TPersistStorage)');
+ Procedure LoadComponents( Root : TComponent; Storage : TPersistStorage)');
+ Procedure AutoSave( Root : TComponent)');
+ Procedure AutoLoad( Root : TComponent)');
+
+ procedure FloatToDecimalE(var Result: TFloatRec; const Value: extended; ValueType: TFloatValue; Precision, Decimals: Integer);');
+ function FloatToTextE(BufferArg: PChar; const Value: extended; ValueType: TFloatValue; Format: TFloatFormat; Precision, Digits: Integer): Integer;');
+ procedure FloatToDecimalE(var Result: TFloatRec; const Value: extended; ValueType: TFloatValue; Precision, Decimals: Integer);');
+ function FloatToTextE(BufferArg: PChar; const Value: extended; ValueType: TFloatValue; Format: TFloatFormat; Precision, Digits: Integer): Integer;');
+ Function GetSystemDefaultLCID : LCID');
+ Function GetUserDefaultLCID : LCID');
+ Function CreateMutex2( lpMutexAttributes : TObject; bInitialOwner : BOOL; lpName : PChar) : THandle');
+  Function CreateSemaphore2( lpSemaphoreAttributes : TObject; lInitialCount, lMaximumCount : Longint; lpName : PChar) : THandle');
+ 
+//GetSystemDefaultLCID : LCID');
+ //GetUserDefaultLCID : LCID');
+
+Function GetUserNameAPI( lpBuffer : PChar; var nSize : DWORD) : BOOL');
+createmutex2 fhand:= OpenFileHandle(exepath+'maxbox4.exe')
+ 
+ function getMatchString(arex, atext: string): string; 
+ function getLastInput: DWord;
+ procedure GetKLList(List: TStrings);');   //Keyboardlist2
+ procedure EnableCTRLALTDEL(YesNo : boolean);
+ function LocalIP: string;
+ function IPAddrToName(IPAddr: string): string;
+ function GetIPFromHost(const HostName: string): string;
+ function FindComputers(Computers : TStringList): DWORD;
+ function GetWin32TypeLibList(var Lines: TStringList): Boolean;
+ function RecurseWin32(const R: TRegistry; const ThePath: string;
+                             const TheKey: string): string;
+
+ RIRegister_JclPCRE_Routines(S: TPSExec);
+ Procedure InitializeLocaleSupport');
+ Procedure TerminateLocaleSupport');
+ Function StrReplaceRegEx(const Subject,Pattern: AnsiString; Args: array of const) : AnsiString');
+
+procedure SIRegister_VariantRtn(CL: TPSPascalCompiler);
+begin
+CL.AddTypeS('TProcReadElementValue', 'procedure(Value:Variant; IndexValue:integerarray; const HighBoundInd:integer; Var Continue:boolean)');
+CL.AddTypeS('TProcWriteElementValue', 'procedure(OldValue:Variant; IndexValue:integerarray; Var NewValue:Variant; Var Continue:boolean)');
+
+ //TProcReadElementValue=procedure (Value:Variant; IndexValue:array of integer; const HighBoundInd:integer; Var Continue:boolean);
+ //TProcWriteElementValue=procedure (OldValue:Variant; IndexValue:array of integer; Var NewValue:Variant;  Var Continue:boolean);
+
+ Function SafeVarArrayCreate( const Bounds : array of Integer; VarType, DimCount : Integer) : Variant');
+ Function VarArrayGet2( const A : Variant; const Indices : array of Integer; const HighBound : integer) : Variant');
+ Procedure VarArrayPut2( var A : Variant; const Value : Variant; const Indices : array of Integer; const HighBound : integer)');
+ Function CycleReadArray(vArray: Variant;CallBackProc: TProcReadElementValue):boolean');
+ Function CycleWriteArray(var vArray:Variant;CallBackProc:TProcWriteElementValue): boolean;
+ Function CompareVarArray1( vArray1, vArray2 : Variant) : boolean');
+ Function EasyCompareVarArray1(vArray1,vArray2:Variant;HighBound:integer): boolean');
+end;
+
+procedure SIRegister_StdFuncs(CL: TPSPascalCompiler);
+begin
+  CL.AddClassN(CL.FindClass('TOBJECT'),'EParserError');
+  //CL.AddTypeS('TCharSet', 'set of Char');
+ Function ConvertFromBase(sNum: String; iBase: Integer; cDigits: String): Integer');
+ Function ConvertToBase( iNum, iBase : Integer; cDigits : String) : String');
+ Function EnsureSentenceTerminates( Sentence : String; Terminator : Char) : String');
+ Function FindTokenStartingAt( st : String; var i : Integer; TokenChars : TCharSet; TokenCharsInToken : Boolean) : String');
+ Function GetDirectoryOfFile( FileName : String) : String');
+ Function GetDirOfFile( FileName : String) : String');
+ Function GetTempFilefib( FilePrefix : String) : String');
+ Function Icon2Bitmap( Icon : HICON) : HBITMAP');
+ Function Maxfib( n1, n2 : Integer) : Integer');
+ Function MaxD( n1, n2 : Double) : Double');
+ Function Minfib( n1, n2 : Integer) : Integer');
+ Function MinD( n1, n2 : Double) : Double');
+ Function RandomStringfib( iLength : Integer) : String');
+ Function RandomIntegerfib( iLow, iHigh : Integer) : Integer');
+ Function Soundexfib( st : String) : String');
+ Function StripStringfib( st : String; CharsToStrip : String) : String');
+ Function ClosestWeekday( const d : TDateTime) : TDateTime');
+ Function Yearfib( d : TDateTime) : Integer');
+ Function Monthfib( d : TDateTime) : Integer');
+ Function DayOfYearfib( d : TDateTime) : Integer');
+ Function DayOfMonth( d : TDateTime) : Integer');
+ Function VarCoalesce( V1, V2 : Variant) : Variant');
+ Function VarEqual( V1, V2 : Variant) : Boolean');
+ Procedure WeekOfYearfib( d : TDateTime; var Year, Week : Integer)');
+ Function Degree10( Degree : integer) : double');
+ Function CompToStr( Value : comp) : string');
+ Function StrToComp( const Value : string) : comp');
+ Function CompDiv( A, B : comp) : comp');
+ Function CompMod( A, B : comp) : comp');
+ // CL.AddTypeS('PComp', '^Comp // will not work');
+end;
+
+procedure SIRegister_RegUtils(CL: TPSPascalCompiler);
+begin
+ Procedure DefWriteToRegistry( const OtherKeys, ParamNames : array of string; const Values : array of Variant)');
+ Procedure WriteToRegistry( aRootKey : HKEY; const OtherKeys, ParamNames : array of string; const Values : array of Variant)');
+ Function ReadFromRegistry( aRootKey : HKEY; const OtherKeys, ParamNames : array of string) : Variant');
+ Function DefReadFromRegistry(const OtherKeys,ParamNames: array of string) : Variant');
+ Function AllSubKey( aRootKey : HKEY; const ForPath : array of string) : Variant');
+ Function DefAllSubKey( const ForPath : array of string) : Variant');
+ Function SaveRegKey(const FileName: String; const ForKey: array of string): Boolean');
+ Function LoadRegKey(const FileName: String; const ForKey: array of string): Boolean');
+ Function AltSaveRegKey(const FileName: String; const ForKey: array of string): Bool;
+ Function AltLoadRegKey(const FileName :String; const ForKey: array of string):Bool;
+ Function GetKeyForParValue( const aRootKey, ParName, ParValue : string) : string');
+end;
+
+ Function GetEulerPhi( n : int64) : int64');
+ function isprime(f: int64): boolean;');
+
+ function  DispositionFrom(const SQLText:string):TPoint;
+ procedure AllTables(const SQLText:string;FTables:Tstrings);
+ function  TableByAlias(const SQLText,Alias:string):string;
+ function  FullFieldName(const SQLText,FieldName:string):string;
+ function  AddToWhereClause(const SQLText,NewClause:string):string;
+ function  GetWhereClause(SQLText:string;N:integer;var
+   StartPos,EndPos:integer ):string;
+ function  WhereCount(SQLText:string):integer;
+ function  GetOrderInfo(SQLText:string):variant;
+ function  OrderStringTxt(SQLText:string; var StartPos,EndPos:integer ):String;
+//
+ function  PrepareConstraint(Src:Tstrings):string;
+ procedure DeleteEmptyStr(Src:Tstrings);
+ function  NormalizeSQLText(const SQL: string;MacroChar:Char): string;
+ function  CountSelect(const SrcSQL:string):string;
+ function  GetModifyTable(const SQLText:string;AlreadyNormal:boolean):string;
+function GetCharFromVKey(vkey: Word): string;
+function Xls_To_StringGrid(AGrid: TStringGrid; AXLSFile: string): Boolean;
+function IsObjectActive(ClassName: string): Boolean;
+ function GetActiveObject(ClassID:TGUID; anil:TObject; aUnknown:IUnknown):HRESULT;');
+function RegisterOCX(FileName: string): Boolean;
+function UnRegisterOCX(FileName: string): Boolean;
+function RegisterServer2(const aDllFileName: string; aRegister: Boolean): Boolean;
+procedure mIRCDDE(Service, Topic, Cmd: string); //mIRCDDE('mIRC', 'COMMAND', '/say Hallo von SwissDelphiCenter.ch');
+function OpenIE(aURL: string): boolean;
+function XRTLIsInMainThread: Boolean;
+function IsInMainThread: Boolean;
+ TryConvertStrToDateTime(const s, format: string; out value: TDateTime): Boolean;');
+  ConvertStrToDateTime(const s, format: string): TDateTime;');
+ Function CreateNotifyThread2(const FolderName : string; WatchSubtree : Boolean; Filter : TFileChangeFilters2) : TNotifyThread');
+procedure DetectImage(const InputFileName: string; BM: TBitmap);
+  function BitmapToString(Bitmap: TBitmap): String;
+   function StringToBitmap(S: String): TBitmap;
+  FUNCTION RemoveChar(CONST s: STRING; CONST c: CHAR): STRING;
+ procedure SecureClearStr(var S: AnsiString);');
+  procedure movestring(const Source:string; var Destination:string; CopyCount:Integer);
+  procedure ShowFilePropertiesSH(Files: TStrings; aWnd: HWND);
+  function GrabLine(const s: string; ALine: Integer): string;
+  function GrabLineFast(const s: string; ALine: Integer): string;
+  function IsTextFile(const sFile: TFileName): boolean;
+  function getODBC: Tstringlist;
+ function getODBCString: string;
+ procedure GetJPGSize(const sFile: string; var wWidth, wHeight: Word);
+ procedure GetPNGSize(const sFile: string; var wWidth, wHeight: Word);
+ procedure GetGIFSize(const sGIFFile: string; var wWidth, wHeight: Word);
+// note: using TForm's BorderIcons, etc. is slow (form blinks) and not reliable (for some
+//       reson it causes TListView.Items to lose all associated objects and other things happen).
+procedure ChangeWindowStyle(const Form: HWND; Style: DWord; AddIt: Boolean);
+
+
+procedure SIRegister_SpectraLibrary(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('Nanometers', 'Double');
+ CL.AddConstantN('WavelengthMinimum','LongInt').SetInt( 380);
+ CL.AddConstantN('WavelengthMaximum','LongInt').SetInt( 780);
+ Procedure WavelengthToRGB( const Wavelength : Nanometers; var R, G, B : BYTE)');
+end;
+
+procedure SIRegister_DrawFigures(CL: TPSPascalCompiler);
+begin
+ Procedure DrawCube( const PantoGraph : TPantoGraph; const color : TColor)');
+ Procedure DrawSphere( const PantoGraph : TPantoGraph; const LatitudeColor, LongitudeColor: TColor;const LatitudeCircles,LongitudeSemicircles,PointsInCircle:WORD)
+ Procedure DrawSurface( const PantoGraph : TPantoGraph)');
+ Procedure DrawFootballField( const PantoGraph : TPantoGraph; const ColorField, ColorLetters, ColorGoals : TColor)');
+end;
+
+procedure SIRegister_synadbg(CL: TPSPascalCompiler);
+begin
+  SIRegister_TSynaDebug(CL);
+ Procedure AppendToLog( const value : Ansistring)');
+end;
+
+procedure SIRegister_XmlRpcCommon(CL: TPSPascalCompiler);
+begin
+  SIRegister_TRC4(CL);
+  CL.AddTypeS('TRPCDataType', '( rpNone, rpString, rpInteger, rpBoolean, rpDoub'
+   +'le, rpDate, rpBase64, rpStruct, rpArray, rpName, rpError )');
+ Function GetTempDirRPC : string');
+ Function FileIsExpired( const FileName : string; Elapsed : Integer) : Boolean');
+ Function EncodeEntities( const Data : string) : string');
+ Function DecodeEntities( const Data : string) : string');
+ Function ReplaceRPC(const Data:string; const Find:string;const Replace:string):string);
+ Function InStr( Start : Integer; const Data : string; const Find : string) : Integer');
+ Function Mid( const Data : string; Start : Integer) : string');
+ Function DateTimeToISO( ConvertDate : TDateTime) : string');
+ Function IsoToDateTime( const ISOStringDate : string) : TDateTime');
+ Function ParseStringRPC( const SearchString : string; Delimiter : Char; Substrings : TStrings; const AllowEmptyStrings : Boolean; ClearBeforeParse : Boolean) : Integer');
+ Function ParseStream( SearchStream : TStream; Delimiter : Char; Substrings : TStrings; AllowEmptyStrings : Boolean; ClearBeforeParse : Boolean) : Integer');
+ Function FixEmptyString( const Value : string) : string');
+ Function URLEncodeRPC( const Value : string) : string');
+ Function StreamToStringRPC( Stream : TStream) : string');
+ Procedure StringToStream( const Text : string; Stream : TStream)');
+ Function StreamToVariant( Stream : TStream) : OleVariant');
+ Procedure VariantToStream( V : OleVariant; Stream : TStream)');
+ Function Hash128AsHex( const Hash128Value : T4x4LongWordRecord) : string');
+ CL.AddConstantN('ValidURLChars','String').SetString( 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$-_@.&+-!''*"(),;/#?:');
+end;
+
+procedure SIRegister_synafpc(CL: TPSPascalCompiler);
+begin
+ Function LoadLibraryfpc( ModuleName : PChar) : TLibHandle');
+ Function FreeLibraryfpc( Module : TLibHandle) : LongBool');
+ Function GetProcAddressfpc( Module : TLibHandle; Proc : PChar) : Pointer');
+ Function GetModuleFileNamefpc(Module:TLibHandle;Buffer:PChar; BufLen:Integer):Integer;
+  CL.AddTypeS('TLibHandle', 'Integer');
+  CL.AddTypeS('TLibHandle2', 'HModule');
+  CL.AddTypeS('LongWordfpc', 'DWord');
+ Procedure Sleepfpc( milliseconds : Cardinal)');
+end;
+
+procedure SIRegister_Spring_Utilsmx(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('TOSPlatformType', '( ptUnknown, ptWin3x, ptWin9x, ptWinNT )');
+  SIRegister_TOperatingSystem(CL);
+  SIRegister_TEnvironmentClass(CL);
+  CL.AddTypeS('Environment', 'TEnvironment');
+ Function ApplicationPath : string');
+ Function ApplicationVersion : TVersion');
+ Function ApplicationVersionString : string');
+ Function GetLastErrorMessage : string');
+ Function CreateCallback( obj : TObject; methodAddress : Pointer) : TCallbackFunc');
+ Function ConvertFileTimeToDateTime( const fileTime : TFileTime; useLocalTimeZone : Boolean) : TDateTime;');
+ Function ConvertDateTimeToFileTime( const datetime : TDateTime; useLocalTimeZone : Boolean) : TFileTime;');
+ {Procedure Synchronize( threadProc : TThreadProcedure)');
+ Procedure Queue( threadProc : TThreadProcedure)'); }
+ Function TryGetPropInfo( instance : TObject; const propertyName : string; out propInfo : PPropInfo) : Boolean');
+ Function IsCtrlPressed : Boolean');
+ Function IsShiftPressed : Boolean');
+ Function IsAltPressed : Boolean');
+ Procedure CheckFileExists( const fileName : string)');
+ Procedure CheckDirectoryExists( const directory : string)');
+ CL.AddConstantN('COneKB','Int64').SetInt64( 1024);
+ CL.AddConstantN('COneMB','Int64').SetInt64( 1048576);
+ CL.AddConstantN('COneGB','Int64').SetInt64( 1073741824);
+ CL.AddConstantN('COneTB','Int64').SetInt64( 1099511627776);
+ function TryConvertStrToDateTime(const s,format:string;out value:TDateTime):Boolean;');
+ function ConvertStrToDateTime(const s, format: string): TDateTime;');
+end;
+
+procedure SIRegister_rxOle2Auto(CL: TPSPascalCompiler);
+begin
+ CL.AddConstantN('MaxDispArgs','LongInt').SetInt( 64);
+ CL.AddConstantN('MaxDispArgs','LongInt').SetInt( 32);
+  CL.AddClassN(CL.FindClass('TOBJECT'),'EPropReadOnly');
+  CL.AddClassN(CL.FindClass('TOBJECT'),'EPropWriteOnly');
+  SIRegister_TOleController(CL);
+ Procedure InitOLE2');
+ Procedure DoneOLE');
+ Function OleInitialized : Boolean');
+ Function MakeLangID( PrimaryLangID, SubLangID : Word) : Word');
+ Function MakeLCID( LangID : Word) : TLCID');
+ Function CreateLCID( PrimaryLangID, SubLangID : Word) : TLCID');
+ Function ExtractLangID( LCID : TLCID) : Word');
+ Function ExtractSubLangID( LCID : TLCID) : Word');
+end;
+
+procedure SIRegister_ulogifit(CL: TPSPascalCompiler);
+begin
+ Procedure LogiFit( X, Y : TVector; Lb, Ub : Integer; ConsTerm : Boolean; General : Boolean; MaxIter : Integer; Tol : Float; B : TVector; V : TMatrix)');
+ Procedure WLogiFit( X, Y, S : TVector; Lb, Ub : Integer; ConsTerm : Boolean; General : Boolean; MaxIter : Integer; Tol : Float; B : TVector; V : TMatrix)');
+ Function LogiFit_Func( X : Float; B : TVector) : Float');
+end;
+
+ Procedure FormattedTextOut( TargetCanvas : TCanvas; const Rect : TRect; const Text : string; Selected : Boolean; Columns : TProposalColumns; Images : TImageList)');
+ Function FormattedTextWidth( TargetCanvas : TCanvas; const Text : string; Columns : TProposalColumns; Images : TImageList) : Integer');
+ Function PrettyTextToFormattedString( const APrettyText : string; AlternateBoldStyle : Boolean) : string');
+ 
+ procedure SIRegister_MaxUtils(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('MaxCharSet', 'set of Char');
+ Function GetMachineNamemax : String');
+ Function GetModuleNamemax( HModule : THandle) : String');
+ Function TrimChars( const S : string; Chars : MaxCharSet) : string');
+ Function TickCountToDateTime( Ticks : Cardinal) : TDateTime');
+ Procedure OutputDebugStringmax( const S : String)');
+ Procedure OutputDebugFormat( const FmtStr : String; Args : array of const)');
+ Function IsAppRunningInDelphi : Boolean');
+ Procedure ParseFields( Separators, WhiteSpace : TSysCharSet; Content : PChar; Strings : TStrings; Decode : Boolean)');
+ Function HTTPDecodemax( const AStr : String) : string');
+ Function HTTPEncodemax( const AStr : String) : string');
+ Function FormatDate( const DateString : string) : string');
+ Function FormatListMasterDate(const DateStr,FormatDefStr:String; Len:Integer):String');
+ Function InvertCase( const S : String) : String');
+ Function CommentLinesWithSlashes( const S : String) : String');
+ Function UncommentLinesWithSlashes( const S : String) : String');
+ Function StripChars( const S : String; Strip : CharSet) : String');
+ Function TrimChars( const S : string; Chars : CharSet) : string');
+ Function TrimLeftChars( const S : string; Chars : CharSet) : string');
+ Function TrimRightChars( const S : string; Chars : CharSet) : string');
+ Function ContainsChars( const S : String; Strip : CharSet) : Boolean');
+ Function DequotedStrmax( const S : String; AQuoteChar : Char) : String');
+ Procedure LeftPadStr( var S : String; toLength : Integer; withChar : Char)');
+ Procedure RightPadStr( var S : String; toLength : Integer; withChar : Char)');
+ Function RemoveChars( S : string; Chars : CharSet) : string');
+ Function FilterChars( S : string; Chars : CharSet) : string');
+ Function RemoveNonNumericChars( S : string) : string');
+ Function RemoveNonAlphanumChars( S : string) : string');
+ Function RemoveNonAlphaChars( S : string) : string');
+ Function HasAlphaChars( S : string) : boolean');
+ Function ReplaceChars( S : string; Chars : CharSet; ReplaceWith : Char) : string');
+ Function DomainOfEMail( const EMailAddress : String) : String');
+ Function IPToHexIP( const IP : String) : String');
+ Procedure CmdLineToStrings( S : AnsiString; const List : TStrings)');
+ BASE2','String').SetString( '01');
+ CL.AddConstantN('BASE10','String').SetString( '0123456789');
+ CL.AddConstantN('BASE16','String').SetString( '0123456789ABCDEF');
+ CL.AddConstantN('BASE36','String').SetString( '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+ CL.AddConstantN('BASE62','String').SetString( '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
+ Function BaseConvert( Number, FromDigits, ToDigits : String) : String');
+Function ValidXmlName( AName : PChar; ASize : Integer) : Boolean;');
+ Function ValidXmlName1( const AName : String) : Boolean;');
+ Function EncodeXmlAttrValue( const AStr : AnsiString) : AnsiString;');
+ Procedure EncodeXmlAttrValue3( ABuff : PChar; ABuffSize : Integer; var AStr : AnsiString; var ALen, AOffset : Integer);');
+ Procedure EncodeXmlAttrValue4( const ASource : String; var ADest : String; var ALen, AOffset : Integer);');
+ Function EncodeXmlString5( const AStr : String) : String;');
+ Procedure EncodeXmlString6( ABuff : PChar; ABuffSize : Integer; var AStr : AnsiString; var ALen, AOffset : Integer);');
+ Procedure EncodeXmlComment( const ASource : AnsiString; var ADest : AnsiString; var ALen, AOffset : Integer);');
+ Function HasEncoding( const AStr : AnsiString) : Boolean');
+ Function DecodeXmlAttrValue( const AStr : String) : String');
+ Procedure ReallocateString( var AString : AnsiString; var ALen : Integer; AReqLen : Integer)');
+ //Procedure AttrFillXMLString( AnAttr : IAttribute; var aString : AnsiString; var aOffset, aLen : Integer)');
+ //Procedure FillXMLString( ANode : INode; var AString : String; var AOffset, ALen : Integer; ASibling : INode; ALevel : Integer)');
+ //Function NodeToXML( ANode : INode) : String');
+ //Procedure XMLSaveToFile( ANode : INode; const AFileName : String)');
+ //Function XMLLoadFromFile( const AFileName : String) : INode');
+ Function Hashmax( const ASource : AnsiString) : Cardinal');
+ CL.AddConstantN('GXMLIndentSpaces','Integer').SetInt( 2);
+ //CL.AddConstantN('GXMLMultiLineAttributes','Boolean')BoolToStr( True);
+ CL.AddConstantN('GXMLMultiLineAttributeThreshold','Integer').SetInt( 7);
+ end;
+
+procedure SIRegister_MaxDOMDictionary(CL: TPSPascalCompiler);
+begin
+  SIRegister_IDictionary(CL);
+  SIRegister_TDictionary(CL);
+ Function HashFast( const AKey : String) : Cardinal');
+ Function HashCarlos( const AKey : String) : Cardinal');
+ Function BorlandHashOf( const AKey : String) : Cardinal');
+ Function HashSumOfChars( const AKey : String) : Cardinal');
+end;
+
+procedure SIRegister_MaxDOM(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('TNodeType', '( ntElement, ntText, ntCDATA, ntComment )');
+  CL.AddInterface(CL.FindInterface('IUNKNOWN'),INode, 'INode');
+  CL.AddInterface(CL.FindInterface('IUNKNOWN'),IAttribute, 'IAttribute');
+  CL.AddInterface(CL.FindInterface('IUNKNOWN'),IAttributeCollection, 'IAttributeCollection');
+  CL.AddInterface(CL.FindInterface('IUNKNOWN'),INodeCollection, 'INodeCollection');
+  SIRegister_INode(CL);
+  SIRegister_IAttribute(CL);
+  SIRegister_IAttributeCollection(CL);
+  SIRegister_INodeCollection(CL);
+ Function NodeCreate( const ANodeName : String; ANodeType : TNodeType) : INode');
+  SIRegister_TAttribute(CL);
+  CL.AddTypeS('TNodes', 'array of INode');
+  CL.AddTypeS('TAttributes2', 'array of IAttribute');
+  CL.AddTypeS('THashedAttributes', 'record Attributes : TAttributes2; AttrCount '
+   +': Integer; AttrCapacity : Integer; end');
+  CL.AddTypeS('TAttrHashTable', 'array of THashedAttributes');
+  SIRegister_TNode(CL);
+  //CL.AddTypeS('TNodeClass', 'class of TNode');
+  //CL.AddTypeS('TAttributeClass', 'class of TAttribute');
+ Function PointerToStr( P : ___Pointer) : String');
+ Function StrToPointer( const S : String) : ___Pointer');
+ Function INodeToStr( ANode : INode) : String');
+ Function StrToINode( const S : String) : INode');
+ Function CompareByNodeName( N1, N2 : INode) : Integer');
+ Function CompareByNameAttr( N1, N2 : INode) : Integer');
+end;
+
+procedure SIRegister_FileStreamW(CL: TPSPascalCompiler);
+begin
+  SIRegister_TFileStreamW(CL);
+  {TFormFadeSettings = record
+    Form: TForm;
+    Step: ShortInt;
+    DisableBlendOnFinish: Boolean;
+    Callback: TNotifyEvent;
+    MinAlpha, MaxAlpha: Byte;
+  end;}
+ TFormFadeSettings', 'record Form: TForm;Step: ShortInt; DisableBlendOnFinish: Boolean; Callback: TNotifyEvent; MinAlpha, MaxAlpha: Byte; end');
+ CL.AddConstantN('fmForcePath','LongWord').SetUInt( $80000000);
+ Function LoadUnicodeFromStream( S : TStream; AsIsAnsi : Boolean) : WideString');
+ function GetClipboardText: WideString;');
+ procedure CopyToClipboard(Str: WideString);');
+ function CurrentWinUser: WideString;');
+  function GetTempPathW: WideString;');
+ function GetTempFileNameW: WideString;');
+ function GetDesktopFolderW: WideString;');
+ function IsWritable(const FileName: WideString): Boolean;');
+ function SysErrorMessageW(ErrorCode: Integer): WideString;');
+ function FormatExceptionInfo: WideString;');
+ procedure ShowExceptionW(Message: WideString);');
+ procedure ChangeWindowStyle(const Form: HWND; Style: DWord; AddIt: Boolean);');
+ function SetNtfsCompressionW(const FileName: WideString; Level: Word): Boolean;');
+ function WriteWS(const Stream: TStream; const Str: WideString): Word;');
+ procedure FormFadeIn(Form: TForm; Step: ShortInt);');
+ procedure FormFadeOut(Form: TForm; Step: ShortInt);');
+ procedure FormFadeOutAndWait(Form: TForm; Step: ShortInt);');
+ function BrowseForFolderw(const Caption, DefaultPath: WideString; const OwnerWindow: HWND): WideString;');
+ procedure FormFade(const Settings: TFormFadeSettings);');
+  function HashOfString(const Str: WideString): DWord;
+  function ComparePoints(const First, Second: TPoint): ShortInt;
+end;
+
+procedure SIRegister_InetUtils(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('TNetUtilsSettings', 'record UserAgent : String; ProxyURL : Strin'
+   +'g; OpenURLFlags : DWord; TrafficCounter : Dword; UploadedCounter : DWord; ReadBufferSize : DWord; end');
+  TRawCharset', 'set of Char');
+  TInetHeaders', 'array of String');
+  SIRegister_EInet(CL);
+  TInetDownloadCallback', 'Function ( Downloaded, TotalSize : DWord) : Boolean');
+ Function InetDownloadTo( const DestFile : WideString; const URL : String; Callback : TInetDownloadCallback) : Boolean;');
+ Function InetDownloadTo1( const DestFile : WideString; const URL : String; const Settings : TNetUtilsSettings; Callback : TInetDownloadCallback) : Boolean;');
+ Function InetDownload( const URL : String; Dest : TStream; Callback : TInetDownloadCallback) : Boolean;');
+ Function InetDownload3( const URL : String; Dest : TStream; const Settings : TNetUtilsSettings; Callback : TInetDownloadCallback) : Boolean;');
+ Function InetBufferedReadFrom( Handle : HInternet; Dest : TStream; const Settings : TNetUtilsSettings; Callback : TInetDownloadCallback) : DWord;');
+ Function InetBufferedReadFrom5( Handle : HInternet; const Settings : TNetUtilsSettings; Callback : TInetDownloadCallback) : String;');
+ Function IsResponseStatusOK( Handle : HInternet) : Boolean');
+  TMultipartItem', 'record Headers : TInetHeaders; Data : TStream; end');
+ {  TMaskMatchInfo = record
+    Matched: Boolean;
+    StrPos: Word;
+    MatchLength: Word;
+  end;}
+  TMaskMatchInfo', 'record Matched: Boolean; StrPos: Word; MatchLength: Word; end');
+ TMultipartItems', 'array of TMultipartItem');
+  TUploadFile','record Name:String; SourceFileName : WideString; Data : TStream; end');
+  TUploadFiles', 'array of TUploadFile');
+ Function FindBoundaryFor( const Items : TMultipartItems) : String');
+ Function RandomBoundary : String');
+ Function GenerateMultipartFormFrom( const Items : TMultipartItems; out ExtraHeaders : TInetHeaders) : String');
+ Function InetUploadTo( const ToURL : String; const Headers : TInetHeaders; const Items : TMultipartItems; const Settings : TNetUtilsSettings) : String;');
+ Function InetUploadTo7( const ToURL : String; const Items : TMultipartItems; const Settings : TNetUtilsSettings) : String;');
+ Function InetUploadTo8(const ToURL: String; const Items: TMultipartItems) : String;');
+ Function InetUploadStreamsTo( const ToURL : String; const Settings : TNetUtilsSettings; Streams : TUploadFiles) : String;');
+ Function InetUploadStreamsTo10(const ToURL:String;const Streams:TUploadFiles):String;
+ Function InetUploadFileTo( const ToURL : String; const Settings : TNetUtilsSettings; const ItemName : String; const FilePath : WideString) : String;');
+ Function InetUploadFileTo12( const ToURL : String; const ItemName : String; const FilePath : WideString) : String;');
+ Function InetUploadFilesTo( const ToURL : String; const Settings : TNetUtilsSettings; const Files : array of const) : String;');
+ Function InetUploadFilesTo14(const ToURL: String;const Files: array of const):String;
+ Function AppendQueryTo(const URL: String; const Arguments: array of const):String');
+ Function HasQueryPart( const URL : String) : Boolean');
+ Function BuildQueryFrom( const Arguments : array of const) : String');
+ Function BuildURLW( Protocol, Host : String; Port : Word; Path, Script : String; const Arguments : array of const) : String');
+ Function CustomEncode(const Str: WideString; const RawChars:TRawCharset): String');
+ Function EncodeURI( const Str : WideString) : String');
+ Function EncodeURIComponent( const Str : WideString) : String');
+ Procedure InetGetLastError( out ErrorCode : DWord; out ErrorMessage : String)');
+ Function InetGetLastErrorCode : DWord');
+ Function InetGetLastErrorMsg : String');
+ Function AbsoluteURLFrom( URL, BaseURL, BasePath : String) : String');
+ Procedure SplitURL( const URL : String; out Domain, Path : String)');
+ Function DomainOf( const URL : String) : String');
+ Function PathFromURL( const URL : String) : String');
+ Function InetHeaders( const NameValues : array of const) : TInetHeaders');
+ Function NoInetHeaders : TInetHeaders');
+ Function JoinHeaders( const Headers : TInetHeaders) : String');
+ CL.AddConstantN('InetHeaderEOLN','String').SetString( #13#10);
+ Procedure SetDefaultNetUtilsSettings');
+ Procedure SetDefaultNetUtilsSettings2');
+
+ Function TotalDownTrafficThroughNetUtils : DWord');
+  TDBDraw', 'record DisplayDC : HDC; MemDC : HDC; MemBitmap : HBIT'
+   +'MAP; OldBitmap : HBITMAP; OldFont : HFONT; OldPen : HPEN; end');
+  TPieceFormatData', 'record Position : TMaskMatchInfo; Color : TColor; end');
+  TFormatData', 'array of TPieceFormatData');
+  TDrawFormattedTextSettings', 'record Text : WideString; FormatDa'
+   +'ta : TFormatData; Canvas : TCanvas; WrapText : Boolean; DestPos : TPoint; '
+   +'MaxWidth : Word; CharSpacing : Word; end');
+  TWrapTextSettings', 'record DC : HDC; Str : WideString; Delimite'
+   +'r : WideString; MaxWidth : Word; LeftMargin : Word; CharSpacing : Word; LastChar : TSize; end');
+ Function TextSize( const DC : HDC; const Str : WideString) : TSize');
+ Function TextWidthW2( const DC : HDC; const Str : WideString) : Integer');
+ Function TextHeightW2( const DC : HDC; const Str : WideString) : Integer');
+ Function GetLineHeightOf( const Font : HFONT) : Word');
+ Function TextWidthEx(const DC:HDC;const Str:WideString; const CharSpacing:Word): Integer;
+ Function TextHeightEx(const DC:HDC;const Str:WideString; const CharSpacing:Word): Integer;
+ Function TextSizeEx(const DC:HDC;const Str:WideString;const CharSpacing:Word):TSize');
+ Function TextWithBreaksSize( Settings : TWrapTextSettings) : TSize;');
+ Function DoubleBufferedDraw(const DisplaySurface:HDC;const BufferSize:TPoint):TDBDraw;
+ Function DoubleBufferedDraw17(const Canvas:TCanvas; const BufferSize:TPoint):TDBDraw;
+ Function DoubleBufferedDraw2(const Canvas:TCanvas; const BufferSize:TPoint):TDBDraw;
+ Procedure DrawFormattedText( const Settings : TDrawFormattedTextSettings)');
+ Function GetLastCharPos( const DC : HDC; const Str : WideString; const MaxWidth : Word; const CharSpacing : Word) : TSize');
+ Function WrapNonMonospacedText( const DC : HDC; const Str : WideString; const Delimiter : WideString; const MaxWidth : Word; const CharSpacing : Word) : WideString;');
+ Function WrapNonMonospacedText2( var Settings : TWrapTextSettings) : WideString;');
+end;
+
+procedure SIRegister_StrConv(CL: TPSPascalCompiler);
+begin
+ CL.AddTypeS('TCodepage', 'DWord');
+ CL.AddConstantN('CP_INVALID','LongInt').SetInt( TCodepage ( - 1 ));
+ CL.AddConstantN('CP_ASIS','LongInt').SetInt( TCodepage ( - 2 ));
+ CL.AddConstantN('CP_ANSI','longint').SetInt(0);
+ CL.AddConstantN('CP_OEM','longint').SetInt(1);
+ CL.AddConstantN('CP_SHIFTJIS','LongInt').SetInt( 932);
+ CL.AddConstantN('CP_LATIN1','LongInt').SetInt( 1250);
+ CL.AddConstantN('CP_UNICODE','LongInt').SetInt( 1200);
+ CL.AddConstantN('CP_UTF8','LongInt').SetInt( 65001);
+ Function MinStrConvBufSize( SrcCodepage : TCodepage; Str : String) : Integer;');
+ Function MinStrConvBufSize1( DestCodepage : TCodepage; Wide : WideString) : Integer;');
+ Function ToWideString(SrcCodepage: TCodepage; Str: String; BufSize: Integer): WideString');
+ Function FromWideString( DestCodepage : TCodepage; Str : WideString; BufSize : Integer; Fail : Boolean) : String');
+ Function CharsetToID( Str : String) : TCodepage');
+ Function IdToCharset( ID : TCodepage; GetDescription : Boolean) : String');
+ function CompareStrW(const S1, S2: WideString; Flags: DWord = 0): Integer;
+ function CompareTextW(const S1, S2: WideString): Integer;
+ function MaskMatch(const Str, Mask: WideString): Boolean;
+ { Info can have special values in some cases:
+  * Matched = True but MatchLength = 0 (and StrPos having random value) - this means that Mask consisted of only "*" and
+    thus no particular substring could be specified (since it could match any part of the string). }
+ function MaskMatchInfo(const Str,Mask:WideString;StartingPos:Word = 1):TMaskMatchInfo;
+ //Strutils
+  Function TryStrToIntStrict(const S: String; out Value:Integer; Min:Integer):Boolean;
+ Function TryStrToFloatStrict( const S : String; out Value : Single; const FormatSettings : TFormatSettings) : Boolean;');
+ Function TryStrToFloatStrict1( const S : String; out Value : Double; const FormatSettings : TFormatSettings) : Boolean;');
+ Function DetectEolnStyleIn( const Str : WideString) : WideString');
+ Function DetectEolnStyleInANSI( Stream : TStream) : WideString');
+ Function PascalQuote( const Str : WideString) : WideString');
+  Function StrRepeatW( const Str : WideString; Times : Integer) : WideString');
+  Function EscapeString(const Str: WideString; CharsToEscape:WideString): WideString');
+ Function UnescapeString(const Str: WideString; CharsToEscape: WideString):WideString;
+ Function BinToHexW( const Buf : String; Delim : String) : String');
+ Function HexToBinW( Text : String) : String');
+ Function SoftHexToBin( Text : String) : String');
+ Function FormatVersion( Version : Word) : WideString');
+ Function FormatDateW( Date : DWord) : WideString');
+ Function FormatNumber( Number : DWord) : WideString');
+ Function GenericFormat(Number:Single;const Language:TGenericFormatLanguage):WideString;
+ Function FormatInterval( Millisecs : DWord) : WideString');
+ Function FormatSize( Bytes : DWord) : WideString');
+ Function PosLast( const Substr, Str : String; Start : Word) : Integer');
+ Function PosLastW( const Substr, Str : WideString; Start : Word) : Integer');
+ Function IsDelimiterW(const Delimiters,S: WideString; Index: Integer): Boolean');
+ Function RemoveNonWordChars(const Str: WideString;DoNotRemove:WideString):WideString;
+ Function IsQuoteChar( const aChr : Char) : Boolean');
+ Function WrapTextW( const Str : WideString; const Delimiter : WideString; const MaxWidth : Word) : WideString');
+ Function PadText( const Str : WideString; const NewLine, PadStr : WideString; const MaxWidth : Word) : WideString');
+ Function PadTextWithVariableLineLength( const Str : WideString; const NewLine, PadStr : WideString; const LineLengths : array of Integer) : WideString');
+ Function StrPadW(const Str : WideString; ToLength: Integer; PadChar: WideChar) : WideString');
+ Function StrPadLeftW(const Str: WideString;ToLength: Integer;PadChar: WideChar) : WideString');
+ //Function StrRepeat( const Str : WideString; Times : Integer) : WideString');
+ Function StrReverseW( const Str : WideString) : WideString');
+  Function CountSubstr( const Substr, Str : WideString) : Integer');
+   Procedure DeleteArrayItem( var A : TWideStringArray; Index : Integer)');
+ Function TrimStringArray( WSArray : TWideStringArray) : TWideStringArray');
+ Function TrimWS( Str : WideString; const Chars : WideString) : WideString');
+ Function TrimLeftWS( Str : WideString; const Chars : WideString) : WideString');
+ //Function TrimRightWS( Str : WideString; const Chars : WideString) : WideString');
+ Function ConsistsOfChars( const Str, Chars : WideString) : Boolean');
+ Function UpperCaseW( const Str : WideString) : WideString');
+ Function LowerCaseW( const Str : WideString) : WideString');
+ Function UpperCaseFirst( const Str : WideString) : WideString');
+ Function LowerCaseFirst( const Str : WideString) : WideString');
+ Function StripAccelChars( const Str : WideString) : WideString');
+end;
+
+
+Amount of Functions: 16400
+Amount of Procedures: 9844
+Amount of Constructors: 1618
+Totals of Calls: 27862
+SHA1: of maXbox4.exe (4.0.2.80) CDC0D39FE16CE883EA98FF65C7E31C874FE1520B
+CRC32: 64E170B0
+maXbox4.exe 26,506,752 bytes
+
+
+https://www.virustotal.com/en/file/c51abbc4533c2a13430ecec4efc37857d173476cbb0115b4d91079227239e59a/analysis/1454793082/
+
+Cumulative Update for Windows 10 Version 1511 for x64-based Systems (KB3124263).
+Cumulative Update for Windows 10 Version 1511 for x64-based Systems (KB3124262).
+
+zip hash
+567aa1a07e75e5c3fb90ebfb04f72217e3a22c48
+
+****************************************************************
+Release Notes maXbox 3.9.9.195 Mai 2015 CODEsign
+****************************************************************
+Add 36 Units, 1 Tutor, SOAPConn, AVI-Res, OLEUtils, ACM, CDS
+
+1085 unit uPSI_JvAnimate                       //JCL
+1086 unit uPSI_DBXCharDecoder;                 //DBX
+1087 unit uPSI_JvDBLists;                      //JCL
+1088 unit uPSI_JvFileInfo;                     //JCL
+1089 unit uPSI_SOAPConn;                       //VCL
+1090 unit uPSI_SOAPLinked;                     //VCL
+1091 unit uPSI_XSBuiltIns;                     //VCL
+1092 unit uPSI_JvgDigits;                      //JCL
+1093 unit uPSI_JvDesignUtils;
+1094 unit uPSI_JvgCrossTable;
+1095 unit uPSI_JvgReport;
+1096 unit uPSI_JvDBRichEdit;
+1097 unit uPSI_JvWinHelp;
+1098 unit uPSI_WaveConverter;
+1099 unit uPSI_ACMConvertor;
+1100 unit XSBuiltIns_Routines
+1101 unit uPSI_ComObjOleDB_utils.pas
+1102 unit uPSI_SMScript;
+1103 unit uPSI_CompFileIo;
+1104 unit uPSI_SynHighlighterGeneral;
+1105 unit uPSI_geometry2;
+1106 unit uPSI_MConnect
+1107 unit uPSI_ObjBrkr;
+1108 unit uPSI_uMultiStr;
+1109 unit uPSI_WinAPI.pas;
+1110 unit uPSI_JvAVICapture;
+1111 unit uPSI_JvExceptionForm;
+1112 unit uPSI_JvConnectNetwork;
+1113 unit uPSI_MTMainForm;
+1114 unit uPSI_DdeMan;
+1115 unit uPSI_DIUtils;
+1116 unit uPSI_gnugettext;
+1117 unit uPSI_Xmlxform;
+1118 unit uPSI_SvrHTTPIndy;
+1119 unit uPSI_CPortTrmSet;
+1120 unit SvrLog;
+
+
+SHA1:  maXbox3.exe F0AB7D054111F5CE46BA122D6280397A841C6FAB
+CRC32: maXbox3.exe 602A885C
+
+
+****************************************************************
+Release Notes maXbox 3.9.9.180 March 2015 CODEsign
+****************************************************************
+Add 20 Units, 1 Slide,Tutor, BigNumbers, TestFramework, GEOInfo
+
+1065 unit uPSI_UDict;                          //DFF
+1066 unit uPSI_ubigFloatV3;                    //DFF
+1067 unit uPSI_UBigIntsV4;                     //DFF 
+1068 unit uPSI_ServiceMgr2;                    //mX
+1069 unit uPSI_UP10Build;                      //PS
+1070 unit uPSI_UParser10;                      //PS
+1071 unit uPSI_IdModBusServer;                 //MB
+1072 unit uPSI_IdModBusClient; +MBUtils        //MB
+1073 unit uPSI_ColorGrd;                       //VCL
+1074 unit uPSI_DirOutln;                       //VCL
+1075 unit uPSI_Gauges;                         //VCL
+1076 unit uPSI_CustomizeDlg;                   //VCL
+1077 unit uPSI_ActnMan;                        //VCL
+1078 unit uPSI_CollPanl;                       //VCL
+1079 unit uPSI_Calendar2;                      //VCL
+1080 unit uPSI_IBCtrls;                        //VCL
+1081 unit uPSI_IdStackWindows;                 //Indy
+1082 unit uPSI_CTSVendorUtils;
+1083 unit uPSI_VendorTestFramework;
+1084 unit uPSI_TInterval; 
+
+SHA1:  maXbox3.exe 3D7F88BE9687CB834A5E2DAED08B23358484FEC0
+CRC32: maXbox3.exe E2ADE828
+
+
+****************************************************************
+Release Notes maXbox 3.9.9.160 January 2015 CODEsign
+****************************************************************
+Add 12 Units, 2Slides 1Tutor, CLXUp, ExampleEdition, UnitConv
+ExecuteProcess (MultiProcessor), ConsoleCapture (DOS)
+
+1053 unit uPSI_BigIni                          //Hinzen
+1054 unit uPSI_ShellCtrls;                     //VCL
+1055 unit uPSI_fMath;                          //FMath
+1056 unit uPSI_fComp;                          //FMath
+1057 unit uPSI_HighResTimer;                   //Lauer
+1058 unit uconvMain; (Unit Converter)          //PS
+1059 unit uPSI_uconvMain;                      //PS
+1060 unit uPSI_ParserUtils;                    //PS
+1061 unit uPSI_uPSUtils;                       //PS
+1062 unit uPSI_ParserU;                        //PS
+1063 unit uPSI_TypInfo; {SubSet}               //VCL
+1064 unit uPSI_ServiceMgr;                     //mX
+
+SHA1:  maXbox3.exe 9C80649752AABE948C34180552BEDC2AB295E82A
+CRC32: maXbox3.exe B4B4B5C7
+
+
+Information for the CLX Linux Version
+****************************************************************
+you can start a shell script with the name e.g. "maxboxstart.sh":
+-----------------------------------------------------------------------------
+#!/bin/bash
+cd `dirname $0`
+export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
+./maxbox3clx
+exit 0
+-----------------------------------------------------------------------------
+so it will include the path to the 2 symbolic links and you can start the box
+ from the shell, from script or with click from a stick.
+-----------------------------------------------------------------------------
+Tips of the Day for Version V3.5
+----------------------------------------------
+
+- Click on the red maXbox Sign (right on top) opens your work directory
+- You can printout your scripts as a pdf-file
+- You do have a context menu with the right mouse click
+- With the UseCase Editor you can convert graphic formats too.
+- On menu Options you find 4 Addons as compiled scripts 
+- You don't need a mouse to handle maXbox, use shortcuts
+- With F2 you check syntax with F9 you compile
+- With escape you can leave the box
+- In directory /exercises you find a few compilats 
+- Drag n' drop your scripts in the box
+- Open in menu Outpout a new instance of the box to compare or prepare your scripts
+- You can get templates as code completion with ctrl j in the editor like
+  classp or iinterface or ttimer (you type classp and then CTRL J)
+- In menu output you can set output menu in edit mode by unchecking read only memo  
+- To start from CD-ROM (read only mode) uncheck  in Menu /Options/Save before Compile         
+
+
+just inside maXbox
+         ____    ___   _      ____    _   _   _
+        |  _ \  |  _| | |    |  _ \  | | | | | |
+        | | . | | |_  | |    | |_| | | |_| | | |
+        | | | | |  _| | |    |  __/  |  _  | | |          
+        | |_. | | |_  | |__  | |     | | | | | |                      
+        |____/  |___| |____| |_|     |_| |_| |_|                                   
+
+max@kleiner.com
+ 
+new version and examples from
+http://www.softwareschule.ch/maxbox.htm
+http://www.softwareschule.ch/download/maxbox3.zip
+http://sourceforge.net/projects/maxbox
+
+
+// to Delphi users:
+ Also add this line to your project source (.DPR).
+{$D-} will prevent placing Debug info to your code.
+{$L-} will prevent placing local symbols to your code.
+{$O+} will optimize your code, remove unnecessary variables etc.
+{$Q-} removes code for Integer overflow-checking.
+{$R-} removes code for range checking of strings, arrays etc.
+{$S-} removes code for stack-checking. USE ONLY AFTER HEAVY TESTING !
+{$Y-} will prevent placing smybol information to your code.
+
+
+
+============================================================
+
+Examples Info
+    examples need internet
+    001_1_pas_functest.txt 
+    101 - 130
+    
+    takes time
+    044_pas_8queens_solutions.txt (2 min.)
+    050_pas_primetest2.txt (1 min)
+    064_pas_timetest.txt(1 min)
+    070_pas_functionplotter4.txt(2 min.)
+
+075_pas_bitmap_Artwork.txt intelligence test
+065 bitcounter as performance test
+
+
+Object Based Scripting Tool
+maXbox is a free scripter tool with an inbuilt delphi engine in one exe! It is designed for teaching, develop, test and analyzing apps and algorithms and runs under Windows and Linux (CLX) to set Delphi in a box without installation and no administration. The tool is based on an educational program with examples and exercises (from biorhythm, form building to how encryption works). Units are precompiled and objects invokable! With a 28 part tutorial for coders.
+
+
+https://github.com/maxkleiner/maXbox3.git
+
+http://downloads.sourceforge.net/project/maxbox/maxbox3clx.tar.gz
+http://de.sourceforge.jp/projects/sfnet_maxbox/downloads/maxbox3clx.tar.gz/
+http://www.mirrorservice.org/sites/downloads.sourceforge.net/m/ma/maxbox/maxbox3clx.tar.gz
+http://www.mirrorservice.org/sites/downloads.sourceforge.net/m/ma/maxbox/
+
+httpde.sourceforge.jp%2Fprojects%2Fsfnet_maxbox%2Fdownloads%2Fmaxbox3clx.tar.gz%2F&ei=iir5UunlHYWxywO17YLYAg&usg=AFQjCNHecwAFuIbxLJ8nKZ2_NLcdAZpfpg
+
+http://www.google.de/url?sa=t&rct=j&q=&esrc=s&source=web&cd=4&cad=rja&ved=0CE4QFjAD&url=http%3A%2F%2Fde.sourceforge.jp%2Fprojects%2Fsfnet_maxbox%2Fdownloads%2Fmaxbox3clx.tar.gz%2F&ei=iir5UunlHYWxywO17YLYAg&usg=AFQjCNHecwAFuIbxLJ8nKZ2_NLcdAZpfp

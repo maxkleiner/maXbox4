@@ -1,0 +1,597 @@
+program BitmapGame3_Load_Solution_BITMAX;
+
+// Game: PascalPicturePuzzle - P3 Deluxe Version
+// Loads several sliced bitmaps with an aggregation from TPicture Class at array of TBitmap
+// A function stretches and rectangels also a bitmap with specified number of pixels
+// in horizontal, vertical dimension, locs=522 , intf= 23  #locs:554
+// adapted from the book software praxis delphi of thomas strauss, improved by max
+
+//http://www.softwareschule.ch/examples/281_picturepuzzle4.txt
+//http://www.softwareschule.ch/examples/picturepuzzle3.png
+
+
+Type 
+    TField2 = array[0..9] of String;
+    TField1 = array[0..11] of TField2;
+    TDir2 = array[1..2] of smallint;
+
+
+Const FBOX = 7;
+      //QB = FBOX*FBOX;
+      QB = 80;
+      QBOX = 9;
+      GPIC = 'examples\richtermax4.bmp';    //max_locomotion.bmp';
+
+var
+  frmMon: TForm;
+  Image1: TImage;
+  drG: TDrawGrid;
+  frmsg: TStringGrid;
+  stat: TStatusbar;
+  panstep: TPanel;
+  Progress: TProgressBar;
+  mT: TTimer;
+  picname: shortstring;
+  Zug: integer;
+  Field, zField: TField1;  //Feldbelegung, Zielfeld
+  bArr: Array[1..QB+1] of TBitmap;
+  dir: array[1..FBOX] of TDir2;
+  
+
+procedure initNavArray;
+begin
+  dir[1][1]:= 0;
+  dir[1][2]:= -1;
+  dir[2][1]:= 1;
+  dir[2][2]:= 0;
+  dir[3][1]:= 0;
+  dir[3][2]:= 1;
+  dir[4][1]:= -1;
+  dir[4][2]:= 0;
+  dir[5][1]:= 0;
+  dir[5][2]:= -1;
+  dir[6][1]:= 1;
+  dir[6][2]:= 0;
+  dir[7][1]:= 0;
+  dir[7][2]:= 1;
+  //dir[8][1]:= -1;
+  //dir[8][2]:= 0;
+ 
+ (*=(( 0,-1), //N
+    ( 1, 0),  //O
+    ( 0, 1),  //S
+    (-1, 0)   //W *)
+end;  
+
+procedure CloseClick(Sender: TObject; var action: TCloseAction); forward;
+  
+procedure loadImage;
+var  aRect: TRect;
+     bm: TBitMap;
+begin
+   bm:= TBitMap.Create;
+   try
+     //bm.LoadFromFile(ExePath+'examples\citymax.bmp');
+     //picname:= ExePath+'examples\citymax.bmp'; //maxboxfrac.bmp
+     picname:= ExePath+GPIC;
+     bm.LoadFromFile(picname);
+     //Image1.Picture.BitMap.LoadFromFile();
+     aRect:= Rect(0,0,image1.Width,image1.Height);
+     image1.Canvas.StretchDraw(aRect, bm);
+   finally
+     bm.Free;
+   end;
+end; 
+
+procedure OpenPicture(var img: TImage);
+var bm: TBitMap; aRect: TRect;
+begin
+  bm:= TBitMap.Create;
+  with TOpenDialog.Create(self) do begin 
+    Filter:= 'bitmap files (*.bmp)|*.BMP';
+    InitialDir:= ExtractFilePath(Application.ExeName);
+    if Execute then begin
+      try
+        bm.LoadFromFile(FileName);
+        picname:= Filename;
+      except
+        showmessageBig('This is not a valid -------- BMP Picture!');
+      end;
+    end;
+  end;  
+  //Scale Bitmap bm at size of img1
+  aRect:=Rect(0,0,image1.Width,image1.Height);
+  image1.Canvas.StretchDraw(aRect, bm);
+  bm.Free;
+end;
+
+procedure MakePuzzlePeaces;
+//Erstellen der Teilquadrate und speichern in bArr
+var
+  i,bhg,bhg2, bh, bh2, z,s,z1,s1,z2,s2: integer;
+  r1,r2: TRect;
+begin
+    bhg:= image1.Picture.Width;
+    bhg2:= image1.picture.height;
+    bh2:= bhg2 div FBOX;
+    bh:= bhg div QBOX;
+    
+    for i:= 1 to QB do begin //Größe der Images einstellen!
+      bArr[i].Width:= bh2;
+      bArr[i].Height:= bh;
+    end;
+    //Images erstellen durch Kopieren aus dem Quellbild
+    for i:= 1 to QB do begin
+      //Zeile/Spalte des Rasters bestimmen
+      z:=(i-1) div QBOX + 1; s:=(i-1) mod FBOX + 1;
+      s1:=(s-1)*bh; z1:=(z-1)*bh2;
+      s2:=s*bh; z2:=z*bh2;
+      //Quadrate unter Berücksichtigung der Ränder definieren
+      r1:=Rect(s1+1,z1+1,s2-1,z2-1); //Source
+      r2:=Rect(1,1,bh-1,bh2-1); //Destination
+      with bArr[i].Canvas do begin
+        Pen.Color:= RGB2TColor(100,100,100);
+        Rectangle(0,0,bh,bh2);
+        CopyRect(r2,image1.Canvas,r1);
+      end;
+    end;
+    //letztes Quadrat weißen //bArr[17]:= bArr[16]; //save last
+    bArr[QB].Canvas.Brush.Color:= clWhite;
+    bArr[QB].Canvas.FillRect(Rect(1,1,bh-1,bh2-1));
+end;  
+
+
+procedure FinishedField;
+//erzeugt die Zielbelegung auf zField
+var w,z,s: smallint;
+begin
+  for z:= 0 to 9 do //Spielfeld löschen
+    for s:= 0 to 8 do
+      zField[s][z]:= '#'; //Randbelegung
+  w:= 0;
+  for z:= 1 to FBOX do
+    for s:= 1 to QBOX do begin
+      inc(w);
+      zField[s][z]:= IntToStr(w);
+    end;
+  zField[FBOX][QBOX]:= ' ';
+end;
+
+procedure HideGridCursor(g: TStringGrid);
+//Cursor aus dem StringGrid entfernen
+var gr: TRect;//TGridRect;
+begin
+  with gr do begin
+    Top:=-1; Left:=-1; Right:=-1; Bottom:=-1
+  end; //g.Selection:= gr;
+end;
+
+procedure DrawField(f: TField1);
+var
+  z,s: integer;
+begin
+  for z:=1 to 9 do
+    for s:=1 to 11 do begin
+    writeln(itoa(s)+' '+itoa(z))
+      frmsg.Cells[s-1,z-1]:= f[s][z];
+    end;
+  //Form1.panZug.Caption:=IntToStr(Zug);
+  HideGridCursor(frmsg);
+end;
+
+function GetFreeDir(x,y: integer): integer;
+//ermittelt die freie Richtung und gibt zurück:
+//0...kein Nachbar frei; 1-4 für N/O/S/W
+var
+ d,fd: integer;
+begin
+  fd:= 0;
+  for d:= 1 to FBOX do begin //check all directions
+    if Field[x+dir[d][1]][y+dir[d][2]]=' ' then fd:= d;
+  end;
+  result:= fd;
+end;
+
+function HasFinished: boolean;
+var
+  finished: boolean;
+  z,s: integer;
+begin
+  finished:=true;
+  for z:=1 to FBOX do
+    for s:=1 to QBOX do
+      if Field[s][z]<>zField[s][z] then finished:= false;
+  result:= finished;
+end;
+
+function RandomField: TField1;
+var
+  f0: TField1;
+  f,f1: Array[1..QB] of string;
+  free: Array[1..QB+2] of boolean;
+  i,z,s,w: integer;
+begin
+  Randomize;
+  for i:=1 to QB-1 do f[i]:= IntToStr(i);
+  f[16]:=' ';
+  for i:=1 to QB do free[i]:= true;
+  w:=0;
+  repeat //Zufallsbelegung in Linearfeld
+    repeat
+      z:= Random(QB)+1;
+    until free[z];
+    inc(w);
+    f1[w]:= f[z];
+    free[z]:= false;
+  until w=QB;
+  w:= 0;
+  for z:=1 to FBOX-1 do //take it
+    for s:= 1 to QBOX-1 do begin
+      inc(w);
+      f0[s][z]:=f1[w];
+    end;
+  Result:= f0;
+end;
+
+function maxSteps: integer;
+//liefert die Anzahl der Entfernungs-Schritte zur Zielkonstellation
+//mit der größtmöglichen Unordnung auf dem Feld
+var z,s,sum: integer;
+begin
+  sum:=0;
+  for z:=1 to 9 do
+    for s:=1 to 11 do
+      sum:=sum + max(z-1,9-z)+ max(s-1,11-s);
+  result:= sum;
+end;
+
+function Steps(f: TField1): integer;
+//liefert Schritte zur Zielkonstellation
+//aus der aktuellen Belegung von f
+var 
+  s,z,x,y,w1,sum: integer;
+  t: string;
+begin
+  sum:= 0;
+  for z:=1 to 7 do begin
+    for s:=1 to 9 do begin
+      t:=f[s][z];
+      if t=' ' then 
+        w1:= 16 else //Zahl auf dem Feld
+      w1:= StrToInt(t); 
+      x:= round(abs((((w1-1) mod 7)+1)-s));
+      y:= round(abs((((w1-1) div 9)+1)-z)); //Zielposition
+      sum:= sum+x+y;
+    end;
+  end;
+  result:= sum;
+end;
+
+
+//*********************** event handlers *********************************//
+procedure btnNewPicClick(Sender: TObject);
+begin
+  //OpenPicture(img1); loadimage
+  stat.SimpleText:= 'Welcome to PicPuzzle: '+ExtractFileName(picname)+' is loaded';
+  drG.Visible:=false;
+  MakePuzzlePeaces;
+  FinishedField;
+  Field:=zField;
+  DrawField(zField);
+  drG.Visible:=True;
+  //btnNewGame.Enabled:=True;
+  //btnCancel.Enabled:=True;
+end;
+
+procedure btnPictureLoad(Sender: TObject);
+begin
+  OpenPicture(image1);
+  btnNewPicClick(Self);
+end; 
+
+procedure btnNewGameClick(Sender: TObject);
+var p: real;
+begin
+  Field:=zField;
+  Progress.Max:= maxSteps+20;
+  Field:= zField;
+  Field:= RandomField;
+  Zug:= 0;
+  p:= 100-Steps(Field)/MaxSteps*100;
+  panStep.Caption:= formatFloat('0',p)+' %';
+  Progress.Position:= round(p);
+  drG.Repaint;
+  //drg.setBounds
+  DrawField(Field);
+  HideGridCursor(frmsg);
+  stat.SimpleText:='Game is running ...';
+  //stat.Color:=$30809000;
+  //btnNewPic.Enabled:=false;
+end;
+
+procedure btnCloseClick(Sender: TObject);
+begin
+  stat.SimpleText:= 'Closed Clicked';
+  frmMon.Close;
+end;
+
+procedure CloseClick(Sender: TObject; var action: TCloseAction);
+var i: integer;
+begin
+   //if MessageDlg('Wanna Leave?',mtConfirmation,[mbYes, mbNo],0)= mrYes then begin
+   //form1.Free; //bmp.Free;
+   for i:= 1 to QB+1 do bArr[i].Free;
+   action:= caFree;
+   writeln('Free and Closer test finished');
+   //end else
+     //Action:= caNone;
+end;
+
+Function RGB(R,G,B: Byte): TColor;
+Begin
+  Result:= B Shl 16 Or G Shl 8 Or R;
+End;
+
+procedure drGClick(Sender: TObject);  //next step 
+var  x,y,x1,y1,d: integer;
+     p: single;
+     w: String;
+begin
+  x:= drG.Col+1;
+  y:= drG.Row+1;
+  d:= GetFreeDir(x,y);
+  if d>0 then begin //free neigbour cell
+    x1:=x+dir[d][1];
+    y1:=y+dir[d][2];
+    w:= Field[x][y]; 
+    Field[x][y]:= Field[x1][y1];
+    Field[x1][y1]:= w;
+    inc(Zug);
+    p:= 100-Steps(Field)/MaxSteps*100;
+    //writeln('debug '+floattostr(p)+' '+floattostr(steps(field)) );
+    panStep.Caption:= 'Step: ' +inttoStr(zug)+'   '+formatFloat('0',p)+' %';
+    Progress.Position:= round(p);
+    DrawField(Field);
+    drG.Repaint;
+  end;
+  if HasFinished then begin
+    writeln('You won - End of picture game');
+    stat.SimpleText:= 'PicturePuzzle Solved';
+    //bArr[16].Canvas.Brush.color:= clred;
+  end;
+end;
+
+
+procedure drGDrawCell(Sender: TObject; ACol, ARow: Integer;
+                              Rect: TRect; State: TGridDrawState);
+var nr: integer; t: string;      
+begin
+  with Sender {as TDrawGrid} do begin
+    t:= Field[ACol+1][ARow+1];
+    if t=' ' then nr:= QB else nr:= StrToInt(t);
+    drg.Canvas.Draw(Rect.Left, Rect.Top, bArr[nr]);
+  end;
+end;
+
+//*************************Form Create********************************//
+procedure InitCreateForms;
+var i: smallint;
+    panImg, panR: TPanel;
+begin
+ // seq --> panel-image-drawgrid-bitmap
+ for i:= 1 to QB+1 do bArr[i]:= TBitMap.Create;
+ HideGridCursor(frmsg);
+  //panimg1.DoubleBuffered:= true;
+ frmMon:= TForm.Create(self);
+ with frmMon do begin
+   //FormStyle := fsStayOnTop;
+   Position:= poScreenCenter;
+   BorderIcons:= [biSystemMenu, biMinimize];
+   BorderStyle:= bsSingle;
+   PixelsPerInch:= 96;
+   caption:='PascalPicturePuzzle of BITMAX';
+   //color:= clblue;
+   width:= 650;
+   height:= 540;
+   Show;
+   onClose:= @CloseClick;
+ end;
+
+ panImg:= TPanel.Create(frmMon)
+   with panImg do begin
+    parent:= frmMon;
+    setBounds(8,8,451,451)
+    BevelOuter:= bvLowered
+    //DoubleBuffered:= true;
+   end;  
+ Image1:= TImage.create(frmMon);
+ with Image1 do begin
+   parent:= panImg;
+   setbounds(1,1, 450,450);
+   //show;
+ end;
+ drG:= TDrawGrid.Create(frmMon);
+   with drG do begin
+      parent:= panImg;
+      Left:= 0; Top:= 0;
+      Width:= 455; Height:= 455;
+      Cursor:= crHandPoint;
+      ColCount:= 8;
+      DefaultColWidth:= 55;
+      DefaultRowHeight:= 55;
+      FixedCols:= 0;
+      RowCount:= 7;
+      FixedRows:= 0;
+      Options:= [goFixedVertLine,goFixedHorzLine,goVertLine,goHorzLine];
+      ScrollBars:= ssNone;
+      Visible:= False;
+      OnClick:= @drGClick;
+      OnDrawCell:= @drGDrawCell;
+    end;
+    PanR:= TPanel.create(frmMon);
+    with PanR do begin
+      parent:= frmMon;
+      setBounds(472,9,155,450);
+      BevelOuter:= bvLowered
+      TabOrder:= 1
+    end;
+    with TBitBtn.Create(frmMon) do begin
+      Parent:= frmMon;        
+      SetBounds(488,30,121,30)        //30
+      Caption:= 'Load Picture'
+      Hint:= 'Load your own bitmap picture!';
+      ShowHint:= true;
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPEJECT'); 
+      OnClick:= @BtnPictureLoad;
+    end;
+    with TBitBtn.Create(frmMon) do begin
+      Parent:= frmMon;        
+      SetBounds(488,68,121,30)       //68
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPSTEP'); 
+      Caption:= 'New Game'
+      //Enabled:= False
+      //TabOrder = 7
+      OnClick:= @btnNewGameClick
+    end;
+    with TBitBtn.Create(frmMon) do begin
+      Parent:= frmMon;        
+      SetBounds(488,420,121,30)
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPSTOP'); 
+      Caption:= 'Close'
+      OnClick:= @btnCloseClick
+    end;
+    panstep:= TPanel.Create(frmMon); 
+    with panstep do begin
+      Parent:= frmMon;        
+      SetBounds(488,120,121,25)
+      BevelOuter:= bvLowered
+      Caption:= '0 %'
+      Color:= clyellow;//$30809000;
+      //Color:= 8404992
+    end;
+   frmsg:= TStringGrid.Create(frmMon);
+   with frmsg do begin
+    //SetBounds(512,320,79,79)  
+     parent:= frmMon;
+     Left:= 512; Top:= 320;
+     Width:= 79; Height:= 79;
+     ColCount:= 10
+     DefaultColWidth:= 6
+     DefaultRowHeight:= 6
+     FixedCols:= 0
+     RowCount:= 8
+     FixedRows:= 0
+     color:= clyellow;
+     //editormode
+     //font
+     //GridLineWidth
+     //options
+     //borderstyle
+     //ondblclick
+     //anchors
+     //selection
+   end;
+  with TJvAnalogClock.Create(frmMon) do begin 
+    parent:= PanR;
+    bevelwidth:= 0;
+    colormin:= clblue;
+    //timeoffSet:= -60;
+    align:= alclient;
+    ColorHr:= clRed;
+    //WidthHandHr:= 1;
+    ColorHandHr:= clRed;
+    ColorHandMin:= clRed;
+    setBounds(28,5,100,100);
+    //centercol:= clyellow; //cldarkblue32; //clwebgold; 
+    //centersize:= 8;
+  end;  
+   with TLabel.Create(frmMon) do begin
+      Parent:= PanR;        
+      SetBounds(18,140,50,18)
+      Caption:= 'Progress:'
+      bringtofront;
+    end;
+    with TLabel.Create(frmMon) do begin
+      Parent:= PanR;        
+      SetBounds(18,167,50,18)
+      Caption:= 'Games:'
+    end;
+    with TLabel.Create(frmMon) do begin
+      Parent:= PanR;        
+      SetBounds(18,290,50,18)
+      Caption:= 'Navigation:'
+   end;
+   stat:= TStatusbar.Create(FrmMon);
+   with Stat do begin
+     parent:= frmMon;
+     stat.SimplePanel:= true;
+   end;
+   Progress:= TProgressBar.Create(frmMon);
+   with progress do begin
+     parent:= frmMon;
+     Align:= alBottom;
+     TabOrder:= 2;
+     //step:= 10;
+     Max:= maxSteps+20;
+   end;
+end; 
+
+///////////////// Main App ////////////////
+begin
+  InitNavArray;
+  InitCreateForms;
+  //LoadBitMap; //test
+  loadImage;    //default
+  btnNewPicClick(Self);
+  PrintF('DiskSize: %d DiskFree: %d',[disksize(3) div 1024
+                        , diskfree(3) div 1024]);
+                        
+   {with TCustomDrawGrid.Create(self) do begin
+    EditorMode:= true;
+     canvas
+     Free
+   end;} 
+End.  
+
+
+
+
+/////////////////Text Mode    
+   Windows-8-Bedienung scheitert im iX-Praxistest
+Meldung vorlesen und MP3-Download
+
+Anlässlich der kontroversen Diskussion über das Windows-8-GUI wollte iX es wissen: Was ist dran an der
+ Fundamentalkritik, wie sie etwa kürzlich vom Webdesignexperten Jakob Nielsen zu hören war? Vier prototypische
+  Anwender sollten mit dem neuen System ihre alltäglichen Aufgaben erledigen. Ihr ernüchterndes Fazit: Keiner sah in
+   Windows 8 einen Vorteil oder einen Fortschritt, weder Einsteiger noch ambitionierte Nutzer, professionelle Anwender
+    oder Administratoren. Alle beklagten, dass die Arbeitsschritte umständlich seien. Die Bedienelemente der neuen
+     Oberfläche fanden sie eher zufällig, an einen besten Weg erinnerten sie sich anschließend nicht. Zum Schluss
+      blieb überwiegend Frustration und Verwirrung übrig.
+
+Vor allem das erzwungene Wechseln zwischen Desktop und Kacheln fanden alle umständlich. Auch die neue Startansicht
+ konnte nicht überzeugen, sie stellte nach Meinung der Tester keinen adäquaten Ersatz für das fehlende Startmenü dar.
+  Von der viel gepriesenen und durchaus hilfreichen Windows-Taste – auf Tablets und Hybrid-Systemen der einzige Button
+   in Display-Nähe – etwa machte keiner der Anwender Gebrauch. Auch die neue Suche, die bereitwillig erscheint, wenn
+    man auf der neuen Startansicht einfach auf der Tastatur lostippt, blieb unangetastet. Immerhin: Innerhalb der
+     klassischen Windows-Anwendungen funktionierte das Arbeiten wie gewohnt.
+     
+
+Zwar ist ein Test mit vier Probanden kein repräsentativer Versuch. Aber die Ergebnisse passen zu gut in die weithin
+ geäußerte Kritik, um sie als zufällig abtun zu können. Administratoren sollten, so das Artikelfazit, sich auf einen
+  erheblichen Schulungsaufwand für ihre Anwender einstellen,
+
+
+procedure Image1MouseDown(Sender: TObject; Button: TMouseButton;
+                                  Shift: TShiftState; X, Y: Integer);
+var i: byte;
+begin
+//test function
+  Image1.Canvas.MoveTo(X,Y);
+  image1.canvas.pen.color:= clyellow;
+  image1.canvas.penpos;
+  for i:= 1 to 30 do
+    //Image1.Canvas.LineTo(X+random(140),Y+random(140));
+    Image1.Picture.Bitmap.Canvas.LineTo(X+random(140),Y+random(140));
+end;  
+
+http://www.softwareschule.ch/examples/281_picturepuzzle4.txt

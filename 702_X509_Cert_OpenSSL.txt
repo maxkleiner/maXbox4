@@ -1,0 +1,576 @@
+// ============================================================================
+// mX4-implementation of "Web X509 Cert & US Secure Hash Algorithm1(SHA1)" (RFC3174)
+// #sign:Max: MAXBOX10: 21/09/2016 19:47:05 
+// #locs:272
+{------------------------------------------------------------------------------}
+
+Program M702_X509_Cert_OpenSSL_Sha1; 
+
+// #tech:.60perf: 0:0:9.47 threads: 5 192.168.1.53 19:47:05 4.2.4.60
+
+{------------------------------------------------------------------------------
+   Based on the reference implementation in RFC 3174
+ ------------------------------------------------------------------------------}
+
+(*uses
+   {$IFDEF RTL_NAMESPACES}System.SysUtils{$ELSE}SysUtils{$ENDIF},
+   {$IFDEF RTL_NAMESPACES}System.Classes{$ELSE}Classes{$ENDIF},
+   OverbyteIcsTypes;
+  *)
+const
+   aIcsSHA1Version     = 800;
+ 
+  // WEBSITE = 'http://rosettacode.org/';
+  // WEBSITE = 'sni32035.cloudflaressl.com';
+   WEBSITE = 'sourceforge.net';
+
+   
+{const
+   shaSuccess      = 0;
+   shaNull         = 1;
+   shaInputTooLong = 2;
+   shaStateError   = 3;
+   SHA1HashSize    = 20;
+ }
+ 
+//type
+   {$IFNDEF COMPILER7_UP}
+   {$IFNDEF FPC}
+  // XBomb('This code requires mX 4.2.2 or later'};
+   {$ENDIF}
+   {$ENDIF}
+   // This structure will hold context information for the SHA-1
+   // hashing operation
+   {SHA1Context = record
+        Intermediate_Hash: array[0..SHA1HashSize div 4-1] of uint32_t; // Message Digest
+        Length_Low : uint32_t;                  // Message length in bits
+        Length_High: uint32_t;                  // Message length in bits
+        Message_Block_Index: int_least16_t;     // Index into message block array
+        Message_Block: array[0..63] of uint8_t; // 512-bit message blocks
+        Computed: Integer;                      // Is the digest computed?
+        Corrupted: Integer;                     // Is the message digest corrupted?
+   end; }  
+
+// ----------------------------------------------------------------------------
+
+function SHA1ofStream( const strm: TStream ): SHA1DigestString;
+var  context: SHA1Context;
+     digest : SHA1Digest;
+     buf: string; //array[0..4095] of AnsiChar;
+     buflen: Integer;
+     I: Integer;       
+begin
+   SHA1Reset ( context);
+   strm.Position := 0;
+   repeat
+      buflen := strm.Read( buf, 4096 );
+      if buflen>0 then SHA1Input ( context, buf, buflen );
+   until buflen<4096;
+   SHA1Result( context, digest );
+   SetLength( Result, sizeof(digest) );
+   for I := 1 to sizeof(digest) do
+       Result[I] := AnsiChar(digest[I - 1]);
+//   Move( digest, Result[1], sizeof(digest) );
+end;
+
+
+function REG_CURRENT_VERSION: string;
+begin
+ //if IsWin95 then
+   // Result := 'Software\Microsoft\Windows\'
+  //else if IsWinNT then
+    Result := 'Software\Microsoft\Windows NT\'
+  //else
+    //Result := EmptyStr;
+end;
+
+const CurrentVersion = 'CurrentVersion';
+      strRegisteredOwner = 'RegisteredOwner';
+
+
+function RegisteredOwner: string;
+var
+  R: TRegIniFile;
+begin
+  R := TRegIniFile.Create('');
+  try
+    R.RootKey := HKEY_LOCAL_MACHINE;
+    Result := R.ReadString(REG_CURRENT_VERSION + CurrentVersion, strRegisteredOwner, 'strNotAvail');
+  finally
+    R.Free;
+  end;
+end;
+
+
+// converts SHA1 digest into a hex-string
+
+function SHA1toHex4( const digest: SHA1DigestString ): String;
+var  i: Integer;
+begin
+   Result:= '';
+   for i:=1 to length(digest) do Result:= Result+ inttoHex(ord(digest[i]),2);
+   Result:= LowerCase( Result );
+end;
+
+// ----------------------------------------------------------------------------
+
+{$IFDEF TEST_SUITE}
+//SHA1 test suit:
+procedure TForm1.Button1Click(Sender: TObject);
+const TEST1   = 'abc';
+      TEST2a  = 'abcdbcdecdefdefgefghfghighijhi';
+      TEST2b  = 'jkijkljklmklmnlmnomnopnopq';
+      TEST2   = TEST2a + TEST2b;
+      TEST3   = 'a';
+      TEST4a  = '01234567012345670123456701234567';
+      TEST4b  = '01234567012345670123456701234567';
+      TEST4   = TEST4a + TEST4b;
+      testarray: array[0..3] of AnsiString = ( TEST1, TEST2, TEST3, TEST4 );
+      repeatcount: array[0..3] of Integer = ( 1, 1, 1000000, 10 );
+      resultarray: array [0..3] of AnsiString = (
+             'A9 99 3E 36 47 06 81 6A BA 3E 25 71 78 50 C2 6C 9C D0 D8 9D',
+             '84 98 3E 44 1C 3B D2 6E BA AE 4A A1 F9 51 29 E5 E5 46 70 F1',
+             '34 AA 97 3C D4 C4 DA A4 F6 1E EB 2B DB AD 27 31 65 34 01 6F',
+             'DE A3 56 A2 CD DD 90 C7 A7 EC ED C5 EB B5 63 93 4F 46 04 52' );
+var   sha: SHA1Context;
+      i, j, err: Integer;
+      Message_Digest: SHA1Digest;
+      s: String;
+begin
+    for j := 0 to 3 do begin
+        ListBox1.Items.Add('Test ' + IntToStr(j+1) + ': ' + 
+                    IntToStr(repeatcount[j]) + ', "' + testarray[j] + '"');
+        err := SHA1Reset(sha);
+        if (err<>0) then begin
+            ListBox1.Items.Add('SHA1Reset Error ' + IntToStr(err));
+            break;    //* out of for j loop */
+        end;
+        for i := 0 to repeatcount[j]-1 do begin
+            err := SHA1Input( sha,
+                              {$IFNDEF CLR}PChar{$ENDIF}(testarray[j]),
+                              length(testarray[j]) );
+            if (err<>0) then begin
+               ListBox1.Items.Add('SHA1Input Error ' + INtToStr(err));
+               break;    //* out of for i loop */
+            end;
+        end;
+        err := SHA1Result(sha, Message_Digest);
+        if (err<>0) then begin
+            ListBox1.Items.Add(
+            'SHA1Result Error ' + IntToStr(Err) +
+            ', could not compute message digest.');
+        end else begin
+              s := '';
+              for i := 0 to 19 do begin
+                  s := s + IntToHex(ord(Message_Digest[i]), 2) + ' ';
+              end;
+              ListBox1.Items.Add( 'Result: ' + s );
+        end;
+       ListBox1.Items.Add( 'Wanted: ' + Format('%s', [resultarray[j]] ) );
+    end;
+end;
+
+HMAC-SHA1 test suite of RFC 2202:
+procedure TForm1.Button3Click(Sender: TObject);
+end;
+{$ENDIF}
+
+
+procedure getWinScreen(acanvas: TCanvas; l,t,w,h: integer);
+  var arect: TRect;
+     adesk: HWnd;
+     adeskdc: HDC;
+     acan: TCanvas;
+  begin
+    try
+      acan:= TCanvas.create;
+      arect:= rect(l,t,w,h)   
+      adesk:= Getdesktopwindow;
+      adeskdc:= getwindowDC(adesk);
+      acan.handle:= adeskDC;
+      acanvas.copyrect(arect, acan, arect)
+    finally
+      releaseDC(adesk, adeskdc)
+      acan.Free;
+    end 
+  end;    
+
+
+procedure getX509_Certificate_from_Web(Sender: TObject);
+var Socket: TTCPBlockSocket;
+begin
+  Socket:= TTCPBlockSocket.Create;
+
+  {with TSSLOpenSSL.create(socket) do begin
+    writeln(getcertinfo)
+    free
+   end; } 
+
+  try
+    // connect to the host test sites_:
+    //Socket.Connect('https://unibe-ch.academia.edu', '443'); 
+    // Socket.Connect('unibe-ch.academia.edu', '443'); 
+    //  Socket.Connect('www.postfinance.ch', '443'); 
+    //Socket.Connect('www.ibm.ch', '443'); 
+    // Socket.Connect('github.com', '443'); 
+    // Socket.Connect('www.softwareschule.ch', '443'); 
+   
+    Socket.Connect(WEBSITE, '443'); 
+   
+    Socket.SSLDoConnect; // start SSL connection; only server has certificate
+    writeln('Web HTTPS Cert: '+socket.ssl.getCertInfo);
+    
+    writeln('getSSLVersion: '+socket.ssl.getSSLVersion);
+    writeln('getSSLlib: '+socket.ssl.libversion);
+    writeln('getSSLname: '+socket.ssl.libname);
+    writeln('getCiphername: '+socket.ssl.getciphername);
+    writeln('getPeername: '+socket.ssl.getpeername);
+    
+    if Socket.LastError = 0 then begin
+       Socket.SendString('GET' + CRLF); // request GET method
+       //receive 512 bytes
+       writeln('SSL back: '+Socket.RecvBufferStr(512, 1000));
+    end;
+
+  finally
+    Socket.Free;
+  end;
+end;
+
+   //apir: TKeyPairGenerator; 
+   //ap: TPKCS7; 
+
+begin
+  
+  writeln(sha1toHEX(SHA1ofStr(loadstringj(exepath+'maxbox4.exe'))))
+  writeln(sha1tohex(SHA1ofStr(loadstringoffile(exepath+'maxbox4.exe'))))
+  writeln(sha1tohex(SHA1ofStr(LSoF(exepath+'maxbox4.exe'))))
+  writeln(sha1toHEX4(SHA1ofStr(filetoString(exepath+'maxbox4.exe'))))
+  writeln(cStrtoHEX(SHA1ofStr(filetoString(exepath+'maxbox4.exe'))))
+  
+  writeln(getexeType(exepath+'maxbox4.exe'))
+  writeln(exeType(exepath+'maxbox4.exe'))
+  
+  repeat
+    writeln(totaltime(gettickcount))
+    writeln(totaltime(gettickcount))
+    sleep(1000)
+    SetKeyPressed;
+  until iskeypressed;
+  
+  selfTestX509;
+  
+  //IsSSLloaded: SSLeayversion( )
+   if IsInternet then 
+     getX509_Certificate_from_Web(self);
+  
+  //XValidatePeerCertificate
+  //regsetvalue
+  
+  writeln(RegisteredOwner);
+  
+End.
+
+ref https://github.com/marado/synapse/blob/master/ssl_openssl.pas}
+
+Doc:
+
+  TSSLOpenSSL = class(TCustomSSL)
+  protected
+    FSsl: PSSL;
+    Fctx: PSSL_CTX;
+    function SSLCheck: Boolean;
+    function SetSslKeys: boolean;
+    function Init(server:Boolean): Boolean;
+    function DeInit: Boolean;
+    function Prepare(server:Boolean): Boolean;
+    function LoadPFX(pfxdata: ansistring): Boolean;
+    function CreateSelfSignedCert(Host: string): Boolean; override;
+  public
+    {:See @inherited}
+    constructor Create(const Value: TTCPBlockSocket); override;
+    destructor Destroy; override;
+    {:See @inherited}
+    function LibVersion: String; override;
+    {:See @inherited}
+    function LibName: String; override;
+    {:See @inherited and @link(ssl_cryptlib) for more details.}
+    function Connect: boolean; override;
+    {:See @inherited and @link(ssl_cryptlib) for more details.}
+    function Accept: boolean; override;
+    {:See @inherited}
+    function Shutdown: boolean; override;
+    {:See @inherited}
+    function BiShutdown: boolean; override;
+    {:See @inherited}
+    function SendBuffer(Buffer: TMemory; Len: Integer): Integer; override;
+    {:See @inherited}
+    function RecvBuffer(Buffer: TMemory; Len: Integer): Integer; override;
+    {:See @inherited}
+    function WaitingData: Integer; override;
+    {:See @inherited}
+    function GetSSLVersion: string; override;
+    {:See @inherited}
+    function GetPeerSubject: string; override;
+    {:See @inherited}
+    function GetPeerIssuer: string; override;
+    {:See @inherited}
+    function GetPeerName: string; override;
+    {:See @inherited}
+    function GetPeerFingerprint: string; override;
+    {:See @inherited}
+    function GetCertInfo: string; override;
+    {:See @inherited}
+    function GetCipherName: string; override;
+    {:See @inherited}
+    function GetCipherBits: integer; override;
+    {:See @inherited}
+    function GetCipherAlgBits: integer; override;
+    {:See @inherited}
+    function GetVerifyCert: integer; override;
+end;  //*)
+
+
+Certificate:  Demo Data
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            14:5f:3b:0d:36:a4:8a:50:17:24:f1:3a:f0:37:e3:76
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=GB, ST=Greater Manchester, L=Salford, O=COMODO CA Limited, CN=COMODO RSA Domain Validation Secure Server CA
+        Validity
+            Not Before: Sep 14 00:00:00 2015 GMT
+            Not After : Oct  7 23:59:59 2017 GMT
+        Subject: OU=Domain Control Validated, OU=PositiveSSL Wildcard, CN=*.academia.edu
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:a2:14:ab:f4:25:30:9f:ea:73:07:7e:1b:3b:f9:
+                    2a:dc:72:8e:30:3a:3b:bc:8a:39:04:f8:45:a1:f6:
+                    53:14:b8:36:78:bb:b9:a4:42:08:49:8a:cb:88:58:
+                    6d:ae:0a:18:30:cd:60:80:36:74:cf:3d:f5:94:06:
+                    d4:4c:f7:9d:dd:34:8c:eb:3f:f0:1a:a5:c6:57:8a:
+                    ee:1f:11:19:c2:4c:52:a8:f9:1f:c8:19:c6:4f:4f:
+                    e6:a3:19:2e:9b:57:ea:9f:f6:d3:d9:0a:9a:01:d8:
+                    0c:f7:c7:76:f3:7c:73:c3:c4:de:07:d7:16:c9:91:
+                    24:c8:23:35:39:90:0a:c0:03:22:29:50:0c:6c:c8:
+                    f6:f5:10:5b:bb:d6:c2:d5:b0:ec:95:b9:a4:73:cc:
+                    22:60:92:61:3c:0b:95:85:81:92:43:52:52:76:9b:
+                    af:db:d8:9b:09:d9:e5:50:cb:7b:a8:bb:b3:5f:83:
+                    99:7c:8b:5e:63:db:55:6f:a8:38:85:9e:c7:e7:2e:
+                    db:36:b0:d2:7d:54:1f:fc:1b:a8:69:58:17:47:a7:
+                    f5:dd:03:e3:7e:0f:6b:db:07:5b:af:83:77:ae:a2:
+                    0e:f7:de:d2:d5:0b:18:9f:8d:c3:f0:65:68:7c:ab:
+                    ec:0a:a4:85:64:cc:9d:7e:a1:9b:b7:5c:75:cd:52:
+                    76:b9
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Authority Key Identifier: 
+                keyid:90:AF:6A:3A:94:5A:0B:D8:90:EA:12:56:73:DF:43:B4:3A:28:DA:E7
+
+            X509v3 Subject Key Identifier: 
+                B2:CA:26:DE:52:7C:9B:25:7B:B5:03:0C:CE:ED:E8:CC:25:D1:74:43
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            X509v3 Certificate Policies: 
+                Policy: 1.3.6.1.4.1.6449.1.2.2.7
+                  CPS: https://secure.comodo.com/CPS
+                Policy: 2.23.140.1.2.1
+
+            X509v3 CRL Distribution Points: 
+
+                Full Name:
+                  URI:http://crl.comodoca.com/COMODORSADomainValidationSecureServerCA.crl
+
+            Authority Information Access: 
+                CA Issuers - URI:http:
+                //crt.comodoca.com/COMODORSADomainValidationSecureServerCA.crt
+                OCSP - URI:http://ocsp.comodoca.com
+
+            X509v3 Subject Alternative Name: 
+                DNS:*.academia.edu, DNS:academia.edu
+    Signature Algorithm: sha256WithRSAEncryption
+        66:d8:77:e6:4c:5e:01:67:98:2b:50:4d:b3:06:4e:cb:b0:af:
+        06:33:52:57:83:33:c2:cc:0a:53:eb:79:7a:ae:80:07:1c:e9:
+        46:98:f4:bb:c4:79:5c:67:86:7a:40:f5:23:f3:be:1c:0b:92:
+        94:1c:ae:a5:fa:b6:a5:78:2c:cf:9b:a7:5d:83:6e:b0:17:5e:
+        7b:c5:de:89:b2:ca:bb:6b:f1:0e:fc:eb:31:cc:03:d5:0c:fe:
+        a8:62:d8:29:f6:b5:8d:9c:59:bb:4d:36:d6:66:98:ee:87:ce:
+        dd:d1:9b:d6:e2:7d:e0:29:35:4b:07:06:75:f5:d9:ef:0d:90:
+        df:be:8a:6d:80:25:c1:31:31:39:2d:34:a3:39:ae:54:6c:ae:
+        7c:f5:48:26:4f:2b:8d:ef:c6:f4:cf:7a:0a:c8:6d:4e:a1:5d:
+        3b:bc:96:5d:53:65:4e:2c:99:4d:41:0c:7a:d2:22:7d:c4:2c:
+        ea:c8:10:51:e4:94:ec:4a:20:87:f1:8e:63:3c:e3:b8:d1:85:
+        07:0e:b3:c7:2c:aa:f0:da:a6:5e:30:2f:f0:4d:1a:54:49:04:
+        4f:99:d1:07:9e:3c:6d:19:e0:d5:f8:81:60:1d:91:9a:9e:71:
+        a8:6a:d7:c7:3f:db:af:c5:6b:cf:83:93:a8:8f:ea:0b:5b:5c:
+        6f:0d:a4:b1
+
+TLSv1
+*)
+
+ demo github.com
+
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            0b:fd:b4:09:0a:d7:b5:e6:40:c3:0b:16:c9:52:9a:27
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert SHA2 Extended Validation Server CA
+        Validity
+            Not Before: Mar 10 00:00:00 2016 GMT
+            Not After : May 17 12:00:00 2018 GMT
+        Subject: businessCategory=Private Organization/1.3.6.1.4.1.311.60.2.1.3=US/1.3.6.1.4.1.311.60.2.1.2=Delaware/serialNumber=5157550/street=88 Colin P Kelly, Jr Street/postalCode=94107, C=US, ST=California, L=San Francisco, O=GitHub, Inc., CN=github.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:e7:88:5c:f2:96:5c:97:18:1c:ba:98:e2:03:f1:
+                    7f:39:91:91:c2:6f:d9:96:e7:28:40:64:cd:4c:a9:
+                    81:12:03:6c:ae:7f:e6:c6:19:e0:5a:63:f0:6c:0b:
+                    d4:68:b3:ff:fd:3e:fd:25:cf:b5:59:73:29:c4:c8:
+                    b3:f4:f2:ba:c9:94:51:16:e2:28:d1:dd:9b:c7:8d:
+                    b7:34:0e:a1:38:bd:91:4e:d6:e7:7e:cf:b2:d0:f1:
+                    52:fd:84:e9:41:27:a5:4e:ea:be:16:ec:2d:b3:9b:
+                    fa:68:0c:1e:37:23:1c:60:3d:07:07:26:e4:91:da:
+                    2c:16:80:dc:70:13:73:27:dd:80:73:c2:39:11:50:
+                    d4:73:73:ab:ff:88:d2:c9:9c:33:c6:ef:64:76:60:
+                    65:07:37:87:32:fb:2a:74:7f:12:5f:d9:8d:6a:15:
+                    ed:5f:14:69:c1:99:c1:89:48:f0:df:a3:e0:37:eb:
+                    3d:18:b5:86:ad:a7:dd:d3:64:f4:bb:1f:58:cd:de:
+                    5e:ce:43:31:ba:4a:84:01:0e:c0:28:82:22:8e:f6:
+                    96:3c:02:5b:2b:fe:76:5c:b8:48:cb:6b:e9:18:dc:
+                    a5:ca:78:bf:0d:00:f5:f1:b0:4f:4f:e6:46:d6:eb:
+                    f4:41:03:fd:2e:e6:3f:8e:83:be:14:a0:ce:4e:57:
+                    ab:e3
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Authority Key Identifier: 
+                keyid:3D:D3:50:A5:D6:A0:AD:EE:F3:4A:60:0A:65:D3:21:D4:F8:F8:D6:0F
+
+            X509v3 Subject Key Identifier: 
+                88:5C:48:67:19:CC:A0:76:59:2D:11:79:C3:BE:A2:AC:87:22:27:5B
+            X509v3 Subject Alternative Name: 
+                DNS:github.com, DNS:www.github.com
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            X509v3 CRL Distribution Points: 
+
+                Full Name:
+                  URI:http://crl3.digicert.com/sha2-ev-server-g1.crl
+
+                Full Name:
+                  URI:http://crl4.digicert.com/sha2-ev-server-g1.crl
+
+            X509v3 Certificate Policies: 
+                Policy: 2.16.840.1.114412.2.1
+                  CPS: https://www.digicert.com/CPS
+                Policy: 2.23.140.1.1
+
+            Authority Information Access: 
+                OCSP - URI:http://ocsp.digicert.com
+                CA Issuers - URI:http://cacerts.digicert.com/DigiCertSHA2ExtendedValidationServerCA.crt
+
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            1.3.6.1.4.1.11129.2.4.2: 
+                ...k.i.v.......X......gp
+<5.......w...
+.....Sa........G0E.!...!........6.h..)l....4...,.Vt... '.j..._[.-.....| .Kf<..Q4.$..6B .v.h....d..:...(.L.qQ]g..D.
+g..OO.....Sa........G0E.!....R.h.N.p7.....(.NM.4...UZ3|a[. 5J....f.`.Ha.....|..)....DCn&'F..w.V.../.......D.>.Fv....\....U.......Sa........H0F.!...u..[.....4..A..d$.d.....X_..3 .!...yz.....5.Z.x"..f.!.(.?. mn.1|
+    Signature Algorithm: sha256WithRSAEncryption
+        8b:6c:db:64:c6:eb:29:ab:27:2a:f2:1d:44:a5:b9:80:5f:4c:
+        0c:e4:3a:16:ee:13:3f:15:57:73:e0:b2:77:2a:67:ed:ca:4d:
+        72:77:c8:ff:3d:2c:51:ac:04:0d:d8:ca:ff:7e:b2:9e:2b:c3:
+        44:d5:c3:23:8b:7d:a6:25:b0:6a:a5:6b:4a:ff:ec:02:f9:ab:
+        cf:a6:50:54:6c:da:73:3f:9d:dc:b9:33:05:fd:0b:2c:c4:8b:
+        4f:18:d3:f9:fc:e4:fd:02:3d:41:c4:0f:cd:a1:f5:99:2a:1e:
+        2e:7d:5e:dc:cf:7a:58:44:34:b8:04:5f:84:10:54:38:97:91:
+        98:fb:2a:78:58:90:3f:c5:2b:d8:b1:31:d6:79:6c:51:0f:5f:
+        e7:97:ad:bf:45:df:45:37:63:64:69:c4:55:a3:30:b1:45:59:
+        5e:16:b0:47:4c:5c:6a:20:fe:a4:0e:7c:62:2c:49:41:ad:99:
+        e0:b5:8d:3b:89:eb:5a:61:95:4b:40:df:c4:4f:2a:8b:41:fb:
+        6c:7f:c4:de:73:04:e4:95:b8:ef:9b:c3:53:26:a6:da:21:58:
+        9f:63:0a:b0:34:df:b8:95:1c:52:dc:5e:65:36:50:3f:8a:5d:
+        76:20:e8:1b:46:2a:0b:23:ad:a8:f0:6d:03:68:45:10:80:73:
+        5f:f2:f4:86
+
+getSSLVersion: TLSv1
+getSSLlib: OpenSSL 1.0.0k 5 Feb 2013
+getSSLname: ssl_openssl
+getCiphername: ECDHE-RSA-AES128-SHA
+getPeername: github.com
+SSL back: HTTP/1.0 400 Bad Request
+Cache-Control: no-cache
+Connection: close
+Content-Type: text/html
+
+<!DOCTYPE html>
+<!--
+
+
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Unicorn! &middot; GitHub</title>
+    <style type="text/css" media="screen">
+      body {
+        background-color: #f1f1f1;
+        margin: 0;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+
+      .container { margin: 50px auto 40px auto; width: 600px; text-align: center; }
+
+      a { color: #4183c4; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      h1 { letter-spacing: -1px; line-height: 60px; font-size: 60px; font-weight: 100; margin: 0px; text-shadow: 0 1px 0 #fff; }
+      p { color: rgba(0, 0, 0, 0.5); margin: 10px 0 10px; font-size: 18px; font-weight: 200; line-height: 1.6em;}
+
+      ul { list-style: none; margin: 25px 0; padding: 0; }
+      li { display: table-cell; font-weight: bold; width: 1%; }
+
+      .logo { display: inline-block; margin-top: 35px; }
+      .logo-img-2x { display: none; }
+      @media
+      only screen and (-webkit-min-device-pixel-ratio: 2),
+      only screen and (   min--moz-device-pixel-ratio: 2),
+      only screen and (     -o-min-device-pixel-ratio: 2/1),
+      only screen and (        min-device-pixel-ratio: 2),
+      only screen and (                min-resolution: 192dpi),
+      only screen and (                min-resolution: 2dppx) {
+        .logo-img-1x { display: none; }
+        .logo-img-2x { display: inline-block; }
+      }
+
+      #suggestions {
+        margin-top: 35px;
+        color: #ccc;
+      }
+      #suggestions a {
+        color: #666666;
+        font-weight: 200;
+        font-size: 14px;
+        margin: 0 10px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+      <p>
+       
+ mX4 executed: 12/06/2016 22:51:03  Runtime: 0:0:4.645  Memload: 23% use
+PascalScript maXbox4 - RemObjects & SynEdit
+*)

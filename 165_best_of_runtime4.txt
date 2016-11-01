@@ -1,0 +1,1739 @@
+{********************************************************"""""""""*******
+ *
+ * Project  : BEST OF RUNTIME LIBRARY by Object Pascal 
+ * App Name : 165_best_of_runtime.txt, #locs:1291
+ * Purpose  : Demonstrates functions of runtime lib
+ * Date     : 17/09/2011  -  14:56
+ * History  : getHostbyName, HINSTANCE, TPrinter, TMediaPlayer
+ *          : TClipboard, TStatusBar, Ressources, Registry Read 
+ *          : System demo for mX3.5.1 and EKON 15 and Delphi Tage 2011 
+ ***********************************************************************}
+
+Program RuntimeLibraryOperatingSystem_Tutorial_Delphi_Experimental_Frame_3;
+{BOOL WINAPI MessageBeep(
+  __in  UINT uType
+);}
+
+// for DLL Load Demo
+function  MessageBeep(para: integer): byte;
+  external 'MessageBeep@user32.dll stdcall';  
+  
+const REGPATH= '\SYSTEM\CurrentControlSet\services\SCCSService';  
+      REGROOT= HKEY_LOCAL_MACHINE;
+
+      REGPATH3= '\Software\Microsoft\Internet Explorer\TypedURLs';  
+      REGROOT3= HKEY_CURRENT_USER;
+
+      MAINFORM = 'TMaxForm1';  
+      BITMAPPATH = '..\maxbox3\examples\citymax.bmp'; 
+      EBNFFILE   = '..\maxbox3\examples\ebnftest.txt';
+      
+      literal         = '*xml-char';
+      title           = 'wikitext-L3';
+      part_name       = 'wikitext-L3';
+      part_value      = 'wikitext-L3';
+      part            = '( part_name "=" part_value ) / ( part_value )';
+      parts           = '[ title *( "|" part ) ]';
+      tplarg          = '"{{{" parts "}}}"';
+      template        = '"{{" parts "}}"';
+      link            = '"[[" wikitext-L3 "]]"';
+
+var
+  rStr: String;
+  StringGrid1: TStringGrid;
+  mytimestamp, dt: TDateTime;
+  osType: TIdWin32Type;
+  myProcList, pathstr: TStrings;
+  //UpDown3: TUpDown;
+
+procedure Signal_Sounds;
+var sound: integer;
+begin
+for sound:= 1 to 100 do
+  if sound mod 10 = 0 then begin
+    MessageBeep(sound)
+    Sleep(1500)
+  end  
+end;
+
+//Recursion
+Function Fakultaet(Zahl: integer): Integer;
+begin
+  If Zahl = 0 then
+    result:= 1
+  else
+    result:= Zahl * Fakultaet(Zahl - 1);
+end;
+
+Function getFileCount: integer;
+var
+  DOSerr: integer;
+  //fsrch: TsearchRec;
+begin
+  result:= 0;
+  doserr:= FindFirst('*.*',faAnyFile);
+  if (DOSerr = 0) then begin
+    while (DOSerr = 0) do begin
+      if (searchRecAttr and faDirectory) = 0 then inc(result);
+      //writeln(searchRecName)
+      DOSerr:= findNext;
+    end;
+  findClose;
+  end;
+end;
+
+function GetFolderDate(Folder: String): TDateTime;
+var
+  Found: integer;
+  Date: TDateTime;
+begin
+  if Folder[length(folder)]= '\' then
+    Delete(Folder, length(folder), 1);
+  Result:= 0;
+  Found:= FindFirst(Folder, faDirectory);
+  try
+  if Found = 0 then begin
+    Date:= FileDateToDateTime(searchRecTime);
+    result:= Date;
+  end;
+  finally
+    FindClose;
+  end;
+end;
+
+function GetTextFromFile(AFile: String; var ReturnString: string): boolean;
+var
+  FileStream: TFileStream;
+begin
+  result:= false;
+  if not fileExists(AFile) then Exit;
+  FileStream:= TFileStream.Create(AFile, fmOpenRead);
+  try
+    if FileStream.Size > 0 then begin
+      SetLength(ReturnString, FileStream.Size);
+      FileStream.Read(ReturnString, FileStream.Size);
+      result:= true;
+    end;
+  finally
+    FileStream.Free;
+  end; //try
+end;
+
+function ExeFileIsRunning(ExeFile: string): boolean;
+begin
+  result:= ExeFileIsRunning(ExeFile);
+end;
+
+procedure getDriveTypesF;
+var
+  Drive: byte;
+  DriveLetter: String;
+begin   
+  for Drive:= ord('A') to ord('Z') do begin
+    DriveLetter:= chr(Drive) + ':\';
+    case GetDriveType(PChar(chr(Drive) + ':\')) of
+      0: //DRIVE_UNKNOWN
+      Memo2.Lines.Add(DriveLetter + ' Unknown Drive');
+      {1: //DRIVE_NO_ROOT_DIR
+      Memo2.Lines.Add(DriveLetter + ' No Root Dir or mount Point');}
+      2: //DRIVE_REMOVABLE:
+      Memo2.Lines.Add(DriveLetter + ' Removable or Floppy Drive');
+      3: //DRIVE_FIXED:
+      Memo2.Lines.Add(DriveLetter + ' Fixed Drive');
+      4: //DRIVE_REMOTE:
+      Memo2.Lines.Add(DriveLetter + ' Network Drive');
+      5: //DRIVE_CDROM:
+      Memo2.Lines.Add(DriveLetter + ' CD-ROM Drive');
+      6: //DRIVE_RAMDISK:
+      Memo2.Lines.Add(DriveLetter + ' RAM Disk');
+    end;
+  end;
+end;
+
+Procedure TimeCounter;
+var
+  time, time2: longint;
+begin
+  time:= GetTickCount;
+  time2:= GetClockValue;
+  //Put the commands to measure...
+  Sleep(500)
+  //maxform1.StatusBar1.SimpleText:= ('Time Diff: '+IntToStr(GetTickCount-time));
+  Writeln('Get Clock Value Time Diff: '+IntToStr(GetTickCount-time));
+end;
+
+function getBitMap: TBitmap;
+begin
+  result:= TBitmap.Create; 
+  //result.LoadFromFile(BITMAPPATH);
+  //result.Free;
+end;  
+
+Procedure RTL_Containers; //see ex. 160_object_list.txt
+var 
+  objstack: TObjectStack;
+  mystrl: TStringlist;
+begin
+  objstack:= TObjectStack.create;
+  mystrl:= TStringlist.create;
+  mystrl.add('first box');
+  mystrl.add('second box');
+  with objstack do begin
+    push(mystrl)
+    push(mystrl)
+    push(mystrl)
+    Pop
+    Writeln('from containers objstack in list has '+intToStr(count)+' objects');
+    Free;
+  end;  
+ mystrl.Free;
+end;
+
+
+procedure StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
+                                      Rect: TRect; State: TGridDrawState);
+begin
+if ARow = 1 then
+  StringGrid1.Canvas.Draw(Rect.Left,Rect.Top, getBitmap);
+end;
+
+procedure BuildFormMenu;
+var frmMon: TForm;
+    myButton: TSpeedButton;
+    mylistbox: TListbox;
+    i: integer;
+begin  
+  frmMon:= TForm.Create(self);
+  with frmMon do begin
+    //FormStyle := fsStayOnTop;
+    Position := poScreenCenter;
+    caption:='Best of Runtime Functions';
+    color:= clred;
+    width:= 650;
+    height:= 600;
+    Show
+  end;
+  
+  stringGrid1:= TStringGrid.Create(frmMon);
+  with stringGrid1 do begin
+    Parent:= frmMon;
+    defaultcolwidth:= 154;
+    defaultrowheight:= 154;
+    height:= 360;
+    width:= 360;   
+    colcount:= 2;  //buggg solved!!!
+    rowcount:= 2;
+    top:= 20;
+    GridLineWidth:= 8;
+    Scrollbars:= false;
+    //onDrawCell:= @StringGrid1DrawCell;  //to decompile
+  end;
+  
+  myListbox:= TListbox.create(frmMon);
+    with myListbox do begin
+      parent:= frmMon;
+      top:= 20;
+      left:= 450;
+      height:= 380;
+      font.size:= 18;
+      //font.Style:= [fsbold];
+      for i:= 1 to 15 do
+        items.add(intToStr(i*i));
+      show
+    end;  
+
+  myButton:= TSpeedButton.Create(frmMon)
+  with myButton do begin
+    Parent:= frmMon;
+    setbounds(10,440,380,80);
+    caption:= 'Big Bit Button';
+    font.size:= 12;
+    //font.Style:= [fsbold];
+    //glyph.loadfromfile(BITMAPPATH); 
+    //glyph.loadfromresourcename(getHINSTANCE,'HARD'); 
+    glyph.loadfromresourcename(getHINSTANCE,'OPENFOLDER'); 
+    //event handler
+    //onclick:= @btnClick;
+  end;
+end; 
+
+procedure Apploop_Tester;
+var i,j: integer;
+    c: TComponent;
+begin
+  for i:= 0 to Application.ComponentCount - 1 do begin
+    // all components of a Form
+    for j:= 0 to Application.Components[i].ComponentCount - 1 do begin
+      c:= Application.Components[i].Components[j];
+      if c is TComponent then
+        writeln(inttostr(j)+ ' '+c.name +' '+ c.classname)
+    end;
+  end; 
+end;  
+
+
+FUNCTION GetIpAddressByName(const AHostName: String): String;
+begin
+  result:= GetHostByName(AHostName)
+end;  
+
+function GetURLByIndy(const AURL: String): String;
+var
+IdHTTP: TIdHTTP;
+begin
+  IdHTTP:= TIdHTTP.Create(NIL);
+try
+  Result:= IdHTTP.Get(AURL);
+finally
+  IdHTTP.Free;
+end;
+end;
+
+FUNCTION HINSTANCE: longword;
+begin
+  result:= GetHINSTANCE;
+end;  
+
+Function RegRead(keyRoot: Longint; keyPath, myField: String): string;
+begin
+  result:= RegistryRead(keyroot, keyPath, myField)
+end;  
+
+procedure IsAppAlive;
+var Handle: THandle;
+begin
+  Handle:= FindWindow(MAINFORM,''); //FindReplDialog does not
+  if Handle <> 0 then 
+    Showmessage('maXbox is alive')
+  else
+    Showmessage('maXbox still sleeps');
+end;
+
+procedure PrintMap(aGraphic: TGraphic; title: string);
+begin
+  Printer.Title:= Title;
+  Printer.BeginDoc;
+  // in to the center                          
+  Printer.Canvas.Draw((Printer.PageWidth  - aGraphic.Width ) div 2,
+                (Printer.PageHeight - aGraphic.Height) div 2,aGraphic);
+  //Printer.Canvas.Draw(40,40,aGraphic);
+  Printer.Canvas.TextOut(480,480,'Place any text here');
+  Printer.EndDoc;
+end;
+
+function d3Array: array of array of string;
+var
+  A: array of array of string;
+  I,J : Integer;
+begin
+   SetLength(A, 10);
+   for I:= Low(A) to High(A) do begin
+     SetLength(A[I], I);
+     for J:= Low(A[I]) to High(A[I]) do begin
+       A[I][J]:= IntToStr(I) + ',' + IntToStr(J) + ' ';
+       Write(A[I][J]+ ' ');
+     end; 
+  end;
+  result:= A;
+end;
+
+function StrToHexStr(const S:string):string;
+//??????16?????
+var
+ I:Integer;
+begin
+ for I:=1 to Length(S) do begin
+    if I=1 then
+      Result:= IntToHex(Ord(S[1]),2)
+    else Result:= Result+IntToHex(Ord(S[I]),2);
+ end;
+end;
+
+procedure ABNFToText_01;  //Indy
+var amfile: string;
+begin
+  Writeln('ABNFToText_01: '+ABNFToText(template))
+  amfile:= LoadFileAsString(Exepath+'examples\ebnftest.txt')
+  Writeln('ABNFToText_01: '+ABNFToText(amfile))
+end;
+
+procedure BytesToString_02;  //Indy
+var mbytes: TBytes;
+    i, byteback: integer;
+begin
+  SetLength(mbytes, 32)
+  Writeln('');
+  for i:= 1 to 31 do begin
+    mbytes[i]:= Random(2)
+    write(inttostr(mbytes[i])+' ') //debug
+  end;
+  //bytestocardinal
+  Writeln('BytesToInteger_02:  '+IntToStr((BytesToInteger(mbytes,0))))
+  byteback:= BytesToInteger(mbytes,0) 
+  //Writeln('testback ' +InttoBin(byteback))                              
+end;
+
+Procedure TimeCompare_05;
+var
+  thismoment, futuremoment: TDateTime;
+begin
+  ThisMoment:= Now; 
+  FutureMoment:= IncDay(ThisMoment, 6); //adds 6 days
+  //sleep(10)
+  //FutureMoment:= Now;
+  Writeln('CompareDateTime '+IntToStr(CompareDateTime(ThisMoment, FutureMoment))) 
+  //returns LessThanValue (-1)
+  //maxform1.StatusBar1.SimpleText:= ('Time Diff: '+IntToStr(GetTickCount-time));
+end;
+
+
+Procedure DecodeDateTimeFully_09;
+var
+  myDate : TDateTime;
+  myYear, myMonth, myDay : Word;
+  myHour, myMin, mySec, myMilli : Word;
+begin
+  // Set up the myDate variable to have a December 2000 value
+  myDate:= StrToDateTime('29.12.2000 12:45:12.34');
+   // Now add a month to this value
+  myDate:= IncMonth(myDate,1);
+   // And let us see what we get
+  DecodeDateTime(myDate, myYear, myMonth, myDay,
+                 myHour, myMin, mySec, myMilli);
+  Writeln('myDate now = '+DateToStr(myDate));
+  Writeln('myHour     = '+IntToStr(myHour));
+  Writeln('myMin      = '+IntToStr(myMin));
+  Writeln('mySec      = '+IntToStr(mySec));
+  Writeln('myMilli    = '+IntToStr(myMilli));
+  Writeln('myDay      = '+IntToStr(myDay));
+  Writeln('myMonth    = '+IntToStr(myMonth));
+  Writeln('myYear     = '+IntToStr(myYear));
+end;
+
+procedure Fetch_13_from_Telnet;
+
+var Buffer: String;
+Tmp: String;
+begin
+  Tmp := Buffer;
+ // repeat
+    tmp:= 'this is my telnet session before' +#13#10+'Memo1.SelStart:= Memo1.GetTextLen';
+    Writeln(tmp)
+    buffer:= Fetch(Tmp, #10,true,false);
+    writeln(buffer)
+  //if (Tmp <>'') and (Tmp[1] = #10) then Delete(Tmp, 1, 1);
+//until Tmp = '';
+end;
+
+Procedure CommandlLineSwitch_14;  //SysUtils unit
+var
+  switchPrefixes : TSysCharSet;
+begin
+  // Before running this code, use the Run/parameters menu option
+  // to set the following command line parameters : /def /file
+  //chars:= ' ';
+  // How many parameters were passed?
+  ExecuteFile(ExePath+'maxbox4.exe','"'
+           +ExePath+'examples\218_biorythmus_studio.txt"','',1);
+  //Set these Commands in the Remote App         
+  ShowMessage('There are '+IntToStr(ParamCount)+' parameters inside');
+  ShowMessage(CmdLine);     // Show the execution command + parameters
+
+  // Scan for parm1, parm2 and parm3 parameters
+  if FindCmdLineSwitch('165_best_of_runtime.txt',switchprefixes, True)
+    then ShowMessage('abc found')
+    else ShowMessage('abc NOT found');
+
+  {if FindCmdLineSwitch('def')
+  then ShowMessage('def found')
+  else ShowMessage('def NOT found');}
+end;
+
+function GetASCII_16: string;
+var i: integer;
+begin
+  for i:= 1 to 255 do
+    result:= result +#13#10+ Format('This Number: %4d is this ASCII %2s',[i, Chr(i)])
+end;
+
+Procedure TimeCounterDiff_18;
+var
+  time, time2: longint;
+begin
+  time:= GetTickCount;
+  time2:= GetClockValue;
+  //Put the commands to measure...
+  Sleep(500)
+  //maxform1.StatusBar1.SimpleText:= ('Time Diff: '+IntToStr(GetTickCount-time));
+  Writeln('Get TickCountTime Diff: '+IntToStr(GetTickCount-time));
+  Writeln('Get Get Tick Diff:        '+IntToStr(GetTickDiff(time, GetTickCount)));
+  Writeln('Get Clock Value Time: '+IntToStr64(GetClockValue));
+end;
+
+procedure PerformanceTimer_18;
+var
+  Start, Stop: longint;
+  Start1, Stop1: TDateTime;
+begin
+  Start:= GetTickCount;
+  //Start1:= GetTickCount;
+  Sleep(3000);
+  Stop:= GetTickCount;
+  //Stop1:= TDateTime(GetTickCount);
+  //Writeln(TimeToStr((time)));
+  Writeln(TimeToStr(GetTickDiff(Start, Stop)));
+  Writeln(IntToStr(Stop - Start)+ ' ms'); // * (1/24/60/60/1000)));
+end; 
+
+function GrabLine2(const s: string; ALine: Integer): string;
+var
+  sl: TStringList;
+begin
+  sl:= TStringList.Create;
+  try
+    sl.LoadFromFile(s);
+    Result:= sl[ALine - 1]; // index off by one
+  finally
+    sl.Free;
+  end;
+end;
+
+Procedure PrompForFileName_28;
+var
+  selectedFile, path, fileName, tmp: string;
+  drive: char;
+begin
+  if PromptForFileName(selectedFile,
+                       'Text files (*.txt)|*.txt',
+                       '',
+                       'Select your mX3 test file',
+                       'C:\', False)  // Means not a Save dialog !
+   then begin
+     // Display this full file/path value
+     ShowMessage('Selected file = '+selectedFile);
+     // Split this full file/path value into its constituent parts
+     //ProcessPath(selectedfile, drive, path, tmp);
+     writeln('PromptForFileName_28: Res of processpath '+tmp)
+     ShowMessage('drive = '+drive);
+     ShowMessage('path = '+path);
+     ShowMessage('fileName = '+tmp);
+   end;
+end;  
+
+procedure testchessboard;
+begin
+ //register;
+//SetAndrew40Str','String').SetString( 'SETANDREW40');
+ //versionStr','String').SetString( '3.02');
+ //NoPiece','LongInt').SetInt( - 1);
+ //change Black','LongInt').SetInt( 0);
+ // change White','LongInt').SetInt( 1);
+ //MOVE_STACK','LongInt').SetInt( 4096);
+ //HIST_STACK','LongInt').SetInt( 64);
+ //LIGHT','LongInt').SetInt( 0);
+ //DARK','LongInt').SetInt( 1);
+ //PAWN','LongInt').SetInt( 0);
+ //KNIGHT','LongInt').SetInt( 1);
+ //BISHOP','LongInt').SetInt( 2);
+ //ROOK','LongInt').SetInt( 3);
+ //QUEEN','LongInt').SetInt( 4);
+ //KING','LongInt').SetInt( 5);
+ //EMPTY','LongInt').SetInt( 6);
+  //CL.AddClassN(CL.FindClass('TOBJECT'),'EChessException');
+  //Square', '( None, A8, B8, C8, D8, E8, F8, G8, H8, A7, B7, C7, D7'
+   {+', E7, F7, G7, H7, A6, B6, C6, D6, E6, F6, G6, H6, A5, B5, C5, D5, E5, F5, '
+   +'G5, H5, A4, B4, C4, D4, E4, F4, G4, H4, A3, B3, C3, D3, E3, F3, G3, H3, A2'
+   +', B2, C2, D2, E2, F2, G2, H2, A1, B1, C1, D1, E1, F1, G1, H1 )');
+  }
+  //DisplayCoords', '( West, North, East, South )');
+  //CanStillCastle', '( WhiteKingSide, WhiteQueenSide, BlackKingSide'
+   //+', BlackQueenSide )');
+  //CastleSet', 'set of CanStillCastle');
+  //CoordSet', 'set of DisplayCoords');
+  //MoveInfo', 'record position : String; Castling : CastleSet; OldS'
+   //+'quare : square; NewSquare : square; EnPassant : Square; end');
+  //pieces', '( BP, BN, BB, BR, BK, BQ, WP, WN, WB, WR, WQ, WK )');
+  //pGenRec', '^gen_rec // will not work');
+  //pSquare', '^Square // will not work');
+  //pCastleSet', '^CastleSet // will not work');
+  //pBoolean', '^Boolean // will not work');
+  //pThreadPriority', '^TThreadPriority // will not work');
+  //change TMoveEvent', 'Procedure ( Sender : TObject; oldSq, newSq : Square)');
+  //TCaptureEvent', 'Procedure ( Sender : TObject; oldSq, newSq : Square; CapturedPiece : Char)');
+  //TOneSquareEvent', 'Procedure ( Sender : TObject; square : Square)');
+  //TPromotionEvent', 'Procedure ( Sender : TObject; oldSq, newSq : '
+  // +'Square; var NewPiece : Char)');
+  //TMoveFunc', 'Function ( oldsq, newsq : Square) : Boolean');
+  //TThinkEvent', 'Procedure ( Sender : TObject; var oldsq, newsq : Square)');
+  //move_bytes', 'record src : byte; dst : byte; promote : byte; bits : Byte; end');
+  //moverec', 'record b : move_bytes; end');
+  //gen_rec', 'record m : moverec; score : Integer; end');
+  //hist_rec', 'record m : moverec; capture : integer; castle : inte'
+   //+'ger; ep : integer; fifty : Integer; end');
+  //SIRegister_TChessThread(CL);
+  //TChessBrd
+  //SIRegister_TChessBrd(CL);
+  //CL.AddClassN(CL.FindClass('TOBJECT'),'ChessBrdError');
+ //CL.AddDelphiFunction('Procedure Register');
+   //TGraph3D
+   //MaxNoOfIsodoses','LongInt').SetInt( 10);
+  //T3DPoint', 'record X : single; Y : single; Z : Single; end');
+  //P3DPoint', '^T3DPoint // will not work');
+  //PSingleArray', '^TSingleArray // will not work');
+  //TMouseControl', '( mcNone, mcMove, mcRotate, mcZoom )');
+  //TIsodoseData', 'record Percentage : Single; Color : TColor; Acti'
+   //+'ve : Boolean; end');
+  //PIsodoseData', '^TIsodoseData // will not work');
+  //TWaterlevel', '( wlNone, wlAbove, wlBelow )');
+  //TGraphLine(CL);
+  //SIRegister_TGraph3D(CL);
+ //L.AddDelphiFunction('Function Point3D( x, y, z : Single) : T3DPoint');
+  //  change Point3D3( x, y, z : Single) : T3DPoint');
+   //TGraphLine
+ //CL.AddDelphiFunction('Procedure Register');
+ writeln('length: '+itoa(length('C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing')))
+
+    // Soundex
+    
+    //isprime
+    
+     //ConvertFromBase(sNum: String; iBase: Integer; cDigits: String): Integer;
+ //ConvertToBase(iNum, iBase: Integer; cDigits: String): String;
+ //EnsureSentenceTerminates(Sentence: String; Terminator: Char): String;
+ //FindTokenStartingAt(st: String; var i: Integer;  TokenChars: TCharSet; TokenCharsInToken: Boolean): String;
+ //GetDirectoryOfFile(FileName: String): String;
+ //GetTempFileFIB(FilePrefix: String): String;
+ //Icon2Bitmap(Icon: HICON): HBITMAP;
+ //Maxfib(n1, n2: Integer): Integer;
+ //MaxD(n1, n2: Double): Double;
+ //Minfib(n1, n2: Integer): Integer;
+ //MinD(n1, n2: Double): Double;
+ //RandomStringfib(iLength: Integer): String;
+ //RandomIntegerfib(iLow, iHigh: Integer): Integer;
+ //Soundexfib(st: String): String;
+ //StripStringfib(st: String; CharsToStrip: String): String;
+ //ClosestWeekday(const d: TDateTime): TDateTime;
+ //Yearfib(d: TDateTime): Integer;
+ //Monthfib(d: TDateTime): Integer;
+ //DayOfYearfib(d: TDateTime): Integer;
+ //DayOfMonthfob(d: TDateTime): Integer;
+ //dayofmonth
+ //VarCoalesce(V1, V2: Variant): Variant;
+ //VarEqual(V1, V2: Variant): Boolean;
+ //WeekOfYearfib(d: TDateTime; var Year, Week: Integer);
+ //Degree10(Degree:integer):double;
+// Comp type stuff
+ //CompToStr(Value: comp): string;
+ //StrToComp(const Value: string): comp;
+ //CompDiv(A, B: comp): comp;
+ //CompModfib(A, B: comp): comp;
+ 
+  //GetDirOfFile( FileName : String) : String');
+  //integerarray
+  
+  //Essentially Free calls Destroy if Self is not nil.
+ 
+{ procedure DefWriteToRegistry( const OtherKeys , ParamNames: array of string;
+  const Values: array of Variant
+ );
+
+ procedure WriteToRegistry(aRootKey:HKEY; const OtherKeys,ParamNames: array of string;
+  const Values: array of Variant
+ );
+
+ function ReadFromRegistry(aRootKey:HKEY;
+  const OtherKeys,  ParamNames: array of string
+ ):Variant;
+ 
+ WriteToRegistry
+
+ function DefReadFromRegistry(const OtherKeys, ParamNames: array of string):Variant;
+
+ function AllSubKey(aRootKey:HKEY; const ForPath: array of string):Variant;
+ function DefAllSubKey(const ForPath: array of string):Variant;
+
+ function SaveRegKey(const FileName: String; const ForKey: array of string): Boolean;
+ function LoadRegKey(const FileName: String; const ForKey: array of string): Boolean;
+
+ function AltSaveRegKey(const FileName: String; const ForKey: array of string): Boolean;
+ function AltLoadRegKey(const FileName: String; const ForKey: array of string): Boolean;
+ function GetKeyForParValue(const aRootKey,ParName,ParValue:string):string;  }
+ 
+ //DefWriteToRegistry( const OtherKeys , ParamNames: array of string;
+  //const Values: array of Variant
+ //);
+
+  //WriteToRegistry(aRootKey:HKEY; const OtherKeys,ParamNames: array of string;
+  //const Values: array of Variant
+ //);
+
+ //ReadFromRegistry(aRootKey:HKEY;
+  //const OtherKeys,  ParamNames: array of string
+ //):Variant;
+
+  //DefReadFromRegistry(const OtherKeys, ParamNames: array of string):Variant;
+
+  //AllSubKey(aRootKey:HKEY; const ForPath: array of string):Variant;
+  //DefAllSubKey(const ForPath: array of string):Variant;
+
+  //SaveRegKey(const FileName: String; const ForKey: array of string): Boolean;
+  //LoadRegKey(const FileName: String; const ForKey: array of string): Boolean;
+
+  //AltSaveRegKey(const FileName: String; const ForKey: array of string): Boolean;
+  //AltLoadRegKey(const FileName: String; const ForKey: array of string): Boolean;
+  //GetKeyForParValue(const aRootKey,ParName,ParValue:string):string;
+
+     //SafeVarArrayCreate
+     //change VarArrayGet
+     //cgange VarArrayPut
+     
+     {function CycleReadArray(vArray:Variant;CallBackProc:TProcReadElementValue):boolean;
+function CycleWriteArray(var vArray:Variant;CallBackProc:TProcWriteElementValue):boolean;
+
+function CompareVarArray1(vArray1,vArray2:Variant):boolean;
+function EasyCompareVarArray1(vArray1,vArray2:Variant;HighBound:integer):boolean;
+}
+ //CycleReadArray(vArray:Variant;CallBackProc:TProcReadElementValue):boolean;
+ //CycleWriteArray(var vArray:Variant;CallBackProc:TProcWriteElementValue):boolean;
+
+ //CompareVarArray1(vArray1,vArray2:Variant):boolean;
+ //EasyCompareVarArray1(vArray1,vArray2:Variant;HighBound:integer):boolean;
+
+     
+   //WriteToRegistry  
+   
+   //VarArrayGet2
+   
+     //DispositionFrom(const SQLText:string):TPoint;
+
+  //AllTables(const SQLText:string;FTables:Tstrings);
+   //TableByAlias(const SQLText,Alias:string):string;
+   //FullFieldName(const SQLText,FieldName:string):string;
+   //AddToWhereClause(const SQLText,NewClause:string):string;
+   //GetWhereClause(SQLText:string;N:integer;var StartPos,EndPos:integer   ):string;
+   //77WhereCount(SQLText:string):integer;
+   //GetOrderInfo(SQLText:string):variant;
+   //OrderStringTxt(SQLText:string;  var StartPos,EndPos:integer  ):String;
+
+//
+   //PrepareConstraint(Src:Tstrings):string;
+  //DeleteEmptyStr(Src:Tstrings);
+   //NormalizeSQLText(const SQL: string;MacroChar:Char): string;
+
+
+   //CountSelect(const SrcSQL:string):string;
+  //GetModifyTable(const SQLText:string;AlreadyNormal:boolean):string;
+     
+       //space2
+       //QuotMarks
+       //dayofyear2
+         //Nanometers', 'Double');
+//WavelengthMinimum','LongInt').SetInt( 380);
+ //WavelengthMaximum','LongInt').SetInt( 780);
+ //CL.AddDelphiFunction('Procedure WavelengthToRGB( const Wavelength : Nanometers; var R, G, B : BYTE)');
+       
+    //WavelengthToRGB   
+    //TRangeErrorEvent
+    
+    //GetCharFromVKey
+       
+     //Xls_To_StringGrid  
+     
+     //IsObjectActive
+     
+     with TChessForm1.create(self) do begin
+       caption:= 'myChess Guess';
+       //ChessBrd1LegalMove(self,square([E_2,E_4]),[E_2,E_4]);
+        ChessBrd1;
+       showmodal
+       free
+     end;  
+       
+       
+ end;
+ 
+ function IsObjectActive(ClassName: string): Boolean;
+var
+  ClassID: TCLSID;
+  Unknown: IUnknown;
+begin
+ //UnRegisterOCX
+  try
+    ClassID := ProgIDToClassID(ClassName);
+    //Result  := XRTLGetActiveObject(ClassID, nil, Unknown) = S_OK;
+    //RegisterServer2
+  except
+    // raise;
+    Result := False;
+  end;
+end;
+ 
+ 
+ procedure TForm1_AppOnMessage(var Msg: TMsg; var Handled: Boolean);
+var
+  ccode: Word;
+begin
+  case Msg.Message of
+    WM_KEYDOWN, WM_KEYUP:
+      begin
+      //RegisterOCX
+       // if (GetKeyState(VK_NUMLOCK) >= 0)  {NumLock not active} and
+         // ((Msg.lParam and $1000000) = 0)  {not a gray key} then
+        begin
+          ccode := 0;
+          case Msg.wParam of
+            VK_HOME: ccode   := VK_NUMPAD7;
+            VK_UP: ccode     := VK_NUMPAD8;
+            VK_PRIOR: ccode  := VK_NUMPAD9;
+            VK_LEFT: ccode   := VK_NUMPAD4;
+            VK_CLEAR: ccode  := VK_NUMPAD5;
+            VK_RIGHT: ccode  := VK_NUMPAD6;
+            VK_END: ccode    := VK_NUMPAD1;
+            VK_DOWN: ccode   := VK_NUMPAD2;
+            VK_NEXT: ccode   := VK_NUMPAD3;
+            VK_INSERT: ccode := VK_NUMPAD0;
+            VK_DELETE: ccode := VK_DECIMAL;
+          end; {Case}
+          if ccode <> 0 then
+            Msg.wParam := ccode;
+        end; {If}
+      end; {Case Msg.Message}
+  end; {Case}
+end;
+
+procedure DelayAPI(msecs: Longint);
+var
+  targettime: Longint;
+  Msg: TMsg;
+begin
+  targettime := GetTickCount + msecs;
+  while targettime > GetTickCount do
+    if PeekMessage(Msg, 0, 0, 0, PM_REMOVE) then
+    begin
+      if Msg.message = WM_QUIT then
+      begin
+        PostQuitMessage(Msg.wParam);
+        Break;
+      end;
+      TranslateMessage(Msg);
+      DispatchMessage(Msg);
+    end;
+end;
+ 
+ procedure TForm1_Button1Click(Sender: TObject);
+var
+  data: TIdMultiPartFormDataStream;
+  IdHTTP1: TIdHTTP;
+begin
+  data := TIdMultiPartFormDataStream.Create;
+  try
+    { add the used parameters for the script }
+    data.AddFormField('param1', 'value1');
+    data.AddFormField('param2', 'value2');
+    data.AddFormField('param3', 'value3');
+    
+    //DownloadJPGToBitmap
+
+    { Call the Post method of TIdHTTP and read the result into TMemo }
+    Memo2.Lines.Text := IdHTTP1.Post2('http://localhost/script.php', data);
+  finally
+    data.Free;
+  end;
+end;
+
+
+function PosInSubstr(const SearchStr:string;Str:string;
+                     BeginPos,EndPos:integer
+         ):integer;
+begin
+ if BeginPos<1 then BeginPos:=1;
+ Result:=Pos(SearchStr,
+  Copy(Str,BeginPos,EndPos)
+ );
+ if Result>0 then   Inc1(Result,BeginPos-1)
+end; 
+ 
+ function PosInSubstrExt(const SearchStr:string;Str:string;
+                     BeginPos,EndPos:integer;
+             BegSub,EndSub:TCharSet
+         ):integer;
+var p,l,l1:integer;
+begin
+  Result:=0;
+  p:=PosInSubstr(SearchStr,Str,BeginPos,EndPos);
+  l:=Length(Str);l1:=Length(SearchStr);
+  while p>0 do begin
+   if   ((p=1) or (Str[p-1] in BegSub)  )
+    and ((Str[p+l1] in EndSub) or (p+l1=l))
+   then
+   begin
+    Result:=p;    Exit;
+   end;
+   p:=PosInSubstr(SearchStr,Str,p+l1,EndPos)
+  end;
+end;
+
+
+var Res : boolean;
+
+function Identical (FLine,SLine : string) : boolean;
+begin
+  if (FLine = '*') or (SLine = '*') or (FLine=SLine) then result:= true
+  else result:= false;
+end;
+
+function Different (FLine,SLine : string ) : boolean;
+begin
+  result:=false;
+  if (Length(FLine)>0) and (Length(SLine)>0) then begin
+      if    (FLine[1]<>'*') and (SLine[1]<>'*')
+        and (FLine[1]<>'?') and (SLine[1]<>'?')
+        and (FLine[1]<>SLine[1]) then result := true;
+  end
+  else begin
+    if (Length(FLine)=0) and (SLine<>'*') then result := true;
+    if (Length(SLine)=0) and (FLine<>'*') then result := true;
+  end;
+end;
+
+function DoResultLine (TLine : string ) : string;
+var i : integer;
+begin
+  i := 1;
+
+  {for i := 1 to Length(TLine) do}
+  while i<=length(TLine) do
+   if (Copy(TLine,i,2)='**') or
+      (Copy(TLine,i,2)='*?') or
+      (Copy(TLine,i,2)='?*') then begin
+         TLine := Copy(TLine,1,i-1)+'*'+Copy(TLine,i+2,Length(TLine)-i-1);
+     {i := 0;}
+      i := 0;
+   end
+   else inc(i);
+  result := TLine;
+end;
+
+
+   
+function WildCompare (FLine,SLine : string) : boolean;
+var k : integer;
+begin
+  //EParserError
+  if Identical(FLine,SLine) then begin
+    result := true;
+    exit;
+  end;
+  if Different(FLine,SLine) then begin
+    result := false;
+    exit;
+  end;
+  if (FLine[1]='*') then
+   for k := 1 to Length(SLine) do
+     if (SLine[k]='*') or (SLine[k]=FLine[2]) or (SLine[k]='?') then
+       Res := Res or 
+       wildcompare(Copy(FLine,2,Length(FLine)-1),    Copy(SLine,k,Length(SLine)-k+1));
+
+  if (SLine[1]='*') then
+   for k := 1 to Length(FLine) do
+    if (FLine[k]='*')or(FLine[k]=SLine[2])or(FLine[k]='?') then
+       Res  := Res
+       or wildcompare(Copy(FLine,k,Length(FLine)-k+1), Copy(SLine,2,Length(SLine)-1));
+
+  if (FLine[1]<>'*') and (SLine[1]<>'*') and ((FLine[1] = SLine[1])
+      or((FLine[1]='?') or (SLine[1]='?'))) then
+       Res  := Res or WildCompare(Copy(FLine,2,Length(Fline)-1),   Copy(SLine,2,Length(SLine)-1));
+  result := Res;
+end;
+
+
+function WordCount(const S: string; const WordDelims: TCharSet): Integer;
+var
+  SLen, I: Cardinal;
+begin
+  Result := 0;
+  I := 1;
+  SLen := Length(S);
+  while I <= SLen do begin
+    while (I <= SLen) and (S[I] in WordDelims) do Inc(I);
+    if I <= SLen then Inc(Result);
+    while (I <= SLen) and not(S[I] in WordDelims) do Inc(I);
+  end;
+end;
+
+
+
+var 
+  mylong, i, j: longword;
+  myhandle: THandle;
+  //b: boolean;
+  mystr: string;
+  mycurr: currency;
+  my3darray: array of array of string;
+  mname, mdes, afile, afile2, filename: string;
+  AFamily: TConvFamily;
+  ATypes: TConvTypeArray;
+
+begin   //main app
+   //Signal_Sounds;
+   Writeln('All files in Exe Path: ' +intToStr(GetFileCount));
+   Writeln('folder date of: '+datetimetostr(getFolderDate('examples')))
+   dt:= getFolderDate('examples')
+   //if GetTextFromFile(ExePath+'firstdemo3.txt',rStr) then ShowMessage(rStr);
+   //0 = Current drive
+   getDriveTypesF;   
+   TimeCounter;
+   //BuildFormMenu; //calls StringGrid1DrawCell and getBitMap
+   //Apploop_Tester;
+   Writeln('IP Address of: '+GetIpAddressByName('www.softwareschule.ch'));
+   Writeln('IP Address of own Host: '+GetIpAddressByName(getHostName));
+   //Memo2.Lines.Text:= GetURLByIndy('http://www.delphi-treff.de'); 
+   Writeln('instance of module is: '+intToStr(HINSTANCE))
+   Writeln('Registry read of url2: '+RegRead(REGROOT3, REGPATH3, 'url2'))
+   
+   //IsAppAlive;
+   //PrintMap(getBitMap,'print of mX3.1')
+   //SearchAndOpenDoc(ExePath+'examples\boxprint2.xps');
+
+   Writeln('machine name is: '+getHostName)
+   Writeln('user name is: '+getUserName)
+   Writeln('proc id is: '+inttostr(currentProcessId))
+   Writeln('path of maXbox exe is: '+ExePath)
+   Writeln('Processor Numbers: '+intToStr(GetNumberOfProcessors))
+   Writeln('Page Size: '+intToStr(GetPageSize))
+   osType:= Win32Type;
+   writeln('OS type is: '+intToStr(ord(osType)));
+   mytimestamp:= GetFileCreationTime(exepath+'maxbox4.exe')
+   writeln(DateTimeToStr(mytimestamp)+' for maxbox4 file')
+   //ExecuteCommand('cmd','/k dir *.*')
+   //ShowMessage('Examples Date: '+FormatDateTime('dddd, d. mmmm yyyy, hh:mm:ss', dt));
+   //memo2.font.name:= 'Courier New';
+   my3darray:= d3Array;    //return test
+     //SetLength(my3darray, 10);
+     for i:= 1 to 10 {High(my3darray)} do
+     //SetLength(my3darray[i], i);
+      for j:= 1 to 10 {High(my3darray)} do begin
+         //Write(my3darray[1][1]);
+      end;
+    //temps:= temps + Format('%.3d   ',[i*j])
+
+
+//**********************Next of Runtime ****************************************
+
+   Writeln('*****************Next of Runtime ******************');
+   Writeln('Internet Test with IP Address of: '
+                     +GetHostByName('www.softwareschule.ch'));
+   Writeln('SHA1 Hash of maXbox: '+SHA1(exepath+'maxbox4.exe'))
+   Writeln('Version from Exe: '+GetVersionString(ExePath+'maxbox4.exe'))
+   //ShowFileProperties(ExePath+'maxbox4.exe');
+   Writeln('Big Power of Big Int 123^100: '+PowerBig(123,100))
+   Writeln('Lotto Combinations 6 from 45: '+int64toStr(CombinationInt(45,6)));
+   //Writeln(GetASCII); 
+   // Procedure OpenCdDrive');    //Jedi
+      //OpenCdDrive; 
+   // Procedure Split(Str: string;  SubStr: string; List: TStrings); //SplitString
+   Filename:= ExePath+'maxboxerrorlog.txt'
+   PathStr:= TStringList.Create;
+   try
+     Split(Filename, '\', PathStr);
+     PathStr[PathStr.count-1]:= 'end';
+     for i:= 1 to pathStr.count -1 do
+       writeln('Split: '+pathStr[i]);
+   finally
+     PathStr.Free;
+   end;
+   // Procedure Voice(const sText: string);
+   //Voice('Welcome to Cologne at Delphi Days')
+   //Procedure GetVisibleWindows(List : Tstrings)');
+   //New in RTL: GotoXY(50,i+1);
+
+
+   
+{*//**********************Best of Runtime ****************************************
+  Writeln('*****************Best of Runtime ******************');
+
+            RTL_Containers;
+ 
+  //Function ABNFToText(const AText : String): String;  Indy
+    
+            ABNFToText_01;
+    
+  //Function BytesToString(ABytes: TIdBytes; AStartIndex: Integer;
+                                               //AMaxCount : Integer) : string;;
+            BytesToString_02;                               
+                                               
+  //Function ChangeFileExt(const FileName: string; const Extension: string): string);
+    
+      Writeln('ChangeFileExt_03:  '+ChangeFileExt('firstdemo.txt','.pas'))  //StrUtils;
+    
+  //Function CharToHexStr(Value: char): string);;    //indy
+    
+      Writeln('ChatToHexStr_04:  '+CharToHexStr('A'))  
+    
+  //Function CompareDateTime(const ADateTime1, ADateTime2 : TDateTime) : Integer;
+     
+      Writeln('CompareDateTime_05 Call')  //DateUtils
+            
+            TimeCompare_05;
+     
+  //Function CompareText(const S1: string; const S2: string): Integer); //Gutenberg Function
+  //Function TextIsSame(const A1 : string; const A2 : string) : Boolean;  //SysUtils
+
+      Writeln('CompareText_06:  '+IntToStr(CompareText('A123uuuuuZ','A123uu')))  
+      Writeln('CompareStr_06:  '+IntToStr(CompareStr('A123uuuuuZ','A123uu')))  
+      Writeln('CompareStr_06:  '+IntToStr(CompareStr('Delphi','DELPHI')))  
+      Writeln('CompareStr_06:  '+IntToStr(CompareStr('DELPHI','Delphi')))  
+      afile:= LoadFileAsString(Exepath+'examples\firstdemo.txt')
+      //afile2:= LoadFileAsString(Exepath+'examples\firstdemo2.txt')
+      Writeln('CompareStr_06_file:  '+IntToStr(CompareStr(afile,afile)))  
+      //SearchAndOpenDoc(Exepath+'examples\firstdemo2.txt')
+
+  //Function ContainsText(const AText, ASubText : string) : Boolean;
+      mystr:= 'the key to your code'
+     //if ContainsStr('A123uuuuumystr','A123') then
+       // Writeln('ContainsText_07 Function')
+      Writeln('ContainsText_07 '+BoolToStr(ContainsStr(mystr,'keys'),true));  
+      //b:= true;
+      //Writeln('bool test: '+BoolToStr(NOT b,true))  //SysUtils-TypeConversion
+  
+  //Function CopyFileTo(const Source, Destination : string) : Boolean; Indy
+     //Not in the same directory and just when the file not exists!
+      if CopyFileTo(ExePath+'examples\firstdemo.txt',ExePath+'crypt\firstdemo5.txt') then
+           Writeln('CopyFileTo_08 Function ')
+         
+  //Function CurrentProcessId : TIdPID;
+      Writeln('ProcessID: '+intToStr(CurrentProcessId))
+    
+  //Function CurrentThreadId : TIdPID;
+      Writeln('ThreadID: '+intToStr(CurrentThreadId))
+ 
+  //Function DecodeDateFully(DateTime: TDateTime; var Year, Month, Day, DOW: Word): Boolean;
+      
+      DecodeDateTimeFully_09;
+ 
+  //Function DomainName(const AHost : String) : String; Indy
+       
+      Writeln('DomainName_10 is: '+(DomainName('www.softwareschule.ch')))  
+ 
+  //Function DupeString(const AText : string; ACount : Integer) : string;
+      
+      Writeln('DupeString_11 is: '+(DupeString('don''t'+' repeat yourself ',5)))  
+  
+  //Function ExePath: string;    maXbox-mUtils
+ 
+      Writeln('ExePath_12 is: '+(DupeString(ExePath,2)))  
+ 
+  //Parses a token from the delimited input string. Indy
+  //Function Fetch(var AInput : string; const ADelim: string; const ADelete: Boolean; const 
+   //              ACaseSensitive: Boolean) : string;
+      Writeln('Fetch_13_from_Telnet: ')
+      Fetch_13_from_Telnet;
+   
+//Function FindCmdLineSwitch(Switch:string; Chars:TSysCharSet; IgnoreCase: Boolean): Boolean;
+//Function FindCmdLineSwitch(Switch : string; IgnoreCase : Boolean) : Boolean;;
+
+      //CommandlLineSwitch_14;
+
+  //Function FloatToCurr(Value : Extended) : Currency;
+  //FloatToCurr(345.5868)
+      //Writeln('FloatToCurr_15: '+CurrToStr(FloatToCurr(Power(2,23))))
+ 
+  //Function Format(const Format: string; const Args: array of const): string;;
+  
+      Writeln(Format('Format_16 meets ASCII Ex.16: %s',[GetASCII_16]))
+ 
+  //Function InterestRate(NPeriods:Integer; const Payment,PresentValue, FutureValue //math
+                               //:Extended; PaymentTime: TPaymentTime): Extended;
+  //Function FutureValue(const Rate :Extended;NPeriods:Integer; const Payment,PresentValue
+                               //:Extended ;PaymentTime:TPaymentTime):Extended;
+   //percent:= 5; year:= 8;  // rate, nperiods
+   //amount:= 405.2          // present value
+   
+    Writeln('FutureValue_17: '+FloatToStr(Abs(FutureValue(0.05, 8,0, 405.2, ptEndofPeriod))))
+    
+    Writeln('Simple Future: '+FloatToStr(Abs(FutureValue(0, 12, 2, 100, ptStartOfPeriod))));
+    Writeln('InterestRate_17: '+
+           FloatToStr(InterestRate(1, -1000.0, 5000.0, -4500.0, ptStartOfPeriod)));          
+     
+  //Function GetClockValue : Int64;
+  //Function GetTickCount : Cardinal;   //4294967296 ms sind ~ 49,7 Tage).
+  //Function GetTickDiff(const AOldTickCount, ANewTickCount : Cardinal) : Cardinal;
+  //gettime is just a wrapper
+      
+      TimeCounterDiff_18;
+      PerformanceTimer_18;
+
+  //Function GetVersionString(FileName: string): string;
+      Writeln('GetVersionString_19 is: '+(GetVersionString(ExePath+'maxbox4.exe')))  
+   
+  //Function GetAssociatedProgram(const Extension:string;var Filename,Description:string):
+                                                      // boolean;
+      GetAssociatedProgram('.pdf',mname, mdes)
+      writeln('GetAssociatedProgram_20: '+mname + mdes)
+    
+  //Function GetHostName : string;
+ 
+      Writeln('GetHostName_21: '+'machine name is: '+getHostName)
+   
+  //Function HexStrToStr(Value: string): string;
+      Writeln('HexStrToStr__22:  '+HexStrToStr('A1CD'))
+      Writeln('StrToHex__22:  '+CharToHexStr('¡')+CharToHexStr('Í'))
+      Writeln('StrToHexStr__22:  '+StrToHexStr('¡Í'))
+
+  //Function IfThen(AValue : Boolean; const ATrue : string; AFalse : string) : string;;
+      i:= 2003; j:= 1973;
+
+      Writeln('IfThen_23: '+IfThen(i > j, inttostr(i-j), inttostr(j-i)));
+      //results in 2003-1973 = 30
+ 
+  //Function InputBox(const ACaption:string;const APrompt:string;
+                                                //const ADefault:string):string);
+      if InputBox('Show Box Release ', 'Show Again?', 'Y') = 'Y' then 
+       Writeln('InputBox_24 ')
+  
+  //Function IsASCII(const AByte : Byte) : Boolean;;
+  
+      if IsASCII(34) then Writeln('IsASCII_Example 25 of 34')
+
+  // Function LineStart(Buffer, BufPos: PChar): PChar); show GrabLine
+  // Function LoadStr(Ident : Integer) : string;
+      Writeln('LoadStr__25: '+LoadStr(7201))
+      Writeln('LineStartN_25:  '+GrabLine2(Exepath+'firstdemo.txt', 4));  //no line start
+   
+   // glyph.loadfromresourcename(getHINSTANCE,'OPENFOLDER'); 
+   
+ //{We can calculate base-b logarithms for any number x by dividing the natural logarithm of x by the natural logarithm of b as follows:
+Lnb(x) = Ln(x) / Ln(b)
+    // Function LogN(const Base, X : Extended) : Extended;
+    //LogN(10,100)
+    //Writeln('LogN__26: '+floatToStr(LogN(10,100)))
+      Writeln('LogN__26: '+floatToStr(LN(100)/LN(10)))
+      Writeln('LogN__26: '+floatToStr(LogN(10,100)))
+ 
+  // Function Mean(const Data : array of Double) : Extended;    //_27
+  // Function StdDev(const Data : array of Double) : Extended;
+  // Procedure MeanAndStdDev(const Data : array of Double; var Mean, StdDev : Extended);
+  // Procedure MomentSkewKurtosis(const Data:array of Double;
+                                    //var M1,M2,M3,M4,Skew,Kurtosis:Extended);
+  // Function TotalVariance(const Data : array of Double) : Extended;
+  // Function Variance(const Data : array of Double) : Extended;
+  // Function Norm(const Data : array of Double) : Extended;
+//ExecuteShell(ExePath+'maxbox4.exe','"'+ExePath+'examples\98_pas_chartgenerator_plus.txt"');
+//ExecuteShell(ExePath+'maxbox4.exe','"'+ExePath+'examples\74_pas_chartgenerator_solution.txt"');
+//ShellExecute('0','open',ExePath+'maxbox4.exe','"'+ExePath+'examples\firstdemo.txt"',NIL,1);
+ 
+ 
+  // Function ProcessPath(const ABasePath:String;
+       //const APath:String;const APathDelim:string):string;  //FileCtrl
+  //Function PromptForFileName(var AFileName:string; const AFilter:string; const ADefaultExt:
+  //string;'  +'const ATitle: string;const AInitialDir:string;SaveDialog: Boolean): Boolean);
+           
+       PrompForFileName_28;
+ 
+  //Function RemoveHeaderEntry(AHeader, AEntry : string) : string; Indy
+ 
+       //Writeln('RemoveHeaderEntry__29: '
+        //      +RemoveHeaderEntry('go west young code','go west'));
+    
+  //Function ServicesFilePath: string;
+      Writeln('Services File Path _30 is: '+ServicesFilePath);
+      myProclist:= TStringList.Create;
+      GetApplicationsRunning(myProclist);     //Jedi
+      for i:= 1 to myProclist.count - 1 do 
+        Writeln(inttoStr(i)+' '+myProclist[i]);
+      myProclist.Free;
+ 
+  //ExecuteShell(ExePath+'maxbox4.exe','"'+ExePath+'examples\165_best_of_runtime2.txt"');
+      //Ex_31
+      //ExecuteShell('cmd','/c systeminfo > '+ExePath+'examples\systeminfo_machine.txt')
+      //SearchAndOpenFile(ExePath+'examples\systeminfo_machine.txt')
+                           
+  // Function Soundex(const AText : string; ALength : TSoundexLength) : string;
+  // Function StrHtmlDecode(const AStr : String) : String;
+  // Function StrHtmlEncode(const AStr : String) : String;
+      //afile:= LoadFileAsString(ExePath+'maxboxnews.htm');
+      //Writeln('StrHtmlDecode__32: '+StrHtmlEncode(afile))
+      //Writeln('StrHtmlDecode__32: '+StrHtmlDecode(afile))
+ 
+  //Cette fonction de comptabilité permet d'effectuer le calcul de l'amortissement d'un actif.
+  // Function SYDDepreciation(const Cost, Salvage: Extended; Life,Period: Integer): Extended;
+  // Function UniCodeToStr(Value: string): string;
+  // Function WordToStr(const Value : Word) : String;    //word is already a string;)
+  // Procedure OutOfMemoryError;
+  // Function TimeZoneBias : TDateTime;
+    Writeln('Last in the Box: '+DateTimeToInternetStr(now, true))
+    //Function LoadFileAsString( const FileName : string) : string');  //File Utils
+    //Procedure CreateFileFromString( const FileName, Data : string)');
+    //name all 3 letter functions for fun: inc, mod, abs, log, max, pos!
+
+   // Discovery support functions
+   //procedure GetConvTypes(const AFamily: TConvFamily; out ATypes: TConvTypeArray);
+   //procedure GetConvFamilies(out AFamilies: TConvFamilyArray);
+    GetConvTypes(afamily, atypes)
+   //myhandle:= ExecuteFile(ExePath+'maxbox4.exe', 'firstdemo.txt','',1)
+   //writeln('filehandle of box is '+ inttostr(myhandle));
+   //Writeln(ShowFileProperties(ExePath+'maxbox4.exe'));
+  ShowFileProperties(ExePath+'maxbox4.exe');
+  with TOpenPictureDialog.Create(self) do begin
+     title:= 'my big pic bit';
+     if execute(hinstance) then
+       showmessage('hit me whit your algorithm stick')
+     Free;
+   end; 
+   with TColorDialog.Create(self) do begin
+     //title:= 'my big pic bit';
+     if execute then
+       showmessage('just to stop mtext.filename')
+     Free;
+   end;  *}
+   
+   testchessboard;
+End.
+
+//http://stackoverflow.com/questions/8685060/how-to-install-a-component-from-pas-file-in-delphi     
+
+//---------------------------------------------------------------------------
+
+ const
+  RTLVersion = 18.00;
+
+
+ 01_ABNFToText is a String function used to a string containing Augmented Backus-Naur Form syntax data and rules to its representation as plain text. Augmented Backus-Naur Form is described in the following Internet Standards document: 
+
+As an example, consider this possible BNF for a U.S. postal address:
+
+ <postal-address> ::= <name-part> <street-address> <zip-part>
+       <name-part> ::= <personal-part> <last-name> <opt-jr-part> <EOL> 
+                    | <personal-part> <name-part>
+   <personal-part> ::= <first-name> | <initial> "." 
+  <street-address> ::= <house-num> <street-name> <opt-apt-num> <EOL>
+        <zip-part> ::= <town-name> "," <state-code> <ZIP-code> <EOL>
+     <opt-jr-part> ::= "Sr." | "Jr." | <roman-numeral> | ""
+
+
+02_BytesToWord
+BytesToWord is a Word function used to convert the byte values in AValue to its representation as a Word data type. 
+BytesToString is a utility function used to convert the TIdBytes value in AValue to a String data type. 
+AStartIndex indicates the initial byte position in ABytes to use for the conversion. AStartIndex is a zero-based offset into the array of bytes. 
+AMaxCount indicates the maximum number of bytes for the conversion. 
+
+type TValueRelationship = -1..1
+function CompareDateTime(const ADate, BDate: TDateTime) : TValueRelationship
+
+function CompareStr(const S1, S2: string): integer;
+description
+Compares two TDateTime values (returns "less", "equal" or "greater").
+
+CompareText Compares strings by ordinal value and is not case sensitive.
+Compares two strings.
+
+The comparison is case sensitive (based on the 8-bit ordinal value of each character) and does not consider the Windows locale settings. The return integer value is less than 0 if S1 is less than S2, 0 if S1 equals S2, or greater than 0 if S1 is greater than S2. 
+
+The AnsiContainsText function looks for a Needle string in a Haystack string, returning true if it finds it. Otherwise false.
+ 
+It is a Case insensitive command.
+
+Fetch Function
+Parses a token from the delimited input string.
+File
+
+IdGlobal
+Pascal
+
+function Fetch(
+    var AInput: string; 
+    const ADelim: string = IdFetchDelimDefault; 
+    const ADelete: Boolean = IdFetchDeleteDefault; 
+    const ACaseSensitive: Boolean = IdFetchCaseSensitiveDefault
+): string;
+
+
+
+The FindCmdLineSwitch function scans the command line (program + parms used to invoke the current program) for a given parameter switch. It saves the coder from this parsing activity. 
+
+<P>Die Parameter Payment (regelmäßige Zahlungen) und FutureValue (Wert am Ende der Laufzeit) müssen ein von PresentValue (Investition) <B>unterschiedliches Vorzeichen</B> haben.
+<P>Ob nun die Parameter Payment und FutureValue negativ und PresentValue positiv sein müssen (Darlehensberechnung) oder Payment / FutureValue postiv und PreventValue negativ (Investitonsrechnung), hängt von Deiner Aufgabenstellung ab. Üblich ist es, geleistete zahlungen und Verbindlichkeiten zu einem Stichtag (= noch zu leistende Zahlungen) mit negativen Werten und erhaltene Einnahmen und Forderungen zu einem Stichtag (= noch fließende Einnahmen) mit positiven Werten anzugeben.
+<P>InterestRate(1, -1000.0, 5000.0, -4500.0, ptEndOfPeriod)
+ergibt 0.1, also ein (Jahres-) Zinssatz von 10% (leicht im Kopf nachzurechnen). Interpretation: Du erhöltst ein Darlehen über 5.000 EUR (Einnahme, daher positiv). Du mußt jährlich hierfür 1.000 EUR an Annuitäten zahlen (Zahlung negativ!) und am Ende des ersten Jahres hast Du noch eine Darlehensschuld von 4.500 EUR.
+<P>InterestRate(5, 1000.0, -5000.0, 2000.0, ptEndOfPeriod)
+ergibt einen Zinssatz von ca, 10,21% p.A.. Interpretation: Du investierst heute 5,000 EUR (Zahlung, daher negativ), an Dich fließen jährlich 1.000 EUR zurück und am Ende des 5. Jahres kannst Du noch mit weiteren Einnahmen von 2.000 EUR rechnen.
+<P>InterestRate(10, -1000.0, 5000.0, -50000.0, ptEndOfPeriod)
+ergibt zwar 0.35827..., die Berechnung ist aber realitätsfremd. Denn wer nimmt schon ein Darlehen von 5.000 EUR auf, muß hierfür jährlich Annuitäten von 1.000 EUR leisten und hat nach 10 Jahren eine höhere Darlehensschuld (50.000 EUR) als zu Beginn?
+
+
+StrHtmlEncode is a String function that converts the string AStr containing reserved HTML characters to a string using HTML Entity references. StrHtmlEncode will convert the following reserved HTML characters to the following representations:
+
+a & - &amp; . < - &lt; . > - &gt; , " - &quot; , ' - &apos;
+
+There is no place like 127.0.0.1 
+
+//-------------------------------------------------------------------
+ DiskSize returns -1 if the drive number is invalid. Drive parameter can be set to: 0 = Current drive, 1 = A, 2 = B, 3 = C and so on. 
+
+
+DRIVE_UNKNOWN
+0 The drive type cannot be determined.
+DRIVE_NO_ROOT_DIR
+1 The root path is invalid; for example, there is no volume mounted at the specified path.
+DRIVE_REMOVABLE
+2 The drive has removable media; for example, a floppy drive, thumb drive, or flash card reader.
+DRIVE_FIXED
+3 The drive has fixed media; for example, a hard drive or flash drive.
+DRIVE_REMOTE
+4 The drive is a remote (network) drive.
+DRIVE_CDROM
+5 The drive is a CD-ROM drive.
+DRIVE_RAMDISK
+6 The drive is a RAM disk.
+
+------------------------------------------------------
+//USES WinSock;
+FUNCTION GetIpAddressByName(const AComputerName: STRING): STRING;
+VAR
+  TMPResult: STRING;
+  WSA: TWSAData;
+  H: PHostEnt;
+  P: PChar;
+BEGIN
+IF WSAStartUp($101, WSA) = 0 THEN BEGIN
+GetMem(P,255 + 1);
+StrPCopy(P, ComputerName);
+H:= GetHostByName(P);
+FreeMem(P);
+IF H <> NIL THEN BEGIN
+  P:= inet_ntoa(PInAddr(H^.h_addr_list^)^);
+  TMPResult:= StrPas(P)
+END;
+  WSACleanUp;
+IF TMPResult <> '' THEN
+  Result:=TMPResult
+ELSE
+  Result:= '0';
+END;
+END;
+
+----------------------------------
+Function TForm1.RegRead (keyPath, myField: String): string;
+begin
+//Create the Object
+with (TRegistry.Create) do begin //als Instanz
+RootKey:=HKEY_LOCAL_MACHINE;
+//Check if whe can open key, if the key dosn't exist, we create it
+if OpenKey(keyPath,true) then begin
+if ValueExists(myField) then
+result:= ReadString(myField) else
+ShowMessage(myField+' does not exists under '+keyPath);
+end else
+ShowMessage('Error opening/creating key : '+keyPath);
+closeKey;
+Free;
+end; //with
+end;
+
+------------------------------------------------
+function GetNumberOfProcessors: longint;
+var
+SystemInfo: TSystemInfo;
+begin
+GetSystemInfo(SystemInfo);
+Result:= SystemInfo.dwNumberOfProcessors;
+end;
+
+In Delphi, you print via the TPrinter object.
+
+    * Add printers to your uses clause
+    * Use the Printer function to access the global instance of TPrinter
+    * Printer.BeginDoc starts the print job
+    * Printer.EndDoc stops the print job and sends it to the printer
+    * Printer.NewPage forces a new page
+    * Printer.Canvas is used to generate the output page 
+ 
+
+Arithmetic routines
+Business and finance routines
+Command line utilities
+Character manipulation routines
+Date/Time routines
+Dialog and Message routines
+File Management Routines
+File Name Utilities
+Flow Control Routines
+Floating point conversion routines
+Geometric routines
+Measurement conversion routines
+Miscellaneous routines
+Numeric formatting routines
+Ordinal routines
+Pointer and address routines
+Random number routines
+Range Handling
+Set handling routines
+String handling routines
+String formating routines
+Text file routines
+Type conversion routines
+
+Routines By Unit
+Classes DateUtils Dialogs Math Masks FileCtrl System StrUtils SysUtils Types
+
+
+function StrToHexStr(const S:string):string;
+//??????16?????
+var
+I:Integer;
+begin
+for I:=1 to Length(S) do
+begin
+    if I=1 then
+      Result:=IntToHex(Ord(S[1]),2)
+    else Result:=Result+IntToHex(Ord(S[I]),2);
+end;
+end;
+
+function HexStrToStr(const S:string):string;
+//16???????????
+var
+t:Integer;
+ts:string;
+M,Code:Integer;
+begin
+t:=1;
+Result:='';
+while t<=Length(S) do
+begin
+    while not (S[t] in ['0'..'9','A'..'F','a'..'f']) do
+      inc(t);
+    if (t+1>Length(S))or(not (S[t+1] in ['0'..'9','A'..'F','a'..'f'])) then
+      ts:='$'+S[t]
+    else
+      ts:='$'+S[t]+S[t+1];
+    Val(ts,M,Code);
+    if Code=0 then
+      Result:=Result+Chr(M);
+    inc(t,2);
+end;
+end;
+
+
+function XorStr(const S:string;passxor:integer):string;
+//?????
+var
+aXorChar:array [0..123] of Byte;
+j,I:Integer;
+
+begin
+for j:=0 to 123 do axorchar[j]:=passxor*3+333;
+SetLength(Result,Length(S));
+for I:=1 to Length(S) do
+begin
+    Result[I]:=Char(Ord(S[I]) Xor aXorChar[I mod (High(aXorChar)+1)]);
+end;
+end;
+
+function SetPassStr(const S:string;passset:integer):string;
+//?????
+begin
+Result:=StrToHexStr(XorStr(S,passset));
+end;
+
+function GetPassStr(const S:string;passget:integer):string;
+//?????
+begin
+Result:=XorStr(HexStrToStr(S),passget);
+end;
+
+type
+  TUpTime = record
+    MilliSeconds: Word;
+    Seconds,
+    Minutes,
+    Hours,
+    Days,
+    Months,
+    Years : Byte;
+  end;
+
+var
+  Ticks: Int64;
+  TempTicks: Cardinal;
+
+function GetTickCountEx: TUpTime;
+var temp: Cardinal;
+begin
+  if Ticks = 0 then
+    Ticks := GetTickCount
+  else
+  begin
+    temp := TempTicks;
+    TempTicks := GetTickCount;
+    if TempTicks < Ticks then
+      Inc(Ticks, TempTicks - temp)
+    else
+      Ticks := TempTicks;
+  end;
+  with Result do
+  begin
+    MilliSeconds := Ticks mod 1000;
+    Seconds := (Ticks div 1000) mod 60;
+    Minutes := (Ticks div 60000) mod 60;
+    Hours := (Ticks div 3600000) mod 24;
+    Days := ((Ticks div 3600000) div 24) mod 30;
+    Months := ((Ticks div 3600000) div 24) div 30;
+    Years := ((Ticks div 3600000) div 24) div 365;
+  end;
+end; 
+
+function GrabLine(const AFileName: string; ALine: Integer): string;
+var
+  fs: TFileStream;
+  buf: packed array[0..4095] of Char;
+  bufRead: Integer;
+  bufPos: PChar;
+  lineStart: PChar;
+  tmp: string;
+begin
+  fs := TFileStream.Create(AFileName, fmOpenRead);
+  try
+    Dec(ALine);
+    bufRead := 0;
+    bufPos := nil;
+
+    { read the first line specially }
+    if ALine = 0 then
+    begin
+      bufRead := fs.Read(buf, SizeOf(buf));
+      if bufRead = 0 then
+        raise Exception.Create('Line not found');
+      bufPos := buf;
+    end else
+      while ALine > 0 do
+      begin
+        { read in a buffer }
+        bufRead := fs.Read(buf, SizeOf(buf));
+        if bufRead = 0 then
+          raise Exception.Create('Line not found');
+        bufPos := buf;
+        while (bufRead > 0) and (ALine > 0) do
+        begin
+          if bufPos^ = #10 then
+            Dec(ALine);
+          Inc(bufPos);
+          Dec(bufRead);
+        end;
+      end;
+    { Found the beginning of the line at bufPos... scan for end.
+      2 cases:
+        1) we'll find it before the end of this buffer
+        2) it'll go beyond this buffer and into n more buffers }
+    lineStart := bufPos;
+    while (bufRead > 0) and (bufPos^ <> #10) do
+    begin
+      Inc(bufPos);
+      Dec(bufRead);
+    end;
+    { if bufRead is positive, we'll have found the end and we can leave. }
+    SetString(Result, lineStart, bufPos - lineStart);
+    { determine if there are more buffers to process }
+    while bufRead = 0 do
+    begin
+      bufRead := fs.Read(buf, SizeOf(buf));
+      lineStart := buf;
+      bufPos := buf;
+      while (bufRead > 0) and (bufPos^ <> #10) do
+      begin
+        Inc(bufPos);
+        Dec(bufRead);
+      end;
+      SetString(tmp, lineStart, bufPos - lineStart);
+      Result := Result + tmp;
+    end;
+  finally
+    fs.Free;
+  end;
+end;
+
+inventa to folio for timeoutline!
+--------------------------------------
+
+  //Function ABNFToText(const AText : String): String;  Indy
+  //Function BytesToString(ABytes: TIdBytes; AStartIndex: Integer;
+                                               //AMaxCount : Integer) : string;;
+  //Function ChangeFileExt(const FileName: string; const Extension: string): string);
+  //Function CharToHexStr(Value: char): string);;    //indy
+  //Function CompareDateTime(const ADateTime1, ADateTime2 : TDateTime) : Integer;
+  //Function CompareText(const S1: string; const S2: string): Integer); //Gutenberg Function
+  //Function TextIsSame(const A1 : string; const A2 : string) : Boolean;  //SysUtils
+  //Function ContainsText(const AText, ASubText : string) : Boolean;
+  
+  //Function CopyFileTo(const Source, Destination : string) : Boolean; Indy
+  //Function CurrentProcessId : TIdPID;
+  //Function CurrentThreadId : TIdPID;
+  //Function DecodeDateFully(DateTime: TDateTime; var Year, Month, Day, DOW: Word): Boolean;
+  //Function DomainName(const AHost : String) : String; Indy
+  //Function DupeString(const AText : string; ACount : Integer) : string;
+      
+  //Function ExePath: string;    maXbox-mUtils
+  //Function Fetch(var AInput : string; const ADelim: string; const ADelete: Boolean; const 
+  //Function FindCmdLineSwitch(Switch : string; IgnoreCase : Boolean) : Boolean;;
+  //Function FloatToCurr(Value : Extended) : Currency;
+  //Function Format(const Format: string; const Args: array of const): string;;
+    //Function InterestRate(NPeriods:Integer; const Payment,PresentValue, FutureValue //math
+  //Function GetClockValue : Int64;
+  //Function GetTickCount : Cardinal;   //4294967296 ms sind ~ 49,7 Tage).
+  //Function GetTickDiff(const AOldTickCount, ANewTickCount : Cardinal) : Cardinal;
+   //Function GetVersionString(FileName: string): string;
+  //Function GetAssociatedProgram(const Extension:string;var Filename,Description:string):
+                                                      // boolean;
+  //Function GetHostName : string;
+  //Function HexStrToStr(Value: string): string;
+  //Function IfThen(AValue : Boolean; const ATrue : string; AFalse : string) : string;;
+ 
+  //Function InputBox(const ACaption:string;const APrompt:string;
+  //Function LoadStr(Ident : Integer) : string;
+  //Function Mean(const Data : array of Double) : Extended;    //_27
+  //Function StdDev(const Data : array of Double) : Extended;
+  //Procedure MeanAndStdDev(const Data : array of Double; var Mean, StdDev : Extended);
+  //Function ProcessPath(const ABasePath:String;
+  //Function PromptForFileName(var AFileName:string; const AFilter:string; const ADefaultExt:  string;'  const ATitle: string;const AInitialDir:string;SaveDialog: Boolean): Boolean);
+           
+  //Function ServicesFilePath: string;
+  //Function ShellExecute(hWnd: HWND; +Operation, FileName, Parameters,Directory: string;
+  //Function StrHtmlDecode(const AStr : String) : String;
+  //Function StrHtmlEncode(const AStr : String) : String;
+   
+   //Function LoadFileAsString( const FileName : string) : string');  //File Utils
+    //Procedure CreateFileFromString( const FileName, Data : string)');
+    //name all 3letter functions for fun: inc, mod, abs, log, max!
+
+  // Discovery support functions
+  //procedure GetConvTypes(const AFamily: TConvFamily; out ATypes: TConvTypeArray);
+  //procedure GetConvFamilies(out AFamilies: TConvFamilyArray);
+  
+  GetConvTypes(afamily, atypes)
+
+The runtime library does not provide any routines for copying a file. However, if you are writing Windows-only applications, you can directly call the Windows API CopyFile function to copy a file. Like most of the runtime library file routines, CopyFile takes a filename as a parameter, not a file handle. When copying a file, be aware that the file attributes for the existing file are copied to the new file, but the security attributes are not. CopyFile is also useful when moving files across drives because neither the RenameFile function nor the Windows API MoveFile function can rename or move files across drives.
+
+procedure ShowFileProperties(const FileName: string);
+var
+  SEI : SHELLEXECUTEINFO;
+begin
+ ZeroMem(SEI,SizeOf(SEI));
+ with SEI do
+ begin
+   cbSize:=SizeOf(SEI);
+   fMask:=SEE_MASK_NOCLOSEPROCESS or SEE_MASK_INVOKEIDLIST or SEE_MASK_FLAG_NO_UI;
+   Wnd:=Application.Handle;
+   lpVerb:='properties';
+   lpFile:=PChar(FileName);
+  end;
+  if not ShellExecuteEx(@SEI) then RaiseLastWin32Error;
+end;
+
+
+//http://www.texttransformer.com/Delphi2CppChangeLog_en.html
+
+SetConsoleScreenBufferSize
+
+tbigint
+
+iinterface

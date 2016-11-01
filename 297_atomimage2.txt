@@ -1,0 +1,307 @@
+//maXbox is a scripter tool with an inbuild delphi engine in one exe!
+//Demo shows the functions of maXbook in images, sound and text,
+//based on the picture atomimage2 I added an animation roseAtom, #locs=273
+//#sign:Max: MAXBOX10: 21/09/2016 18:12:31 
+//*************************************************************************
+
+Program maXbook_atomimage2;
+
+Const LOGO = 'Welcome to maXbook Art Exhibiton look!';
+      myPIC1 = 'http://www.softwareschule.ch/images/atomimage2.png';
+      myPIC2 = 'http://www.softwareschule.ch/images/maxworld.png';
+      myPIC1loc = 'examples\atomimage2.png';
+      myPIC2loc = 'examples\earthplay\maxworld.png';
+ 
+      myMusic = 'http://www.softwareschule.ch/download/airmaxloop3.mp3';
+      mySong = 'airmaxloop3.mp3';
+      myText = ' atomimage2';
+      MILLISECONDS = 50;
+
+var
+  inFrm: TForm;
+  image1, image2: TImage;
+  mT: TTimer;
+  E: Exception;
+  CurStep: Double;
+    
+  procedure loadImageLocal(vimage: TImage; picpath: shortstring); forward;
+
+procedure drawText(vFrm: TForm; vcolor: TColor);
+var
+  theRect: TRect;
+begin
+  with vFrm.canvas do begin
+    //brush.Color:= clred;
+      Brush.Style:= bsClear;
+    //.left/.top/.right/.bottom
+    theRect:= Rect(350,350,600,400);
+    font.color:= vColor;
+    font.size:= 22;
+    TextOut(460,395,myText);
+  end;
+end;  
+ 
+procedure getMP3File;
+var 
+  fStream: TFileStream;
+begin
+  fStream:= TFileStream.create(mySong, fmCreate)
+  with TIdHTTP.create(NIL) do begin
+    try
+      Get1(myMusic, fStream)
+    finally
+      Free
+      fStream.Free;
+    end;
+  end;    
+end;
+
+procedure getHTTP_PNG(vimage: TImage; vURL: string); 
+var
+  idHTTP: TIDHTTP;
+  pngStream: TMemoryStream;
+begin
+  with TLinearBitmap.Create do
+  try
+    idHTTP:= TIdHTTP.Create(NIL)
+    pngStream:= TMemoryStream.Create;
+    try
+      idHTTP.Get1(vURL, pngStream)
+    except
+      showmessage(E.message)
+    end  
+    pngStream.Position:= 0;
+    LoadFromStream2(pngstream,'PNG');
+    vimage.Picture:= NIL;
+    AssignTo(vimage.picture);
+    //SaveToFile(ExePath+'mX3_open.png');
+  finally
+    Dispose;
+    Free;
+    idHTTP.Free
+    pngStream.Free;
+  end; 
+end; 
+
+function TForm1_RotatePoint(APoint,ACenter: TPoint; AAngle: Double): TPoint;
+var
+  dx,dy: Double;
+begin
+  dx:= (ACenter.Y * Sin(AAngle)) - (ACenter.X * Cos(AAngle)) + ACenter.X;
+  dy:= -(ACenter.X * Sin(AAngle)) - (ACenter.Y * Cos(AAngle)) + ACenter.Y;
+  Result.X:= Round((APoint.X * Cos(AAngle)) - (APoint.Y * Sin(AAngle)) + dx);
+  Result.Y:= Round((APoint.X * Sin(AAngle)) + (APoint.Y * Cos(AAngle)) + dy);
+end;
+  
+procedure TForm1_RotatePolygon(var APoints: array of TPoint; AAngle: Double);
+var
+  aCentr: TPoint;
+  i: Integer;
+begin
+  aCentr:= Point(10, 10);
+  for i:= 0 to Length(APoints)-1 do begin
+    aCentr.X:= aCentr.X + APoints[i].X;
+    aCentr.Y:= aCentr.Y + APoints[i].Y;
+  end;
+  aCentr.X:= aCentr.X div Length(APoints);
+  aCentr.Y:= aCentr.Y div Length(APoints);
+  for i:= 0 to Length(APoints)-1 do
+    APoints[i]:= TForm1_RotatePoint(APoints[i], aCentr, AAngle);
+end;
+
+procedure TFrm1_FormPaint(Sender: TObject; vimage: TImage);
+var //lPoints: array[0..5] of TPoint;
+  lPoints: array of TPoint;
+begin
+  SetLength(lpoints,5); //composition of roseAtom
+  lPoints[0].X:= 50;
+  lPoints[0].Y:= 125;
+  lPoints[1].X:= 100;
+  lPoints[1].Y:= 10;
+  lPoints[2].X:= 100;
+  lPoints[2].Y:= 100;
+  lPoints[3].X:= 125;
+  lPoints[3].Y:= 125;
+  lPoints[4].X:= 150;
+  lPoints[4].Y:= 150;
+  TForm1_RotatePolygon(lpoints, CurStep);
+  //infrm.Canvas.Pen.Width:= 5;
+  //infrm.Canvas.Polygon(lPoints);
+   with vimage.canvas do begin
+      //Refresh;
+      Pen.color:= random(clred);
+      Pen.Width:= random(3)+1;
+      brush.Color:= clteal;
+      Polygon(lPoints);
+      //Brush.Style:= bsClear;
+      //Rectangle(10, 10, infrm.Width, infrm.Height);
+   end;  
+  //application.processMessages;
+end;
+
+ 
+//------------------------------event handler----------------------------------
+
+procedure closeForm(Sender: TObject; var Action: TCloseAction);
+begin
+  ///afrm.Free;
+   if mt <> NIL then begin
+    mT.enabled:= false;
+    mT.Free;
+    mT:= NIL;
+  end;
+  image1.Free;
+  //image2.Free;  
+  action:= caFree;
+  infrm:= NIL;
+end;
+
+procedure TFrm1_timerRedrawTimer(Sender: TObject);
+begin
+  CurStep:= CurStep + 0.1;
+  if CurStep > 360 then CurStep:= 0;
+   //infrm.Invalidate;  //redraw
+   TFrm1_FormPaint(Self, image1);
+end;
+
+procedure loadForm;
+begin
+  image1:= TImage.create(inFrm);
+  with inFrm do begin
+    position:= poScreenCenter;
+    color:= clblack;
+    setBounds(5,5, 650, 490);
+    caption:= LOGO;
+    onClose:= @closeForm;
+    //onPaint:= @TFrm1_FormPaint;
+    Show;
+  end; 
+  with image1 do begin
+    parent:= infrm;
+    setBounds(120,0, 572,513);
+    //onPaint
+    //onMousedown:= @Image1MouseDown;
+    stretch:= true;
+  end;
+  mT:= TTimer.Create(self);
+  mt.onTimer:= @TFrm1_timerRedrawTimer;
+  mt.interval:= MILLISECONDS;
+  (*image2:= TImage.create(inFrm);
+  with image2 do begin
+    parent:= infrm;
+    setBounds(0,0, inFrm.width, inFrm.height);
+    show;
+  end; *)
+end; 
+
+procedure loadImageLocal(vimage: TImage; picpath: shortstring);
+//var
+//jpeg, jpeg2: tjpegimage;
+begin
+  //@tester jpeg := TJpegImage.create();
+  //jpeg2:= TJpegImage.create();
+ with TLinearBitmap.Create do
+  try
+    LoadFromFile(picpath);
+    vimage.Picture:= NIL;
+    AssignTo(vimage.picture);
+    //SaveToFile(ExePath+'mX3_open.png');
+  finally
+    Dispose;
+    Free;
+  end; 
+  {@to save from bmp to jpg }
+  //Image1.Picture.BitMap.LoadFromFile(ExePath+'examples\citymax.bmp');
+  //jpeg2.loadfromfile(ExePath+'examples\maxbox_logo2.jpg');
+  //image1.picture.assign(jpeg);
+  //Image1.Picture.LoadFromFile(ExePath+'examples\citymax.bmp');
+  //jpeg.Free;
+  //jpeg2.Free;
+end; 
+
+procedure loadImageLocalCanvas(vimage: TCanvas; picpath: shortstring);
+begin
+ with TLinearBitmap.Create do
+  try
+    LoadFromFile(picpath);
+    vimage.brush.bitmap:= NIL;
+    AssignTo(vimage.brush.bitmap);
+    //SaveToFile(ExePath+'mX3_open.png');
+  finally
+    Dispose;
+    Free;
+  end; 
+end; 
+
+procedure SaveComposition(vCanvas: TCanvas; FileName: string);
+var
+  Bmp: TBitmap;
+  MyRect: TRect;
+begin
+  Bmp:= TBitmap.Create;
+  try
+    MyRect:= vCanvas.ClipRect;
+    Bmp.Width:= MyRect.Right;
+    Bmp.Height:= MyRect.Bottom;
+    Bmp.Canvas.CopyRect(MyRect, vCanvas, MyRect);
+    Bmp.SaveToFile(FileName);
+  finally
+    Bmp.Free;
+  end;
+end;
+
+//------------------MAIN APP--------------------------------------------
+begin
+  ProcessMessagesON;
+  inFrm:= TForm.create(self)
+    E:= Exception.create('Any internet connect problem'); 
+  loadForm;
+  if fileExists(mySong) = false then 
+    getMP3File;
+  closeMP3;
+  playMP3(mySong); 
+  if isInternet then begin 
+    //getHTTP_PNG(image2, myPIC2);
+     getHTTP_PNG(image1, myPIC1);
+  end else begin
+     loadImagelocal(image1, ExePath+myPIC1loc);
+     //loadImagelocalCanvas(inFrm.Canvas, ExePath+myPIC1loc);
+  end;
+  drawText(inFrm, clPurple);   //hidden signature
+  //TFrm1_FormPaint(Self, image1);
+  //SaveComposition(inFrm.canvas, 'myatomcard.bmp')
+end.
+
+Pictures from:
+
+http://www.softwareschule.ch/images/atomimage1.png
+http://www.softwareschule.ch/images/atomimage2.png
+http://www.softwareschule.ch/images/maxboxlogo.bmp
+http://www.softwareschule.ch/images/maxlindau2.png
+http://www.softwareschule.ch/images/citymax.bmp
+http://www.softwareschule.ch/images/oposlogo.gif
+
+---------------------------------------------------------------------
+code of version mX3.9 from http://www.softwareschule.ch/maxbox.htm
+//Load examples pas_*.txt from directory examples and press F9!
+//please read the readmefirst...
+//or start with the tutorial in /help
+//memo1 is script editor
+//memo2 is output space
+  new version and examples from
+     http://www.softwareschule.ch/maxbox.htm }
+
+
+just inside maXbox
+
+         ____    ___   _      ____    _   _   _
+        |  _ \  |  _| | |    |  _ \  | | | | | |
+        | | . | | |_  | |    | |_| | | |_| | | |
+        | | | | |  _| | |    |  __/  |  _  | | |          
+        | |_. | | |_  | |__  | |     | | | | | |                      
+        |____/  |___| |____| |_|     |_| |_| |_|  
+        
+
+Latest News of Free Pascal
+
+                                         

@@ -1,0 +1,577 @@
+{***************************************************************
+ * Project  : Console Expressions and Multikernel Routines with REGEX
+ * App Name : 630_Multikernel.TXT, 530_3DLab.TXT, #locs=242
+ * Purpose  : Demonstrates Multi Console & multi processing
+ *             out to box, STExpression adding func() at runtime!
+ * Date     : #sign>0:23 Max: MAXBOX10: 05/06/2016 23:21:23  PM 
+ ****************************************************************}
+
+ //TODO: transfer the strip and param1 to a REGEX func
+ //ref: maXbox3/source/REST/uPSI_StExpr.pas
+ //file need: 097_pas_lottocombinations_gab_plus2.txt
+   
+ Program DOSConsoleCaptureMultiKernel4;
+ 
+ //Const FiletoRun ='examples/097_pas_lottocombinations_gab_plus2.txt'
+ //Const FILETO_RUN ='examples/161_bigint_class_tester2.txt';
+ //Const FILETO_RUN ='examples/151_binominal_bigint2.txt';
+ //Const FILETO_RUN ='examples/070_pas_functionplotter_digital2.txt';
+ 
+ Const FILETO_RUN ='examples/044_queens_performer3.txt';
+
+ //Const FILETO_RUN1 ='examples/044_queens_performer3.txt para1';
+ //Const FILETO_RUN2 ='examples/044_queens_performer3.txt para2';
+ 
+ 
+ {Formats a StripTag Position of HTML in function or REGEX match selection}
+
+  function ReadUntil(const ReadFrom,len: Integer; const C:Char; s: string): Integer;
+  var
+    j: Integer;
+  begin
+    for j := ReadFrom to Len do
+      if (s[j] = C) then begin
+        Result := j;
+        Exit;
+      end;
+    Result := Len+1;
+  end;
+ 
+function StripTags2(const S: string): string;
+var
+  Len: Integer;
+  i, APos: Integer;
+begin
+  Len := Length(S);
+  i := 0;
+  Result := '';
+  while (i <= Len) do begin
+    Inc(i);
+    APos := ReadUntil(i, len, '<', s);
+    Result := Result + Copy(S, i, APos-i);
+    i := ReadUntil(APos+1,len, '>',s);
+  end;
+end;
+
+FUNCTION Strip(const SubString: String; MainString: String): String;
+{ =================================================================== }
+VAR i,j: Integer;
+
+BEGIN{Strip}
+    j := length(SubString);
+    If j <> 0 Then Begin
+       i := Pos(SubString,MainString);
+       While i <> 0 Do Begin
+           Delete(MainString, i, j);
+           i := Pos(SubString,MainString);
+       End;
+   End;
+   result:= MainString;
+END{Strip};
+
+
+FUNCTION StripAny(const SubString: String; MainString: String): String;
+{ =================================================================== }
+VAR i,j: Integer;
+      s: char;
+BEGIN{Strip}
+    //j := Ord(SubString[0]);
+     j := length(SubString);
+    While j > 0 Do Begin
+       s := SubString[j];
+       i := Pos(s,MainString);
+       While i <> 0 Do Begin
+           Delete(MainString,i,1);
+           i := Pos(s,MainString);
+       End;
+       Dec(j);
+   End;
+   result:= MainString;
+END{Strip};
+
+  
+procedure AppendValueToStrings(const SL: TStrings; StartingValue: Integer);
+var i: Integer;
+begin
+  Assert(Assigned(SL),'not assigned');  // Make sure valid TStrings has been passed in
+  for i := 0 to SL.Count - 1 do begin
+    SL[i] := IntToStr(StartingValue) + ' ' + SL[i];
+    Inc(StartingValue);
+  end;
+end;
+
+function GrabLine2(const s: string; ALine: Integer): string;
+var sl: TStringList;
+begin
+  sl:= TStringList.Create;
+  try
+    sl.LoadFromFile(s);
+    Result:= sl[ALine - 1]; // index off by one
+  finally
+    sl.Free;
+  end;
+end;
+
+function GetLinesCount(sFileName : String): Integer;
+var oSL : TStringlist;
+begin
+   oSL:= TStringlist.Create;
+   oSL.LoadFromFile(sFileName);
+   result:= oSL.Count;
+   oSL.Free;
+end; //[/DELPHI]
+
+
+procedure STEXpressionPattern;
+begin
+    with TStExpression.create(self) do begin
+      AddConstant('MPI',3.14159);
+      srlist:= TStringlist.create;
+      GetIdentList(srlist);
+      for it:= 0 to srlist.count-1 do 
+        writeln(srlist.strings[it]);
+      srlist.Free;  
+      Expression:= '2^10 * ln(8 +MPI)';
+      writeln(floattoStr(AnalyzeExpression))
+      free;
+    end;  
+end;   
+
+// function to add in expression at runtime
+  Function superPI(Value1: TStFloat): TStFloat;
+  begin
+    result:= value1 * PI;
+  end;  
+
+Const FName = 'maxboxlog2.log'; //'firstdemo3.txt';
+      Testtext = 'this is CODEsign to mine!..?';
+var   FormLab3D: TFormLab3D;
+      myfunc: TStMethod1Param;
+
+Begin   //main
+
+//OpenDoc(exepath+FName)
+ {Memo1.Lines.LoadFromFile(YourFileNameHere);
+ AppendValueToStrings(Memo1.Lines, 10);
+ Memo1.Lines.SaveToFile(YourFileNameHere);}
+  //maxform1.N3dlab1click(self);
+
+  writeln(Strip('<br/>','<p>This is text.<br/>This is line 2</p>'))
+  writeln(StripString('<p>This is text.<br/>This is line 2</p>','<br/>'))
+  writeln(StripAny('<br/>','<p>This is text.<br/>This is line 2</p>'))
+  writeln(Strip('!',testtext));
+  writeln(StripAny('!,.?',testtext));
+ 
+  sr:= StripTags2('<p>This is text.<br/> This is line 2</p>');
+  //ShowMessage(s);   // will display 'This is text.This is line 2'
+  writeln(sr);   // will display 'This is text.This is line 2'
+  writeln(StripTags('<p>This is text.<br/> This is line 2</p>'));
+  Writeln(ReplaceRegExpr ('([</pbr>])*',
+                          '<p>This is text.<br/> This is line 2</p>','', True))
+  Writeln(ReplaceRegExpr ('<[^>]*>',
+                          '<p>This is text.<br/> This is line 2</p>','', True))
+ //CL.AddDelphiFunction('Function AnalyzeExpr( const Expr : AnsiString) : Double');
+   writeln(floattostr(AnalyzeExpr('2^10 * ln(8)')))
+    
+      srlist:= TStringlist.create;
+      //ConsoleCapture('C:\', 'cmd.exe', '/c dir *.* /s',srlist);
+      ConsoleCapture('C:\', 'cmd.exe', '/c dir *.*',srlist);
+      writeln(srlist.text)
+      srlist.Free;
+      
+//ExecuteShell('cmd','/c rundll32.exe url.dll,TelnetProtocolHandler 172.134.77.119')
+      // ExecuteShell('cmd','/c rundll32.exe url.dll,MailToProtocolHandler max@kleiner.ch')
+      //ExecuteShell('cmd','/c rundll32.exe url.dll,NewsProtocolHandler borland.public.delphi.objectpascal')
+ 
+       //rundll32.exe url.dll,NewsProtocolHandler borland.public.delphi.objectpascal
+    SendCopyMessage('this is from outer box','TMaxForm1');
+    //SendCopyMessage('this is from outer box','MainForm');
+  
+  Set_ReportMemoryLeaksOnShutdown(false);
+    
+        writeln('DOScomSpec: '+getenvironmentvariable('ComSpec'))
+  //    function ExecuteProcess(FileName: string;Visibility:Integer; BitMask:Integer; Synch:Boolean):Longword;
+  
+    //bitmask ---> 1 means on first CPU, sync or async possible!
+    //bitmask ---> 2 means on second CPU, sync or async possible!
+    //bitmask ---> 4 means on third CPU, sync or async possible!
+    //bitmask ---> 8 means on fourth CPU, sync or async possible -true-false!
+ 
+  if ExecuteProcess(exepath+EXENAME+' '+
+                      FILETO_RUN +' para1', SW_SHOW, 1, false) = 0 then 
+                        writeln('Multiprocessing Runs on CPU 1');
+      
+  if ExecuteProcess(exepath+EXENAME+' '+
+                      FILETO_RUN +' para2', SW_SHOW, 2, false) = 0 then 
+                        writeln('Multiprocessing Runs on CPU 2');
+
+  if ExecuteProcess(exepath+EXENAME+' '+
+                      FILETO_RUN +' para3', SW_SHOW, 4, false) = 0 then 
+                        writeln('Multiprocessing Runs on CPU 3');
+      
+  if ExecuteMultiProcessor(exepath+EXENAME+' '+
+                      FILETO_RUN +' para4', SW_SHOW, 8, false) = 0 then begin 
+                        writeln('Multiprocessing Runs on CPU 4');
+                        ShowMessage(SysErrorMessage(GetLastError)) 
+                      end;       
+ 
+ {
+   if ExecuteProcess(exepath+'maxbox4.exe examples/097_pas_lottocombinations_gab_plus2.txt', SW_SHOW, 4, true) = 0 then 
+      writeln('Multiprocessing Runs on CPU 3');
+
+  if ExecuteProcess(exepath+'maxbox4.exe examples/097_pas_lottocombinations_gab_plus2.txt', SW_SHOW, 8, true) = 0 then 
+      writeln('Multiprocessing Runs on CPU 4');
+  }    
+   {if ExecuteMultiProcessor('notepad.exe', SW_SHOW, 2, true) = 0 then 
+      writeln('Multiprocessing Runs on CPU 2');}
+      
+      writeln('NUMBER_OF_PROCESSORS: '
+             +getEnvironmentVariable('NUMBER_OF_PROCESSORS'))
+      
+      writeln(DecimalSeparator);        
+      writeln(getDecimalSeparator);
+      //SysErrorMessage(GetLastError());
+      //ShowMessage(SysErrorMessage(GetLastError)) 
+      //C:\Program Files (x86)\maxbox3\examples\630_multikernel3.psb   
+       with memo2 do begin
+        color:= clblack;
+        font.color:= clweborange;
+        font.size:= 16;
+      end;  
+   
+End.  // Multikernel REGEX StripUtils
+
+Ref:
+
+ if ExecuteMultiProcessor('notepad.exe', SW_SHOW, 2, true) = 0 then 
+      writeln('Multiprocessing Runs on CPU 2');
+  
+
+http://www.swissdelphicenter.ch/en/showcode.php?id=770
+
+function TForm1.RunCaptured(const _dirName, _exeName, _cmdLine: string): Boolean;
+var
+  start: TStartupInfo;
+  procInfo: TProcessInformation;
+  tmpName: string;
+  tmp: Windows.THandle;
+  tmpSec: TSecurityAttributes;
+  res: TStringList;
+  return: Cardinal;
+begin
+  Result := False;
+  try
+    { Setze ein Temporäres File }
+    { Set a temporary file }
+    tmpName := 'Test.tmp';
+    FillChar(tmpSec, SizeOf(tmpSec), #0);
+    tmpSec.nLength := SizeOf(tmpSec);
+    tmpSec.bInheritHandle := True;
+    tmp := Windows.CreateFile(PChar(tmpName),
+           Generic_Write, File_Share_Write,
+           @tmpSec, Create_Always, File_Attribute_Normal, 0);
+    try
+      FillChar(start, SizeOf(start), #0);
+      start.cb          := SizeOf(start);
+      start.hStdOutput  := tmp;
+      start.dwFlags     := StartF_UseStdHandles or StartF_UseShowWindow;
+      start.wShowWindow := SW_Minimize;
+      { Starte das Programm }
+      { Start the program }
+      if CreateProcess(nil, PChar(_exeName + ' ' + _cmdLine), nil, nil, True,
+                       0, nil, PChar(_dirName), start, procInfo) then
+      begin
+        SetPriorityClass(procInfo.hProcess, Idle_Priority_Class);
+        WaitForSingleObject(procInfo.hProcess, Infinite);
+        GetExitCodeProcess(procInfo.hProcess, return);
+        Result := (return = 0);
+        CloseHandle(procInfo.hThread);
+        CloseHandle(procInfo.hProcess);
+        Windows.CloseHandle(tmp);
+        { Die Ausgaben hinzufügen }
+        { Add the output }
+        res := TStringList.Create;
+        try
+          res.LoadFromFile(tmpName);
+          Memo1.Lines.AddStrings(res);
+        finally
+          res.Free;
+        end;
+        Windows.DeleteFile(PChar(tmpName));
+      end
+      else
+      begin
+        Application.MessageBox(PChar(SysErrorMessage(GetLastError())),
+          'RunCaptured Error', MB_OK);
+      end;
+    except
+      Windows.CloseHandle(tmp);
+      Windows.DeleteFile(PChar(tmpName));
+      raise;
+    end;
+  finally
+  end;
+end;
+
+
+
+function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
+var
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+  SecAtrrs: TSecurityAttributes;
+  hInputFile, hOutputFile: THandle;
+begin
+  Result := False;
+  hInputFile := CreateFile(PChar(InputFile), GENERIC_READ, FILE_SHARE_READ,
+    CreateInheritable(SecAtrrs), OPEN_EXISTING, FILE_ATTRIBUTE_TEMPORARY, 0);
+  if hInputFile <> INVALID_HANDLE_VALUE then
+  begin
+    hOutputFile := CreateFile(PChar(OutPutFile), GENERIC_READ or GENERIC_WRITE,
+      FILE_SHARE_READ, CreateInheritable(SecAtrrs), CREATE_ALWAYS,
+      FILE_ATTRIBUTE_TEMPORARY, 0);
+    if hOutputFile <> INVALID_HANDLE_VALUE then
+    begin
+      FillChar(StartupInfo, SizeOf(StartupInfo), #0);
+      StartupInfo.cb := SizeOf(StartupInfo);
+      StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+      StartupInfo.wShowWindow := SW_HIDE;
+      StartupInfo.hStdOutput := hOutputFile;
+      StartupInfo.hStdInput := hInputFile;
+      Result := CreateProcess(nil, PChar(CommandLine), nil, nil, True,
+        CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo,
+        ProcessInfo);
+      if Result then
+      begin
+        WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+        CloseHandle(ProcessInfo.hProcess);
+        CloseHandle(ProcessInfo.hThread);
+      end;
+      CloseHandle(hOutputFile);
+    end;
+    CloseHandle(hInputFile);
+  end;
+end;
+
+
+procedure SIRegister_TStExpression(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TStComponent', 'TStExpression') do
+  with CL.AddClassN(CL.FindClass('TStComponent'),'TStExpression') do
+  begin
+    RegisterMethod('Constructor Create( AOwner : TComponent)');
+    RegisterMethod('Function AnalyzeExpression : TStFloat');
+    RegisterMethod('Procedure AddConstant(const Name:AnsiString; Value:TStFloat)');
+    RegisterMethod('Procedure AddFunction0Param( const Name : AnsiString; FunctionAddr : TStFunction0Param)');
+    RegisterMethod('Procedure AddFunction1Param( const Name : AnsiString; FunctionAddr : TStFunction1Param)');
+    RegisterMethod('Procedure AddFunction2Param( const Name : AnsiString; FunctionAddr : TStFunction2Param)');
+    RegisterMethod('Procedure AddFunction3Param( const Name : AnsiString; FunctionAddr : TStFunction3Param)');
+    RegisterMethod('Procedure AddInternalFunctions');
+    RegisterMethod('Procedure AddMethod0Param( const Name : AnsiString; MethodAddr : TStMethod0Param)');
+    RegisterMethod('Procedure AddMethod1Param( const Name : AnsiString; MethodAddr : TStMethod1Param)');
+    RegisterMethod('Procedure AddMethod2Param( const Name : AnsiString; MethodAddr : TStMethod2Param)');
+    RegisterMethod('Procedure AddMethod3Param( const Name : AnsiString; MethodAddr : TStMethod3Param)');
+    RegisterMethod('Procedure AddVariable(const Name: AnsiString;VariableAddr: PStFloat)');
+    RegisterMethod('Procedure ClearIdentifiers');
+    RegisterMethod('Procedure GetIdentList( S : TStrings)');
+    RegisterMethod('Procedure RemoveIdentifier( const Name : AnsiString)');
+    RegisterProperty('AsInteger', 'Integer', iptr);
+    RegisterProperty('AsFloat', 'TStFloat', iptr);
+    RegisterProperty('AsString', 'AnsiString', iptr);
+    RegisterProperty('ErrorPosition', 'Integer', iptr);
+    RegisterProperty('Expression', 'AnsiString', iptrw);
+    RegisterProperty('LastError', 'Integer', iptr);
+    RegisterProperty('AllowEqual', 'Boolean', iptrw);
+    RegisterProperty('OnAddIdentifier', 'TNotifyEvent', iptrw);
+    RegisterProperty('OnGetIdentValue', 'TStGetIdentValueEvent', iptrw);
+  end;
+end;
+
+
+//#sign:0:23 Max: MAXBOX10: 05/06/2016 23:21:23  PM 
+//#tech:.4.25perf: 0:0:1.264 threads: 7 192.168.56.1 23:21:23 4.2.4.25.98
+
+
+ref:
+
+http://stackoverflow.com/questions/11229831/regular-expression-to-remove-html-tags-from-a-string
+http://www.delphipages.com/forum/showthread.php?t=201629
+http://useruploadedfiles.programmersheaven.com/48584/NMEA.pas
+
+
+    Program SpammersAreParasites;
+    var l1,l2: Srting;
+    begin
+      l1:='70';
+      l2:='0';
+      Bxo:=l1 + l2;
+      Bxo:=(Bxo)
+    (*
+      l1:=97;
+      l2:=9
+     Bxo:=(l1 + l2);
+    *)
+    //end.
+
+(*? Value of Bxo:    *)
+
+{"There is a theory which states that if ever anybody discovers
+exactly what the Universe is for and why it is here, it will
+instantly disappear and be replaced by something even more
+bizarre and inexplicable. There is another theory which states
+that this has already happened."
+-- Douglas Adams }
+
+
+
+Ich habe noch ein Problem auf den letzten Metern mit Sonarqube 5.1, mit dem PL/SQL-Plugin enabled lässt sich SonarQube sich nicht mehr starten.
+Ich vermute das JAR ist kaputt gegangen beim Kopieren:
+
+unzip -t sonar-plsql-plugin-2.7.jar
+
+Archive:  sonar-plsql-plugin-2.7.jar
+    testing: META-INF/MANIFEST.MF     OK
+    testing: META-INF/                OK
+    testing: META-INF/maven/          OK
+[...]
+    testing: org/sonar/l10n/plsql/rules/plsql/UpperCaseReservedWordsCheck.html   OK
+    testing: org/sonar/l10n/plsql/rules/plsql/UseAnsiJoinsCheck.html   bad CRC d111910b  (should be b3dad37d)
+org/sonar/l10n/plsql/rules/plsql/UseAsForColumnAliasesCheck.html:  mismatching "local" filename (org'son`r/l10n/plsql/rules/plsql/UseAsForColumnAliasesCheck.html),
+         continuing with "central" filename version
+    testing: org/sonar/l10n/plsql/rules/plsql/UseAsForColumnAliasesCheck.html   bad CRC d5d904cd  (should be 8e96deed)
+org/sonar/l10n/plsql/rules/plsql/UseFetchBulkCollectIntoCheck.html:  mismatching "local" filename (oRg/sonar/l10n/plsql/rules/plsql/UseFetchBulkColdectIntoCheck.html),
+         continuing with "central" filename version
+    testing: org/sonar/l10n/plsql/rules/plsql/UseFetchBulkCollectIntoCheck.html
+  error:  invalid compressed data to inflate
+org/sonar/l10n/plsql/rules/plsql/UseForallStatementCheck.html:  mismatching "local" filename (org/sonar/l10n/plsql/rules/plsql/UseForallZtatementCheck.ltml),
+         continuing with "central" filename version
+    testing: org/sonar/l10n/plsql/rules/plsql/UseForallStatementCheck.html
+  error:  invalid compressed data to inflate
+org/sonar/l10n/plsql/rules/plsql/UseNativeSqlJoinsInsteadOfEmbeddedCursorLoopsCheck.html:  mismatching "local" filename (org/sonar/l10~/plsq,/rules/plsql/UseNativeSqlJoinsInsteadOfEmbeddedCursorLoopsCheck.html),
+         continuing with "central" filename version
+    testing: org/sonar/l10n/plsql/rules/plsql/UseNativeSqlJoinsInsteadOfEmbeddedCursorLoopsCheck.html   bad CRC a7b161e5  (should be 9d05587e)
+org/sonar/l10n/plsql/rules/plsql/VarcharUsageCheck.html:  mismatching "local" filename (org/sonar/l10f/plsql/rules/plsql/VarcharUsageCheck.html),
+         continuing with "central" filename version
+    testing: org/sonar/l10n/plsql/rules/plsql/VarcharUsageCheck.html   bad CRC 869ccce2  (should be 79c20f65)
+    testing: org/sonar/l10n/plsql/rules/plsql/VariableHiding.html   OK
+[...]
+
+Die SHA1-Summe ist:
+
+  sha1sum.exe sonar-plsql-plugin-2.7.jar
+  d8d38923d78be7840416c0907a175664ad281fe0 *sonar-plsql-plugin-2.7.jar
+
+Kannst Du bitte die SHA1-Summe [1] von deinem JAR verifizieren und mir ggf. das JAR nocheinmal schicken?
+
+
+[1] http://sourceforge.net/projects/getgnuwin32/
+Wichtiger Hinweis: Diese E-Mail kann Betriebs- oder Geschäftsgeheimnisse oder sonstige vertrauliche Informationen enthalten. Sollten Sie diese E-Mail irrtümlich erhalten haben, ist Ihnen eine Kenntnisnahme des Inhalts, eine Vervielfältigung oder Weitergabe der E-Mail ausdrücklich untersagt. Bitte benachrichtigen Sie uns und vernichten Sie die empfangene E-Mail. Vielen Dank.
+
+Das Wappen der Stadt Mainz zeigt zwei durch ein silbernes Kreuz verbundene, schräg gestellte, sechsspeichige, silberne Räder auf rotem Untergrund.
+
+Category: System
+
+function ExecuteProcess(FileName: string; Visibility: Integer; BitMask: Integer; Synch: Boolean): Longword;
+//valori di Visibility:
+{
+Value                Meaning
+SW_HIDE            :Hides the window and activates another window.
+SW_MAXIMIZE        :Maximizes the specified window.
+SW_MINIMIZE        :Minimizes the specified window and activates the next top-level window in the Z order.
+SW_RESTORE        :Activates and displays the window. If the window is minimized or maximized,
+                    Windows restores it to its original size and position. An application should
+                    specify this flag when restoring a minimized window.
+SW_SHOW                :Activates the window and displays it in its current size and position.
+SW_SHOWDEFAULT        :Sets the show state based on the SW_ flag specified in the STARTUPINFO
+                        structure passed to the CreateProcess function by the program that started the application.
+SW_SHOWMAXIMIZED       :Activates the window and displays it as a maximized window.
+SW_SHOWMINIMIZED       :Activates the window and displays it as a minimized window.
+SW_SHOWMINNOACTIVE     :Displays the window as a minimized window. The active window remains active.
+SW_SHOWNA              :Displays the window in its current state. The active window remains active.
+SW_SHOWNOACTIVATE      :Displays a window in its most recent size and position. The active window remains active.
+SW_SHOWNORMAL          :Activates and displays a window. If the window is minimized or maximized,
+                      Windows restores it to its original size and position. An application should specify this
+                      flag when displaying the window for the first time.
+}
+//FileName: the name of the program I want to launch
+//Bitmask:   specifies the set of CPUs on wich I want to run the program
+    //the BitMask is built in the following manner:
+    //I have a bit sequence: every bit is associated to a CPU (from right to left)
+    //I set the bit to 1 if I want to use the corrisponding CPU, 0 otherwise
+    //for example: I have 4 processor and I want to run the specified process on the CPU 2 and 4:
+    //the corresponding bitmask will be     1010 -->2^0 * 0 + 2^1 * 1 + 2^2 * 0 + 2^3 * 1 = 2 + 8 = 10
+    //hence BitMask = 10
+//Synch: Boolean --> True if I want a Synchronous Execution (I cannot close
+//my application before the launched process is terminated)
+
+var
+  zAppName: array[0..512] of Char;
+  zCurDir: array[0..255] of Char;
+  WorkDir: string;
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+  Closed: Boolean;
+begin
+  Closed := True;
+  StrPCopy(zAppName, FileName);
+  GetDir(0, WorkDir);
+  StrPCopy(zCurDir, WorkDir);
+  FillChar(StartupInfo, SizeOf(StartupInfo), #0);
+  StartupInfo.cb := SizeOf(StartupInfo);
+  StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
+  StartupInfo.wShowWindow := Visibility;
+  if not CreateProcess(nil,
+    zAppName, // pointer to command line string
+    nil, // pointer to process security attributes
+    nil, // pointer to thread security attributes
+    False, // handle inheritance flag
+    CREATE_NEW_CONSOLE or // creation flags
+    NORMAL_PRIORITY_CLASS,
+    nil, //pointer to new environment block
+    nil, // pointer to current directory name
+    StartupInfo, // pointer to STARTUPINFO
+    ProcessInfo) // pointer to PROCESS_INF
+    then Result := WAIT_FAILED
+  else
+  begin
+    //running the process on the set of CPUs specified by BitMask
+    SetProcessAffinityMask(ProcessInfo.hProcess, BitMask);
+    /////
+    if (Synch = True) then //if I want a Synchronous execution (I cannot close my
+    // application before this process is terminated)
+      begin
+        Closed:= False;
+        repeat
+          case WaitForSingleObject(
+            ProcessInfo.hProcess, 100) of
+              WAIT_OBJECT_0 : Closed:= True;
+              WAIT_FAILED : RaiseLastWin32Error;
+          end;
+          Application.ProcessMessages;
+        until (Closed);
+        GetExitCodeProcess(ProcessInfo.hProcess, Result);
+        //exit code of the launched process (0 if the process returned no error  )
+        CloseHandle(ProcessInfo.hProcess);
+        CloseHandle(ProcessInfo.hThread);
+      end
+    else
+      begin
+        Result := 0;
+      end;
+  end;
+end; {ExecuteProcess}
+
+// Open Taskmanager, select the launched process, right click,
+// "Set affinity", you will see a check on the CPUs you selected
+
+If the system running your program has multiple processors, you can improve performance by dividing the work into
+several threads and letting them run simultaneously on separate processors.
+We show the function and examples to work with it!
+
+
+https://www.scribd.com/doc/284810389/Tutor-42-Multiprocessing-Programming
+
+https://www.academia.edu/16747890/Tutor_42_Multiprocessing_Coding
+
+
+ * [Tutorial 42 Multicore Processing](http://www.softwareschule.ch/download/maxbox_starter42.pdf)

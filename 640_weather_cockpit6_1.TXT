@@ -1,0 +1,1742 @@
+{***************************************************************
+ * Project  : Weather Station Report (WST) Analog Meter and Time Routines
+ * App Name :  517_animation7.TXT, 491_analogmeter.TXT, #locs=1162
+ * Purpose  : Demonstrates bitblock component2 - on progress
+ * Date     : #sign>4:17 Max: MAXBOX10: 17/06/2016 22:29:21  PM 
+ * History  : convert analogmeter to maXbox Aug 2014
+ *          : add time routines and tickcount to LED -need <ledList1.dat>
+            : animates a sprite, calls OpenWeatherMap API -store to stream dat
+ ****************************************************************}
+
+Program WeatherStation_AnalogMeterComp567_V4;
+
+{@BOOL WINAPI MessageBeep(               
+  __in  UINT uType  );}
+
+
+function MessageBoxTimeOut(hWnd: HWND; lpText: PChar; lpCaption: PChar; uType: UINT;
+                wLanguageId: WORD; dwMilliseconds: DWORD): Integer;
+             external 'MessageBoxTimeoutA@user32.dll stdcall';
+  
+procedure CloseClick(Sender: TObject; var action: TCloseAction); forward;
+  
+Const
+  //BACKMAP = 'examples\images\bmp47.bmp';    //<ledList1.dat>
+  //BACKMAP = 'examples\images\bmp33.bmp';
+  //BITMAP1 = 'examples\images\empty.bmp';
+  //BITMAP1 = 'examples\images\bmp21.bmp';  //try another combinations
+  //BITMAP2 = 'examples\images\bmp29.bmp';
+  //BITMAP2 = 'examples\images\bmp33.bmp';
+  SAVEPATH = 'examples\treeview_300.txt';
+  AExponent = 4;
+  ANIMATEDELAY = 6;
+  
+type
+  TByteArr = array of byte;
+  
+var
+  except_state, execute_state: string;  
+  mytimestamp: TDateTime;
+  osType: TIdWin32Type;
+  bfrm: TForm;
+  bitmap4, FPicled, FPicRed, FPicGreen, bmp47: TBitMap;
+  anamtr, anamtr0: TAnalogMeter;
+  aind: TindGnouMeter;
+  timerRedraw: TTimer;
+  acomp: ThhAvComp;
+  ledlbl: TLEDNumber;
+  atemper, apressure, ahumidity, awind, acloud: integer; 
+  actlocation, jsonstr: string;
+  telelabel: TLabel;
+  myEdit: TEdit;
+  ahumid: TGauge;
+  apress, ahumi: TSpinEdit;
+ 
+
+  
+{Windows Date and Time
+Sometimes you need to send a date and time through the Windows API. However, Windows uses its own date and time type: TSystemTime. Convert between TDateTime and TSystemTime using one of the following methods: }
+
+//ÑSoftware wird schneller langsamer als Hardware schneller wird. ì (Niklaus Wirth, 1995)
+
+procedure GetScreenShot2(var ABitmap : TBitmap);
+var
+  DC : THandle;
+begin
+  if Assigned(ABitmap) then begin// Check Bitmap<>NIL
+    DC := GetDC(0); // Get Desktop DC
+    try
+      ABitmap.Width := Screen.Width; // Adjust Bitmapsize..
+      ABitmap.Height := Screen.Height; // ..to screen size
+      BitBlt(ABitmap.Canvas.Handle, // Copy
+             0,0,Screen.Width,Screen.Height, // Desktop
+             DC, // into
+             0,0, // the
+             SrcCopy // Bitmap
+        );
+    finally
+      ReleaseDC(0, DC); // Relase DC
+    end;
+  end;
+end; 
+
+
+procedure TfrmScreenshot_btnScreenshotClick(Sender: TObject);
+var
+  bmp: TBitmap;
+  DC: HDC;
+  btnScreenshot: TBitBtn;
+    imgScreenshot: TImage;
+    vars: variant;
+begin
+  vars:= VarArrayCreate([0, 1], varShortInt)
+  bmp := TBitmap.Create;
+  DC := GetDC(0);
+  try
+    //bmp.LoadFromDevice(DC);
+  finally
+    ReleaseDC(0, DC);
+  end;
+  imgScreenshot.Picture.Bitmap.Assign(bmp);
+  bmp.Free;
+  //FreeAndNil(bmp);
+end;
+
+   
+procedure TMHTMLGetImageX(Sender: TObject {TIpHtmlNode}; const URL: string;
+  var Picture: TPicture);
+var
+  PicCreated: boolean;
+begin
+  try
+    if FileExistsUTF8(URL) then begin
+      PicCreated := False;
+      if Picture=nil then begin
+        Picture:=TPicture.Create;
+        PicCreated := True;
+      end;
+      Picture.LoadFromFile(URL);
+    end;
+  except
+    if PicCreated then
+      Picture.Free;
+    Picture := nil;
+  end;
+  //OpenURL
+end;
+
+{
+OpenURLInMozilla.sh
+#!/usr/bin/env bash
+mozilla -remote "openurl($1)" || mozilla $1 &}
+
+procedure TFOpenURL(const URL: string);
+var
+  TheProcess: TProcess;
+  BrowserFilename: string;
+  StartScriptFilename: string;
+  BrowserName: string;
+begin
+  //TFGetBrowser(BrowserName,BrowserFilename,StartScriptFilename);
+  if BrowserFilename='' then begin
+    //DebugLn('TForm1.OpenURL unable to find browser "',BrowserName,'"');
+    MessageDlg('Invalid browser'+
+           'Unable to find browser executable "'+BrowserName+'"',
+           mtError,[mbCancel],0);
+    exit;
+  end;
+  
+  //DebugLn('TForm1.OpenURL StartScriptFilename=',StartScriptFilename);
+  if not FileExistsUTF8(StartScriptFilename) then begin
+    //DebugLn('TForm1.OpenURL unable to find program "',StartScriptFilename,'"');
+    MessageDlg('Invalid browser'+
+           'Unable to find browser "'+StartScriptFilename+'"',
+           mtError,[mbCancel],0);
+    exit;
+  end;
+ { if not FileIsExecutable(StartScriptFilename) then begin
+  DebugLn('TForm1.OpenURL browserfile is not executable "',StartScriptFilename,'"');
+    MessageDlg('Invalid browser',
+           'Browserfilename "'+StartScriptFilename+'" is not executable',
+           mtError,[mbCancel],0);
+    exit;
+  end; }
+   TheProcess:=TProcess{UTF8}.Create(nil);
+  try
+    TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutput];
+    TheProcess.ShowWindow := swoNone;
+    TheProcess.CommandLine:=StartScriptFilename+' '+URL;
+    try
+      TheProcess.Execute;
+      TheProcess.WaitOnExit;
+      if TheProcess.ExitStatus<>0 then begin
+        MessageDlg('Error'+
+          'Error executing browser script '+StartScriptFilename+#13
+          +'Error code: '+IntToStr(TheProcess.ExitStatus),
+          mtError,[mbCancel],0);
+      end;
+    finally
+      TheProcess.Free;
+    end;
+  except
+    //on E: Exception do begin
+      Writeln('TForm1.OpenURL ERROR: '+'$E.Message');
+    //end;
+  end;
+end;
+
+  
+var CurStep: Double; 
+
+function TFRotatePoint(APoint, ACenter: TPoint; AAngle: Double): TPoint;
+var
+  dx, dy: Double;
+begin
+  dx := (ACenter.Y * Sin(AAngle)) - (ACenter.X * Cos(AAngle)) + ACenter.X;
+  dy := -(ACenter.X * Sin(AAngle)) - (ACenter.Y * Cos(AAngle)) + ACenter.Y;
+  Result.X := Round((APoint.X * Cos(AAngle)) - (APoint.Y * Sin(AAngle)) + dx);
+  Result.Y := Round((APoint.X * Sin(AAngle)) + (APoint.Y * Cos(AAngle)) + dy);
+end;
+   
+type ATPoint = array[0..2] of TPoint;
+   
+procedure TFRotatePolygon(var APoints: ATPoint; AAngle: Double);
+var
+  alCenter: TPoint;
+  i: Integer;
+begin
+  alCenter:= Point(150, 200);
+  for i:= 0 to Length(APoints)-1 do begin
+    alCenter.X := alCenter.X + APoints[i].X;
+    alCenter.Y := alCenter.Y + APoints[i].Y;
+  end;
+  alCenter.X := alCenter.X div Length(APoints);
+  alCenter.Y := alCenter.Y div Length(APoints);
+  for i := 0 to Length(APoints)-1 do
+    APoints[i]:= TFRotatePoint(APoints[i], alCenter, AAngle);
+end;
+
+
+procedure TFFormPaint(Sender: TObject);
+var
+  lPoints: ATPoint;
+begin
+  lPoints[0].X := 50; //50;
+  lPoints[0].Y := 50;
+  lPoints[1].X := 200;
+  lPoints[1].Y := 0;
+  lPoints[2].X := 250;
+  lPoints[2].Y := 250;
+  TFRotatePolygon(lPoints, CurStep);
+  bfrm.Canvas.Polygon(lPoints);
+  //writeln('pant');
+  bfrm.Canvas.Draw(26, round(Curstep),BitMap4);
+ 
+end;
+
+procedure TFTimerRedrawTimer(Sender: TObject);
+begin
+  CurStep:= CurStep + 0.1;
+  {if CurStep > 360 then CurStep := 0;
+   if anamtr.value > 99 then anamtr.value:= 0;
+     anamtr.value:= anamtr.value+1;
+   if aind.value > 99 then aind.value:= 0;
+     aind.value:= aind.value+1;
+   if acomp.course > 99 then acomp.course:= 0;}
+     acomp.course:= acomp.course+1; 
+    ledlbl.caption:= timetoStr(time) 
+
+   bfrm.Invalidate;
+end;
+
+
+procedure BitmapFormCreate(Sender: TObject);
+//var BitMap4: TBitmap;   
+//var imagelist1: TCustomImageList;
+var imagelist1: TImageList;
+
+   image, image1, image2, image3, mask: TBitmap;
+   //pngImage : TPngImage;
+
+begin
+  //FMask.LoadFromFile(exepath+'examples\citymax.bmp');
+  
+ { imagelist1:= TCustomImageList.Create(NIL);
+  image:= getbitmap(exepath+'\examples\images\red1.bmp');
+  image1:= getbitmap(exepath+'\examples\images\green1.bmp');
+   image2:= getbitmap(exepath+'\examples\images\yellow1.bmp')
+   image3:= getbitmap(exepath+'\examples\images\bmp47.bmp')
+   with imagelist1 do begin
+       Height:= 39; Width:= 39;
+       Add(image,NIL);
+       Add(image1,NIL);
+       Add(image2,NIL);
+       Add(image3,NIL);
+   
+       //DetectImage
+       //BitmapToString
+       //StringToBitmap
+  end;
+  WriteComponentResFile(exepath+'ledList1.dat', imagelist1);
+  imagelist1.free;     }
+
+  imagelist1:= TImageList.Create(nil);
+  
+  //grabline
+  //StrToOem
+  //TXMLConfig
+  //pansichar
+  //THash
+  //THashW
+  //chartobyteindex
+  //chartobytelen
+  //LoadUnicodeFromStream
+  //CopyToClipboard
+  //HashOfString
+  //ComparePoints
+  with TDragImageList.create(self) do begin
+    free
+    end;
+  
+   //FormatExceptionInfo
+      //BrowseForFolderw
+   //SetNtfsCompression
+   {ChangeWindowStyle
+   ShowExceptionW
+   
+   SysErrorMessageW
+  
+  GetDesktopFolderW
+  GetTempFileNameW
+  GetTempPathW
+  CurrentWinUser
+  iswritable     }
+  
+  // deserialize object stream to imagelist
+  
+    ReadComponentResFile(exepath+'examples\ledList1.dat', imagelist1);
+    
+    FPicled:= TBitMap.Create;
+  FPicRed:= TBitMap.Create;
+  FPicGreen:= TBitMap.Create;
+  bmp47:= TBitMap.Create;
+  
+  imagelist1.getbitmap(0, FPicled)
+  imagelist1.getbitmap(1, FPicred)
+  imagelist1.getbitmap(2, FPicgreen)
+  imagelist1.getbitmap(3, bmp47)
+    
+    {for it:= 1 to imagelist1.count-1 do begin
+      getBitmap(it,FPicled)
+    end; }  
+  
+   imagelist1.Free;
+    
+  //FPicled.LoadFromFile(Exepath+'\examples\images\yellow1.bmp');
+  //FPicRed.LoadFromFile(Exepath+'\examples\images\red1.bmp');
+  //FPicGreen.LoadFromFile(Exepath+'\examples\images\green1.bmp');
+  Screen.Cursor:= crCross;//loadCursor(hinstance,'Pan_All'); //crCross;
+   
+end;  
+
+function getBitMapObject2(mappath: string): TBitmap;
+begin
+  result:= TBitmap.Create;
+  try 
+    result.LoadFromFile(mappath);
+  finally
+    //result.Free;
+  end;  
+end; 
+
+
+type
+  TPolygon = array of TPoint;
+
+procedure PlotPolygon(const Canvas: TCanvas; const N: Integer; const R: Single;
+  const XC: Integer; const YC: Integer);
+var
+  aPolygon: TPolygon;
+  I: Integer;
+  C: Extended;
+  S: Extended;
+  A: Single;
+begin
+  SetLength(aPolygon, N);
+  A := 2 * Pi / N;
+  for I := 0 to (N - 1) do begin
+    SinCos(I * A, S, C);
+    aPolygon[I].X := XC + Round(R * C);
+    aPolygon[I].Y := YC + Round(R * S);
+    //Polygon[I].top := YC + Round(R * S);
+    //points.top
+  end;
+  Canvas.Polygon(aPolygon);
+end;
+
+
+const
+  N = 6; R = 10;
+procedure PlotPolygonForm(af: Tform);
+var
+  W: Single;
+  H: Single;
+  X: Integer;
+  Y: Integer;
+  //af: TForm;
+begin
+  W := 1.5 * R;
+  H := R * Sqrt(3);
+  //af:= TForm.create(self);
+  {af.height:= 600;
+  af.width:= 600;
+  af.color:= clblack;  }
+  af.canvas.pen.color:= clnavy; //clwebgold;
+  //af.show;
+  for X := 0 to Round(af.ClientWidth / W) do
+    for Y := 0 to Round(af.ClientHeight / H) do
+      if Odd(X) then
+        PlotPolygon(af.Canvas, N, R, Round(X * W), Round((Y + 0.5) * H))
+      else
+        PlotPolygon(af.Canvas, N, R, Round(X * W), Round(Y * H));
+  //af.Show;      
+end;
+
+
+Const
+// UrlWeatherReport25='http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric';
+ 
+ {@To get access weather API you need an own API key whatever account you chose!!}
+   UrlWeatherReport25=
+     'http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&APPID'+
+                                      '=55013bf3d09cfb0619989a00ed5bed09';
+
+function GetGeoWeather(const location: string;
+                             const UrlRestAPI: string): string;
+var lHTTP: TIdHTTP;
+    lStream: TStringStream;
+begin
+  lHTTP:= TIdHTTP.Create(NIL);
+  lStream:= TStringStream.Create('');
+  try
+     try
+       lHTTP.Get1(Format(UrlRestAPI,[location]),lStream);
+     except
+       //lHTTP.Get1(Format(UrlGeoLookupInfo2,[location]),lStream);
+        //if something wrong try using a backup server.
+     end;
+     lStream.Seek(0,0);
+     result:= 'GEO_Weather_Report: '+lStream.ReadString(lStream.Size);
+  finally
+    lHTTP.Free;
+    lStream.Free;
+  end;
+end;
+
+//{GEO_Weather_Report: {"coord":{"lon":14.16,"lat":46.62},"weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04d"}],"base":"cmc stations","main":{"temp":20.47,"pressure":1014,"humidity":56,"temp_min":17.78,"temp_max":22.6},"wind":{"speed":2.1},"clouds":{"all":75},"dt":1440415899,"sys":{"type":1,"id":5931,"message":0.0054,"country":"AT","sunrise":1440389578,"sunset":1440439050},"id":2771894,"name":"Maria Worth","cod":200}}
+
+
+
+procedure getIPWeatherData(aloc: string);
+begin
+if isInternet then begin
+    //writeln(GetGeoInfo4('178.196.192.131', UrlGeoLookupInfo3));
+    //writeln(GetGeoWeather('krumpendorf', UrlWeatherReport25));
+    //writeln(GetGeoWeather('koeln', UrlWeatherReport25));
+    //writeln(GetGeoWeather('bern', UrlWeatherReport25));
+    writeln('')
+    //"pressure":1009,"humidity":64
+    sr:= GetGeoWeather(aloc, UrlWeatherReport25);
+    writeln(sr);
+      writeln('temp live at: '+actlocation+' '+copy(sr,pos('"temp"',sr)+7,5))
+      writeln('pressure live: '+copy(sr,pos('"pressure"',sr)+11,4))
+      writeln('humidity live: '+copy(sr,pos('"humidity"',sr)+11,2))
+      if (copy(sr,pos('"clouds"',sr)+16,1)) <> '0' then
+         writeln('clouds live: '+copy(sr,pos('"clouds"',sr)+16,2));
+      writeln('weather report of: '+actlocation);
+ 
+    if isinternet then 
+       try
+         atemper:= strtoint(copy(sr,pos('"temp"',sr)+7,2)) //else
+       except
+         atemper:= strtoint(copy(sr,pos('"temp"',sr)+7,1)) //else
+       end else
+         atemper:= 25;
+    if isInternet then
+       try
+         apressure:= strtoint(copy(sr,pos('"pressure"',sr)+11,4)) 
+       except
+         apressure:= strtoint(copy(sr,pos('"pressure"',sr)+11,3)) 
+       end  
+       else
+       apressure:= 1009;
+    if isInternet then
+       try
+         ahumidity:= strtoint(copy(sr,pos('"humidity"',sr)+11,2))
+       except
+         ahumidity:= strtoint(copy(sr,pos('"humidity"',sr)+11,1))
+       end
+        else
+       ahumidity:= 78;
+    if isInternet then begin
+        if copy(sr,pos('"wind"',sr)+16,1) <> '0' then
+       awind:= strtoint(copy(sr,pos('"wind"',sr)+16,1)) else
+       awind:= 2;
+       end;
+    if isInternet then begin
+       if (copy(sr,pos('"clouds"',sr)+16,1)) <> '0' then
+          try
+            acloud:= strtoint(copy(sr,pos('"clouds"',sr)+16,2))
+          except
+            acloud:= strtoint(copy(sr,pos('"clouds"',sr)+16,1))
+          end 
+          end else
+       acloud:= 40;
+    //it:= pos('"temp"',sr)
+    //writeln(sr[it+7]+sr[it+8]+sr[it+9]+sr[it+10]+sr[it+11]) 
+   end  else begin
+      jsonstr:=  
+'GEO_Weather_Report: {"coord":{"lon":14.16,"lat":46.62},"weather":[{"id":501,"main":"Rain","description":"moderate rain","icon":"10d"}],"base":"cmc stations","main":{"temp":19.93,"pressure":1009,"humidity":64,"temp_min":17,"temp_max":21.67},"wind":{"speed":2.6,"deg":200},"rain":{"1h":1.17},"clouds":{"all":75},"dt":1439818945,"sys":{"type":1,"id":5931,"message":0.0042,"country":"AT","sunrise":1439784246,"sunset":1439834986},"id":2771894,"name":"Maria Worth","cod":200}';
+  sr:= jsonstr
+  writeln(' no internet connection found - local data of arduino ? ')
+  end
+ end;  
+  
+
+ 
+
+
+//********************************Event Handler*****************************//
+
+procedure MeterClick(Sender: TObject);
+var idx: integer;
+begin
+     TAnalogMeter(sender).value:= 
+       TAnalogMeter(sender).value +2; 
+end;
+
+procedure BtnAddClick(Sender: TObject);
+begin
+  {If nothing is selected}
+     bfrm.canvas.draw(335,30, FPicGreen); 
+     anamtr.value:= anamtr.value+10; 
+     //meterClick(anamtr)
+end;
+
+procedure UpdateClick(Sender: TObject);
+var tmps: string;
+begin
+     bfrm.canvas.draw(335,30, FPicRed);
+     actlocation:= myedit.text;
+     getIPWeatherData(actlocation)  
+     anamtr.value:= atemper;//strtoint(copy(atemper,0,2))
+     aind.value:= apressure div 15
+     telelabel.caption:= sr;
+     //wraptext(tmps,700);
+     telelabel.hint:= sr; //'this is box';
+     ahumid.progress:= ahumidity;
+     apress.value:= apressure;
+     ahumi.value:= ahumidity;
+ 
+     //anamtr.value:= anamtr.value-10; 
+end;
+
+procedure CloseClick(Sender: TObject; var action: TCloseAction);
+begin
+  FPicled.Free;
+  FPicRed.Free;
+  FPicGreen.Free;
+  bitmap4.free;
+  bmp47.free;
+  action:= caFree;
+  timerRedraw.Free;
+  Screen.Cursor:= crDefault;
+  writeln('Analog Outline Form being closed');
+end;
+
+procedure CloseButtonClick(Sender: TObject);
+begin
+  bfrm.Close; //calls close click
+end;
+
+procedure EditEnter(Sender: TObject);
+begin
+  //bfrm.Close; //calls close click
+end;
+
+procedure Edit1KeyPress(Sender: TObject; var Key: Char);
+var
+  S: String;
+begin
+  if Key = #13 then
+  begin
+    Key := #0;  
+    actlocation:= myedit.text;
+    updateclick(self)
+    //S := Edit1.Text;
+    //Edit1.Clear;
+    // do something with S...
+  end;
+end;
+
+//********************************Form Builder*****************************//
+procedure InitBitmapForm;
+var  RootNode: TTreeNode;
+     myc: TCollection;   
+     //images: TCustomImagelist;
+     //acomp: ThhAvComp;
+       var apanel: TPanel;
+
+begin
+ bfrm:= TForm.create(self);
+  //mt.free;  in on close
+ with bfrm do begin
+   FormStyle := fsStayOnTop;
+   Position:= poScreenCenter;
+   caption:='maXbox Internet or Arduino Weather Station IAWS';
+   color:= clblack;
+   width:= 950;
+   height:= 660;
+   //canvas.Pen.mode:= pmNotXor;
+   onClose:=  @CloseClick;
+   onpaint:= @TFFormPaint;
+   doublebuffered:= true;
+   //canvas.brush.bitmap.loadfromfile(Exepath+backmap);
+   Show;
+   BitMap4:= TBitmap.create;
+   bitmap4.transparent:= true;
+   BitMap4.LoadFromResourceName(HInstance,'Live');
+    bfrm.Canvas.Draw(16,450,BitMap4);
+ 
+   //canvas.draw(300,200, getbitmapObject2(Exepath+'\examples\citymax.bmp'));
+ end;
+ 
+  myEdit:= TEdit.create(bFrm);
+     with myEdit do begin
+      parent:= bFrm;
+      text:= 'klagenfurt';
+      setbounds(45,163,250,40);
+      font.size:= 18;
+      //onkeypreview:= true;
+      //onenter:= @updateClick;
+      onkeypress:= @Edit1KeyPress;
+     show
+    end;  
+ 
+ 
+ 
+  anamtr:= TAnalogMeter.create(self);
+  with anamtr do begin
+    parent:= bfrm;
+    //clear;
+    caption:= 'Temperature'; //+CRLF+'25.34';
+    setbounds(435,50,240,220);
+    font.color:= clRed;
+    font.size:= 14;
+    lowzonecolor:= clblue;
+    highzonecolor:= clred;
+    okzonecolor:= clgreen;
+    lowzone:= 17;
+    highzone:= 70;
+    tickcolor:= clred;
+    tickcount:= 9;
+    showvalue:= true;
+    min:= -30;
+    max:= 60;
+    writeln(inttostr(atemper))
+    if isinternet then
+      value:= atemper else //strtoint(copy(atemper,0,2)) else
+      value:= 25;
+    visible;
+    //ctl3d
+    //alignment
+  end;
+ 
+ aind:= TindGnouMeter.create(self);
+  with aind do begin
+    parent:= bfrm;
+    //clear;
+    caption:= 'Pressure';
+    color:= clwhite;
+    //canvas.color
+    //drawtoptext;
+    font.color:= clwhite;
+    font.size:= 12;
+    setbounds(136,200,140,260);
+    //tickcolor:= clred;
+    showmarker:= true;
+    colorback:= clblue;
+    //digits:= 4;
+    BarThickness:= 30
+    //value:= strtoint(copy(apressure,0,4)); //25;
+   
+    //value:= 85;
+    //increment:= 50;
+    //valuemin:= 990.0;
+    //valuemax:= 1030.0;
+    if isInternet then
+    value:= apressure div 15
+    else value:= 1000 div 15; //25;
+   
+    visible;
+    //ctl3d
+    //alignment
+  end;
+
+ acomp:= ThhAvComp.create(self);
+  with acomp do begin
+    parent:= bfrm;
+    //clear;
+    //caption:= 'maXMeter3';
+    //color:= clwhite;
+    //canvas.color
+    font.color:= clwhite;
+    font.size:= 11;
+    setbounds(275,300,340,220);
+    //tickcolor:= clred;
+    //showmarker:= true;
+    course:= 190.34;
+    ShowMagnetic:= true;
+    ShowBearing:= true;
+    ShowCourse:= true;
+    visible;
+    //ctl3d
+    //alignment
+  end;
+  
+  //with TSensorPanel.create(self) do begin
+ { with TAnalogSensor.create(self) do begin
+   parent:= bfrm;
+    //clear;
+    setbounds(136,350,340,220);
+    caption:= 'maXMeter3';
+    color:= clwhite;
+    //canvas.color
+    font.color:= clwhite;
+    font.size:= 11;
+    showlevel:= true;
+   end; }
+
+  with TLEDNumber.create(bFrm) do begin
+    Parent:= bFrm;
+    setBounds(40,60,200,60)
+    caption:= DATEtoStr(date);
+    columns:= 10;
+    size:= 2;
+  end;
+
+
+  ledlbl:= TLEDNumber.create(bFrm)
+  with ledlbl do begin
+    Parent:= bFrm;
+    setBounds(40,100,200,60)
+    caption:= TimeToStr(time);
+    columns:= 11;
+    size:= 2;
+  end;
+
+  ahumid:= TGauge.create(self);
+  with ahumid do begin
+    parent:= bfrm;
+    //clear;
+    //text:= 'humidity';
+    setbounds(745,50,90,90);
+    color:= clblack;
+    //canvas.color
+    showtext:= true;
+    forecolor:= clblue;
+    backcolor:= clnavy; //clgreen;
+    //borderstyle:= bsDialog;
+    borderstyle:= bsToolWindow;
+    font.color:= clblack;
+    //canvas.pen
+    font.size:= 24;
+    //tickcolor:= clred;
+    //showmarker:= true;
+    //colorback:= clblue;
+    kind:= gkpie; //gkneedle; // gkpie;
+    showtext:= true
+    progress:= ahumidity; //77;
+    //BarThickness:= 20
+    //value:= 25;
+    visible;
+    //ctl3d
+    //alignment
+  end;
+  
+  with TGauge.create(self) do begin
+    parent:= bfrm;
+    //clear;
+    //text:= 'humidity';
+    //caption
+    setbounds(745,170,90,90);
+    color:= clblack;
+    //canvas.color
+    forecolor:= clblue;
+    backcolor:= clnavy;
+    //borderstyle:= bsDialog;
+    borderstyle:= bsToolWindow;
+    font.color:= clblack;
+    //canvas.pen
+    font.size:= 24;
+    kind:= gkpie; //gkneedle; // gkpie;
+    showtext:= true
+    progress:= 47;
+    //BarThickness:= 20
+    //value:= 25;
+    visible;
+    //ctl3d
+    //alignment
+  end;
+  
+  with TColorGrid.create(self) do begin
+    parent:= bfrm;
+    //clear; //caption:= 'maXMeter3';
+    //color:= clnavy;
+    //canvas.color
+    ClickEnablesColor:= true;
+    //foregroundcolor:= clred;
+    //backgroundcolor:= clgreen;
+    //borderstyle:= bsDialog;
+    //borderstyle:= bsToolWindow;
+    font.color:= clred;
+    //canvas.pen
+    font.size:= 10;
+    setbounds(740,300,100,100);
+    //tickcolor:= clred;
+    //showmarker:= true;
+    //colorback:= clblue;
+    //kind:= gkpie; //gkneedle; // gkpie;
+    //BarThickness:= 20
+    //value:= 25;
+    //visible;
+    //ctl3d
+    //alignment
+  end;
+  
+ timerRedraw:= TTimer.create(self);
+ timerRedraw.interval:= 60;
+ timerRedraw.ontimer:= @TFTimerRedrawTimer;
+ timerRedraw.enabled:= true;
+ 
+ with TBitBtn.create(bfrm) do begin
+   parent:= bfrm;
+   setbounds(450,480,150,55)
+   font.size:= 12;
+   glyph.LoadFromRes(HINSTANCE,{'TGPSSATELLITESRECEPTION'}'CL_MPSTOP');
+   caption:= '&Close App';
+   onClick:= @closeButtonClick;
+ end;
+ with TBitBtn.Create(bfrm) do begin
+   Parent:= bfrm;
+   setbounds(130,480,150, 55);
+   caption:= 'A&dd Node';
+   font.size:= 12;
+   glyph.LoadFromRes(HINSTANCE,'CL_MPNEXT');
+   onClick:= @BtnAddClick;
+ end;
+ with TBitBtn.Create(bfrm) do begin
+   Parent:= bfrm;
+   setbounds(290,480,150, 55);
+   caption:= '&Reduce Node';
+   font.size:= 12;
+   glyph.LoadFromRes(getHINSTANCE,'TGPSSATELLITESRECEPTION'{CL_MPPREV'});
+   onClick:= @UpdateClick;
+ end;
+
+ with TBitBtn.Create(bfrm) do begin
+   Parent:= bfrm;
+   setbounds(610,480,150, 55);
+   caption:= '&Update';
+   font.size:= 12;
+   glyph.LoadFromRes(getHINSTANCE,'TVPCLOCK'); //MODBUSSPLASH'{CL_MPPREV'});
+   //mXButton(05,05,width, height,12,12,handle);
+   onClick:= @UpdateClick;
+ end;
+ 
+ apress:= TSpinEdit.create(bfrm);
+ with apress do begin
+    parent:= bfrm;
+    //parentcolor:= clgreen;
+    color:= clgreen;
+    SetBounds(50,250,80,210);
+    //distance(20);
+    //backgroundcolor
+    //font.color:= clred;
+    text:= 'Pressure';
+    font.size:=14;
+    writeln(inttostr(apressure))
+    if isinternet then 
+       value:= apressure else
+       value:= 1009;
+ end;
+ 
+ ahumi:= TSpinEdit.create(bfrm);
+ with ahumi do begin
+    parent:= bfrm;
+    //parentcolor:= clgreen;
+    color:= clgreen;
+    SetBounds(50,300,80,210);
+    //distance(20);
+    //backgroundcolor
+    //font.color:= clred;
+    text:= 'humidity';
+    font.size:=14;
+    if isInternet then 
+      value:= ahumidity else
+      value:= 75;
+ end;
+ 
+ with TSpinEdit.create(bfrm) do begin
+    parent:= bfrm;
+    //parentcolor:= clgreen;
+    color:= clgreen;
+    SetBounds(50,350,80,210);
+    //distance(20);
+    //backgroundcolor
+    //font.color:= clred;
+    text:= 'wind';
+    font.size:=14;
+    if isInternet then 
+      value:= awind else //strtoint(apressure)-100 else
+      value:= 2;
+ end;
+    
+ with TSpinEdit.create(bfrm) do begin
+    parent:= bfrm;
+    //parentcolor:= clgreen;
+    color:= clgreen;
+    SetBounds(50,400,80,210);
+    //distance(20);
+    //backgroundcolor
+    //font.color:= clred;
+    text:= 'cloud';
+    font.size:=14;
+    if isInternet then 
+      value:= acloud else //strtoint(apressure)-100 else
+      value:= 42;
+ end;
+
+ with TStatusBar.create(bfrm) do begin
+    parent:= bfrm;
+    simplepanel:= true;
+    color:= clyellow;
+    //align:= alleft;
+    autohint:= true;
+    showhint:= true;
+    
+    //autosize:= false;
+    hint:= sr; //'this is box';
+    //simpletext.font.size:= 12;
+    //simpletext:= 'this is analogue status bar';
+    //wordwrap(true);
+    simpletext:= sr;
+    //visible:= true;
+    //alignment:= alleft;
+  end;
+  
+
+ { apanel:= TPanel.create(bfrm)
+  with apanel do begin
+   Parent:= bfrm;
+   setbounds(0,550,bfrm.width,30);
+   show;
+ end; }
+ 
+ 
+ //with TStaticText.create(apanel) do begin
+ telelabel:= TLabel.create(bfrm);
+ with telelabel do begin
+     parent:= bfrm; //apanel;
+    //simplepanel:= true;
+    //color:= clyellow;
+    //align:= alclient;
+    transparent:= false;
+    setbounds(0,540,bfrm.width,40)
+    font.color:= clyellow;
+    font.size:= 11;
+    //top:= 550;
+    //height:= 300;
+    //width:=400;
+    //align:= alclient;
+    //autohint:= true;
+    //Application.HintHidePause:= 5000; // milliseconds
+    //WrapText(sr,50)
+    showhint:= true;
+    //autosize:= false;
+    wordwrap:= true;
+    //SetWindowLong(BitBtn1.Handle, GWL_STYLE,
+    //GetWindowLong(BitBtn1.Handle, GWL_STYLE) or BS_MULTILINE);
+    hint:= sr; //'this is box';
+    //simpletext.font.size:= 12;
+    //simpletext:= 'this is analogue status bar';
+    //autowrap:= true;
+    //text:= sr;
+    //showlines:= true;
+    //text:= sr;
+    caption:= sr;
+    show;
+    visible:= true;
+    //alignment:= alleft;
+    //Application.HintHidePause:= 2000; // milliseconds
+  
+  end;
+  
+ {for i:= 10 to 100 do begin 
+    anamtr.value:= anamtr.value + 1;
+    sleep(50);
+  end;  
+  for i:= 100 downto 25 do begin   
+    anamtr.value:= anamtr.value - 1;
+    sleep(50)
+ end;} 
+end;
+
+
+const  weatherREX = //'(?i)Ioeoeaeuiue eo?n OA ii aieea?o' 
+    //'.*Aaoa\s*Eo?n\s*Eo?n iie.\s*Eo?n i?ia. [^<\d]*' 
+    //  '.*ƒ‡Ú‡\s* Û?Ò\s* Û?Ò ÔÓÍ.\s* Û?Ò Ô?Ó‰.\s* ÛÒ Ì‡?[^<\d]*' 
+    //+("name":"[\w]+")';      //"name":"
+    
+    '"temp":([\d\.]+).*"humidity":([0-9]+).*"name":"([\w]+)"';  
+
+
+procedure getREGEX_WeatherStation(Sender: TObject; actlocation: string); 
+var http1: TIDHTTP;
+  srb: string;
+begin 
+  if  actlocation = '' then
+    actlocation:= 'Mainz';
+  srb:= '';
+  srb:= GetGeoWeather(actlocation, UrlWeatherReport25);
+    writeln(srb);
+      writeln('temp live at: '+actlocation+' '+copy(srb,pos('"temp"',srb)+7,5))
+      writeln('pressure live: '+copy(srb,pos('"pressure"',srb)+11,4))
+      writeln('humidity live: '+copy(srb,pos('"humidity"',srb)+11,2))
+  
+  with TRegExpr.Create do try 
+     Expression:= weatherREX; 
+     if Exec(srb) then begin 
+       PrintF('Weather Temp at %s in %s and %s humidity',
+                                  [Match[1] ,Match[3], Match[2]+'%']); 
+      end; 
+    finally Free; 
+  end;
+   //text2html
+end;  
+
+
+  
+function TimeStampInterval(StartStamp, EndStamp: TDateTime): integer;
+var
+  days: Integer;
+  hour, min, s, ms: Word;
+begin
+  days := Trunc(EndStamp - StartStamp); // whole days
+  DecodeTime(EndStamp - StartStamp, hour, min, s, ms);
+  result := (((days * 24 + hour) * 60 + min) * 60 + s) * 1000 + ms;
+end;
+
+procedure maxcalc_demo;
+begin
+  printF('this is %.6f',[maXcalc('ln(2)+fact(388)+2!')]); 
+  printF('this is %.6f',[maXcalc('(4!)^(3!)')]); 
+  printF('this is %.6f',[maXcalc('4!+4!')]); 
+  printF('this is %.6f',[maXcalc('log(22)')]); 
+  printF('this is logN %.6f',[maXcalc('2%256')]);
+  writeln('ln(e): '+floattostr(maXcalc('ln(e)')))
+  writeln(floattostr(maXcalc('e+10^6')))
+  printF('addition theorem %.18f ',[maXcalc('sin(2.5/2)')])
+  printF('addition theorem %.18f ',[maXcalc('sqrt(1/2*(1-cos(2.5)))')])
+  printF('addition theorem2 %22.18f ',[maXcalc('cos(2.5/2)')])
+  printF('addition theorem2 %22.18f ',[maXcalc('sqrt(1/2*(1+cos(2.5)))')])
+  maXcalcF('2%256+2^10');
+end; 
+
+ var    myus: TUserfunction;
+        aobj: TObject;
+        bitstyle: TBitmapstyle;
+        UserSpaceAvail, TotalSpaceAvail, DiskSize: Comp; {disk size}
+        shdig: TSHA1Digest;
+        mybit: TBitmap;
+
+begin   //main of animationbox
+   //InifileRead;
+   ProcessMessagesON;
+   writeln('Thread ID :'+intToStr(CurrentThreadID))
+   writeln('Process ID :'+intToStr(CurrentProcessID))
+   writeln('machine name is: '+getHostName)
+   writeln('user name is: '+getUserName)
+   osType:= Win32Type;
+   writeln('OS Type is: '+intToStr(ord(osType)));
+   mytimestamp:= GetFileCreationTime(exepath+'maxbox4.exe')
+   writeln(DateTimeToStr(mytimestamp)+' for maXbox4 file')
+   //SearchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter16.pdf')
+   //ExecuteCommand('cmd','/k dir *.*')
+    
+    //actlocation:= 'poertschach';
+    actlocation:= 'Mainz';
+    getIPWeatherData(actlocation);  
+    
+   //Form Section ----------------
+   BitmapFormCreate(self);
+   InitBitmapForm;
+   PlotPolygonForm(bFrm);
+   myEdit.text:= actlocation;
+   bfrm.canvas.brush.bitmap:= bmp47; //getbitmapObject(Exepath+backmap);
+   bfrm.Canvas.FillRect(Rect(400,300,100,100));
+   //Form Section End ------------
+   
+   
+   //actlocation:= myedit.text;
+  //FormDrawBitmap(Exepath+BACKMAP,10,10, bfrm.canvas);
+    //bfrm.canvas.brush.bitmap.loadfromfile(Exepath+backmap);
+   //bfrm.canvas.draw(300,200, getbitmapObject(Exepath+backmap));
+   //bfrm.canvas.brush.bitmap.width:= 300;
+   //FormDrawBitmap(BITMAP2,540,10, bfrm.canvas);
+   //PlotPolygonForm(bFrm);
+ 
+   CurrencyFormat;
+   //VarComplexToPolar
+   //CheckSynchronize
+    if isMultiThread then writeln('multi thread');
+    //maXbox
+     aobj:= TObject.Create;
+    freeandnil2(aobj);
+    //RIRegister_StGenLog_Routines
+    //Function HexifyBlock( var Buffer, BufferSize : Integer) : string');
+    //HexifyBlock( var Buffer, BufferSize : Integer) : string');
+    //maxform1.CB1SCList.color:= clred;
+    //maxform1.mxNavigator.color:= clyellow;
+    bitstyle:= bsCentered;
+    //printimage(getbitmapObject(Exepath+backmap),bscentered); 
+    writeln(inttostr(vk_back))
+    writeln(inttostr(vk_F1))
+    //formatmasktext //MaskGetMaskSave
+    //GetEnvironmentInfo;
+  writeln('DriveDelim= '+DriveDelim) 
+
+{-Return technical information about the specified drive.}
+{GetDiskSpace}
+ //GetDiskSpace(Drive : AnsiChar;
+   //               var UserSpaceAvail  : Comp;           {space available to user}
+     //             var TotalSpaceAvail : Comp;           {total space available}
+       //           var DiskSize        : Comp) : Boolean;{disk size}
+{-Return space information about the drive.}
+
+ if GetDiskSpace('C',UserSpaceAvail,TotalSpaceAvail,DiskSize) then
+     printF('UserSpaceAvail: %d TotalSpaceAvail: %d DiskSize: %d',
+         [UserSpaceAvail div 1024,TotalSpaceAvail div 1024,DiskSize div 1024]);
+  
+    //maXcalc_demo;
+   
+   maXcalcF('ln(e)');
+   //dpGetTempFolder
+   //GetTempFile
+//function GetSomeFileInfo( aFile: string; aWhatInfo: TSomeFileInfo) : string');
+    writeln(GetSomeFileInfo(exepath+'maxbox4.exe', fi_DisplayType));
+    writeln(TBGetTempFolder+' '+TBGetTempFile+' '
+         +TBGetModuleFilename+inttostr(TBGetFileSize(exepath+'maxbox4.exe',1)));
+     writeln('windir: ' +windir)
+    //ExpandMacro('%WINDIR%\Media\notify.wav');
+    if PlaySound(windir+'\Media\notify.wav', 0, SND_FILENAME or SND_SYNC) then
+    writeln('sound on box fox');
+    
+    //getIPWeatherData('poertschach');  
+    {writeln(itoa(ComputeFileCRC32(exepath+'\maxbox4.exe')));
+    writeln(sha1(exepath+'\maxbox4.exe'))
+    shdig:= GetSHA1OfFile(false,exepath+'\maxbox4.exe'); 
+      for i:= 0 to 19 do write(bytetohex(shdig[i]));} 
+    //changetime;  
+    //TFOpenURL('http://www.softwareschule.ch');
+    {mybit:= TBitmap.create;
+    GetScreenShot(mybit)
+    mybit.savetofile(exepath+'gotscreen2.bmp');
+    mybit.Free;} 
+    writeln(sr)
+    getREGEX_WeatherStation(self, 'klagenfurt');
+    bfrm.Canvas.Draw(5, 20,Fpicled);
+    
+    writeln(spacerexx('thisis mx',3))
+ 
+End.   
+
+http://www.be-precision.com/products/precision-builder/express/webhelp/en/topics/PSSyntax.htm
+
+------------------------------------------------
+Windows crashed again. I am the Blue Screen of Death. No one hears your screams.
+Three things are certain: Death, taxes, and lost data. Guess which has occurred.
+There is no place like 127.0.0.1 
+
+http://en.wikipedia.org/wiki/Sneakers_%281992_film%29
+
+
+
+procedure CurrencyFormat;
+var fSettings: TFormatSettings;
+begin
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, fSettings);
+  writeln(fsettings.timeAMString);
+  writeln(fsettings.longDateFormat);
+  writeln(fsettings.shortDateFormat);
+    //writeln(currtostrF
+  writeln('currtostrFS 1234.56 formats with setting as = '+
+             CurrToStrFS(1234.5678989, ffCurrency, 4, fSettings));
+             writeln(FloatToStrF(1234.5678989, ffCurrency, 6, 6));
+  writeln('currtostrFS and back as = '+
+             CurrToStrFS(strToCurr('1234.5678989'), ffCurrency, 4, fSettings));
+end; 
+
+procedure maxcalc_demo;
+begin
+  printF('this is %.6f',[maXcalc('ln(2)+fact(388)+2!')]); 
+  printF('this is %.6f',[maXcalc('(4!)^(3!)')]); 
+  printF('this is %.6f',[maXcalc('4!+4!')]); 
+  printF('this is %.6f',[maXcalc('log(22)')]); 
+  printF('this is logN %.6f',[maXcalc('2%256')]);
+  writeln('ln(e): '+floattostr(maXcalc('ln(e)')))
+  writeln(floattostr(maXcalc('e+10^6')))
+  printF('addition theorem %.18f ',[maXcalc('sin(2.5/2)')])
+  printF('addition theorem %.18f ',[maXcalc('sqrt(1/2*(1-cos(2.5)))')])
+  printF('addition theorem2 %22.18f ',[maXcalc('cos(2.5/2)')])
+  printF('addition theorem2 %22.18f ',[maXcalc('sqrt(1/2*(1+cos(2.5)))')])
+  maXcalcF('2%256+2^10');
+end; 
+
+50000  = 0.693137180659968
+100000 = 0.693142180584982
+500000 = 0.693146180561005
+10^6   = 0.693146680560255
+5*10^6 = 0.693147080560068
+50*10^6= 0.693147170560399    //Runtime: 0:28:22.422
+ln(2)  = 0.693147180559945
+
+(* zeta:= 0;
+     for i:= 1 to 50000 do 
+       if i mod 2 = 0 then
+         zeta:= zeta - 1/i else
+         zeta:= zeta + 1/i;
+       writeln('harmonic alternate to ln(2): '+floattostr(zeta))  
+       writeln(floattostr(maxcalc('ln(2)')))
+       writeln(floattostr(ln2))    *)
+   
+
+
+***********************************Thread Class *****************************
+  TThread = class
+  private
+{$IFDEF MSWINDOWS}
+    FHandle: THandle;
+    FThreadID: THandle;
+{$ENDIF}
+{$IFDEF LINUX}
+    // ** FThreadID is not THandle in Linux **
+    FThreadID: Cardinal;
+    FCreateSuspendedSem: TSemaphore;
+    FInitialSuspendDone: Boolean;
+{$ENDIF}
+    FCreateSuspended: Boolean;
+    FTerminated: Boolean;
+    FSuspended: Boolean;
+    FFreeOnTerminate: Boolean;
+    FFinished: Boolean;
+    FReturnValue: Integer;
+    FOnTerminate: TNotifyEvent;
+    FSynchronize: TSynchronizeRecord;
+    FFatalException: TObject;
+    procedure CallOnTerminate;
+    class procedure Synchronize(ASyncRec: PSynchronizeRecord; QueueEvent: Boolean = False); overload;
+{$IFDEF MSWINDOWS}
+    function GetPriority: TThreadPriority;
+    procedure SetPriority(Value: TThreadPriority);
+{$ENDIF}
+{$IFDEF LINUX}
+    // ** Priority is an Integer value in Linux
+    function GetPriority: Integer;
+    procedure SetPriority(Value: Integer);
+    function GetPolicy: Integer;
+    procedure SetPolicy(Value: Integer);
+{$ENDIF}
+    procedure SetSuspended(Value: Boolean);
+  protected
+    procedure CheckThreadError(ErrCode: Integer); overload;
+    procedure CheckThreadError(Success: Boolean); overload;
+    procedure DoTerminate; virtual;
+    procedure Execute; virtual; abstract;
+    procedure Queue(AMethod: TThreadMethod); overload;
+    procedure Synchronize(AMethod: TThreadMethod); overload;
+    property ReturnValue: Integer read FReturnValue write FReturnValue;
+    property Terminated: Boolean read FTerminated;
+  public
+    constructor Create(CreateSuspended: Boolean);
+    destructor Destroy; override;
+    procedure AfterConstruction; override;
+    procedure Resume;
+    procedure Suspend;
+    procedure Terminate;
+    function WaitFor: LongWord;
+    class procedure Queue(AThread: TThread; AMethod: TThreadMethod); overload;
+    class procedure RemoveQueuedEvents(AThread: TThread; AMethod: TThreadMethod);
+    class procedure StaticQueue(AThread: TThread; AMethod: TThreadMethod);
+    class procedure Synchronize(AThread: TThread; AMethod: TThreadMethod); overload;
+    class procedure StaticSynchronize(AThread: TThread; AMethod: TThreadMethod);
+    property FatalException: TObject read FFatalException;
+    property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
+{$IFDEF MSWINDOWS}
+    property Handle: THandle read FHandle;
+    property Priority: TThreadPriority read GetPriority write SetPriority;
+{$ENDIF}
+{$IFDEF LINUX}
+    // ** Priority is an Integer **
+    property Priority: Integer read GetPriority write SetPriority;
+    property Policy: Integer read GetPolicy write SetPolicy;
+{$ENDIF}
+    property Suspended: Boolean read FSuspended write SetSuspended;
+{$IFDEF MSWINDOWS}
+    property ThreadID: THandle read FThreadID;
+{$ENDIF}
+{$IFDEF LINUX}
+    // ** ThreadId is Cardinal **
+    property ThreadID: Cardinal read FThreadID;
+{$ENDIF}
+    property OnTerminate: TNotifyEvent read FOnTerminate write FOnTerminate;
+  end;
+  
+  
+
+ 
+http://www.hitekdev.com/delphi/BITMAPANIMATION.html
+
+void draw() 
+{
+  fill(0, 2);
+  rect(0, 0, width, height);
+  pct += step;
+  if (pct < 1.0) {
+    x = beginX + (pct * distX);
+    y = beginY + (pow(pct, exponent) * distY);
+  }
+  fill(255);
+  ellipse(x, y, 20, 20);
+}
+
+function FindRootNode(ACaption: String; ATreeView: TTreeView): TTreeNode; 
+var LCount: Integer; 
+begin 
+  result := nil; 
+  LCount := 0; 
+  while (LCount < ATreeView.Items.Count) and (result = nil) do 
+  begin 
+    if (ATreeView.Items.Item[LCount].Text = ACaption) and (ATreeView.Items.Item[LCount].Parent = nil) then 
+      result := ATreeView.Items.Item[LCount]; 
+    inc(LCount); 
+  end; 
+end;
+
+...
+
+var LDestNode: TTreeNode; 
+begin 
+  LDestNode := FindRootNode('category', TreeView1); 
+  if LDestNode <> nil then 
+  begin 
+    TreeView1.Items.AddChild(LDestNode, 'node1'); 
+    TreeView1.Items.AddChild(LDestNode, 'node2'); 
+  end; 
+end;
+
+Loading TTreeView items from XML
+Once we have the XML representation of the tree view items, we can use it to populate the tree view. When the application starts, the XML2Tree procedure is called to construct the tree. The tree parameter is a reference to a TTreeView component we are populating; the XMLDoc parameter points to a TXMLDocument component. In this case we are using the TXMLDocument component dropped on a form.
+
+procedure XML2Tree(
+          tree   : TTreeView; 
+          XMLDoc : TXMLDocument);
+var
+  iNode : IXMLNode;
+
+  procedure ProcessNode(
+        Node : IXMLNode; 
+        tn   : TTreeNode);
+  var
+    cNode : IXMLNode;
+  begin
+    if Node = nil then Exit;
+    with Node do
+    begin
+      tn := tree.Items.AddChild(tn, Attributes['text']);
+      tn.ImageIndex := Integer(Attributes['imageIndex']);
+      tn.StateIndex := Integer(Attributes['stateIndex']);
+    end;
+
+    cNode := Node.ChildNodes.First;
+    while cNode <> nil do
+    begin
+      ProcessNode(cNode, tn);
+      cNode := cNode.NextSibling;
+    end;
+  end; (*ProcessNode*)
+begin
+  tree.Items.Clear;
+  XMLDoc.FileName := ChangeFileExt(ParamStr(0),'.XML');
+  XMLDoc.Active := True;
+
+  iNode := XMLDoc.DocumentElement.ChildNodes.First;
+
+  while iNode <> nil do
+  begin
+    ProcessNode(iNode,nil);
+    iNode := iNode.NextSibling;
+  end;
+
+  XMLDoc.Active := False;
+end;
+
+
+http://jedi.grizzlydev.com/www/art_usingtreeviews.html
+
+In modern times, a configuration file has to be an XML standard so you want to parse that file to get the elements from corresponding nodes. 
+Answer:
+
+
+First you have to import the Type library. This will create a wrapper class for that component and all you have to do is to name it in uses in your unit. 
+I used msxml.dll(Version 2.0) to install the XML parsing components in the IDE through the Import Type Library option. 
+See for more details: 
+
+Importing XML DOM Parser in Delphi /ID 2021 
+
+
+Second we produce a simple XML file like a configuration file: 
+(Name the file myconfig.xml) 
+(Strange things happen (cause the xml interpreter in d3k-editor) with a well-formed file after submit the article, so I had to cancel first tags between databases and databases ) 
+please download the file: http://max.kleiner.com/myconfig.xml 
+****************************************************************************** 
+----Simple Browser started----
+
+// Run asynchronously (wait for process to exit) and use pipes so we can read the output pipe
+  hProcess.Options := hProcess.Options + [poWaitOnExit, poUsePipes];
+  // Now run:
+  
+ http://www.delphibasics.info/home/delphibasicssnippets/processunitbyaphexwithexample
+  
+  http://www.jrsoftware.org/ishelp/index.php?topic=scriptfunctions
+  
+  
+  Auﬂerdem gibt diese Prozedur:
+zusammenfalten ∑ markieren
+Delphi-Quellcode:
+procedure GetScreenShot (var ABitmap : TBitmap);
+var
+  DC : THandle;
+begin
+  if Assigned(ABitmap) then // Check Bitmap<>NIL
+  begin
+    DC := GetDC(); // Get Desktop DC
+    try
+      ABitmap.Width := Screen.Width; // Adjust Bitmapsize..
+      ABitmap.Height := Screen.Height; // ..to screen size
+      BitBlt(ABitmap.Canvas.Handle, // Copy
+             0,0,Screen.Width,Screen.Height, // Desktop
+             DC, // into
+             0,0, // the
+             SrcCopy // Bitmap
+        );
+    finally
+      ReleaseDC(0, DC); // Relase DC
+    end;
+  end;
+end;
+... einige Errors:
+
+unit1.pas(38,22) Error: Illegal parameter list
+unit1.pas(40,11) Error: Wrong number of parameters specified for call to "GetDC"
+unit1.pas(42,15) Error: Unknown record field identifier "WIDTH"
+unit1.pas(43,15) Error: Unknown record field identifier "HEIGHT"
+unit1.pas(44,22) Error: Unknown record field identifier "CANVAS"
+unit1.pas(60,21) Error: Call by var for arg no. 1 has to match exactly: Got "TImage" expected "BITMAP"
+unit1.pas(34,11) Hint: Found declaration: GetScreenShot(var BITMAP);
+unit1.pas(88) Fatal: There were 6 errors compiling module, stopping
+
+Warum funktioniert die Funktion nicht?
+Das ist bei mir in der uses:
+markieren
+Delphi-Quellcode:
+uses
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, StdCtrls, Windows, CLipBrd, LCLIntf, LCLType;
+
+https://en.wikipedia.org/wiki/User:Maxkleiner
+http://en.wikipedia.org/wiki/Megido_%28Free_Pascal%29
+
+
+Editing Pascal Script (section)
+
+Your edit includes new external links. To help protect against automated spam, please solve the simple sum below and enter the answer in the box (more info):
+
+    Program SpammersAreParasites;
+    var
+      l1,l2: Srting;
+    begin
+      l1:='70';
+      l2:='0';
+      Bxo:=l1 + l2;
+      Bxo:=(Bxo)
+    (*  l1:=97;
+      l2:=9
+     Bxo:=(l1 + l2);
+    *)
+    end.
+
+? Value of Bxo: 
+
+
+********** File 1: C:\maXbook\maxbox3\mX3999\maxbox3\maxbox3\source\REST\indgnoumeter.pas
+type
+19:   TindGnouMeter = class(TGraphicControl)
+  private
+
+99: constructor TindGnouMeter.Create(AOwner: TComponent);
+begin
+
+120: destructor TindGnouMeter.Destroy;
+begin
+
+125: procedure TindGnouMeter.CMTextChanged(var Message: TMessage);
+begin
+
+130: procedure TindGnouMeter.SetValue(val: Double);
+begin
+
+139: procedure TindGnouMeter.SetColorFore(val: TColor);
+begin
+
+148: procedure TindGnouMeter.SetColorBack(val: TColor);
+begin
+
+157: procedure TindGnouMeter.SetSignalUnit(val: ShortString);
+begin
+
+166: procedure TindGnouMeter.SetValueMin(val: Double);
+begin
+
+175: procedure TindGnouMeter.SetValueMax(val: Double);
+begin
+
+184: procedure TindGnouMeter.SetDigits(val: Byte);
+begin
+
+193: procedure TindGnouMeter.SetIncrement(val: Double);
+begin
+
+202: procedure TindGnouMeter.SetShowIncrements(val: Boolean);
+begin
+
+211: function TindGnouMeter.GetTransparent: Boolean;
+begin
+
+216: procedure TindGnouMeter.SetTransparent(Val: Boolean);
+begin
+
+228: procedure TindGnouMeter.SetGapTop(val: Word);
+begin
+
+237: procedure TindGnouMeter.SetGapBottom(val: Word);
+begin
+
+246: procedure TindGnouMeter.SetBarThickness(val: Word);
+begin
+
+255: procedure TindGnouMeter.SetMarkerColor(val: TColor);
+begin
+
+264: procedure TindGnouMeter.SetShowMarker(val: Boolean);
+begin
+
+273: procedure TindGnouMeter.DrawIncrements;
+var
+
+298: procedure TindGnouMeter.DrawMarker;
+begin
+
+323: procedure TindGnouMeter.DrawTopText;
+begin
+
+344: procedure TindGnouMeter.DrawValueMin;
+begin
+
+360: procedure TindGnouMeter.DrawValueMax;
+begin
+
+375: procedure TindGnouMeter.DrawMeterBar;
+begin
+
+414: function TindGnouMeter.ValueToPixels(val: Double): integer;
+var
+
+233: {-------------------------TAnalogMeter-----------------------------------------}
+{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+235: Constructor TAnalogMeter.Create(AOwner: TComponent);
+Begin
+{------------------------------------------------------------------------------}
+265: Destructor TAnalogMeter.Destroy;
+Begin
+{------------------------------------------------------------------------------}
+272: Procedure TAnalogMeter.WMSize(var Message : TWMSize);
+Begin
+{------------------------------------------------------------------------------}
+286: Function TAnalogMeter.GetFont : TFont;
+Begin
+{------------------------------------------------------------------------------}
+292: Procedure TAnalogMeter.SetFont(f : TFont);
+Begin
+{------------------------------------------------------------------------------}
+305: Procedure TAnalogMeter.SetCaption(s : String);
+Begin
+{------------------------------------------------------------------------------}
+315: Procedure TAnalogMeter.SetMin(m : LongInt);
+Var OldLow, OldHigh : Longint;
+{------------------------------------------------------------------------------}
+329: Procedure TAnalogMeter.SetMax(m : LongInt);
+Var OldLow, OldHigh : Longint;
+{------------------------------------------------------------------------------}
+343: Procedure TAnalogMeter.SetValue(v : LongInt);
+Var TriggerHi, TriggerLo : Boolean;
+{------------------------------------------------------------------------------}
+370: Procedure TAnalogMeter.SetAngularRange(r : LongInt);
+Begin
+{------------------------------------------------------------------------------}
+385: Procedure TAnalogMeter.SetTickCount(t : LongInt);
+Begin
+{------------------------------------------------------------------------------}
+396: Procedure TAnalogMeter.SetLowZone(percent : Byte);
+Var fOldLow : Single;
+{------------------------------------------------------------------------------}
+417: Function TAnalogMeter.GetLowZone : Byte;
+Begin
+{------------------------------------------------------------------------------}
+425: Procedure TAnalogMeter.SetHighZone(percent : Byte);
+Var fOldHigh : Single;
+{------------------------------------------------------------------------------}
+446: Function TAnalogMeter.GetHighZone : Byte;
+Begin
+{------------------------------------------------------------------------------}
+454: Procedure TAnalogMeter.SetShowValue(b : Boolean);
+Begin
+{------------------------------------------------------------------------------}
+463: Procedure TAnalogMeter.SetHighZoneColor(c : TColor);
+Begin
+{------------------------------------------------------------------------------}
+473: Procedure TAnalogMeter.SetLowZoneColor(c : TColor);
+Begin
+{------------------------------------------------------------------------------}
+483: Procedure TAnalogMeter.SetOKZoneColor(c : TColor);
+Begin
+{------------------------------------------------------------------------------}
+493: Procedure TAnalogMeter.SetTickColor(c : TColor);
+Begin
+{------------------------------------------------------------------------------}
+502: Procedure TAnalogMeter.SetShowTicks(b : Boolean);
+Begin
+{------------------------------------------------------------------------------}
+511: Procedure TAnalogMeter.SetShowFrame(b : Boolean);
+Begin
+{------------------------------------------------------------------------------}
+523: Function TAnalogMeter.AngleOf(v : Single) : Single;
+Begin
+{------------------------------------------------------------------------------}
+528: Procedure TAnalogMeter.OptimizeSizes;
+var TH : LongInt; //space for text at the bottom
+{------------------------------------------------------------------------------}
+541: Procedure TAnalogMeter.ClearCanvas;
+Begin
+{------------------------------------------------------------------------------}
+550: Procedure TAnalogMeter.DrawFrame;
+Begin
+{------------------------------------------------------------------------------}
+564: Procedure TAnalogMeter.DrawRegions;
+Var Xzero, Yzero,
+{------------------------------------------------------------------------------}
+608: Procedure TAnalogMeter.ClearInnerFace;
+Var Xzero, Yzero : LongInt;
+{------------------------------------------------------------------------------}
+629: Procedure TAnalogMeter.DrawTicks;
+var i : LongInt;
+{------------------------------------------------------------------------------}
+649: Procedure TAnalogMeter.DrawCaption;
+var TW: LongInt; //textwidth
+{------------------------------------------------------------------------------}
+663: Procedure TAnalogMeter.DrawPointer;
+var angle : Single;
+{------------------------------------------------------------------------------}
+700: Procedure TAnalogMeter.DrawValue;
+var s : String;
+{------------------------------------------------------------------------------}
+711: Procedure TAnalogMeter.DeleteOldValue;
+var s : String;
+{------------------------------------------------------------------------------}
+727: Procedure TAnalogMeter.DrawOuterFace;
+Begin
+{------------------------------------------------------------------------------}
+734: Procedure TAnalogMeter.DrawInnerFace;
+Begin
+{------------------------------------------------------------------------------}
+746: Procedure TAnalogMeter.Paint;
+Begin
+
+
+99: constructor TGauge.Create(AOwner: TComponent);
+begin
+
+116: function TGauge.GetPercentDone: Longint;
+begin
+
+121: procedure TGauge.Paint;
+var
+
+161: procedure TGauge.PaintBackground(AnImage: TBitmap);
+var
+
+174: procedure TGauge.PaintAsText(AnImage: TBitmap; PaintRect: TRect);
+var
+
+204: procedure TGauge.PaintAsNothing(AnImage: TBitmap; PaintRect: TRect);
+begin
+
+213: procedure TGauge.PaintAsBar(AnImage: TBitmap; PaintRect: TRect);
+var
+
+245: procedure TGauge.PaintAsPie(AnImage: TBitmap; PaintRect: TRect);
+var
+
+279: procedure TGauge.PaintAsNeedle(AnImage: TBitmap; PaintRect: TRect);
+var
+
+319: procedure TGauge.SetGaugeKind(Value: TGaugeKind);
+begin
+
+328: procedure TGauge.SetShowText(Value: Boolean);
+begin
+
+337: procedure TGauge.SetBorderStyle(Value: TBorderStyle);
+begin
+
+346: procedure TGauge.SetForeColor(Value: TColor);
+begin
+
+355: procedure TGauge.SetBackColor(Value: TColor);
+begin
+
+364: procedure TGauge.SetMinValue(Value: Longint);
+begin
+
+377: procedure TGauge.SetMaxValue(Value: Longint);
+begin
+
+390: procedure TGauge.SetProgress(Value: Longint);
+var
+
+407: procedure TGauge.AddProgress(Value: Longint);
+begin
+
+
+We code and connect a weatherstation (sensors) on a Arduino board with a breadboard on which we switch off or on the weather-report by a browser and on an android device with our own web server and their socket protocols too. As a reference we use the OpenWeatherMap Rest-API and build a test unit around the devices. Finally we show the impact of weather pressure, humidity and temperature on our blood-pressure and heart-rate.

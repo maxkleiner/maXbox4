@@ -1,0 +1,757 @@
+program GEO_Distance_BOX_WebScript_mapbox_Satellite;
+//*********************************************************************
+// Computes distance between earth locations based on OpenStreetMap! #locs:655
+//#sign:Max: MAXBOX10: 19/09/2016 20:54:24 
+//shows a REST call MAP GetGeoC() with RegEx validate and GEO distance formula
+//*********************************************************************
+(*RRRR    EEEEEE   AAAA   DDDDD    MM     MM   EEEEEE 
+ RR  RR   EE       AA AA  DD  DD   MMMM MMMM   EE    
+ RRRRR    EEEE    AAAAAA  DD   DD  MM MMM MM   EEEE
+ RR  RR   EE      AA   AA DD   DD  MM  M  MM   EE
+ RR   RR  EEEEEE AA    AA DDDDD    MM  M  MM   EEEEEE *)
+ 
+//http://www.rosettacode.org/wiki/Haversine_formula#Delphi
+   
+ ////////////////////////////////GEO CoorD Distance/////////////////////////////   
+    
+   
+  Const GEOCoordREX = 
+              'latitude: ''([\d\.-]+).* longitude: ''([\d\.-]+).*';  
+   
+               //ex.: latitude: '-37.8696164'  longitude: '144.9819593'
+               
+  UrlMapQuestAPIReverse= 'http://open.mapquestapi.com/nominatim/v1/reverse.php?format=%s&json_callback=renderExampleThreeResults&lat=%s&lon=%s';
+  
+  mapboxAPI = 
+    'https://api.mapbox.com/geocoding/v5/mapbox.places/%s.json?country=%s'+
+        '&access_token=pk.eyJ1IjoibWF4Ym94IiwiYSI6ImNpcWpubHVrZDAwZGZod2t4eGxxaHIybDkifQ.6SitTIIurXlwj3pVBeyhow';
+        
+  mapboxAPIMap2 = 
+    'https://api.mapbox.com/v4/mapbox.streets/76.9,38.9,5/100x100.png32'+
+        '&access_token=pk.eyJ1IjoibWF4Ym94IiwiYSI6ImNpcWpubHVrZDAwZGZod2t4eGxxaHIybDkifQ.6SitTIIurXlwj3pVBeyhow';
+        
+    mapboxAPIMap3=  'https://api.mapbox.com/v4/mapbox.satellite/6.9,38.9,5/500x500.png32?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbTgzcHQxMzAxMHp0eWx4bWQ1ZHN2NGcifQ.WVwjmljKYqKciEZIC3NfLA#30/46.210/7.45';
+        
+    mapboxAPIMap4=  'https://api.mapbox.com/v4/mapbox.satellite/16.9,39.9,8/%dx%d.png128?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbTgzcHQxMzAxMHp0eWx4bWQ1ZHN2NGcifQ.WVwjmljKYqKciEZIC3NfLA#5/46.210/7.45';
+
+    mapboxAPIMap5=  'https://api.mapbox.com/v4/mapbox.satellite/16.95,47.45,5,0/%dx%d.png128?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbTgzcHQxMzAxMHp0eWx4bWQ1ZHN2NGcifQ.WVwjmljKYqKciEZIC3NfLA#4/46.210/7.45';
+    
+    mapboxAPIMap6=  'https://api.mapbox.com/v4/mapbox.streets-satellite/7.45,46.95,15,0,5/%dx%d.png128?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbTgzcHQxMzAxMHp0eWx4bWQ1ZHN2NGcifQ.WVwjmljKYqKciEZIC3NfLA#4';
+    
+    mapboxAPIMap= 'https://api.mapbox.com/v4/mapbox.satellite/%.2f,%.2f,%.2f,0/%dx%d.png128?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbTgzcHQxMzAxMHp0eWx4bWQ1ZHN2NGcifQ.WVwjmljKYqKciEZIC3NfLA#4/';
+ 
+
+    mapboxAPIMapStreet= 'https://api.mapbox.com/v4/mapbox.streets-satellite/%.2f,%.2f,%.2f,0,0/%dx%d.png128?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbTgzcHQxMzAxMHp0eWx4bWQ1ZHN2NGcifQ.WVwjmljKYqKciEZIC3NfLA#4';
+
+    mapboxAPIMapStreet2= 'https://api.mapbox.com/v4/mapbox.streets/%.2f,%.2f,%.2f,0,0/%dx%d.png128?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbTgzcHQxMzAxMHp0eWx4bWQ1ZHN2NGcifQ.WVwjmljKYqKciEZIC3NfLA#4';
+    
+  {  # retrieve a map at -122.4241 longitude, 37.78 latitude,
+# zoom 14.24, bearing 0, and pitch 60. The map
+# will be 600 pixels wide and 600 pixels high
+curl "https://api.mapbox.com/styles/v1/mapbox/streets-v8/static/-122.4241,37.78,14.25,0,60/600x600"   }
+    
+    UrlWeatherReport25=
+     'http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&APPID'+
+                                      '=55013bf3d09cfb0619989a00ed5bed09';
+  
+  function GetGeoInfo5(const location,country: string;
+                               const UrlGeoLookupInfo: string): string;
+  var
+    lStream: TStringStream;
+  begin
+    lStream:= TStringStream.Create('');
+    try
+      try
+        HttpGet(Format(UrlGeoLookupInfo,[location,country]), lStream);
+        //WinInet Circuit
+      except
+        //lHTTP.Get1(Format(UrlGeoLookupInfo2,[IpAddress]), lStream);
+        //if something wrong try using backup server.
+        writeln(ExceptionToString(ExceptionType, ExceptionParam));
+      end;
+      lStream.Seek(0,0);
+      result:= 'GEO_Code Data Map Out: '+UTF8ToString(lStream.ReadString(lStream.Size));
+    finally
+      lStream.Free;
+  end;
+end;             
+
+  function GetGeoInfoMap(const location,country, apath: string; asize: integer;
+                               const UrlGeoLookupInfo: string): string;
+  var
+    pngStream: TMemoryStream;
+  begin
+    pngStream:= TMemoryStream.Create;
+      try
+        HttpGet(Format(UrlGeoLookupInfo,[asize,asize]), pngStream);
+        //WinInet Circuit
+      except
+        //lHTTP.Get1(Format(UrlGeoLookupInfo2,[IpAddress]), lStream);
+        //if something wrong try using backup server.
+        writeln(ExceptionToString(ExceptionType, ExceptionParam));
+      end;
+  with TLinearBitmap.Create do try
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    SaveToFile(apath);
+    OpenDoc(apath);
+  finally
+    Dispose;
+    Free;
+    pngStream.Free;
+  end;
+end;             
+
+function GetGeoInfoMap2(const location,country, apath: string; asize: integer;
+                               const UrlGeoLookupInfo: string): string;
+  var
+    pngStream: TMemoryStream;
+  begin
+    pngStream:= TMemoryStream.Create;
+      try
+        HttpGet(Format(UrlGeoLookupInfo,[asize,asize]), pngStream);
+        //WinInet Circuit
+      except
+        //lHTTP.Get1(Format(UrlGeoLookupInfo2,[IpAddress]), lStream);
+        //if something wrong try using backup server.
+        writeln(ExceptionToString(ExceptionType, ExceptionParam));
+      end;
+      
+  //afrm:= getform(600,600)   
+  //graphic.TransparentMode:= tmAuto;
+  //graphic.TransParentColor:= graphic.canvas.pixels[50,50];
+  with TLinearBitmap.Create do try
+    pngStream.Position:= 0;
+    raiselastexception;
+    LoadFromStream2(pngStream,'PNG');
+    //raiselastexception;
+    paintToCanvas(getform(700,700).canvas, Rect(25,25,Width,Height),false);
+    //SaveToFile(apath);
+  finally
+    Dispose;
+    Free;
+    pngStream.Free;
+  end;
+end;             
+
+function GetGeoInfoMap3(const lat,lon, zoom: double; asize: integer;
+                               const UrlGeoLookupInfo: string): string;
+  var
+    pngStream: TMemoryStream;
+  begin
+    pngStream:= TMemoryStream.Create;
+      try
+        HttpGet(Format(UrlGeoLookupInfo,[lon,lat,zoom, asize,asize]), pngStream);
+        //WinInet Circuit
+      except
+        //lHTTP.Get1(Format(UrlGeoLookupInfo2,[IpAddress]), lStream);
+        //if something wrong try using backup server.
+        writeln(ExceptionToString(ExceptionType, ExceptionParam));
+      end;
+  with TLinearBitmap.Create do try
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    paintToCanvas(getform(700,700).canvas, Rect(25,25,Width,Height),false);
+    //SaveToFile(apath);
+  finally
+    Dispose;
+    Free;
+    pngStream.Free;
+  end;
+end;             
+
+function GetGeoInfoMap4save(const lat,lon, zoom: double; asize: integer;
+                               const UrlGeoLookupInfo, apath: string): string;
+  var
+    pngStream: TMemoryStream;
+  begin
+    pngStream:= TMemoryStream.Create;
+      try
+        HttpGet(Format(UrlGeoLookupInfo,[lon,lat,zoom, asize,asize]), pngStream);
+        //WinInet Circuit
+      except
+        //lHTTP.Get1(Format(UrlGeoLookupInfo2,[IpAddress]), lStream);
+        //if something wrong try using backup server.
+        writeln(ExceptionToString(ExceptionType, ExceptionParam));
+      end;
+  with TLinearBitmap.Create do try
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    paintToCanvas(getform(asize+50,asize+50).canvas, Rect(25,25,Width,Height),false);
+    SaveToFile(apath);
+  finally
+    Dispose;
+    Free;
+    pngStream.Free;
+  end;
+end;             
+
+ procedure letGEOCoord(apistr: string);
+ begin
+    with TRegExpr.Create do try 
+      Expression:= GEOCoordREX; 
+      if Exec(apistr) then 
+        PrintF('GEO REXT live: '+
+           'lat %sº in long %sº ',[Match[1],Match[2]]); 
+        writeln(Match[1]+': '+Match[2])   
+      finally Free; 
+    end;
+ end;   
+
+ function GEOCoord2Point(apistr: string): TFloatPoint;
+ begin
+    with TRegExpr.Create do try 
+      Expression:= GEOCoordREX; 
+      if Exec(apistr) then begin
+        result.x:= strtofloat(Match[1])
+        result.y:= strtofloat(Match[2])
+      end;     
+      finally Free; 
+    end;
+ end;   
+
+
+ const DIAMETER = 2 * 6372.8;
+
+//haversine(lat1,lon1,lat2,lon2)
+
+  function HaversineDist(th1, ph1, th2, ph2:double):double;
+   var   dx, dy, dz:double;
+   begin
+     ph1    := degtorad(ph1 - ph2);
+     th1    := degtorad(th1);
+     th2    := degtorad(th2);
+     dz     := sin(th1) - sin(th2);
+     dx     := cos(ph1) * cos(th1) - cos(th2);
+     dy     := sin(ph1) * cos(th1);
+     Result := arcsin(sqrt(sqr(dx) + sqr(dy) + sqr(dz))/2) * DIAMETER;
+   end;
+
+//http://www.rosettacode.org/wiki/Haversine_formula#Delphi
+   
+
+  function GetGEONameDistance2(loc1, loc2: string): double;
+  var latf,lonf, latf1,lonf1: Double;
+      geocode, geocode2: string;
+  begin
+    if isInternet then begin
+      geocode:= GetGeoCode('xml','',loc1, false);
+        latf:= GEOCoord2Point(geocode).x  
+        lonf:= GEOCoord2Point(geocode).y    
+      geocode2:= GetGeoCode('xml','',loc2, false);
+        latf1:= GEOCoord2Point(geocode2).x  
+        lonf1:= GEOCoord2Point(geocode2).y    
+       
+      result:= HaversineDist(latf,lonf,latf1, lonf1);
+    end else writeln('No Internet Connection found');   
+  end;  
+  
+  const ARAD = 0.000008998719243599958;
+  function testlabdistance: double;
+  begin
+     result:= sqrt(power(36.12 - 33.94, 2) + power(-86.67 - -118.4, 2)) / ARAD;
+  end;  
+  
+  function PixelsX(Control: TControl; APixels: Integer): Integer;
+var
+  Form: TForm;
+begin
+  Result := APixels;
+  if Control is TForm then
+    Form := TForm(Control)
+  else
+    Form := TForm(GetParentForm(Control));
+  if Form.Scaled then
+    Result := Result * Form.PixelsPerInch div 96;
+end;
+
+  function  RealizePalette(hdc: HDC): Longint;
+     external 'RealizePalette@gdi32.dll stdcall';
+  
+
+procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
+  SrcDC: HDC; SrcX, SrcY, SrcW, Srch: Integer; Palette: HPALETTE;
+  TransparentColor: TColorRef);
+var
+  Color: TColorRef;
+  bmAndBack, bmAndObject, bmAndMem, bmSave: HBITMAP;
+  bmBackOld, bmObjectOld, bmMemOld, bmSaveOld: HBITMAP;
+  MemDC, BackDC, ObjectDC, SaveDC: HDC;
+  palDst, palMem, palSave, palObj: HPALETTE;
+begin
+  { Create some DCs to hold temporary data }
+  BackDC := CreateCompatibleDC(DstDC);
+  ObjectDC := CreateCompatibleDC(DstDC);
+  MemDC := CreateCompatibleDC(DstDC);
+  SaveDC := CreateCompatibleDC(DstDC);
+  { Create a bitmap for each DC }
+  bmAndObject := CreateBitmap(SrcW, Srch, 1, 1, 'nil');
+  bmAndBack := CreateBitmap(SrcW, Srch, 1, 1, 'nil');
+  bmAndMem := CreateCompatibleBitmap(DstDC, DstW, DstH);
+  bmSave := CreateCompatibleBitmap(DstDC, SrcW, Srch);
+  { Each DC must select a bitmap object to store pixel data }
+  bmBackOld := SelectObject(BackDC, bmAndBack);
+  bmObjectOld := SelectObject(ObjectDC, bmAndObject);
+  bmMemOld := SelectObject(MemDC, bmAndMem);
+  bmSaveOld := SelectObject(SaveDC, bmSave);
+  { Select palette }
+  palDst := 0;
+  palMem := 0;
+  palSave := 0;
+  palObj := 0;
+  if Palette <> 0 then begin
+    palDst := SelectPalette(DstDC, Palette, True);
+    RealizePalette(DstDC);
+    palSave := SelectPalette(SaveDC, Palette, False);
+    RealizePalette(SaveDC);
+    palObj := SelectPalette(ObjectDC, Palette, False);
+    RealizePalette(ObjectDC);
+    palMem := SelectPalette(MemDC, Palette, True);
+    RealizePalette(MemDC);
+  end;
+  { Set proper mapping mode }
+  SetMapMode(SrcDC, GetMapMode(DstDC));
+  SetMapMode(SaveDC, GetMapMode(DstDC));
+  { Save the bitmap sent here }
+  BitBlt(SaveDC, 0, 0, SrcW, Srch, SrcDC, SrcX, SrcY, SRCCOPY);
+  { Set the background color of the source DC to the color,         }
+  { contained in the parts of the bitmap that should be transparent }
+  Color := SetBkColor(SaveDC, PaletteColor(TransparentColor));
+  { Create the object mask for the bitmap by performing a BitBlt()  }
+  { from the source bitmap to a monochrome bitmap                   }
+  BitBlt(ObjectDC, 0, 0, SrcW, Srch, SaveDC, 0, 0, SRCCOPY);
+  { Set the background color of the source DC back to the original  }
+  SetBkColor(SaveDC, Color);
+  { Create the inverse of the object mask }
+  BitBlt(BackDC, 0, 0, SrcW, Srch, ObjectDC, 0, 0, NOTSRCCOPY);
+  { Copy the background of the main DC to the destination }
+  BitBlt(MemDC, 0, 0, DstW, DstH, DstDC, DstX, DstY, SRCCOPY);
+  { Mask out the places where the bitmap will be placed }
+  StretchBlt(MemDC, 0, 0, DstW, DstH, ObjectDC, 0, 0, SrcW, Srch, SRCAND);
+  { Mask out the transparent colored pixels on the bitmap }
+  BitBlt(SaveDC, 0, 0, SrcW, Srch, BackDC, 0, 0, SRCAND);
+  { XOR the bitmap with the background on the destination DC }
+  StretchBlt(MemDC, 0, 0, DstW, DstH, SaveDC, 0, 0, SrcW, Srch, SRCPAINT);
+  { Copy the destination to the screen }
+  BitBlt(DstDC, DstX, DstY, DstW, DstH, MemDC, 0, 0, SRCCOPY);
+  { Restore palette }
+  if Palette <> 0 then begin
+    SelectPalette(MemDC, palMem, False);
+    SelectPalette(ObjectDC, palObj, False);
+    SelectPalette(SaveDC, palSave, False);
+    SelectPalette(DstDC, palDst, True);
+  end;
+  { Delete the memory bitmaps }
+  DeleteObject(SelectObject(BackDC, bmBackOld));
+  DeleteObject(SelectObject(ObjectDC, bmObjectOld));
+  DeleteObject(SelectObject(MemDC, bmMemOld));
+  DeleteObject(SelectObject(SaveDC, bmSaveOld));
+  { Delete the memory DCs }
+  DeleteDC(MemDC);
+  DeleteDC(BackDC);
+  DeleteDC(ObjectDC);
+  DeleteDC(SaveDC);
+end;
+
+
+procedure DrawTransparentBitmapRect(DC: HDC; Bitmap: HBITMAP; DstX, DstY,
+  DstW, DstH: Integer; SrcRect: TRect; TransparentColor: TColorRef);
+var
+  hdcTemp: HDC;
+begin
+  hdcTemp := CreateCompatibleDC(DC);
+  try
+    SelectObject(hdcTemp, Bitmap);
+    StretchBltTransparent(DC, DstX, DstY, DstW, DstH, hdcTemp,
+      SrcRect.Left, SrcRect.Top, SrcRect.Right - SrcRect.Left, 
+      SrcRect.Bottom - SrcRect.Top, 0, TransparentColor);
+  finally
+    DeleteDC(hdcTemp);
+  end;
+end;
+
+type MyReal = Extended; 
+
+type tagBITMAP = record
+  bmType: LongInt;
+  bmWidth: LongInt;
+  bmHeight: LongInt;
+  bmWidthBytes: LongInt;
+  bmPlanes: Word;
+  bmBitsPixel: Word;
+  //bmBits: Pointer;
+end;
+
+procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
+  DstX, DstY: Integer; TransparentColor: TColorRef);
+var
+  BM: tagBITMAP;
+begin
+  //GetObject(Bitmap, SizeOf(BM), @BM);
+  DrawTransparentBitmapRect(DC, Bitmap, DstX, DstY, BM.bmWidth, BM.bmHeight,
+    Rect(0, 0, BM.bmWidth, BM.bmHeight), TransparentColor);
+end;
+
+procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
+var
+  DC: {Windows.}HDC;
+  I: Integer;
+begin
+  GetDesktopWindow();
+  //DC := {Windows.}GetDC(HWND_DESKTOP);
+  DC := {Windows.}GetDC(GetDesktopWindow);
+
+  try
+    for I := 1 to Width do begin
+      {Windows.}DrawFocusRect(DC, ScreenRect);
+      //InflateRect(ScreenRect, -1, -1);
+    end;
+  finally
+    {Windows.}ReleaseDC(GetDesktopWindow, DC);
+  end;
+  //mergeform
+end;
+
+procedure CenterControl(Control: TControl);
+var
+  X, Y: Integer;
+begin
+  X := Control.Left;
+  Y := Control.Top;
+  if Control is TForm then begin
+    if (TForm(Control).FormStyle = fsMDIChild) and
+      (Application.MainForm <> nil) then begin
+      X := (Application.MainForm.ClientWidth - Control.Width) div 2;
+      Y := (Application.MainForm.ClientHeight - Control.Height) div 2;
+    end
+    else begin
+      X := (Screen.Width - Control.Width) div 2;
+      Y := (Screen.Height - Control.Height) div 2;
+    end;
+  end
+  else
+  if Control.Parent <> nil then begin
+    Control.Parent.HandleNeeded;
+    X := (Control.Parent.ClientWidth - Control.Width) div 2;
+    Y := (Control.Parent.ClientHeight - Control.Height) div 2;
+  end;
+  if X < 0 then
+    X := 0;
+  if Y < 0 then
+    Y := 0;
+  Control.SetBounds(X, Y, Control.Width, Control.Height);
+end;
+
+  
+  function DualInputQueryX(const ACaption, Prompt1, Prompt2: string;
+  var AValue1, AValue2: string; PasswordChar: Char): Boolean;
+   var
+     AForm: TForm;
+     ALabel1, ALabel2: TLabel;
+     AEdit1, AEdit2: TEdit;
+     ASize, I: Integer;
+   begin
+     Result:= False;
+     AForm := CreateMessageDialog(Prompt1, mtCustom, [mbOK, mbCancel]);
+     ASize := 5;
+     writeln('pixels :'+itoa(pixelsX(aform,100)))
+     CenterControl(aform)
+     if AForm <> nil then
+     try
+       AForm.Caption := ACaption;
+       ALabel1 := AForm.FindComponent('Message') as TLabel;
+       for I := 0 to AForm.ControlCount - 1 do
+         if AForm.Controls[I] is TButton then
+           TButton(AForm.Controls[I]).Anchors:= [akRight, akBottom];
+       if ALabel1 <> Nil then begin
+         AEdit1 := TEdit.Create(AForm);
+         AEdit1.Left := ALabel1.Left;
+         AEdit1.Width := AForm.ClientWidth - AEdit1.Left * 2;
+         AEdit1.Top := ALabel1.Top + ALabel1.Height + 2;
+         AEdit1.Parent := AForm;
+         AEdit1.Anchors := [akLeft, akTop, akRight];
+         AEdit1.Text := AValue1;
+         ALabel1.Caption := Prompt1;
+         ALabel1.FocusControl := AEdit1;
+         Inc2(ASize, AEdit1.Height + 2);
+   
+         ALabel2 := TLabel.Create(AForm);
+         ALabel2.Left := ALabel1.Left;
+         ALabel2.Top := AEdit1.Top + AEdit1.Height + 7;
+         ALabel2.Caption := Prompt2;
+         ALabel2.Parent := AForm;
+         Inc2(ASize, ALabel2.Height + 7);
+   
+         AEdit2 := TEdit.Create(AForm);
+         AEdit2.Left := ALabel1.Left;
+         AEdit2.Width := AForm.ClientWidth - AEdit2.Left * 2;
+         AEdit2.Top := ALabel2.Top + ALabel2.Height + 2;
+         AEdit2.Parent := AForm;
+         AEdit2.Anchors := [akLeft, akTop, akRight];
+         AEdit2.Text := AValue2;         //changed
+         
+         if PasswordChar <> #0 then
+           AEdit2.PasswordChar := PasswordChar;
+         ALabel2.FocusControl := AEdit2;  //changed
+   
+         Inc2(ASize, AEdit2.Height + 8);
+         AForm.ClientHeight := AForm.ClientHeight + ASize;
+         AForm.ClientWidth := 320;
+         AForm.ActiveControl := AEdit1;
+         Result := AForm.ShowModal = mrOk;
+         if Result then begin
+           AValue1 := AEdit1.Text;
+           AValue2 := AEdit2.Text;
+         end;
+       end;
+     finally
+       AForm.Free;
+     end;
+   end;
+
+ 
+  var
+    geocode, geocode2: string;
+    latf, longf, latf1, longf1, distres, zoomf: Double;
+    aval1, aval2: string;
+
+begin  //main
+
+   //ref 2887.25995060711
+   Writeln('Haversine distance1: '
+         +floattostr(HaversineDist(36.12, -86.67, 33.94, -118.4))+' km.');
+   Writeln('Haversine distance2: '
+         +format('%.2f ',[HaversineDist(36.12, -86.67, 33.94, -118.4)])+' km.');
+   
+   writeln(floattostr(testlabdistance))
+ 
+   writeln('DegToDmsStr lat: '+DegToDmsStr(50.9385758,4))
+   writeln('DegToDmsStr lon: '+DegToDmsStr(6.96161043239216,4))
+
+    //Function DMS2Extended( const Degs, Mins, Secs : Extended) : Extended 5444:  
+    //Procedure Extended2DMS( const X : Extended; var Degs, Mins, Secs : Extended) 
+   
+    Writeln('Haversine distance3: '
+         +format('%.2f ',[HaversineDist(DMS2Extended(36, 7.2,0), DMS2Extended(86, 40.2,0),
+                            DMS2Extended(33, 56.4,0),DMS2Extended(118, 24.0,0))])+' km.');
+    Writeln('Haversine distance4: '
+         +format('%.2f ',[HaversineDist(DMStoDeg(36, 7,0),DMStoDeg(86, 40,0),
+                            DMStoDeg(33, 56,0),DMStoDeg(118, 24,0))])+' km.');
+    //http://www.wolframalpha.com/input/?i=distance+from+cologne+to+bern
+    //Result: 446.2 km (kilometers)
+    
+    Writeln('Haversine distance5: cologne - bern: '
+         +format('%.2f ',[HaversineDist(50.94, 6.91, 46.9567, 7.4667)])+' km.');
+    writeln(floattoStr(sqrt(power(50.94-46.9167, 2) 
+                    + power(6.91-7.4667, 2))/ ARAD /1000));  
+    writeln('DegToDmsStr lat: '+DegToDmsStr(46.9167,4))
+    writeln('DegToDmsStr lon: '+DegToDmsStr(7.4667,4))
+    Writeln('Haversine distance6: krumpendorf - bern: '
+         +format('%.2f ',[HaversineDist(46.62, 14.22, 46.9167, 7.4667)])+' km.');
+    writeln(floattoStr(sqrt(power(46.62-46.9167, 2) 
+                    + power(14.22-7.4667, 2))/ ARAD /1000));  
+    
+  //Function GetGeoCode(C_form,apath: string; const data: string; sfile: boolean): string;                         
+   { if isInternet then begin
+      geocode:=  GetGeoCode('xml',ExePath+'outputmap5cologne.xml',                                                   'church cathedral cologne', false);
+      writeln('Coord of Church1 is: '+GeoCode);
+       letGEOCoord(geocode)
+       latf:= GEOCoord2Point(geocode).x  
+       longf:= GEOCoord2Point(geocode).y    
+       geocode2:=  GetGeoCode('xml',ExePath+'outputmap5bern.xml',                                                   'church cathedral bern', false);
+       writeln('Coord of Church2 is: '+GeoCode2);
+       letGEOCoord(geocode2)
+       latf1:= GEOCoord2Point(geocode2).x  
+       longf1:= GEOCoord2Point(geocode2).y    
+       Writeln('Haversine distance7: church bern-cologne: '
+         +format('%.2f ',[HaversineDist(latf,longf,latf1, longf1)])+' km.');
+       writeln('test: '+floattostr(GetGEONameDistance2('church cathedral bern',
+                           'church cathedral cologne')))
+     end; 
+     
+     //call to the def function:  
+     
+      PrintF('dist bern-vienna church1: %.2f km',
+          [GetGEONameDistance2('church cathedral bern','church cathedral vienna')]);
+      PrintF('dist bern-vienna church2: %.2f km',
+          [GetGEONameDistance2('cathedral bern','cathedral vienna')]);
+      PrintF('dist bern-vienna church3: %.2f km',
+          [GetGEONameDistance2('bern switzerland','vienna austria')]);
+    
+      PrintF('dist bern-melbourne: %.2f km',
+          [GetGEONameDistance2('bern switzerland','melbourne victoria australia')]);
+      PrintF('dist nashville-los angeles: %.2f km',
+          [GetGEONameDistance2('Nashville, TN, USA','Los Angeles, CA, USA')]);
+      PrintF('dist bern-gomera: %.2f km',
+          [GetGEONameDistance2('bern switzerland','Gomera spain')]);
+     PrintF('dist bern-montreux: %.2f km',
+          [GetGEONameDistance2('bern switzerland','montreux switzerland')]);
+    PrintF('dist bern-montreux: %.2f km',
+          [GetGEONameDistance2('montreux switzerland','wiesbaden germany')]);
+              
+      //be aware of minus sign - solved in RegEx
+      //wolfram Result: 16425 km (kilometers) bern-melbourne
+      //writeln(GetGeoCode('xml',ExePath+'', 'melbourne australia', false));
+     } 
+      
+      {  geocode2:=  GetGeoCode('xml',ExePath+'outputmap6bern.txt',                                                   'kaserne bern switzerland', true);
+       writeln('Coord of Church3 is: '+GeoCode2);  }
+       
+          writeln('DegToDmsStr lat: '+DegToDmsStr(46.9570806,3))
+          writeln('DegToDmsStr lon: '+DegToDmsStr(7.45880536873668,3))
+          writeln('DegToDmsStr lon: '+DegToDmsStr(7.45880536,3))
+          writeln('DegToDmsStr lon: '+DegToDmsStr(7.45880536873668,5))
+       
+        PrintF('distance bern-cologne coord direct: %.2f km',
+          [GetGEONameDistance2('46.95 7.45','50.94 6.95')]);
+          
+  //function DualInputQuery(const ACaption, Prompt1, Prompt2: string; var AValue1, AValue2: string; PasswordChar: Char)
+   
+   {  aval1:= 'Cathedral Bern Switzerland';
+     aval2:= 'Cathedral Cologne Germany';   
+     achar:= #0;  
+     if DualInputQueryX('GEOMap Distance Service', 'Enter Location 1:', 'Location 2:', 
+         AVal1, AVal2, achar) then begin
+         PrintF('Distance from '+aval1+ ' to '+aval2+ ' direct: %.2f km',
+          [GetGEONameDistance2(AVal1,AVal2)]);
+         showMessageBig(aval1+ ' to '+aval2+':  '+
+                 formatfloat('0.00',GetGEONameDistance2(AVal1,AVal2))+' km');
+          writeln('test back name: '+aval1 + ' '+aval2);  
+     end;
+     }
+     
+     { GetGeoCode('xml',ExePath+'outputmap7bern.txt',                                                   floattostr(DmsToDeg(117,43,24))+' '+floattostr(DmsToDeg(49,26,04)), true);
+      }
+      
+   writeln(GetGeoInfo5('cologne','de',mapboxAPI)) 
+   
+   //GetGeoInfoMap('cologne','de',ExePath+'mX4mapbox.png',550,mapboxAPIMap)
+   // GetGeoInfoMap2('cologne','de',ExePath+'mX4mapbox_ent2.png',650,mapboxAPIMap)
+  
+  { GetGeoInfoMap3(47.5,16.95,5.2,650,mapboxAPIMap)
+  
+   GetGeoInfoMap3(47.5,16.95,15,650,mapboxAPIMap)
+   
+   GetGeoInfoMap3(38.895,-77.0364,15,650,mapboxAPIMap)
+   }
+   
+   if isInternet then begin
+      //geocode:= GetGeoCode('xml','','bern switzerland', false);
+      geocode:= GetGeoCode('xml','','werzer poertschach austria', false);
+       writeln(GetGeoInfo5('poertschach','',mapboxAPI)) 
+        writeln('geocode: '+geocode)
+        latf:= GEOCoord2Point(geocode).x  
+        longf:= GEOCoord2Point(geocode).y 
+        PrintF('lat: %.2f - lon: %.2f ',[latf,longf]) 
+        zoomf:= 16 
+      
+      //2 APIs: mapboxAPIMap - no names ; mapboxAPIMapStreet - with names
+      
+      GetGeoInfoMap4save(latf-0.00560,longf,zoomf,650,mapboxAPIMapStreet,
+                                 ExePath+'mX4mapbox_poertschach.png')
+                                 
+    end else writeln('No Internet Connection found');   
+
+End.
+
+Doc:
+
+website.
+Mapbox Static API
+
+Mapbox also provides a Static API for creating static images from your map styles. Provide your style ID, access token, and a few more parameters and you can display static images directly by making requests in your application.
+
+https://www.academia.edu/26964578/mapbox_REST_API_GEO_service.pdf
+
+https://api.mapbox.com/v4/mapbox.streets/1/0/0.png"
+
+   // procedure PaintToCanvas(Canvas: TCanvas; const Dest: TRect; HalftoneStretch: Boolean=False);
+     // procedure StretchDIBits(DC: THandle; const Dest: TRect; HalftoneStretch: Boolean=False);
+     
+     Latitude and longitude are a pair of numbers (coordinates) used to describe a position on the plane of a geographic coordinate system. The numbers are in decimal degrees format and range from -90 to 90 for latitude and -180 to 180 for longitude.
+
+For example, Washington DC has a latitude 38.8951 and longitude -77.0364. In API calls you’ll often see the numbers placed together and separated by a comma: 38.8951,-77.0364.
+
+One common problem is mixing up the latitude and longitude. Some tools and APIs format longitude,latitude while others use latitude,longitude.
+
+
+http://docs.embarcadero.com/products/rad_studio/delphiAndcpp2009/HelpUpdate2/EN/html/devcommon/cm_invalid_cast_xml.html
+
+ref:
+    Coord Kaserne der Berner Truppen, 15,
+    lat='46.9570806' lon='7.45880536873668'
+    
+    lat='50.94134445' lon='6.95812085888689' display_name='Kölner Dom, 4, Domkloster, Ursulaviertel, Altstadt-Nord, Innenstadt, Köln,
+
+    Roco 43839 E Lok BR 103 181 4 DB
+
+    Nashville International Airport (BNA) &nbsp' in Nashville, TN, USA,   which is:
+          N 36°7.2',   W 86°40.2'     (36.12,   -86.67)     -and-
+    Los Angeles International Airport (LAX)  in Los Angeles, CA, USA,   which is:
+          N 33°56.4',   W 118°24.0'     (33.94,   -118.40). 
+    
+    Haversine distance1: 2887.25995060711 km.
+    Haversine distance2: 2887.26  km.  
+    
+    ref:
+    writeln('DegToDmsStr lon: '+DegToDmsStr(7.45880536873668,5))
+       
+    d = int(7.45880536873668°) = 7°
+    m = int((7.45880536873668° - 7°) × 60) = 27'
+    s = (7.45880536873668° - 7° - 27'/60) × 3600 = 31.69933"
+    7.45880536873668°
+    = 7° 27' 31.69933"    
+
+Ref:
+
+<place icon="http://open.mapquestapi.com/nominatim/v1/images/mapicons/place_of_worship_unknown3.p.20.png" importance="0.44054450316591" type="place_of_worship" class="amenity" display_name="Groß St.Martin, 8, Martinspförtchen, Kunibertsviertel, Altstadt-Nord, Innenstadt, Köln, Regierungsbezirk Köln, Nordrhein-Westfalen, 50667, Deutschland" lon="6.96161043239216" lat="50.9385758" boundingbox="50.9384011,50.9387501,6.9610971,6.9620193" place_rank="30" osm_id="25270980" osm_type="way" place_id="56684983"/>
+
+//http://delphi.about.com/od/objectpascalide/l/blvkc.htm
+
+To get the key state of some special keys like TAB or PageUp we can use the GetKeyState Windows API call. The key status specifies whether the key is up, down, or toggled (on, off - alternating each time the key is pressed).
+
+ if HiWord(GetKeyState(vk_PageUp)) <> 0 then
+ ShowMessage('PageUp - DOWN')
+ else
+ ShowMessage('PageUp - UP') ;
+ 
+
+ ifs=: (fa@] + fm@] +/ .* [) prob
+getPoints=: ifs^:(<200000)
+plotFern=: 'dot;grids 0 0;tics 0 0;labels 0 0;color green' plot ;/@|:
+plotFern getPoints 0 0</lang>
+
+ [[File:Barnsley_farn_white.PNG]]
+
+just inside maxbox
+         ____    ___   _      ____    _   _   _
+        |  _ \  |  _| | |    |  _ \  | | | | | |
+        | | . | | |_  | |    | |_| | | |_| | | |
+        | | | | |  _| | |    |  __/  |  _  | | |          
+        | |_. | | |_  | |__  | |     | | | | | |                      
+        |____/  |___| |____| |_|     |_| |_| |_| 
+                              
+                              
+                              
+----code_cleared_checked----
+
+Fazit:
+
+
+https://www.mapbox.com/map-feedback/#mapbox.streets/11.458/46.089/10
+
+Mit der mapbox Open Source Platform hat man ein Toolset und diverse REST APIs zugleich, die man schlicht zur Next Generation zählen darf.
+Immer mehr Apps der Geoinformationstechnologie basieren auf Basis von HTML5, CSS3 und JavaScript im Umfeld von sog. Responsive Design.
+Mit den modularen APIs, vor allem Static, Geocoding, Distance und Map Matching ist man breit augestellt, was auch die plattformunabhängige Entwicklung fördert.
+Auch mit dem durchdachten Upload API wird man mit dem Stagen von Daten in eine Cloud wie S3 nicht alleine gelassen. Das eigene Tool mapbox Studio hilft beim Editieren von neuen Layern oder ausgefeiltem, interaktivem Kartenmaterial. Das Tool vereint Flexibilität, moderner Look und einfache Bedienung in einem, in der Basic Version sogar kostenlos.
+Für mich ein Highlight ist der Satellite Layer kombiniert mit dem Static API. Mapbox kann auf unterschiedliche Auflösungen in unterschiedlichen Gebieten auch in Detailkarten mit Zoomstufen reagieren. Man darf teilweise DigitalGlobe-Bilder nutzen und erweitern, die genaue Rechtslage ergibt sich aber nicht aus der Veröffentlichung.
+Mit Mapbox lassen sich also Karten auf einfache Weise in Anwendungen oder Artikel integrieren. Die Verwendung setzt ein Account voraus und der Preis ist volumenbasiert. Mit der App lassen sich nicht nur Orte, sondern auch ganze Strecken und Areale deutlich machen um der Erde ein neues Antlitz zu verschaffen.
+
+).
+Man darf wie bisher den "Mapbox Satellite"-Layer nutzen, aber der enthält ab jetzt Bilder von DigitalGlobe. In meinen Referenzgebieten sehe ich nun immerhin tatsächlich Bilder, wo Mapbox beim letzten V
+http://bleiwüsten.de/work/mapbox-interaktive-karten-erstellen/
+
+von mobilen Geo 
+-Web-App
+
+

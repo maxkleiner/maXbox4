@@ -1,0 +1,71 @@
+/* ********************************************************** */
+/*      Cascading-Style-Sheets: Definition von Tabellen, Layout 3            */
+/* ********************************************************** */
+
+/* ************ Allgemeine Dokumenteinstellungen ************ */
+body {background-color:#FFFFFF;font-family:Arial;font-size:10pt}
+
+/* ************ Einstellungen für Tabellen ****************** */
+/* Zelle Überschrif */
+.th1 
+{  
+  font-family: Arial, Helvetica, sans-serif; 
+  font-size: 10pt; 
+  font-style: normal; 
+  line-height: normal; 
+  font-weight: bolder; 
+  font-variant: normal; 
+  color: #FFFFFF; 
+  background-color: #006699; 
+  text-align: center; 
+  vertical-align: middle; 
+  border: #FFFFFF; 
+  border-top-width: medium; 
+  border-right-width: medium; 
+  border-bottom-width: medium; 
+  border-left-width: medium
+}
+/* einfacher Text */
+.text 
+{  
+  font-family: Arial, Helvetica, sans-serif; 
+  font-size: 8pt; 
+  font-style: normal; 
+  line-height: normal; 
+  font-variant: normal; 
+  color: #000000; 
+  background-color: #ffffff; 
+  text-align: center; 
+  vertical-align: middle; 
+}
+
+/* Zeile hell */
+.td1 
+{
+  font-family: Arial, Helvetica, sans-serif; 
+  font-size: 9pt; 
+  text-align:center;
+  font-weight:bolder;
+  vertical-align:middle;
+  color: #003366; 
+  background-color: #E2DFF2;
+  text-align: center;
+  padding:2pt;
+  margin:2pt
+}
+
+/* Zeile dunkel */
+.td2 
+{
+  font-family: Arial, Helvetica, sans-serif; 
+  font-size: 9pt; 
+  text-align:center;
+  font-weight:bolder;
+  vertical-align:middle;
+  color: #003366; 
+  background-color: #B9B9EE;
+  text-align: center;
+  padding:2pt;
+  margin:2pt
+}
+

@@ -1,0 +1,968 @@
+program Parserdemo;
+//#sign:Max: MAXBOX10: 23/09/2016 12:28:25 
+// writeln(GetDOSOutput('systeminfo | findstr "OS Version"','C:\'))
+
+
+(*{$WARN SYMBOL_PLATFORM OFF}  #locs:862
+{$WARN SYMBOL_LIBRARY OFF}
+{$WARN SYMBOL_DEPRECATED OFF} *)
+
+{$DEFINE MSWINDOWS}
+
+ type
+  mCharSet = Set of AnsiChar;
+  CharSetArray = array of CharSet;
+  StringArray = array of string;
+  T2DimStrArray = array of array of string ;
+  TIntegerArray = array of integer ;
+  WideStringArray = array of WideString; // 10 Sept 2009
+  UnicodeStringArray = array of UnicodeString; // 10 Sept 2009
+
+
+//#sign:Max: MAXBOX10: 23/09/2016 12:28:25 
+//#tech:0perf: 0:0:7.34 threads: 26 192.168.1.53 12:28:25 4.2.4.60
+// 4 Aug 8 - ANSI versions of common string utils
+
+function TrimAnsi(const S: AnsiString): Ansistring;
+var
+  I, L: Integer;
+begin
+  L := Length(S);
+  I := 1;
+  while (I <= L) and (S[I] <= ' ') do Inc(I);
+  if I > L then Result := '' else begin
+    while S[L] <= ' ' do Dec(L);
+    Result := Copy(S, I, L - I + 1);
+  end;
+end;
+
+function TrimLeftAnsi(const S: AnsiString): AnsiString;
+var
+  I, L: Integer;
+begin
+  L := Length(S);
+  I := 1;
+  while (I <= L) and (S[I] <= ' ') do Inc(I);
+  Result := Copy(S, I, Maxint);
+end;
+
+function TrimRightAnsi(const S: Ansistring): AnsiString;
+var
+  I: Integer;
+begin
+  I := Length(S);
+  while (I > 0) and (S[I] <= ' ') do Dec(I);
+  Result := Copy(S, 1, I);
+end;
+
+
+
+// get the computer name from networking
+
+function GetCompName: string;
+var
+    Buffer: PChar; //array[0..255] of WideChar ;
+    aNLen: DWORD ;
+begin
+    //Buffer [0] := #0 ;
+    Buffer:= #0 ;
+    result := '' ;
+    aNLen := Length (Buffer) ;
+    if wGetComputerName (Buffer, aNLen) then Result:= Buffer ;
+end ;
+
+// convert seconds since 1 Jan 1970 (UNIX time stamp) to proper Delphi stuff
+
+function TStamptoDT (stamp: DWORD): TDateTime ;
+begin
+    result := (stamp / SecsPerDay) + 25569 ;
+end ;
+
+// convert Delphi time to seconds since 1 Jan 1970 (UNIX time stamp)
+
+function TDTtoStamp (D: TDateTime): DWORD ;
+begin
+    result := 0 ;
+    if D < 25569 then exit ;
+    D := D - 25569 ;
+    if D > 21900 then exit ;  // sanity test, year 2030
+    result := Trunc (D * SecsPerDay) ;
+end ;
+
+
+Function Match2 (const M : CharSetArray; const S : AnsiString; const Pos : Integer) : Boolean;
+var J, C : Integer;
+  Begin
+    C := Length (M);
+    if (C = 0) or (Pos < 1) or (Pos + C - 1 > Length (S)) then begin
+        Result := False;
+        exit;
+      end;
+
+    For J := 0 to C - 1 do
+      if not (S [J + Pos] in M [J]) then begin
+          Result := False;
+          exit;
+        end;
+
+    Result := True;
+  End;
+
+{                                                                              }
+{ PosNext                                                                      }
+{                                                                              }
+Function PosNext (const Find : CharSet; const S : AnsiString; const LastPos : Integer) : Integer;
+var I : Integer;
+  Begin
+    if Find = [] then begin
+        Result := 0;
+        exit;
+      end;
+
+    For I := Max (LastPos + 1, 1) to Length (S) do
+      if S [I] in Find then begin
+          Result := I;
+          exit;
+        end;
+
+    Result := 0;
+  End;
+
+Function PosNext1 (const Find : CharSetArray; const S : AnsiString; const LastPos : Integer) : Integer;
+var I, C : Integer;
+  Begin
+    C := Length (Find);
+    if C = 0 then begin
+        Result := 0;
+        exit;
+      end;
+    For I := Max (LastPos + 1, 1) to Length (S) - C + 1 do
+      if Match2 (Find, S, I) then begin
+          Result := I;
+          exit;
+        end;
+    Result := 0;
+  End;
+
+
+Function StrArrayJoin (const S : StringArray; const Delimiter : String) : String;
+var
+    I : Integer;
+Begin
+    Result := '';
+    For I := 0 to High (S) do begin
+        if I > 0 then
+          Result := Result + Delimiter;
+        Result := Result + S [I];
+    end;
+End;
+
+Function StrArrayJoin2 (const S : WideStringArray; const Delimiter : WideString) : WideString;
+var
+    I : Integer;
+Begin
+    Result := '';
+    For I := 0 to High (S) do begin
+        if I > 0 then
+          Result := Result + Delimiter;
+        Result := Result + S [I];
+    end;
+End;
+
+// pos in part of an array - where the array has unused elements
+
+function StrArrayPosOfEx (const L: string; S: StringArray; Total: integer): integer ;
+var
+    I: integer ;
+begin
+    if Total > Length (S) then Total := Length (S) ;
+    result := -1 ;
+    if Total = 0 then exit ;
+    for I := 0 to pred (Total) do begin
+        if L = S [I] then begin
+            result := I ;
+            exit ;
+        end ;
+    end ;
+end ;
+
+function StrArrayPosOfEx2 (const L: Widestring; S: WideStringArray; Total: integer): integer ;
+var
+    I: integer ;
+begin
+    if Total > Length (S) then Total := Length (S) ;
+    result := -1 ;
+    if Total = 0 then exit ;
+    for I := 0 to pred (Total) do begin
+        if L = S [I] then begin
+            result := I ;
+            exit ;
+        end ;
+    end ;
+end ;
+
+// check if file open
+
+function CheckFileOpen(const FName: String): integer;
+var
+    H: Integer;
+begin
+    result := -1;   // file not found
+    if NOT FileExists (FName) then exit ;
+    H := FileOpen(FName, fmOpenReadWrite);
+    result := 1;   // file open
+    if H < 0 then exit;
+    FileClose(H);
+    result := 0;   // file found but closed
+end;
+
+
+// yyyy-mm-ddThh:nn:ss to yyyymmdd-hhnnss
+
+// fuzzy date/time comparison, within one second
+// Warning - does not work with file time stamps, need at least two secs
+
+function EqualDateTime(const A, B: TDateTime): boolean;
+begin
+    result := (Abs (A - B) < OneSecond) ;
+end;
+
+// date/time difference in seconds, max one day
+
+function DiffDateTime(const A, B: TDateTime): integer ;
+begin
+    result := SecsPerDay ;
+    if Abs (A - B) >= 1 then exit ;
+    result := Trunc ((Abs (A - B)) * SecsPerDay) ;
+end;
+
+
+// TDateTime to to yyyy-mm-ddThh:nn:ss - no quotes
+
+function DT2ISODT (D: TDateTime): string ;
+begin
+    result := FormatDateTime (ISODateTimeMask, D) ;
+end ;
+
+// TDateTime to to 'yyyy-mm-ddThh:nn:ss'
+
+function DTtoISODT (D: TDateTime): string ;
+begin
+    result := QuotedStr (DT2ISODT (D)) ;
+end ;
+
+
+// date parsing borrowed from HttpApp but adapted to allow time hh:mm without seconds
+// and for two digit W2K years, and with fewer exceptions
+{const
+// These strings are NOT to be resourced
+
+  Months: array[1..13] of string = (
+    'Jan', 'Feb', 'Mar', 'Apr',
+    'May', 'Jun', 'Jul', 'Aug',
+    'Sep', 'Oct', 'Nov', 'Dec', '');
+  DaysOfWeek: array[1..7] of string = (
+    'Sun', 'Mon', 'Tue', 'Wed',
+    'Thu', 'Fri', 'Sat');
+ }
+
+ var Parser: TParser; //TPppParser; //TParser; //TCppParser; //TParser;
+     Months: array[1..13] of string; 
+ var
+  Month, Day, Year, Hour, Minute, Sec: Integer;
+  
+  function GetMonth: Boolean;
+  begin
+    Month := 1;
+    //while not Parser.TokenSymbolIs(Months[Month]) and (Month < 13) do Inc(Month);
+    Result := Month < 13;
+  end;
+  
+  procedure GetTime;
+  begin
+    with Parser do begin
+      Hour := TokenInt;
+      NextToken;
+      if Token = ':' then NextToken;
+      Minute := TokenInt;
+      NextToken;
+      if Token = ':' then   // angus, allow missing seconds
+      begin
+          NextToken;
+          Sec := TokenInt;
+          NextToken;
+      end ;
+    end;
+  end;
+  
+  
+    procedure TParserErrorEvent2 (Sender: TObject; const aMessage: string; var Handled: Boolean);
+    begin
+       writeln(amessage)
+     end;  
+
+ 
+function InetParseDate3(const DateStr: string): TDateTime;
+var
+ //Month, Day, Year, Hour, Minute, Sec: Integer;
+  //Parser: TParser;
+  StringStream: TStringStream;
+  temptime: TDateTime ;
+begin
+
+  Months[1]:='Jan'; Months[2]:='Feb'; Months[3]:='Mar'; Months[4]:='Apr';
+  Months[5]:='May'; Months[6]:='Jun'; Months[7]:='Jul'; Months[8]:='Aug';
+  Months[9]:='Sep'; Months[10]:='Oct'; Months[11]:='Nov'; Months[12]:='Dez';
+  Sec := 0 ;
+  result := 0 ;
+  if DateStr = '' then exit ;  // angus, ignore blank
+  StringStream := TStringStream.Create(DateStr);
+  try
+    Parser := TParser.Create(StringStream,nil);
+    with Parser do try
+      onerror:= @TParserErrorEvent2;
+      NextToken;
+      if Token = ':' then NextToken;
+      NextToken;         // get day of week, might not exixt...
+      if Token = ',' then NextToken;
+      if GetMonth then begin
+        NextToken;
+        Day := TokenInt;
+        NextToken;
+        //GetTime;
+   //     Year := TokenInt;
+      end else begin
+        Day := TokenInt;
+        NextToken;
+        if Token = '-' then NextToken;
+        GetMonth;
+        NextToken;
+        if Token = '-' then NextToken;
+        Year := TokenInt;
+        if Year < 50 then Inc2(Year, 2000);   // Y2K pivot
+        if Year < 100 then Inc2(Year, 1900);
+        NextToken;
+        //GetTime;
+      end;
+   // avoid exceptions
+      if TryEncodeDate (Year, Month, Day, Result) then begin
+         if TryEncodeTime (Hour, Minute, Sec, 0, temptime) then
+                                        result := result + temptime ;
+      end ;
+    finally
+      Free;
+    end;
+  finally
+    StringStream.Free;
+  end;
+end;
+
+
+function SumOfDigitBase(n:UInt64;base:LongWord): LongWord;
+var
+  tmp: int64;
+  digit,sum : uint64;
+Begin
+  digit := 0;
+  sum   := 0;
+  While n > 0 do Begin
+    tmp := n div base;
+    digit := n-base*tmp;
+    n := tmp;
+    //inc2(sum,digit);
+    sum:= sum + digit;
+  end;
+  result:= sum;  
+end;
+
+
+function GetModifiedDate(const aFilename: string): TDateTime;
+var
+  hFile: Integer;
+  iDosTime: Integer;
+begin
+  hFile := FileOpen(aFilename, fmOpenRead);
+  iDosTime := FileGetDate(hFile);
+  FileClose(hFile);
+  if (hFile = -1) or (iDosTime = -1) then 
+      raise; //Exception.Create('Cannot read file: ' + sFilename);
+  Result := FileDateToDateTime(iDosTime);
+end;
+// }
+
+procedure ChangeModifiedDate(const aFilename: string; aDateTime: TDateTime);
+begin
+  FileSetDate(aFileName, DateTimeToFileDate(aDateTime));
+end;
+
+procedure countmX4Systemdirfiles;
+var
+  FilesFound: Integer;
+  FindRec: TFindRec;
+begin
+  FilesFound := 0;
+  //if FindFirst(ExpandConstant('{sys}\*'), FindRec) then begin
+  if FindFirst3(exepath+'\*.*', FindRec) then begin
+   try
+      repeat
+        // Don't count directories
+        if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY = 0 then
+          FilesFound := FilesFound + 1;
+      until not FindNext3(FindRec);
+    finally
+      FindClose3(FindRec);
+    end;
+  end;
+  MsgBox(IntToStr(FilesFound) + ' files found in the mX4System directory.',
+                              'mX4_mbInformation', MB_OK);
+end;
+
+procedure ExtremeFloatingPointNumbers;
+var
+  PlusInf, MinusInf, NegZero, NotANum: Double;
+  aone, azeroo: double;
+ 
+begin
+  PlusInf:= 1.0/0.0;
+  MinusInf:= -1.0/0.0;
+  NegZero:= -1.0/PlusInf;
+  NotANum:= 0.0/0.0;
+ 
+  Writeln('Positive Infinity: '+floattoStr(PlusInf));      // +Inf
+  Writeln('Negative Infinity: '+floattoStr(MinusInf));     // -Inf
+  Writeln('Negative Zero: '+floattoStr(NegZero));          // -0.0
+  Writeln('Not a Number: '+floattoStr(NotANum));           // Nan
+ 
+// allowed arithmetic
+  Writeln('+Inf + 2.0 = '+floattoStr(PlusInf + 2.0));      // +Inf
+  Writeln('+Inf - 10.1 = '+floattoStr(PlusInf - 10.1));    // +Inf
+  Writeln('NaN + 1.0 = '+floattoStr(NotANum + 1.0));       // Nan
+  Writeln('NaN + NaN = '+floattoStr(NotANum + NotANum));   // Nan
+ 
+// throws exception
+  aone:= 1.67; azeroo:= 0;
+  try
+    Writeln('+inf + -inf = '+floattoStr(PlusInf + MinusInf));  // EInvalidOp
+    Writeln('0.0 * +inf = '+floattoStr(0.0 * PlusInf));        // EInlalidOp
+    Writeln('1.0/-0.0 = '+floattoStr(1.0 / NegZero));          // EZeroDivide
+    Writeln('1.0/-0.0 = '+floattoStr(1.0 / 0));          // EZeroDivide
+    Writeln('1.0/-0.0 2 = '+floattoStr(aone / azeroo));          // EZeroDivide
+
+  except
+    //on E:Exception do
+      //Writeln('E.Classname, ': ', E.Message');
+      writeln(ExceptionToString(ExceptionType, ExceptionParam));
+  end;
+    aone:= aone / azeroo;          // EZeroDivide
+    writeln(floattostr(aone))
+end;  
+
+const
+  aBase = 10;
+  aMaxDigits = 16;
+
+{type
+  tDigit = 0..Base-1;
+  tcntDgt= 0..MaxDigits-1;
+ }
+ 
+//procedure narcisticdecimalnumber;
+var
+  powDgt   : array[0..9]  of NativeUint;
+  PotdgtPos: array[0..15] of NativeUint;
+  UpperSum : array[0..15] of NativeUint;
+ 
+  tmpSum,
+  tmpN,
+  actPot  : NativeUint;
+ 
+//begin
+
+
+//end;
+
+procedure InitPowDig;
+var
+  i,j : NativeUint;
+Begin
+  j := 1;
+  For i := 0 to 9 {High(tDigit)} do Begin
+    powDgt[i] := i;
+    PotdgtPos[i] := j;
+    j := j*Base;
+  end;
+  actPot := 0;
+end;
+ 
+procedure NextPowDig;
+var
+  i,j : NativeUint;
+Begin
+  // Next power of digit =  i ^ actPot,always 0 = 0 , 1 = 1
+  For i := 2 to 9 {High(tDigit)} do
+    powDgt[i] := powDgt[i]*i;
+  // number of digits times 9 ^(max number of digits)
+  j := powDgt[9];
+  For i := 0 to High(UpperSum) do
+    UpperSum[i] := (i+1)*j;
+  inc(actPot);
+end;
+
+procedure OutPutNdN(n:NativeUint);
+Begin
+  write(itoa(n)+' ');
+end;
+ 
+procedure NextDgtSum(dgtPos,i,sumPowDgt,n:NativeUint);
+begin
+  //unable to reach sum
+  IF (sumPowDgt+UpperSum[dgtPos]) < n then
+    EXIT;
+  repeat
+    tmpN   := n+PotdgtPos[dgtPos]*i;
+    tmpSum := sumPowDgt+powDgt[i];
+    //unable to get smaller
+    if tmpSum > tmpN then
+      EXIT;
+    IF tmpSum = tmpN then
+      OutPutNdN(tmpSum);
+    IF dgtPos>0 then
+      NextDgtSum(dgtPos-1,0,tmpSum,tmpN);
+    inc(i);
+  until i >= Base;
+end;
+
+procedure pythagoNumbertripel;
+var a,b,c,d: integer;
+begin
+  for a:= 1 to 50 do
+    for b:= a to 50 do
+     for c:= 1 to a*a+b*b do
+        if a*a+b*b = c*c  then
+        printF('a= %d - b= %d - c= %d ',[a,b,c])
+end;        
+
+function AscToIntAnsi (value: AnsiString): Integer;   // simple version of StrToInt
+var
+    E: Integer;
+begin
+    Val (string (value), result, E) ;  // 7 Aug 2010
+end;
+
+function HexStrToBinStr (const HexStr: AnsiString): AnsiString ;
+var
+    I, len: integer ;
+    S: AnsiString ;
+begin
+    len := Length (HexStr) div 2 ;
+    SetLength (result, len) ;
+    for I := 1 to len do begin
+        S := AnsiChar ('$') + HexStr [(I * 2) - 1] + HexStr [I * 2];
+        result [I] := chr(AscToIntAnsi(S));
+    end;
+end;
+
+function AscToIntAnsi2 (value: String): Integer;   // simple version of StrToInt
+var
+    E: Integer;
+begin
+    //Val (string(value), result, E) ;  // 7 Aug 2010
+    result:= Strtoint(value)
+end;
+
+function HexStrToBinStr2 (const HexStr: String): String ;
+var
+    I, len: integer ;
+    S: String ;
+begin
+    len := Length(hexstr); //(HexStr) div 2 ;
+    SetLength (result, len) ;
+    for I := 1 to len do begin
+        S := ('$') + HexStr [(I * 2) - 1] + HexStr [I * 2];
+        writeln(s)
+        result [I] := Chr(AscToIntAnsi2(S));
+    end;
+end;
+
+
+function checkRunner(const start: integer): integer;
+ begin
+    result:= start;
+    for it:= 1 to 120 do begin
+      if odd(result) then 
+        result:= (result*3) +1
+      else if iseven(result) then 
+        result:= result div 2;
+      writeln(itoa(it)+': '+itoa(result))
+    end;
+end;
+
+function checkRunner2(const start: integer): integer;
+ begin
+    result:= start;
+    for it:= 1 to 120 do begin
+      if odd(result) then 
+        result:= (result*3) +1
+      else  
+        result:= result div 2;
+      writeln(itoa(it)+': '+itoa(result))
+    end;
+end;
+
+function checkRunner3(const start: integer): integer;
+ begin
+    result:= start;
+    for it:= 1 to 120 do begin
+      if (result mod 2) <> 0 then  //odd
+        result:= (result*3) +1
+      else  
+        result:= result div 2;
+      writeln(itoa(it)+': '+itoa(result))
+    end;
+end;
+
+//http://www.swissdelphicenter.ch/en/showcode.php?id=2272
+
+procedure RegisterProtocol(const Name, Describtion, ExecuteStr: string);
+var
+  reg: TRegistry;
+begin
+  reg := TRegistry.Create;
+  try
+    reg.RootKey := HKEY_CLASSES_ROOT;
+    reg.OpenKey(Name, True);
+    try
+      reg.Writestring('', 'URL:' + Name +' (' + Describtion + ')');
+      reg.WriteInteger('EditFlags', 2);
+      reg.WriteString('Source Filter', '');
+      reg.WriteString('URL Protocol', '');
+      reg.OpenKey('shell', True);
+      reg.OpenKey('open', True);
+      reg.OpenKey('command', True);
+      reg.Writestring('', ExecuteStr);
+    finally
+      reg.CloseKey;
+    end;
+  finally
+    reg.Free;
+  end;
+end;
+
+{$IFDEF MSWINDOWS}
+procedure DeleteRegValue(const Key, ValueName: string);
+var
+  Handle: HKey;
+  Status: Integer;
+begin
+  Status := RegOpenKey(HKEY_CLASSES_ROOT, PChar(Key), Handle);
+  if Status = 0 then
+  begin
+    RegDeleteValue(Handle, PChar(ValueName));
+    RegCloseKey(Handle);
+  end;
+end;
+{$ENDIF}
+{$IFDEF LINUX}
+procedure DeleteRegValue(const Key, ValueName: string);
+begin
+end;
+{$ENDIF}
+
+function DaysInMonthX: Integer;
+var
+  Year, Month, Day: Word;
+begin
+  DecodeDate(Now, Year, Month, Day);
+  //Result := MonthDays[IsLeapYear(Year), Month];
+  result:= DaysInMonthYm(Year, month);
+end;
+
+
+//A Quine is a self-referential program that can, without any external access, output its own source.
+
+const s=';begin writeln(#99#111#110#115#116#32#115#61#39,s,#39,s)end.';
+   //begin writeln(#99#111#110#115#116#32#115#61#39,s,#39,s)end.
+
+//program Quine(Output);
+ const A='program Quine(Output);const A=';
+       B='begin writeln(A,char(39),A,char(39),char(59),char(66),char(61),char(39),'+
+          'B,char(39),char(59),B)end.';
+
+
+var past: TDatetime;
+    auint64: int64;
+    mylog: THotlog;
+   // aw: qword;
+   aw: word;
+   awl: longword;
+   aca: cardinal;
+   us: USHORT;
+   var
+  amin, amin1, amax, amax1 : int64;
+  var
+  iu : NativeUint;
+  dw: dword;
+  afrm: TForm;
+  wb :TWebBrowser;
+  
+  Res: Longint;
+  sMsg: string;
+  
+  const
+  NERR_BASE = 2100;
+  NERR_NameNotFound = NERR_BASE + 173;
+  NERR_NetworkError = NERR_BASE + 36;
+  NERR_Success = 0;
+  ERROR_INVALID_PARAMETER =  87;
+
+
+begin
+  
+     writeln(A+chr(39)+A+chr(39)+chr(59)+chr(66)+chr(61)+
+                                 chr(39)+B+chr(39)+chr(59)+B)
+    writeln('')
+      writeln(#99#111#110#115#116#32#115#61#39+s+#39+s); //end.
+    writeln('');  
+
+    writeln('getOSVersion: '+getOSVersion)
+ //   writeln(GetDOSOutput('Systeminfo | findstr "OS Version"','C:\'))
+    //writeln(GetCompName)
+    
+    writeln('InetParseDate3: '+datetimetoStr(InetParseDate3('19-09-1959-16:16:37')))
+    
+    //countmX4Systemdirfiles;
+    
+    {past:= Now;
+    sleep(3000)
+    writeln(itoa(DiffDateTime(past,Now)));
+    }
+    writeln(chr(39)+chr(59)+chr(66)+chr(61))
+    
+  writeln('   1 sums to '+ itoa(SumOfDigitBase(1,10))); 
+  writeln('1234 sums to '+ itoa(SumOfDigitBase(1234,10)));  
+  writeln(' $FE sums to '+ itoa(SumOfDigitBase($FE,16))); 
+  writeln('$FOE sums to '+ itoa(SumOfDigitBase($F0E,16)));   
+ 
+//  writeln(itoa(high(aUint64-1)))
+  //writeln('1844073709551615 sums to '+ itoa(SumOfDigitBase(High(aUint64),10)));  
+  writeln('18440737095516(15) sums to '+ itoa(SumOfDigitBase($FFFFFFFFFFFFFFF,10)));  
+  //writeln('18446744073709551615 sums to '+ itoa(SumOfDigitBase(18446744073709551614,10)));  
+
+   writeln(GetDOSOutput('Ver','C:\'))
+   
+   //  writeln(GetDOSOutput('Systeminfo | findstr /B /C:"OS Name" /C:"OS Version"','C:\'))
+     writeln(GetDOSOutput('Systeminfo | findstr /C:"System Type"','C:\'))
+  
+   //  hlog.Add('>>>> Start parser demo script Exe4: {App_name} v{App_ver}{20@}{now}');
+  //1844674409551615 sums to 87
+  //  1844674409551615
+  
+   writeln('GetModifiedDate '+datetimetoStr(GetModifiedDate(exepath+'maxbox4.exe')))
+   
+   ExtremeFloatingPointNumbers;
+   
+   aw:= -456;
+   writeln(inttostr(aw))
+   awl:= -456;
+   write(inttostr(awl))
+  
+   aca:= -456;
+   write(inttostr(aca))
+   
+    iu:= -456;
+   write(inttostr(iu))
+    dw:= -456;
+   write(inttostr(dw))
+  
+    us:= -456;
+   writeln(inttostr(us))
+   
+   //amin := Low(amin1);
+   //amax := High(amax1);
+   
+   amin := -9223372036854775807;
+   amax := 922337203685407;
+   
+  writeln('Min int64 value = '+IntToStr64(amin));
+  writeln('Max int64 value = '+IntToStr64(amax));
+     
+    InitPowDig;
+  For iu := 1 to 5 do Begin
+    write(' length '+itoa(actPot)+': ');
+    //start with 1 in front, else you got i-times 0 in front
+    NextDgtSum(actPot,1,0,0);
+    writeln('');
+    NextPowDig;
+  end;
+  
+  //1634
+  
+  maxCalcF('1^4+6^4+3^4+4^4')
+  
+  writeln(HexStrToBinStr('29A'))
+  writeln(HexToBin2('29A'))
+  
+  //#77 : 9232  #111: 1
+  checkrunner3(27)
+   //IntToIdent
+  //pythagoNumbertripel
+  //TestStreamFormat  // TStreamOriginalFormat
+  //TGetStrProc
+  //TListAssignOp
+    //ResStringRec
+   // TStringsDefined
+     //aTValueType
+    //FindRootDesigner toperation
+    //ExtractStrings //AncestorIsValid
+    //BeginGlobalLoading
+    //FontToOleFont
+    //OleFontToFont
+    
+    //ComputePEChecksum
+    
+    //  GetCachedFileFromURL
+   //  IAddrToHostName
+   //StrToSQLTimeStamp
+      //   GetText
+     // WB_LoadHTML
+     //  NetSend
+   //  netsend
+   
+   afrm:= getForm(600,400)
+  wb := TWebBrowser.Create(afrm);
+  TWinControl(wb).Name := 'MyWebBrowser';
+  TWinControl(wb).Parent := afrm;
+  wb.Align := alClient;
+  // TWinControl(wb).Parent := TabSheet1; ( To put it on a TabSheet )
+  wb.Navigate('http://www.swissdelphicenter.ch')
+  //wb.Navigate('http://www.ibm.ch')
+ 
+  //Wb.Navigate('view-source:' + 'ComboBoxEx1.Text');
+  
+  //WB_LoadHTML(WebBrowser1,'SwissDelphiCenter');
+  //WB_LoadHTML(Wb,'SwissDelphiCenter');
+  
+  //netsend
+  //function NetSend(dest, Source, Msg: string): Longint; overload;
+  
+  Res := NetSend('login name', 'max','Your Message...');
+  case Res of
+    ERROR_ACCESS_DENIED: sMsg := 'user does not have access to the requested information.';
+    ERROR_INVALID_PARAMETER: sMsg := 'The specified parameter is invalid.';
+    ERROR_NOT_SUPPORTED: sMsg := 'This network request is not supported.';
+    NERR_NameNotFound: sMsg := 'The user name could not be found.';
+    NERR_NetworkError: sMsg := 'A general failure occurred in the network hardware.';
+    NERR_Success: sMsg := 'Message sent!';
+  end;
+  ShowMessage(sMsg);
+  
+  writeln(gettextfromhandle(application.handle))
+  
+   
+End.
+
+ref:
+
+SpVoice1.Speak(Edit1.Text,1).
+
+
+10 PCS LD-3461AS 0.36 inch 4 Digit 7 Segment Red Light LED Numeric Digital Display,Common Cathode
+Back to product details
+
+http://www.learningaboutelectronics.com/Articles/4-digit-7-segment-LED-circuit-with-an-arduino.php
+
+http://www.electroschematics.com/10512/arduino-4-digit-7-segment-led-display/
+
+
+#sign:Max: MAXBOX10: 23/09/2016 12:28:25 
+#tech:.60perf: 0:0:7.34 threads: 26 192.168.1.53 12:28:25 4.2.4.60
+
+//https://rosettacode.org/wiki/9_billion_names_of_God_the_integer/REXX_histogram
+
+time ./NdN
+ length  1: 1 2 3 4 5 6 7 8 9 
+ length  2: 
+ length  3: 153 370 370 371 407 
+ length  4: 1634 8208 9474 
+ length  5: 54748 92727 93084 
+  mX4 5 executed: 18/06/2016 16:55:15  Runtime: 0:0:9.234  Memload: 28% use
+ length  6: 548
+  mX4 6 executed: 18/06/2016 16:56:47  Runtime: 0:0:48.252  Memload: 28% use
+ length  7: 1741725 4210818 9800817 9926315 
+  mX4 7 executed: 17/06/2016 23:22:04  Runtime: 0:6:56.958  Memload: 26% use
+  length  8: 2460 24678050 24678051 88593477 
+ 
+ length  9: 146511208 472335975 534494836 912985153 
+ 
+  length 0: 1 2 3 4 5 6 7 8 9 
+ length 1: 
+ length 2: 153 370 370 371 407 
+ length 3: 1634  9474 
+ length 4: 54748 9293084 
+ length 5: 548834 
+  mX4 5 executed: 18/06/2016 20:59:12  Runtime: 0:0:9.489  Memload: 28% use
+ length 6: 1741725 4210818 9800817 9926315 
+  mX4 executed: 18/06/2016 21:03:03  Runtime: 0:0:48.833  Memload: 28% use
+  mX4 bytecode  18/06/2016 21:06:38  Runtime: 0:0:38.526  Memoryload: 28% use
+ length 7: 2450 24678050 24678051 3477 
+ length 8: 146511208 45975 534494836 912985153 
+1634
+ mX4 executed: 18/06/2016 18:09:37  Runtime: 1:8:34.255  Memload: 28% use
+
+
+doc:
+
+ OS Name:                   Microsoft Windows 10 Home
+OS Version:                10.0.10586 N/A Build 10586
+
+=={{header|Delphi}}==
+<lang Delphi>function GetModifiedDate(const aFilename: string): TDateTime;
+var
+  hFile: Integer;
+  iDosTime: Integer;
+begin
+  hFile := FileOpen(aFilename, fmOpenRead);
+  iDosTime := FileGetDate(hFile);
+  FileClose(hFile);
+  if (hFile = -1) or (iDosTime = -1) then raise Exception.Create('Cannot read file: ' + sFilename);
+  Result := FileDateToDateTime(iDosTime);
+end;
+
+procedure ChangeModifiedDate(const aFilename: string; aDateTime: TDateTime);
+begin
+  FileSetDate(aFileName, DateTimeToFileDate(aDateTime));
+end;</lang>
+
+<!DOCTYPE html><html><head><title>Software System Reliability and Security - M. Broy, Johannes Grünbauer, Charles Antony Richard Hoare - Google Books</title><script>(function(){(function(){function e(a){this.t={};this.tick=function(a,c,b){var d=void 0!=b?b:(new Date).getTime();this.t[a]=[d,c];if(void 0==b)try{window.console.timeStamp("CSI/"+a)}catch(e){}};this.tick("start",null,a)}var a;window.performance&&(a=window.performance.timing);var f=a?new e(a.responseStart):new e;window.jstiming={Timer:e,load:f};if(a){var c=a.navigationStart,d=a.responseStart;0<c&&d>=c&&(window.jstiming.srt=d-c)}if(a){var b=window.jstiming.load;0<c&&d>=c&&(b.tick("_wtsrt",void 0,c),b.tick("wtsrt_",
+"_wtsrt",d),b.tick("tbsd_","wtsrt_"))}try{a=null,window.chrome&&window.chrome.csi&&(a=Math.floor(window.chrome.csi().pageT),b&&0<c&&(b.tick("_tbnd",void 0,window.chrome.csi().startE),b.tick("tbnd_","_tbnd",c))),null==a&&window.gtbExternal&&(a=window.gtbExternal.pageT()),null==a&&window.external&&(a=window.external.pageT,b&&0<c&&(b.tick("_tbnd",void 0,window.external.startE),b.tick("tbnd_","_tbnd",c))),a&&(window.jstiming.pt=a)}catch(g){}})();})();
+</script><script>(function() {var preloadImg = document.createElement('img');preloadImg.src = 'https://books.google.ch/books?id\x3dwEENARi1lvAC\x26pg\x3dPR5\x26img\x3d1\x26zoom\x3d3\x26hl\x3den\x26sig\x3dACfU3U0krSI1W6yexmu59T3RaAvFunthWg\x26w\x3d685
+try{  //}
+
+Parsing Events
+
+Event parsing is done via the same custom parsing functions as described above, except if you return a dict (or a list of dict) from your custom parsing function, Datadog will treat it as an event instead of a metric.
+
+Here are the event fields (bold means the field is required):
+Field 	Type 	Value
+msg_title 	string 	Title of the event. Will get indexed by our full-text search.
+timestamp 	integer 	Unix epoch timestamp. If omitted, will default to the time that the Agent parsed the event.
+msg_text 	string 	Body of the event. Will get indexed by our full-text search.
+alert_type 	string enum 	Indicates the severity of the event. Must be one of `error`, `warning`, `success` or `info`. If omitted, will default to `info`. Searchable by `alert_type:value`
+event_type 	string 	Describes what kind of event this is. Used as part of the aggregation key
+aggregation_key 	string 	Describes what this event affected, if anything. Used as part of the aggregation key
+host 	string 	Name of the host this event originated from. The event will automatically get tagged with any tags you've given this host using the tagging page or the tagging api. The host value is used as part of the aggregation key.
+priority 	string 	Determines whether the event will be visible or hidden by default in the stream; Must be one of low or normal
+
+
+/ Converting method pointers into function pointers
+
+ Often you need a function pointer for a callback function. But what, if you want to specify a method as
+ an callback? Converting a method pointer to a function pointer is not a trivial task; both types are
+ incomatible with each other. Although you have the possibility to convert like this "@TClass.SomeMethod",
+ this is more a hack than a solution, because it restricts the use of this method to some kind of a class
+ function, where you cannot access instance variables. If you fail to do so, you'll get a wonderful gpf.
+ But there is a better solution: run time code generation! Just allocate an executeable memory block, and
+ write 4 machine code instructions into it: 2 instructions loads the two pointers of the method pointer
+ (code & data) into the registers, one calls the method via the code pointer, and the last is just a return
+ Now you can use this pointer to the allocated memory as a plain funtion pointer, but in fact you are
+ calling a method for a specific instance of a Class.
