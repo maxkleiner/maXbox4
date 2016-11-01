@@ -1,0 +1,54 @@
+//maXbox is a scripter tool with a delphi engine in one exe!
+//runs under Win and Linux (CLX) to build Delphi in a Box
+//*************************************************************************
+
+program Delphi_in_a_Box;
+
+const mys = 'CODESIGN!';
+var i: byte;
+ inFrm: TForm;
+
+begin
+  inFrm:= TForm.create(self)
+  for i:= 1 to 3 do
+    writeln(intToStr(i) + ' aloha from CoreCode');
+  with inFrm do begin
+    position := poScreenCenter;
+    color:= clred;
+    caption:= 'Delphi in a Box'
+    show;
+  end;  
+  showmessage('the boX rocks ' + mys)
+  Beep;
+  Sleep(500);
+  //inFrm.close
+  //... add your code here
+end.
+
+//Load examples *.txt from /examples and press F9!
+//please read the readmefirst...or start with the tutorials in /help
+//memo1 is script editor
+//memo2 is output space
+****************************************************************
+Changes in maXbox 3.9.9 and 4.0.1
+****************************************************************
+- over 16800 delphi, pascal, network, admin, jedi and indy functions built in
+- Grid, DB, DBX, RTL, Printer, Canvas, Crypto and more VCL
+- SMTP, POP3, HTTP, FTP, sysutils, strutils, fileutils,  SocketServer
+- Syntax Check F2 - Java, C Syntax in Context, Syn API, MAPX
+- V3.8 new Compiler mX4, bootscript, internet check, unit support
+- CryptoBox AES, FileInfo, Perl RegEx, Serial, Jedi Utils, Systools4, Orpheus
+
+{  max@kleiner.com  V4.0.1.15 January 2016
+    max@kleiner.com  V3.9.9.195 Mai 2015
+  new version and examples from
+     http://www.softwareschule.ch/maxbox.htm }
+
+just inside maXbox /maXcom /maXbase /maXcase /maXnet /maXtec /maXmap
+
+        ____    ___   _      ____    _   _   _
+        |  _ \  |  _| | |    |  _ \  | | | | | |
+        | | . | | |_  | |    | |_| | | |_| | | |
+        | | | | |  _| | |    |  __/  |  _  | | |          
+        | |_. | | |_  | |__  | |     | | | | | |                      
+        |____/  |___| |____| |_|     |_| |_| |_|                                   

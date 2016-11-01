@@ -1,0 +1,698 @@
+ 
+New Session Exe Start C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\examples\first4test
+>>>> Start Exe: maXbox4.exe v4.0.1.15                       2016-01-13 21:47:39 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=681592856576, Total on disk=972076589056, Free total on disk=681592856576 ; 2016-01-13 21:47:39 
+ 
+New Session Exe Start C:\maXbox\maxbox3\maxbox3\maXbox3\examples\100_weather_australia_secure.txt
+>>>> Start Exe: maXbox4.exe v4.0.1.15                       2016-01-13 21:49:32 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=681592655872, Total on disk=972076589056, Free total on disk=681592655872 ; 2016-01-13 21:49:32 
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\650_drawdice2016_3testerV4.txt  2016-01-13 21:49:51 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 650_drawdice2016_3testerV4.txt            2016-01-13 21:49:54 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:3.334
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\370_synedit2_mxtester4.txt  2016-01-13 21:50:13 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 370_synedit2_mxtester4.txt                2016-01-13 21:50:15 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 21:50:13.831
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\370_synedit2_mxtester4.txt  2016-01-13 21:52:35 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 370_synedit2_mxtester4.txt                2016-01-13 21:52:37 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:1.484
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\370_synedit2_mxtester4.txt  2016-01-13 21:52:58 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 370_synedit2_mxtester4.txt                2016-01-13 21:52:59 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:1.203
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\370_synedit2_mxtester4.txt  2016-01-14 09:24:05 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 370_synedit2_mxtester4.txt                2016-01-14 09:24:06 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:1.240
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\370_synedit2_mxtester4.txt  2016-01-14 09:55:32 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 370_synedit2_mxtester4.txt                2016-01-14 09:55:33 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:1.217
+ 
+New Session Exe Start ..\maXbox4\examples\370_synedit2_mxtester4.txt
+>>>> Start Exe: maXbox4.exe v4.0.1.15                       2016-01-14 10:00:13 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=681520521216, Total on disk=972076589056, Free total on disk=681520521216 ; 2016-01-14 10:00:13 
+ 
+New Session Exe Start ..\maXbox4\examples\650_drawdice2016_3testerV4.txt
+>>>> Start Exe: maXbox4.exe v4.0.1.15                       2016-01-14 10:01:50 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=681520451584, Total on disk=972076589056, Free total on disk=681520451584 ; 2016-01-14 10:01:50 
+ 
+New Session Exe Start ..\maxbox4\examples\370_synedit2_mxtester4.txt
+>>>> Start Exe: maXbox4.exe v4.0.1.15                       2016-01-14 10:08:44 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=681520222208, Total on disk=972076589056, Free total on disk=681520222208 ; 2016-01-14 10:08:44 
+ 
+>>>> Start Script: ..\maxbox4\examples\370_synedit2_mxtester4.txt  2016-01-14 10:08:49 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 370_synedit2_mxtester4.txt                2016-01-14 10:08:51 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:1.459
+ 
+>>>> Start Script: ..\maxbox4\examples\370_synedit2_mxtester4.txt  2016-01-14 10:09:38 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 370_synedit2_mxtester4.txt                2016-01-14 10:09:39 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:1.222
+ 
+>>>> Start Script: ..\maXbox4\examples\650_drawdice2016_3testerV4.txt  2016-01-14 10:09:53 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 650_drawdice2016_3testerV4.txt            2016-01-14 10:09:56 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:3.199
+ 
+>>>> Start Script: ..\maXbox4\examples\650_http_server2tester.txt  2016-01-14 10:10:07 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 650_http_server2tester.txt                2016-01-14 10:10:12 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:5.163
+ 
+>>>> Start Script: ..\maXbox4\examples\650_drawdice2016_3testerV4.txt  2016-01-14 10:10:40 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 650_drawdice2016_3testerV4.txt            2016-01-14 10:10:43 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:3.221
+ 
+>>>> Start Script: ..\maXbox4\examples\650_drawdice2016_3testerV4.txt  2016-01-14 10:17:38 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 650_drawdice2016_3testerV4.txt            2016-01-14 10:17:41 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:3.43
+ 
+>>>> Start Script: ..\maXbox4\examples\650_drawdice2016_3testerV4.txt  2016-01-14 10:18:59 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 650_drawdice2016_3testerV4.txt            2016-01-14 10:19:02 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:3.67
+ 
+>>>> Start Script: ..\maXbox4\examples\650_drawdice2016_3testerV4.txt  2016-01-14 10:19:32 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 650_drawdice2016_3testerV4.txt            2016-01-14 10:19:36 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:3.215
+ 
+New Session Exe Start ..\maXbox4\examples\650_drawdice2016_3testerV4.txt
+>>>> Start Exe: maXbox4.exe v4.0.1.15                       2016-01-14 10:24:54 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=681519931392, Total on disk=972076589056, Free total on disk=681519931392 ; 2016-01-14 10:24:54 
+ 
+>>>> Start Script: ..\maXbox4\examples\650_drawdice2016_3testerV4.txt  2016-01-14 10:25:12 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 650_drawdice2016_3testerV4.txt            2016-01-14 10:25:15 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:3.146
+ 
+New Session Exe Start ..\maXbox4\examples\650_drawdice2016_3testerV4.txt
+>>>> Start Exe: maXbox4.exe v4.0.1.15                       2016-01-14 13:30:55 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=28% ; [Disk monitor] : Available to user=681354964992, Total on disk=972076589056, Free total on disk=681354964992 ; 2016-01-14 13:30:56 
+ 
+>>>> Start Script: ..\maXbox4\examples\630_multikernel4.TXT  2016-01-14 13:32:09 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 630_multikernel4.TXT                      2016-01-14 13:32:10 
+[RAM  monitor] : (2147483647, 2147483647, 28%) Compiled+Run Success! runtime: 0:0:1.153
+ 
+>>>> Start Script: ..\maXbox4\examples\630_multikernel4.TXT  2016-01-14 13:33:37 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 630_multikernel4.TXT                      2016-01-14 13:33:38 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:1.137
+ 
+>>>> Start Script: ..\maXbox4\examples\630_multikernel4.TXT  2016-01-14 13:34:41 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 630_multikernel4.TXT                      2016-01-14 13:34:42 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:1.109
+ 
+>>>> Start Script: ..\maXbox4\examples\630_multikernel4.TXT  2016-01-14 13:39:02 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 630_multikernel4.TXT                      2016-01-14 13:39:03 
+[RAM  monitor] : (2147483647, 2147483647, 28%) Compiled+Run Success! runtime: 0:0:1.103
+ 
+>>>> Start Script: ..\maXbox4\examples\630_multikernel4.TXT  2016-01-14 13:40:34 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 630_multikernel4.TXT                      2016-01-14 13:40:37 
+[RAM  monitor] : (2147483647, 2147483647, 28%) Compiled+Run Success! runtime: 0:0:3.424
+ 
+>>>> Start Script: ..\maXbox4\examples\575_tartaruga_desktop.txt  2016-01-14 13:46:55 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 575_tartaruga_desktop.txt                 2016-01-14 13:46:59 
+[RAM  monitor] : (2147483647, 2147483647, 28%) Compiled+Run Success! runtime: 0:0:3.975
+ 
+>>>> Start Script: ..\maXbox4\examples\611_Arduino_COMOutputs.txt  2016-01-14 13:49:47 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 611_Arduino_COMOutputs.txt                2016-01-14 13:49:49 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 13:49:47.907
+ 
+>>>> Start Script: ..\maXbox4\examples\611_Arduino_COMOutputs.txt  2016-01-14 13:50:28 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 611_Arduino_COMOutputs.txt                2016-01-14 13:50:29 
+[RAM  monitor] : (2147483647, 2147483647, 28%) Compiled+Run Success! runtime: 0:0:1.142
+ 
+>>>> Start Script: ..\maXbox4\examples\611_Arduino_COMOutputs.txt  2016-01-14 13:52:51 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 611_Arduino_COMOutputs.txt                2016-01-14 13:52:54 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:3.146
+ 
+>>>> Start Script: ..\maXbox4\examples\558_hirestimer2test2.txt  2016-01-14 13:56:31 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 558_hirestimer2test2.txt                  2016-01-14 13:56:33 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:1.663
+ 
+>>>> Start Script: ..\maXbox4\examples\558_hirestimer2test2.txt  2016-01-14 13:57:19 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 558_hirestimer2test2.txt                  2016-01-14 13:57:20 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:1.354
+ 
+>>>> Start Script: C:\Program Files (x86)\maxbox3\Import\maxbox4\examples\weatherapp2.txt  2016-01-14 14:01:26 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: weatherapp2.txt                           2016-01-14 14:01:33 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:6.506
+ 
+>>>> Start Script: C:\Program Files (x86)\maxbox3\Import\maxbox4\examples\weatherapp2.txt  2016-01-14 14:02:34 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: weatherapp2.txt                           2016-01-14 14:02:37 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:2.470
+ 
+>>>> Start Script: ..\maXbox4\examples\558_hirestimer2test2.txt  2016-01-14 14:03:19 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 558_hirestimer2test2.txt                  2016-01-14 14:03:21 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:1.330
+ 
+New Session Exe Start ..\maXbox4\examples\558_hirestimer2test2.txt
+>>>> Start Exe: maXbox4.exe v4.0.1.15                       2016-01-14 14:11:28 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=681350381568, Total on disk=972076589056, Free total on disk=681350381568 ; 2016-01-14 14:11:28 
+ 
+>>>> Start Script: ..\maXbox4\examples\558_hirestimer2test2.txt  2016-01-14 14:11:39 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 558_hirestimer2test2.txt                  2016-01-14 14:11:40 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:1.658
+ 
+New Session Exe Start ..\maXbox4\examples\558_hirestimer2test2.txt
+>>>> Start Exe: maXbox4.exe v4.0.1.15                       2016-01-14 14:15:50 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=681349890048, Total on disk=972076589056, Free total on disk=681349890048 ; 2016-01-14 14:15:50 
+ 
+New Session Exe Start ..\maXbox4\examples\558_hirestimer2test2.txt
+>>>> Start Exe: maXbox4.exe v4.0.2.15                       2016-01-17 15:30:58 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=27% ; [Disk monitor] : Available to user=675867947008, Total on disk=972076589056, Free total on disk=675867947008 ; 2016-01-17 15:30:58 
+ 
+>>>> Start Script: ..\maXbox4\examples\558_hirestimer2test2.txt  2016-01-17 15:31:01 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 558_hirestimer2test2.txt                  2016-01-17 15:31:02 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:1.573
+ 
+New Session Exe Start ..\maXbox4\examples\558_hirestimer2test2.txt
+>>>> Start Exe: maXbox4.exe v4.0.2.15                       2016-01-18 18:29:58 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=29% ; [Disk monitor] : Available to user=675384590336, Total on disk=972076589056, Free total on disk=675384590336 ; 2016-01-18 18:29:58 
+ 
+>>>> Start Script: ..\maXbox4\examples\558_hirestimer2test2.txt  2016-01-18 18:30:03 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 558_hirestimer2test2.txt                  2016-01-18 18:30:05 
+[RAM  monitor] : (2147483647, 2147483647, 30%) Compiled+Run Success! runtime: 0:0:1.650
+ 
+New Session Exe Start ..\maXbox4\examples\558_hirestimer2test2.txt
+>>>> Start Exe: maXbox4.exe v4.0.2.15                       2016-01-18 21:50:51 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=36% ; [Disk monitor] : Available to user=675022151680, Total on disk=972076589056, Free total on disk=675022151680 ; 2016-01-18 21:50:51 
+ 
+>>>> Start Script: ..\maxbox4\examples\370_synedit2_mxtester4.txt  2016-01-18 21:50:57 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 370_synedit2_mxtester4.txt                2016-01-18 21:50:59 
+[RAM  monitor] : (2147483647, 2147483647, 36%) Compiled+Run Success! runtime: 0:0:1.627
+ 
+>>>> Start Script: ..\maXbox4\examples\650_http_server2tester.txt  2016-01-18 21:51:07 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 650_http_server2tester.txt                2016-01-18 21:51:27 
+[RAM  monitor] : (2147483647, 2147483647, 37%) Compiled+Run Success! runtime: 0:0:19.459
+ 
+>>>> Start Script: ..\maXbox4\examples\650_http_server2tester.txt  2016-01-18 21:51:30 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 650_http_server2tester.txt                2016-01-18 21:51:34 
+[RAM  monitor] : (2147483647, 2147483647, 36%) Compiled+Run Success! runtime: 0:0:4.827
+ 
+New Session Exe Start ..\maXbox4\examples\650_http_server2tester.txt
+>>>> Start Exe: maXbox4.exe v4.0.2.15                       2016-01-20 21:00:34 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=34% ; [Disk monitor] : Available to user=673616244736, Total on disk=972076589056, Free total on disk=673616244736 ; 2016-01-20 21:00:34 
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.15                       2016-01-20 21:01:19 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=33% ; [Disk monitor] : Available to user=673616228352, Total on disk=972076589056, Free total on disk=673616228352 ; 2016-01-20 21:01:19 
+ 
+>>>> Start Script: ..\maXbox4\examples\652_graph3DMainUnit2.pas  2016-01-20 21:01:25 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-01-20 21:01:26 
+[RAM  monitor] : (2147483647, 2147483647, 33%) Compiled+Run Success! runtime: 0:0:1.295
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.15                       2016-01-20 21:01:46 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=33% ; [Disk monitor] : Available to user=673616224256, Total on disk=972076589056, Free total on disk=673616224256 ; 2016-01-20 21:01:46 
+ 
+>>>> Start Script: ..\maXbox4\examples\652_graph3DMainUnit2.pas  2016-01-20 21:01:48 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-01-20 21:01:49 
+[RAM  monitor] : (2147483647, 2147483647, 33%) Compiled+Run Success! runtime: 0:0:1.327
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.15                       2016-01-20 21:03:40 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=33% ; [Disk monitor] : Available to user=673615855616, Total on disk=972076589056, Free total on disk=673615855616 ; 2016-01-20 21:03:40 
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.15                       2016-01-21 19:16:04 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=32% ; [Disk monitor] : Available to user=673452728320, Total on disk=972076589056, Free total on disk=673452728320 ; 2016-01-21 19:16:04 
+ 
+>>>> Start Script: ..\maXbox4\examples\652_graph3DMainUnit2.pas  2016-01-21 19:16:27 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-01-21 19:16:28 
+[RAM  monitor] : (2147483647, 2147483647, 32%) Compiled+Run Success! runtime: 0:0:1.319
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.15                       2016-01-23 19:07:54 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=21% ; [Disk monitor] : Available to user=673196650496, Total on disk=972076589056, Free total on disk=673196650496 ; 2016-01-23 19:07:54 
+ 
+>>>> Start Script: ..\maXbox4\examples\652_graph3DMainUnit2.pas  2016-01-23 19:08:20 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-01-23 19:08:21 
+[RAM  monitor] : (2147483647, 2147483647, 21%) Compiled+Run Success! runtime: 0:0:1.249
+ 
+>>>> Start Script: ..\maXbox4\examples\652_graph3DMainUnit2.pas  2016-01-23 19:10:00 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-01-23 19:10:01 
+[RAM  monitor] : (2147483647, 2147483647, 20%) Compiled+Run Success! runtime: 0:0:1.338
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.15                       2016-01-24 15:28:52 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=673056010240, Total on disk=972076589056, Free total on disk=673056010240 ; 2016-01-24 15:28:52 
+ 
+>>>> Start Script: ..\maXbox4\examples\652_graph3DMainUnit2.pas  2016-01-24 15:28:57 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-01-24 15:28:59 
+[RAM  monitor] : (2147483647, 2147483647, 25%) Compiled+Run Success! runtime: 0:0:1.322
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.60                       2016-01-29 19:29:42 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=21% ; [Disk monitor] : Available to user=671885602816, Total on disk=972076589056, Free total on disk=671885602816 ; 2016-01-29 19:29:42 
+ 
+>>>> Start Script: ..\maXbox4\examples\652_graph3DMainUnit2.pas  2016-01-29 19:29:44 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-01-29 19:29:45 
+[RAM  monitor] : (2147483647, 2147483647, 21%) Compiled+Run Success! runtime: 0:0:1.327
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.60                       2016-01-29 23:27:20 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=21% ; [Disk monitor] : Available to user=672035446784, Total on disk=972076589056, Free total on disk=672035446784 ; 2016-01-29 23:27:20 
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.60                       2016-01-31 23:16:18 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=28% ; [Disk monitor] : Available to user=672087859200, Total on disk=972076589056, Free total on disk=672087859200 ; 2016-01-31 23:16:19 
+ 
+>>>> Start Script: ..\maXbox4\examples\652_graph3DMainUnit2.pas  2016-01-31 23:16:22 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-01-31 23:16:23 
+[RAM  monitor] : (2147483647, 2147483647, 28%) Compiled+Run Success! runtime: 0:0:1.319
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.80                       2016-02-02 11:31:24 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=28% ; [Disk monitor] : Available to user=671888994304, Total on disk=972076589056, Free total on disk=671888994304 ; 2016-02-02 11:31:24 
+ 
+>>>> Start Script: ..\maXbox4\examples\652_graph3DMainUnit2.pas  2016-02-02 11:31:26 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-02-02 11:31:28 
+[RAM  monitor] : (2147483647, 2147483647, 28%) Compiled+Run Success! runtime: 0:0:1.428
+ 
+New Session Exe Start ..\maXbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.80                       2016-02-02 22:57:32 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=30% ; [Disk monitor] : Available to user=671579328512, Total on disk=972076589056, Free total on disk=671579328512 ; 2016-02-02 22:57:32 
+ 
+>>>> Start Script: ..\maXbox4\examples\652_graph3DMainUnit2.pas  2016-02-02 22:57:36 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-02-02 22:57:38 
+[RAM  monitor] : (2147483647, 2147483647, 30%) Compiled+Run Success! runtime: 0:0:1.519
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.80                       2016-02-03 14:04:42 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=30% ; [Disk monitor] : Available to user=671314526208, Total on disk=972076589056, Free total on disk=671314526208 ; 2016-02-03 14:04:42 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.80                       2016-02-05 18:54:08 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=24% ; [Disk monitor] : Available to user=671459049472, Total on disk=972076589056, Free total on disk=671459049472 ; 2016-02-05 18:54:08 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-02-05 18:54:18 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-02-05 18:54:19 
+[RAM  monitor] : (2147483647, 2147483647, 23%) Compiled+Run Success! runtime: 0:0:1.337
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-02-05 18:55:05 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-02-05 18:55:06 
+[RAM  monitor] : (2147483647, 2147483647, 23%) Compiled+Run Success! runtime: 0:0:1.332
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-02-05 18:56:07 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-02-05 18:56:08 
+[RAM  monitor] : (2147483647, 2147483647, 23%) Compiled+Run Success! runtime: 0:0:1.328
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.80                       2016-02-05 21:25:45 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=23% ; [Disk monitor] : Available to user=671442399232, Total on disk=972076589056, Free total on disk=671442399232 ; 2016-02-05 21:25:45 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.80                       2016-02-06 23:13:28 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=671360749568, Total on disk=972076589056, Free total on disk=671360749568 ; 2016-02-06 23:13:28 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-02-06 23:13:30 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-02-06 23:13:32 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:1.336
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.80                       2016-02-06 23:13:42 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=671360749568, Total on disk=972076589056, Free total on disk=671360749568 ; 2016-02-06 23:13:42 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.0.2.80                       2016-02-07 00:33:43 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=33% ; [Disk monitor] : Available to user=671145926656, Total on disk=972076589056, Free total on disk=671145926656 ; 2016-02-07 00:33:43 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-02-07 00:33:46 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-02-07 00:33:47 
+[RAM  monitor] : (2147483647, 2147483647, 33%) Compiled+Run Success! runtime: 0:0:1.428
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.0.10                       2016-03-12 21:39:19 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=24% ; [Disk monitor] : Available to user=695458004992, Total on disk=972076589056, Free total on disk=695458004992 ; 2016-03-12 21:39:19 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-03-12 21:39:23 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-03-12 21:39:25 
+[RAM  monitor] : (2147483647, 2147483647, 24%) Compiled+Run Success! runtime: 0:0:1.405
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.0.10                       2016-03-13 19:07:35 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=695118422016, Total on disk=972076589056, Free total on disk=695118422016 ; 2016-03-13 19:07:35 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-03-13 19:07:36 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-03-13 19:07:38 
+[RAM  monitor] : (2147483647, 2147483647, 24%) Compiled+Run Success! runtime: 0:0:1.444
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.0.10                       2016-03-13 21:58:30 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=695050797056, Total on disk=972076589056, Free total on disk=695050797056 ; 2016-03-13 21:58:30 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-03-13 21:58:32 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-03-13 21:58:34 
+[RAM  monitor] : (2147483647, 2147483647, 25%) Compiled+Run Success! runtime: 0:0:1.313
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.0.10                       2016-03-14 14:49:47 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=27% ; [Disk monitor] : Available to user=694757232640, Total on disk=972076589056, Free total on disk=694757232640 ; 2016-03-14 14:49:47 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-03-14 14:49:51 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-03-14 14:49:52 
+[RAM  monitor] : (2147483647, 2147483647, 27%) Compiled+Run Success! runtime: 0:0:1.303
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.0.80                       2016-04-07 22:27:38 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=24% ; [Disk monitor] : Available to user=685935091712, Total on disk=972076589056, Free total on disk=685935091712 ; 2016-04-07 22:27:38 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-07 22:27:43 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-07 22:27:44 
+[RAM  monitor] : (2147483647, 2147483647, 24%) Compiled+Run Success! runtime: 0:0:1.364
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.0.80                       2016-04-08 22:21:40 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=685889593344, Total on disk=972076589056, Free total on disk=685889593344 ; 2016-04-08 22:21:41 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-08 22:21:49 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-08 22:21:50 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:1.316
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-08 22:22:42 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-08 22:22:44 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:1.306
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.0.80                       2016-04-09 11:00:51 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=23% ; [Disk monitor] : Available to user=685809004544, Total on disk=972076589056, Free total on disk=685809004544 ; 2016-04-09 11:00:51 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-09 11:00:53 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-09 11:00:54 
+[RAM  monitor] : (2147483647, 2147483647, 23%) Compiled+Run Success! runtime: 0:0:1.345
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.0.80                       2016-04-09 18:43:41 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=29% ; [Disk monitor] : Available to user=685220671488, Total on disk=972076589056, Free total on disk=685220671488 ; 2016-04-09 18:43:42 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-09 18:43:44 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-09 18:43:45 
+[RAM  monitor] : (2147483647, 2147483647, 29%) Compiled+Run Success! runtime: 0:0:1.332
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.0.80                       2016-04-09 18:43:58 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=29% ; [Disk monitor] : Available to user=685220675584, Total on disk=972076589056, Free total on disk=685220675584 ; 2016-04-09 18:43:58 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.90                       2016-04-24 00:24:05 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=22% ; [Disk monitor] : Available to user=676980113408, Total on disk=972076589056, Free total on disk=676980113408 ; 2016-04-24 00:24:05 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-24 00:24:08 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-24 00:24:09 
+[RAM  monitor] : (2147483647, 2147483647, 22%) Compiled+Run Success! runtime: 0:0:1.322
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.90                       2016-04-24 18:24:33 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=23% ; [Disk monitor] : Available to user=676939161600, Total on disk=972076589056, Free total on disk=676939161600 ; 2016-04-24 18:24:33 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-24 18:25:13 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-24 18:25:14 
+[RAM  monitor] : (2147483647, 2147483647, 23%) Compiled+Run Success! runtime: 0:0:1.321
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.90                       2016-04-25 19:12:47 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=676482691072, Total on disk=972076589056, Free total on disk=676482691072 ; 2016-04-25 19:12:47 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-25 19:12:49 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-25 19:12:51 
+[RAM  monitor] : (2147483647, 2147483647, 25%) Compiled+Run Success! runtime: 0:0:1.476
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-25 19:12:57 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-25 19:12:59 
+[RAM  monitor] : (2147483647, 2147483647, 25%) Compiled+Run Success! runtime: 0:0:1.504
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.90                       2016-04-26 16:02:39 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=676253294592, Total on disk=972076589056, Free total on disk=676253294592 ; 2016-04-26 16:02:39 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-26 16:02:41 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-26 16:02:43 
+[RAM  monitor] : (2147483647, 2147483647, 25%) Compiled+Run Success! runtime: 0:0:1.479
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.90                       2016-04-26 20:01:52 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=676201426944, Total on disk=972076589056, Free total on disk=676201426944 ; 2016-04-26 20:01:52 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-26 20:01:55 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-26 20:01:57 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:1.466
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-26 20:02:29 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-26 20:02:31 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:1.497
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.90                       2016-04-28 13:18:05 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=22% ; [Disk monitor] : Available to user=677079486464, Total on disk=972076589056, Free total on disk=677079486464 ; 2016-04-28 13:18:05 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-04-28 13:18:34 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-04-28 13:18:35 
+[RAM  monitor] : (2147483647, 2147483647, 22%) Compiled+Run Success! runtime: 0:0:1.388
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.95                       2016-05-12 14:59:01 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=678630875136, Total on disk=972076589056, Free total on disk=678630875136 ; 2016-05-12 14:59:01 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-05-12 14:59:05 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-05-12 14:59:06 
+[RAM  monitor] : (2147483647, 2147483647, 25%) Compiled+Run Success! runtime: 0:0:1.461
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.95                       2016-05-15 11:09:34 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=24% ; [Disk monitor] : Available to user=677250166784, Total on disk=972076589056, Free total on disk=677250166784 ; 2016-05-15 11:09:34 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-05-15 11:09:36 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-05-15 11:09:37 
+[RAM  monitor] : (2147483647, 2147483647, 24%) Compiled+Run Success! runtime: 0:0:1.496
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.95                       2016-05-15 13:25:39 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=677247184896, Total on disk=972076589056, Free total on disk=677247184896 ; 2016-05-15 13:25:39 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.98                       2016-05-22 18:04:43 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=29% ; [Disk monitor] : Available to user=674362499072, Total on disk=972076589056, Free total on disk=674362499072 ; 2016-05-22 18:04:43 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-05-22 18:04:59 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-05-22 18:05:00 
+[RAM  monitor] : (2147483647, 2147483647, 29%) Compiled+Run Success! runtime: 0:0:1.440
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.2.98                       2016-05-23 15:02:23 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=28% ; [Disk monitor] : Available to user=673891328000, Total on disk=972076589056, Free total on disk=673891328000 ; 2016-05-23 15:02:23 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-05-23 15:02:25 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-05-23 15:02:26 
+[RAM  monitor] : (2147483647, 2147483647, 28%) Compiled+Run Success! runtime: 0:0:1.395
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.25                       2016-06-05 11:56:10 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=670065872896, Total on disk=972076589056, Free total on disk=670065872896 ; 2016-06-05 11:56:10 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-06-05 11:56:15 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-06-05 11:56:17 
+[RAM  monitor] : (2147483647, 2147483647, 26%) Compiled+Run Success! runtime: 0:0:1.380
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.25                        2016-06-05 11:56:53 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.25                       2016-06-05 17:31:06 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=670242181120, Total on disk=972076589056, Free total on disk=670242181120 ; 2016-06-05 17:31:06 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-06-05 17:31:09 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-06-05 17:31:10 
+[RAM  monitor] : (2147483647, 2147483647, 25%) CompileRun Success! RT: 0:0:1.384
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.25                        2016-06-05 17:31:38 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.25                       2016-06-05 21:15:34 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=669799567360, Total on disk=972076589056, Free total on disk=669799567360 ; 2016-06-05 21:15:34 
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.25                        2016-06-05 21:15:55 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.25                       2016-06-05 21:16:32 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=669799493632, Total on disk=972076589056, Free total on disk=669799493632 ; 2016-06-05 21:16:32 
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.25                        2016-06-05 21:18:07 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.25                       2016-06-05 21:23:32 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=26% ; [Disk monitor] : Available to user=669798866944, Total on disk=972076589056, Free total on disk=669798866944 ; 2016-06-05 21:23:32 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-06-05 21:23:34 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-06-05 21:23:35 
+[RAM  monitor] : (2147483647, 2147483647, 26%) CompileRun Success! RT: 0:0:1.384
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.25                        2016-06-05 21:23:48 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.25                       2016-06-05 21:48:26 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=669758889984, Total on disk=972076589056, Free total on disk=669758889984 ; 2016-06-05 21:48:26 
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.25                        2016-06-05 21:48:49 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.60                       2016-09-21 19:28:38 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=35% ; [Disk monitor] : Available to user=655792115712, Total on disk=972076589056, Free total on disk=655792115712 ; 2016-09-21 19:28:38 
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.60                        2016-09-21 19:28:52 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.60                       2016-09-23 13:14:11 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=652529348608, Total on disk=972076589056, Free total on disk=652529348608 ; 2016-09-23 13:14:11 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-09-23 13:14:21 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-09-23 13:14:23 
+[RAM  monitor] : (2147483647, 2147483647, 25%) CompileRun Success! RT: 0:0:1.622
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.60                        2016-09-23 13:14:27 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.60                       2016-10-10 21:35:37 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=651235127296, Total on disk=972076589056, Free total on disk=651235127296 ; 2016-10-10 21:35:38 
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.60                        2016-10-10 21:36:14 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.80                       2016-10-10 21:38:29 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=25% ; [Disk monitor] : Available to user=651234848768, Total on disk=972076589056, Free total on disk=651234848768 ; 2016-10-10 21:38:29 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-10-10 21:38:31 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-10-10 21:38:33 
+[RAM  monitor] : (2147483647, 2147483647, 25%) CompileRun Success! RT: 0:0:1.412
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.80                        2016-10-10 21:38:40 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.80                       2016-10-12 14:12:43 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=31% ; [Disk monitor] : Available to user=650651926528, Total on disk=972076589056, Free total on disk=650651926528 ; 2016-10-12 14:12:43 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-10-12 14:12:47 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-10-12 14:12:48 
+[RAM  monitor] : (2147483647, 2147483647, 31%) CompileRun Success! RT: 0:0:1.517
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.80                        2016-10-12 14:12:53 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.80                       2016-10-12 22:55:57 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=30% ; [Disk monitor] : Available to user=650453897216, Total on disk=972076589056, Free total on disk=650453897216 ; 2016-10-12 22:55:57 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-10-12 22:55:59 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-10-12 22:56:00 
+[RAM  monitor] : (2147483647, 2147483647, 30%) CompileRun Success! RT: 0:0:1.442
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.80                        2016-10-12 22:56:06 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.80                       2016-10-14 21:58:11 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=23% ; [Disk monitor] : Available to user=649429831680, Total on disk=972076589056, Free total on disk=649429831680 ; 2016-10-14 21:58:11 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-10-14 21:58:13 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-10-14 21:58:15 
+[RAM  monitor] : (2147483647, 2147483647, 23%) CompileRun Success! RT: 0:0:1.452
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.80                        2016-10-14 21:58:18 
+ 
+New Session Exe Start ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Start Exe: maXbox4.exe v4.2.4.80                       2016-10-15 10:17:22 
+>>>> Start [RAM  monitor] : Total=2147483647, Avail=2147483647, Load=24% ; [Disk monitor] : Available to user=649182023680, Total on disk=972076589056, Free total on disk=649182023680 ; 2016-10-15 10:17:22 
+ 
+>>>> Start Script: ..\maxbox4\examples\652_graph3DMainUnit2.pas  2016-10-15 10:17:26 
+           From Host: maXbox4.exe of C:\Program Files (x86)\maxbox3\Import\maxbox4\
+>>>> Stop Script: 652_graph3DMainUnit2.pas                  2016-10-15 10:17:28 
+[RAM  monitor] : (2147483647, 2147483647, 24%) CompileRun Success! RT: 0:0:1.620
+ 
+Session Exe Stop! ..\maxbox4\examples\652_graph3DMainUnit2.pas
+>>>> Stop Exe: maXbox4.exe v4.2.4.80                        2016-10-15 10:17:32 

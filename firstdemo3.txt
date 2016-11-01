@@ -1,0 +1,214 @@
+//maXbox a scripter tool with an on board Delphi engine in one exe!
+//runs under Win, Mac & Linux (CLX) pure code for object scripting, #locs:70
+//micro world, all to have done is gone except one, PEP Pascal Edu Program
+//*************************************************************************
+
+
+program Delphi_in_a_Box_Demo_4_2_4;
+
+function PlaySound(s: pchar; flag,syncflag: integer): boolean;
+                               external 'PlaySound@winmm.dll stdcall';
+
+const ASIGN = 'mathpath CODESIGN with HEX in the BOX!';
+      AFILE = 'maxbox4.exe';
+      MP3SONG = 'maxbox.mp3';
+
+var  
+  inFrm: TForm;
+  mp3path: string;
+  i: byte;
+
+
+procedure getMP3File;
+var idHTTP: TIdHTTP;
+    fStream: TFileStream;
+    myUrl: string;
+begin
+  myURL:= 'http://www.softwareschule.ch/download/'+MP3SONG;
+  fStream:= TFileStream.create(mp3path, fmCreate)
+  idHTTP:= TIdHTTP.create(NIL)
+  try
+    idHTTP.Get1(myURL, fStream)
+  finally
+    idHTTP.Free
+    fStream.Free;
+  end;    
+end;
+
+
+begin  //main app
+  mp3path:= ExePath+'examples\'+MP3SONG;
+  if DirectoryExists(ExePath+'examples') = false then 
+      CreateDir(ExePath + 'examples');
+  if fileExists(mp3path) = false then
+      getMP3File;
+  inFrm:= TForm.Create(self)
+  for i:= 1 to 3 do
+    Writeln(intToStr(i) + ' Hi PascalScript Bit to ICE3');
+  with inFrm do begin
+    position:= poScreenCenter;
+    color:= clRed;
+    caption:= 'Delphi in a Box'
+    show;
+  end;  
+  Showmessage('the boX rocks in Wonderland ' + ASIGN)
+  closeMP3;
+  playMP3(mp3path);
+  for i:= 1 to 37 do begin
+    inFrm.color:= Random(clwhite);
+    Sleep(100)
+  end;
+  Writeln('song length: '+intToStr(lengthMP3(mp3path)));
+  Writeln('From SHA1:  '+SHA1(ExePath+AFILE))
+  Showmessage('Now you see the news of mX3');
+  inFrm.Close;
+  if (GetHostByName('www.softwareschule.ch')) > '0' then
+    ExecuteCommand('http://www.softwareschule.ch/maxboxnews.htm','') else
+      searchAndOpenDoc(ExePath+'\docs\maxboxnews.htm');
+  Voice('Welcome to max box 4.2')
+  //... add more code here
+end.
+
+//Load examples *.txt from directory and press F9!
+ memo1 is script editor
+ memo2 is output space
+
+ maXbox 4.2.4.80   October 2016
+ maXbox 4.2.4.60   September 2016
+ maXbox 4.2.4.25   June 2016
+ maXbox 4.2.2.98   Mai 2016
+ maXbox 4.2.2.90   April 2016
+ maXbox 4.2.0.80   April 2016
+ maXbox 4.2.0.10   March 2016
+ maXbox 4.0.2.15   January 2016
+ maXbox 3.9.9.195  Mai 2015
+ maXbox 3.9.9.160  January 2015
+ maXbox 3.9.9.120  December 2014
+ maXbox 3.9.9.98   October 2014
+ maXbox 3.9.9.96   June 2014
+ maXbox 3.9.9.95   Mai 2014
+ maXbox 3.9.9.94   April 2014
+ maXbox 3.9.9.91   March 2014
+ maXbox 3.9.9.88   March 2014
+ maXbox 3.9.9.86   February 2014
+ maXbox 3.9.9.60   November 2013
+{ max@kleiner.com  V3.9.9.7 Sept 2013
+{ max@kleiner.com  V3.8.6.4 Mai 2012
+  info and examples from
+     http://www.softwareschule.ch/maxbox.htm 
+     http://www.blaisepascal.eu/; }
+http://www.bahnmax.com/
+     
+just inside maXbox for arduino
+         ____    ___   _      ____    _   _   _
+        |  _ \  |  _| | |    |  _ \  | | | | | |
+        | | . | | |_  | |    | |_| | | |_| | | |
+        | | | | |  _| | |    |  __/  |  _  | | |          
+        | |_. | | |_  | |__  | |     | | | | | |                      
+        |____/  |___| |____| |_|     |_| |_| |_|      
+
+
+ maXbox /maXcom /maXbase /maXcase /maXbook /maXcel /maXbit /maXplot
+        /maXwin /maXML /maXtex /maXmath /maXmap /MAPX /maXtec/ maXlab
+ 
+asm Road Map end
+
+1991 Application Program
+1995 Application
+1998 Applet
+2010 App
+2014 A
+2015 Arduino
+2016 Android
+2017 Analog
+
+ No route to host - connection to host lost, fly, robin, fly 
+ Better a block socket than black sabbath
+ A StringtoThing out of the firebox
+ Le sifflement d'un train dans le lointain
+ Mann geht den Weg und einmal ist man weg.
+ Using The grand design BigBitBox - maXfox ShellHell
+
+Windows crashed again. I am the Blue Screen of Death. No one hears your screams.
+Three things are certain: Death, taxes, and lost data. Guess which has occurred.
+There is no place like 127.0.0.1 
+
+ 
+ myfastform  //replace component reference
+   
+ procedure CreateMyFastForm;
+  //diaform:= CreateMessageDialog('my fast form perform',mtconfirmation, []);
+ var 
+     dbform: TForm;
+     ard: TRadioGroup;
+ begin
+    dbform:= CreateMessageDialog('My Fast Form Template - FFP',mtwarning,
+                                         [mball, mbyes, mbhelp, mbok]);
+    with dbform do begin
+      font.size:= 12;
+      caption:= 'FFP XML Demo';
+      setBounds(50,50,800,600)
+      FormStyle:= fsStayontop;
+      Color:= 12234;  //clWebGold;//12234;
+      autoScroll:= true;
+    with TLabel.Create(self) do begin
+      parent:= dbform;
+      SetBounds(400,60,500,600)
+      font.size:= 18;
+      //dblist.Add('All Converted to...XML')
+      caption:= 'entry in a list dblist.text...';
+    end;  
+    with TRadioGroup.Create(self) do begin
+      parent:= dbform;
+      top:= 130;
+      left:= 60;
+      items.add('first entry of');
+      items.add('second entry off');
+      items.add('third entry off');
+      ItemIndex:= 2; 
+      //writeln(Items.Strings[ItemIndex]); 
+    end;
+    Show;
+    Canvas.Draw(400,200,getBitMap(Exepath+'\examples\citymax.bmp'));
+   end; 
+    //SelectDirectory
+ end;
+   
+   
+ mydll     function DMathFact(N: Integer):Float; external 'Fact@dmath.dll';
+
+
+It's a matter of fact that programming is the only art that never ends - programming is the synthesizer in our live that sounds each time a BIT different.                   
+
+LiveBox 'This Time is different:' member of SOL Society of Light
+
+Filling the Void or feeling the Void ;)   - create , move , remove
+
+Ich frage Bernd nach einer stelle in seiner autobiografie. "das leben begann vor vier milliarden jahren", heisst es da, "und in wahrheit hat es keinen anfang und kein ende. Leben ist nur ein endloser prozess der stoffumwandlung". Ist das wirklich alles? Kein sinn in sicht, nirgends?
+"das leben dient keinerlei zweck", sagt er. "Es gibt nicht den geringsten hinweis auf ein höheres leben, das hinter allem steckt. Für mich genügt es zu wissen, dass ich teil eines ökosystems, teil einer gesellschaft, teil des lebens bin. Das leben ist so fabelhaft wunderbar und komplex und spannend, dass ich mir nichts grossartigeres vorstellen kann."
+Und was ist mit der religion, die doch in der evolution eine wichtige rolle gespielt haben muss? "Die religion ist teil der menschlichen anpassung, genau gleich wie zum beispiel der blinddarm. Die religiösesten stämme waren die siegreichsten, weil sie den grössten zusammenhalt hatten." Deshalb habe sich die religiosität in der evolution durchgesetzt. "aber das heisst nicht, dass ich heute eine religion will oder brauche, genauso wenig wie ich heute einen blinddarm will oder brauche."
+
+Interview mit Bernd Heinrich
+Das Magazin 2010 
+
+myform 
+ tmenu
+   tlist
+   with TMainMenu.create(clogFrm) do begin;
+     GameMi:= TMenuItem.Create(clogfrm);
+     gamemi.Caption:= '&Save Graph as PNG ';
+     gamemi.OnClick:= LogBox_btnSaveClick;
+     Items.Add(gamemi);
+     Game2:= TMenuItem.Create(clogfrm);
+     game2.Caption:= ' &Close LogBox';
+     game2.OnClick:= LogBox_CloseClick;
+     Items.Add(game2);
+   end;
+   
+"There is a theory which states that if ever anybody discovers
+exactly what the Universe is for and why it is here, it will
+instantly disappear and be replaced by something even more
+bizarre and inexplicable. There is another theory which states
+that this has already happened."
+-- Douglas Adams   
+    
