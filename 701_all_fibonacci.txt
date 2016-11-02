@@ -1,0 +1,415 @@
+{***************************************************************
+ * Project  : mX4 Fibonacci History Client API
+ * App Name : 143_OpenTools_API.txt  - 701_pipeclient.txt - 701_all_fibonacci.txt
+ * Purpose  : Demo coding maXbox fibonacci algorithms pipe, #locs=355
+ * History  : integrate to bds_delphi.dci - see below
+ ***************************************************************}
+//uses  ../Debug/Code Completion List   - FiboMaxE2
+//#sign:Max: MAXBOX10: 09/04/2016 18:07:26 
+
+const onetimefile = 'onetimerun.txt';
+
+var  
+  fHandle: integer;
+  mybox: TMaxForm1;
+  //myitem: TMenuitem;
+  //mbutton: TToolButton
+  var a,b,s,t,h: extended;
+
+procedure setOpenToolsAPI_mX3GUI;
+begin  
+ with maxForm1 do begin
+   tbtnUseCaseClick(self)
+   caption:= 'OpenToolsAPI modified';
+   tbtnCompile.caption:= 'Runtime!!'
+   about1click(self)
+   color:= clYellow;
+ end
+end;   
+  
+procedure compileCompile(stopFile: string);
+begin
+  if not FileExists(ExePath+'examples\'+stopFile) then begin
+    fhandle:= FileCreate(ExePath+'examples\'+stopFile)
+    FileClose(fhandle)
+    writeln('script for the second time')
+    maxForm1.color:= clRed;
+    maxForm1.Compile1Click(self)
+  end;
+end;  
+
+procedure CreateClientPipeTest__;
+var evAbort : TEvent;
+    evabort1: TEvent;
+    evsimple: TSimpleEvent;
+    idloc: TIdLocalEvent;
+    apt: ___Pointer;
+    //apt1: btpointer;
+    asec: TSecurityAttributes;
+    asecp: PSecurityAttributes;
+begin
+
+  //evAbort:= TEvent.create(self);
+  evabort:= TEvent.Create('0', TRUE, FALSE, '',true);
+  //evsimple:= TObject.create;
+//  RegisterMethod('Constructor Create( EventAttributes : PSecurityAttributes; ManualReset, InitialState : Boolean; const Name : string; UseCOMWait : Boolean);')
+ //asecp:= 0;
+  asec.nlength:= 29;
+  //asec.lpSecurityDescriptor:= apt;
+  //apt:= 3450; //'NIL';
+  idloc:= TidlocalEvent.Create(TRUE, FALSE);
+  evabort1:= TEvent.create1(true)
+  with TClientPipe.create('CLIENT_P12','MAXPIPE_SERVER') do begin
+  //with TClientPipe.create(PIPE_NAMING_SCHEME,'MAXPIPE_SERVER') do begin
+    timeout:= 1500;
+    writeln('pipe handle '+itoa(handle))
+    writeln('overlapped '+botostr(overlapped))
+    if Open(evabort) then begin
+      ReadMessages;
+      writeln('cpipe open')
+      //Transact
+    end;
+    Free
+  end; 
+  idloc.free;
+  evabort1.Free;
+  evabort.Free;
+  
+    {  function  Transact( const aInput : string; var aOutput : string; evAbort : TEvent = nil) : Boolean;  overload;
+    {function  Transact( aInput, aOutput : TStream; evAbort : TEvent = nil) : Boolean;  overload;
+     // Was kommt aus der Pipe: Bytes oder Messages?
+    property  ReadMessages : Boolean read FReadMessages write FReadMessages;
+     // Basis-Timeout für Pipe.Open()
+    property  Timeout : DWORD  read FTimeout write FTimeout;  end;    }
+  end;
+  
+  
+function CalculateTimeout( aBasis : DWORD) : DWORD;
+// Berechnet ein variables Timeout, welches um den Wert aBasis streut (± 25%)
+// Ein variables Timeout kann in bestimmten Fällen die Warscheinlichkeit
+// von Kollisionen vermindern und sorgt damit für bessere Skalierbarkeit
+   var i : Integer;
+   begin
+     case aBasis of
+       0 :  result := aBasis;
+       INFINITE : result := aBasis;
+     //else
+       1: ASSERT((1.0*aBasis) < (1.25*MAXINT),'adjust algorithm');  // sonst Algorithmus anpassen
+     end;  
+       i := max( aBasis, 0);
+       i := round(i * 0.75) + Random(i div 2);  // Timeout = aBasis ± 25%
+       result := DWORD(i);
+     //end;
+   end;
+   
+   // Function instead of a C Macro
+function HasOverlappedIoCompleted(const ov : OVERLAPPED): Boolean;
+// The HasOverlappedIoCompleted macro provides a high performance test operation
+// that can be used to poll for the completion of an outstanding I/O operation.
+begin
+  { Pascal-equivalent to:
+    #define HasOverlappedIoCompleted(lpOverlapped)
+      ((lpOverlapped)->Internal != STATUS_PENDING)
+  }
+  result:= (ov.Internal <> STATUS_PENDING);
+end;
+
+ procedure RunPipeServer_Sync;
+ var spipe: TServerPipe;
+ begin 
+   spipe:= TServerPipe.Create('MAXPIPE_SERVER',pdir_Duplex);
+   if Not spipe.open then writeln('server pipe not open');
+   writeln(itoa(spipe.handle))
+   repeat
+     writeln('listening press on memo2 console to stop....')
+     if not spipe.waitforclientconnect then exit; //writeln('stop server pipe');
+     //processdata(spipe)
+     writeln('client has connected')
+   until isKeyPressed;
+   spipe.free;
+  end;    
+//--------------------------------------------------------------------------  
+  
+  function FiboMaxE(n: byte): Extended;
+  begin
+    result:= (pow((1+sqrt(5))/2,n)-pow((1-sqrt(5))/2,n))/sqrt(5)   
+  end;
+  
+  function FiboMaxE2(n: integer): Extended;
+  begin
+    result:= (pow((1+SQRT5)/2,n)-pow((1-SQRT5)/2,n))/SQRT5   
+  end;
+  
+  function BigPow(aone, atwo: integer): string;
+  var tbig1, tbig2: TInteger;
+  begin
+    tbig1:= TInteger.create(aone);
+  //tbig2:= TInteger.create(10);
+  try
+    tbig1.pow(atwo);
+  finally
+    result:= tbig1.toString(false);
+    tbig1.Free;
+  end;
+end;
+
+  function FiboMaxE2Big(n: byte): string;
+  begin
+  //with TInteger.create(1) do begin
+    //result:= (bigpow(round((1+SQRT5)/ 2),n)-bigpow((round(1-SQRT5)/ 2),n))/round(SQRT5) 
+  //end    
+  end;
+  
+  
+  function FiboPython(n: byte): integer;
+  //def fibonacci2(n):
+  var a,b, temp: integer;
+  begin 
+    a:= 0
+    b:= 1
+    for it:= 1 to n do begin
+    	temp:= a
+	   a:= b
+	   b:= temp + b
+	 end;  
+    result:= a
+   end; 
+  
+  function FiboPython2(n: byte): integer;
+  var b, temp: integer;
+  begin 
+    result:= 0
+    b:= 1
+    for it:= 1 to n do begin
+    	temp:= result
+	   result:= b
+	   b:= temp + b
+	 end;  
+   end; 
+
+  //Big Fibonacci full Decimals!
+  function FiboPythonBigInt(n: integer): string;
+  var tbig1, tbig2, tbig3: TInteger;
+  begin 
+    result:= '0'
+    tbig1:= TInteger.create(1);  //temp
+    tbig2:= TInteger.create(0);  //result (a)
+    tbig3:= Tinteger.create(1);  //b
+    for it:= 1 to n do begin
+    	tbig1.assign(tbig2)
+	   tbig2.assign(tbig3);
+	   tbig1.add(tbig3);
+	   tbig3.assign(tbig1);
+	 end; 
+    result:= tbig2.tostring(false)
+    tbig3.free;
+    tbig2.free;
+    tbig1.free; 
+  end; 
+
+function BigFac(n: integer): string;
+  var tbig1: TInteger;
+  begin 
+    result:= '0'
+    tbig1:= TInteger.create(n);  //temp
+       //tbig1.assign(tbig2)
+	   tbig1.factorial;
+    result:= tbig1.tostring(false)
+    tbig1.free; 
+  end; 
+   
+ //const
+  //Sqrt51 = sqrt(5.0);
+  
+  function fibAnalytic(n: integer):longInt;
+   var C1,C2: extended;
+  begin
+  C1:= ln((Sqrt5+1.0)*0.5);//ln( 1.618..)
+  //C2 = ln((1.0-Sqrt5)*0.5);//ln(-0.618 )) tsetsetse
+  C2:= ln((Sqrt5-1.0)*0.5);//ln(+0.618 ))
+  IF n>0 then begin
+    IF odd(n) then
+      result:= round((exp(C1*n) + exp(C2*n) )/Sqrt5)
+    else
+      result:= round((exp(C1*n) - exp(C2*n) )/Sqrt5)
+  end
+  else
+    result:= 0
+  end;
+  
+  function fibrecursive(n: integer): integer;
+  begin
+  if (n = 0) or (n = 1)
+   then
+    result:= n
+   else
+    result:= fibrecursive(n-1) + fibrecursive(n-2)
+  end;
+  
+  function fibiterate(n: integer): integer;
+  var
+    f0, f1, tmpf0, k: integer;
+  begin
+   f1 := n;
+   IF f1 >1 then begin
+    k := f1-1;
+    f0 := 0;
+    f1 := 1;
+    repeat
+      tmpf0 := f0;
+      f0 := f1;
+      f1 := f1+tmpf0;
+      dec(k);
+    until k = 0;
+  end else
+    IF f1 < 0 then
+      f1 := 0;
+   result:= f1;
+  end;
+  
+
+ var aobj: TObject;
+    
+begin
+   //uniquestring format
+   writeln(Format('%8.2f', [123.45668774])); 
+   //FmtStr(Result, ‘%d%s%d%d’, [Major, DecimalSeparator, Minor, Release]);
+   //Static Call First Time
+   //setOpenToolsAPI_mX3GUI;
+   //Second Remote Time Call
+   //compileCompile(onetimefile)
+   //DeleteFile(ExePath+'examples\'+onetimefile)
+
+   writeln(extractFiledrive(ExePath+'maxbox4.exe'))
+   writeln(extractFilepath(ExePath+'maxbox4.exe'))
+   writeln(extractFileExt(ExePath+'maxbox4.exe'))
+   writeln(expandFilename('maxbox4.exe'))
+   writeln(IntToStr(binToInt('00000000000000001001110010010110')))
+   writeln(hexToBin2('BBBBAAAA'))
+   writeln(binToHex2('10111011101110111010101010101010'))
+   //ExecuteCommand('cmd','/k systeminfo > systeminfosony.txt')
+   //MSecsToTimeStamp(34567)
+   writeln(TimeToStr(StrToTime('14:15:12')))
+       //Dynamic Way
+       {mybox:= TMaxForm1.create(application);
+          mybox.imglogo.setbounds(10,25, 600,320);
+          mybox.open1click(self)
+          mybox.formcreate(self)
+          mybox.close;
+        mybox.Free;}
+       //maxform1:= mybox
+  //Speak('This is the voice of OpenTools Application Programming Interface')
+  //CreateClientPipe;
+  //TtoPointer(255)
+  //aobj:= TObject(TtoObject(255))
+  //BinaryBS(255)
+  //RunPipeServer_Sync;
+  
+   repeat
+     writeln('test - listening <press> on memo2 console to stop....')
+     //processdata(spipe)
+     writeln('test - client has connected')
+     delay(500)
+     break;
+   until isKeyPressed;
+   
+   writeln(floattoStr(FiboMaxE(30)))
+   writeln(floattoStr(FiboMaxE(46)))
+   writeln(floattoStr(FiboMaxE(50)))
+   writeln(floattostr(Fibo(50)))
+   writeln(floattoStr(FiboMaxE(51)))
+   writeln(floattostr(Fibo(51)))
+   
+   writeln(inttostr(FiboPython(30)))
+   writeln(inttostr(FiboPython2(30)))
+   writeln(floattoStr(FiboMaxE(30)))
+   
+   writeln(inttostr(fibAnalytic(30)))
+   writeln(inttostr(fibRecursive(30)))
+   writeln(inttostr(fibIterate(30)))
+   
+   writeln(floattoStr(FiboMaxE(3)))
+   writeln(floattoStr(FiboMaxE2(30)))
+   writeln(FiboPythonBigInt(30))
+   
+   writeln(floattoStr(FiboMaxE2(250)))
+   writeln(FiboPythonBigInt(250))
+  
+   writeln(floattoStr(FiboMaxE2(555)))
+   writeln(FiboPythonBigInt(555))
+   
+   with TInteger.create(1) do begin
+     RandomOfSize(51)
+     writeln(toString(true))
+     Getnextprime;
+     writeln(toString(true))
+     Free;
+   end;  
+  
+    //bigdiv 
+    //bigfac
+    writeln((BigFac(100)))
+    writeln((BigFib(100)))
+    writeln(FiboPythonBigInt(100))
+  
+End.   
+
+ref:
+  https://www.rosettacode.org/wiki/Fibonacci_sequence
+
+
+ doc:
+189-5,556*(70)=-199,92 
+Entropieänderung 
+5,556 *(189-70) kJ/mol = 661,2 kJ/mol ? 
+
+Wasser verdunstet eigentlich immer, es wird eigentlich nur durch den Luftdruck zurückgehalten. Bei 100 Grad ist über dem Wasser nur noch Wasserdampf und keine Luft mehr, also hält niemand mehr das Wasser zurück, es fängt heftig an zu sprudeln und verdampft deshalb so schlagartig. Wie schnell, dass hängt davon ab, wie schnell die Energiequelle unter dem Wassertopf Energie nachliefern kann.
+
+Und weiter, unter 5.:
+„Braucht man bei konstanter Wärmezufuhr 3 Minuten, um Wasser in 
+einem Gefäß v0n 0°C auf 100°C zu erwärmen, so sind zum restlosen Verdampfen des Wassers 
+bei gleicher Wärmezufuhr 16 min erforder
+lich. Die Verdampfungswärme ist demnach 16/3 = 
+5,33 mal größer als die
+se Menge
+zu erwärmen von 0°C auf 100°C. Die 
+Verdampfungsenthalpie entspricht der Wärmemenge in kJ, die man braucht, um 1kg 
+Flüssigkeit bei der Siedtemperatur in Dampf von gleicher Temper
+atur umzuwandeln.
+“
+Unter Annahme dieser Erkenntnisse habe ich folgendermassen weiter überlegt:
+Wenn die Verdampfungs
+-
+/Verdunstungs
+-
+Enthalpie der bereits mehrfach erwähnten 10 kg 
+Wasser also „5.33 mal grösser ist als die Erwärmung derselben Menge Wasser von
+0 auf 100 
+Grad C“, so ist 
+die
+s
+äquivalent zu
+„gleich gross wie die Erwärmung 
+der 5.33
+-
+fachen Menge 
+Wasser, also 
+von 
+53.3 kg Wasser
+von 0 auf 100 Grad C“.
+Daraus ergab sich nun folgendes gedankliche Mischungsexperiment:
+1000 kg Wasser von knapp über dem Ge
+frierpunkt (also von gut 0 Grad C) werden gemischt 
+mit 
+53.3 kg Wasser
+von 100 Grad C. Mittels einer einfachen Mischungsrechnung ergibt sich 
+für die 1053.3 kg Wasser eine Mischungstemperatur von +5.06 Grad C. Dies bedeutet, dass 
+die Enthalpie von 10 Liter v
+erdunstendem Wasser für eine Wassermenge von 1000 Liter eine 
+Temperaturdifferenz von 5 Grad Celsius bewirken kann. Da die Wassertiefe unserer 
+Swimmingpools anstatt 1 m durchschnittlich 1,5 m (entsprechend 1500 Liter pro m
+2
+) 
+betragen haben mag, ergibt sich 
+immer noch eine Temperaturdifferenz von 5.06 / 1,5 ~ 3,4 
+Grad C. 

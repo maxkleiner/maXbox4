@@ -1,7 +1,7 @@
 ****************************************************************
 Release Notes maXbox 4.2.4.80 October 2016 Ocean7 mX4
 ****************************************************************
-add 20 units + 442 functions- WMI Script Type Library - webbox
+add 16 units + 420 functions- WMI Script Type Library - webbox
 
 1241 uPSI_wmiserv.pas {uPSI_SimpleSFTP.pas}
 1242 uPSI_WbemScripting_TLB.pas
@@ -19,13 +19,9 @@ add 20 units + 442 functions- WMI Script Type Library - webbox
 1254 uPSI_dateutil_real.pas  //Optima ISO 8601
 1255 unit uPSI_dateext4.pas
 1256 uPSI_locale.pas
-1257 file charset.inc  //IANA Registered character sets
-1258 unit uPSI_Strings;
-1259 unit uPSI_crc_checks;  //ISO 3309 and ITU-T-V42
-1260 unit uPSI_extDOS;
 
-SHA1: of 4.2.4.80 15565A557B0F9576AA5F23F2A1D06BE9699A757B
-CRC32: FA1F1F25 26.4 MB (27,720,144 bytes)
+SHA1: of 4.2.4.80 E101F7CA8FEBECCED8DA84B187B9CFB09A4D6BD5
+CRC32: DEFF39B1 26.4 MB (27,689,936 bytes)
 
  function GetCachedFileFromURL(strUL: string; var strLocalFile: string): boolean;
  function IAddrToHostName(const IP: string): string;
@@ -47,9 +43,6 @@ CRC32: FA1F1F25 26.4 MB (27,720,144 bytes)
  procedure DumpDOSHeader(const h: IMAGE_DOS_HEADER; Lines: TStrings);');
  procedure DumpPEHeader(const h: IMAGE_FILE_HEADER; Lines: TStrings);');
  procedure DumpOptionalHeader(const h: IMAGE_OPTIONAL_HEADER; Lines: TStrings);');
- Function checkSystem: string;
- Function getSystemReport: string;
-
 
 ****************************************************************
 Release Notes maXbox 4.2.4.25 June 2016 Ocean5 mX4

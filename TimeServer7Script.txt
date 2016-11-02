@@ -1,0 +1,199 @@
+{code  http://www.softwareschule.ch/examples/469_ibzresult3_timeserver7.txt}
+{model http://www.softwareschule.ch/examples/469_ibzresult3_timeserver7.png}
+
+Program FormConsole_TimeServer7;
+{ ****************************************************************
+  Sourcefile: #file:469_ibzresult3_timeserver7.txt
+  Typ : WinForm-Unit with Console
+  Engineer  : max@kleiner.ch, 1 Release: 10.01.1997
+  Compiler  : maXbox: DevC+Delphi, OS: W7
+  Purpose   : Let a user pick and set a date 
+  Revisions : 25.10.96 first dialog to open a date
+            : 23.04.2014 migrate to maXbox - #locs:153
+            : 18.09.2014 Async Tester with Timer Form and Console output
+            : #sign: max: MAXBOX8: 9/22/2014 9:18:15 AM 
+ **************************************************************** }
+
+Type  TTimeFrm = TForm;
+
+Const ScriptURL = 'http://www.softwareschule.ch/examples/469_ibzresult3_timeserver7.txt';
+
+var   timeFrm: TTimeFrm;
+      brDateForm: TDateTimePicker; //TJvPickdate; 
+      lbltime: TLabel;
+      ledlbl: TLEDNumber;
+      ctime: TTimer;
+    
+
+procedure TTime_Button1Click(Sender: TObject);
+  var beginDate: TDateTime;
+begin
+  beginDate:= brDateForm.Datetime;
+  writeln('date set back time: '+dateTimetoStr(brDateForm.Datetime));
+end;
+
+procedure TTime_Close(Sender: TObject; var action: TCloseAction);
+begin //action:= caFree;
+  if assigned(ctime) then begin
+     ctime.Free;
+     ctime:= NIL;
+  end;   
+  timeFrm.Free;
+  Writeln('Form Closed and Timer Free!');
+  //ExecuteCommand('http://www.softwareschule.ch/maxboxshow.htm','')
+end;
+
+procedure TTime_CloseClick(Sender: TObject);
+begin
+  Writeln('Form Close Clicked...');
+  timeFrm.Close;
+end;
+
+procedure Timer1Event(Sender: TObject);
+begin
+  lbltime.caption:= dateTimeToStr(Now);
+  ledlbl.caption:= TimeToStr(time);
+end;  
+
+procedure SetSynchroTime;
+var mySTime: TIdSNTP;
+begin
+  mySTime:= TIdSNTP.create(self);
+  try
+    mySTime.host:='0.debian.pool.ntp.org'
+    writeln('the internettime '+
+    datetimetoStr(mystime.datetime));
+    if mySTime.Synctime then
+      writeln('operating system sync now!');
+  finally
+    mySTime.free;
+    Speak('System time is now sync with the internet time '+TimeToStr(time))
+  end;
+end;
+
+
+procedure TTime_SetForm(Sender: TObject);
+begin
+  timeFrm:= TTimeFrm.Create(self)
+  with timeFrm do begin
+    setBounds(0,0,450,400)
+    Caption:= 'Async Time Tester on: '+datetimetoStr(now);
+    //brush.style:= bsdiagCross
+    FormStyle := fsStayOnTop;
+    color:= clBlack;
+    OnClose:= @TTime_Close;
+    Show;
+  end;
+  with TBitBtn.Create(timeFrm) do begin
+    parent:= timeFrm;
+    setBounds(20,300,150,40)
+    caption:= '&OK Date';
+    glyph.LoadFromRes(getHINSTANCE,'TPSIMPORT_COMOBJ');
+    onClick:= @TTime_Button1Click;
+  end;
+  with TBitBtn.Create(timeFrm) do begin
+    parent:= timeFrm;
+    setBounds(250,300,150,40)
+    caption:= '&Close';
+    glyph.LoadFromRes(getHINSTANCE,'TPSSCRIPT');
+    onClick:= @TTime_CloseClick;
+  end;
+  lbltime:= TLabel.create(timeFrm);
+  with lbltime do begin
+    parent:= timeFrm;
+    setBounds(30,220,160,40)
+    font.size:= 25;
+    caption:= dateTimeToStr(Now);
+    font.color:= clpurple;
+  end;
+  ledlbl:= TLEDNumber.create(timeFrm)
+  with ledlbl do begin
+    Parent:= timeFrm;
+    setBounds(20,140,350,100)
+    //borderStyle:= lnbSunken;
+    caption:= TimeToStr(time);
+    columns:= 11;
+    size:= 3;
+  end;
+  ctime:= TTimer.create(self)    //constructor
+  ctime.interval:= 1000;         //call property
+  ctime.ontimer:= @Timer1Event;  
+  try
+    brDateForm:= TDateTimePicker.Create(timeFrm)
+    with brDateForm do begin
+      parent:= timeFrm;
+      SetBounds(20,20,100,100);
+    end;
+  finally
+    //timeFrm.Release; //or free
+  end;
+end;
+
+function clockCount2(apause: integer): cardinal;
+var gtime, cnt: cardinal;
+begin
+  gtime:= gettickcount;
+  cnt:= 0;
+  repeat
+    inc(cnt)
+    //sleep(500) :debug
+    PrintF('debug: %d of  tick: %d ',[cnt, gettickcount])
+  until gettickcount - apause > gtime;
+  result:= cnt
+end;    
+
+begin //main app
+  if isInternet then
+    SetSynchroTime;
+  TTime_SetForm(self);
+  PrintF('system count in one sec: %d ',[clockcount2(5000)])
+  Voice2('You set the date '+datetoStr(brDateForm.Datetime));
+  writeln('Voice Async...now download');
+  DownloadFile(ScriptURL,'TimeServer7Script.txt')
+End.
+
+
+-----------------------------------------------------
+Doc: Status PEP Pascal Education Program
+API: The Date and Time Picker is a control that allows the user to
+      select either a date or a time value. This control provides two
+      objects in one: A picker and a calendar
+    Training: http://www.functionx.com/bcb/controls/datetime.htm
+    Blog
+    About http://www.softwareschule.ch/examples/469_ibzresult.txt
+    //ToDo: Eliminate the Global Vars!
+
+    © 2014 GitHub, Inc.
+    Terms           carica - scarica -- charge - decharge
+    Privacy
+    Security
+    Contact
+    http://www.amazon.de/Patterns-konkret-modellgetriebenen-durchg%C3%A4ngig-Beispielen/dp/3935042469
+    
+    Anforderung:
+    Ein Datum ist zu wählen und nach Bestätigung zu hören. 
+    Aufgabe:
+    Alles unnötige ist auszukommentieren und nötiges zu vereinfachen.
+    
+  first date: 14.6.2014  
+  
+   Agenda 30.8.2014
+  
+ X - Wettbewerb und Aufgabe Timer 
+ X - Rekap 
+ X - Test II
+ ----------Pause
+ X - Vortrag Service Orientierung
+ X - Script Component Diagram
+ X - OO Components und Integration
+-----------Pause
+ X - Integration Time Machine timetest
+ () - Client Server Model
+ XX - Rekap today
+ 
+
+  S. 251 - 268 im C++ Buch  Aufräumarbeiten
+    
+  S. 11 -Skript UML Use Case
+  
+  Tool: mX Musterlösung 469_formarrow_datepicker_ibz.txt

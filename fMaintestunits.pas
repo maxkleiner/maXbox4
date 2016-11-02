@@ -51,7 +51,7 @@
          3142    V3.7.1 InstanceSize, WebDB, FileInfo, arduino examples
          3189    V3.8.0 beta to 4.0 mX4 compiler with unicode, 64bit, units, open arrays
                         bootscript, versioncheck
-         3250    V3.8.1 dragndrop usecase, 10 add unitfs, print exception
+         3250    V3.8.1 dragndrop usecase, 10 add units, print exception
          3292    V3.8.2 AES, SHA256, CryptoBox, LockBox3 Units, perf counter
          3339    V3.8.2.1 passworddlg, module list, loadlibrary, AddOns restructure
          3362    V3.8.2.4  JCLVCLutils, CAD functions, tutor 14
@@ -133,7 +133,6 @@
          10500     build 193 TClientDataSet2  - filter, objbroker
          10538     build 194 myscript TClientDataSet3  - connect dlgs
          10592     build 195 tcom, vterminal, utilspac
-         
          10621          build 200 to V4   Jupiter
          10700     build 215 4.0.1.15    change tracker traxx, 22 more units
                    build 215 after disaster win10 update!
@@ -142,15 +141,7 @@
          10926     build 4.0.2.80_1     wide string package  - unified routines
          10960     build 4.2.0.10 more wide strings - stringgridlib - REXX
          10993     build 4.2.0.80 another pipe solution - change ___pointer to btstring at upscompiler
-         11032     build 4.2.2.90 kronos and pipe fix - setkeypressed - compare v - tokens2lib - kdialogs, maxpipe
-         11040     build 4.2.2.90 III add kcontrols and last functions of coolcode! getform()
-         11078     build 4.2.2.95 another 9 units and kmemo kkstring  II
-         11084     build 4.2.2.98 55 code snippets  openurl
-         11085     build 4.2.2.98 II more snippets in utilsmx4
-         11104    build 4.2.4.25 one unit many fixes and new functions asn1 back - globallock
-         11125    build 4.2.4.60 new stream concept - WMI - RegSvr  - Utilsmax5 - webtop - webbox - shorts
-         11160     build 4.2.4.80 second units dragdrop tcontrol  ocean7 dateutil - dateutils  -win32find - locale
-                  [the last one before V4.5 in 2016]  V4.5   in  March 2017
+                  [the last one before V4.5 in 2016]  V4.5   in  November 2016
 
  ************************************************************************************* }
 
@@ -161,7 +152,7 @@ interface
    //USB Support of  FTD2XX = 'ftd2xx.dll';
    //{$DEFINE CD2XXUNIT}
 
-uses
+{uses
   Forms, SysUtils, uPSComponent, uPSCompiler, uPSRuntime, Menus,
   Classes, ExtCtrls, Controls, StdCtrls,  SynEditHighlighter,
   SynHighlighterPas, SynEdit, SynMemo, SynEditMiscClasses, SynEditSearch,
@@ -178,12 +169,13 @@ uses
   SynHighlighterEiffel, SynHighlighterAsm, SynHighlighterDfm, SynHighlighterVB,
   SynHighlighterIni, SynHighlighterBat, SynHighlighterIDL,
   SynHighlighterVBScript, SynHighlighterMsg
-  {,IWBaseControl,IWBaseHTMLControl}; //, jpeg;
-
+  {,IWBaseControl,IWBaseHTMLControl}//; //, jpeg;
+ //}
+ 
 const
-   BYTECODE = 'bytecode.psb';        //3.5
-   PSTEXT = 'PS Scriptfiles (*.txt)|*.TXT';
-   PSMODEL = 'PS Modelfiles (*.uc)|*.UC';
+   //BYTECODE = 'bytecode.psb';        //3.5
+   //PSTEXT = 'PS Scriptfiles (*.txt)|*.TXT';
+   {PSMODEL = 'PS Modelfiles (*.uc)|*.UC';
    PSPASCAL ='PS Pascalfiles (*.pas)|*.PAS';
    PSINC = 'PS Includes (*.inc)|*.INC';
    DEFFILENAME = 'firstdemo.txt';
@@ -199,25 +191,26 @@ const
    ALLUNITLIST = 'docs\maxbox4_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '4.2.4.80';
-   MBVER = '424';              //for checking!
-   MBVER2 = '42480';              //for checking!
+   MBVERSION = '4.2.0.80';
+   MBVER = '420';              //for checking!
+   MBVER2 = '42080';              //for checking!
    EXENAME ='maXbox4.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile.txt';
    MXVERSIONFILE2 = 'http://www.softwareschule.ch/maxvfile2.txt';
    MXINTERNETCHECK = 'www.ask.com';
    MXMAIL = 'max@kleiner.com';
-   TAB = #$09;
-   CODECOMPLETION ='bds_delphi.dci';
+   TAB = #$09;    }
+   //CODECOMPLETION ='bds_delphi.dci';
    ENDSIGN='end.';
 
-type
-  TMaxForm1 = class(TForm)
-    memo2: TMemo;
+//type
+  //TMaxForm1 = class(TForm)
+  var  
+    amemo2: TMemo;
     Splitter1: TSplitter;
-    PSScript: TPSScript;
-    PS3DllPlugin: TPSDllPlugin;
+    //PSScript: TPSScript;
+    //PS3DllPlugin: TPSDllPlugin;
     MainMenu1: TMainMenu;
     Program1: TMenuItem;
     Compile1: TMenuItem;
@@ -234,16 +227,16 @@ type
     About1: TMenuItem;
     Search1: TMenuItem;
     SynPasSyn1: TSynPasSyn;
-    memo1: TSynMemo;
+    amemo1: TSynMemo;
     SynEditSearch1: TSynEditSearch;
     WordWrap1: TMenuItem;
-    XPManifest1: TXPManifest;
+    //XPManifest1: TXPManifest;
     SearchNext1: TMenuItem;
     Replace1: TMenuItem;
-    PSImport_Controls1: TPSImport_Controls;
-    PSImport_Classes1: TPSImport_Classes;
+    //PSImport_Controls1: TPSImport_Controls;
+    //PSImport_Classes1: TPSImport_Classes;
     ShowInclude1: TMenuItem;
-    SynEditPrint1: TSynEditPrint;
+    //SynEditPrint1: TSynEditPrint;
     Printout1: TMenuItem;
     mnPrintColors1: TMenuItem;
     dlgFilePrint: TPrintDialog;
@@ -272,7 +265,7 @@ type
     About2: TMenuItem;
     loadLastfile1: TMenuItem;
     imglogo: TImage;
-    cedebug: TPSScriptDebugger;
+    //cedebug: TPSScriptDebugger;
     debugPopupMenu1: TPopupMenu;
     BreakPointMenu: TMenuItem;
     Decompile1: TMenuItem;
@@ -282,10 +275,10 @@ type
     Reset1: TMenuItem;
     N3: TMenuItem;
     DebugRun1: TMenuItem;
-    PSImport_ComObj1: TPSImport_ComObj;
+    {PSImport_ComObj1: TPSImport_ComObj;
     PSImport_StdCtrls1: TPSImport_StdCtrls;
     PSImport_Forms1: TPSImport_Forms;
-    PSImport_DateUtils1: TPSImport_DateUtils;
+    PSImport_DateUtils1: TPSImport_DateUtils;   }
     tutorial4: TMenuItem;
     ExporttoClipboard1: TMenuItem;
     ImportfromClipboard1: TMenuItem;
@@ -304,20 +297,20 @@ type
     UseCase1: TMenuItem;
     tutorial21: TMenuItem;
     OpenUseCase1: TMenuItem;
-    PSImport_DB1: TPSImport_DB;
+    //PSImport_DB1: TPSImport_DB;
     tutorial31: TMenuItem;
-    SynHtmlSyn1: TSynHTMLSyn;
+    //SynHtmlSyn1: TSynHTMLSyn;
     HTMLSyntax1: TMenuItem;
     ShowInterfaces1: TMenuItem;
     Tutorial5: TMenuItem;
     AllFunctionsList1: TMenuItem;
     ShowLastException1: TMenuItem;
     PlayMP31: TMenuItem;
-    SynTeXSyn1: TSynTeXSyn;
+    //SynTeXSyn1: TSynTeXSyn;
     texSyntax1: TMenuItem;
     N8: TMenuItem;
     GetEMails1: TMenuItem;
-    SynCppSyn1: TSynCppSyn;
+    //SynCppSyn1: TSynCppSyn;
     CSyntax1: TMenuItem;
     Tutorial6: TMenuItem;
     New1: TMenuItem;
@@ -343,15 +336,15 @@ type
     SaveScreenshot: TMenuItem;
     Tutorial101: TMenuItem;
     SQLSyntax1: TMenuItem;
-    SynSQLSyn1: TSynSQLSyn;
+    //SynSQLSyn1: TSynSQLSyn;
     Console1: TMenuItem;
-    SynXMLSyn1: TSynXMLSyn;
+    //SynXMLSyn1: TSynXMLSyn;
     XMLSyntax1: TMenuItem;
     ComponentCount1: TMenuItem;
     NewInstance1: TMenuItem;
     toolbtnTutorial: TToolButton;
     Memory1: TMenuItem;
-    SynJavaSyn1: TSynJavaSyn;
+//    SynJavaSyn1: TSynJavaSyn;
     JavaSyntax1: TMenuItem;
     SyntaxCheck1: TMenuItem;
     Tutorial10Statistics1: TMenuItem;
@@ -378,12 +371,12 @@ type
     DocuforAddOns1: TMenuItem;
     Tutorial14Async1: TMenuItem;
     Lessons15Review1: TMenuItem;
-    SynPHPSyn1: TSynPHPSyn;
+//    SynPHPSyn1: TSynPHPSyn;
     PHPSyntax1: TMenuItem;
     Breakpoint1: TMenuItem;
     SerialRS2321: TMenuItem;
     N14: TMenuItem;
-    SynCSSyn1: TSynCSSyn;
+//    SynCSSyn1: TSynCSSyn;
     CSyntax2: TMenuItem;
     Calculator1: TMenuItem;
     tbtnSerial: TToolButton;
@@ -437,9 +430,9 @@ type
     WebServer1: TMenuItem;
     Tutorial17Server1: TMenuItem;
     Tutorial18Arduino1: TMenuItem;
-    SynPerlSyn1: TSynPerlSyn;
+//    SynPerlSyn1: TSynPerlSyn;
     PerlSyntax1: TMenuItem;
-    SynPythonSyn1: TSynPythonSyn;
+//    SynPythonSyn1: TSynPythonSyn;
     PythonSyntax1: TMenuItem;
     DMathLibrary1: TMenuItem;
     IntfNavigator1: TMenuItem;
@@ -462,14 +455,14 @@ type
     Tutorial0Function1: TMenuItem;
     SimuLogBox1: TMenuItem;
     OpenExamples1: TMenuItem;
-    SynJScriptSyn1: TSynJScriptSyn;
+//    SynJScriptSyn1: TSynJScriptSyn;
     JavaScriptSyntax1: TMenuItem;
     Halt1: TMenuItem;
     CodeSearch1: TMenuItem;
-    SynRubySyn1: TSynRubySyn;
+//    SynRubySyn1: TSynRubySyn;
     RubySyntax1: TMenuItem;
     Undo1: TMenuItem;
-    SynUNIXShellScriptSyn1: TSynUNIXShellScriptSyn;
+//    SynUNIXShellScriptSyn1: TSynUNIXShellScriptSyn;
     LinuxShellScript1: TMenuItem;
     Rename1: TMenuItem;
     spdcodesearch: TSpeedButton;
@@ -480,7 +473,7 @@ type
     MP3Player1: TMenuItem;
     DLLSpy1: TMenuItem;
     SynURIOpener1: TSynURIOpener;
-    SynURISyn1: TSynURISyn;
+//    SynURISyn1: TSynURISyn;
     URILinksClicks1: TMenuItem;
     EditReplace1: TMenuItem;
     GotoLine1: TMenuItem;
@@ -501,7 +494,7 @@ type
     Bookmark21: TMenuItem;
     Bookmark31: TMenuItem;
     Bookmark41: TMenuItem;
-    SynMultiSyn1: TSynMultiSyn;
+//    SynMultiSyn1: TSynMultiSyn;
     ScriptListbox1: TMenuItem;
     CountWords2: TMenuItem;
     Bookmark51: TMenuItem;
@@ -530,8 +523,8 @@ type
     SOAPTester1: TMenuItem;
     Sniffer1: TMenuItem;
     AutoDetectSyntax1: TMenuItem;
-    SynCssSyn1: TSynCssSyn;
-    SynEiffelSyn1: TSynEiffelSyn;
+//    SynCssSyn1: TSynCssSyn;
+//    SynEiffelSyn1: TSynEiffelSyn;
     FPlot1: TMenuItem;
     N21: TMenuItem;
     PasStyle1: TMenuItem;
@@ -539,12 +532,12 @@ type
     Reversi1: TMenuItem;
     ManualmaXbox1: TMenuItem;
     BlaisePascalMagazine1: TMenuItem;
-    SynAsmSyn1: TSynAsmSyn;
+//    SynAsmSyn1: TSynAsmSyn;
     AddToDo1: TMenuItem;
     CreateGUID1: TMenuItem;
     Tutorial27XML1: TMenuItem;
     SynDfmSyn1: TSynDfmSyn;
-    SynVBSyn1: TSynVBSyn;
+//    SynVBSyn1: TSynVBSyn;
     CreateDLLStub1: TMenuItem;
     Tutorial28DLL1: TMenuItem;
     FileChanges1: TMenuItem;
@@ -555,15 +548,15 @@ type
     CreateHeader1: TMenuItem;
     Oscilloscope1: TMenuItem;
     Tutorial30WOT1: TMenuItem;
-    SynIniSyn1: TSynIniSyn;
+//    SynIniSyn1: TSynIniSyn;
     GetWebScript1: TMenuItem;
-    SynBatSyn1: TSynBatSyn;
+//    SynBatSyn1: TSynBatSyn;
     Checkers1: TMenuItem;
     TaskMgr1: TMenuItem;
     WebCam1: TMenuItem;
     Tutorial31Closure1: TMenuItem;
     GEOMapView1: TMenuItem;
-    SynIdlSyn1: TSynIdlSyn;
+//    SynIdlSyn1: TSynIdlSyn;
     Run1: TMenuItem;
     GPSSatView1: TMenuItem;
     N3DLab1: TMenuItem;
@@ -571,20 +564,20 @@ type
     PANView1: TMenuItem;
     Tutorial39GEOMaps1: TMenuItem;
     UnitConverter1: TMenuItem;
-    SynVBScriptSyn1: TSynVBScriptSyn;
+//    SynVBScriptSyn1: TSynVBScriptSyn;
     MyScript1: TMenuItem;
     Terminal1: TMenuItem;
-    SynMsgSyn1: TSynMsgSyn;
+//    SynMsgSyn1: TSynMsgSyn;
     Tutorial361: TMenuItem;
     ArduinoIOT1: TMenuItem;
     TrainingArduino1: TMenuItem;
     Chess41: TMenuItem;
     OrangeStyle1: TMenuItem;
-    procedure IFPS3ClassesPlugin1CompImport(Sender: TObject; x: TPSPascalCompiler);
-    procedure IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TPSExec; x: TPSRuntimeClassImporter);
-    procedure PSScriptCompile(Sender: TPSScript);
+    //procedure IFPS3ClassesPlugin1CompImport(Sender: TObject; x: TPSPascalCompiler);
+    //procedure IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TPSExec; x: TPSRuntimeClassImporter);
+    //procedure PSScriptCompile(Sender: TPSScript);
     procedure Compile1Click(Sender: TObject);
-    procedure PSScriptExecute(Sender: TPSScript);
+    //procedure PSScriptExecute(Sender: TPSScript);
     procedure open1Click(Sender: TObject);
     procedure Save2Click(Sender: TObject);
     procedure Savebefore1Click(Sender: TObject);
@@ -625,11 +618,11 @@ type
     procedure StepInto1Click(Sender: TObject);
     procedure StepOut1Click(Sender: TObject);
     procedure Reset1Click(Sender: TObject);
-    procedure cedebugAfterExecute(Sender: TPSScript);
+ //   procedure cedebugAfterExecute(Sender: TPSScript);
     procedure cedebugBreakpoint(Sender: TObject; const FileName: String;
       Position, Row, Col: Cardinal);
-    procedure cedebugCompile(Sender: TPSScript);
-    procedure cedebugExecute(Sender: TPSScript);
+//    procedure cedebugCompile(Sender: TPSScript);
+//    procedure cedebugExecute(Sender: TPSScript);
     procedure cedebugIdle(Sender: TObject);
     procedure cedebugLineInfo(Sender: TObject; const FileName: String;
       Position, Row, Col: Cardinal);
@@ -761,8 +754,8 @@ type
     procedure Rename1Click(Sender: TObject);
     procedure SynEditPrint1PrintLine(Sender: TObject; LineNumber, PageNumber: Integer);
     procedure Preview1Click(Sender: TObject);
-    procedure SynEditPrint1PrintStatus(Sender: TObject; Status: TSynPrintStatus;
-      PageNumber: Integer; var Abort: Boolean);
+//    procedure SynEditPrint1PrintStatus(Sender: TObject; Status: TSynPrintStatus;
+      //PageNumber: Integer; var Abort: Boolean);
     procedure Tutorial22Services1Click(Sender: TObject);
     procedure Tutorial23RealTime1Click(Sender: TObject);
     procedure Configuration1Click(Sender: TObject);
@@ -788,8 +781,8 @@ type
     procedure Bookmark21Click(Sender: TObject);
     procedure Bookmark31Click(Sender: TObject);
     procedure Bookmark41Click(Sender: TObject);
-    procedure SynMultiSyn1CustomRange(Sender: TSynMultiSyn; Operation: TRangeOperation;
-      var Range: Pointer);
+ //   procedure SynMultiSyn1CustomRange(Sender: TSynMultiSyn; Operation: TRangeOperation;
+   //   var Range: Pointer);
     procedure ScriptListbox1Click(Sender: TObject);
     procedure Memo2KeyPress(Sender: TObject; var Key: Char);
     procedure Bookmark51Click(Sender: TObject);
@@ -853,7 +846,8 @@ type
     procedure Chess41Click(Sender: TObject);
     procedure OrangeStyle1Click(Sender: TObject);
     //procedure Memo1DropFiles(Sender: TObject; X,Y: Integer; AFiles: TStrings);
-  private
+  //private
+    var
     STATSavebefore: boolean;
     STATShowBytecode: boolean;
     STATInclude: boolean;
@@ -868,7 +862,7 @@ type
     STATVersionCheck: boolean;
     STATOtherHL: boolean;
     STATAutoBookmark: boolean;
-    Act_Filename: string[255];
+  {  Act_Filename: string[255];
     ExternalApp: string[255];
     Def_FName: string[255];
     Last_fName: string[255];
@@ -881,14 +875,14 @@ type
     Last_fName7: string[255];
     Last_fName8: string[255];
     Last_fName9: string[255];
-    Last_fName10: string[255];
+    Last_fName10: string[255]; }
     ledimage: TImage;
    // IPHost: string[255];
    // IPPort: integer;
    // COMPort: integer;
     last_fontsize: byte;
-    fileextension: string[12];
-    fPrintOut: TSynEditPrint;
+   // fileextension: string[12];
+//    fPrintOut: TSynEditPrint;
     fAutoComplete: TSynAutoComplete;
     fActiveLine: Longint;
     fResume: Boolean;
@@ -901,7 +895,7 @@ type
     fmemoclick: boolean;
     perftime: string;
     lbintflistwidth: integer;
-    Mark: TSynEditMark;
+    aMark: TSynEditMark;
     bookmarkimage: byte;
     factivelinecolor: TColor;
     fkeypressed: boolean;
@@ -919,7 +913,7 @@ type
     function UpdateFindtext: string;
     procedure FindNextText(Sender: TObject);
     procedure ReplaceNextText(Sender: TObject);
-    procedure WMDROP_THEFILES(var message: TWMDROPFILES); message WM_DROPFILES;
+//    procedure WMDROP_THEFILES(var message: TWMDROPFILES); message WM_DROPFILES;
     procedure ShowInterfaces(myFile: string);
     procedure AppOnException(sender: TObject; E: Exception);
     procedure LoadBootScript;
@@ -942,10 +936,11 @@ type
     procedure SetTodoMarks(myFile: string);
    //procedure DoEditorExecuteCommand(EditorCommand: word);
   //  procedure WebScannerDirect(urls: string);
-     procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
-  public
+ //    procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
+  //public
+    var
     STATMemoryReport: boolean;
-    IPHost: string[255];
+  //  IPHost: string[255];
     IPPort: integer;
     COMPort: integer;
     lbintflist: TListBox;
@@ -966,20 +961,19 @@ type
    //procedure defFilereadUpdate;
     function GetPerftime: string;
     procedure ResetKeyPressed;
-    procedure SetKeyPressed;
     procedure SaveByteCode;
 
- end;
+// end;
 
 
 var
-  maxForm1: TMaxForm1;
+  amaxForm1: TMaxForm1;
 
 implementation
 
-{$R *.dfm}
+//{$R *.dfm}
 
-uses
+(*uses
   uPSR_std,
   uPSC_std,          //TObject!   TComponent
   uPSR_stdctrls,
@@ -1279,7 +1273,7 @@ uses
   uPSI_JvYearGridEditForm,
   uPSI_JvMarkupCommon,
   uPSI_JvChart,
-  uPSI_JvXPCore,  //add resource rc files!
+  uPSI_JvXPCore,  //add resource files!
   uPSI_JvXPCoreUtils,
   uPSI_JvSearchFiles,
   //uPSI_JvSpeedbarSetupForm,   //3.9.8 fin
@@ -2073,7 +2067,7 @@ uses
   uPSI_ExtPascal,
   uPSI_ExtUtil,
   uPSI_FCGIApp,
-  uPSI_PersistSettings,  //also Windows API Settings  SpectraLib , pipehelper, pipe2
+  uPSI_PersistSettings,  //also Windows API Settings  SpectraLib , pipehelper
   uPSI_SynEditAutoComplete,
   uPSI_SynEditTextBuffer,
   uPSI_JclPCRE,
@@ -2141,46 +2135,8 @@ uses
   uPSI_NamedPipesImpl,
   uPSI_KLog,                //4.2.0.80  plus thread
   uPSI_NamedPipeThreads,
-  uPSI_MapFiles,
-  uPSI_BKPwdGen,
-  uPSI_Kronos,   //4.2.2.90
-  uPSI_TokenLibrary2,
-  uPSI_KDialogs,
-  uPSI_Numedit,
-  uPSI_KGraphics,
-  uPSI_umaxPipes,     //4.2.2.90 II
-  uPSI_KControls,
-  uPSI_IdAntiFreeze,  //4.2.2.95
-  uPSI_IdLogStream,
-  uPSI_IdThreadSafe,
-  uPSI_IdThreadMgr,
-  //uPSI_IdAuthentication,
-  uPSI_IdAuthenticationManager,
-  uPSI_OverbyteIcsConApp,
-  uPSI_KMemo,             //richview
-  //uPSI_kmemofrm,
-  uPSI_OverbyteIcsTicks64,
-  uPSI_OverbyteIcsSha1,     //context input2
-  uPSI_KEditCommon,
-  uPSI_UtilsMax4,      //with idbase component - 4.2.2.98
-  uPSI_IdNNTPServer,        //4.2.4.25
-  uPSI_UWANTUtils,
-  uPSI_OverbyteIcsAsn1Utils,
-  //uPSI_SimpleSFTP,
-  uPSI_WbemScripting_TLB,
-  uPSI_wmiserv,
-  //uPSI_uJSON,
-  uPSI_RegSvrUtils,
-  uPSI_osFileUtil,   //4.2.4.60
-  uPSI_SHDocVw,
-  uPSI_xutils,
-  uPSI_ietf,          //4.2.4.80
-  //uPSI_iso3166,
-  uPSI_dateutil,      //real
-  uPSI_dateext4,      //4.2.4.80_2
-  uPSI_locale,
 
-
+  
   uPSI_St2DBarC,
   uPSI_FmxUtils,
   uPSI_CustomDrawTreeView,
@@ -2342,10 +2298,10 @@ uses
   uPSI_IdSNTP,
   JclSysInfo,  //loadedmoduleslist
   IFSI_SysUtils_max,
-  uPSI_cFundamentUtils;
+  uPSI_cFundamentUtils;  *)
 
 
-resourcestring
+{resourcestring
   RCReplace = 'Replace this '#13'of "%s"'#13+'by "%s"?';
   RCSTRMB =' maXbox4 ';
   RCPRINTFONT ='Courier New';
@@ -2362,13 +2318,13 @@ resourcestring
   //www.swissdelphicenter.ch/';
   SConfirmDelete = 'Confirm delete';
   SConfirmClear  = 'Confirm clear';
-  SDelSelItemsPrompt = 'Delete selected items?';
+  SDelSelItemsPrompt = 'Delete selected items?';   }
 
 
-const
+{const
   DefSynEditOptions = [eoAltSetsColumnMode, eoAutoIndent, eoDragDropEditing,
   eoEnhanceEndKey, eoGroupUndo, eoShowScrollHint, eoScrollPastEol, eoSmartTabs,
-  eoTabsToSpaces, eoSmartTabDelete];
+  eoTabsToSpaces, eoSmartTabDelete];}
 
 var
   srec: TSearchRec;
@@ -2390,12 +2346,17 @@ begin
   //SIRegister_Menus(X); //from up to 3.9.7 cause of form
   //RIRegister_Controls_Routines(Exec);
   SIRegister_Forms(x);
+  04 unit uPSI_fMain Functions;                  //maXbox Open Tools API
+  05 unit IFSI_WinForm1puzzle;                   //maXbox
   SIRegister_TwinFormp(x);
   SIRegister_TMyLabel(x);
   SIRegister_WinForm1(x);
   RegisterDateTimeLibrary_C(x);
+  07 unit RegisterDateTimeLibrary_R(exec);       //Delphi
   //SIRegister_Types(X);       //3.5
   //SIRegister_Graphics(x, true);
+  01 unit RIRegister_StrUtils_Routines(exec);    //Delphi
+  02 unit SIRegister_IdStrings                   //Indy Sockets
   SIRegister_StrUtils(X);
   SIRegister_SysUtils(X);   //3.2   --> sysutils_max also unit down  , TBytes
   SIRegister_EInvalidArgument(x);
@@ -2414,17 +2375,24 @@ begin
   SIRegister_SqlTimSt(X);
   SIRegister_gsUtils(X);
   SIRegister_JvFunctions(X);
+  25 unit JvFunctions_max;                       //Jedi Functions
   SIRegister_Grids(X);
   SIRegister_Menus(X); //3.1  up
   SIRegister_ComObj(X);
+  16 unit uPSC_comobj;                           //COM Functions
   SIRegister_Printers(X);
+  14 unit uPSI_Printers.pas                      //Delphi VCL
   SIRegister_Dialogs(X); //remove 3.9.6.1
   SIRegister_MPlayer(X);
+  15 unit uPSI_MPlayer.pas                       //Delphi VCL
   SIRegister_ImgList(X);
   SIRegister_Buttons(X);
   SIRegister_Clipbrd(X);
+  17 unit uPSI_Clipbrd;                          //Delphi VCL
   SIRegister_SqlExpr(X);
+  19 unit uPSI_SqlExpr;                          //DBX3
   SIRegister_ADODB(X);
+  20 unit uPSI_ADODB;                            //ADODB
   SIRegister_DBGrids(X);
   SIRegister_DBCtrls(X);
   SIRegister_DBCGrids(X); //3.6
@@ -2638,6 +2606,7 @@ begin
   SIRegister_MaskUtils(X); //3.5
   SIRegister_Masks(X);
   SIRegister_FileCtrl(X);
+  18 unit Filectrl in IFSI_SysUtils_max;         //VCL Runtime
   SIRegister_Outline(X);
   SIRegister_ScktComp(X);
   SIRegister_Calendar(X);
@@ -2816,8 +2785,6 @@ begin
   SIRegister_JclCOM(X);
   SIRegister_GR32_Math(X);
   //SIRegister_GR32_LowLevel(X);
-  SIRegister_UtilsMax4(X);
-  
    SIRegister_SimpleHl(X);
   SIRegister_cXMLFunctions(X);
   SIRegister_JvTimer(X);
@@ -3436,42 +3403,9 @@ begin
   SIRegister_NamedPipesImpl(X);
   SIRegister_KLog(X);               //4.2.0.80
   SIRegister_NamedPipeThreads(X);
-  SIRegister_MapFiles(X);
-  SIRegister_BKPwdGen(X);
-  SIRegister_Kronos(X);
-  SIRegister_TokenLibrary2(X);
-  SIRegister_KEditCommon(X);  //add
-  SIRegister_KControls(X);  //Base Class
-  SIRegister_KDialogs(X);
-  SIRegister_NumEdit(X);
-  SIRegister_KGraphics(X);
-  SIRegister_umaxPipes(X);
-  SIRegister_IdAntiFreeze(X);
-  SIRegister_IdLogStream(X);
-  SIRegister_IdThreadSafe(X);
-  SIRegister_IdThreadMgr(X);
-  SIRegister_IdAuthenticationManager(X);
-  SIRegister_OverbyteIcsConApp(X);
-  SIRegister_KMemo(X);
-  //SIRegister_kmemofrm(X);
-  SIRegister_OverbyteIcsTicks64(X);
-  SIRegister_OverbyteIcsSha1(X);
-  SIRegister_IdNNTPServer(X);
-  SIRegister_UWANTUtils(X);
-  SIRegister_OverbyteIcsAsn1Utils(X);
-  SIRegister_WbemScripting_TLB(X);
-  SIRegister_wmiserv(X);
-  //SIRegister_uJSON(X);
-  SIRegister_RegSvrUtils(X);    //4.2.4.60
-  SIRegister_osFileUtil(X);
-  SIRegister_SHDocVw(X);       //4.2.4.60_2
-  SIRegister_ietf(X);
-  SIRegister_xutils(X);          //4.2.4.80
-  SIRegister_dateutil(X);
-  SIRegister_dateext4(X);
-  SIRegister_locale(X);
 
-     SIRegister_dbTvRecordList(X);
+
+    SIRegister_dbTvRecordList(X);
     SIRegister_TreeVwEx(X);
     SIRegister_ECDataLink(X);
     SIRegister_dbTree(X);
@@ -3650,6 +3584,8 @@ begin
   SIRegister_DBXChannel(X);
   SIRegister_DBXIndyChannel(X);
   SIRegister_LinarBitmap(X);
+  06 unit RIRegister_LinarBitmap_Routines(Exec); //ImageFileLibBCB
+  
   SIRegister_PNGLoader(X);
   SIRegister_BitmapConversion(X);
   //SIRegister_IniFiles(X);
@@ -5034,49 +4970,6 @@ begin
   RIRegister_NamedPipesImpl(X);
   RIRegister_KLog(X);
   RIRegister_NamedPipesImpl_Routines(Exec);
-  RIRegister_MapFiles(X);
-  RIRegister_BKPwdGen(X);
-  RIRegister_Kronos(X);             //4.2.2.90
-  RIRegister_TokenLibrary2(X);
-  RIRegister_KDialogs(X);
-  RIRegister_NumEdit(X);
-  RIRegister_KGraphics(X);
-  RIRegister_umaxPipes(X);
-  RIRegister_KGraphics_Routines(EXEC); //4.2.2.90 OII
-  RIRegister_KControls(X);
-  RIRegister_KControls_Routines(Exec);
-  RIRegister_IdAntiFreeze(X);
-  RIRegister_IdLogStream(X);
-  RIRegister_IdThreadSafe(X);
-  RIRegister_IdThreadMgr(X);
-  RIRegister_IdAuthenticationManager(X);
-  RIRegister_OverbyteIcsConApp(X);
-  RIRegister_KMemo(X);
-  RIRegister_KMemo_Routines(Exec);
-  //RIRegister_kmemofrm(X);
-  RIRegister_OverbyteIcsTicks64_Routines(Exec);  //4.2.2.95
-  RIRegister_OverbyteIcsSha1_Routines(Exec);
-  //uPSI_KEditCommon.pas
-  RIRegister_KEditCommon(X);
-  RIRegister_KEditCommon_Routines(exec);
-  RIRegister_UtilsMax4(X);
-  RIRegister_UtilsMax4_Routines(Exec);
-  RIRegister_IdNNTPServer(X);
-  RIRegister_UWANTUtils_Routines(Exec);
-  RIRegister_OverbyteIcsAsn1Utils_Routines(Exec);
-  RIRegister_wmiserv_Routines(Exec);
-  RIRegister_WbemScripting_TLB(X);
-  //RIRegister_uJSON(X);
-  RIRegister_RegSvrUtils_Routines(Exec);
-  RIRegister_RegSvrUtils(X);
-  RIRegister_osFileUtil_Routines(Exec); //4.2.4.60
-   RIRegister_SHDocVw(X);
-   RIRegister_ietf_Routines(Exec);
-  RIRegister_xutils_Routines(Exec);
-  RIRegister_dateutil_Routines(Exec);
-  RIRegister_dateext4_Routines(Exec);
-  RIRegister_locale_Routines(Exec);
-
 
   RIRegister_DebugBox(X);
   RIRegister_HotLog(X);
@@ -5187,7 +5080,6 @@ end;
 
 procedure TMaxForm1.FormCreate(Sender: TObject);
 //var //Plugin: TPSPlugin;
-//var    amark: TSynEditMark;
 begin
   self.Height:= 830;
   self.Width:= 950;
@@ -5396,17 +5288,6 @@ begin
      hlog.Add('>>>> Start Exe: {App_name} v{App_ver}{80@}{now}');
      hlog.Add('>>>> Start {RAM-} {disk-}{80@}{now}');
   end;
-      (*aMark:= TSynEditMark.Create;
-     with amark do begin
-        Line:= 2;
-        //Char:= p.char;
-        ImageIndex:= bookmarkimage;//(Sender as TSpeedButton).Tag;  10-13
-        Visible:= TRUE;
-        //InternalImage:= BookMarkOptions.BookMarkImages = nil;
-        memo1.Marks.Add(amark);
-        //amark.Free;
-      end; *)
-         memo1.Gutter.BorderColor:= clwebblue; //clwebgold;      //3.9.9.100
 
 end;
 
@@ -5704,9 +5585,9 @@ end;
 
 procedure myAssert(expr : Boolean; const msg: string);
 begin
-  {$C+}             //{$ASSERTIONS ON}
+//  {$C+}             //{$ASSERTIONS ON}
   Assert(expr, (msg));
-  {$C-}
+//  {$C-}
    maxform1.memo2.lines.add('True Assert Log: '+msg+' mX4 Assertion: ' +DateTimeToStr(Now));
 end;
 
@@ -5721,9 +5602,9 @@ end;
 procedure myassignfileWrite(mystring, myfilename: string); //v3.1
 begin
   AssignFile(fx, myfilename);
-  {$I-}
+ // {$I-}
   Rewrite(fx);
-  {$I+}
+//  {$I+}
   if IOResult = 0 then begin
     WriteLn(fx, mystring);
     CloseFile(fx);
@@ -5733,9 +5614,9 @@ end;
 procedure myassignfileRead(var mystring, myfilename: string); //v3.1
 begin
   AssignFile(fx, myfilename);
-  {$I-}
+//  {$I-}
   ReSet(fx);
-  {$I+}
+//  {$I+}
   if IOResult = 0 then begin
     ReadLN(fx, mystring);
     CloseFile(fx);
@@ -5869,11 +5750,6 @@ end;
 procedure myResetKeyPressed;
 begin
   maxform1.ResetKeyPressed;
-end;
-
-procedure mySetKeyPressed;
-begin
-  maxform1.setKeyPressed;
 end;
 
 function myformatsettings: Tformatsettings;
@@ -6274,8 +6150,6 @@ begin
   Sender.AddFunction(@myFillcharSearchRec, 'procedure FillCharSearchRec;');
   Sender.AddFunction(@mySaveByteCode, 'procedure SaveByteCode;');
   Sender.AddFunction(@myResetKeyPressed, 'procedure ResetKeyPressed;');
-  Sender.AddFunction(@mysetKeyPressed, 'procedure SetKeyPressed;');
-
   Sender.AddFunction(@CheckMemory, 'procedure CheckMemory;');
   Sender.AddFunction(@GetMemoryInfo, 'function getMemoryInfo: string;');
   Sender.AddFunction(@GetMemoryInfo, 'function getMemInf: string;');
@@ -6324,28 +6198,28 @@ begin
   fname:=  extractFileName(Act_Filename);
   // Dir := ExtractFilePath(ParamStr(0)) + '\lib';
 
-  SearchAndCopy(memo1.lines, '<TIME>', timetoStr(time), 6);
-  SearchAndCopy(memo1.lines, '<DATE>', datetoStr(date), 6);
-  SearchAndCopy(memo1.lines, '<PATH>', fpath, 6);
-  SearchAndCopy(memo1.lines, '<EXEPATH>', EXEPath, 9);
-  SearchAndCopy(memo1.lines, '<FILE>', fname, 6);
-  SearchAndCopy(memo1.lines, '<SOURCE>', ExePath+'Source', 8);
+  SearchAndCopy(memo1.lines, ' timet14:07:59oStr(time), 6);
+  SearchAndCopy(memo1.lines, 'atetoS17/04/2016tr(date), 6);
+  SearchAndCopy(memo1.lines, 'C:\Program Files (x86)\maxbox3\Import\maxbox4\examples\
+  SearchAndCopy(memo1.lines, 'C:\Program Files (x86)\maxbox3\
+  SearchAndCopy(memo1.lines, 'fname,fMain.pas 6);
+  SearchAndCopy(memo1.lines, 'C:\Program Files (x86)\maxbox3\Source
 
-  SearchAndCopy(memo1.lines, '#name', getUserNameWin, 11);
-  SearchAndCopy(memo1.lines, '#date', datetimetoStr(now), 11);
-  SearchAndCopy(memo1.lines, '#host', getComputernameWin, 11);
-  SearchAndCopy(memo1.lines, '#path', fpath, 11);
-  SearchAndCopy(memo1.lines, '#file', fname, 11);
-  SearchAndCopy(memo1.lines, '#fils', fname +' '+SHA1(Act_Filename), 11);
-  SearchAndCopy(memo1.lines, '#locs', intToStr(getCodeEnd), 11);
-  SearchAndCopy(memo1.lines, '#head',Format('%s: %s: %s %s ',
+  SearchAndCopy(memo1.lines, '#name'axMaxMaxrNameWin, 11);
+  SearchAndCopy(memo1.lines, '#date'58:0718/04/2016 17:58:27);
+  SearchAndCopy(memo1.lines, '#host'BOX10MAXBOX10nameWin, 11);
+  SearchAndCopy(memo1.lines, '#path'C:\Program Files (x86)\maxbox3\Import\maxbox4\examples\
+  SearchAndCopy(memo1.lines, '#file'fMaintestunits.pas
+  SearchAndCopy(memo1.lines, '#fils'fMaintestunits.pas BFA37BC9CDA6C72DC316FECB0BD2CE99D75175CE
+  SearchAndCopy(memo1.lines, '#locs'1099510995(getCodeEnd), 11);
+  SearchAndCopy(memo1.lines, '#head'Max: MAXBOX10: 18/04/2016 17:58:27 C:\Program Files (x86)\maxbox3\Import\maxbox4\examples\fMaintestunits.pas 
        [getUserNameWin, getComputernameWin, datetimetoStr(now), Act_Filename]), 11);
   SearchAndCopy(memo1.lines, '#perf', perftime, 11);
-  SearchAndCopy(memo1.lines, '#sign',Format('%s: %s: %s ',
+  SearchAndCopy(memo1.lines, '#sign'Max: MAXBOX10: 18/04/2016 17:58:27 
        [getUserNameWin, getComputernameWin, datetimetoStr(now)]), 11);
-  SearchAndCopy(memo1.lines, '#tech',Format('perf: %s threads: %d %s %s %s',
+  SearchAndCopy(memo1.lines, '#tech'0perf:  threads: 7 192.168.56.1 17:58:27 4.2.0.80
        [perftime, numprocessthreads, getIPAddress(getComputerNameWin), timetoStr(time),mbversion]), 11);
-  SearchAndCopy(memo1.lines, '#net',Format('DNS: %s; local IPs: %s; local IP: %s',
+  SearchAndCopy(memo1.lines, '#net',DNS: 192.168.1.1; local IPs: fe80::938:c5c6:5fc3:2f59%13,fe80::50ec:abb5:dbd2:a3dd%15,fe80::1433:37c6:aafc:741f%3,192.168.56.1,192.168.1.53,2001:0:9d38:90d7:1433:37c6:aafc:741f; local IP: 192.168.56.1
        [getDNS, GetLocalIPs, getIPAddress(getComputerNameWin)]), 10);
   memo2.Lines.Add('Macro Expanded '+inttostr(memo1.Lines.count-1)+' lines');
 end;
@@ -6515,12 +6389,11 @@ begin
    memo1.Hint:= intToStr(memo1.CaretY)+' Cursor: '+memo1.WordAtCursor +' Mouse: '+memo1.WordAtMouse;
   if STATExceptionLog then begin
    hlog.Add('>>>> Stop Script: '+ExtractFileName(Act_Filename)+' {80@}{now}');
-   hlog.Add('{RAM--} CompileRun Success! RT: '+perftime);
+   hlog.Add('{RAM--} Compiled+Run Success! runtime: '+perftime);
   end;
   end else begin
     OutputMessages;
     memo2.Lines.Add('Compiling Script failed');
-    memo1.Gutter.BorderColor:= clred;      //4.2.4.80
     if STATExceptionLog then begin
       hlog.AddStr(Act_Filename+ ' failed');
       hlog.Add('>>>> Fail {App_name} {80@}{now}');
@@ -6974,9 +6847,9 @@ begin
  //fileClose(fx);
 
  AssignFile(f, outfile); //BYTECODE
- {$I-}
+// {$I-}
  Rewrite(f); //1
- {$I+}
+// {$I+}
  if IOResult = 0  then begin
    Writeln(f, bdata);
    //PSScript.SetCompiled(bdata);
@@ -7153,8 +7026,7 @@ begin
     STATEdchanged:= false;
     statusBar1.panels[2].text:= ' SM';
     Act_Filename:= '';
-       memo1.Gutter.BorderColor:= clwindow;      //4.2.4.80
-   end
+  end
 end;
 
 procedure TMaxForm1.lineToNumber(met: boolean);
@@ -7687,11 +7559,6 @@ end;
 procedure TMaxForm1.ResetKeyPressed;
 begin
   fKeypressed:= false;
-end;
-
-procedure TMaxForm1.setKeyPressed;
-begin
-  fKeypressed:= true;
 end;
 
 procedure TMaxForm1.SetLastFileName(vname: string);
@@ -8694,7 +8561,7 @@ begin
         output.Lines.add('Associated Task: '+mname+': '+mdes);
         output.Lines.add('SHA1 of File: '+SHA1(Act_Filename));
         output.Lines.add('MD5 of File: '+MD5(Act_Filename));
-        output.Lines.add('CRC32 of File: '+IntToStr((CRC32H(Act_Filename)))+' : '+inttoHex(CRC32H(Act_Filename),4));
+        output.Lines.add('CRC32 of File: '+IntToStr((CRC32H(Act_Filename))));
         Attributes:= FileGetAttr(Act_Filename);
         ReadOnly:= (Attributes and faReadOnly) = faReadOnly;
         Archive:= (Attributes and faArchive) = faArchive;
@@ -8722,12 +8589,12 @@ begin
         output.Lines.add('Host Name: '+getComputerNameWin+'   Win64: '+boolToStr(isWoW64,true)+'  OS: '+getOSName);
         output.Lines.add('User Name: '+getUserNameWin+'    Is Admin: '+boolToStr(getISAdmin,true));
         output.Lines.add('Process ID: '+intToStr(CurrentProcessID) +'  ThreadCount: '+intToStr(numprocessthreads));
-        output.Lines.add('Memory Load: '+inttoStr(GetMemoryLoad) +'% used'+ '  CPU: '+GetProcessorName);
-        output.Lines.add('Free Mem: '+inttoStr(GetFreePhysicalMemory div 1024)+' KB'+'  SYS_BIOS: '+GetBiosVendor);
+        output.Lines.add('Memory Load: '+inttoStr(GetMemoryLoad) +'% used');
+        output.Lines.add('Free Mem: '+inttoStr(GetFreePhysicalMemory div 1024)+' KB');
         output.Lines.add('Time: '+DateTimeToInternetStr(now, true));
         output.Lines.add('mX4 Installed Version: '+MBVERSION);
         output.Lines.add('mX4 Internet Version: '+ActVersion);
-        output.Lines.add('Highlighter: '+memo1.Highlighter.GetLanguageName +'  Akku: '+inttostr(RemainingBatteryPercent));
+        output.Lines.add('Highlighter: '+memo1.Highlighter.GetLanguageName);
         output.Lines.add('Uptime: '+uptime);
 
          //output.Lines.add(PSScript.Comp.UnitName);
@@ -8803,13 +8670,6 @@ begin
    [mbYes,mbNo,mbcancel], 0) of
     end;
   end; *)
-  //mX4.2.4.25
-  if STATExceptionLog then begin
-     hlog.AddStr(' ');
-     hlog.AddStr('Session Exe Stop! '+Act_Filename);
-     hlog.Add('>>>> Stop Exe: {App_name} v{App_ver}{80@}{now}');
-  end;
-
   try
     CopyFile(PChar(Exepath+DEFINIFILE),
        PChar(ChangeFileExt(Exepath+DEFINIFILE, '.ini.BACKUP')), False);
@@ -9353,10 +9213,10 @@ begin
   //Replace(Result, '<DEVCPP>', ExtractFileDir(ParamStr(0)));
   //Replace(Result, '<DEVCPPVERSION>', DEVCPP_VERSION);
 
-  //SearchAndCopy(memo1.lines, '#date', datetimetoStr(now), 11);
+  //SearchAndCopy(memo1.lines, '#date'58:0718/04/2016 17:58:27);
 
-  Replace(result, '<EXEPATH>', ExePath);
-  Replace(Result, '<DATE>', DateToStr(Now));
+  Replace(result, 'C:\Program Files (x86)\maxbox3\
+  Replace(Result, 'ateToS17/04/2016tr(Now));
   Replace(Result, '<DATETIME>', DateTimeToStr(Now));
 
   {Dir := ExtractFilePath(ParamStr(0)) + '\include';
@@ -10373,7 +10233,6 @@ begin
 if cedebug.Exec.Status = isRunning then
     cedebug.Stop;
      memo2.Lines.Add('Runtimer Debug Reset');
-       memo1.Gutter.BorderColor:= clwindow;      //4.2.4.80
 end;
 
 procedure TMaxForm1.ResourceExplore1Click(Sender: TObject);
@@ -10708,7 +10567,6 @@ begin
     ShellExecute(0, NIL, @sEName[1], @sOName[1], NIL, SW_SHOW);
   end else
     showMessage('No Example Workdirectory found...');
-        memo1.Gutter.BorderColor:= clwindow;      //4.2.4.80
 end;
 
 procedure TMaxForm1.OpenExamples1Click(Sender: TObject);
@@ -11028,10 +10886,8 @@ begin
     end;
 end;
 
-
 function TMaxForm1.getCodeEnd: integer;
-var i: integer;
-    s1: string;
+var i: integer; s1: string;
 begin
   for i:= 0 to memo1.lines.Count -1 do begin
      s1:= memo1.lines[i];
@@ -11044,16 +10900,13 @@ begin
   end;
 end;
 
-
 procedure TMaxForm1.ShowInterfaces(myFile: string);
-var
-  i, t1, t2, tstr: integer;
+var  i, t1, t2, tstr: integer;
   s1, mstr: string;
   aStrList: TStringList;
 begin
   aStrList:= TStringList.create;
-  aStrList.loadfromfile(myFile);
-  debugout.Output.Clear;
+  aStrList.loadfromfile(myFile); debugout.Output.Clear;
   tstr:= 0;
   try
     for i:= 0 to aStrList.Count -1 do begin
@@ -11102,8 +10955,7 @@ begin
       end;
     end;
    end;
-  debugout.output.Font.Size:= 12;
-  debugout.output.Lines.Text:= mstr;
+  debugout.output.Font.Size:= 12;  debugout.output.Lines.Text:= mstr;
   debugout.caption:= 'Interface List in Code';
   debugout.output.Lines.Add(inttoStr(tstr)+' Interface(s) Found: ' +
                                      ExtractFileName(Act_Filename));
@@ -11120,7 +10972,6 @@ begin
   //this is all about declaration
   ShowInterfaces(Act_Filename);
   IntfNavigator1Click(Self);
-      memo1.Gutter.BorderColor:= clwindow;      //4.2.4.80
 end;
 
 procedure TMaxForm1.ShowLastException1Click(Sender: TObject);
@@ -11131,8 +10982,7 @@ begin
     if FileExists(ExePath+EXCEPTLOGFILE) then begin
       aStrList.loadfromfile(ExePath+EXCEPTLOGFILE);
       debugout.Output.Clear;
-      debugout.output.Font.Size:= 10;
-      debugout.Width:= 800;
+      debugout.output.Font.Size:= 10; debugout.Width:= 800;
       debugout.output.Lines.Text:= aStrList.Text;
       debugout.caption:= 'Exception Log Box';
       debugout.output.Lines.Add(inttoStr(aStrList.Count)+' Exceptions Found: ' +
@@ -11148,13 +10998,2498 @@ end;
     //to set to late
    { RegisterMethod('Constructor Create(AOwner: TComponent)');
     RegisterConstructor(@TJvMail.Create, 'Create');
-     RegisterMethod('Procedure Free');
-    RegisterMethod(@TJvMail.Destroy, 'Free');
-     RegisterMethod(@TKCustomColors.Assign, 'Assign');
-         RegisterPublishedProperties;}
-    //RIRegister_KMessageBox_Routines
-   //  with CL.AddClassN(CL.FindClass('TObjectList'),'TKObjectList') do
-   //{ CL.AddClassN(CL.FindClass('Class of TIdAuthentication'),'TIdAuthenticationClass');   //3.8
-  //CL.AddTypeS('TIdAuthenticationClass', 'class of TIdAuthentication');
-
+     RegisterMethod('Procedure Free');  RegisterMethod(@TJvMail.Destroy, 'Free');
+      RegisterPublishedProperties;}  //RIRegister_KMessageBox_Routines
 End.
+
+procedure TMaxForm1.IFPS3ClassesPlugin1CompImport(Sender: TObject;
+  x: TIFPSPascalcompiler);
+begin
+  SIRegister_Std(x);
+  SIRegister_Classes(x, true);
+  12 unit uPSCompiler.pas;                       //PS kernel functions
+ // SIRegister_Types(X);       //3.5+3.6
+  SIRegister_Graphics(x, true);     //canvas
+  SIRegister_Controls(x);
+  SIRegister_stdctrls(x);
+  SIRegister_extctrls(x);
+  SIRegister_Types(X);       //3.5+3.6
+  //SIRegister_Menus(X); //from up to 3.9.7 cause of form
+  //RIRegister_Controls_Routines(Exec);
+  SIRegister_Forms(x);
+  04 unit uPSI_fMain Functions;                  //maXbox Open Tools API
+  05 unit IFSI_WinForm1puzzle;                   //maXbox
+  SIRegister_TwinFormp(x);
+  SIRegister_TMyLabel(x);
+  SIRegister_WinForm1(x);
+  RegisterDateTimeLibrary_C(x);
+  07 unit RegisterDateTimeLibrary_R(exec);       //Delphi
+  //SIRegister_Types(X);       //3.5
+  //SIRegister_Graphics(x, true);
+  01 unit RIRegister_StrUtils_Routines(exec);    //Delphi
+  02 unit SIRegister_IdStrings                   //Indy Sockets
+  SIRegister_StrUtils(X);
+  SIRegister_SysUtils(X);   //3.2   --> sysutils_max also unit down  , TBytes
+  10 unit RIRegister_SysUtils_Routines(Exec);    //Delphi
+  SIRegister_EInvalidArgument(x);
+  SIRegister_MathMax(x);
+  08 unit RIRegister_MathMax_Routines(exec);     //Jedi & Delphi
+  SIRegister_WideStrUtils(X);
+  SIRegister_WideStrings(X);
+  SIRegister_StrHlpr(X);
+  21 unit uPSI_StrHlpr;                          //String Helper Routines 
+  SIRegister_DB(x);
+  13 unit uPSI_DBCommon;                         //DB Common_Routines and Types
+  SIRegister_DBCommonTypes(X);
+  SIRegister_DBCommon(X);
+  SIRegister_DBTables(X);
+  SIRegister_DBPlatform(X);
+  SIRegister_DBLogDlg(X);  //3.9
+  SIRegister_DateUtils(X); //3.2
+  22 unit uPSI_DateUtils;                        //Expansion to DateTimeLib
+  SIRegister_FileUtils(X);
+  23 unit uPSI_FileUtils;                        //Expansion to Sys/File Utils
+  SIRegister_SqlTimSt(X);
+  SIRegister_gsUtils(X);
+  SIRegister_JvFunctions(X);
+  SIRegister_Grids(X);
+  SIRegister_Menus(X); //3.1  up
+  SIRegister_ComObj(X);
+  SIRegister_Printers(X);
+  SIRegister_Dialogs(X); //remove 3.9.6.1
+  SIRegister_MPlayer(X);
+  SIRegister_ImgList(X);
+  SIRegister_Buttons(X);
+  SIRegister_Clipbrd(X);
+  SIRegister_SqlExpr(X);
+  SIRegister_ADODB(X);
+  SIRegister_DBGrids(X);
+  SIRegister_DBCtrls(X);
+  SIRegister_DBCGrids(X); //3.6
+  SIRegister_IniFiles(X);    //remove 3.8.4
+  SIRegister_JclBase(X);
+  SIRegister_JclMath(X);
+  SIRegister_JvgCommClasses(X);
+  SIRegister_JvgUtils(X);    //with JvGTypes
+  SIRegister_JclStatistics(X);
+  SIRegister_JclMiscel(X);
+  SIRegister_JclLogic(X);
+  SIRegister_JvVCLUtils(X);  //3.8
+  SIRegister_JvUtils(X);
+  24 unit JUtils / gsUtils;                      //Jedi / Metabase
+  //SIRegister_JvJCLUtils(X); //3.9
+  SIRegister_JvAppUtils(X);
+  SIRegister_JvDBUtil(X);
+  SIRegister_JvDBUtils(X);
+  SIRegister_JvParsing(X);
+  SIRegister_JvFormToHtml(X);
+  SIRegister_JvCtrlUtils(X);
+  SIRegister_JvComponent(X);     // base >to glue to VCL
+  SIRegister_JvBdeUtils(X);
+  SIRegister_JvDateUtil(X);
+  SIRegister_JvGenetic(X);
+  SIRegister_JvStrUtil(X);
+  SIRegister_JvStrUtils(X);
+  SIRegister_JvFileUtil(X);
+  SIRegister_JvCalc(X);
+  SIRegister_JvJCLUtils(X); //3.9
+  SIRegister_JvMemoryInfos(X);
+  SIRegister_JvComputerInfo(X);
+  SIRegister_Serial(X);
+  SIRegister_SerDlgs(X);
+  SIRegister_JvLED(X);
+  SIRegister_JvgLogics(X);
+  SIRegister_JvTurtle(X);
+  SIRegister_JvHtmlParser(X);
+  SIRegister_JvgXMLSerializer(X);
+  SIRegister_JvStrings(X);
+  SIRegister_uTPLb_IntegerUtils(X);
+  SIRegister_uTPLb_HugeCardinal(X);
+  SIRegister_uTPLb_HugeCardinalUtils(X);
+  SIRegister_LongIntList(X);
+  SIRegister_SortThds(X);
+  SIRegister_ThSort(X);
+  SIRegister_JvExprParser(X);
+  SIRegister_SynRegExpr(X);
+  SIRegister_SynURIOpener(X);
+  SIRegister_StUtils(X);  //SysTools4
+  SIRegister_IMouse(X);
+  SIRegister_SyncObjs(X);
+  SIRegister_AsyncCalls(X);
+  SIRegister_ParallelJobs(X);
+  SIRegister_Variants(X);
+  SIRegister_VarCmplx(X);
+  SIRegister_DTDSchema(X);
+  SIRegister_ShLwApi(X);
+  SIRegister_IBUtils(X); //3.9.2.2 fin -3.9.3
+  SIRegister_JvGraph(X);
+  SIRegister_Registry(X);
+  SIRegister_TlHelp32(X);
+  SIRegister_JclRegistry(X);
+  //SIRegister_TJvGradient(X);
+  SIRegister_JvLogFile(X);
+  SIRegister_JvComCtrls(X);
+  SIRegister_JvCtrls(X);
+  SIRegister_CPort(X);
+  SIRegister_CPortEsc(X);   //3.9.3
+  SIRegister_CPortCtl(X);
+  SIRegister_CPortMonitor(X);
+  SIRegister_cutils(X);  //3.9.4
+  SIRegister_PerlRegEx(X);
+  SIRegister_BoldUtils(X);
+  SIRegister_IdSimpleServer(X);
+  SIRegister_BarCodeScaner(X);
+  SIRegister_GUITesting(X);
+  SIRegister_JvFindFiles(X);
+  SIRegister_JclSimpleXml(X);
+  SIRegister_CheckLst(X);
+  SIRegister_ToolWin(x);     //moved up!!
+  SIRegister_Spin(X);        //3.9.9.101
+
+  SIRegister_ComCtrls(X); //3.9 moved up
+  SIRegister_StBase(X);
+  SIRegister_ExtPascalUtils(X);
+  SIRegister_JvSimpleXml(X);     //domtotree
+  SIRegister_JvXmlDatabase(X);
+  SIRegister_StList(X);
+  SIRegister_StFirst(X);
+  SIRegister_StMime(X);
+  SIRegister_StToHTML(X);
+  SIRegister_StStrms(X);
+  SIRegister_StFIN(X);
+  SIRegister_StDate(X);
+  SIRegister_StDateSt(X);
+  SIRegister_StAstroP(X);
+  SIRegister_StStat(X);
+  SIRegister_StNetCon(X);
+  SIRegister_StDecMth(X);
+  SIRegister_StOStr(X);
+  SIRegister_StPtrns(X);
+  SIRegister_StNetMsg(X);
+  SIRegister_StMath(X);
+  SIRegister_StExpLog(X);
+  SIRegister_StExport(X);
+  SIRegister_StGenLog(X);
+  SIRegister_StSystem(X);
+  SIRegister_StIniStm(X);
+  SIRegister_StBarC(X);
+  SIRegister_StDbBarC(X);
+  SIRegister_StBarPN(X);
+  SIRegister_StDbPNBC(X);
+  SIRegister_StDb2DBC(X);
+  SIRegister_StMoney(X);
+  //SIRegister_StMime(X);
+  SIRegister_StEclpse(X);
+  SIRegister_JvKeyboardStates(X);
+  SIRegister_JclMapi(X);
+  SIRegister_JvMail(X);
+  SIRegister_JclConsole(X);
+  SIRegister_JclLANMan(X);
+  SIRegister_ActnList(X);
+  SIRegister_ActnMan(X);  //3.9.9.182
+  SIRegister_jpeg(X);
+  SIRegister_StRandom(X);
+  SIRegister_StDict(X);
+  SIRegister_StBCD(X);
+  SIRegister_StTxtDat(X);
+  SIRegister_StRegEx(X);
+  SIRegister_HexDump(X);
+   SIRegister_uTPLb_StreamUtils(X);
+  SIRegister_uTPLb_AES(X);
+  SIRegister_uTPLb_SHA2(X);
+  SIRegister_AESPassWordDlg(X);
+  SIRegister_JclMultimedia(X);
+  SIRegister_TTypeTranslatoR(X);
+  SIRegister_IdMessageCoder(X);
+  SIRegister_IdMessageCoderMIME(X);
+  //SIRegister_IdServerIOHandler(X);
+  //SIRegister_IdServerIOHandlerSocket(X);   change 3.9.9.8
+  SIRegister_IdHeaderList(X);
+  SIRegister_IdMultipartFormData(X);
+  SIRegister_MathUtils(X);
+  SIRegister_HTTPParse(X);
+  SIRegister_HTTPUtil(X);
+  SIRegister_utypes(X);  //for dmath.dll   and eval
+  SIRegister_FlatSB(X);
+  //SIRegister_EIdHTTPProtocolException(x);
+  {SIRegister_TIdHTTP(x);
+  SIRegister_TIdCustomHTTP(x);
+  SIRegister_TIdHTTPProtocol(x);
+  SIRegister_TIdHTTPRequest(x);
+  SIRegister_TIdHTTPResponse(x);}
+  SIRegister_IdException(X);
+  SIRegister_IdGlobal(X);     //remove 3.9.9.1
+  09 unit RIRegister_IdGlobal_Routines(exec);    //Indy Sockets
+  SIRegister_IdRFCReply(X);   //3.9.7.5
+  SIRegister_IdDateTimeStamp(X);  //3.9.9.40
+  SIRegister_IdStack(X);
+  SIRegister_IdSocks(X);
+  SIRegister_IdComponent(X); //3.9.9.91
+  SIRegister_IdIOHandlerThrottle(X);
+  SIRegister_IdSocketHandle(X);
+  SIRegister_IdIntercept(X);
+  SIRegister_IdIOHandlerSocket(X);
+  SIRegister_IdServerIOHandler(X);
+  SIRegister_IdServerIOHandlerSocket(X);
+  SIRegister_IdCoder(X);
+  SIRegister_IdRawBase(X);
+  SIRegister_IdNTLM(X);
+  SIRegister_IdNNTP(X);
+  SIRegister_usniffer(X);
+  SIRegister_IdCoder3to4(X);
+  SIRegister_IdCookie(X);
+  SIRegister_IdCookieManager(X);
+  SIRegister_IdIOHandlerStream(X);
+  SIRegister_IdLogBase(X);
+  SIRegister_TextUtils(X);
+  SIRegister_MandelbrotEngine(X);
+  SIRegister_fplotMain(X);
+  SIRegister_uJSON(X);
+  SIRegister_EncdDecd(X);
+  SIRegister_SockAppReg(X);
+  SIRegister_Reversi(X);
+  SIRegister_Textures(X);
+  SIRegister_MyGrids(X);
+  SIRegister_SortGrid(X);
+  SIRegister_JvExControls(X);
+  SIRegister_JvBDEMemTable(X);
+  SIRegister_yuvconverts(X);
+  SIRegister_PsAPI(X);
+  SIRegister_ovcurl(X);
+  SIRegister_ovcuser(X);
+  SIRegister_ovccolor(X);
+  SIRegister_ovcvlb(X);
+  SIRegister_ovctcary(X);
+  SIRegister_DXPUtils(X);
+  SIRegister_JclSysUtils(X);
+  SIRegister_IdTCPConnection(X);  //3.1
+  11 unit uPSI_IdTCPConnection;                  //Indy some functions
+  SIRegister_IdTCPClient(X);
+  SIRegister_IdHTTPHeaderInfo(X);
+  SIRegister_IdHTTP(x);
+  SIRegister_HTTPApp(X);
+  //SIRegister_TIdURI(x);
+  SIRegister_IdURI(x);
+  //SIRegister_IdSocketHandle(X);
+  SIRegister_IdTCPServer(X);
+  SIRegister_IdFTP(X);
+  SIRegister_IdCustomHTTPServer(X); //3.9.3
+  SIRegister_IdSSLOpenSSL(X);
+  SIRegister_xmlutil(X);    //3.2 XML
+  SIRegister_MaskUtils(X); //3.5
+  SIRegister_Masks(X);
+  SIRegister_FileCtrl(X);
+  SIRegister_Outline(X);
+  SIRegister_ScktComp(X);
+  SIRegister_Calendar(X);
+  SIRegister_VListView(X);
+  SIRegister_ide_debugoutput(X);
+  //SIRegister_ComCtrls(X); //3.6  move upwards
+  SIRegister_VarHlpr(X);    //variants
+  SIRegister_StatsClasses(X);   //unit test
+  //SIRegister_Dialogs(X);
+  SIRegister_ExtDlgs(X);
+  SIRegister_ValEdit(X);
+  SIRegister_interface2_so(X);
+  SIRegister_Contnrs(X);
+  SIRegister_MyBigInt(X);
+  SIRegister_StdConvs(X);
+  SIRegister_ConvUtils(X);
+  SIRegister_SOAPHTTPClient(X);  //HTTPRIO
+  SIRegister_VCLScannerIntf(X);
+  SIRegister_VCLScannerImpl(X);
+  SIRegister_FMTBcd(X);
+  SIRegister_Midas(X);
+  SIRegister_Provider(X);
+  SIRegister_DBClient(X);  //3.6
+  SIRegister_CDSUtil(X);
+  SIRegister_GraphUtil(X);   //3.7
+  SIRegister_DBWeb(X);
+  SIRegister_DBXpressWeb(X);
+  SIRegister_DBBdeWeb(X);
+  SIRegister_ShadowWnd(X); //3.8
+  SIRegister_ToolWin(x);
+  SIRegister_devcutils(X);
+  SIRegister_Tabs(X);
+  SIRegister_JclGraphUtils(X);
+  SIRegister_JclCounter(X);
+  SIRegister_JclSysInfo(X);
+  SIRegister_JclSecurity(X);
+  SIRegister_IdUserAccounts(X);
+  SIRegister_JclFileUtils(X);
+  SIRegister_JvStarfield(X);   //3.9.7
+  SIRegister_JvAnalogClock(X);
+  SIRegister_JvAlarms(X);
+  SIRegister_JvSQLS(X);
+  SIRegister_JvDBSecur(X);
+  SIRegister_JvDBQBE(X);
+  SIRegister_JvProfiler32(X);
+  SIRegister_JvDirectories(X);
+  SIRegister_JclSvcCtrl(X);
+  SIRegister_JclSchedule(X);
+  SIRegister_JvSoundControl(X);
+  SIRegister_JvBDESQLScript(X);
+  SIRegister_IdAuthentication(X);
+  SIRegister_JclNTFS(X);
+  SIRegister_JclAppInst(X);
+  SIRegister_JclMIDI(X);
+  SIRegister_JclWinMidi(X);
+  SIRegister_JvRle(X);
+  SIRegister_JvImageWindow(X);
+  SIRegister_JvImageDrawThread(X);  //3.9.7.3
+  SIRegister_JvTransparentForm(X);
+  SIRegister_JvWinDialogs(X);
+  SIRegister_JclUnitConv_mX2(X);
+  SIRegister_JvFloatEdit(X);  //3.9.8
+  SIRegister_ShellZipTool(X);
+  SIRegister_JvJoystick(X);
+  SIRegister_JvMailSlots(X);
+  SIRegister_JclComplex(X);
+  SIRegister_SynPdf(X);
+  SIRegister_JvAirBrush(X);
+  SIRegister_mORMotReport(X);
+  SIRegister_ugamma(X);
+  SIRegister_ExcelExport(X);
+  SIRegister_JvDBGridExport(X);
+  SIRegister_JvSerialMaker(X);
+  SIRegister_JvWin32(X);
+  SIRegister_JvPaintFX(X);
+  SIRegister_JvNTEventLog(X);
+  SIRegister_JvDirFrm(X);
+  SIRegister_JvParserForm(X);
+  SIRegister_JvDualListForm(X);
+  SIRegister_JvDualList(X);
+  SIRegister_JvSwitch(X);
+  SIRegister_JvTimerLst(X);
+  SIRegister_JvObjStr(X);
+  SIRegister_JvMemTable(X);
+  SIRegister_JvPicClip(X);
+  SIRegister_JvImagPrvw(X);
+  SIRegister_JvFormPatch(X);
+  SIRegister_JvDataConv(X);
+  SIRegister_JvCpuUsage(X);
+  SIRegister_JvCpuUsage2(X);
+  SIRegister_JvJanTreeView(X);
+  SIRegister_JvYearGridEditForm(X);
+  SIRegister_JvMarkupCommon(X);
+  SIRegister_JvPlaylist(X);
+  SIRegister_JvTransLED(X);
+  SIRegister_JvFormAutoSize(X);
+  SIRegister_JvChart(X);
+  SIRegister_JvXPCore(X);
+  SIRegister_JvXPCoreUtils(X);
+  SIRegister_ExtCtrls2(X);
+  SIRegister_JvUrlGrabbers(X);
+  SIRegister_JvXmlTree(X);
+  SIRegister_JvWavePlayer(X);
+  SIRegister_JvUnicodeCanvas(X);
+  SIRegister_JvTFUtils(X);
+  SIRegister_IdMIMETypes(X);
+  SIRegister_JvConverter(X);    //JVdataConv
+  SIRegister_JvCsvParse(X);
+  SIRegister_JclLocales(X);
+  SIRegister_JvSearchFiles(X);
+  SIRegister_xrtl_math_Integer(X);
+  SIRegister_lazMasks(X);
+  SIRegister_StLArr(X);
+  SIRegister_StWmDCpy(X);
+  SIRegister_StText(X);
+  SIRegister_StNTLog(X);
+  SIRegister_SynEditTypes(X);
+  //  syn API int and ext
+  SIRegister_SynEditKeyCmds(X);
+  SIRegister_SynEditMiscClasses(X);
+  SIRegister_SynEditHighlighter(X);
+  SIRegister_SynHighlighterPas(X);
+  SIRegister_SynEdit(X);
+  SIRegister_SynEditRegexSearch(X);
+  SIRegister_SynMacroRecorder(X);
+  SIRegister_SynMemo(X);
+  SIRegister_SynHighlighterAny(X);
+  SIRegister_SynEditKbdHandler(X);
+  SIRegister_SynEditMiscProcs(X);
+  SIRegister_SynEditExport(X);
+  SIRegister_SynExportRTF(X);
+  SIRegister_SynExportHTML(X);
+  SIRegister_SynEditSearch(X);  //3.9.9
+  SIRegister_SynHighlighterDfm(X);
+  SIRegister_frmExportMain(X);
+  SIRegister_SynDBEdit(X);
+  SIRegister_SynEditWildcardSearch(X);
+  SIRegister_JvSticker(X);
+  SIRegister_JvZoom(X);
+  SIRegister_PMrand(X);
+  SIRegister_StAstro(X);
+  SIRegister_StSort(X);
+  SIRegister_XmlVerySimple(X);
+  SIRegister_StVInfo(X);
+  SIRegister_JvBrowseFolder(X);
+  SIRegister_JvBoxProcs(X);
+  SIRegister_usimann(X);
+  SIRegister_urandom(X);
+  SIRegister_uranuvag(X);
+  SIRegister_uqsort(X);
+  SIRegister_ugenalg(X);
+  SIRegister_uinterv(X);
+  SIRegister_JvHighlighter(X);
+  SIRegister_Diff(X);
+  SIRegister_WinAPI(X);
+  SIRegister_Services(X);
+  SIRegister_SocketsDelphi(X);
+  SIRegister_BlockSocket(X);
+  SIRegister_JvForth(X);
+  SIRegister_HttpRESTConnectionIndy(X);
+  SIRegister_RestRequest(X);
+  SIRegister_StBits(X);
+  SIRegister_MultilangTranslator(X);
+  SIRegister_HyperLabel(X);
+  SIRegister_TomDBQue(X);
+  SIRegister_Starter(X);
+  SIRegister_FileAssocs(X);
+  SIRegister_devFileMonitorX(X);
+  SIRegister_devrun(X);
+  SIRegister_devExec(X);
+  SIRegister_oysUtils(X);
+  SIRegister_DosCommand(X);      //3996
+  SIRegister_CppTokenizer(X);
+  SIRegister_JvHLParser(X);
+  SIRegister_JclShell(X);
+  SIRegister_JclCOM(X);
+  SIRegister_GR32_Math(X);
+  //SIRegister_GR32_LowLevel(X);
+   SIRegister_SimpleHl(X);
+  SIRegister_cXMLFunctions(X);
+  SIRegister_JvTimer(X);
+  SIRegister_cHTTPUtils(X);
+  SIRegister_cTLSUtils(X);
+  SIRegister_JclGraphics(X);
+  SIRegister_JclSynch(X);
+  SIRegister_Spring_Cryptography_Utils(X);
+  SIRegister_MapReader(X);
+  SIRegister_uwinstr(X);
+  SIRegister_utexplot(X);
+  SIRegister_VarRecUtils(X);
+  SIRegister_JvStringHolder(X);
+  SIRegister_JvStringListToHtml(X);
+  SIRegister_Barcode(X);
+  SIRegister_ip_misc(X);
+  SIRegister_SimpleXML(X);
+  SIRegister_JvAppEvent(X);
+  SIRegister_JvAppInst(X);
+  SIRegister_JvAppCommand(X);
+  SIRegister_JvAnimatedImage(X);
+  SIRegister_JvAnimTitle(X);
+  SIRegister_IdASN1Util(X);
+  SIRegister_IdHashMessageDigest(X);  //3.5
+  SIRegister_IdHash(X);
+  SIRegister_IdHashCRC(X);
+  //SIRegister_IdHashMessageDigest(X);  //3.5
+  SIRegister_IdHashSHA1(X);
+  SIRegister_IdLogFile(X);
+  SIRegister_IdTime(X);
+  SIRegister_IdDayTime(X);
+ // SIRegister_IdGlobal(X);
+  SIRegister_IdEMailAddress(X);
+  SIRegister_IdMessage(X);
+  SIRegister_IdMessageClient(X);
+  SIRegister_IdSMTP(X);
+  SIRegister_IdPOP3(X);
+  SIRegister_IdMailBox(X);
+  SIRegister_IdQotd(X);
+  SIRegister_IdTelnet(X);
+  SIRegister_IdNetworkCalculator(X);
+  SIRegister_IdFinger(X);
+  SIRegister_IdIcmpClient(X);
+  SIRegister_IdUDPBase(X);
+  SIRegister_IdUDPClient(X);
+  SIRegister_IdTrivialFTPBase(X);
+  SIRegister_IdTrivialFTP(X);
+  SIRegister_IdRemoteCMDClient(X);
+  SIRegister_IdRemoteCMDServer(X);
+  SIRegister_IdRexec(X); //client & server
+  SIRegister_IdUDPServer(X);
+  SIRegister_IdIPWatch(X);
+  SIRegister_IdIrcServer(X);
+  SIRegister_IdMessageCollection(X);
+  SIRegister_IdDNSResolver(X);
+  //SIRegister_IdRFCReply(X);   //3.9.7.5
+  SIRegister_IdIdentServer(X);
+  SIRegister_IdIdent(X);
+  SIRegister_IdEcho(X);
+  SIRegister_IdEchoServer(X);
+  //SIRegister_IdEchoUDP(X);
+  SIRegister_IdEchoUDP(X);
+  SIRegister_IdEchoUDPServer(X);
+  SIRegister_IdTelnetServer(X);
+  SIRegister_IdAntiFreezeBase(X);
+  SIRegister_IdHostnameServer(X);
+  SIRegister_IdTunnelCommon(X);
+  SIRegister_IdTunnelMaster(X);
+  SIRegister_IdTunnelSlave(X);
+  SIRegister_IdRSHServer(X);
+  SIRegister_IdRSH(X);
+  SIRegister_LibTar(X);
+  SIRegister_IdQOTDUDP(X);
+  SIRegister_IdQOTDUDPServer(X);
+  SIRegister_IdChargenServer(X);
+  SIRegister_IdBlockCipherIntercept(X);
+  SIRegister_IdFTPServer(X);
+  SIRegister_IdFingerServer(X);
+  SIRegister_StNet(X);
+  SIRegister_StNetPfm(X);
+  SIRegister_JvPatchFile(X);
+  SIRegister_JclPrint(X);
+  SIRegister_JclMime(X);
+  SIRegister_JvRichEdit(X);
+  SIRegister_JvDBRichEd(X);
+  SIRegister_JvDice(X);
+  SIRegister_cPEM(X);
+  //SIRegister_cFundamentUtils(X);   //3.9.6.3 remove
+  SIRegister_uwinplot(X);
+  SIRegister_umath(X);
+  SIRegister_ufft(X);
+  SIRegister_GR32_System(X);
+  SIRegister_PJFileHandle(X);
+  SIRegister_PJEnvVars(X);
+  SIRegister_PJPipe(X);
+  SIRegister_PJPipeFilters(X);
+  SIRegister_PJConsoleApp(X);
+  SIRegister_UConsoleAppEx(X);
+  SIRegister_DbxDataGenerator(X);
+  SIRegister_DbxSocketChannelNative(X);
+  SIRegister_DBXClient(X);
+  SIRegister_IdLogEvent(X);
+  SIRegister_IdSMTPServer(X);
+  SIRegister_Geometry(X);
+  SIRegister_IB(X);
+  SIRegister_IBX(X);
+  SIRegister_IWDBCommon(X);
+  SIRegister_IBScript(X);
+  SIRegister_JvCSVBaseControls(X);
+  SIRegister_JvShellHook(X);
+  SIRegister_Jvg3DColors(X);
+  SIRegister_JvSHFileOperation(X);
+  SIRegister_uFilexport(X);
+  SIRegister_JvDialogs(X);
+  SIRegister_JvDBTreeView(X);
+  SIRegister_JvDBUltimGrid(X);
+  SIRegister_JvDBQueryParamsForm(X);   //3.9.9.82
+  SIRegister_JvCommStatus(X);
+  SIRegister_JvgWinMask(X);
+  //SIRegister_StStrS(X);
+  SIRegister_StMerge(X);
+  SIRegister_StTree(X);
+  SIRegister_StVArr(X);
+  SIRegister_StRegIni(X);
+  SIRegister_usvd(X);
+  SIRegister_DepWalkUtils(X);
+  SIRegister_OptionsFrm(X);
+  SIRegister_JvPropAutoSave(X);
+  SIRegister_AviCap(X);
+  //SIRegister_AclAPI(X);
+  SIRegister_ALAVLBinaryTree(X);
+  SIRegister_ALStringList(X);
+  SIRegister_ALQuickSortList(X);
+  SIRegister_ALFcnMisc(X);
+  SIRegister_ALStaticText(X);
+  SIRegister_ALJSONDoc(X);
+  SIRegister_ALGSMComm(X);
+  SIRegister_ALWindows(X);
+  SIRegister_ALMultiPartBaseParser(X);
+  SIRegister_ALMultiPartFormDataParser(X);
+  SIRegister_ALMultiPartAlternativeParser(X);
+  SIRegister_ALHttpCommon(X);
+  SIRegister_ALWebSpider(X);
+  SIRegister_ALHttpClient(X);
+  SIRegister_ALFTPClient(X);
+  SIRegister_ALInternetMessageCommon(X);
+  SIRegister_ALWininetHttpClient(X);
+  SIRegister_ALWinInetFTPClient(X);
+  SIRegister_ALWinHttpWrapper(X);
+  SIRegister_ALWinHttpClient(X);
+  SIRegister_ALFcnWinSock(X);
+  //SIRegister_ALFcnSQL(X);
+  SIRegister_ALFcnHTML(X);
+  SIRegister_ALFcnCGI(X);
+  SIRegister_ALFcnExecute(X);
+  SIRegister_ALFcnFile(X);
+  SIRegister_ALFcnMime(X);
+  SIRegister_ALPhpRunner(X);
+  SIRegister_ALGraphic(X);
+  SIRegister_ALIniFiles(X);
+  SIRegister_ALMemCachedClient(X);  //3.9.9.84
+  SIRegister_ALMultiPartMixedParser(X);
+  SIRegister_ALSMTPClient(X);
+  SIRegister_ALNNTPClient(X);
+  SIRegister_ALHintBalloon(X);
+  SIRegister_ALXmlDoc(X);
+  SIRegister_IPCThrd(X);
+  SIRegister_MonForm(X);
+  SIRegister_ovcmisc(X);
+  SIRegister_ovcfiler(X);
+  SIRegister_ovcstate(X);
+  SIRegister_ovccoco(X);
+  SIRegister_ovcrvexp(X);
+  SIRegister_OvcFormatSettings(X);
+  SIRegister_ovcstore(X);
+  SIRegister_ovcstr(X);
+  SIRegister_ovcmru(X);
+  SIRegister_ovccmd(X);
+  SIRegister_ovctimer(X);
+  SIRegister_ovcintl(X);
+  SIRegister_AfCircularBuffer(X);
+  SIRegister_AfUtils(X);
+  SIRegister_AfSafeSync(X);
+  SIRegister_AfDataDispatcher(X);
+  SIRegister_AfDataControls(X);
+  SIRegister_AfComPortCore(X);
+  SIRegister_AfComPort(X);
+  SIRegister_AfPortControls(X);
+  SIRegister_AfViewers(X);
+  SIRegister_AfDataTerminal(X);  //3.9.9.85
+  SIRegister_SimplePortMain(X);
+  SIRegister_o32ledlabel(X);
+  SIRegister_ovcclock(x);
+  SIRegister_o32intlst(x);
+  SIRegister_ALFBXLib(X);
+  SIRegister_AlMySqlClient(X);
+  SIRegister_ALFBXClient(X);
+  SIRegister_ALFcnSQL(X);
+  SIRegister_AsyncTimer(X);
+  SIRegister_ApplicationFileIO(X);
+  SIRegister_ovcmeter(X);
+  SIRegister_ovcpeakm(X);
+  SIRegister_ovcBidi(X);     //3.9.9.86
+  SIRegister_DXPUtils(X);
+  SIRegister_ALPOP3Client(X);
+  SIRegister_SmallUtils(X);
+  SIRegister_MakeApp(X);
+  SIRegister_O32MouseMon(X);
+  SIRegister_OvcCache(X);
+  SIRegister_ovccalc(X);
+  SIRegister_Joystick(X);
+  SIRegister_ScreenSaver(X);
+  SIRegister_Polynomials(X);
+  SIRegister_XCollection(X);
+  //RIRegister_XCollection_Routines(Exec);
+  SIRegister_PersistentClasses(X);
+  SIRegister_XOpenGL(X);
+  SIRegister_VectorLists(X);
+  SIRegister_MeshUtils(X);
+  SIRegister_JclBorlandTools(X); //3.9.9.86
+  SIRegister_JclFileUtils_max(X);
+  SIRegister_GLSilhouette(X);
+  SIRegister_changefind(X);
+  SIRegister_cmdIntf(X);
+  SIRegister_Keyboard(X);
+  SIRegister_Octree(X);
+  SIRegister_VRMLParser(X);
+  SIRegister_GLFileVRML(X);
+  SIRegister_GLCrossPlatform(X);
+  SIRegister_GLPolyhedron(X);
+  SIRegister_GLParticles(X);
+  SIRegister_GLNavigator(X);
+  SIRegister_GLStarRecord(X);
+  SIRegister_GLCanvas(X);
+  SIRegister_GeometryBB(X);
+  SIRegister_GeometryCoordinates(X);
+  SIRegister_VectorGeometry(X);
+  SIRegister_TGA(X);
+  SIRegister_GLVectorFileObjects(X); //3.9.9.88
+  SIRegister_CategoryButtons(X);
+  SIRegister_ButtonGroup(X);
+  SIRegister_DbExcept(X);
+  SIRegister_StdVCL(X);
+  SIRegister_AxCtrls(X);
+  SIRegister_gl_actorUnit1(X);  //3.9.9.88
+  SIRegister_DataAwareMain(X);
+  SIRegister_TabNotBk(X);
+  SIRegister_udwsfiler(X);
+  SIRegister_synaip(X);
+  SIRegister_synacode(X);
+  SIRegister_synachar(X);
+  SIRegister_synamisc(X);
+  SIRegister_synaser(X);
+  SIRegister_synaicnv(X);
+  SIRegister_blcksock(X); //synaclient
+  SIRegister_tlntsend(X);
+  SIRegister_pingsend(X);
+  SIRegister_asn1util(X);
+  SIRegister_dnssend(X);
+  SIRegister_ldapsend(X);
+  SIRegister_clamsend(X);
+  SIRegister_slogsend(X);
+  SIRegister_mimepart(X);
+  SIRegister_mimemess(X);
+  SIRegister_mimeinln(X);
+  SIRegister_ftpsend(X);
+  SIRegister_ftptsend(X);
+  SIRegister_httpsend(X);
+  SIRegister_sntpsend(X);
+  SIRegister_snmpsend(X);
+  SIRegister_smtpsend(X);    //3.9.9.91
+  SIRegister_imapsend(X);
+  SIRegister_pop3send(X);
+  SIRegister_nntpsend(X);
+  SIRegister_ssl_openssl(X); //3.9.9.91
+  SIRegister_synhttp_daemon(X);
+  SIRegister_PingThread(X);
+  SIRegister_JvThreadTimer(X);
+  SIRegister_NetWork(X);
+  SIRegister_wwSystem(X);
+  SIRegister_Themes(X);
+  SIRegister_StdStyleActnCtrls(X);
+  SIRegister_UDDIHelper(X);
+  SIRegister_IdIMAP4Server(X);
+  SIRegister_VariantSymbolTable(X);
+  SIRegister_udf_glob(X);
+  SIRegister_TabGrid(X);
+  SIRegister_JsDBTreeView(X);
+  SIRegister_JsSendMail(X);         //3.9.9.92
+  SIRegister_Wwstr(X);
+  SIRegister_dblookup(X);
+  SIRegister_Printgri(X);
+  SIRegister_Hotspot(X);
+  SIRegister_HList(X);
+  SIRegister_TConnect(X);
+  SIRegister_DataBkr(X);
+  SIRegister_DrTable(X);
+  //SIRegister_HTTPIntr(X);   //3.9.9.94
+  SIRegister_Mathbox(X);
+  SIRegister_cyTypes(X);
+  SIRegister_cyIndy(X);
+  SIRegister_cySysUtils(X);
+  SIRegister_cyWinUtils(X);
+  SIRegister_cyStrUtils(X);
+  SIRegister_cyDateUtils(X);
+  SIRegister_cyObjUtils(X);
+  SIRegister_cyBDE(X);
+  SIRegister_cyClasses(X);
+  SIRegister_cyGraphics(X);
+  SIRegister_JvDateTimePicker(X);
+  SIRegister_JvEasterEgg(X);
+  SIRegister_JvCreateProcess(X);
+  SIRegister_WinSvc(X);
+  SIRegister_SvcMgr(X);
+  SIRegister_JvPickDate(X);
+ SIRegister_JvStrHlder(X);
+ SIRegister_JvNotify(X);
+ SIRegister_JclNTFS2(X);
+ SIRegister_Jcl8087(X);
+ SIRegister_JvAddPrinter(X);
+ SIRegister_JvCabFile(X);
+ SIRegister_JvDataEmbedded(X);
+ SIRegister_U_HexView(X);
+ SIRegister_UWavein4(X);
+ SIRegister_AMixer(X);
+ SIRegister_JvArrow(X);
+ SIRegister_JvaScrollText(X);
+ SIRegister_UrlMon(X);  //types also in wininet
+ SIRegister_U_Oscilloscope4(X);
+ SIRegister_DFFUtils(X);
+ SIRegister_MathsLib(X);
+ //SIRegister_UGetParens(X);
+ SIRegister_UIntList(X);
+ SIRegister_UGeometry(X);
+ SIRegister_UAstronomy(X);
+ SIRegister_UCardComponentV2(X);
+ SIRegister_UTGraphSearch(X);
+ SIRegister_UParser10(X);
+ SIRegister_cyIEUtils(X);
+ SIRegister_UcomboV2(X);
+ SIRegister_cyBaseComm(X);
+ SIRegister_cyAppInstances(X);
+ SIRegister_cyAttract(X);
+ SIRegister_cyDERUtils(X);
+ SIRegister_cyDocER(X);
+ SIRegister_ODBC(X);
+ SIRegister_AssocExec(X);
+ SIRegister_cyBaseCommRoomConnector(X);
+ SIRegister_cyCommRoomConnector(X);
+ SIRegister_cyCommunicate(X);
+ SIRegister_cyImage(X);
+ SIRegister_cyBaseContainer(X);
+ SIRegister_cyModalContainer(X);
+ SIRegister_cyFlyingContainer(X);
+ SIRegister_RegStr(X);          //just consts
+ SIRegister_HtmlHelpViewer(X);  //just intf
+ SIRegister_cyIniForm(X);
+ SIRegister_cyVirtualGrid(X);
+ SIRegister_Profiler(X);
+ SIRegister_BackgroundWorker(X);
+ SIRegister_WavePlay(X);
+ SIRegister_WaveTimer(X);
+ SIRegister_WaveUtils(X);
+ SIRegister_NamedPipes(X);
+ SIRegister_NamedPipeServer(X);
+ SIRegister_pipes(X);
+ SIRegister_process(X);
+ SIRegister_DPUtils(X);
+ SIRegister_CommonTools(X);
+ SIRegister_DataSendToWeb(X);
+ SIRegister_StarCalc(X);
+ SIRegister_D2_VistaHelperU(X);
+ SIRegister_ProcessUnit(X);
+// SIRegister_adgsm(X);
+ SIRegister_BetterADODataSet(X);
+ SIRegister_AdSelCom(X);
+ SIRegister_dwsXPlatform(X);
+ SIRegister_AdSocket(X);
+ //SIRegister_AdPacket(X);
+ SIRegister_AdPort(X);
+ SIRegister_AdPacket(X);
+ SIRegister_adgsm(X);
+ SIRegister_PathFunc(X);
+ SIRegister_CmnFunc2(X);
+ SIRegister_CmnFunc(X);
+ SIRegister_BitmapImage(X);
+ SIRegister_ImageGrabber(X);
+ SIRegister_SecurityFunc(X);
+ SIRegister_RedirFunc(X);
+ SIRegister_FIFO(X);
+ SIRegister_Int64Em(X);
+ SIRegister_InstFunc(X);
+ SIRegister_ScriptFunc_R(X);
+ SIRegister_LibFusion(X);
+ SIRegister_SimpleExpression(X);
+ SIRegister_unitResourceDetails(X);
+ SIRegister_unitResFile(X);
+ SIRegister_simplecomport(X);
+ SIRegister_Console(X);
+ SIRegister_AnalogMeter(X);
+ SIRegister_XPrinter(X);
+ SIRegister_lazIniFiles(X);
+ SIRegister_fpcunit(X);
+ SIRegister_testdecorator(X);
+ SIRegister_testutils(X);
+ SIRegister_ToolsUnit(X);
+ SIRegister_fpcunittests(X);
+ SIRegister_cTCPBuffer(X);
+ SIRegister_Glut(X);
+ SIRegister_LEDBitmaps(X);
+ SIRegister_FileClass(X);
+ SIRegister_FileUtilsClass(X);
+ SIRegister_ComPortInterface(X);
+ SIRegister_SwitchLed(X);
+ SIRegister_cyDmmCanvas(X);
+ SIRegister_uColorFunctions(X);
+ SIRegister_uSettings(X);
+ SIRegister_cyDebug(X);
+ SIRegister_cyBaseColorMatrix(X);
+ SIRegister_cyColorMatrix(X);
+ SIRegister_cySearchFiles(X);
+ SIRegister_cyCopyFiles(X);
+ SIRegister_cyBaseMeasure(X);
+ SIRegister_PJIStreams(X);
+ SIRegister_cyRunTimeResize(X);
+ SIRegister_jcontrolutils(X);
+ SIRegister_kcMapViewer(X);
+ SIRegister_kcMapViewerGLGeoNames(X);
+ SIRegister_kcMapViewerDESynapse(X);
+ SIRegister_cparserutils(X);
+ SIRegister_LedNumber(X);
+ SIRegister_StStrL(X);
+ SIRegister_indGnouMeter(X);
+ SIRegister_Sensors(X);
+ SIRegister_pwnative_out(X);
+ SIRegister_HTMLUtil(X);
+ SIRegister_synwrap1(X);
+ SIRegister_pwmain(X);
+ SIRegister_W32VersionInfo(X);
+ SIRegister_IpAnim(X);
+ SIRegister_IpUtils(X);
+ SIRegister_LrtPoTools(X);
+ SIRegister_Laz_DOM(X);
+ SIRegister_hhAvComp(X);
+ SIRegister_GPS2(X);
+ SIRegister_GPS(X);
+ SIRegister_GPSUDemo(X);
+ SIRegister_NMEA(X);        //3.9.9.101
+ SIRegister_ScreenThreeDLab(X);
+ SIRegister_DynaZip(X);
+ SIRegister_clockExpert(X);
+ SIRegister_SortUtils(X);
+ //SIRegister_BitmapConversion(X); down with LinearBitmap
+ SIRegister_JclTD32(X);
+ SIRegister_ZDbcUtils(X);
+ SIRegister_ZScriptParser(X);
+ SIRegister_JvFtpGrabber(X);
+ SIRegister_JvIni(X);
+ SIRegister_NeuralNetwork(X);
+ SIRegister_StExpr(X);
+ SIRegister_StSaturn(X);
+ SIRegister_JclParseUses(X);
+ SIRegister_JvFinalize(X);     //3.9.9.120
+ SIRegister_panUnit1(X);
+ SIRegister_DD83u1(X);
+ SIRegister_BigIni(X);
+ SIRegister_ShellCtrls(X);
+ SIRegister_fmath(X);
+ SIRegister_fcomp(X);     //3.9.9.160
+ SIRegister_HighResTimer(X);
+ SIRegister_uconvMain(X);
+ SIRegister_ParserUtils(X);
+ SIRegister_uPSUtils(X);
+ SIRegister_ParserU(X);
+ SIRegister_TypInfo(X);
+ SIRegister_ServiceMgr(X);
+ SIRegister_UDict(X);
+  SIRegister_ubigFloatV3(X);
+  SIRegister_UBigIntsV4(X);
+  SIRegister_UP10Build(X);
+  SIRegister_IdModBusServer(X);
+  SIRegister_IdModBusClient(X);    //3.9.9.180
+  SIRegister_ModbusUtils(X);
+  SIRegister_ColorGrd(X);
+  SIRegister_DirOutln(X);
+  SIRegister_Gauges(X);
+  SIRegister_CustomizeDlg(X);    //3.9.9.182
+  SIRegister_CollPanl(X);
+  SIRegister_IBCtrls(X);
+  SIRegister_IdStackWindows(X);
+  SIRegister_VendorTestFramework(X);
+  SIRegister_CTSVendorUtils(X);
+  SIRegister_JvAnimate(X);
+  SIRegister_DBXCharDecoder(X);
+  SIRegister_JvDBLists(X);
+  SIRegister_JvFileInfo(X);
+  SIRegister_SOAPConn(X);
+  SIRegister_SOAPLinked(X);
+  SIRegister_XSBuiltIns(X);  //3.9.9.190
+  SIRegister_JvgDigits(X);
+  SIRegister_JvDesignUtils(X);
+  SIRegister_JvgCrossTable(X);
+  SIRegister_JvgReport(X);
+  SIRegister_JvDBRichEdit(X); //3.9.9.190
+  SIRegister_JvWinHelp(X);
+  SIRegister_WaveConverter(X);
+  SIRegister_ACMConvertor(X);
+  SIRegister_ComObj2(X);    //3.9.9.191
+  SIRegister_SMScript(X);
+  SIRegister_CompFileIo(X);
+  SIRegister_SynHighlighterGeneral(X); //3.9.9.192
+  SIRegister_geometry2(X);
+  SIRegister_MConnect(X);
+  SIRegister_ObjBrkr(X);
+  SIRegister_uMultiStr(X);
+  SIRegister_JvAVICapture(X);
+  SIRegister_JvExceptionForm(X);
+  SIRegister_JvConnectNetwork(X);
+  SIRegister_MTMainForm(X);
+  SIRegister_DdeMan(X);
+  SIRegister_DIUtils(X);  //3.9.9.195
+  SIRegister_gnugettext(X);
+  SIRegister_Xmlxform(X);
+  SIRegister_SvrHTTPIndy(X);
+  SIRegister_CPortTrmSet(X);
+
+  SIRegister_HTTPProd(X);                    //V4   mX4  - 44 units
+
+ //uPSI_SockHTTP.pas
+  SIRegister_SockHTTP(X); //based on webrequest & httpapp
+  SIRegister_IndySockTransport(X);
+  SIRegister_synacrypt(X);
+  SIRegister_CppParser(X);
+  SIRegister_CodeCompletion(X);
+  SIRegister_U_IntList2(X);
+  SIRegister_SockAppNotify(X);
+  SIRegister_DBOleCtl(X);
+  //SIRegister_NSToIS(X);     no ns-http*.dll
+  SIRegister_xercesxmldom(X);
+  SIRegister_xmldom(X);
+  SIRegister_JclExprEval(X);
+  SIRegister_Gameboard(X);
+  SIRegister_ExtPascal(X);
+  SIRegister_ExtUtil(X);
+  SIRegister_FCGIApp(X);
+  SIRegister_PersistSettings(X);
+  SIRegister_SynEditAutoComplete(X);
+  SIRegister_SynEditTextBuffer(X);
+  SIRegister_JclPCRE(X);
+  //RIRegister_JclPCRE_Routines(Exec);
+  SIRegister_ChessBrd(X);
+  SIRegister_ChessPrg(X);
+  SIRegister_Graph3D(X);
+  SIRegister_SysInfoCtrls(X);
+  SIRegister_StdFuncs(X);
+  SIRegister_RegUtils(X);
+  SIRegister_VariantRtn(X);
+  SIRegister_SqlTxtRtns(X);
+  SIRegister_BSpectrum(X);
+  SIRegister_IPAddressControl(X);
+  SIRegister_Paradox(X);
+  //RIRegister_Paradox_Routines(Exec);
+  SIRegister_Environ(X);
+  SIRegister_GraphicsPrimitivesLibrary(X);
+  SIRegister_DrawFigures(X);
+  SIRegister_synadbg(X);
+  SIRegister_xrtl_util_FileVersion(X);
+  SIRegister_BitStream(X);
+  SIRegister_XmlRpcTypes(X);
+  SIRegister_XmlRpcCommon(X);
+  SIRegister_XmlRpcClient(X);
+  SIRegister_XmlRpcServer(X);     //xmlrpc
+  SIRegister_SynAutoIndent(X);
+  SIRegister_synafpc(X);
+  SIRegister_RxNotify(X);
+  SIRegister_SynAutoCorrect(X);
+  SIRegister_rxOle2Auto(X);
+  SIRegister_Spring_Utilsmx(X);
+  SIRegister_ulogifit(X);
+  SIRegister_HarmFade(X);
+  SIRegister_SynCompletionProposal(X);
+  SIRegister_rxAniFile(X);
+  SIRegister_ulinfit(X);
+  SIRegister_JclStringLists(x);
+  //SIRegister_ZLib(X);
+  //RIRegister_ZLib_Routines(Exec);
+  SIRegister_MaxTokenizers(X);
+  SIRegister_MaxDOM(X);
+  SIRegister_MaxUtils(X);
+  SIRegister_MaxStrUtils(X);
+  SIRegister_MaxXMLUtils(X);
+  SIRegister_VListBox(X);
+  SIRegister_MaxDOMDictionary(X);
+  //uPSI_MaxDOM,
+  //uPSI_MaxDOMDictionary,     //68 units add
+  SIRegister_cASN1(X);
+  //RIRegister_cASN1_Routines(Exec);
+  //RIRegister_cX509Certificate_Routines(Exec);
+  SIRegister_cX509Certificate(X);
+  SIRegister_uCiaXml(X);
+  SIRegister_StringsW(X);
+  SIRegister_FileStreamW(X);
+  //SIRegister_StringsW(X);
+  SIRegister_InetUtils(X);
+  SIRegister_FileMask(X);
+  SIRegister_StrConv(X);
+  SIRegister_Simpat(X);
+  SIRegister_Tooltips(X);
+  SIRegister_StringGridLibrary(X);    //mX 4.2.0
+  SIRegister_ChronCheck(X);
+  SIRegister_REXX(X);
+  SIRegister_SysImg(X);
+  SIRegister_Tokens(X);
+  SIRegister_KFunctions(X);
+  SIRegister_KMessageBox(X);
+  SIRegister_NamedPipesImpl(X);
+  SIRegister_KLog(X);               //4.2.0.80
+  SIRegister_NamedPipeThreads(X);
+
+
+    SIRegister_dbTvRecordList(X);
+    SIRegister_TreeVwEx(X);
+    SIRegister_ECDataLink(X);
+    SIRegister_dbTree(X);
+    SIRegister_dbTreeCBox(X);
+    SIRegister_Debug(X);
+  SIRegister_FileIntf(X);
+  SIRegister_SockTransport(X);
+  SIRegister_WinInet(X);
+  SIRegister_JvSimLogic(X);      //3.9.7.4
+  SIRegister_JvSimIndicator(X);
+  SIRegister_JvSimPID(X);
+  SIRegister_JvSimPIDLinker(X);
+  SIRegister_JclPeImage(X);
+  SIRegister_xrtl_util_CPUUtils(X);
+  SIRegister_xrtl_net_URI(X);
+  SIRegister_xrtl_net_URIUtils(X);
+  SIRegister_xrtl_util_StrUtils(X);
+  SIRegister_xrtl_util_COMCat(X);
+  SIRegister_xrtl_util_VariantUtils(X);
+  SIRegister_xrtl_util_FileUtils(X);
+   SIRegister_xrtl_util_Compat(X);
+  SIRegister_OleAuto(X);            //OlESysError
+  SIRegister_xrtl_util_COMUtils(X);
+  SIRegister_CmAdmCtl(X);
+  SIRegister_GR32(X);
+  SIRegister_GR32_Image(X);
+  SIRegister_GR32_Rasterizers(X);
+  SIRegister_GR32_ExtImage(X);
+  SIRegister_GR32_OrdinalMaps(X);
+  SIRegister_GR32_LowLevel(X);
+  SIRegister_GR32_Filters(X);
+  SIRegister_GR32_VectorMaps(X);
+  SIRegister_GR32_Geometry(X);
+  SIRegister_GR32_Containers(X);
+  SIRegister_GR32_Backends_VCL(X);
+
+  SIRegister_LazFileUtils(X);
+  SIRegister_FileUtil(X);
+  SIRegister_IDECmdLine(X);
+  SIRegister_JclMiscel2(X);
+  SIRegister_JclIniFiles(X);
+   {$IFDEF CD2XXUNIT}
+     SIRegister_D2XXUnit(X);
+  {$ENDIF}
+  //SIRegister_D2XXUnit(X);
+  SIRegister_JclStreams(X);
+  SIRegister_JclDateTime(X);
+  SIRegister_JclEDI(X);
+  SIRegister_JclAnsiStrings(X);    //3.9.9.14
+  SIRegister_synautil(X);
+  //SIRegister_SRMgr(X);
+  SIRegister_DebugBox(X);
+  SIRegister_HotLog(X);
+  SIRegister_ustrings(X);
+  SIRegister_uregtest(X);
+  SIRegister_usimplex(X);
+  SIRegister_uhyper(X);
+  SIRegister_unlfit(X);
+  SIRegister_IdHL7(X);
+  //uPSI_IdIPMCastBase;
+  SIRegister_IdIPMCastBase(X);
+  SIRegister_IdIPMCastServer(X);
+  SIRegister_IdIPMCastClient(X);
+  SIRegister_IdRawHeaders(X);
+  SIRegister_IdRawClient(X);
+  SIRegister_IdRawFunctions(X);
+  SIRegister_IdTCPStream(X);
+  SIRegister_IdSNPP(X);
+  SIRegister_St2DBarC(X);
+  SIRegister_ImageWin(X);
+  SIRegister_FmxUtils(X);
+  SIRegister_CustomDrawTreeView(X);
+  SIRegister_GraphWin(X);
+  SIRegister_StSpawn(X);
+  SIRegister_actionMain(X);
+  SIRegister_CtlPanel(X);
+  SIRegister_IdLPR(X);
+  SIRegister_SockRequestInterpreter(X);
+  SIRegister_ulambert(X);
+  SIRegister_SimpleDS(X);
+  SIRegister_DBXSqlScanner(X);
+  SIRegister_DBXMetaDataUtil(X);
+  SIRegister_TeeProcs(X);
+  SIRegister_TeCanvas(X);
+  SIRegister_TeEngine(X);
+  SIRegister_Chart(X);     //3.9.9.20!
+  SIRegister_CopyPrsr(X);
+  SIRegister_SockApp(X);
+  SIRegister_MDIEdit(X);
+  SIRegister_ExtActns(X);
+  SIRegister_AppEvnts(X);
+  SIRegister_CoolMain(X);
+  SIRegister_StCRC(X);
+  SIRegister_BoldContainers(X);
+  SIRegister_BoldComUtils(X);
+  SIRegister_BoldIsoDateTime(X);
+  SIRegister_BoldXMLRequests(X);
+  SIRegister_BoldStringList(X);
+  SIRegister_BoldFileHandler(X);
+  SIRegister_BoldThread(X);
+  SIRegister_BoldWinINet(X);
+  SIRegister_BoldQueryUserDlg(X);
+  SIRegister_BoldQueue(X);
+  SIRegister_JvPcx(X);
+  SIRegister_IdWhois(X);
+  SIRegister_IdWhoIsServer(X);
+  SIRegister_IdGopher(X);
+  SIRegister_IdDiscardServer(X);
+  SIRegister_IdDiscardUDPServer(X);
+  SIRegister_IdDICTServer(X);
+  SIRegister_IdDayTimeUDPServer(X);
+  SIRegister_IdDayTimeServer(X);
+  SIRegister_IdDayTimeUDP(X);  //3.9.9.50
+  SIRegister_IdMappedPortTCP(X);
+  SIRegister_IdMappedFTP(X);
+  SIRegister_IdMappedPortUDP(X);
+  SIRegister_IdQotdServer(X);
+  SIRegister_IdGopherServer(X);
+  SIRegister_JvRgbToHtml(X);
+  SIRegister_JvSysComp(X);
+  SIRegister_JvRemLog(X);
+  SIRegister_JvTMTL(X);
+  SIRegister_JvWinampApi(X);
+  SIRegister_MSysUtils(X);
+  SIRegister_ESBMaths(X);
+  SIRegister_ESBMaths2(X);
+  SIRegister_uLkJSON(X);
+  SIRegister_ZSysUtils(X);
+  SIRegister_ZURL(X);
+  SIRegister_ZClasses(X);
+  SIRegister_ZMatchPattern(X);
+  SIRegister_ZCollections(X);
+  SIRegister_ZEncoding(X);
+  SIRegister_IdCoderMIME(X);
+  SIRegister_IdCoderUUE(X);
+  SIRegister_IdCoderXXE(X);
+  SIRegister_WDosSocketUtils(X);
+  SIRegister_WDosPlcUtils(X);
+  SIRegister_WDosPorts(X);
+  SIRegister_WDosResolvers(X);
+  SIRegister_WDosTimers(X);
+  SIRegister_WDosPlcs(X);
+  SIRegister_WDosPneumatics(X);
+  SIRegister_IdHTTPWebBrokerBridge(X);
+  SIRegister_IdSysLogMessage(X);
+  SIRegister_IdSysLog(X);
+  SIRegister_IdSysLogServer(X);
+  SIRegister_IdTimeServer(X);
+  SIRegister_IdTimeUDPServer(X);
+  SIRegister_IdTimeUDP(X);
+  SIRegister_IdUserAccounts(X);
+  SIRegister_JclStrHashMap(X);
+  SIRegister_delphi_arduino_Unit1(X);
+  SIRegister_PppState(X);
+  SIRegister_FindFileIter(X);
+  SIRegister_PppParser(X);
+  SIRegister_PppLexer(X);
+  SIRegister_PCharUtils(X);
+  SIRegister_JclHookExcept(X);
+  SIRegister_StStrS(X);    //ansi char   shortstring
+   //SIRegister_EncdDecd(X);
+  //SIRegister_SockAppReg(X);
+   SIRegister_xrtl_util_TimeStamp(X);
+  SIRegister_xrtl_util_TimeUtils(X);
+  SIRegister_xrtl_util_TimeZone(X);
+  SIRegister_xrtl_util_Map(X);
+  SIRegister_xrtl_util_Set(X);  //3.9.6.4
+  SIRegister_xrtl_util_Compare(X);
+  SIRegister_xrtl_util_Value(X);
+  SIRegister_xrtl_util_Exception(X);
+  SIRegister_cFileUtils(X);
+  SIRegister_cDateTime(X);
+  SIRegister_cTimers(X);
+  SIRegister_cRandom(X);
+  SIRegister_ueval(X);
+  SIRegister_DBXChannel(X);
+  SIRegister_DBXIndyChannel(X);
+  SIRegister_LinarBitmap(X);
+  06 unit RIRegister_LinarBitmap_Routines(Exec); //ImageFileLibBCB
+  
+  SIRegister_PNGLoader(X);
+  SIRegister_BitmapConversion(X);
+  //SIRegister_IniFiles(X);
+  SIRegister_IdThread(X);
+  SIRegister_fMain(X);
+  SIRegister_niSTRING(X);
+  SIRegister_niRegularExpression(X);
+  SIRegister_niExtendedRegularExpression(X);
+  SIRegister_IdSNTP(X);
+  //SIRegister_SysUtils(X);         //maybe bug
+  SIRegister_cFundamentUtils(X);   //3.9.6.3
+  SIRegister_ShellAPI(X);
+end;                           //12261
+
+
+
+************************************************************
+ unit List asm internal end
+************************************************************
+01 unit RIRegister_StrUtils_Routines(exec);    //Delphi
+02 unit SIRegister_IdStrings                   //Indy Sockets
+03 unit RIRegister_niSTRING_Routines(Exec);    //from RegEx
+04 unit uPSI_fMain Functions;                  //maXbox Open Tools API
+05 unit IFSI_WinForm1puzzle;                   //maXbox
+06 unit RIRegister_LinarBitmap_Routines(Exec); //ImageFileLibBCB
+07 unit RegisterDateTimeLibrary_R(exec);       //Delphi
+08 unit RIRegister_MathMax_Routines(exec);     //Jedi & Delphi
+09 unit RIRegister_IdGlobal_Routines(exec);    //Indy Sockets
+10 unit RIRegister_SysUtils_Routines(Exec);    //Delphi
+11 unit uPSI_IdTCPConnection;                  //Indy some functions
+12 unit uPSCompiler.pas;                       //PS kernel functions
+13 unit uPSI_DBCommon;                         //DB Common_Routines and Types
+14 unit uPSI_Printers.pas                      //Delphi VCL
+15 unit uPSI_MPlayer.pas                       //Delphi VCL
+16 unit uPSC_comobj;                           //COM Functions
+17 unit uPSI_Clipbrd;                          //Delphi VCL
+18 unit Filectrl in IFSI_SysUtils_max;         //VCL Runtime
+19 unit uPSI_SqlExpr;                          //DBX3
+20 unit uPSI_ADODB;                            //ADODB
+21 unit uPSI_StrHlpr;                          //String Helper Routines 
+22 unit uPSI_DateUtils;                        //Expansion to DateTimeLib
+23 unit uPSI_FileUtils;                        //Expansion to Sys/File Utils
+24 unit JUtils / gsUtils;                      //Jedi / Metabase
+25 unit JvFunctions_max;                       //Jedi Functions
+26 unit HTTPParser;                            //Delphi VCL
+27 unit HTTPUtil;                              //Delphi VCL
+28 unit uPSI_XMLUtil;                          //Delphi VCL
+29 unit uPSI_SOAPHTTPClient;                   //Delphi VCL SOAP WebService V3.5
+30 unit uPSI_Contnrs;                          //Delphi RTL Container of Classes
+31 unit uPSI_MaskUtils;                        //RTL Edit and Mask functions
+32 unit uPSI_MyBigInt;                         //big integer class with Math
+33 unit uPSI_ConvUtils;                        //Delphi VCL Conversions engine 
+34 unit Types_Variants;                        //Delphi\Win32\rtl\sys
+35 unit uPSI_IdHashSHA1;                       //Indy Crypto Lib
+36 unit uPSI_IdHashMessageDigest               //Indy Crypto;
+37 unit uPSI_IdASN1Util;                       //Indy ASN1Utility Routines;
+38 unit uPSI_IdLogFile;                        //Indy Logger from LogBase
+39 unit uPSI_IdIcmpClient;                     //Indy Ping ICMP
+40 unit uPSI_IdHashMessageDigest_max           //Indy Crypto &OpenSSL;
+41 unit uPSI_FileCtrl;                         //Delphi RTL 
+42 unit uPSI_Outline;                          //Delphi VCL
+43 unit uPSI_ScktComp;                         //Delphi RTL
+44 unit uPSI_Calendar;                         //Delphi VCL
+45 unit uPSI_VListView                         //VListView;
+46 unit uPSI_DBGrids;                          //Delphi VCL
+47 unit uPSI_DBCtrls;                          //Delphi VCL
+48 unit ide_debugoutput;                       //maXbox
+49 unit uPSI_ComCtrls;                         //Delphi VCL
+50 unit uPSC_stdctrls+;                        //Delphi VCL
+51 unit uPSI_Dialogs;                          //Delphi VCL
+52 unit uPSI_StdConvs;                         //Delphi RTL
+53 unit uPSI_DBClient;                         //Delphi RTL
+54 unit uPSI_DBPlatform;                       //Delphi RTL
+55 unit uPSI_Provider;                         //Delphi RTL
+56 unit uPSI_FMTBcd;                           //Delphi RTL
+57 unit uPSI_DBCGrids;                         //Delphi VCL
+58 unit uPSI_CDSUtil;                          //MIDAS
+59 unit uPSI_VarHlpr;                          //Delphi RTL
+60 unit uPSI_ExtDlgs;                          //Delphi VCL
+61 unit sdpStopwatch;                          //maXbox
+62 unit uPSI_JclStatistics;                    //JCL
+63 unit uPSI_JclLogic;                         //JCL
+64 unit uPSI_JclMiscel;                        //JCL
+65 unit uPSI_JclMath_max;                      //JCL RTL
+66 unit uPSI_uTPLb_StreamUtils;                //LockBox 3
+67 unit uPSI_MathUtils;                        //BCB
+68 unit uPSI_JclMultimedia;                    //JCL
+69 unit uPSI_WideStrUtils;                     //Delphi API/RTL
+70 unit uPSI_GraphUtil;                        //Delphi RTL
+71 unit uPSI_TypeTrans;                        //Delphi RTL
+72 unit uPSI_HTTPApp;                          //Delphi VCL
+73 unit uPSI_DBWeb;                            //Delphi VCL
+74 unit uPSI_DBBdeWeb;                         //Delphi VCL
+75 unit uPSI_DBXpressWeb;                      //Delphi VCL
+76 unit uPSI_ShadowWnd;                        //Delphi VCL
+77 unit uPSI_ToolWin;                          //Delphi VCL
+78 unit uPSI_Tabs;                             //Delphi VCL
+79 unit uPSI_JclGraphUtils;                    //JCL
+80 unit uPSI_JclCounter;                       //JCL
+81 unit uPSI_JclSysInfo;                       //JCL
+82 unit uPSI_JclSecurity;                      //JCL
+83 unit uPSI_JclFileUtils;                     //JCL
+84 unit uPSI_IdUserAccounts;                   //Indy 
+85 unit uPSI_IdAuthentication;                 //Indy
+86 unit uPSI_uTPLb_AES;                        //LockBox 3
+87 unit uPSI_IdHashSHA1;                       //LockBox 3
+88 unit uTPLb_BlockCipher;                     //LockBox 3
+89 unit uPSI_ValEdit.pas;                      //Delphi VCL
+90 unit uPSI_JvVCLUtils;                       //JCL
+91 unit uPSI_JvDBUtil;                         //JCL 
+92 unit uPSI_JvDBUtils;                        //JCL
+93 unit uPSI_JvAppUtils;                       //JCL
+94 unit uPSI_JvCtrlUtils;                      //JCL
+95 unit uPSI_JvFormToHtml;                     //JCL
+96 unit uPSI_JvParsing;                        //JCL
+97 unit uPSI_SerDlgs;                          //Toolbox
+98 unit uPSI_Serial;                           //Toolbox
+99 unit uPSI_JvComponent;                      //JCL
+100 unit uPSI_JvCalc;                          //JCL
+101 unit uPSI_JvBdeUtils;                      //JCL
+102 unit uPSI_JvDateUtil;                      //JCL
+103 unit uPSI_JvGenetic;                       //JCL
+104 unit uPSI_JclBase;                         //JCL
+105 unit uPSI_JvUtils;                         //JCL
+106 unit uPSI_JvStrUtil;                       //JCL
+107 unit uPSI_JvStrUtils;                      //JCL
+108 unit uPSI_JvFileUtil;                      //JCL
+109 unit uPSI_JvMemoryInfos;                   //JCL
+110 unit uPSI_JvComputerInfo;                  //JCL
+111 unit uPSI_JvgCommClasses;                  //JCL
+112 unit uPSI_JvgLogics;                       //JCL
+113 unit uPSI_JvLED;                           //JCL
+114 unit uPSI_JvTurtle;                        //JCL
+115 unit uPSI_SortThds; unit uPSI_ThSort;      //maXbox
+116 unit uPSI_JvgUtils;                        //JCL 
+117 unit uPSI_JvExprParser;                    //JCL
+118 unit uPSI_HexDump;                         //Borland
+119 unit uPSI_DBLogDlg;                        //VCL
+120 unit uPSI_SqlTimSt;                        //RTL
+121 unit uPSI_JvHtmlParser;                    //JCL
+122 unit uPSI_JvgXMLSerializer;                //JCL
+123 unit uPSI_JvJCLUtils;                      //JCL
+124 unit uPSI_JvStrings;                       //JCL
+125 unit uPSI_uTPLb_IntegerUtils;              //TurboPower
+126 unit uPSI_uTPLb_HugeCardinal;              //TurboPower
+127 unit uPSI_uTPLb_HugeCardinalUtils;         //TurboPower
+128 unit uPSI_SynRegExpr;                      //SynEdit
+129 unit uPSI_StUtils;                         //SysTools4
+130 unit uPSI_StToHTML;                        //SysTools4
+131 unit uPSI_StStrms;                         //SysTools4
+132 unit uPSI_StFIN;                           //SysTools4
+133 unit uPSI_StAstroP;                        //SysTools4
+134 unit uPSI_StStat;                          //SysTools4
+135 unit uPSI_StNetCon;                        //SysTools4
+136 unit uPSI_StDecMth;                        //SysTools4
+137 unit uPSI_StOStr;                          //SysTools4
+138 unit uPSI_StPtrns;                         //SysTools4
+139 unit uPSI_StNetMsg;                        //SysTools4
+140 unit uPSI_StMath;                          //SysTools4
+141 unit uPSI_StExpEng;                        //SysTools4
+142 unit uPSI_StCRC;                           //SysTools4
+143 unit uPSI_StExport,                        //SysTools4
+144 unit uPSI_StExpLog,                        //SysTools4
+145 unit uPSI_ActnList;                        //Delphi VCL
+146 unit uPSI_jpeg;                            //Borland
+147 unit uPSI_StRandom;                        //SysTools4
+148 unit uPSI_StDict;                          //SysTools4
+149 unit uPSI_StBCD;                           //SysTools4
+150 unit uPSI_StTxtDat;                        //SysTools4
+151 unit uPSI_StRegEx;                         //SysTools4
+152 unit uPSI_IMouse;                          //VCL
+153 unit uPSI_SyncObjs;                        //VCL
+154 unit uPSI_AsyncCalls;                      //Hausladen
+155 unit uPSI_ParallelJobs;                    //Saraiva
+156 unit uPSI_Variants;                        //VCL
+157 unit uPSI_VarCmplx;                        //VCL Wolfram
+158 unit uPSI_DTDSchema;                       //VCL 
+159 unit uPSI_ShLwApi;                         //Brakel
+160 unit uPSI_IBUtils;                         //VCL
+161 unit uPSI_CheckLst;                        //VCL
+162 unit uPSI_JvSimpleXml;                     //JCL
+163 unit uPSI_JclSimpleXml;                    //JCL
+164 unit uPSI_JvXmlDatabase;                   //JCL
+165 unit uPSI_JvMaxPixel;                      //JCL
+166 unit uPSI_JvItemsSearchs;                  //JCL
+167 unit uPSI_StExpEng2;                       //SysTools4
+168 unit uPSI_StGenLog;                        //SysTools4
+169 unit uPSI_JvLogFile;                       //Jcl
+170 unit uPSI_CPort;                           //ComPort Lib v4.11 
+171 unit uPSI_CPortCtl;                        //ComPort
+172 unit uPSI_CPortEsc;                        //ComPort
+173 unit BarCodeScaner;                        //ComPort
+174 unit uPSI_JvGraph;                         //JCL
+175 unit uPSI_JvComCtrls;                      //JCL
+176 unit uPSI_GUITesting;                      //D Unit
+177 unit uPSI_JvFindFiles;                     //JCL
+178 unit uPSI_StSystem;                        //SysTools4
+179 unit uPSI_JvKeyboardStates;                //JCL
+180 unit uPSI_JvMail;                          //JCL
+181 unit uPSI_JclConsole;                      //JCL
+182 unit uPSI_JclLANMan;                       //JCL
+183 unit uPSI_IdCustomHTTPServer;              //Indy
+184 unit IdHTTPServer                          //Indy
+185 unit uPSI_IdTCPServer;                     //Indy
+186 unit uPSI_IdSocketHandle;                  //Indy
+187 unit uPSI_IdIOHandlerSocket;               //Indy
+188 unit IdIOHandler;                          //Indy
+189 unit uPSI_cutils;                          //Bloodshed
+190 unit uPSI_BoldUtils;                       //boldsoft
+191 unit uPSI_IdSimpleServer;                  //Indy
+192 unit uPSI_IdSSLOpenSSL;                    //Indy
+193 unit uPSI_IdMultipartFormData;             //Indy
+194 unit uPSI_SynURIOpener;                    //SynEdit
+195 unit uPSI_PerlRegEx;                       //PCRE
+196 unit uPSI_IdHeaderList;                    //Indy
+197 unit uPSI_StFirst;                         //SysTools4
+198 unit uPSI_JvCtrls;                         //JCL
+199 unit uPSI_IdTrivialFTPBase;                //Indy
+200 unit uPSI_IdTrivialFTP;                    //Indy
+201 unit uPSI_IdUDPBase;                       //Indy
+202 unit uPSI_IdUDPClient;                     //Indy
+203 unit uPSI_utypes;                          //for DMath.DLL
+204 unit uPSI_ShellAPI;                        //Borland
+205 unit uPSI_IdRemoteCMDClient;               //Indy
+206 unit uPSI_IdRemoteCMDServer;               //Indy
+207 unit IdRexecServer;                        //Indy
+208 unit IdRexec; (unit uPSI_IdRexec;)         //Indy
+209 unit IdUDPServer;                          //Indy
+210 unit IdTimeUDPServer;                      //Indy
+211 unit IdTimeServer;                         //Indy
+212 unit IdTimeUDP; (unit uPSI_IdUDPServer;)   //Indy
+213 unit uPSI_IdIPWatch;                       //Indy
+214 unit uPSI_IdIrcServer;                     //Indy
+215 unit uPSI_IdMessageCollection;             //Indy
+216 unit uPSI_cPEM;                            //Fundamentals 4
+217 unit uPSI_cFundamentUtils;                 //Fundamentals 4
+218 unit uPSI_uwinplot;                        //DMath
+219 unit uPSI_xrtl_util_CPUUtils;              //ExtentedRTL
+220 unit uPSI_GR32_System;                     //Graphics32
+221 unit uPSI_cFileUtils;                      //Fundamentals 4
+222 unit uPSI_cDateTime; (timemachine)         //Fundamentals 4
+223 unit uPSI_cTimers; (high precision timer)  //Fundamentals 4
+224 unit uPSI_cRandom;                         //Fundamentals 4
+225 unit uPSI_ueval;                           //DMath
+226 unit uPSI_xrtl_net_URIUtils;               //ExtendedRTL
+227 unit xrtl_net_URIUtils;                    //ExtendedRTL
+228 unit uPSI_ufft;  (FFT)                     //DMath
+229 unit uPSI_DBXChannel;                      //Delphi
+230 unit uPSI_DBXIndyChannel;                  //Delphi Indy
+231 unit uPSI_xrtl_util_COMCat;                //ExtendedRTL
+232 unit uPSI_xrtl_util_StrUtils;              //ExtendedRTL
+233 unit uPSI_xrtl_util_VariantUtils;          //ExtendedRTL
+234 unit uPSI_xrtl_util_FileUtils;             //ExtendedRTL
+235 unit xrtl_util_Compat;                     //ExtendedRTL
+236 unit uPSI_OleAuto;                         //Borland
+237 unit uPSI_xrtl_util_COMUtils;              //ExtendedRTL
+238 unit uPSI_CmAdmCtl;                        //Borland
+239 unit uPSI_ValEdit2;                        //VCL
+240 unit uPSI_GR32;  //Graphics32              //Graphics32
+241 unit uPSI_GR32_Image;                      //Graphics32
+242 unit uPSI_xrtl_util_TimeUtils;             //ExtendedRTL
+243 unit uPSI_xrtl_util_TimeZone;              //ExtendedRTL
+244 unit uPSI_xrtl_util_TimeStamp;             //ExtendedRTL
+245 unit uPSI_xrtl_util_Map;                   //ExtendedRTL
+246 unit uPSI_xrtl_util_Set;                   //ExtendedRTL
+247 unit uPSI_CPortMonitor;                    //ComPort
+248 unit uPSI_StIniStm;                        //SysTools4
+249 unit uPSI_GR32_ExtImage;                   //Graphics32
+250 unit uPSI_GR32_OrdinalMaps;                //Graphics32
+251 unit uPSI_GR32_Rasterizers;                //Graphics32
+252 unit uPSI_xrtl_util_Exception;             //ExtendedRTL
+253 unit uPSI_xrtl_util_Value;                 //ExtendedRTL
+254 unit uPSI_xrtl_util_Compare;               //ExtendedRTL
+255 unit uPSI_FlatSB;                          //VCL
+256 unit uPSI_JvAnalogClock;                   //JCL
+257 unit uPSI_JvAlarms;                        //JCL
+258 unit uPSI_JvSQLS;                          //JCL
+259 unit uPSI_JvDBSecur;                       //JCL
+260 unit uPSI_JvDBQBE;                         //JCL
+261 unit uPSI_JvStarfield;                     //JCL
+262 unit uPSI_JVCLMiscal;                      //JCL
+263 unit uPSI_JvProfiler32;                    //JCL
+264 unit uPSI_JvDirectories,                   //JCL
+265 unit uPSI_JclSchedule,                     //JCL
+266 unit uPSI_JclSvcCtrl,                      //JCL
+267 unit uPSI_JvSoundControl,                  //JCL
+268 unit uPSI_JvBDESQLScript,                  //JCL
+269 unit uPSI_JvgDigits,                       //JCL>
+270 unit uPSI_ImgList;                         //TCustomImageList
+271 unit uPSI_JclMIDI;                         //JCL>
+272 unit uPSI_JclWinMidi;                      //JCL>
+273 unit uPSI_JclNTFS;                         //JCL>
+274 unit uPSI_JclAppInst;                      //JCL>
+275 unit uPSI_JvRle;                           //JCL>
+276 unit uPSI_JvRas32;                         //JCL>
+277 unit uPSI_JvImageDrawThread,               //JCL>
+278 unit uPSI_JvImageWindow,                   //JCL>
+279 unit uPSI_JvTransparentForm;               //JCL>
+280 unit uPSI_JvWinDialogs;                    //JCL>
+281 unit uPSI_JvSimLogic,                      //JCL>
+282 unit uPSI_JvSimIndicator,                  //JCL>
+283 unit uPSI_JvSimPID,                        //JCL>
+284 unit uPSI_JvSimPIDLinker,                  //JCL>
+285 unit uPSI_IdRFCReply;                      //Indy
+286 unit uPSI_IdIdent;                         //Indy
+287 unit uPSI_IdIdentServer;                   //Indy
+288 unit uPSI_JvPatchFile;                     //JCL
+289 unit uPSI_StNetPfm;                        //SysTools4
+290 unit uPSI_StNet;                           //SysTools4
+291 unit uPSI_JclPeImage;                      //JCL
+292 unit uPSI_JclPrint;                        //JCL
+293 unit uPSI_JclMime;                         //JCL
+294 unit uPSI_JvRichEdit;                      //JCL
+295 unit uPSI_JvDBRichEd;                      //JCL
+296 unit uPSI_JvDice;                          //JCL
+297 unit uPSI_JvFloatEdit;                     //JCL 3.9.8
+298 unit uPSI_JvDirFrm;                        //JCL
+299 unit uPSI_JvDualList;                      //JCL
+300 unit uPSI_JvSwitch;                        ////JCL
+301 unit uPSI_JvTimerLst;                      ////JCL
+302 unit uPSI_JvMemTable;                      //JCL
+303 unit uPSI_JvObjStr;                        //JCL
+304 unit uPSI_StLArr;                          //SysTools4
+305 unit uPSI_StWmDCpy;                        //SysTools4
+306 unit uPSI_StText;                          //SysTools4
+307 unit uPSI_StNTLog;                         //SysTools4
+308 unit uPSI_xrtl_math_Integer;               //ExtendedRTL
+309 unit uPSI_JvImagPrvw;                      //JCL
+310 unit uPSI_JvFormPatch;                     //JCL
+311 unit uPSI_JvPicClip;                       //JCL
+312 unit uPSI_JvDataConv;                      //JCL
+313 unit uPSI_JvCpuUsage;                      //JCL
+314 unit uPSI_JclUnitConv_mX2;                 //JCL
+315 unit JvDualListForm;                       //JCL
+316 unit uPSI_JvCpuUsage2;                     //JCL
+317 unit uPSI_JvParserForm;                    //JCL
+318 unit uPSI_JvJanTreeView;                   //JCL
+319 unit uPSI_JvTransLED;                      //JCL
+320 unit uPSI_JvPlaylist;                      //JCL
+321 unit uPSI_JvFormAutoSize;                  //JCL
+322 unit uPSI_JvYearGridEditForm;              //JCL
+323 unit uPSI_JvMarkupCommon;                  //JCL
+324 unit uPSI_JvChart;                         //JCL
+325 unit uPSI_JvXPCore;                        //JCL
+326 unit uPSI_JvXPCoreUtils;                   //JCL
+327 unit uPSI_StatsClasses;                    //mX4
+328 unit uPSI_ExtCtrls2;                       //VCL
+329 unit uPSI_JvUrlGrabbers;                   //JCL
+330 unit uPSI_JvXmlTree;                       //JCL
+331 unit uPSI_JvWavePlayer;                    //JCL
+332 unit uPSI_JvUnicodeCanvas;                 //JCL
+333 unit uPSI_JvTFUtils;                       //JCL
+334 unit uPSI_IdServerIOHandler;               //Indy
+335 unit uPSI_IdServerIOHandlerSocket;         //Indy
+336 unit uPSI_IdMessageCoder;                  //Indy
+337 unit uPSI_IdMessageCoderMIME;              //Indy
+338 unit uPSI_IdMIMETypes;                     //Indy
+339 unit uPSI_JvConverter;                     //JCL
+340 unit uPSI_JvCsvParse;                      //JCL
+341 unit uPSI_umath;  unit uPSI_ugamma;        //DMath
+342 unit uPSI_ExcelExport;(Nat:TJsExcelExport) //JCL
+343 unit uPSI_JvDBGridExport;                  //JCL
+344 unit uPSI_JvgExport;                       //JCL
+345 unit uPSI_JvSerialMaker;                   //JCL
+346 unit uPSI_JvWin32;                         //JCL
+347 unit uPSI_JvPaintFX;                       //JCL
+348 unit uPSI_JvOracleDataSet; (beta)          //JCL
+349 unit uPSI_JvValidators; (preview)          //JCL
+350 unit uPSI_JvNTEventLog;                    //JCL
+351 unit uPSI_ShellZipTool;                    //mX4
+352 unit uPSI_JvJoystick;                      //JCL
+353 unit uPSI_JvMailSlots;                     //JCL
+354 unit uPSI_JclComplex;                      //JCL
+355 unit uPSI_SynPdf;                          //Synopse
+356 unit uPSI_Registry;                        //VCL
+357 unit uPSI_TlHelp32;                        //VCL
+358 unit uPSI_JclRegistry;                     //JCL
+359 unit uPSI_JvAirBrush;                      //JCL
+360 unit uPSI_mORMotReport;                    //Synopse
+361 unit uPSI_JclLocales;                      //JCL
+362 unit uPSI_SynEdit;                         //SynEdit
+363 unit uPSI_SynEditTypes;                    //SynEdit
+364 unit uPSI_SynMacroRecorder;                //SynEdit
+365 unit uPSI_LongIntList;                     //SynEdit
+366 unit uPSI_devcutils;                       //DevC
+367 unit uPSI_SynEditMiscClasses;              //SynEdit
+368 unit uPSI_SynEditRegexSearch;              //SynEdit
+369 unit uPSI_SynEditHighlighter;              //SynEdit
+370 unit uPSI_SynHighlighterPas;               //SynEdit
+371 unit uPSI_JvSearchFiles;                   //JCL
+372 unit uPSI_SynHighlighterAny;               //Lazarus
+373 unit uPSI_SynEditKeyCmds;                  //SynEdit
+374 unit uPSI_SynEditMiscProcs,                //SynEdit
+375 unit uPSI_SynEditKbdHandler                //SynEdit
+376 unit uPSI_JvAppInst,                       //JCL
+377 unit uPSI_JvAppEvent;                      //JCL
+378 unit uPSI_JvAppCommand;                    //JCL
+379 unit uPSI_JvAnimTitle;                     //JCL
+380 unit uPSI_JvAnimatedImage;                 //JCL
+381 unit uPSI_SynEditExport;                   //SynEdit
+382 unit uPSI_SynExportHTML;                   //SynEdit
+383 unit uPSI_SynExportRTF;                    //SynEdit
+384 unit uPSI_SynEditSearch;                   //SynEdit
+385 unit uPSI_fMain_back                       //maXbox;
+386 unit uPSI_JvZoom;                          //JCL
+387 unit uPSI_PMrand;                          //PM
+388 unit uPSI_JvSticker;                       //JCL
+389 unit uPSI_XmlVerySimple;                   //mX4
+390 unit uPSI_Services;                        //ExtPascal
+391 unit uPSI_ExtPascalUtils;                  //ExtPascal
+392 unit uPSI_SocketsDelphi;                   //ExtPascal
+393 unit uPSI_StBarC;                          //SysTools
+394 unit uPSI_StDbBarC;                        //SysTools
+395 unit uPSI_StBarPN;                         //SysTools
+396 unit uPSI_StDbPNBC;                        //SysTools
+397 unit uPSI_StDb2DBC;                        //SysTools
+398 unit uPSI_StMoney;                         //SysTools
+399 unit uPSI_JvForth;                         //JCL
+400 unit uPSI_RestRequest;                     //mX4
+401 unit uPSI_HttpRESTConnectionIndy;          //mX4
+402 unit uPSI_JvXmlDatabase; //update          //JCL
+403 unit uPSI_StAstro;                         //SysTools
+404 unit uPSI_StSort;                          //SysTools
+405 unit uPSI_StDate;                          //SysTools
+406 unit uPSI_StDateSt;                        //SysTools
+407 unit uPSI_StBase;                          //SysTools
+408 unit uPSI_StVInfo;                         //SysTools
+409 unit uPSI_JvBrowseFolder;                  //JCL
+410 unit uPSI_JvBoxProcs;                      //JCL
+411 unit uPSI_urandom; (unit uranuvag;)        //DMath
+412 unit uPSI_usimann; (unit ugenalg;)         //DMath
+413 unit uPSI_JvHighlighter;                   //JCL
+414 unit uPSI_Diff;                            //mX4
+415 unit uPSI_SpringWinAPI;                    //DSpring
+416 unit uPSI_StBits;                          //SysTools
+417 unit uPSI_TomDBQue;                        //mX4
+418 unit uPSI_MultilangTranslator;             //mX4
+419 unit uPSI_HyperLabel;                      //mX4
+420 unit uPSI_Starter;                         //mX4
+421 unit uPSI_FileAssocs;                      //devC
+422 unit uPSI_devFileMonitorX;                 //devC
+423 unit uPSI_devrun;                          //devC
+424 unit uPSI_devExec;                         //devC
+425 unit uPSI_oysUtils;                        //devC
+426 unit uPSI_DosCommand;                      //devC
+427 unit uPSI_CppTokenizer;                    //devC
+428 unit uPSI_JvHLParser;                      //devC
+429 unit uPSI_JclMapi;                         //JCL
+430 unit uPSI_JclShell;                        //JCL
+431 unit uPSI_JclCOM;                          //JCL
+432 unit uPSI_GR32_Math;                       //Graphics32
+433 unit uPSI_GR32_LowLevel;                   //Graphics32
+434 unit uPSI_SimpleHl;                        //mX4
+435 unit uPSI_GR32_Filters,                    //Graphics32
+436 unit uPSI_GR32_VectorMaps;                 //Graphics32
+437 unit uPSI_cXMLFunctions;                   //Fundamentals 4
+438 unit uPSI_JvTimer;                         //JCL
+439 unit uPSI_cHTTPUtils;                      //Fundamentals 4
+440 unit uPSI_cTLSUtils;                       //Fundamentals 4
+441 unit uPSI_JclGraphics;                     //JCL
+442 unit uPSI_JclSynch;                        //JCL
+443 unit uPSI_IdTelnet;                        //Indy
+444 unit uPSI_IdTelnetServer,                  //Indy
+445 unit uPSI_IdEcho,                          //Indy
+446 unit uPSI_IdEchoServer,                    //Indy
+447 unit uPSI_IdEchoUDP,                       //Indy
+448 unit uPSI_IdEchoUDPServer,                 //Indy
+449 unit uPSI_IdSocks,                         //Indy
+450 unit uPSI_IdAntiFreezeBase;                //Indy
+451 unit uPSI_IdHostnameServer;                //Indy
+452 unit uPSI_IdTunnelCommon,                  //Indy
+453 unit uPSI_IdTunnelMaster,                  //Indy
+454 unit uPSI_IdTunnelSlave,                   //Indy
+455 unit uPSI_IdRSH,                           //Indy
+456 unit uPSI_IdRSHServer,                     //Indy
+457 unit uPSI_Spring_Cryptography_Utils;       //Spring4Delphi
+458 unit uPSI_MapReader,                       //devC
+459 unit uPSI_LibTar,                          //devC
+460 unit uPSI_IdStack;                         //Indy
+461 unit uPSI_IdBlockCipherIntercept;          //Indy
+462 unit uPSI_IdChargenServer;                 //Indy
+463 unit uPSI_IdFTPServer,                     //Indy
+464 unit uPSI_IdException,                     //Indy
+465 unit uPSI_utexplot;                        //DMath
+466 unit uPSI_uwinstr;                         //DMath
+467 unit uPSI_VarRecUtils;                     //devC
+468 unit uPSI_JvStringListToHtml,              //JCL
+469 unit uPSI_JvStringHolder,                  //JCL
+470 unit uPSI_IdCoder;                         //Indy
+471 unit uPSI_SynHighlighterDfm;               //Synedit
+472 unit uHighlighterProcs; in 471             //Synedit
+473 unit uPSI_LazFileUtils,                    //LCL
+474 unit uPSI_IDECmdLine;                      //LCL
+475 unit uPSI_lazMasks;                        //LCL
+476 unit uPSI_ip_misc;                         //mX4
+477 unit uPSI_Barcode;                         //LCL
+478 unit uPSI_SimpleXML;                       //LCL
+479 unit uPSI_JclIniFiles;                     //JCL
+480 unit uPSI_D2XXUnit;  //{$X-}                 //FTDI
+481 unit uPSI_JclDateTime;                     //JCL
+482 unit uPSI_JclEDI;                          //JCL
+483 unit uPSI_JclMiscel2;                      //JCL
+484 unit uPSI_JclValidation;                   //JCL
+485 unit uPSI_JclAnsiStrings; {-PString}       //JCL
+486 unit uPSI_SynEditMiscProcs2;               //Synedit
+487 unit uPSI_JclStreams;                      //JCL
+488 unit uPSI_QRCode;                          //mX4
+489 unit uPSI_BlockSocket;                     //ExtPascal
+490 unit uPSI_Masks,Utils                      //VCL
+491 unit uPSI_synautil;                        //Synapse!
+492 unit uPSI_JclMath_Class;                   //JCL RTL
+493 unit ugamdist; //Gamma function            //DMath
+494 unit uibeta, ucorrel; //IBeta              //DMath
+495 unit uPSI_SRMgr;                           //mX4
+496 unit uPSI_HotLog;                          //mX4
+497 unit uPSI_DebugBox;                        //mX4
+498 unit uPSI_ustrings;                        //DMath
+499 unit uPSI_uregtest;                        //DMath
+500 unit uPSI_usimplex;                        //DMath
+501 unit uPSI_uhyper;                          //DMath
+502 unit uPSI_IdHL7;                           //Indy
+503 unit uPSI_IdIPMCastBase,                   //Indy
+504 unit uPSI_IdIPMCastServer;                 //Indy
+505 unit uPSI_IdIPMCastClient;                 //Indy
+506 unit uPSI_unlfit; //nlregression           //DMath
+507 unit uPSI_IdRawHeaders;                    //Indy
+508 unit uPSI_IdRawClient;                     //Indy
+509 unit uPSI_IdRawFunctions;                  //Indy
+510 unit uPSI_IdTCPStream;                     //Indy
+511 unit uPSI_IdSNPP;                          //Indy
+512 unit uPSI_St2DBarC;                        //SysTools
+513 unit uPSI_ImageWin;  //FTL                 //VCL
+514 unit uPSI_CustomDrawTreeView; //FTL        //VCL
+515 unit uPSI_GraphWin;  //FTL                 //VCL
+516 unit uPSI_actionMain;  //FTL               //VCL
+517 unit uPSI_StSpawn;                         //SysTools
+518 unit uPSI_CtlPanel;                        //VCL
+519 unit uPSI_IdLPR;                           //Indy
+520 unit uPSI_SockRequestInterpreter;          //Indy
+521 unit uPSI_ulambert;                        //DMath
+522 unit uPSI_ucholesk;                        //DMath
+523 unit uPSI_SimpleDS;                        //VCL
+524 unit uPSI_DBXSqlScanner;                   //VCL
+525 unit uPSI_DBXMetaDataUtil;                 //VCL
+526 unit uPSI_Chart;                           //TEE
+527 unit uPSI_TeeProcs;                        //TEE
+528 unit mXBDEUtils;                           //mX4
+529 unit uPSI_MDIEdit;                         //VCL
+530 unit uPSI_CopyPrsr;                        //VCL
+531 unit uPSI_SockApp;                         //VCL
+532 unit uPSI_AppEvnts;                        //VCL
+533 unit uPSI_ExtActns;                        //VCL
+534 unit uPSI_TeEngine;                        //TEE
+535 unit uPSI_CoolMain; //browser              //VCL
+536 unit uPSI_StCRC;                           //SysTools
+537 unit uPSI_StDecMth2;                       //SysTools
+538 unit uPSI_frmExportMain;                   //Synedit
+539 unit uPSI_SynDBEdit;                       //Synedit
+540 unit uPSI_SynEditWildcardSearch;           //Synedit
+541 unit uPSI_BoldComUtils;                    //BOLD
+542 unit uPSI_BoldIsoDateTime;                 //BOLD
+543 unit uPSI_BoldGUIDUtils; //inCOMUtils      //BOLD
+544 unit uPSI_BoldXMLRequests;                 //BOLD
+545 unit uPSI_BoldStringList;                  //BOLD
+546 unit uPSI_BoldFileHandler;                 //BOLD
+547 unit uPSI_BoldContainers;                  //BOLD
+548 unit uPSI_BoldQueryUserDlg;                //BOLD
+549 unit uPSI_BoldWinINet;                     //BOLD
+550 unit uPSI_BoldQueue;                       //BOLD
+551 unit uPSI_JvPcx;                           //JCL
+552 unit uPSI_IdWhois;                         //Indy
+553 unit uPSI_IdWhoIsServer;                   //Indy
+554 unit uPSI_IdGopher;                        //Indy
+555 unit uPSI_IdDateTimeStamp;                 //Indy
+556 unit uPSI_IdDayTimeServer;                 //Indy
+557 unit uPSI_IdDayTimeUDP;                    //Indy
+558 unit uPSI_IdDayTimeUDPServer;              //Indy
+559 unit uPSI_IdDICTServer;                    //Indy
+560 unit uPSI_IdDiscardServer;                 //Indy
+561 unit uPSI_IdDiscardUDPServer;              //Indy
+562 unit uPSI_IdMappedFTP;                     //Indy
+563 unit uPSI_IdMappedPortTCP;                 //Indy
+564 unit uPSI_IdGopherServer;                  //Indy
+565 unit uPSI_IdQotdServer;                    //Indy
+566 unit uPSI_JvRgbToHtml;                     //JCL
+567 unit uPSI_JvRemLog,                        //JCL
+568 unit uPSI_JvSysComp;                       //JCL
+569 unit uPSI_JvTMTL;                          //JCL
+570 unit uPSI_JvWinampAPI;                     //JCL
+571 unit uPSI_MSysUtils;                       //mX4
+572 unit uPSI_ESBMaths;                        //ESB
+573 unit uPSI_ESBMaths2;                       //ESB
+574 unit uPSI_uLkJSON;                         //Lk
+575 unit uPSI_ZURL;  //Zeos                    //Zeos
+576 unit uPSI_ZSysUtils;                       //Zeos
+577 unit unaUtils internals                    //UNA
+578 unit uPSI_ZMatchPattern;                   //Zeos
+579 unit uPSI_ZClasses;                        //Zeos
+580 unit uPSI_ZCollections;                    //Zeos
+581 unit uPSI_ZEncoding;                       //Zeos
+582 unit uPSI_IdRawBase;                       //Indy
+583 unit uPSI_IdNTLM;                          //Indy
+584 unit uPSI_IdNNTP;                          //Indy
+585 unit uPSI_usniffer; //PortScanForm         //mX4
+586 unit uPSI_IdCoderMIME;                     //Indy
+587 unit uPSI_IdCoderUUE;                      //Indy
+588 unit uPSI_IdCoderXXE;                      //Indy
+589 unit uPSI_IdCoder3to4;                     //Indy
+590 unit uPSI_IdCookie;                        //Indy
+591 unit uPSI_IdCookieManager;                 //Indy
+592 unit uPSI_WDosSocketUtils;                 //WDos
+593 unit uPSI_WDosPlcUtils;                    //WDos
+594 unit uPSI_WDosPorts;                       //WDos
+595 unit uPSI_WDosResolvers;                   //WDos
+596 unit uPSI_WDosTimers;                      //WDos
+597 unit uPSI_WDosPlcs;                        //WDos
+598 unit uPSI_WDosPneumatics;                  //WDos
+599 unit uPSI_IdFingerServer;                  //Indy
+600 unit uPSI_IdDNSResolver;                   //Indy
+601 unit uPSI_IdHTTPWebBrokerBridge;           //Indy
+602 unit uPSI_IdIntercept;                     //Indy
+603 unit uPSI_IdIPMCastBase;                   //Indy
+604 unit uPSI_IdLogBase;                       //Indy
+605 unit uPSI_IdIOHandlerStream;               //Indy
+606 unit uPSI_IdMappedPortUDP;                 //Indy
+607 unit uPSI_IdQOTDUDPServer;                 //Indy
+608 unit uPSI_IdQOTDUDP;                       //Indy
+609 unit uPSI_IdSysLog;                        //Indy
+610 unit uPSI_IdSysLogServer;                  //Indy
+611 unit uPSI_IdSysLogMessage;                 //Indy
+612 unit uPSI_IdTimeServer;                    //Indy
+613 unit uPSI_IdTimeUDP;                       //Indy
+614 unit uPSI_IdTimeUDPServer;                 //Indy
+615 unit uPSI_IdUserAccounts;                  //Indy
+616 unit uPSI_TextUtils;                       //mX4
+617 unit uPSI_MandelbrotEngine;                //mX4
+618 unit uPSI_delphi_arduino_Unit1;            //mX4
+619 unit uPSI_DTDSchema2;                      //mX4
+620 unit uPSI_fplotMain;                       //DMath
+621 unit uPSI_FindFileIter;                    //mX4
+622 unit uPSI_PppState;  (JclStrHashMap)       //PPP
+623 unit uPSI_PppParser;                       //PPP
+624 unit uPSI_PppLexer;                        //PPP
+625 unit uPSI_PCharUtils;                      //PPP
+626 unit uPSI_uJSON;                           //WU
+627 unit uPSI_JclStrHashMap;                   //JCL
+628 unit uPSI_JclHookExcept;                   //JCL
+629 unit uPSI_EncdDecd;                        //VCL
+630 unit uPSI_SockAppReg;                      //VCL
+631 unit uPSI_PJFileHandle;                    //PJ
+632 unit uPSI_PJEnvVars;                       //PJ
+633 unit uPSI_PJPipe;                          //PJ
+634 unit uPSI_PJPipeFilters;                   //PJ
+635 unit uPSI_PJConsoleApp;                    //PJ
+636 unit uPSI_UConsoleAppEx;                   //PJ
+637 unit uPSI_DbxSocketChannelNative,          //VCL
+638 unit uPSI_DbxDataGenerator,                //VCL
+639 unit uPSI_DBXClient;                       //VCL
+640 unit uPSI_IdLogEvent;                      //Indy
+641 unit uPSI_Reversi;                         //mX4
+642 unit uPSI_Geometry;                        //mX4
+643 unit uPSI_IdSMTPServer;                    //Indy
+644 unit uPSI_Textures;                        //mX4
+645 unit uPSI_IBX;                             //VCL
+646 unit uPSI_IWDBCommon;                      //VCL
+647 unit uPSI_SortGrid;                        //mX4
+648 unit uPSI_IB;                              //VCL
+649 unit uPSI_IBScript;                        //VCL
+650 unit uPSI_JvCSVBaseControls;               //JCL
+651 unit uPSI_Jvg3DColors;                     //JCL
+652 unit uPSI_JvHLEditor;  //beat              //JCL
+653 unit uPSI_JvShellHook;                     //JCL
+654 unit uPSI_DBCommon2                        //VCL
+655 unit uPSI_JvSHFileOperation;               //JCL
+656 unit uPSI_uFilexport;                      //mX4
+657 unit uPSI_JvDialogs;                       //JCL
+658 unit uPSI_JvDBTreeView;                    //JCL
+659 unit uPSI_JvDBUltimGrid;                   //JCL
+660 unit uPSI_JvDBQueryParamsForm;             //JCL
+661 unit uPSI_JvExControls;                    //JCL
+662 unit uPSI_JvBDEMemTable;                   //JCL
+663 unit uPSI_JvCommStatus;                    //JCL
+664 unit uPSI_JvMailSlots2;                    //JCL
+665 unit uPSI_JvgWinMask;                      //JCL
+666 unit uPSI_StEclpse;                        //SysTools
+667 unit uPSI_StMime;                          //SysTools
+668 unit uPSI_StList;                          //SysTools
+669 unit uPSI_StMerge;                         //SysTools
+670 unit uPSI_StStrS;                          //SysTools
+671 unit uPSI_StTree,                          //SysTools
+672 unit uPSI_StVArr;                          //SysTools
+673 unit uPSI_StRegIni;                        //SysTools
+674 unit uPSI_urkf;                            //DMath
+675 unit uPSI_usvd;                            //DMath
+676 unit uPSI_DepWalkUtils;                    //JCL
+677 unit uPSI_OptionsFrm;                      //JCL
+678 unit yuvconverts;                          //mX4
+679 uPSI_JvPropAutoSave;                       //JCL
+680 uPSI_AclAPI;                               //alcinoe
+681 uPSI_AviCap;                               //alcinoe
+682 uPSI_ALAVLBinaryTree;                      //alcinoe
+683 uPSI_ALFcnMisc;                            //alcinoe
+684 uPSI_ALStringList;                         //alcinoe
+685 uPSI_ALQuickSortList;                      //alcinoe
+686 uPSI_ALStaticText;                         //alcinoe
+687 uPSI_ALJSONDoc;                            //alcinoe
+688 uPSI_ALGSMComm;                            //alcinoe
+689 uPSI_ALWindows;                            //alcinoe
+690 uPSI_ALMultiPartFormDataParser;            //alcinoe
+691 uPSI_ALHttpCommon;                         //alcinoe
+692 uPSI_ALWebSpider,                          //alcinoe
+693 uPSI_ALHttpClient;                         //alcinoe
+694 uPSI_ALFcnHTML;                            //alcinoe
+695 uPSI_ALFTPClient;                          //alcinoe
+696 uPSI_ALInternetMessageCommon;              //alcinoe
+697 uPSI_ALWininetHttpClient;                  //alcinoe
+698 uPSI_ALWinInetFTPClient;                   //alcinoe
+699 uPSI_ALWinHttpWrapper;                     //alcinoe
+700 uPSI_ALWinHttpClient;                      //alcinoe
+701 uPSI_ALFcnWinSock;                         //alcinoe
+702 uPSI_ALFcnSQL;                             //alcinoe
+703 uPSI_ALFcnCGI;                             //alcinoe
+704 uPSI_ALFcnExecute;                         //alcinoe
+705 uPSI_ALFcnFile;                            //alcinoe
+706 uPSI_ALFcnMime;                            //alcinoe
+707 uPSI_ALPhpRunner;                          //alcinoe
+708 uPSI_ALGraphic;                            //alcinoe
+709 uPSI_ALIniFiles;                           //alcinoe
+710 uPSI_ALMemCachedClient;                    //alcinoe
+711 unit uPSI_MyGrids;                         //mX4
+712 uPSI_ALMultiPartMixedParser                //alcinoe
+713 uPSI_ALSMTPClient                          //alcinoe
+714 uPSI_ALNNTPClient;                         //alcinoe
+715 uPSI_ALHintBalloon;                        //alcinoe
+716 unit uPSI_ALXmlDoc;                        //alcinoe
+717 unit uPSI_IPCThrd;                         //VCL
+718 unit uPSI_MonForm;                         //VCL
+719 unit uPSI_TeCanvas;                        //Orpheus
+720 unit uPSI_Ovcmisc;                         //Orpheus
+721 unit uPSI_ovcfiler;                        //Orpheus
+722 unit uPSI_ovcstate;                        //Orpheus
+723 unit uPSI_ovccoco;                         //Orpheus
+724 unit uPSI_ovcrvexp;                        //Orpheus
+725 unit uPSI_OvcFormatSettings;               //Orpheus
+726 unit uPSI_OvcUtils;                        //Orpheus
+727 unit uPSI_ovcstore;                        //Orpheus
+728 unit uPSI_ovcstr;                          //Orpheus
+729 unit uPSI_ovcmru;                          //Orpheus
+730 unit uPSI_ovccmd;                          //Orpheus
+731 unit uPSI_ovctimer;                        //Orpheus
+732 unit uPSI_ovcintl;                         //Orpheus
+733 uPSI_AfCircularBuffer;                     //AsyncFree
+734 uPSI_AfUtils;                              //AsyncFree
+735 uPSI_AfSafeSync;                           //AsyncFree
+736 uPSI_AfComPortCore;                        //AsyncFree
+737 uPSI_AfComPort;                            //AsyncFree
+738 uPSI_AfPortControls;                       //AsyncFree
+739 uPSI_AfDataDispatcher;                     //AsyncFree
+740 uPSI_AfViewers;                            //AsyncFree
+741 uPSI_AfDataTerminal;                       //AsyncFree
+742 uPSI_SimplePortMain;                       //AsyncFree
+743 unit uPSI_ovcclock;                        //Orpheus
+744 unit uPSI_o32intlst;                       //Orpheus
+745 unit uPSI_o32ledlabel;                     //Orpheus
+746 unit uPSI_AlMySqlClient;                   //alcinoe
+747 unit uPSI_ALFBXClient;                     //alcinoe
+748 unit uPSI_ALFcnSQL;                        //alcinoe
+749 unit uPSI_AsyncTimer;                      //mX4
+750 unit uPSI_ApplicationFileIO;               //mX4
+751 unit uPSI_PsAPI;                           //VCLé
+752 uPSI_ovcuser;                              //Orpheus
+753 uPSI_ovcurl;                               //Orpheus
+754 uPSI_ovcvlb;                               //Orpheus
+755 uPSI_ovccolor;                             //Orpheus
+756 uPSI_ALFBXLib,                             //alcinoe
+757 uPSI_ovcmeter;                             //Orpheus
+758 uPSI_ovcpeakm;                             //Orpheus
+759 uPSI_O32BGSty;                             //Orpheus
+760 uPSI_ovcBidi;                              //Orpheus
+761 uPSI_ovctcary;                             //Orpheus
+762 uPSI_DXPUtils;                             //mX4
+763 uPSI_ALMultiPartBaseParser;                //alcinoe
+764 uPSI_ALMultiPartAlternativeParser;         //alcinoe
+765 uPSI_ALPOP3Client;                         //alcinoe
+766 uPSI_SmallUtils;                           //mX4
+767 uPSI_MakeApp;                              //mX4
+768 uPSI_O32MouseMon;                          //Orpheus
+769 uPSI_OvcCache;                             //Orpheus
+770 uPSI_ovccalc;                              //Orpheus
+771 uPSI_Joystick,                             //OpenGL
+772 uPSI_ScreenSaver;                          //OpenGL
+773 uPSI_XCollection,                          //OpenGL
+774 uPSI_Polynomials,                          //OpenGL
+775 uPSI_PersistentClasses, //9.86             //OpenGL
+776 uPSI_VectorLists;                          //OpenGL
+777 uPSI_XOpenGL,                              //OpenGL
+778 uPSI_MeshUtils;                            //OpenGL
+779 unit uPSI_JclSysUtils;                     //JCL
+780 unit uPSI_JclBorlandTools;                 //JCL
+781 unit JclFileUtils_max;                     //JCL
+782 uPSI_AfDataControls,                       //AsyncFree
+783 uPSI_GLSilhouette;                         //OpenGL
+784 uPSI_JclSysUtils_class;                    //JCL
+785 uPSI_JclFileUtils_class;                   //JCL
+786 uPSI_FileUtil;                             //JCL
+787 uPSI_changefind;                           //mX4
+788 uPSI_cmdIntf;                              //mX4
+789 uPSI_fservice;                             //mX4
+790 uPSI_Keyboard;                             //OpenGL
+791 uPSI_VRMLParser,                           //OpenGL
+792 uPSI_GLFileVRML,                           //OpenGL
+793 uPSI_Octree;                               //OpenGL
+794 uPSI_GLPolyhedron,                         //OpenGL
+795 uPSI_GLCrossPlatform;                      //OpenGL
+796 uPSI_GLParticles;                          //OpenGL
+797 uPSI_GLNavigator;                          //OpenGL
+798 uPSI_GLStarRecord;                         //OpenGL
+799 uPSI_GLTextureCombiners;                   //OpenGL
+800 uPSI_GLCanvas;                             //OpenGL
+801 uPSI_GeometryBB;                           //OpenGL
+802 uPSI_GeometryCoordinates;                  //OpenGL
+803 uPSI_VectorGeometry;                       //OpenGL
+804 uPSI_BumpMapping;                          //OpenGL
+805 uPSI_TGA;                                  //OpenGL
+806 uPSI_GLVectorFileObjects;                  //OpenGL
+807 uPSI_IMM;                                  //VCL
+808 uPSI_CategoryButtons;                      //VCL
+809 uPSI_ButtonGroup;                          //VCL
+810 uPSI_DbExcept;                             //VCL
+811 uPSI_AxCtrls;                              //VCL
+812 uPSI_GL_actorUnit1;                        //OpenGL
+813 uPSI_StdVCL;                               //VCL
+814 unit CurvesAndSurfaces;                    //OpenGL
+815 uPSI_DataAwareMain;                        //AsyncFree
+816 uPSI_TabNotBk;                             //VCL
+817 uPSI_udwsfiler;                            //mX4
+818 uPSI_synaip;                               //Synapse!
+819 uPSI_synacode;                             //Synapse
+820 uPSI_synachar;                             //Synapse
+821 uPSI_synamisc;                             //Synapse
+822 uPSI_synaser;                              //Synapse
+823 uPSI_synaicnv;                             //Synapse
+824 uPSI_tlntsend;                             //Synapse
+825 uPSI_pingsend;                             //Synapse
+826 uPSI_blcksock;                             //Synapse
+827 uPSI_asn1util;                             //Synapse
+828 uPSI_dnssend;                              //Synapse
+829 uPSI_clamsend;                             //Synapse
+830 uPSI_ldapsend;                             //Synapse
+831 uPSI_mimemess;                             //Synapse
+832 uPSI_slogsend;                             //Synapse
+833 uPSI_mimepart;                             //Synapse
+834 uPSI_mimeinln;                             //Synapse
+835 uPSI_ftpsend,                              //Synapse
+836 uPSI_ftptsend;                             //Synapse
+837 uPSI_httpsend;                             //Synapse
+838 uPSI_sntpsend;                             //Synapse
+839 uPSI_smtpsend;                             //Synapse
+840 uPSI_snmpsend;                             //Synapse
+841 uPSI_imapsend;                             //Synapse
+842 uPSI_pop3send;                             //Synapse
+843 uPSI_nntpsend;                             //Synapse
+844 uPSI_ssl_cryptlib;                         //Synapse
+845 uPSI_ssl_openssl;                          //Synapse
+846 uPSI_synhttp_daemon;                       //Synapse
+847 uPSI_NetWork;                              //mX4
+848 uPSI_PingThread;                           //Synapse
+849 uPSI_JvThreadTimer;                        //JCL
+850 unit uPSI_wwSystem;                        //InfoPower
+851 unit uPSI_IdComponent;                     //Indy
+852 unit uPSI_IdIOHandlerThrottle;             //Indy
+853 unit uPSI_Themes;                          //VCL
+854 unit uPSI_StdStyleActnCtrls;               //VCL
+855 unit uPSI_UDDIHelper;                      //VCL
+856 unit uPSI_IdIMAP4Server;                   //Indy
+857 uPSI_VariantSymbolTable,                   //VCL //3.9.9.92
+858 uPSI_udf_glob,                             //mX4
+859 uPSI_TabGrid,                              //VCL
+860 uPSI_JsDBTreeView,                         //mX4
+861 uPSI_JsSendMail,                           //mX4
+862 uPSI_dbTvRecordList,                       //mX4
+863 uPSI_TreeVwEx,                             //mX4
+864 uPSI_ECDataLink,                           //mX4
+865 uPSI_dbTree,                               //mX4
+866 uPSI_dbTreeCBox,                           //mX4
+867 unit uPSI_Debug; //TfrmDebug               //mX4
+868 uPSI_TimeFncs;                             //mX4
+869 uPSI_FileIntf,                             //VCL
+870 uPSI_SockTransport,                        //RTL
+871 unit uPSI_WinInet;                         //RTL
+872 unit uPSI_Wwstr;                           //mX4
+873 uPSI_DBLookup,                             //VCL
+874 uPSI_Hotspot,                              //mX4
+875 uPSI_HList; //History List                 //mX4
+876 unit uPSI_DrTable;                         //VCL
+877 uPSI_TConnect,                             //VCL
+878 uPSI_DataBkr,                              //VCL
+879 uPSI_HTTPIntr;                             //VCL
+880 unit uPSI_Mathbox;                         //mX4
+881 uPSI_cyIndy,                               //cY
+882 uPSI_cySysUtils,                           //cY
+883 uPSI_cyWinUtils,                           //cY
+884 uPSI_cyStrUtils,                           //cY
+885 uPSI_cyObjUtils,                           //cY
+886 uPSI_cyDateUtils,                          //cY
+887 uPSI_cyBDE,                                //cY
+888 uPSI_cyClasses,                            //cY
+889 uPSI_cyGraphics,  //3.9.9.94_2             //cY
+890 unit uPSI_cyTypes;                         //cY
+891 uPSI_JvDateTimePicker,                     //JCL
+892 uPSI_JvCreateProcess,                      //JCL
+893 uPSI_JvEasterEgg,                          //JCL
+894 uPSI_WinSvc,  //3.9.9.94_3                 //VCL
+895 uPSI_SvcMgr                                //VCL
+896 unit uPSI_JvPickDate;                      //JCL
+897 unit uPSI_JvNotify;                        //JCL
+898 uPSI_JvStrHlder                            //JCL
+899 unit uPSI_JclNTFS2;                        //JCL
+900 uPSI_Jcl8087 //math coprocessor            //JCL
+901 uPSI_JvAddPrinter                          //JCL
+902 uPSI_JvCabFile                             //JCL
+903 uPSI_JvDataEmbedded;                       //JCL
+904 unit uPSI_U_HexView;                       //mX4
+905 uPSI_UWavein4,                             //mX4
+906 uPSI_AMixer,                               //mX4
+907 uPSI_JvaScrollText,                        //mX4
+908 uPSI_JvArrow,                              //mX4
+909 unit uPSI_UrlMon;                          //mX4
+910 U_Oscilloscope4 in 'U_Oscilloscope4.pas'   //mX4
+911 unit uPSI_U_Oscilloscope4; //TOscfrmMain;  //DFF
+912 unit uPSI_DFFUtils;                        //DFF
+913 unit uPSI_MathsLib;                        //DFF
+914 uPSI_UIntList;                             //DFF
+915 uPSI_UGetParens;                           //DFF
+916 unit uPSI_UGeometry;                       //DFF
+917 unit uPSI_UAstronomy;                      //DFF
+918 unit uPSI_UCardComponentV2;                //DFF
+919 unit uPSI_UTGraphSearch;                   //DFF
+920 unit uPSI_UParser10;                       //DFF
+921 unit uPSI_cyIEUtils;                       //cY
+922 unit uPSI_UcomboV2;                        //DFF
+923 uPSI_cyBaseComm,                           //cY
+924 uPSI_cyAppInstances,                       //cY
+925 uPSI_cyAttract,                            //cY
+926 uPSI_cyDERUtils                            //cY
+927 unit uPSI_cyDocER;                         //cY
+928 unit uPSI_ODBC;                            //mX
+929 unit uPSI_AssocExec;                       //mX
+930 uPSI_cyBaseCommRoomConnector,              //cY
+931 uPSI_cyCommRoomConnector,                  //cY
+932 uPSI_cyCommunicate,                        //cY
+933 uPSI_cyImage;                              //cY
+934 uPSI_cyBaseContainer                       //cY
+935 uPSI_cyModalContainer,                     //cY
+936 uPSI_cyFlyingContainer;                    //cY
+937 uPSI_RegStr,                               //VCL
+938 uPSI_HtmlHelpViewer;                       //VCL
+939 unit uPSI_cyIniForm                        //cY
+940 unit uPSI_cyVirtualGrid;                   //cY
+941 uPSI_Profiler,                             //DA
+942 uPSI_BackgroundWorker,                     //DA
+943 uPSI_WavePlay,                             //DA
+944 uPSI_WaveTimer,                            //DA
+945 uPSI_WaveUtils;                            //DA
+946 uPSI_NamedPipes,                           //TB
+947 uPSI_NamedPipeServer,                      //TB
+948 unit uPSI_process,                         //TB
+949 unit uPSI_DPUtils;                         //TB
+950 unit uPSI_CommonTools;                     //TB
+951 uPSI_DataSendToWeb,                        //TB
+952 uPSI_StarCalc,                             //TB
+953 uPSI_D2_XPVistaHelperU                     //TB
+954 unit uPSI_NetTools                         //TB
+955 unit uPSI_Pipes                            //TB
+956 uPSI_ProcessUnit,                          //mX
+957 uPSI_adGSM,                                //mX
+958 unit uPSI_BetterADODataSet;                //mX
+959 unit uPSI_AdSelCom; //FTT                  //mX
+960 unit unit uPSI_dwsXPlatform;               //DWS
+961 uPSI_AdSocket;                             //mX Turbo Power
+962 uPSI_AdPacket;                             //mX
+963 uPSI_AdPort;                               //mX
+964 uPSI_PathFunc;                             //Inno
+965 uPSI_CmnFunc;                              //Inno
+966 uPSI_CmnFunc2; //Inno Setup                //Inno
+967 unit uPSI_BitmapImage;                     //mX4
+968 unit uPSI_ImageGrabber;                    //mX4
+969 uPSI_SecurityFunc,                         //Inno
+970 uPSI_RedirFunc,                            //Inno
+971 uPSI_FIFO, (MemoryStream)                  //mX4
+972 uPSI_Int64Em,                              //Inno
+973 unit uPSI_InstFunc;                        //Inno
+974 unit uPSI_LibFusion;                       //Inno
+975 uPSI_SimpleExpression;                     //Inno
+976 uPSI_unitResourceDetails,                  //XN
+977 uPSI_unitResFile,                          //XN
+978 unit uPSI_simpleComport;                   //mX4
+979 unit uPSI_AfViewershelpers;                //Async
+980 unit uPSI_Console;                         //mX4
+981 unit uPSI_AnalogMeter;                     //TB
+982 unit uPSI_XPrinter,                        //TB
+983 unit uPSI_IniFiles;                        //VCL
+984 unit uPSI_lazIniFiles;                     //FP
+985 uPSI_testutils;                            //FP
+986 uPSI_ToolsUnit; (DBTests)                  //FP
+987 uPSI_fpcunit                               //FP
+988 uPSI_testdecorator;                        //FP
+989 unit uPSI_fpcunittests;                    //FP
+990 unit uPSI_cTCPBuffer;                      //Fundamentals 4
+991 unit uPSI_Glut,                            //Open GL
+992 uPSI_LEDBitmaps,                           //mX4
+993 uPSI_FileClass,                            //Inno
+994 uPSI_FileUtilsClass,                       //mX4
+995 uPSI_ComPortInterface; //Kit               //mX4
+996 unit uPSI_SwitchLed;                       //mX4
+997 unit uPSI_cyDmmCanvas;                     //cY
+998 uPSI_uColorFunctions;                      //DFF
+999 uPSI_uSettings;                            //DFF
+1000 uPSI_cyDebug.pas                          //cY
+1001 uPSI_cyColorMatrix;                       //cY
+1002 unit uPSI_cyCopyFiles;                    //cY
+1003 unit uPSI_cySearchFiles;                  //cY
+1004 unit uPSI_cyBaseMeasure;                  //cY
+1005 unit uPSI_PJIStreams;                     //DD
+1006 unit uPSI_cyRunTimeResize;                //cY
+1007 unit uPSI_jcontrolutils;                  //cY
+1008 unit uPSI_kcMapViewer; (+GEONames)        //kc
+1009 unit uPSI_kcMapViewerDESynapse;           //kc
+1010 unit uPSI_cparserutils; (+GIS_SysUtils)   //kc
+1011 unit uPSI_LedNumber;                      //TurboPower
+1012 unit uPSI_StStrL;                         //SysTools
+1013 unit uPSI_indGnouMeter;                   //LAZ
+1014 unit uPSI_Sensors;                        //LAZ
+1015 unit uPSI_pwmain;  //cgi of powtils       //Pow
+1016 unit uPSI_HTMLUtil;                       //Pow
+1017 unit uPSI_synwrap1; //httpsend            //Pow
+1018 unit StreamWrap1                          //Pow
+1019 unit uPSI_pwmain;                         //Pow
+1020 unit pwtypes                              //Pow
+1021 uPSI_W32VersionInfo                       //LAZ
+1022 unit uPSI_IpAnim;                         //LAZ
+1023 unit uPSI_IpUtils; //iputils2(TurboPower) //TP
+1024 unit uPSI_LrtPoTools;                     //LAZ
+1025 unit uPSI_Laz_DOM;                        //LAZ
+1026 unit uPSI_hhAvComp;                       //LAZ
+1027 unit uPSI_GPS2;                           //mX4
+1028 unit uPSI_GPS;                            //mX4
+1029 unit uPSI_GPSUDemo; // formtemplate TFDemo//mX4
+1030 unit uPSI_NMEA;     // GPS                //mX4
+1031 unit uPSI_ScreenThreeDLab;                //mX4
+1032 unit uPSI_Spin;                           //VCL
+1033 unit uPSI_DynaZip;                        //mX4
+1034 unit uPSI_clockExpert;                    //TB
+1035 unit debugLn                              //mX4
+1036 uPSI_SortUtils;                           //Jcl
+1037 uPSI_BitmapConversion;                    //Jcl
+1038 unit uPSI_JclTD32;                        //Jcl
+1039 unit uPSI_ZDbcUtils;                      //Zeos
+1040 unit uPSI_ZScriptParser;                  //Zeos
+1041 uPSI_JvIni,                               //JCL
+1042 uPSI_JvFtpGrabber;                        //JCL
+1043 unit uPSI_NeuralNetwork;                  //OCL
+1044 unit uPSI_StExpr;                         //SysTools
+1045 unit uPSI_GR32_Geometry;                  //GR32
+1046 unit uPSI_GR32_Containers;                //GR32
+1047 unit uPSI_GR32_Backends_VCL,              //GR32
+1048 unit uPSI_StSaturn;//Venus+Mercury+Mars++ //SysTools
+1049 unit uPSI_JclParseUses;                   //JCL
+1050 unit uPSI_JvFinalize;                     //JCL
+1051 unit uPSI_panUnit1;                       //GLScene
+1052 unit uPSI_DD83u1;  //Arduino Tester       //mX4
+1053 unit uPSI_BigIni                          //Hinzen
+1054 unit uPSI_ShellCtrls;                     //VCL
+1055 unit uPSI_fmath;                          //FMath
+1056 unit uPSI_fComp;                          //FMath
+1057 unit uPSI_HighResTimer;                   //Lauer
+1058 unit uconvMain; (Unit Converter)          //PS
+1059 unit uPSI_uconvMain;                      //PS
+1060 unit uPSI_ParserUtils;                    //PS
+1061 unit uPSI_uPSUtils;                       //PS
+1062 unit uPSI_ParserU;                        //PS
+1063 unit uPSI_TypInfo;                        //VCL
+1064 unit uPSI_ServiceMgr;                     //mX
+1065 unit uPSI_UDict;                          //DFF
+1066 unit uPSI_ubigFloatV3;                    //DFF
+1067 unit uPSI_UBigIntsV4;                     //DFF 
+1068 unit uPSI_ServiceMgr2;                    //mX
+1069 unit uPSI_UP10Build;                      //PS
+1070 unit uPSI_UParser10;                      //PS
+1071 unit uPSI_IdModBusServer;                 //MB
+1072 unit uPSI_IdModBusClient;                 //MB
+1073 unit uPSI_ColorGrd;                       //VCL
+1074 unit uPSI_DirOutln;                       //VCL
+1075 unit uPSI_Gauges;                         //VCL
+1076 unit uPSI_CustomizeDlg;                   //VCL
+1077 unit uPSI_ActnMan;                        //VCL
+1078 unit uPSI_CollPanl;                       //VCL
+1079 unit uPSI_Calendar2;                      //VCL
+1080 unit uPSI_IBCtrls;                        //VCL
+1081 unit uPSI_IdStackWindows;                 //Indy
+1082 unit uPSI_CTSVendorUtils;                 //DBX
+1083 unit uPSI_VendorTestFramework;            //DBX
+1084 unit uPSI_TInterval;                      //mX4
+1085 unit uPSI_JvAnimate                       //JCL
+1086 unit uPSI_DBXCharDecoder;                 //DBX
+1087 unit uPSI_JvDBLists;                      //JCL
+1088 unit uPSI_JvFileInfo;                     //JCL
+1089 unit uPSI_SOAPConn;                       //VCL
+1090 unit uPSI_SOAPLinked;                     //VCL
+1091 unit uPSI_XSBuiltIns;                     //VCL
+1092 unit uPSI_JvgDigits;                      //JCL
+1093 unit uPSI_JvDesignUtils;
+1094 unit uPSI_JvgCrossTable;
+1095 unit uPSI_JvgReport;
+1096 unit uPSI_JvDBRichEdit; 
+1097 unit uPSI_JvWinHelp;
+1098 unit uPSI_WaveConverter; 
+1099 unit uPSI_ACMConvertor;
+1100 unit XSBuiltIns_Routines
+1101 unit uPSI_ComObjOleDB_utils.pas
+1102 unit uPSI_SMScript;
+1103 unit uPSI_CompFileIo;
+1104 unit uPSI_SynHighlighterGeneral;
+1105 unit uPSI_geometry2;
+1106 unit uPSI_MConnect;
+1107 unit uPSI_ObjBrkr;
+1108 unit uPSI_uMultiStr;
+1109 unit uPSI_WinAPI.pas;
+1110 unit uPSI_JvAVICapture;
+1111 unit uPSI_JvExceptionForm;
+1112 unit uPSI_JvConnectNetwork;
+1113 unit uPSI_MTMainForm;
+1114 unit uPSI_DdeMan;
+1115 unit uPSI_DIUtils;
+1116 unit uPSI_gnugettext;
+1117 unit uPSI_Xmlxform;
+1118 unit uPSI_SvrHTTPIndy;
+1119 unit uPSI_CPortTrmSet;
+1120 unit SvrLog; ---------------------------------------------------------------
+1121 unit uPSI_IndySockTransport.pas (+IdHTTPHeaderInfo) //mX4
+1122 unit uPSI_HTTPProd.pas
+1123 unit uPSI_CppParser.pas
+1124 unit uPSI_SynHighlighterCpp.pas
+1125 unit uPSI_CodeCompletion.pas
+1126 unit uPSI_U_IntList2.pas
+1127 unit uPSI_SockHTTP.pas
+1128 uPSI_SockAppNotify.pas
+1129 uPSI_NSToIS.pas
+1130 unit uPSI_DBOleCtl.pas
+1131 unit uPSI_xercesxmldom;
+1132 unit uPSI_xmldom;
+1133 unit uPSI_Midas;
+1134 unit uPSI_JclExprEval;
+1135 uPSI_Gameboard;
+1136 unit uPSI_ExtUtil;
+1137 unit uPSI_FCGIApp;
+1138 unit uPSI_ExtPascal;
+1139 unit uPSI_PersistSettings;
+1140 IdHTTPHeaderInfo.pas
+1141 uPSI_SynEditAutoComplete;
+1142 uPSI_SynEditTextBuffer.pas
+1143 unit uPSI_JclPCRE;
+1144 unit uPSI_ZConnection;
+1145 unit uPSI_ZSequence;
+1146 unit uPSI_ChessPrg;
+1147 unit uPSI_ChessBrd;
+1148 unit uPSI_Graph3D;
+1149 uPSI_SysInfoCtrls2.pas
+1150 unit uPSI_RegUtils;
+1151 unit uPSI_VariantRtn;
+1152 uPSI_StdFuncs,
+1153 unit uPSI_SqlTxtRtns;
+1154 unit uPSI_BSpectrum;
+1155 unit IPAddressControl;
+1156 unit uPSI_Paradox;
+1157 unit uPSI_Environ;
+1158 uPSI_GraphicsPrimitivesLibrary;
+1159 uPSI_DrawFigures,
+1160 unit uPSI_synadbg;
+1161 unit uPSI_BitStream;
+1162 unit uPSI_xrtl_util_FileVersion;
+1163 uPSI_XmlRpcCommon,
+1164 unit uPSI_XmlRpcClient;
+1165 unit uPSI_XmlRpcTypes;
+1166 unit uPSI_XmlRpcServer;
+1167 unit uPSI_SynAutoIndent;
+1168 unit uPSI_synafpc;
+1169 unit uPSI_RxNotify;
+1170 unit uPSI_SynAutoCorrect;
+1171 unit uPSI_rxOle2Auto;
+1172 unit uPSI_Spring_Utilsmx;
+1173 unit uPSI_ulogifit;
+1174 unit uPSI_HarmFade;
+1175 unit uPSI_SynCompletionProposal;
+1176 unit uPSI_rxAniFile;
+1177 uPSI_ulinfit,
+1178 uPSI_usvdfit;
+1179 unit uPSI_JclStringLists;
+1180 unit uPSI_ZLib;
+1181 unit uPSI_MaxTokenizers;  //WANT
+1182 unit uPSI_MaxStrUtils;
+1183 unit uPSI_MaxXMLUtils;
+1184 unit uPSI_MaxUtils;
+1185 unit uPSI_VListBox;
+1186 unit uPSI_MaxDOM;
+1187 unit uPSI_MaxDOMDictionary;
+1188 unit uPSI_MaxDOMDictionary_Routines;
+1189 unit uPSI_cASN1;
+1190 unit uPSI_cX509Certificate;
+1191 unit uPSI_uCiaXml;
+1192 unit uPSI_StringsW;
+1193 unit uPSI_FileStreamW;  //WideString D7X
+1194 unit Drawingutils;
+1195 unit uPSI_InetUtilsUnified;
+1196 unit uPSI_FileMask;
+1197 unit uPSI_StrConv;
+1198 unit uPSI_Simpat;
+1199 unit uPSI_Tooltips.pas
+1200 unit uPSI_StringGridLibrary.pas
+1201 unit uPSI_ChronCheck.pas
+1202 unit uPSI_REXX.pas
+1203 uPSI_SysImg.pas
+1204 unit uPSI_Tokens;
+1205 unit uPSI_KFunctions;
+1206 unit uPSI_KMessageBox;
+1207 unit uPSI_CPUSpeed.pas
+1208 uPSI_RoboTracker.pas
+1209 unit uPSI_NamedPipesImpl.pas
+1210 unit uPSI_KLog.pas
+1211 unit uPSI_NamedPipeThreads.pas
+
+source of the new units: http://sourceforge.net/projects/maxbox/files/Docu/SourceV4/
+
+
+

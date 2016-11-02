@@ -1,0 +1,3166 @@
+program patternFrmDesignStudy_Weather_Report;
+
+//========================================================================
+//  free for all(o) 2003 - 2015, Max Kleiner  - on progress!
+//  sample application for the book Delphi Design Patterns
+//  proofed by IBZ and BFH , #locs:2124
+//  controls & lists external files, #sign>Max: MAXBOX10: 14/01/2016 14:02:34 
+//  ex.:  if Text = 'MVC' then
+//             toogleview_orfile('boldmain.pas');
+//========================================================================
+//{$UNDEF PATTERNS}
+{$DEFINE PATTERNS}
+
+(*interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Controls, Forms, Dialogs,
+  Menus, ImgList, ExtCtrls, uStrategy, IVCLScanner1,
+  Grids, ComCtrls, StdCtrls, OleCtrls, ToolWin;
+
+type
+  TmainForm1 = class(TForm)
+    StatusBar1: TStatusBar;
+    MainMenu1: TMainMenu;
+    Datei1: TMenuItem;
+    Beenden1: TMenuItem;
+    CoolBar1: TCoolBar;
+    ToolBar1: TToolBar;
+    tbtnClose: TToolButton;
+    ImageList1: TImageList;
+    ImageList2: TImageList;
+    tbtnGenerator: TToolButton;
+    ImageList3: TImageList;
+    tbtnOptions: TToolButton;
+    Generator: TMenuItem;
+    mnEncrypt: TMenuItem;
+    mnDecrypt: TMenuItem;
+    progBar: TProgressBar;
+    TreeView1: TTreeView;
+    Splitter1: TSplitter;
+    view: TListView;
+    ImageList4: TImageList;
+    ImageList5: TImageList;
+    info1: TMenuItem;
+    Fractals: TMenuItem;
+    options: TMenuItem;
+    MATestCase1: TMenuItem;
+    tbtnTrans: TToolButton;
+    mnOpentree: TMenuItem;
+    mnSearch: TMenuItem;
+    mnRegistryReader: TMenuItem;
+    r1: TMenuItem;
+    r2: TMenuItem;
+    R3: TMenuItem;
+    R4: TMenuItem;
+    R5: TMenuItem;
+    T1: TMenuItem;
+       procedure tbtnCloseClick(Sender: TObject);
+       procedure tbtnOptionsClick(Sender: TObject);
+       procedure mnEncryptClick(Sender: TObject);
+       procedure mnDecryptClick(Sender: TObject);
+       procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
+       procedure FractalsClick(Sender: TObject);
+       procedure MovingAverage1Click(Sender: TObject);
+       procedure MATestCase1Click(Sender: TObject);
+       procedure FormCreate(Sender: TObject);
+       procedure FormDestroy(Sender: TObject);
+       procedure tbtnTransClick(Sender: TObject);
+       procedure mnOpentreeClick(Sender: TObject);
+       procedure info1Click(Sender: TObject);
+       procedure mnSearchClick(Sender: TObject);
+       procedure dlgSearchFind(Sender: TObject);
+       procedure r1Click(Sender: TObject);
+       procedure r2Click(Sender: TObject);
+       procedure R3Click(Sender: TObject);
+       procedure R4Click(Sender: TObject);
+       procedure R5Click(Sender: TObject);
+       procedure T1Click(Sender: TObject);
+       procedure FormActivate(Sender: TObject);
+       procedure viewClick(Sender: TObject);
+       //procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private-Deklarationen}
+    FRegCharges: TChargeContext;
+    FPrefCharges: TChargeContext;
+    FTrialCharges: TChargeContext;
+    memMon: TMemo;
+    frmMon: TForm;
+    mem2: TMemo;
+    dlgSearch: TFindDialog;
+    ws_url: string[255];
+  {$IFDEF PATTERNS}
+    myWS: IVCLScanner;
+    myFac: T_RIOFactory;
+  {$ENDIF}
+      procedure scanFile_orStream(myFile: string);
+      procedure FindDlgClose(Sender: TObject; var action: TCloseaction);
+      procedure Mem2Close(Sender: TObject);
+       function OpenRead(myfile: String) : String;
+      procedure parseReg(regKey: string; rootKey: byte);
+      procedure toogleView_orFile(ufile: string);
+     public
+    ListItem: TListItem;
+    //cause of chartview callback
+  end;
+
+var
+  mainForm1: TmainForm1;
+  Win32Platform: integer =2;
+
+implementation
+
+uses ulooktrans, usingletonF, uFilexport,
+     fchaos, registry, uCrypto, graphics, chartView;     *)
+
+//{$R *.DFM}
+
+procedure parseReg(regKey: string; rootKey:byte); forward;
+
+function ListView_SetTextColor(hwnd: HWND; clrText: TColorRef): Bool; forward;
+
+function FindDesktopWindow: HWND; forward;
+function IsDesktopTransparent: Boolean; forward;
+procedure SetDesktopIconColor(Foreground,Background: TColor; Trans:Boolean); forward;
+procedure SetDefaultIconColors; forward;
+procedure SetImageTemperatur(alistitem: Tlistitem); forward;
+procedure TFrm_UpdateClick(Sender: TObject); forward;
+
+  
+var
+   StatusBar1: TStatusBar;
+    MainMenu1: TMainMenu;
+    Datei1: TMenuItem;
+    Beenden1: TMenuItem;
+    CoolBar1: TCoolBar;
+    ToolBar1: TToolBar;
+    tbtnClose: TToolButton;
+    ImageList1: TCustomImageList;
+    ImageList2: TCustomImageList;
+    tbtnGenerator: TToolButton;
+    ImageList3: TCustomImageList;
+    tbtnOptions: TToolButton;
+    Generator: TMenuItem;
+    mnEncrypt: TMenuItem;
+    mnDecrypt: TMenuItem;
+    progBar: TProgressBar;
+    TreeView1: TTreeView;
+    Splitter1: TSplitter;
+    view: TListView;
+    ImageList4: TImageList;
+    ImageList5: TImageList;
+    info1: TMenuItem;
+    Fractals: TMenuItem;
+    options: TMenuItem;
+    MATestCase1: TMenuItem;
+    tbtnTrans: TToolButton;
+    mnOpentree: TMenuItem;
+    mnSearch: TMenuItem;
+    mnRegistryReader: TMenuItem;
+    r1: TMenuItem;
+    r2: TMenuItem;
+    R3: TMenuItem;
+    R4: TMenuItem;
+    R5: TMenuItem;
+    T1: TMenuItem;
+     memMon: TMemo;
+    frmMon: TForm;
+    mem2: TMemo;
+    dlgSearch: TFindDialog;
+    ws_url: string;
+  {$IFDEF PATTERNS}
+    myWS: IVCLScanner;
+    //myFac: T_RIOFactory;
+  {$ENDIF}
+     ListItem: TListItem;
+      mainForm1: TForm;
+      myEdit: TEdit;
+      statBar1: TStatusBar;
+     selectFile: string;
+      hh,mm: word;
+     ss,ms: Word;
+     mtime: TDateTime;
+     //mem2: TMemo;
+    //dlgSearch: TFindDialog;
+    //ws_url: string;
+    asock: TCustomSocket; //TClientSocket; // TServerSocket;
+    actlocation: string;
+
+
+ const LVM_FIRST  = $1000;
+ const LVM_SETCOLUMNWIDTH = LVM_FIRST + 30;
+ const  LVM_SETTEXTCOLOR        = LVM_FIRST + 36;
+       LVM_GETTEXTBKCOLOR      = LVM_FIRST + 37;
+       LVM_SETTEXTBKCOLOR      = LVM_FIRST + 38;
+      LVM_REDRAWITEMS         = LVM_FIRST + 21;
+        LVM_GETITEMCOUNT        = LVM_FIRST + 4;
+ const COLOR_DESKTOP = 1;
+  const COLOR_MAX = 15;
+
+{@To get access weather API you need an own API key whatever account you chose!!}
+   UrlWeatherReport25=
+     'http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&APPID'+
+                                      '=55013bf3d09cfb0619989a00ed5bed09';
+
+  const  WeatherREX = 
+    //test: '.*Äàòà\s*Êó?ñ\s*Êó?ñ ïîê.\s*Êó?ñ ï?îä.\s*Êóðñ íà?[^<\d]*' 
+    
+    //'"temp":([\d\.]+).*"pressure":([0-9]+).*"humidity":([0-9]+).*"name":"([\w]+)"';  
+  '"id":([\w]+).*"main":"([\w\s]+)".*"temp":([\d\.\-]+).*"pressure":([0-9]+).*'+
+      '"humidity":([0-9]+).*"country":"([\w\s]+).*"name":"([\w\s]+)"';
+  
+   //'"temp":([\d\.-]+).*"pressure":([0-9]+).*"humidity":([0-9]+).*"country":"([\w\s]+).*'+
+     //             '"sunrise":([0-9]+).*"sunset":([0-9]+).*"name":"([\w\s]+)"';  
+   
+  //.*"description":"([\w\s]+)"';
+  //.*"id":([\w]+)"';  
+  
+    jsonstr=  
+'GEO_Weather_Report: {"coord":{"lon":14.16,"lat":46.62},"weather":[{"id":501,"main":"Rain","description":"moderate rain","icon":"10d"}],"base":"cmc stations","main":{"temp":19.93,"pressure":1009,"humidity":64,"temp_min":17,"temp_max":21.67},"wind":{"speed":2.6,"deg":200},"rain":{"1h":1.17},"clouds":{"all":75},"dt":1439818945,"sys":{"type":1,"id":5931,"message":0.0042,"country":"AT","sunrise":1439784246,"sunset":1439834986},"id":2771894,"name":"Maria Worth","cod":200}';
+
+ jsonip= 
+  'MyPublicIP: { '+
+  '"ip": "188.60.54.133",'+
+  '"hostname": "133.54.60.188.dynamic.wline.res.cust.swisscom.ch",'+
+  '"city": "Lausanne",'+
+  '"region": "Vaud",'+
+  '"country": "CH",'+
+  '"loc": "46.5200,6.6300",'+
+  '"org": "AS3303 Swisscom (Switzerland) Ltd",'+
+  '"postal": "1003"}';
+  
+  type Tweatherrex = record
+    city, country, temp, bar, humid, line, descript, id, time: string;
+   end; 
+
+  var wrec: Tweatherrex; 
+    
+ function FindDesktopWindow: HWND;
+var
+Window: HWND;
+begin
+   Window := FindWindow('Progman','Program Manager');
+   Window := FindWindowEx(Window,0,'SHELLDLL_DefView','');
+   Window := FindWindowEx(Window,0,'SysListView32','');
+   Result := Window;
+end;
+
+
+function ListView_GetTextBkColor(hwnd: HWND): TColorRef;
+begin
+  Result := SendMessage(hwnd, LVM_GETTEXTBKCOLOR, 0, 0);
+end;
+
+function ListView_SetTextBkColor(hwnd: HWND; clrTextBk: TColorRef): Bool;
+begin
+  Result := Bool( SendMessage(hwnd, LVM_SETTEXTBKCOLOR, 0, clrTextBk) );
+end;
+
+function ListView_RedrawItems(hwndLV: HWND; iFirst, iLast: Integer): Bool;
+begin
+  Result := Bool( SendMessage(hwndLV, LVM_REDRAWITEMS, iFirst, iLast) );
+end;
+
+function ListView_GetItemCount(hWnd: HWND): Integer;
+begin
+  Result := SendMessage(hWnd, LVM_GETITEMCOUNT, 0, 0);
+end;
+
+
+
+function IsDesktopTransparent: Boolean;
+var
+BkColor: COLORREF;
+begin
+   BkColor := ListView_GetTextBkColor(FindDesktopWindow);
+     if BkColor  <> $FFFFFFFF then
+      Result := False
+     else
+      Result := True;
+end;
+
+procedure SetDesktopIconColor(Foreground, Background: TColor; Trans: Boolean);
+var
+Window: HWND;
+begin
+   Window := FindDesktopWindow;
+     if Trans = True then
+      ListView_SetTextBkColor(Window,$FFFFFFFF)
+     else
+      ListView_SetTextBkColor(Window,Background);
+   ListView_SetTextColor(Window, Foreground);
+   ListView_RedrawItems(Window,0,ListView_GetItemCount(Window) - 1);
+   UpdateWindow(Window);
+end;
+
+procedure SetDefaultIconColors;
+var
+Kind: Integer;
+Color: TColor;
+begin
+   Kind := COLOR_DESKTOP;
+   Color := GetSysColor(COLOR_DESKTOP);
+   //SetSysColors(0,Kind,Color);
+end;
+   
+ 
+ 
+
+procedure TFrm_FormCreate(Sender: TObject);
+begin
+  tbtnTrans.Enabled:=false;
+  //FRegCharges:= TMonthlyCharges.Create(TRegularCharge.Create);
+  //FPrefCharges:= TMonthlyCharges.Create(TPreferredCharge.Create);
+  //FTrialCharges:= TMonthlyCharges.Create(TTrialCharge.Create);
+  //frmChart:=TfrmChart.create(self);
+  self.Visible:=true;
+  self.Height:= 550;
+  self.ClientHeight:= 500;
+  self.Width:= 765;
+  self.ClientWidth:= 755;
+end;
+
+procedure TFrm_FormActivate(Sender: TObject);
+begin
+  self.Caption:='Delphi Design Patterns';
+  progBar.visible:= false;
+  statusbar1.simplepanel:= true;
+  //trans.strlit[19];
+  statusBar1.SimpleText:='max@kleiner.com';
+end;
+
+procedure TFrm_FormDestroy(Sender: TObject);
+begin
+  //frmChart.release;
+  messagebeep(0);
+  //FRegCharges.Free;
+  //FPrefCharges.Free;
+  //FTrialCharges.Free;
+  //mem2.Free;
+end;
+
+
+procedure TFrm_tbtnCloseClick(Sender: TObject);
+begin
+  //mainform1.close;
+end;
+
+
+
+procedure TFrm_tbtnOptionsClick(Sender: TObject);
+begin
+  //trans.showmodal;
+end;
+
+procedure TFrm_mnEncryptClick(Sender: TObject);
+var //myCrypt: TCryptoDecorator2;
+    od1: TOpenDialog;
+    step, size: Longint;
+    passB: integer;
+    psStr, dataStr, chiffr: string;
+    crMode: byte;
+    F, F1: TextFile;
+begin
+  if TMenuItem(sender).Name = 'mnDecrypt' then
+  crMode:= 2 else crMode:= 1;
+  //myCrypt:= TCryptoDecorator2.create(TCrypto.create);
+  od1:= TOpenDialog.Create(NIL);
+  step:= 0;
+  //psStr:= InputBox(trans.strLit[2], trans.strlit[3], '');
+  //trans.password:= psStr;
+  if psStr = '' then begin
+    //messagedlg(trans.strlit[4], mtError, [mbOk], 0);
+    exit;
+  end;
+  od1.execute;
+  try
+    passB:= strToInt(psStr);
+    if length(od1.FileName) < 1 then
+      //messagedlg(trans.strlit[5],mtError,[mbOk], 0)
+    else begin
+      AssignFile(F, OD1.FileName);
+      Reset(F);
+      //fHandle:= FileOpen(Od1.FileName, 2);
+      //Size:= filesize(F);
+      with progbar do begin
+        visible:= True;
+        Min:= 0;
+        Max:= Size;
+        Step:= 1;
+        //color
+      end;
+      if crMode = 1 then begin
+      //more performance without progbar
+        AssignFile(F1, 'chiffrat.txt');
+        Rewrite(F1);
+        //while not EOF(F) do begin
+        while not EOF do begin
+          //7readln(F,dataStr);
+          //chiffr:= myCrypt.encrypt1(passB, dataStr, step);
+          //if trans.cbcrypt.checked then progBar.StepIt;
+          //writeln(F1, chiffr);
+        end;
+        //messagedlg(trans.strlit[6], mtInformation, [mbOk], 0)
+      end else if crMode = 2 then begin
+         AssignFile(F1, 'clear.txt');
+         Rewrite(F1);
+         while not EOF do begin
+           //readln(F,dataStr);
+           //7chiffr:= myCrypt.decrypt1(passB, dataStr, step);
+           //if trans.cbcrypt.checked then progBar.StepIt;
+           //writeln(F1, chiffr);
+          //append(F1);
+         end;
+         //messagedlg(trans.strlit[7], mtInformation, [mbOk], 0);
+      end; //crMode
+    end; //filename
+  finally
+    flush(F1);
+    //myCrypt.Free;
+    od1.Free;
+    closeFile(F);
+    closeFile(F1);
+    progbar.Visible:= False;
+  end;
+end;
+
+procedure TFrm_mnDecryptClick(Sender: TObject);
+begin
+  //mnEncryptClick(sender);
+  //selects the sender
+end;
+
+
+function TFrm_OpenRead(myfile: String) : String;
+var
+  f: TextFile;
+  content, row: string;
+ begin
+   content:= '';
+   if fileexists(myfile) then begin
+    Assignfile(f, myfile);
+    Reset(f);
+      while not eof do begin
+         //ReadLn(F, row);
+         content:= content + row + chr(13);
+      end;
+    CloseFile(F);
+    Result := content;
+   end else
+   //Result := trans.strlit[5];
+end;
+
+procedure TFrm_scanFile_orStream(myFile: string);
+var
+  Tempstr, cont: String;
+  position: integer;
+begin
+  //mem2close(NIL);
+  with view do begin
+    //ListItem
+    if fileexists(myFile) then
+    cont:= TFrm_openRead(myFile) else
+    cont:= myfile;
+    position:= pos(chr(13), cont);
+    if (position = 0) and (length(trim(cont)) > 0) then begin
+     ListItem:= Items.Add;
+     ListItem.Caption := cont;
+     exit
+    end;
+    while position > 0 do begin
+      TempStr:= cont;
+      delete(TempStr, position, length(TempStr) - position + 1);
+      delete(cont, 1, position);
+      ListItem:= Items.Add;
+      ListItem.Caption := TempStr;
+      position:= pos(chr(13), cont);
+    end;
+  end;
+end;
+
+procedure TFrm_toogleView_orFile(ufile: string);
+begin
+  if not assigned(mem2) then begin
+    mem2:= TMemo.Create(application);
+    //if q.loadFromStreamFile('patterns.dsm',aStream) then
+    mem2.parent:= view;
+    mem2.Align:= alclient;
+    mem2.Font.Size:= 12;
+    //mem2.OnDblClick:= mem2Close;
+      //mem2.lines.LoadFromStream(aStream);
+  end;
+  if fileexists(uFile) then
+    mem2.lines.LoadFromFile(ufile)
+  else begin
+    mem2.Clear;
+    mem2.Lines.add(ufile);
+  end;
+  mem2.Show;
+end;
+
+procedure TFrm_Mem2Close(Sender: TObject);
+begin
+  if assigned(mem2) then begin
+    mem2.clear;
+    mem2.Parent:= NIL;
+    mem2:= NIL;
+    mem2.Free;
+  end;
+end;
+
+procedure TFrm_TreeView1Change(Sender: TObject; Node: TTreeNode);
+(*const
+//array of critical files just to test
+    sProgs: array[0..3, 0..1] of ShortString = (
+     ('Passwort.ini', 'T-Online Passwörter'),
+     ('Cis.ini', 'CompuServe Passwortdatei'),
+     ('Services', 'Port-Eintraege zu TCP/IP'),
+     ('Sam','Sicherheits-Eintraege'));       *)
+var i: integer;
+  //aStream: TMemoryStream;
+  //q: TTxtFile;
+begin
+  view.Items.Clear;
+  //****************start treeview events********************
+  with Treeview1.selected do begin
+    if Text = 'OCL' then
+      TFrm_scanFile_orStream('ocl_facts.txt');
+    if Text = 'Delegation' then
+      TFrm_scanFile_orStream('delegate.txt');
+    if Text = 'Refactoring' then
+      TFrm_scanFile_orStream('refactoring.txt');
+    if Text = 'Redesign' then
+      TFrm_scanFile_orStream('redesign.txt');
+    if Text = 'DUnit' then
+      TFrm_scanFile_orStream('algorithms.pas');
+    if Text = 'NUnit' then
+      TFrm_scanFile_orStream('nunit.txt');
+    if Text = 'Interfaces' then
+      TFrm_toogleview_orfile('IVCLScanner1.pas');
+    if Text = 'Lists' then
+      TFrm_toogleview_orfile('listCollect.pas');
+    if Text = 'Singleton' then begin
+      TFrm_toogleview_orfile('uSingletonF.pas');
+      //SingleKeeper.Show;
+      //TSingletonForm.Create(self);
+      {for i:= 1 to trans.GetWinner.Count-1 do with view do begin
+      //test routine
+        ListItem:= Items.Add;
+        ListItem.Caption:= trans.getwinner.Strings[i];
+      end; }
+      //trans.GetWinner.Free
+    end;
+    if Text = 'SingletonAlt' then
+       //TSingletonForm.Instance.Show;
+    if Text = 'Observer' then begin
+      //SingleKeeper.Show;
+      TFrm_toogleview_orfile('uObserver.pas');
+    end;
+    if Text = 'Template' then begin
+      //mem2close(sender);
+      //TFrm_scanFile_orStream(trans.executeTemplate.strings[0]);
+      //trans.executeTemplate.Free
+    end;
+    if Text = 'Strategy' then with view do begin
+    //simulating client using Strategy context object
+      //mem2close(sender);
+      Clear;
+      listItem:= Items.Add;
+      //listItem.Caption:= (trans.strlit[16]);
+      listItem:= Items.Add;
+      //listItem.Caption:=
+        // Format('Regular %m',[FRegCharges.CompCharges(1000)]);
+      listItem:= Items.Add;
+      //listItem.caption:=
+        // Format('Preferred %m',[FPrefCharges.CompCharges(1000)]);
+      listItem:= Items.Add;
+      //listItem.Caption:=
+        // Format('Trial %m',[FTrialCharges.CompCharges(1000)]);
+    end;
+    if Text = 'Lock' then begin
+      //transMonitor.createTrans(NIL); //class instance
+      statusBar1.SimpleText:='running trans in button';
+      tbtnTrans.Enabled:=not(tbtnTrans.Enabled);
+      //toogle button
+      TFrm_toogleview_orfile('ulooktrans.pas');
+    end;
+    if Text = 'Abstract' then
+      //toogleview_orfile('abstfact.htm');
+    if Text = 'Builder' then
+      TFrm_toogleview_orfile('uSingletonF.pas');
+    if Text = 'Factory' then
+      TFrm_toogleview_orfile('uObserver.pas');
+    if Text = 'Adapter' then
+      TFrm_toogleview_orfile('uObserver.pas');
+    if Text = 'Bridge' then
+      TFrm_toogleview_orfile('uFilexport.pas');
+    if Text = 'Composite' then
+      TFrm_toogleview_orfile('u_Composition.pas');
+    if Text = 'Decorator' then
+      TFrm_toogleview_orfile('uCrypto.pas');
+    if Text = 'Facade' then
+      TFrm_toogleview_orfile('marshall.pas');
+    if Text = 'Flyweight' then
+      TFrm_toogleview_orfile('uStrategy.pas');
+    if Text = 'Proxy' then
+      TFrm_toogleview_orfile('IVCLScanner1.pas');
+    if Text = 'Wrapper' then
+      TFrm_toogleview_orfile('uFilexport.pas');
+    if Text = 'Chain' then
+      TFrm_toogleview_orfile('ulooktrans.pas');
+    if Text = 'Command' then begin
+      TFrm_toogleview_orfile('uStrategy.pas');
+      //TFrmChaos.getFrmInstance.Show;
+    end;
+    if Text = 'Interpreter' then
+      TFrm_toogleview_orfile('patternFrm.pas');
+    if Text = 'Iterator' then
+      TFrm_toogleview_orfile('iterator.txt');
+    if Text = 'Mediator' then
+      TFrm_toogleview_orfile('uFilexport.pas');
+    if Text = 'Memento' then
+      TFrm_toogleview_orfile('Graphics.pas');
+    if Text = 'State' then
+      TFrm_toogleview_orfile('foerderband.pas');
+    if Text = 'Visitor' then
+      TFrm_toogleview_orfile('RND.pas');
+    if Text = 'Automation' then
+      TFrm_toogleview_orfile('i2c.pas');
+    if Text = 'Broker' then begin
+      TFrm_toogleview_orfile('IVCLScanner1.pas');
+       //like an abstract factory in HTTPRIO
+      //ws_url:=WSURL1;
+      {$IFDEF PATTERNS}
+      //myWS:= myFac.GetIVCLScanner(false, ws_url);
+      //myWS.PostUser(trans.strlit[19], trans.strlit[14], 'mix')
+      {$ENDIF}
+    end;
+    if Text = 'Container' then
+      TFrm_toogleview_orfile('income.dpr');
+    if Text = 'Layers' then
+      TFrm_toogleview_orfile('banklogic.pas');
+    if Text = 'Master-Slave' then
+      TFrm_toogleview_orfile('sortThds.pas');
+    if Text = 'Microkernel' then
+      TFrm_toogleview_orfile('shellConsts.pas');
+    if Text = 'Monitor' then
+      TFrm_toogleview_orfile('chartView.pas');
+    if Text = 'MVC' then
+      TFrm_toogleview_orfile('boldmain.pas');
+    if Text = 'PAC' then
+      TFrm_toogleview_orfile('boldbase.pas');
+    if Text = 'Prototyp' then
+      TFrm_toogleview_orfile('testmodules.pas');
+    if Text = 'Provider' then
+      TFrm_toogleview_orfile('DMU.pas');
+    if Text = 'Simulator' then
+      TFrm_toogleview_orfile('RND.pas');
+    if Text = 'Terminal-Server' then
+      TFrm_toogleview_orfile('fterminal.pas');
+    if Text = 'Transaction' then
+      TFrm_toogleview_orfile('u_dwsserver1.pas');
+    if Text = 'Watchdog' then
+      TFrm_toogleview_orfile('monForm.pas');
+    end; //with
+end; //treeview
+
+
+procedure TFrm_FractalsClick(Sender: TObject);
+begin
+  //if win32platform = VER_PLATFORM_WIN32_WINDOWS then
+   //TFrmChaos.getFrmInstance.ShowModal;
+end;
+
+procedure TFrm_MovingAverage1Click(Sender: TObject);
+begin
+  try
+    //frmChart.Show;
+  finally
+  end;
+end;
+
+procedure TFrm_MATestCase1Click(Sender: TObject);
+begin
+  //movingAverage1click(sender);
+end;
+
+
+procedure TFrm_tbtnTransClick(Sender: TObject);
+begin
+  //transMonitor.addTransactions(trans.strlit[20]);
+end;
+
+procedure TFrm_mnOpentreeClick(Sender: TObject);
+begin
+  with mnOpenTree do begin
+    if tag=0 then begin
+      treeview1.FullExpand;
+      //Caption:=trans.strlit[21];
+      tag:=1
+    end else begin
+      treeview1.FullCollapse;
+      //mnOpenTree.Caption:=trans.strlit[22];
+      tag:=0;
+    end;
+  end
+end;
+
+procedure TFrm_info1Click(Sender: TObject);
+begin
+  statusBar1.Font.color:=clblue;
+  //statusBar1.SimpleText:=trans.strlit[19];
+end;
+
+procedure TFrm_color1Click(Sender: TObject);
+begin
+  writeln(itoa(TColorbox(sender).selected));
+  writeln(ColorToString(TColorbox(sender).selected));
+   ListView_SetTextColor(view.Handle,TColorbox(sender).selected)   
+  
+  //statusBar1.SimpleText:=trans.strlit[19];
+end;
+
+procedure TFrm_dlgSearchFind(Sender: TObject);
+begin
+ if assigned(dlgSearch) then
+  //trans.txtSearch(mainForm1, memMon, dlgSearch, memMon.text);
+end;
+
+procedure TFrm_FindDlgClose(Sender: TObject; var action: TcloseAction);
+begin
+  dlgSearch.CloseDialog;
+  dlgSearch:= NIL;
+  dlgSearch.Free;
+end;
+
+
+procedure TFrm_mnSearchClick(Sender: TObject);
+var  aTop: TPoint;
+begin
+ if not assigned(dlgsearch) then begin
+  dlgSearch:= TFindDialog.Create(self);
+  frmMon:= TForm.create(dlgSearch);
+  memMon:= TMemo.create(frmMon);
+  //frmMon.canvas
+    with mainForm1 do begin
+      aTop.y:=Top;
+      aTop.x:=Left;
+    end;
+    try
+      dlgSearch.OnFind:= @TFrm_dlgSearchfind;
+      frmMon.OnClose:= @TFrm_findDlgClose; //on destroy
+      frmMon.Parent:= self;
+      memMon.parent:= frmMon;
+      memMon.setbounds(10,10,290,190);
+      //frmMon.caption:=trans.strLit[14];
+      //memMon.lines.LoadFromFile(TESTFILE);
+      with frmMon do begin
+        top:=ATop.y + view.Top + toolbar1.Height + 12;
+        left:=ATop.x + view.left + 6;
+        show;
+      end;
+        dlgSearch.Execute
+    finally
+     //memMon:=NIL;
+     //frmMon.Release;
+    end;
+  end else exit
+end;
+
+
+
+procedure TFrm_r1Click(Sender: TObject);
+begin
+  parseReg('SOFTWARE\Microsoft\Windows\CurrentVersion\Run',1);//
+end;
+
+procedure TFrm_r2Click(Sender: TObject);
+begin
+  parseReg('SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce',1);
+end;
+
+procedure TFrm_R3Click(Sender: TObject);
+begin
+  parseReg('SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnceEx',1);
+end;
+
+procedure TFrm_R4Click(Sender: TObject);
+begin
+  parseReg('SOFTWARE\Microsoft\Windows\CurrentVersion\RunServices',1);
+end;
+
+procedure TFrm_R5Click(Sender: TObject);
+begin
+  parseReg('SOFTWARE\Microsoft\Windows\CurrentVersion\RunServicesOnce',1)
+end;
+
+procedure TFrm_T1Click(Sender: TObject);
+begin
+  parseReg('Software\Microsoft\Internet Explorer\TypedURLs',2);//
+end;
+
+procedure parseReg(regKey: string; rootKey:byte);
+var reg: TRegistry;
+    mySV: TStringList;
+    keyContent: string;
+    i: integer;
+begin
+ reg:= TRegistry.create;
+ try
+  case rootKey of
+    1:reg.RootKey:= HKEY_LOCAL_MACHINE;
+    2:reg.RootKey:= HKEY_CURRENT_USER;
+  end;
+  if reg.OpenKey(regKey, false) then begin
+      mySV:= TStringList.Create;
+      view.Items.Clear;
+    try
+      //reg.GetKeyNames(mySK);
+      //returns keys!
+    reg.GetValueNames(mySV);
+      for i:= 0 to mySV.Count - 1 do begin
+        keyContent:= mySv.Strings[i];
+        ListItem:= view.Items.Add;
+        ListItem.Caption:=
+               keyContent +'/ '+ reg.ReadString(keyContent);
+        //ListItem.Subitems.Add(reg.ReadString(keyContent));
+      end;
+    finally
+       mySV.Free;
+     end;
+     reg.CloseKey;
+  end;// if
+ finally
+   reg.Free;
+ end;
+end;
+
+
+(*procedure TFrm_viewClick(Sender: TObject);
+var cycle: byte;
+  fname: string;
+begin
+  with View do begin
+    if frmchart.optimise then begin
+    frmchart.SetFocus;
+    frmchart.Timer1.Enabled:= false;
+    cycle:=  strToint(copy(selected.Caption,1,2)) ;
+    frmchart.drawListChart(cycle);
+   end;
+   if frmchart.optimiseall then begin
+    frmchart.SetFocus;
+    frmchart.Timer1.Enabled:= false;
+    fname:= copy(selected.caption,1,pos(':',selected.Caption));
+    frmchart.loadChartDirect(fname);
+   end; 
+  end;
+end; *)
+
+
+
+var F: TForm;
+
+procedure loadViewForm;
+var 
+  NewItem: TMenuItem;
+  MainMenu1: TMainMenu;
+  //list: TStrings;
+  F: TForm;
+
+begin
+  //constructor
+  F:= TForm.Create(self);
+  with F do begin
+    caption:= 'LEDBOX, click to edit, dblclick write out pattern'+
+                 ' Press <Return> to run the Sentence';  
+    //BorderStyle:= bsDialog;
+    //BorderStyle:= bsDialog;
+    SetBounds(0,0,300,500);
+    Position:= poScreenCenter;
+    //onKeyPress:= @FormKeyPress
+    //OnClick:= @Label1Click;
+    //OnClose:= @closeForm;
+    //onShow:= @showForm;
+    Show;
+    //SELF.color:= clwhite;
+  end;
+  
+  with TColorBox.create(self) do begin
+   parent:= F;
+   Show;
+   //free
+  end;  
+
+  with TTrackbar.create(self) do begin
+  parent:= F
+  Min:= 0;
+  Max:= 100;
+  //Step:= 1;
+  //color:= TColor(random(65100));
+  Align:= alBottom;
+  end;
+
+  with TProgressbar.create(self) do begin
+  parent:= F
+  Min:= 0;
+  Max:= 100;
+  Step:= 1;
+  //text
+  //color:= clred; //TColor(random(65100));
+  Align:= alTop;
+  //onchange
+  end;
+end;
+
+
+CONST   AExponent = 4;
+      ANIMATEDELAY = 4;
+
+
+var  distX, distY, glx,gly, step, pct: float;
+  endX, endY, beginX, beginY: integer;
+  FPicRed, FStorage: TBitMap;
+    FNewRect: TRect; 
+  FOldRect: tRect; //make foldrect local!
+  FirstTime: boolean;
+  
+
+ 
+procedure setupAnimation(); 
+{ size(640, 360); noStroke();
+  distX = endX - beginX;
+  distY = endY - beginY; }
+begin
+
+  //FNewRect: TRect; 
+  //FOldRect: tRect; //make foldrect local!
+  //FirstTime: boolean;
+  FPicRed:= TBitMap.Create;
+  FPicRed.transparent:= true;
+  FStorage:= TBitMap.Create;
+  FStorage.Width:= FPicred.Width;
+  FStorage.Height:= FPicred.Height;
+  Screen.Cursor:= crCross;//loadCursor(hinstance,'Pan_All'); //crCross;
+    
+  //FPicRed.LoadFromFile(Exepath+'\examples\images\red1.bmp');
+
+  beginX:= 20;  // Initial x-coordinate
+  beginY:= 20;  // Initial y-coordinate
+  endX:= 470;   // Final x-coordinate
+  endY:= 320;   // Final y-coordinate
+  glx:= 20.0;        // Current x-coordinate
+  gly:= 20.0;        // Current y-coordinate
+  step:= 0.01;    // Size of each step along the path  100 steps
+  pct:= 0.0;      // Percentage traveled (0.0 to 1.0)
+  distX:= endX - beginX;
+  distY:= endY - beginY;
+end;
+
+
+
+  var 
+    aFrm: TForm;
+    mT: TTimer;
+ //   tB: TTrackBar;
+ //   statBar1: TStatusBar;
+
+
+procedure drawE2(abeginx, abeginy, endx, endy: integer); 
+var i: integer;  
+begin
+  pct:= 0.0;
+  distX:= endX - beginX;
+  distY:= endY - beginY;
+  for i:= 1 to 100 do begin
+  pct:= pct+ step;
+  if (pct < 1.0) then begin
+    glx:= beginX + (pct * distX);
+    gly:= beginY + (power(pct, AExponent+5) * distY);
+  end;
+   afrm.repaint;
+ 
+  afrm.canvas.draw(round(glx)-20,round(gly-20), fPicRed);
+  delay(ANIMATEDELAY);
+  end;
+end;  
+
+procedure TMyDelphiWizard_Execute;
+var
+  Reg: TRegistry;
+  Palette: TTabControl;
+  //ToolServices: TToolServices;
+begin
+  {MyDelphiForm := TMyDelphiForm.Create (Application);
+  try
+    MyDelphiForm.ShowModal;
+  finally
+    MyDelphiForm.Free;
+  end;}
+  // saves the status in the registry
+  Reg := TRegistry.Create;
+  //Reg.OpenKey (ToolServices.GetBaseRegistryKey +
+    //'\MyDelphiWizard', True);
+  Palette := Application.MainForm.
+    FindComponent ('TabControl') as TTabControl;
+  //Reg.WriteBool ('Multiline', Palette.Multiline);
+  Reg.WriteInteger ('PaletteHeight', Palette.Height);
+  Reg.Free;
+end;
+
+procedure TRebWizForm_ExamineDir;
+var
+  FileList: TStrings;
+  I: Integer;
+  CurrDir: string;
+  FileListBox1: TFileListBox;
+  listboxfiles: TListbox;
+begin
+  // examining .dpr files
+  FileListBox1.Mask := '*.dpr';
+  FileListBox1.FileType := [ftNormal];
+  FileList := TStringList.Create;
+  try
+    FileList.Assign(FileListBox1.Items);
+    // for each file, add its path to the list
+    for I := 0 to FileList.Count - 1 do begin
+      ListBoxFiles.Items.Add (FileListbox1.Directory +
+        '\' + FileList[I]);
+    end;
+ 
+    // examine sub directorties
+    FileListBox1.Mask := '*.*';
+    FileListBox1.FileType := [ftDirectory];
+    FileList.Assign(FileListBox1.Items);
+    CurrDir := FileListbox1.Directory;
+    // for each dir re-examine...    
+    for I := 2 to FileList.Count - 1 do begin 
+      FileListbox1.Directory :=
+        CurrDir + '\' + Copy (FileList[I], 2, 
+          Length (FileList [I]) - 2);
+      TRebWizForm_ExamineDir;
+    end;
+    FileListbox1.Directory := CurrDir;
+  finally
+    FileList.Free;
+  end;
+end;
+
+function TisReadOnly(const afilename: string): boolean;
+var asearch: TsearchRec;
+begin
+  try
+  //if findfirst2(afilename, faAnyFile, asearch) <> 0 then
+  if findfirst(afilename, faAnyFile) <> 0 then
+
+   result:= false else begin
+     findclose;
+     result:= (fareadonly and searchrecattr) <> 0;
+   end;
+  except
+   writeln('except why')
+  end;  
+end;
+
+  procedure getMultipleWeather(apistr: string);
+    begin
+    with TRegExpr.Create do try 
+      Expression:= weatherREX; 
+      if Exec(apistr) then begin
+        PrintF('Weather Id:%s is %s in: %s at %s of %s pressure with %s humidity',
+                   [Match[1],Match[2],Match[7],Match[3],Match[4],Match[5]+'%']); 
+        wrec.id:= match[1];
+        wrec.descript:= match[2];
+        wrec.city:= match[7];
+        wrec.country:= match[6];
+        wrec.temp:= match[3];
+        wrec.bar:= match[4];
+        wrec.humid:= match[5];
+        wrec.line:= 
+          Format('Weather Id:%s is %s in: %s at %s of %s pressure with %s humidity',
+                   [Match[1],Match[2],Match[7],Match[3],Match[4],Match[5]+'%'])
+      end;  
+       finally Free; 
+      end;
+    end; 
+ 
+ 
+  function GetGeoWeather(const location: string;
+                             const UrlRestAPI: string): string;
+  var lHTTP: TIdHTTP;
+    lStream: TStringStream;
+    asyn: TSynwInfo;
+    dl: TDownloadURL;
+begin
+  lHTTP:= TIdHTTP.Create(NIL);
+  lStream:= TStringStream.Create('');
+  try
+     try
+       lHTTP.Get1(Format(UrlRestAPI,[location]),lStream);
+       //writeln('html back: '+lHTTP.Get(Format(UrlRestAPI,[location])));
+      //writeln(lHTTP.Get('http://google.com'));
+     
+     except
+       //lHTTP.Get1(Format(UrlGeoLookupInfo2,[location]),lStream);
+        //if something wrong try using a backup server.
+       //writeln('html back: '+GetURLAsString('http://api.openweathermap.org'));
+           //writeln('html back: '+GetURLAsString('http://google.com'));
+       writeln('OWMap Exception: '+Gethtm(UrlWeatherReport25))
+    end;
+     lStream.Seek(0,0);
+     result:= 'GEO_Weather_Report: '+lStream.ReadString(lStream.Size);
+  finally
+    lHTTP.Free;
+    lStream.Free;
+  end;
+end;
+
+
+Const  RealIP_REX = '"city": "([üöä\w\s]*).*"country": "([\w\s]+).*"';  
+
+ var LocalCity, LocalCountry: string;
+
+
+  function GetRealIP2(): String;
+  var  LJsonObj: TJSONObject;
+  str: string;
+  http : TIdHttp;
+  begin
+    str:='';
+    http:=TIdHTTP.Create(Nil);
+    try             
+        str:= UTF8toAnsi(http.Get('http://ipinfo.io/json'));
+        LJsonObj:= TJSONObject.create4(str);
+        //TEncoding.ASCII.GetBytes(str),0)  as TJSONObject;
+        //str := LJsonObj.Get('ip').JsonValue.Value;
+        //LJsonObj.clone;
+        //LJsonObj.GetItemAsStrUTF8 GetItemAsStrUTF8('ip');
+        //result:= LJsonObj.GetString('"ip":');
+        // result:= LJsonObj.GetString('"hostname":');
+        // str:= HTTPEncode(str) //str:= HTTPDecode(str)
+        //str:= UTF8ToString(str)
+       with TRegExpr.Create do try 
+         Expression:= RealIP_REX; 
+        if Exec(str) then begin                             
+          PrintF('IP Weather Local City Name: %s ',[Match[1]])  
+          PrintF('IP Weather Local Country Name: %s ',[Match[2]])  
+          LocalCity:= match[1] 
+          LocalCountry:= match[2] 
+           //UTF8 umlaute
+          {s:= StringReplace(s, 'Ã¤', 'ä', [rfReplaceAll]);
+          s:= StringReplace(s, 'Ã¶', 'ö', [rfReplaceAll]);
+          s:= StringReplace(s, 'Ã¼', 'ü', [rfReplaceAll]); }
+          localcity:= StringReplace(localcity, 'ä', 'ae', [rfReplaceAll]);
+          localcity:= StringReplace(localcity, 'ö', 'oe', [rfReplaceAll]);
+          localcity:= StringReplace(localcity, 'ü', 'ue', [rfReplaceAll]);
+          writeln('aeo name convert: '+localcity)
+          end else writeln('ip localcity not found');
+      finally Free; 
+      end;
+    Except
+      writeln('get real ip EXCEPTION ')
+      raiselastException;
+    end;
+      result:= str;
+      LJsonObj.Free;
+      http.Free;
+  end;
+
+  
+ 
+
+
+  //**************************Event Handlers*******************************
+  
+  procedure FormMouseDown(sender: TObject; Button: TMouseButton; 
+                                Shift: TShiftState; vX, vY: Integer);
+begin
+  BitBlt(FStorage.Canvas.Handle,0,0, FPicred.Width, FPicred.Height,
+               afrm.Canvas.Handle, FNewRect.Left, FNewRect.Top, SRCCOPY);
+  pct:= 0.0;
+  beginX:= round(glx);
+  beginY:= round(gly);
+  endX:= vX;     //mouseX
+  endY:= vY;
+  
+  afrm.repaint;
+  //FormDrawBitmap(Exepath+BACKMAP,10,10, bfrm.canvas);
+  drawE2(beginx,beginy, endx,endy);
+  
+end;
+
+
+ //var trackval: integer;
+    //progbar: TProgressbar;
+  
+  procedure TFrm1_trackSpeedChange(Sender: TObject);
+  begin
+    //mt.Interval:= 1000 div tB.Position;
+    //writeln(intToStr(1000 div TTrackbar(sender).Position));
+    writeln(intToStr(TTrackbar(sender).Position));
+    //trackval:= TTrackbar(sender).Position;
+    Progbar.Position:= TTrackbar(sender).Position*10;
+
+ 
+  end;
+ 
+  procedure TFrm1_progressChange(Sender: TObject);
+  begin
+    //mt.Interval:= 1000 div tB.Position;
+    //writeln(intToStr(1000 div TTrackbar(sender).Position));
+    writeln(intToStr(TTrackbar(sender).Position));
+ 
+  end;
+  
+  procedure TFrm1_closeForm(Sender: TObject; var Action: TCloseAction);
+  begin
+    {if mt <> NIL then begin
+      mT.enabled:= false;
+      mT.Free;
+      mT:= NIL;
+    end;}
+    ///afrm.Free;  
+    if assigned(FPicRed) then
+       FPicRed.Free;
+       FPicRed:= NIL;
+    if assigned(FStorage) then
+       FStorage.Free;
+       FStorage:= NIL;
+       
+    imagelist1.Free;
+    imagelist2.Free;   
+ 
+    view.Free;
+    action:= caFree;
+    afrm:= NIL;
+    Screen.Cursor:= crDefault
+    writeln('map form free');
+  end;
+  
+  procedure TFrm1_CloseClick(Sender: TObject);
+  begin
+    afrm.Close;
+    writeln('map form close and free at: '+datetimetostr(now));
+    
+  end;
+  
+  
+  const MEDIAPATH =  'examples\';
+  
+  procedure OpenWeatherList(sender: TObject);
+begin
+   //cryptFile:= 'C:\SecureCenter\Dec 15 2010mx3\maxboxerrorlog2.txt';
+ //cryptFile:= 'C:\SecureCenter\Dec 15 2010mx3\maxboxerrorlog2.txt';
+  if PromptForFileName(selectFile,'Files(*.*)|*.*',//others
+                      '', 'Select your weather filelist', MEDIAPATH, False)
+  then begin
+     // Display this full file/path value
+    (*mPanel.font.color:= clyellow;
+    mPanel.font.size:= 18;
+    mPanel.caption:= ExtractFileName(selectFile)+' encrypt...';
+    //cfile:= LoadFileAsString(selectFile);
+   Application.ProcessMessages;
+   screen.Cursor:= crHourglass;
+   with clstBox.Items do begin
+      Add('SHA256 Hash of: '+ExtractFileName(selectFile));
+      Add('is: '+ComputeSHA256(selectFile,'F'));
+      idx:= Add('File to Crypt: '+ExtractFileName(selectFile));
+      stat.SimpleText:= clstBox.items[idx];
+    end;
+    with TStopwatch.Create do begin
+     Start;
+    AESSymetricExecute(selectFile,selectFile+'_encrypt',aespassw);
+    mPanel.font.color:= clblue;
+    mPanel.font.size:= 30;
+    mPanel.caption:= 'File Encrypted!';
+    screen.Cursor:= crDefault;
+    Stop;
+      //clstBox.Items.Add('Time: ' +(floattoStr(GetValueMSec/1000)));
+      clstBox.Items.Add('Time consuming: ' +GetValueStr +' of: '+
+              inttoStr(getFileSize(selectFile))+' File Size');
+     Free;
+   end;
+    //add hash and cipher to compare later on
+    //cfile:= cfile + 'SHA$'+SHA1(selectFile);
+    //cryptin:= S_StrEncrypt96(cfile, StartKey, MultKey, AddKey);
+    //CreateFileFromString(selectFile+'_crypt', cryptin);
+    cLstbox.Items.Add('Crypted file: '+ExtractFileName(selectFile)+'_encrypt');
+    WriteLog(cryptLog, clstbox.items.text)
+    {clearout:= S_StrDEcrypt96(cryptin, StartKey, MultKey, AddKey);
+    CreateFileFromString(selectFile+'_decrypt', clearout);}
+    *)
+  end; 
+end;
+
+  
+  procedure TFrm1_AddClick(Sender: TObject);
+  begin
+    {if mT <> NIL then
+      mt.enabled:= not mt.enabled; }
+    actlocation:= removespaces(myedit.text);
+    //actlocation:= TrimSpacesL(myedit.text);
+    TFrm_updateclick(self)
+ 
+  end;
+
+ 
+  procedure ListClick(Sender: TObject);
+  begin
+    {if mT <> NIL then
+      mt.enabled:= not mt.enabled; }
+      writeln(objecttostring(sender))
+      //writeln(TListview(sender).items[3].caption);
+      writeln(TListview(sender).selected.caption);
+      writeln(copy(TListview(sender).selected.caption,4,20));
+      actlocation:= copy(TListview(sender).selected.caption,4,20);
+      if isInternet then begin
+       sr:= GetGeoWeather(removespaces(actlocation), UrlWeatherReport25);
+       writeln(sr)
+     end;  
+    
+      { for i := 0 to Items.Count - 1 do
+      if Items[i].Selected then
+        Items[i].Caption := Items[i].Caption + ' - Selected!';
+        } 
+  end;
+  
+   procedure tbtnScanClick(Sender: TObject);
+  begin
+    {if mT <> NIL then
+      mt.enabled:= not mt.enabled; }
+      writeln(objecttostring(sender))
+      if isInternet then begin
+       sr:= GetGeoWeather(removespaces(actlocation), UrlWeatherReport25);
+       writeln(sr)
+     end;
+  end;
+
+ 
+const    PicPath = '\examples\images\';
+ 
+
+
+procedure EditColumn(Item: TListItem; Col: byte; const Text: string);
+begin
+if Col = 0 then
+Item.Caption:= Text
+  else begin
+while Item.SubItems.Count < Col do
+   Item.SubItems.Add('');
+   Item.SubItems[Col -1] := Text;
+end;
+end;
+
+procedure AddlistItem(Item: TListItem);
+begin
+  with Item do begin  
+    Caption:= wrec.id+'  '+wrec.city+' :'+wrec.country;
+    SubItems.Add(wrec.temp+' ° at bar: '+wrec.bar+' of humid: '+wrec.humid+'%');
+    SubItems.Add(wrec.descript);
+  end;
+end; 
+
+procedure Change(AListView: TListView; const ARowIndex, AColIndex: Integer; 
+                           const ANewContent: string);
+var
+  i: Integer;
+  vItem: TListItem;
+begin
+  vItem := AListView.Items[ARowIndex];
+  if AColIndex=0 then
+    vItem.Caption := ANewContent
+  else begin
+    for i := vItem.SubItems.Count to AColIndex+1 do
+    vItem.SubItems.Add('');
+    vItem.SubItems[AColIndex] := ANewContent;
+  end;
+end;
+
+  procedure TFrm_UpdateClick(Sender: TObject);
+var tmps: string;
+begin
+     {bfrm.canvas.draw(335,30, FPicRed);
+     actlocation:= myedit.text;
+     getIPWeatherData(actlocation)  
+     anamtr.value:= atemper;//strtoint(copy(atemper,0,2))
+     aind.value:= apressure div 15
+     telelabel.caption:= sr;
+     //wraptext(tmps,700);
+     telelabel.hint:= sr; //'this is box';
+     ahumid.progress:= ahumidity;
+     apress.value:= apressure;
+     ahumi.value:= ahumidity; }
+    ListView_SetTextBkColor(view.handle, $7dcced) //$8deeed) // $9cc123)
+     
+     if isInternet then begin
+       sr:= GetGeoWeather(actlocation, UrlWeatherReport25);
+       getMultipleWeather(sr)
+       ListItem:= view.Items.Add;
+       AddlistItem(listitem)
+       SetImageTemperatur(listitem) 
+       listitem.makevisible(false);
+       //View.Items.Item[0].MakeVisible(false); //scrolls up if necessary
+        //ListView1.SetFocus; // sets focus on the listview
+       //Listitem.TopIndex := -1 + ListBox1.Items.Count; 
+       statbar1.panels.items[1].text:= sr;
+      statbar1.hint:= sr;
+     // @debug writeln(sr)
+   end;
+ 
+     //anamtr.value:= anamtr.value-10; 
+end;
+
+procedure Edit1KeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then begin
+    Key := #0;  
+    actlocation:= removespaces(myedit.text);
+    //actlocation:= TrimSpacesL(myedit.text);
+    TFrm_updateclick(self)
+    if sender is TListview then
+    writeln('list view return key pressed at: '+(TListview(sender).selected.caption));
+    //S := Edit1.Text;
+    //Edit1.Clear;
+    // do something with S...
+  end;
+  //writeln('list view key pressed')
+end;
+
+
+function ListView_SetTextColor(hwnd: HWND; clrText: TColorRef): Bool;
+begin
+  Result := Bool( SendMessage(hwnd, LVM_SETTEXTCOLOR, 0, clrText) );
+end;
+
+procedure TMyControl_TriggerHint(Hint: String);
+var
+  Message: TMessage;
+  FGridHintFlag: boolean;
+begin
+  Self.Hint:= Hint;
+  if Hint='' then
+  begin
+    Application.HideHint;
+    Application.CancelHint;
+  end
+  else
+  begin
+    Application.CancelHint;
+    FGridHintFlag:=Self.Hint<>'';
+    Self.Hint:=Hint;
+    if Hint<>'' then
+    begin
+      //TWMMouse(Message).Pos:=PointToSmallPoint(ScreenToClient(Mouse.CursorPos));
+      Application.HintMouseMessage(Self, Message);
+    end;
+  end;
+end;
+
+
+Const PBM_SETBARCOLOR = (WM_USER + 9);
+
+
+   Procedure initTabletmode;
+   var
+     aMessage: TMessage;
+   begin
+     //Application.HintColor := clAqua;   // color of your choice
+     Application.HintColor := $8deeed
+     Application.HintMouseMessage(Self, aMessage)
+     Application.HintPause := 250;      // 250 mSec before hint is shown
+     Application.HintHidePause := 13000; // hint disappears after 3 secs
+   
+   end;
+
+   Procedure RegisterHiddenMenu;
+   var
+     Comp: TComponent;
+   begin
+     //Make a hidden menu item visible
+     Comp := Application.MainForm.FindComponent('MenuItemName');
+     if Comp is TMenuItem then
+       TMenuItem(Comp).Visible := True;
+   end;
+   
+   procedure SetImageTemperatur(alistitem: Tlistitem);
+   begin
+     setDecimalSeparator('.')
+     if trunc(strtofloat(wrec.temp)) < 5 then
+     //if wrec.temp < '5' then
+        alistitem.imageindex:= 3;
+     if (trunc(strtofloat(wrec.temp)) >= 5) and (trunc(strtofloat(wrec.temp)) <= 10) then
+     //if wrec.temp < '5' then
+        alistitem.imageindex:= 1; 
+     if trunc(strtofloat(wrec.temp)) >= 11 then
+     //if wrec.temp < '5' then
+        alistitem.imageindex:= 0;
+     if wrec.descript= 'Rain' then
+        alistitem.imageindex:= 2;
+        
+   end;  
+   
+   //get a real server without async problems and lost file size!
+   procedure CheckBitmapIcons;
+   begin
+
+   //if not fileexists(exepath+'sun1.bmp')  then
+    if not fileExists(exepath+'WeatherImageList.dat')  then begin
+     //wGet('http://www.softwareschule.ch/images/texturemap.jpg',PICPATH+'\texturemap.jpg');
+       
+      // wGet2('http://www.softwareschule.ch/images/weatherimagelist.dat',
+        //                                             exepath+'WeatherImageList.dat');
+     //DownloadFile('http://www.softwareschule.ch/images/weatherimagelist.dat',
+       //              exepath+'WeatherImageList.dat')  
+      
+    //   if DownloadFile('http://sourceforge.net/projects/maxbox/files/Android/weatherimagelist.dat/download',
+      //                          Exepath+'golgraph37.png') then 
+   wGetX2('http://max.kleiner.com/images/weatherimagelist.dat',
+                                                     exepath+'WeatherImageList.dat');
+      
+       ShowmessageBig('second download starts..., please confirm!')
+    
+   wGetX2('http://max.kleiner.com/images/weatherimagelist1.dat',
+                                                     exepath+'WeatherImageList1.dat');
+     
+       {wGet('http://www.softwareschule.ch/images/WeatherImageList1.dat',
+                                                     exepath+'WeatherImageList1.dat');
+        }
+      end;                                                 
+    writeln('imagelist has been downloaded at: ' +exepath)
+   end;  
+   
+   
+  
+   //**************************Form Builder*******************************
+   Procedure loadForm;
+   var tB: TTrackBar;
+      //statBar1: TStatusBar;
+       NewColumn: TListColumn; 
+       atool: TToolBar;
+       asr: AnsiString;
+       //atool: TCoolBar;
+       ListItem, slistitem: TListItem;
+       Temp: TComponent;
+       //aimage, aimage1, aimage2, 
+       image, image1, image2, image3, mask, mask1: TBitmap;
+       sunr, suns: string;
+ 
+
+  begin
+  
+    setupAnimation;
+    
+    aFrm:= TForm.Create(self);
+    //mT:= TTimer.Create(self);
+    //mt.onTimer:= @TFrm1_timerRedrawTimer;
+    //mt.interval:= MILLISECONDS;
+    //mt.free;  in on close            
+    with aFrm do begin
+      Caption:= '********** maXbox Weather Station Map ***********';  
+      //top:= 30;
+      height:= 660;
+      width:= 820;
+      Position:= poScreenCenter;
+      //Color:= clBlack;
+      onClose:= @TFrm1_closeForm;
+      //onPaint:= @TFrm1_FormPaint;
+      Canvas.Pen.color:= clBlue;
+      Canvas.Pen.Width:= 15;
+      BorderIcons:= [biSystemMenu, biMinimize];
+      BorderStyle:= bsSingle;
+      //borderWidth:= 4;
+      scaled:= true;
+      onMouseDown:= @FormMouseDown;
+
+      //Textheight('20');
+      //activecontrol
+      Show;
+      //canvas.brush.bitmap:= getBitmapObject(Exepath+'examples\images\bmp47.bmp');
+      //Canvas.FillRect(Rect(50,50,500,200));
+      //canvas.draw(0,200, getbitmap(Exepath+'\examples\citymax.bmp'));
+      //Show;
+    end;
+    
+  
+    with TBitBtn.Create(aFrm) do begin
+      Parent:= aFrm;
+      setbounds(400,520,170,65);
+      caption:= 'Update';
+      //flat
+      font.size:= 15;
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPPAUSE'); 
+      mXButton(02,02,width, height,15,15,handle);
+      //event handler
+      onClick:= @TFrm_UpdateClick;
+    end;
+    with TBitBtn.Create(aFrm) do begin
+      Parent:= aFrm;
+      setbounds(580,520,170,65);
+      caption:= 'Close';
+      font.size:= 15;
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPSTOP'); 
+      mXButton(02,02,width, height,15,15,handle);
+      onClick:= @TFrm1_CloseClick;
+    end;
+    tB:= TTrackBar.create(aFrm);
+    with tB do begin
+      parent:= aFrm;
+      setBounds(40,515,230,70);
+      Min:= 10; Max:= 100
+      Frequency:= 10
+      Position:= 1000 div 50;
+      linesize:= 15;
+      ThumbLength:= 55;
+      SetFocus;
+      //color
+      OnChange:= @TFrm1_trackSpeedChange;
+      //ondblclick
+    end;
+    statbar1:= TStatusBar.Create(aFrm);
+    with statbar1 do begin
+      parent:= aFrm;
+      showhint:= true;
+       parentcolor:= false;
+       color:= clred;
+      //panels.color:= clnavy;
+      //sizeGrip
+      hint:= 'this is a Weather LED BoX in maXcalc';
+      Panels.add;
+        panels.items[0].width:= 200;
+        panels.items[0].text:= DateTimeToInternetStr(Now, true);
+      Panels.add;
+        panels.items[1].width:= 150;
+        panels.items[1].text:= '150 get the solution';
+    end;
+     atool:= TToolBar.create(aFrm);
+     //atool:= TCoolBar.create(aFrm);
+     
+  //If owner is NIl it is not actually part of the main form.    
+     
+  imagelist1:= TCustomImageList.Create(NIL);
+  
+ ReadComponentResFile(exepath+'WeatherImageList1.dat', imagelist1);
+  
+  {image:= getbitmap(exepath+picpath+'red1.bmp');
+  image1:= getbitmap(exepath+picpath+'green1.bmp');
+   image2:= getbitmap(exepath+picpath+'yellow1.bmp')
+   }
+  
+  with imagelist1 do begin
+       Height:= 39; Width:= 39;
+       Add(image,NIL);
+       Add(image1,NIL);
+       Add(image2,NIL);
+ 
+  end;
+  
+  //WriteComponentResFile(exepath+'WeatherImageList1.dat', imagelist1);
+
+  imagelist2:= TCustomImageList.Create(aFrm);
+  
+  // deserialize object stream to imagelist
+  
+  ReadComponentResFile(exepath+'WeatherImageList.dat',imagelist2);
+  
+  {image:= getbitmap(exepath+picpath+'red1.bmp')
+  image1:= getbitmap(exepath+picpath+'green1.bmp');
+  image2:= getbitmap(exepath+picpath+'yellow1.bmp');
+  }
+  {image:= getbitmap(exepath+picpath+'sun1.bmp')
+  image1:= getbitmap(exepath+picpath+'sun2.bmp');
+  image2:= getbitmap(exepath+picpath+'sun3.bmp');
+  image3:= getbitmap(exepath+picpath+'sun4.bmp');
+  }
+  
+  with imagelist2 do begin
+       Height:= 39; Width:= 39;
+       Add(image,NIL);
+       Add(image1,NIL);
+       Add(image2,NIL);
+       Add(image3,NIL);
+  end;
+  
+  
+  //serialize imagelist object to object stream file
+  
+  //WriteComponentResFile('WeatherImageList.dat', imagelist2);
+   
+    with atool do begin
+      setBounds(10,5,100,80)
+      Parent:= aFrm;
+      //Align:= altop;
+      parentcolor:= false;
+      ButtonHeight:= 50;
+      ButtonWidth:= 90;
+      EdgeInner:= esNone;
+      EdgeOuter:= esNone;
+      Flat:= True;
+      HotImages:= ImageList1;
+      Images:= ImageList2;
+      ShowCaptions:= True;
+      //TabOrder = 0
+      color:= clnavy;
+      Transparent:= True;
+      show;
+     end; 
+      with TToolbutton.create(atool) do  begin
+        parent:= atool;
+        //flat:= true;
+        //color
+        //Font.size:= 20;
+        Caption:= '&Open';
+        ImageIndex:= 2;
+        //ParentShowHint:= False
+        ShowHint:= False
+        OnClick:= @OpenWeatherList;
+      end; 
+    
+      with TToolbutton.create(atool) do  begin
+        parent:= atool;
+        Caption:= '&Add';
+        ImageIndex:= 1;
+        //ParentShowHint:= False
+        ShowHint:= False
+        OnClick:= @TFrm1_AddClick
+      end;            
+      with TToolbutton.create(atool) do  begin
+        parent:= atool;
+        Caption:= '&Scan';
+        ImageIndex:= 0;
+        OnClick:= @tbtnScanClick
+      end; 
+      
+    myEdit:= TEdit.create(aFrm);
+     with myEdit do begin
+      parent:= afrm;
+      text:= ' Klagenfurt';
+      borderstyle:= bsnone;
+      setbounds(212,10,250,32);
+      color:= clweblightblue; //$8deeed //clnavy
+      font.color:= clwebdarkred; //$7dcced; //$0deeed; //clred;
+      //font.style:= [fsbold]
+      font.size:= 18;
+      //onkeypreview:= true;
+      //onenter:= @updateClick;
+      onkeypress:= @Edit1KeyPress;
+     show
+    end;  
+    
+   with TColorBox.create(self) do begin
+      parent:= aFrm;
+      top:= 10;
+      left:= 488;
+      width:= 263;
+      height:= 50;
+      items[16];
+      //autosize:= false;
+      {selected:= 2
+      items[selected]; }
+      font.size:= 14;
+      onclick:= @TFrm_color1Click;
+      Show;
+      //free
+  end;  
+
+ 
+   DecodeTime(now,hh,mm,ss,ms);
+    //showmessage(floattostr(mtime))
+ 
+   progbar:= TProgressbar.create(afrm);   
+   with progbar do begin
+     parent:= aFrm;
+     Align:= albottom;
+     {Min:= 0;
+     Max:= 100;
+     Step:= 10;}
+     Max:= (24*60);
+     //text
+     //color:= clred; //TColor(random(65100));
+     position:= tb.position;
+     Position:= (hh * 60)+mm;
+     Brush.Color := clTeal;
+     SendMessage(Handle, PBM_SETBARCOLOR, 0, clYellow); 
+     //onchange:= @TFrm1_progressChange;
+   end;
+
+    { with TTabbedNotebook.create(aFrm) do begin
+       parent:= aFrm;
+       setbounds(10,65,453,120)
+     end; } 
+      
+    view:= TListview.create(aFrm);
+    with view do begin
+      parent:= aFrm;
+      setbounds(10,65,782,435)
+        //Align:= alClient;
+      //columns:= listitem  
+      //color
+      //groupview
+      //Items.Insert(1)
+      
+      DoubleBuffered:= False
+      FlatScrollBars:= True
+      readonly:= false;
+      //groups
+      
+     gridLines:= true; 
+        RowSelect:= True; 
+        NewColumn:= Columns.Add; 
+        NewColumn.Caption:= 'City:Country'; 
+        newColumn.width:= 240; 
+        newcolumn.alignment:= taLeftJustify;
+        //newcolumn.color
+        //newColumn.autosize:= true;
+       // newColumn.imageindex:= 1;
+       NewColumn:= Columns.add;
+       NewColumn.Caption:= 'Weather Sensor';
+       newColumn.width:= 385; 
+       
+      //ListItem:= view.Items[1].rows.Add;
+      //view.Items[1].caption:= 'sensor second';
+  
+       NewColumn:= Columns.add;
+       NewColumn.Caption:= 'Description';
+       newColumn.width:= 130; 
+       {sListItem:= view.Items.Add;
+       slistitem.caption:= 'temp.name';
+       slistitem.subitems[1].caption:='temp.name'
+        }
+  
+       //newColumn.caption:= 'fX453 Intf';
+     {colums= <
+      item
+        AutoSize = True
+        Caption = 'Content'
+        ImageIndex = 3
+      end> }
+    HotTrack:= True;
+    HotTrackStyles:= [htHandPoint];
+    //IconOptions.AutoArrange = True
+    RowSelect:= True;
+    //ParentShowHint:= False;
+    ShowHint:= True;
+    font.size:= 14
+    SmallImages:= ImageList2;
+    //imageindex:= 2                          
+    //StateImages: = ImageList2;
+    //TabOrder = 4
+    //ListView_SetTextColor(View.Handle, $123ADA)
+    //ListView_SetTextBkColor(view.handle, $ADA123)
+    ListView_SetTextBkColor(view.handle, $8deeed) // $9cc123)
+    ondblclick:= @listclick;
+    onkeypress:= @edit1KeyPress;
+    //@test data
+    {ViewStyle:= vsReport;
+    for It:= Application.ComponentCount - 1 downto 0 do begin
+    Temp:= application.Components[It];
+    begin
+      ListItem:= view.Items.Add;
+      ListItem.Caption:= Temp.Name;
+      //listitem.subitems.add(temp.name)
+    end;
+   end;} 
+      
+   viewstyle:= vsreport;
+   readonly:= false;
+   
+   //ListItem:= view.Items.Add;
+    
+   
+   ListItem:= view.Items.Add;
+   ListItem.Caption:= '801  Cologne';
+   //ListItem.SubItems.Add(' Add a new city above ');
+   ListItem.SubItems.Add('Add a new city above');
+
+   ListItem.SubItems.Add('better weather 3');
+   items[0].EditCaption;
+
+    //EditColumn(listitem,0, 'maxbox')
+   
+   ListItem:= view.Items.Add;
+   ListItem.Caption:= '200  Bern test2';
+   EditColumn(listitem,1, 'hot images on a coolbar')
+   EditColumn(listitem,2, 'maXbox399195')
+   
+   //update test
+  {  listitem:= Items.Item[1];
+      listitem.Caption:='11';
+      //listitem.SubItems.ValueFromIndex[0]:='22';
+      //listitem.SubItems.ValueFromIndex[1]:='33';
+      listitem.SubItems.strings[0]:='22';
+      listitem.SubItems.strings[1]:='33';
+   } 
+
+   if isInternet then begin
+    sr:= GetGeoWeather('kiruna', UrlWeatherReport25);
+     getMultipleWeather(sr)
+     ListItem:= view.Items.Add;
+     SetImageTemperatur(listitem)
+     //listitem.imageindex:= 2
+      AddlistItem(listitem)
+     writeln(sr)
+    
+    sr:= GetGeoWeather('koeln', UrlWeatherReport25);
+     getMultipleWeather(sr)
+     ListItem:= view.Items.Add;
+     SetImageTemperatur(listitem)
+     // listitem.imageindex:= 2
+     AddlistItem(listitem)
+      writeln(sr)
+   
+     {getMultipleWeather(GetGeoWeather('kandersteg', UrlWeatherReport25))
+     ListItem:= view.Items.Add;
+     AddlistItem(listitem)
+     }
+     //sr:= GetGeoWeather('klagenfurt', UrlWeatherReport25);
+     getMultipleWeather(GetGeoWeather('klagenfurt', UrlWeatherReport25))
+     ListItem:= view.Items.Add;
+      SetImageTemperatur(listitem)
+     // listitem.imageindex:= 1
+      AddlistItem(listitem)
+
+      ListView_SetTextBkColor(view.handle, $7dcced) // $9cc123)  0dcced
+   
+     getMultipleWeather(GetGeoWeather('mailand', UrlWeatherReport25))
+     ListItem:= view.Items.Add;
+     SetImageTemperatur(listitem)
+     AddlistItem(listitem)
+ 
+     sr:= GetGeoWeather('bern', UrlWeatherReport25);
+     getMultipleWeather(GetGeoWeather('bern', UrlWeatherReport25))
+     ListItem:= view.Items.Add;
+     SetImageTemperatur(listitem)
+      AddlistItem(listitem)
+      writeln('bern sunsettest: '+sr)
+      writeln(copy(sr, pos('sunrise":',sr)+9,10))
+      sunr:= copy(sr, pos('sunrise":',sr)+9,10);
+       writeln('bern sunrise: '
+               +datetimetostr(UnixDateTimeToDelphiDateTime(strtoint(sunr))))
+      suns:= copy(sr, pos('sunset":',sr)+8,10);
+       writeln('bern sunset: '
+               +datetimetostr(UnixDateTimeToDelphiDateTime(strtoint(suns))))
+   
+ 
+     getMultipleWeather(GetGeoWeather('kuwait', UrlWeatherReport25))
+     ListItem:= view.Items.Add;
+     SetImageTemperatur(listitem)
+      AddlistItem(listitem)
+    
+     getMultipleWeather(GetGeoWeather('havana', UrlWeatherReport25))
+     ListItem:= view.Items.Add;
+     SetImageTemperatur(listitem)
+      AddlistItem(listitem)
+   
+     getMultipleWeather(GetGeoWeather('brussels', UrlWeatherReport25))
+     ListItem:= view.Items.Add;
+     SetImageTemperatur(listitem)
+      AddlistItem(listitem)
+    
+     //listitem.imageindex:= 2
+     //ListItem:= view.Items.Add;
+     
+     statbar1.panels.items[1].text:= sr;
+      statbar1.hint:= sr;
+ 
+   end else begin
+      getMultipleWeather(jsonstr)
+      ListItem:= view.Items.Add;
+   
+     with ListItem do begin  
+       Caption:= wrec.id+'  '+wrec.city;
+       SubItems.Add(wrec.temp+' ° temp at bar: '+wrec.bar+' of humid: '+wrec.humid+'%');
+       SubItems.Add(wrec.descript);
+       imageindex:= 2
+     end;
+     statbar1.panels.items[1].text:= jsonstr;
+    statbar1.hint:= jsonstr;
+    //SHOWmessageBig3('no internet found!',100,true);
+    
+    //AnsiInsert( var dst : AnsiString; const src : AnsiString; index : Integer)
+      asr:= ansistring(getbigpi);
+   
+    {  for it:= 1 to length(asr) do begin
+         if it mod 55 = 0 then
+         ansiInsert(asr,CRLF,it);
+       end;  
+      writeln(asr)
+    SHOWmessageBig2(asr, true);
+     }
+     
+  end;
+    
+    //This Number:  176 is this ASCII  °
+     ///getitem
+     //  ListItem.Caption:= 'Temp.Namerr';
+   
+   //ListItem.SubItems.Add('column 4');
+   //ListItem.SubItems[1] := 'forth column';
+
+      //view.subItems[2].caption:= 'sensor second';
+  
+  { for it:= 1 to 20 do begin
+          ListItem:= view.Items.Add;
+          ListItem.Caption:= getrandomString(40);
+   end;}
+    
+    //OnClick = viewClick
+    //ViewStyle:=vsReport;
+  end;  
+    
+  end;  
+  
+  
+  Procedure sunrisesetRouter(lon, lat: float);
+  
+  var rs: TSTRiseSetRec;
+  UT: TSTDateTimeRec;
+  iday:  TDateTime;
+
+  begin
+   UT.D:= currentdate;
+   UT.T:= currenttime;
+   //UT.T:= incdays(UT.D,1);
+   iday:= date;
+   iday:= adddays(iday,1);
+   
+   writeln(sttimetotimestring('hh:mm',UT.T,false))
+   for it:= 0 to 25 do begin
+      //iday:= adddays(iday,1);
+      //UT.d:= iday;
+       ut.d:= stincdate(ut.d, it,0,0);
+       rs:= sunriseset(UT.d, lon, lat);
+       
+       with rs do begin
+         if orise >-1 then 
+           writeln('sunrise of '+stdatetodatestring('dd.mm.yyyy',ut.d,false)+' : '
+                     +#9+sttimetotimestring('hh:mm',
+                   orise, false)+#9+ ' sunSet: '+
+                   sttimetotimestring('hh:mm', oset, false)); 
+       end;
+   end;      
+  end; 
+  
+  
+         //Style:= tbsSeparator;
+        //Modell Roco Nr. 43792 Schürze und Pufferbohlenverkleidung. Nummer 112 312-4
+        //ROCO DB ELECTRIC TRAIN NO 43792 112 312-4
+          //Modell Lima Nr. L208288-1
+        //OnClick:= tbtnCloseClick
+ 
+   var   UserSpaceAvail, TotalSpaceAvail, DiskSize: Comp; {disk size}
+
+begin
+
+  initTabletmode;
+  CheckBitmapIcons;
+  loadForm;
+  
+  //loadViewForm;
+  
+   with maxform1 do begin
+      with memo2 do begin
+        color:= clblack;
+        font.color:= clweborange;
+        font.size:= 16;
+      end;  
+    end;
+  {with TColorDialog.create(self) do begin
+   execute;
+   free
+  end;}                                            
+  
+  //TFrm_r1Click(self);
+  //view.ViewStyle:=vsReport;
+  //TFrm_r2Click(Self);
+  //TFrm_T1Click(Self);
+
+
+   if GetDiskSpace('C',UserSpaceAvail,TotalSpaceAvail,DiskSize) then
+     printF('UserSpaceAvail: %d TotalSpaceAvail: %d DiskSize: %d',
+         [UserSpaceAvail div 1024,TotalSpaceAvail div 1024,DiskSize div 1024]);
+
+
+    // maxform1.statusbar1.color:= clred;
+    // maxform1.statusbar1.showhint:= true;
+    with TClientSocket.create(self) do begin
+      //writeln(TClientSocket(socket).host);
+      writeln('TCustomWinSocket host: '+TCustomWinSocket(Socket).remotehost);
+     writeln('TCustomWinSocket port: '+intToStr(TCustomWinSocket(Socket).remoteport));
+      Free
+    end; 
+
+      // writeln('TCustomWinSocket: '+TCustomWinSocket(socket).remotehost);
+      // writeln('TCustomWinSocket: '+inttoStr(TCustomWinSocket(socket).remoteport));
+     {   with TControl.create(self) do begin
+      //writeln(TClientSocket(socket).host);
+      parent:= NIL;
+      Free
+    end;  }
+
+    //progbar.Position:= (hh * 60)+mm;
+    writeln(itoa((hh * 60)+mm))
+    //writeln(botostr(TisReadOnly(exepath+'allexlist.txt')));
+    //writeln(getASCII)
+    //opendoc(exepath+'\allexlist.txt')
+    {constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Socket: TClientWinSocket read FClientSocket;}
+    writeln('köln time: '+datetimetostr(UnixDateTimeToDelphiDateTime(1446127190)))
+    writeln('havana time: '+datetimetostr(UnixDateTimeToDelphiDateTime(1446125586)))
+    sunrisesetRouter(7.45,46.95);
+    //writeln(getascii)
+   if isInternet then begin
+      writeln('GetRealIP2_string: '+GetRealIP2)
+      writeln('Weather Report date: '+DateTimeToInternetStr(now, true))
+     write('Local Weather Sensor: '+localcity+' '+localcountry)
+      sr:= GetGeoWeather(localcity+','+localcountry, UrlWeatherReport25);
+     getMultipleWeather(sr)
+     if localcity <> '' then       
+       myedit.text:= localcity+','+localcountry else
+        myedit.text:= ' Klagenfurt';
+    end;
+    
+    raiselastwin32;
+
+End.
+
+
+var 
+  aFrm: TForm;
+  mT: TTimer;
+  tB: TTrackBar;
+  statBar1: TStatusBar;
+
+//**************************Event Handlers*******************************
+procedure TFrm1_trackSpeedChange(Sender: TObject);
+begin
+  //mt.Interval:= 1000 div tB.Position;
+  writeln(intToStr(1000 div tB.Position));
+end;
+
+procedure TFrm1_closeForm(Sender: TObject; var Action: TCloseAction);
+begin
+  {if mt <> NIL then begin
+    mT.enabled:= false;
+    mT.Free;
+    mT:= NIL;
+  end;}
+  ///afrm.Free;  
+  action:= caFree;
+  afrm:= NIL;
+end;
+
+procedure TFrm1_CloseClick(Sender: TObject);
+begin
+  afrm.Close;
+end;
+
+procedure TFrm1_PauseClick(Sender: TObject);
+begin
+  {if mT <> NIL then
+    mt.enabled:= not mt.enabled; }
+end;
+
+//**************************Form Builder*******************************
+procedure loadForm;
+
+ var tB: TTrackBar;
+ 
+begin
+  aFrm:= TForm.Create(self);
+  //mT:= TTimer.Create(self);
+  //mt.onTimer:= @TFrm1_timerRedrawTimer;
+  //mt.interval:= MILLISECONDS;
+  //mt.free;  in on close            
+  with aFrm do begin
+    Caption:= '********** Form Template ***********';  
+    height:= 510;
+    width:= 700;
+    Position:= poScreenCenter;
+    //Color:= clBlack;
+    onClose:= @TFrm1_closeForm;
+    //onPaint:= @TFrm1_FormPaint;
+    Canvas.Pen.color:= clBlue;
+    Canvas.Pen.Width:= 15;
+    BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+
+    Show;
+    canvas.brush.bitmap:= getBitmapObject(Exepath+'examples\images\bmp47.bmp');
+    Canvas.FillRect(Rect(600,300,100,100));
+  end;
+  with TBitBtn.Create(aFrm) do begin
+    Parent:= aFrm;
+    setbounds(310,390,150,55);
+    caption:= 'Pause';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'CL_MPPAUSE'); 
+    mXButton(05,05,width, height,12,12,handle);
+    //event handler
+    onClick:= @TFrm1_PauseClick;
+  end;
+  with TBitBtn.Create(aFrm) do begin
+    Parent:= aFrm;
+    setbounds(480,390,150, 55);
+    caption:= 'Close';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'CL_MPSTOP'); 
+    mXButton(05,05,width, height,12,12,handle);
+    onClick:= @TFrm1_CloseClick;
+  end;
+  tB:= TTrackBar.create(aFrm);
+  with tB do begin
+    parent:= aFrm;
+    setBounds(40,402,230,40);
+    Min:= 10; Max:= 100
+    Frequency:= 10
+    Position:= 1000 div 50;
+    linesize:= 4;
+    ThumbLength:= 30;
+    SetFocus;
+    OnChange:= @TFrm1_trackSpeedChange;
+  end;
+  statbar1:= TStatusBar.Create(aFrm);
+  with statbar1 do begin
+    parent:= aFrm;
+    showhint:= true;
+    //sizegrip
+    hint:= 'this is a LED BoX';
+    Panels.add;
+      panels.items[0].width:= 200;
+      panels.items[0].text:= '200';
+    Panels.add;
+      panels.items[1].width:= 150;
+      panels.items[1].text:= '150';
+  end;
+end;  
+
+
+
+
+object mainForm1: TmainForm1
+  Left = 227
+  Top = 124
+  HelpContext = 1
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  BorderWidth = 1
+  Caption = 'maTRIx by maX'
+  ClientHeight = 501
+  ClientWidth = 746
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  Menu = MainMenu1
+  OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter
+    Left = 177
+    Top = 41
+    Width = 2
+    Height = 421
+    Cursor = crHSplit
+    ResizeStyle = rsLine
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 482
+    Width = 746
+    Height = 19
+    Panels = <>
+    SimplePanel = True
+    SimpleText = 'StatusLine: OK'
+    SizeGrip = False
+  end
+  object CoolBar1: TCoolBar
+    Left = 0
+    Top = 0
+    Width = 746
+    Height = 41
+    Bands = <
+      item
+        Bitmap.Data = {
+          760F0000424D760F0000000000007600000028000000800000003C0000000100
+          040000000000000F000000000000000000001000000010000000000000008080
+          80000080000000808000800000008000800080800000C0C0C000808080000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+          777777777777171717777777777777177771777777777777777077F7FF7FFFF7
+          77F77F77F7F7F7F7F7F7F7F7F777777777771777177777777777777777777777
+          777777777771717717777777777777777717777777777777777777777FFFFF7F
+          7F7F77F7F7F7F7F7F7F7F7F77777777777777717177777777777777777777777
+          77777777777777171777777777777777717777777777777777777777777FF7FF
+          7F77777777F7F7FF7F7F77F77F77777777777777177777777777777777777777
+          7777777777771771777777777777777771777777777777777777777777777FFF
+          FF7F7777F7F7F7F7F7F77F777777777777777771717777777777777777777777
+          777777777777771777777777777777777777777777777777777777777777777F
+          F7F7F7F777F7F7F7F7F7F7F7F777777777777777177777777777777777777777
+          7777777777777777777777777777777777777777777777777777777777777777
+          FFFF7F7F7F7F7F7F7F7F777777777F7777777777777777777777777777777777
+          7777777777777777777777777777777777777777777777777777777777777777
+          7FF7F7F7F7F7F7FFFFF7F7F7F7F7777777777777717717177777777777777777
+          7777777777777777777777777777777777777777777777777777777777777771
+          77FFFFF7F7777F77F7F7F77F77777F7777777777777171777777777777777777
+          7777777777777177777777777777777777777777777777777777777777777777
+          777FFFFFF7F7F77F7F7FF7F7F77F777777777777777777177777777777777777
+          7777777777777777771777777777777777777777777777777777777777777777
+          7177FFFF7F7F77F7F7FF7FF7F7F7F77F77777777777171717777777777777777
+          7777777777777717771777777777777777777777777777777777777777777777
+          77777FFFFF7F7777F7F7FF7FF7F77F7777777777777777777777771777777777
+          7777777777777771777777777777777777777777777777777777777777777777
+          777777FFFF7F77F7F7F7F7F7F7F7F77F7F777777777771717771777177177777
+          7777777777777777777777777777777777777777777777777777777777777777
+          777777FFFFFF7F77F7F7F7FF7FF7F7F7777F7777777777771717717777777777
+          7777777777777777177777777777777777777777777777777777777777777777
+          7777777FFFF7F7F777F7F7F7F7F7F777F7777F77777777717771777777777777
+          7777777777777777717777777777777777777777777777777777777777777777
+          7777777F7FFF7F77F7F77F7FFF7F7F7F777F7777777777171717717777777F77
+          7777777777777777777771777777777777777777777777777777777777777777
+          7777777FFFF7F7777777F7F7F7F7F7F77F77F7777777777771771777777F7777
+          F7F7777777777777771777777777177777777777777777777777777777777777
+          77777177FFFFF7F777F77F7F7FF7F7F7F77F77F777777777171717177777F777
+          777F7F7777777777777177177771717777777777777777777777777777777777
+          77777777FFFF7F777777F7F7FF7F7F7F7F7F7F77777777777771717717777777
+          77777F7F77777777777717771777777777777777777777777777777777777777
+          777777177FFFF7F7F77F7F7FF7F7FF7F7F7F7F7F777777777717177177777777
+          1777777777777777777771717717777177777777777777777777777777777777
+          777777777FFFF7F77777777F7F7FF7F7F7F7F777F77777777771771717777771
+          7777777777771777777777177771777777777777777777777777777777777777
+          77777771777F7F7F77777F7F7F7F7F7F7F7F7F7F777777777777771717717717
+          7777777777777777777771777777777777777777777777777777777777777777
+          777777777777F7F7F7F77F7F7F7F7F7F7F7F7777777F77777777717717171717
+          7777777777171777777717777777777777777777777777777777777777777777
+          77777777777777F7F77777777F7F7F7F7F7F7F7F7F7777777777777777717777
+          7777777777777177777771777777777777777777777777777777777777777777
+          777777777777777F7F77777F7F7F7F7F7F7F7F777777F77F7777771777717777
+          7777777777777777777771177777777777777777777777777777777777777777
+          7177777777777777F7F7777777F77F7F7FF7F7F7F7F777777777777777717777
+          7777777777777777777777777777777777777777777777777777777777777777
+          7777777777777777777777777F77F7F7F7F7F7F77777F7777777777771777777
+          7777777777777777777771717777777777777777777777777777777777777777
+          777777177777771777777777777F7F7F7F7F7F7F7F7F777F7777777777717777
+          7777777777777777777777171777777777777777777777777777777777777777
+          71777777777777777777777777F7F7F7F7F7F7F7F7F77F777777777777177777
+          7777777777777777777777177777777777777777777777777777777777777717
+          77777777777777717777777777777F77F7F7F7F7F7F7F7777777777777777777
+          77777777777777777777777777777777777F7777777777777777777777777171
+          7171777777777777171777777777F77F7F7F7F7F7F7F7F777777777777777777
+          771777777777777777777777777777777177F777777777777777777777777717
+          171777177777777717771777777777F7F7F7F7FF7F7F77F77777777777777171
+          7777777777777777777777777777777777777F77777777777777777777777777
+          77717177777777777171717177777F77F7F7F7F7F7F7F77F7777777777777171
+          7177777177777777777777777777777777777FF7F77771777777777777777777
+          1717777777777777771777777777777F7F7F7F7F7F7F77F7F777777777777777
+          7777777717777777777777777777777777777777777777777777777777777777
+          717777777777777777777777717777F77F7F7F7F7F7F7F7F77F7777777777771
+          7177777777777777777777777777777777771777777777777777777777777777
+          77177777777777777777777777777777F7F77F7F7F7F7F7FF777F77777777717
+          777777F777777777777777777777777777777777717177717777777777777777
+          77177777777777777777777771777777777F77F7F7F7F7F777F7777777777777
+          171777F7F7777777777777177777777777777777777777777777777777777777
+          777777777777777777777777177177777F77F7F7F7F7F7F7F7F7F7F777777777
+          7777777F77777777777777777777777777777777777777777777777777777777
+          77777777777777777777777771777777777F77F7F7F7F7F7F7F77777F7777777
+          7717777F77777777777777717177777777777777777777777777777777777777
+          7777777777777777777777777717777777777F7F7F7F7F7F7777F7F777777777
+          777777777F777777777777777717777777777777777777777777777777777777
+          777777777777777777777777777777777777F7F7F7F7F7F7F7F7F77777777777
+          7777777777777777777777771777777777777777777777777777777777777777
+          77777777777777777777777777717771777777F7F77F7F7F7F7F77F777777777
+          7777777777777777777777777717177777777771777777777777777777777777
+          7777777777777777777777777777177777777F7F77F7F7F7F7F77F777F777777
+          7777777777777177777777777777777777777717177777777777777777777777
+          77777777777777777177777777717171777777777F7F7FF7F7F7F77F77777777
+          7777777777717777777777777717177777777777777777777777777777777777
+          777777777777777777177777777711717777777F7F7F7F7F7F77F7F7F7F77777
+          777777777717171717777777777777777777777771777777777F777777777777
+          777777777777777777777777777117117777777777F77F7F7F7F77F77777F777
+          77777777171777777777777777777777777777777777777777F7F77777777777
+          77777777777777777771777777771117177777777F77F7F7F777F7F7F7F77777
+          7777777777171777777777777777777777777777777777777777777777777777
+          777777777777777777777777777771777777777777F77F7F7F7F7F7F777F7777
+          7777777717177777777777777777777777777777777777777777777777777777
+          77777777777777777777777777777777777177777777F77F7F77F7F7F7F77F77
+          7777777777171777777777777777777777777777777777777777777777777777
+          7777777777777777777777777777777777177777777F7F7F7F7F7F7F777F7777
+          77777777777777777F7F77777717777777777777777777777777777771777777
+          7777777777777777777777777777777777717777777777F7F7F77F7F7F7F77F7
+          77777777777777777F7F7F777777777777777777777777777777771777777777
+          77777777177777777777777777771777777717777777F7F7F77F7F7F7F77F777
+          777777777777777777FFF77F7777717777777777777777777777777777177777
+          77777777777777777777777777771777777771777777777777F7F7F7F77F77F7
+          77F7777777777777777777F77777777777777777777777777777777777777777
+          77777777777777777777777777777777777777171777777F7F77F7F7F7F77F77
+          F77777777777777777777777F7F7777777777777777777777777777777777777
+          777777777717777777777777777777777777717777777777777F7F7F7F77F77F
+          77F77777777F77777717777777F7777777777777777777777777777777777777
+          77777777777177777777777777777777777777777177777777F7F7F77F7F77F7
+          7F77F77777777F77777717777777777777777777777777777777777777777777
+          7777777777771777777777777777777777777777777777777F77F7F7F777F777
+          F77F777777777777771771777777771777777777777777777777777777777777
+          777777777777777771777777777777777777777777177777777F7F7F7F7F77F7
+          F7F7777777777777777717171777777777777777777777777777777777777777
+          77777777777771777777777777777177777777777771777777777777F777F777
+          7777777777777777777171717177771777777777777777777777777777777777
+          77777777777777777777777777777777777777777777777777777F7F7F7F7777
+          F77F77F777777777777771771717177777777777777777777777777777777777
+          7777777777777777777777777777777777777777777177777777}
+        Break = False
+        Control = ToolBar1
+        ImageIndex = -1
+        MinHeight = 49
+        ParentBitmap = False
+        Width = 742
+      end>
+    Bitmap.Data = {
+      760F0000424D760F0000000000007600000028000000800000003C0000000100
+      040000000000000F000000000000000000001000000010000000000000008080
+      80000080000000808000800000008000800080800000C0C0C000808080000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+      777777777777171717777777777777177771777777777777777077F7FF7FFFF7
+      77F77F77F7F7F7F7F7F7F7F7F777777777771777177777777777777777777777
+      777777777771717717777777777777777717777777777777777777777FFFFF7F
+      7F7F77F7F7F7F7F7F7F7F7F77777777777777717177777777777777777777777
+      77777777777777171777777777777777717777777777777777777777777FF7FF
+      7F77777777F7F7FF7F7F77F77F77777777777777177777777777777777777777
+      7777777777771771777777777777777771777777777777777777777777777FFF
+      FF7F7777F7F7F7F7F7F77F777777777777777771717777777777777777777777
+      777777777777771777777777777777777777777777777777777777777777777F
+      F7F7F7F777F7F7F7F7F7F7F7F777777777777777177777777777777777777777
+      7777777777777777777777777777777777777777777777777777777777777777
+      FFFF7F7F7F7F7F7F7F7F777777777F7777777777777777777777777777777777
+      7777777777777777777777777777777777777777777777777777777777777777
+      7FF7F7F7F7F7F7FFFFF7F7F7F7F7777777777777717717177777777777777777
+      7777777777777777777777777777777777777777777777777777777777777771
+      77FFFFF7F7777F77F7F7F77F77777F7777777777777171777777777777777777
+      7777777777777177777777777777777777777777777777777777777777777777
+      777FFFFFF7F7F77F7F7FF7F7F77F777777777777777777177777777777777777
+      7777777777777777771777777777777777777777777777777777777777777777
+      7177FFFF7F7F77F7F7FF7FF7F7F7F77F77777777777171717777777777777777
+      7777777777777717771777777777777777777777777777777777777777777777
+      77777FFFFF7F7777F7F7FF7FF7F77F7777777777777777777777771777777777
+      7777777777777771777777777777777777777777777777777777777777777777
+      777777FFFF7F77F7F7F7F7F7F7F7F77F7F777777777771717771777177177777
+      7777777777777777777777777777777777777777777777777777777777777777
+      777777FFFFFF7F77F7F7F7FF7FF7F7F7777F7777777777771717717777777777
+      7777777777777777177777777777777777777777777777777777777777777777
+      7777777FFFF7F7F777F7F7F7F7F7F777F7777F77777777717771777777777777
+      7777777777777777717777777777777777777777777777777777777777777777
+      7777777F7FFF7F77F7F77F7FFF7F7F7F777F7777777777171717717777777F77
+      7777777777777777777771777777777777777777777777777777777777777777
+      7777777FFFF7F7777777F7F7F7F7F7F77F77F7777777777771771777777F7777
+      F7F7777777777777771777777777177777777777777777777777777777777777
+      77777177FFFFF7F777F77F7F7FF7F7F7F77F77F777777777171717177777F777
+      777F7F7777777777777177177771717777777777777777777777777777777777
+      77777777FFFF7F777777F7F7FF7F7F7F7F7F7F77777777777771717717777777
+      77777F7F77777777777717771777777777777777777777777777777777777777
+      777777177FFFF7F7F77F7F7FF7F7FF7F7F7F7F7F777777777717177177777777
+      1777777777777777777771717717777177777777777777777777777777777777
+      777777777FFFF7F77777777F7F7FF7F7F7F7F777F77777777771771717777771
+      7777777777771777777777177771777777777777777777777777777777777777
+      77777771777F7F7F77777F7F7F7F7F7F7F7F7F7F777777777777771717717717
+      7777777777777777777771777777777777777777777777777777777777777777
+      777777777777F7F7F7F77F7F7F7F7F7F7F7F7777777F77777777717717171717
+      7777777777171777777717777777777777777777777777777777777777777777
+      77777777777777F7F77777777F7F7F7F7F7F7F7F7F7777777777777777717777
+      7777777777777177777771777777777777777777777777777777777777777777
+      777777777777777F7F77777F7F7F7F7F7F7F7F777777F77F7777771777717777
+      7777777777777777777771177777777777777777777777777777777777777777
+      7177777777777777F7F7777777F77F7F7FF7F7F7F7F777777777777777717777
+      7777777777777777777777777777777777777777777777777777777777777777
+      7777777777777777777777777F77F7F7F7F7F7F77777F7777777777771777777
+      7777777777777777777771717777777777777777777777777777777777777777
+      777777177777771777777777777F7F7F7F7F7F7F7F7F777F7777777777717777
+      7777777777777777777777171777777777777777777777777777777777777777
+      71777777777777777777777777F7F7F7F7F7F7F7F7F77F777777777777177777
+      7777777777777777777777177777777777777777777777777777777777777717
+      77777777777777717777777777777F77F7F7F7F7F7F7F7777777777777777777
+      77777777777777777777777777777777777F7777777777777777777777777171
+      7171777777777777171777777777F77F7F7F7F7F7F7F7F777777777777777777
+      771777777777777777777777777777777177F777777777777777777777777717
+      171777177777777717771777777777F7F7F7F7FF7F7F77F77777777777777171
+      7777777777777777777777777777777777777F77777777777777777777777777
+      77717177777777777171717177777F77F7F7F7F7F7F7F77F7777777777777171
+      7177777177777777777777777777777777777FF7F77771777777777777777777
+      1717777777777777771777777777777F7F7F7F7F7F7F77F7F777777777777777
+      7777777717777777777777777777777777777777777777777777777777777777
+      717777777777777777777777717777F77F7F7F7F7F7F7F7F77F7777777777771
+      7177777777777777777777777777777777771777777777777777777777777777
+      77177777777777777777777777777777F7F77F7F7F7F7F7FF777F77777777717
+      777777F777777777777777777777777777777777717177717777777777777777
+      77177777777777777777777771777777777F77F7F7F7F7F777F7777777777777
+      171777F7F7777777777777177777777777777777777777777777777777777777
+      777777777777777777777777177177777F77F7F7F7F7F7F7F7F7F7F777777777
+      7777777F77777777777777777777777777777777777777777777777777777777
+      77777777777777777777777771777777777F77F7F7F7F7F7F7F77777F7777777
+      7717777F77777777777777717177777777777777777777777777777777777777
+      7777777777777777777777777717777777777F7F7F7F7F7F7777F7F777777777
+      777777777F777777777777777717777777777777777777777777777777777777
+      777777777777777777777777777777777777F7F7F7F7F7F7F7F7F77777777777
+      7777777777777777777777771777777777777777777777777777777777777777
+      77777777777777777777777777717771777777F7F77F7F7F7F7F77F777777777
+      7777777777777777777777777717177777777771777777777777777777777777
+      7777777777777777777777777777177777777F7F77F7F7F7F7F77F777F777777
+      7777777777777177777777777777777777777717177777777777777777777777
+      77777777777777777177777777717171777777777F7F7FF7F7F7F77F77777777
+      7777777777717777777777777717177777777777777777777777777777777777
+      777777777777777777177777777711717777777F7F7F7F7F7F77F7F7F7F77777
+      777777777717171717777777777777777777777771777777777F777777777777
+      777777777777777777777777777117117777777777F77F7F7F7F77F77777F777
+      77777777171777777777777777777777777777777777777777F7F77777777777
+      77777777777777777771777777771117177777777F77F7F7F777F7F7F7F77777
+      7777777777171777777777777777777777777777777777777777777777777777
+      777777777777777777777777777771777777777777F77F7F7F7F7F7F777F7777
+      7777777717177777777777777777777777777777777777777777777777777777
+      77777777777777777777777777777777777177777777F77F7F77F7F7F7F77F77
+      7777777777171777777777777777777777777777777777777777777777777777
+      7777777777777777777777777777777777177777777F7F7F7F7F7F7F777F7777
+      77777777777777777F7F77777717777777777777777777777777777771777777
+      7777777777777777777777777777777777717777777777F7F7F77F7F7F7F77F7
+      77777777777777777F7F7F777777777777777777777777777777771777777777
+      77777777177777777777777777771777777717777777F7F7F77F7F7F7F77F777
+      777777777777777777FFF77F7777717777777777777777777777777777177777
+      77777777777777777777777777771777777771777777777777F7F7F7F77F77F7
+      77F7777777777777777777F77777777777777777777777777777777777777777
+      77777777777777777777777777777777777777171777777F7F77F7F7F7F77F77
+      F77777777777777777777777F7F7777777777777777777777777777777777777
+      777777777717777777777777777777777777717777777777777F7F7F7F77F77F
+      77F77777777F77777717777777F7777777777777777777777777777777777777
+      77777777777177777777777777777777777777777177777777F7F7F77F7F77F7
+      7F77F77777777F77777717777777777777777777777777777777777777777777
+      7777777777771777777777777777777777777777777777777F77F7F7F777F777
+      F77F777777777777771771777777771777777777777777777777777777777777
+      777777777777777771777777777777777777777777177777777F7F7F7F7F77F7
+      F7F7777777777777777717171777777777777777777777777777777777777777
+      77777777777771777777777777777177777777777771777777777777F777F777
+      7777777777777777777171717177771777777777777777777777777777777777
+      77777777777777777777777777777777777777777777777777777F7F7F7F7777
+      F77F77F777777777777771771717177777777777777777777777777777777777
+      7777777777777777777777777777777777777777777177777777}
+    object ToolBar1: TToolBar
+      Left = 9
+      Top = 0
+      Width = 729
+      Height = 49
+      Align = alClient
+      ButtonHeight = 36
+      ButtonWidth = 69
+      EdgeInner = esNone
+      EdgeOuter = esNone
+      Flat = True
+      HotImages = ImageList1
+      Images = ImageList2
+      ShowCaptions = True
+      TabOrder = 0
+      Transparent = True
+      object tbtnClose: TToolButton
+        Left = 0
+        Top = 0
+        Caption = '&Close'
+        ImageIndex = 1
+        ParentShowHint = False
+        ShowHint = False
+        OnClick = tbtnCloseClick
+      end
+      object ToolButton2: TToolButton
+        Left = 69
+        Top = 0
+        Width = 8
+        Caption = 'ToolButton2'
+        ImageIndex = 1
+        Style = tbsSeparator
+      end
+      object tbtnGenerator: TToolButton
+        Left = 77
+        Top = 0
+        Caption = '&Generator'
+        ImageIndex = 2
+        OnClick = MovingAverage1Click
+      end
+      object tbtnOptions: TToolButton
+        Left = 146
+        Top = 0
+        Caption = '&Options'
+        ImageIndex = 3
+        Style = tbsCheck
+        OnClick = tbtnOptionsClick
+      end
+      object tbtnTrans: TToolButton
+        Left = 215
+        Top = 0
+        Caption = '&Transaction'
+        ImageIndex = 0
+        OnClick = tbtnTransClick
+      end
+      object ToolButton5: TToolButton
+        Left = 284
+        Top = 0
+        Width = 13
+        Caption = 'ToolButton5'
+        ImageIndex = 3
+        Style = tbsSeparator
+      end
+    end
+  end
+  object progBar: TProgressBar
+    Left = 0
+    Top = 462
+    Width = 746
+    Height = 20
+    Align = alBottom
+    Min = 0
+    Max = 100
+    Smooth = True
+    TabOrder = 2
+    Visible = False
+  end
+  object TreeView1: TTreeView
+    Left = 0
+    Top = 41
+    Width = 177
+    Height = 421
+    Align = alLeft
+    AutoExpand = True
+    Images = ImageList4
+    Indent = 19
+    ReadOnly = True
+    TabOrder = 3
+    OnChange = TreeView1Change
+    Items.Data = {
+      03000000290000000000000000000000FFFFFFFFFFFFFFFF000000000B000000
+      1050726F7A657373205061747465726E731A0000000100000002000000FFFFFF
+      FFFFFFFFFF000000000000000001561C0000000100000002000000FFFFFFFFFF
+      FFFFFF0000000000000000035255501B0000000100000002000000FFFFFFFFFF
+      FFFFFF0000000000000000025850230000000100000002000000FFFFFFFFFFFF
+      FFFF00000000000000000A496E74657266616365731E00000001000000020000
+      00FFFFFFFFFFFFFFFF0000000000000000054C69737473230000000100000002
+      000000FFFFFFFFFFFFFFFF00000000000000000A44656C65676174696F6E1C00
+      00000100000002000000FFFFFFFFFFFFFFFF0000000000000000034F434C2400
+      00000100000002000000FFFFFFFFFFFFFFFF00000000000000000B5265666163
+      746F72696E67210000000100000002000000FFFFFFFFFFFFFFFF000000000000
+      000008526564657369676E1E0000000100000002000000FFFFFFFFFFFFFFFF00
+      000000000000000544556E69741E0000000100000002000000FFFFFFFFFFFFFF
+      FF0000000000000000054E556E6974280000000000000000000000FFFFFFFFFF
+      FFFFFF00000000030000000F44657369676E205061747465726E732300000000
+      00000000000000FFFFFFFFFFFFFFFF00000000050000000A4372656174696F6E
+      616C210000000100000002000000FFFFFFFFFFFFFFFF00000000000000000841
+      62737472616374200000000100000002000000FFFFFFFFFFFFFFFF0000000000
+      000000074275696C646572200000000100000002000000FFFFFFFFFFFFFFFF00
+      0000000000000007466163746F7279220000000100000002000000FFFFFFFFFF
+      FFFFFF00000000000000000953696E676C65746F6E2500000001000000020000
+      00FFFFFFFFFFFFFFFF00000000000000000C53696E676C65746F6E416C742300
+      00000000000000000000FFFFFFFFFFFFFFFF00000000080000000A5374727563
+      747572616C200000000100000002000000FFFFFFFFFFFFFFFF00000000000000
+      0007416461707465721F0000000100000002000000FFFFFFFFFFFFFFFF000000
+      000000000006427269646765220000000100000002000000FFFFFFFFFFFFFFFF
+      000000000000000009436F6D706F73697465220000000100000002000000FFFF
+      FFFFFFFFFFFF0000000000000000094465636F7261746F721F00000001000000
+      02000000FFFFFFFFFFFFFFFF0000000000000000064661636164652200000001
+      00000002000000FFFFFFFFFFFFFFFF000000000000000009466C797765696768
+      741E0000000100000002000000FFFFFFFFFFFFFFFF0000000000000000055072
+      6F7879200000000100000002000000FFFFFFFFFFFFFFFF000000000000000007
+      57726170706572230000000000000000000000FFFFFFFFFFFFFFFF000000000C
+      0000000A4265686176696F72616C1E0000000100000002000000FFFFFFFFFFFF
+      FFFF000000000000000005436861696E200000000100000002000000FFFFFFFF
+      FFFFFFFF000000000000000007436F6D6D616E64240000000100000002000000
+      FFFFFFFFFFFFFFFF00000000000000000B496E74657270726574657221000000
+      0100000002000000FFFFFFFFFFFFFFFF0000000000000000084974657261746F
+      721D0000000100000002000000FFFFFFFFFFFFFFFF0000000000000000044C6F
+      636B210000000100000002000000FFFFFFFFFFFFFFFF0000000000000000084D
+      65646961746F72200000000100000002000000FFFFFFFFFFFFFFFF0000000000
+      000000074D656D656E746F210000000100000002000000FFFFFFFFFFFFFFFF00
+      00000000000000084F627365727665721E0000000100000002000000FFFFFFFF
+      FFFFFFFF0000000000000000055374617465210000000100000002000000FFFF
+      FFFFFFFFFFFF0000000000000000085374726174656779210000000100000002
+      000000FFFFFFFFFFFFFFFF00000000000000000854656D706C61746520000000
+      0100000002000000FFFFFFFFFFFFFFFF00000000000000000756697369746F72
+      2D0000000000000002000000FFFFFFFFFFFFFFFF000000000F00000014417263
+      686974656B747572205061747465726E73230000000100000002000000FFFFFF
+      FFFFFFFFFF00000000000000000A4175746F6D6174696F6E1F00000001000000
+      02000000FFFFFFFFFFFFFFFF00000000000000000642726F6B65722200000001
+      00000002000000FFFFFFFFFFFFFFFF000000000000000009436F6E7461696E65
+      721F0000000100000002000000FFFFFFFFFFFFFFFF0000000000000000064C61
+      79657273250000000100000002000000FFFFFFFFFFFFFFFF0000000000000000
+      0C4D61737465722D536C617665240000000100000002000000FFFFFFFFFFFFFF
+      FF00000000000000000B4D6963726F6B65726E656C2000000001000000020000
+      00FFFFFFFFFFFFFFFF0000000000000000074D6F6E69746F721C000000010000
+      0002000000FFFFFFFFFFFFFFFF0000000000000000034D56431C000000010000
+      0002000000FFFFFFFFFFFFFFFF00000000000000000350414321000000010000
+      0002000000FFFFFFFFFFFFFFFF00000000000000000850726F746F7479702100
+      00000100000002000000FFFFFFFFFFFFFFFF00000000000000000850726F7669
+      646572220000000100000002000000FFFFFFFFFFFFFFFF000000000000000009
+      53696D756C61746F72280000000100000002000000FFFFFFFFFFFFFFFF000000
+      00000000000F5465726D696E616C2D5365727665722400000001000000020000
+      00FFFFFFFFFFFFFFFF00000000000000000B5472616E73616374696F6E210000
+      000100000002000000FFFFFFFFFFFFFFFF000000000000000008576174636864
+      6F67}
+  end
+  object view: TListView
+    Left = 179
+    Top = 41
+    Width = 567
+    Height = 421
+    Align = alClient
+    Columns = <
+      item
+        AutoSize = True
+        Caption = 'Content'
+        ImageIndex = 3
+      end>
+    HotTrack = True
+    HotTrackStyles = [htHandPoint]
+    IconOptions.AutoArrange = True
+    RowSelect = True
+    ParentShowHint = False
+    ShowHint = True
+    SmallImages = ImageList5
+    StateImages = ImageList5
+    TabOrder = 4
+    ViewStyle = vsReport
+    OnClick = viewClick
+  end
+  object MainMenu1: TMainMenu
+    Left = 240
+    Top = 136
+    object Datei1: TMenuItem
+      Caption = '&File'
+      object mnOpentree: TMenuItem
+        Caption = '&Open Tree'
+        OnClick = mnOpentreeClick
+      end
+      object Beenden1: TMenuItem
+        Caption = '&Close'
+        OnClick = tbtnCloseClick
+      end
+    end
+    object Registry1: TMenuItem
+      Caption = '&Tools'
+      object Fractals: TMenuItem
+        Caption = 'Fractals...'
+        OnClick = FractalsClick
+      end
+      object Generator: TMenuItem
+        Caption = '&Chart Generator...'
+        OnClick = MovingAverage1Click
+      end
+      object Verschlsseln1: TMenuItem
+        Caption = '&Encrypt/ Decrypt'
+        object mnEncrypt: TMenuItem
+          Caption = '&Encrypt'
+          OnClick = mnEncryptClick
+        end
+        object mnDecrypt: TMenuItem
+          Caption = '&Decrypt'
+          OnClick = mnDecryptClick
+        end
+      end
+      object MATestCase1: TMenuItem
+        Caption = 'MA TestCase'
+        OnClick = MATestCase1Click
+      end
+      object mnSearch: TMenuItem
+        Caption = '&Search in Memo'
+        OnClick = mnSearchClick
+      end
+      object mnRegistryReader: TMenuItem
+        Caption = '&Registry Reader'
+        object r1: TMenuItem
+          Caption = 'Run'
+          OnClick = r1Click
+        end
+        object r2: TMenuItem
+          Caption = 'RunOnce'
+          OnClick = r2Click
+        end
+        object R3: TMenuItem
+          Caption = 'RunOnceEX'
+          OnClick = R3Click
+        end
+        object R4: TMenuItem
+          Caption = 'RunServices'
+          OnClick = R4Click
+        end
+        object R5: TMenuItem
+          Caption = 'RunServicesOnce'
+          OnClick = R5Click
+        end
+        object T1: TMenuItem
+          Caption = 'TypedURLs'
+          OnClick = T1Click
+        end
+      end
+    end
+    object info1: TMenuItem
+      Caption = '&Info'
+      OnClick = info1Click
+      object options: TMenuItem
+        Caption = '&Options'
+        OnClick = tbtnOptionsClick
+      end
+    end
+  end
+  object ImageList1: TImageList
+    Left = 504
+    Top = 72
+    Bitmap = {
+      494C010104000500040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      0000000000003600000028000000400000002000000001001000000000000010
+      000000000000000000000000000000000000FF7FFF7F0000FF7FFF7FFF7FEF3D
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7F0000FF7F
+      FF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      EF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7F0000FF7FFF7FFF7FEF3DFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FEF3DFF7FFF7FFF7FFF7FFF7FF75EF75EFF7FFF7F0000FF7FFF7FFF7FEF3D
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7F0000FF7F
+      FF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      EF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FEF3DFF7FEF3DFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FEF3DFF7FEF3DFF7FEF3DFF7FEF3D
+      FF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7F00000000000000000000FF7FEF3DFF7F
+      EF3DFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7F00000000000000000000
+      FF7FEF3DFF7FEF3DFF7FEF3DFF7F0000000000000000000000000000FF7FEF3D
+      FF7FEF3DFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7F0000000000000000
+      0000FF7FEF3DFF7FEF3DFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7F0000
+      0000000000000000FF7FEF3DFF7FEF3DFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7F
+      EF3DFF7F00000000000000000000FF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FEF3DFF7FEF3DFF7FEF3DFF7FEF3DFF7FEF3DFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FEF3DFF7FEF3DFF7FEF3DFF7F
+      EF3DFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7F0000FF7FFF7FFF7FEF3DFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FEF3DFF7FFF7FFF7FFF7FFF7F00000000FF7FFF7F0000FF7FFF7FFF7FEF3D
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7F0000FF7F
+      FF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      EF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7F0000FF7FFF7FFF7FEF3DFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FEF3DFF7FFF7FFF7FFF7FFF7F00000000FF7FFF7F0000FF7FFF7FFF7FEF3D
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7F0000FF7F
+      FF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      EF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FEF3DFF7FFF7FFF7FFF7FFF7FEF3DEF3DFF7FFF7FFF7FFF7FFF7FFF7FEF3D
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      EF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3D0000000000000000000000000000
+      E07FEF3DFF7FFF7FFF7FFF7FFF7FE07F00000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      E07FEF3DFF7FFF7FFF7FFF7FFF7FE07F0000000000000000003C003C003C003C
+      003C003C003C003C003C00000000000000000000000000000000000000000000
+      000000000000007C000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      E07FEF3DFF7FFF7FFF7FFF7FFF7FE07F0000000000000000003C003C003C003C
+      003C003C003C003C003C00000000000000000000000000000000000000000000
+      000000000000007C007C00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      E07FEF3DFF7FFF7FFF7FFF7FFF7FE07F0000000000000000003C003C003C003C
+      003C003C003C003C003C0000000000000000000000000000000000000000007C
+      007C007C007C007C007C007C0000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000EF3DEF3D00000000EF3D0000000000000000003C003C003C003C
+      003C003C003C003C003C00000000000000000000FF7FFF7FFF7FFF7F0000007C
+      007C007C007C007C007C007C007C000000000000000000000000000000000000
+      0000000000000000000000000000000000000000FF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7F000000000000EF3DEF3DE07F0000000000000000003C003C003C003C
+      003C003C003C003C003C00000000000000000000FF7FFF7FFF7FFF7F0000007C
+      007C007C007C007C007C007C007C007C00000000000000000000000010000000
+      0000104200000000000000000000000000000000FF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7F000000000000EF3DE07FE07F0000000000000000003C003C003C003C
+      003C003C003C003C003C00000000000000000000FF7F00000000FF7F0000007C
+      007C007C007C007C007C007C007C000000000000000010001F001F001F001F00
+      1F00100000000000000000000000000000000000FF7F00000000FF7F00000000
+      0000FF7F000000000000007C00000000EF3D000000000000003C003C003C003C
+      003C003C003CE07F003C00000000000000000000FF7FFF7FFF7FFF7F0000007C
+      007C007C007C007C007C007C000000000000104210001F00000000001F001F00
+      1F001F0000001000000000000000000000000000FF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7F00000000007C007C007C00000000000000000000003C003C003C003C
+      003C003C003C003C003C00000000000000000000FF7F00000000FF7FFF7FFF7F
+      FF7FFF7F0000007C007C000000000000000000001F000000000010021F001F00
+      00001F001F000000104200000000000000000000FF7F0000000000000000FF7F
+      0000FF7F0000007C007C007C007C007C0000000000000000003C003C003C003C
+      003C003C003C003C003C00000000000000000000FF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7F0000007C000000000000000000001000186300000000100210021F00
+      00001F001F000000104200000000000000000000FF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7F007C007C007C007C007C007C007C000000000000003C003CFF03FF03
+      FF03FF03FF03003C003C00000000000000000000FF7F00000000FF7F00000000
+      0000000000000000000000000000000000001000186318631F0010021F000000
+      000000001F000000104200000000000000000000FF7F00000000FF7F00000000
+      0000000000000000007C007C007C00000000000000000000003C003CFF03FF03
+      FF03FF03FF03003C003C00000000000000000000FF7FFF7FFF7FFF7F0000FF7F
+      FF7F000000000000000000000000000000001000104218631F0010021F000000
+      000000001F001000104200000000000000000000FF7FFF7FFF7FFF7F0000FF7F
+      FF7F000000000000007C007C007C00000000000000000000003C003CFF03FF03
+      FF03FF03FF03003C003C00000000000000000000FF7F0000F75EFF7F0000FF7F
+      00000000000000000000000000000000000000001042104218631F0010021863
+      1863186310420000000000000000000000000000FF7F0000F75EFF7F0000FF7F
+      000000000000EF3D007C007C007C00000000000000000000003C003C003C003C
+      003C003C003C003C003C00000000000000000000FF7FFF7FFF7FFF7F00000000
+      00000000000000000000000000000000000000001042104200001F0018631042
+      1042104210421042000000000000000000000000FF7FFF7FFF7FFF7F00000000
+      0000007C007C007C007C007C000000000000000000000000003C003C003C003C
+      003C003C003C003C003C00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000010421F001F0018631042
+      1042104200000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000001042000010001F001042
+      104210420000000000000000000000000000424D3E000000000000003E000000
+      2800000040000000200000000100010000000000000100000000000000000000
+      000000000000000000000000FFFFFF004C37400088374000E839400030374000
+      F0394000F4394000E0394000EC39400008000000D459460000000000A4634600
+      0000000000000000000000000000000000000000000000006E460000A0634600
+      53696E676C65746F845845005C000B75466F726D3C614600696E676C65746F6E
+      2C634600070E5453194300D410430090FC00C007FFDFFFF6FC00C007FFCFEFB1
+      FC00C007FFC7ED39FC00C0070003E24A0000C0070001FFF70000C0070000E07F
+      0000C0070001803F0000C0070003101F0023C0070007300F0001C007000F310F
+      0000C007001F030F0023C007007F030F0063C00700FF001F00C3C00701FF801F
+      0107C00703FF803F03FFC007FFFFC07F00000000000000000000000000000000
+      000000000000}
+  end
+  object ImageList2: TImageList
+    Left = 544
+    Top = 80
+    Bitmap = {
+      494C010104000500040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      0000000000003600000028000000400000002000000001001000000000000010
+      000000000000000000000000000000000000FF7FFF7FFF7FFF7FFF7F00000000
+      00000000000000000000FF7FFF7FFF7FFF7F000000000000000000000000FF7F
+      FF7FFF7F0000FF7FFF7F0000FF7FFF7F0000FF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7FFF7FFF7F0000FF7FFF7F
+      FF7FFF7F0000FF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F7B6FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F0000FF7F
+      FF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F0000FF7F
+      FF7FFF7F0000FF7FFF7F0000FF7FFF7F0000FF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7FFF7FFF7F0000FF7FFF7F
+      FF7FFF7F0000FF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7F
+      FF7FFF7F0000000000000000FF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F0000
+      FF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7F0000FF7F
+      FF7FFF7F00000000FF7F00000000FF7F0000FF7FFF7FFF7FFF7FFF7FFF7F0000
+      0000FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F000000000000FF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7FFF7FFF7FFF7F00000000FF7F
+      FF7FFF7F0000FF7FFF7FFF7FFF7F0000FF7FFF7FFF7F00000000FF7FFF7FFF7F
+      FF7F0000FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F0000FF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7F000000000000FF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FEF3DFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F000000000000FF7FFF7FFF7FFF7F
+      000000000000FF7FFF7FFF7FFF7FFF7FFF7FFF7F0000000000000000FF7FFF7F
+      FF7F00000000FF7F0000FF7FFF7F0000FF7FFF7FFF7FFF7FFF7FFF7FFF7F0000
+      0000FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F000000000000000000000000EF3D
+      EF3DEF3DFF7F0000000000000000EF3DEF3D00000000EF3DEF3DEF3DEF3DEF3D
+      EF3DEF3DEF3DEF3DEF3DEF3DFF7F000000000000000000000000000000000000
+      000000000000EF3DFF7FFF7F0000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000EF3D
+      EF3DEF3DFF7F0000000000000000EF3DEF3D00000000EF3DFF7F000000000000
+      00000000000000000000EF3DFF7F000000000000000000000000000000000000
+      000000000000EF3DEF3DFF7FFF7F000000000000000000000000FF5EEF3D0000
+      EF3D00000000FF5E00000000000000000000000000000000000000000000EF3D
+      EF3DEF3DFF7F0000000000000000EF3DEF3D00000000EF3DFF7F000000000000
+      00000000000000000000EF3DFF7F000000000000FF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FEF3DEF3DEF3DFF7FFF7F0000000000000000FF5EEF3DEF3DEF3D
+      00000000000000000000FF5E0000000000000000FF7FFF7FFF7FFF7FFF7FEF3D
+      EF3DEF3DFF7FFF7FFF7FFF7FFF7FEF3DEF3D00000000EF3DFF7F000000000000
+      00000000000000000000EF3DFF7F00000000EF3DEF3DEF3DEF3DEF3DEF3DEF3D
+      EF3DEF3DEF3DEF3DEF3DEF3DEF3DFF7FFF7F00000000FF5EEF3DEF3DEF3D0000
+      EF3D00000000000000000000FF5E00000000EF3DEF3DEF3DEF3DEF3DEF3DEF3D
+      EF3DEF3DEF3DEF3DEF3DEF3DEF3DEF3DEF3D00000000EF3DFF7F000000000000
+      00000000000000000000EF3DFF7F00000000EF3DFF7F000000000000EF3DEF3D
+      EF3DEF3DEF3DEF3DEF3DEF3DEF3DEF3DFF7F00000000EF3DEF3DEF3DEF3DEF3D
+      000000000000000000000000000000000000EF3DFF7F00000000000000000000
+      00000000EF3DFF7FFF7FFF7FFF7FEF3DEF3D00000000EF3DFF7F000000000000
+      00000000000000000000EF3DFF7F00000000EF3DFF7F0000FF7FFF7FEF3DEF3D
+      EF3DEF3DEF3DEF3DEF3DEF3DEF3DEF3DEF3D0000FF5EEF3DEF3DEF3DEF3D0000
+      EF3D000000000000000000000000FF5E0000EF3DFF7F0000FF7FFF7F0000FF7F
+      FF7FFF7FEF3DEF3DFF7FFF7FEF3DEF3DEF3D00000000EF3DFF7F000000000000
+      0000000000000000FF7FEF3DFF7F00000000EF3DFF7FEF3DEF3D0000EF3DEF3D
+      EF3DEF3DEF3DEF3DEF3DEF3DEF3DEF3D00000000FF5EEF3DFF5EFF5EEF3DEF3D
+      0000EF3D00000000000000000000EF3D0000EF3DFF7FEF3DEF3D0000EF3DEF3D
+      EF3D0000EF3DEF3DEF3DEF3DFF7FEF3DEF3D00000000EF3DFF7F000000000000
+      000000000000EF3D0000EF3DFF7F00000000EF3DFF7F0000FF7FFF7FEF3DEF3D
+      EF3DEF3DEF3DEF3DEF3DEF3DEF3D000000000000FF5EFF5EFF5EFF5EFF5EEF3D
+      EF3D0000EF3D0000000000000000EF3D0000EF3DFF7F0000FF7FFF7FFF7FFF7F
+      0000FF7FEF3DFF7FEF3DEF3DEF3DFF7FFF7F00000000EF3DFF7F000000000000
+      00000000000000000000EF3DFF7F00000000EF3DFF7FEF3DEF3D000000000000
+      00000000EF3DEF3DEF3DEF3D0000000000000000FF5E00000000FF5EFF5EEF3D
+      EF3DEF3D0000EF3D0000EF3D0000EF3D0000EF3DFF7FEF3DEF3DEF3DEF3D0000
+      EF3D0000EF3DEF3DEF3DEF3DEF3DEF3DFF7F00000000EF3DFF7F00000000FF7F
+      FF7FFF7FFF7FFF7F0000EF3DFF7F00000000EF3DFF7F0000FF7FFF7F0000FF7F
+      FF7FFF7FEF3DEF3DEF3D00000000000000000000FF5E00000000FF5EFF5EFF5E
+      EF3DEF3DEF3D0000EF3D0000EF3DEF3D0000EF3DFF7F0000FF7FFF7F0000FF7F
+      FF7FFF7FEF3DEF3DEF3DEF3DEF3DEF3DEF3D00000000EF3DFF7F0000EF3DEF3D
+      EF3DEF3DEF3DFF7F0000EF3DFF7F00000000EF3DFF7FEF3DEF3D0000EF3DEF3D
+      EF3DEF3DEF3DEF3D000000000000000000000000FF5E00000000FF5EFF5EFF5E
+      FF5EEF3DEF3DEF3D0000EF3D0000FF5E0000EF3DFF7FEF3DEF3D0000EF3DEF3D
+      EF3DEF3DEF3D0000EF3DEF3DEF3DFF7F000000000000EF3DFF7F0000EF3DFF7F
+      FF7FFF7FEF3DFF7F0000EF3DFF7F00000000EF3DFF7F0000FF7FFF7FEF3DFF7F
+      0000EF3D000000000000000000000000000000000000FF5E00000000FF5EFF5E
+      FF5EFF5EEF3DEF3DEF3DEF3DEF3D00000000EF3DFF7F0000FF7FFF7FEF3DFF7F
+      0000EF3D00000000EF3DEF3DEF3DFF7F000000000000EF3DFF7F0000EF3DEF3D
+      EF3DEF3DEF3D00000000EF3DFF7F00000000EF3DFF7FEF3DEF3D0000EF3DFF7F
+      EF3D00000000000000000000000000000000000000000000FF5E000000000000
+      FF5EFF5EFF5EFF5EEF3DEF3DFF5E00000000EF3DFF7FEF3DEF3D0000EF3DFF7F
+      EF3D0000FF7FEF3DEF3DEF3DEF3D0000000000000000EF3DFF7F000000000000
+      00000000000000000000EF3DFF7F00000000EF3DFF7FFF7FFF7FFF7FEF3DEF3D
+      0000000000000000000000000000000000000000000000000000FF5E00000000
+      0000FF5EFF5EEF3DEF3DFF5E000000000000EF3DFF7FFF7FFF7FFF7FEF3DEF3D
+      0000EF3DEF3DEF3DEF3DEF3D00000000000000000000EF3DFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FEF3DFF7F00000000EF3DEF3DEF3DEF3DEF3DEF3D0000
+      00000000000000000000000000000000000000000000000000000000FF5EFF5E
+      FF5EFF5EFF5EFF5E00000000000000000000EF3DEF3DEF3DEF3DEF3DEF3D0000
+      00000000000000000000000000000000000000000000EF3DEF3DEF3DEF3DEF3D
+      EF3DEF3DEF3DEF3DEF3DEF3D0000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000424D3E000000000000003E000000
+      2800000040000000200000000100010000000000000100000000000000000000
+      000000000000000000000000FFFFFF0047008B15844D4600E89B11FAFFB8B41E
+      740BA1C03C470050FF833DC03C4700003C470050E8AF11FA3C470000740BA1BC
+      3C47007548833DBCFF30648920FF05B8C05568C3594600645DC20400558BEC33
+      08928B18FF530C5B558BEC538BC18B4DFF53085B5DC204008BC18B4D08928B18
+      DEFDFFC3558BEC5388901D020000E8A1FC3CC003FFC7FFFFFC3CCFF3FFC3F01F
+      FC3CCFF38001E0078000CFF30000C0030000CFF33800C0033F80CFF320008001
+      2400CFE3080180010880CFD3200380012100CFF30F87B0010280CC13240FB001
+      2400C813081FB0010821C813217FD8032161C83308FFEE030883CFF301FFF707
+      0107C00303FFF81F03FFC007FFFFFFFF00000000000000000000000000000000
+      000000000000}
+  end
+  object ImageList3: TImageList
+    Left = 196
+    Top = 210
+    Bitmap = {
+      494C010102000500040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      0000000000003600000028000000400000002000000001001000000000000010
+      000000000000000000000000000000000000FF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FF75EFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7F00000000000000000000FF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FF75EFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7F
+      FF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7FFF7  }
+      
+      
+      The set of APIs within a device family is broken down into subdivisions known as API contracts. See Device families.
+
+This reference topic enumerates for Windows 10 all of the API contracts and their versions, with links to the and the APIs within each, with links to topics with more info on each particular API contract.
+
+http://www.streamlineicons.com/img/preview/preview-free-pack.svg
+
+http://sm-artists.com/?page_id=925
+
+https://thecattlecrew.wordpress.com/2014/10/31/analyse-der-software-qualitat-mit-sonarqube/
+
+GetRealIP2_string: {
+  "ip": "85.4.239.55",
+  "hostname": "55.239.4.85.dynamic.wline.res.cust.swisscom.ch",
+  "city": "Tann",
+  "region": "Zurich",
+  "country": "CH",
+  "loc": "47.2682,8.8479",
+  "org": "AS3303 Swisscom (Switzerland) Ltd",
+  "postal": "8632"
+}
+Weather Report date: Fri, 18 Dec 2015 10:50:16 +0100
+Local Weather Sensor: Tann CH
+Weather Id:802 is Clouds in: Tann at 6.35 of 1027 pressure with 100% humidity
+
+http://www.poertschach.at/de/wetter/detail#_webcams
