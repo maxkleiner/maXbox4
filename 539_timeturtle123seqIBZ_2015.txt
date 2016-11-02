@@ -1,0 +1,180 @@
+PROGRAM myTurtle123_seq;
+// task: design each number from 0..10
+// process: download --> include --> loop
+// #sign:3 max: MAXBOX7: 07.02.2015 12:27:41 
+
+var cfrm: TForm;
+
+//function DownloadFile(SourceFile, DestFile: string): Boolean;
+
+procedure downloadnumbers;
+begin
+  //if DownloadFile('http://192.168.1.43/Nr9_Damian.inc',
+  if DownloadFile('http://172.18.62.159/Nr9_Damian.inc',
+ 
+        Exepath+'\examples\ibznumbers\Nr9_Damian.inc') then
+      writeln('Download succesful!') else
+      writeln('Download not succesful!');
+end;      
+
+    
+
+procedure LoadForm;
+begin
+  cFrm:= TForm.create(self);
+  try
+    with cFrm do begin
+      caption:= '((((TARTARUGA))))';  
+      height:= 600;
+      width:= 600;
+      color:= clblack;
+      Position:= poScreenCenter;
+      show;
+    end;
+  except
+    Exit;
+  end  
+end;
+
+procedure TurtleEasy1;
+begin
+  with TJVTurtle.create(self) do begin
+    canvas:= cFrm.canvas;
+    canvas.Pen.Color:= clred;
+    penDown:= true;
+    penWidth:= 30;
+    setpos(150,250)
+    turn(45)
+    moveforward(100)
+    right(135)
+    moveforward(200)
+    Free;
+  end;
+end;    
+
+procedure TurtleEasy2;
+var myturtle: TJVTurtle;
+begin
+  myturtle:= TJVTurtle.create(self);
+  with myTurtle do begin
+    //canvas.assign(cFrm)
+    canvas:= cFrm.canvas;
+    canvas.Pen.Color:= clgreen;
+    penDown:= true;
+    //penup
+    penWidth:= 30;
+    setpos(280,250);
+    //turn(45)
+    moveforward(100)
+    right(90)    //180
+    moveforward(100)
+    right(90)    //180
+    moveforward(100)
+    left(90)    //180
+    moveforward(100)
+    left(90)    //180
+    moveforward(100)
+    //movebackward(100)
+   end;
+   myturtle.Free;
+end;    
+
+procedure TurtleEasy3;
+begin
+  with TJVTurtle.create(self) do begin
+    canvas:= cFrm.canvas;
+    canvas.Pen.Color:= clblue;
+    penDown:= true;
+    penWidth:= 30;
+    setpos(430,300);
+    moveforward(100)
+    right(90)    
+    moveforward(100)
+    right(90)    
+    moveforward(100)
+    turn(180)    //or movebackward()
+    moveforward(100)
+    right(90)   
+    moveforward(100)
+    right(90)  //180
+    moveforward(100)
+    Free;
+   end;
+end;  
+
+procedure looprepaint;
+begin  
+   sleep(500) 
+   //cfrm.repaint;           
+end;
+
+//https://www.dropbox.com/s/w0bfri6sm3dy5bn/Nr9_Damian.INC?dl=0
+
+// {$I ..\maxbox3\examples\ibznumbers\Nr9_damian.inc}
+
+ {$I ..\ppk_2015\examples\ibznumbers\Nr9_damian.inc}
+  
+
+BEGIN  //Main
+
+ if NOT DirectoryExists(ExePath + 'Examples/ibznumbers') then CreateDir(ExePath + 'Examples/ibznumbers');                                       
+
+ downloadnumbers;
+
+ loadform;
+ //repeat 
+   TurtleEasy1;
+    looprepaint  
+   TurtleEasy2;
+    looprepaint
+   TurtleEasy3;
+    //looprepaint
+   //{$I ..\SWS2014\damiannr9.txt}
+   turtleEasy9(cfrm);
+ //until iskeypressed;     
+END. 
+
+Doc:
+C:\maxbook\maxbox3\mx39\maxbox3\maxbox3\docs\utils\Herleitung_4.jpg
+
+----app_template_loaded_code----
+----File #file:539_timeturtle123seqIBZ_2015.txt
+
+
+Agenda 17.1.2015
+
+ - Besprechung Test 1
+ - Rekap Sequencediagram
+ Pause
+ - Vortrag auf 7.2. verschoben
+ - State Event
+ - Uebung Ticket buchen
+ Pause
+   Codieren Mond Papier - Sync, Async
+     Activitiy
+     Sequence
+     State Event
+ - 
+ 
+ 
+ Wieviel muss ich ein Blatt Papier falten, dass es den Mond berührt?
+ 
+     Activitiy
+     Sequence
+     State Event
+     
+     Algorithmus
+       - Gleichung mit Calc
+       - Simulation mit Loop
+   
+   Muster in dbox 563
+ 
+ 
+ 
+ 
+ 2
+ 12
+ 1112 Muster kopieren
+ 3112 Sync
+ 132112 
+ 

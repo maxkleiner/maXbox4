@@ -1,0 +1,125 @@
+program TimerEvent_Object;
+// tutorial on http://www.softwareschule.ch/download/maxbox_starterpdf _59_
+// timerevent with time dialog synchronisation or event triggering, loc's=
+// when messagebox is to early (line 15) the break condition never arrives
+
+const MILLISECONDS = 1500; //
+ 
+var myTimer, mytimer2: TTimer; //is an object of class TTimer! 
+    glob_cnt, i: byte;   
+
+procedure timer1Event(Sender: TObject);  //event handler
+begin
+  incb(glob_cnt)
+  if glob_cnt >= 5 then begin 
+    myTimer.enabled:= false;
+    myTimer.Free;
+    myTimer2.enabled:= false;
+    myTimer2.Free;
+  end;
+  if Sender = mytimer then 
+    Writeln(Format('this is timer1 %d of: %s',[glob_cnt,timeToStr(time)]))
+  else
+    Writeln(Format('this is timer2 %d of: %s',[glob_cnt,timeToStr(time)]))
+end;  
+
+//main program
+begin
+  glob_cnt:= 0;
+  ShowMessage('Press OK to start with timer at: '
+                 +dateToStr(date)+': '+timeToStr(time))
+  myTimer:= TTimer.Create(self);
+  myTimer2:= TTimer.Create(self);
+  myTimer.onTimer:= @timer1Event;
+  myTimer2.onTimer:= @timer1Event;
+  myTimer.interval:= MILLISECONDS;
+  myTimer2.interval:= 2000;
+  for i:= 1 to 100 do begin
+    writeln('this is loop: '+inttostr(i))
+    sleep(20)
+  end;  
+end.
+
+{//Purpose
+Use the Timer component to trigger an event, either one time or repeatedly, after a measured interval. Write the code that you want to occur at the specified time inside the timer component's OnTimer event. 
+//Tasks
+To specify the amount of elapsed time before the timer event is triggered, use the Interval property. 
+To discontinue a timed event, set the timer component's Enabled property to False. TTimer encapsulates the Windows API timer functions.
+
+Unit
+ExtCtrls
+
+//Description
+TTimer is used to simplify calling the Windows API timer functions SetTimer and KillTimer, and to simplify processing the WM_TIMER messages. Use one timer component for each timer in the application.
+The execution of the timer occurs through its OnTimer event. TTimer has an Interval property that determines how often the timer’s OnTimer event occurs. Interval corresponds to the parameter for the Windows API SetTimer function.
+Caution: Limitations on the total number of timers system-wide are system dependent.
+//Sender of a button click:
+The parameter "Sender" references the control that was used to call the method. If you click on the Button1 control, causing the Button1Click method to be called, a reference or pointer to the Button1 object is passed to Button1Click in the parameter called Sender.}
+
+Einstieg OOP
+
+An object consists
+of methods, properties and in many cases events.
+
+Ein Objekt ist eine Instanz von einer Klasse:
+
+
+Was ist eine Klasse?
+
+TTimer = class(TComponent)
+private
+  FInterval: Cardinal;
+  FWindowHandle: HWND;
+  FOnTimer: TNotifyEvent;
+  FEnabled: Boolean;
+  procedure UpdateTimer;
+  procedure SetEnabled(Value: Boolean);
+  procedure SetInterval(Value: Cardinal);
+  procedure SetOnTimer(Value: TNotifyEvent);
+  procedure WndProc(var Msg: TMessage);
+protected
+  procedure Timer; dynamic;
+public
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+published
+  property Enabled: Boolean read FEnabled write SetEnabled default True;
+  property Interval: Cardinal read FInterval write SetInterval default 1000;
+  property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
+end;
+
+
+Bei einer Eigenentwicklung kommt sicher als Variable ein Intervall und ein Zeitgeber zum Einsatz. 
+
+Eine Klasse erzeugt N-Objekte!
+
+Welcher Typ hat ein Objekt?   --> myTimer: TTimer; //mytimer= object
+Die Klasse definiert den Typ. --> mytimer als Typ TTimer
+Welcher Typ hat die Klasse?   --> die Klasse erbt den Typ der Oberklasse (TTimer = class(TComponent))
+
+
+myTimer.onTimer:= @timer1Event;
+
+Wo ist das Signal (Event)?  -->onTimer
+wo ist der EventHandler ? --> timer1Event
+Wir übergeben dem Event oder Signal des Objekts die Adresse des EventHandler(unsere definierte Procedur) als Adressoperator @, dies ist Technik einer CallBack Operation.
+
+Mit dem Parameter Sender wissen wir, wer uns aufruft:
+timer1Event(Sender: TObject)
+
+Aufgabe: Mit einem zweiten ttimer Objekt alle 2 Sekunden den EventHandler auf Zeile 12 aufrufen.
+
+timer1 1   3   5  
+timer2   2   4
+
+
+
+
+
+
+
+
+
+
+
+

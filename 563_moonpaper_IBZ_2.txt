@@ -1,0 +1,63 @@
+Program MoonPaper;
+//3 solutions to calc how many steps, #locs:44
+//#sign:max: MAXBOX7: 20.03.2015 14:18:14 
+  
+  Const EARTHMOON = 384000;
+  var Psize: float;
+  
+function moonSteps(asize: extended): float;
+ var EARTHMOONf: integer;
+begin
+  EARTHMOONf:= 384000;
+  result:= ln(EARTHMOONf/asize)/ln(2*1)
+end; 
+
+procedure moonStepsSimulation(asize: float);
+begin   
+  it:= 0;
+  repeat 
+    asize:= asize * 2
+    inc(it)
+  until asize > EARTHMOON; 
+  writeln(intToStr(it))
+end;
+
+Begin  //Main
+  //async
+  maXcalcF('ln(384000/0.0000001)/ln(2)') 
+  Psize:= 0.0000001; //km
+  writeln(floatToStr(moonSteps(Psize))) 
+  //sync with loop
+  moonStepsSimulation(Psize);
+  
+  
+  // function ExecuteProcess(FileName: string;Visibility:Integer; BitMask:Integer; Synch:Boolean):Longword;
+//bitmask ---> 2 means on second CPU, sync or async possible!
+ if ExecuteProcess('notepad.exe', SW_SHOW, 1, false) = 0 then
+writeln('Multiprocessing Runs on CPU 2');
+ if ExecuteProcess('calc.exe', SW_SHOW, 2, false) = 0 then
+writeln('Multiprocessing Runs on CPU 2');
+
+writeln('NUMBER_OF_PROCESSORS: '
++getEnvironmentVariable('NUMBER_OF_PROCESSORS'))
+
+End.
+
+ref:        a2^x=b
+            x= ln(384000/0.00001)/ln 2
+
+task doc: how many times do you have to fold a paper to reach moon? 
+input: papersize: 0.1 mm, distance 384000 km
+---- app_template_loaded_code----
+---- #file:563_moonpaper_IBZ_2.txt
+
+Version:
+https://github.com/maxkleiner/maXbox3/blob/masterbox2/maxbox3.exe
+
+Muster
+https://github.com/maxkleiner/maXbox3/blob/masterbox2/examples2/060_pas_datefind_exceptions3dll.txt
+
+
+arduino vortrag in semester ende
+
+

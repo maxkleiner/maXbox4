@@ -1,0 +1,233 @@
+//**********************************************
+program Public_Private_Diffie_Hellmann;
+
+//in this lession we want to exchange securely a key !
+//http://en.wikipedia.org/wiki/Hash_function
+//public-private crypto system for education (ppcse), see also ex. 210_
+
+//type
+  //T5x4LongWordRecord = array [0..4] of LongWord;
+ 
+ //A Crypto Exchange System:
+{1. Prime Generator: 113 (bignumber=4419669047)
+ 2. s = 7                (bignumber= 65537)
+ 3. alice a = 5          (bignumber= 2894521959)
+ 4. bob b = 4            (bignumber= 3318557156) }
+
+const
+   AFILE = 'maxbox3.exe';
+   AMESSAGE = 'HELLO WORLD OF CRYPTOBOX WITH 1 HASH!';
+   OFFSET = 65;  
+
+var   
+   prime1, prime2: integer;
+   cryptolist: TStrings;
+   HashSHA1: string;
+   s, a, b, p: int64;
+   
+function setPublic: integer;
+begin
+  result:= prime1 * prime2;
+end;   
+
+function getPHI_N_Private: integer;
+begin
+  result:= (prime1-1) * (prime2-1);
+end;   
+
+function getEPublic: integer;
+begin
+  result:= round(Power(2,2)+1);  
+end;   
+
+function getAlice: integer;
+begin
+  result:= (round(Power(s,a)) mod p);
+  //result:= (getEPublic) mod (getPHI_N_Private); 0 tester
+end;  
+
+function getBob: integer;
+begin
+  result:= (round(Power(s,b)) mod p);
+end;  
+
+function getAAliceKey: integer;
+begin
+  result:= (round(Power(getBob,a)) mod p);
+end;  
+
+function getABobKey: integer;
+begin
+  result:= (round(Power(getAlice,b)) mod p);
+end;  
+
+//---------------------------------------------------------------
+//private d= e^-1 mod phi(N)
+//cipher c[i]   = m[i]^e (mod N)
+//decipher m[i] = c[i]^d (mod N)
+
+function cipherMessage(akey: integer; atext: string): string;
+var i, k, l: integer;
+begin
+  for i:= 1 to length(atext) do begin
+    l:= Ord(atext[i]);
+    write(atext[i]) //debug
+    k:= l XOR akey;   
+    atext[i]:= chr(k);
+  end;
+  result:= atext;
+end;    
+
+function decipherMessage(akey: integer; atext: string): string;
+var k,l, i: integer;
+begin
+  for i:= 1 to length(atext) do begin
+    l:= Ord(atext[i]);
+    k:= l XOR akey;   
+    atext[i]:= chr(k);
+  end;
+  result:= atext;
+end;    
+
+//-----------------------------------------------------------
+// a demonstrator to cipher a hash - digital signature 
+function SHA1A(const fileName: string): string;
+var
+  idsha: TIdHashSHA1;
+  fs: TFileStream;
+  //hash: T5x4LongWordRecord;
+ begin
+   idsha:= TIdHashSHA1.Create;
+   fs:= TFileStream.Create(fileName, fmOpenRead OR fmShareDenyWrite) ;
+   try
+     //result:= idmd5.AsHex(hash) ;
+     result:= idsha.AsHex(idsha.HashValue(fs)) ;
+   finally
+     fs.Free;
+     idsha.Free;
+   end;
+ end;
+
+Begin  //main frame 
+  //1. Choose numbers.
+  P:= 113;
+  s:= 7;
+  a:= 5; b:= 4;
+  Writeln(Format('1. Alice and Bob agrees on Prime1: %d and base: %d',[P, s]))
+  //2. Choose Privat Alice and Bob.
+  PrintF('2. Privat Alice %d and Bob %d',[a ,b])
+  
+  Writeln('3. Public Exchange Alice: '+inttostr(getAlice))    
+  Writeln('3. Public Exchange Bob: '+inttostr(getBob))    
+
+  //4. Compute the secret key.
+  PrintF('4. Key of Alice (%d) - Key of Bob (%d)',[getABobKey, getAAliceKey])
+  Writeln('');
+  Writeln('5. Cipher a Message: ');
+  Writeln(cipherMessage(getABobKey, AMESSAGE));
+  Writeln('');
+  Writeln('6. DeCipher a Message: ');
+  Writeln(decipherMessage(getABobKey, cipherMessage(getABobKey, AMESSAGE)));
+
+  //maxform1.CipherFile1Click(self)
+  writeln('');  
+  //hashvalue and crc32 test
+  PrintF('From CRC32 of file %s is %d',[AFILE, (ComputeFileCRC32(ExePath+AFILE))]);
+  //65B83A31774A8F6D3A1606ED8E466903185D2E90
+  //Writeln('From SHA1 of maXbox:  '+SHA1(ExePath+AFILE))
+  writeln(' ');  
+End.
+
+----------------------------------------------------
+My Cryptosystem
+
+1. Prime1: 5 and Prime2: 7
+2. RSA Modul Public [p*q] as N: 35
+3. phi(N) Private: 24
+4. Public RSA Exponent: 5
+5. Private D: 5
+6. Public (5,35) - Private (5,35)
+----------------------------------------------------
+
+prim1:= 23;
+prim2:= 97;
+RSA Modul Public [p*q] as N: 2231
+RSA Exponent: 65537
+phi(N) Private: 2112
+Private D: 65
+
+
+Explanation:
+Alice lets her public key be known to everyone, but keeps the private key secret. Bob may send a confidential message to Alice like this:
+
+   1. B gets A's public key (you can get it from web, or just send it to him).
+   2. B encrypts the message with A's public key, and sends it.
+   3. A decrypts the message with her private key.
+
+For this to work, the system must guarantee that it is (effectively) impossible to decrypt the message without knowledge of the private key. In particular, it must be impossible to decrypt using the public key, or to derive the private key from the public key.
+
+-1753041190
+-346756791
+SHA1 of mx3
+DA DE 32 22 55 6A EC 69 BC D9 F9 AB 6F 1F C2 1F B6 72 2A 56
+
+from idpop3
+
+if Length(S) > 0 then begin
+          with TIdHashMessageDigest5.Create do
+          try
+            S:= LowerCase(TIdHash128.AsHex(HashValue(S+Password)));
+          finally
+            Free;       
+          end;//try
+          
+Some cryptographic hash functions, such as SHA-1, have even stronger uniformity guarantees than checksums or fingerprints, and thus can provide very good general-purpose hashing functions.
+
+In ordinary applications, this advantage may be too small to offset their much higher cost.[5] However, this method can provide uniformly distributed hashes even when the keys are chosen by a malicious agent. This feature may help protect services against denial of service attacks.          
+
+
+How RSA works
+------------------------------------
+Generating the public and private keys. Pick two large prime numbers, p and q. Let n=pq. Typically, n is a number which in binary is written with 1024 bits (in decimal, that's about 308 digits). Pick e relatively prime to (p-1)(q-1). Now find d such that ed=1 mod (p-1)(q-1). You can use Euclid's algorithm to find this d. The pair of numbers (e, n) is the public key. The pair of numbers (d, n) is the private key. The two primes p,q are no longer needed, and can be discarded, but should never be revealed.
+
+Exercise. Which of the following key pairs are valid?
+
+   1. K=(7,187), K-1=(23,187)
+   2. K=(23,187), K-1=(7,187)
+   3. K=(7,143), K-1=(23,143)
+
+Can you invert the key (7,299)?
+Message format. Divide the message into blocks, each block corresponding to a number less than n. For example, for binary data, the blocks will be (log2 n) bits.
+Encryption. The encryption of message m is  c = me mod n.
+Decryption. To decrypt c,  put m' = cd mod n.
+
+Generating the public and private keys. Pick two large prime numbers, p and q. Let n=pq. Typically, n is a 1024 bit number. Pick e relatively prime to (p-1)(q-1). Now find d such that ed=1 mod (p-1)(q-1). There is an algorithm which will find this d for you. The pair of numbers (e, n) is the public key. The pair of numbers (d, n) is the private key. The two primes p,q are no longer needed, and can be discarded, but should never be revealed.
+
+
+
+A response to Diffie Helleman challenge by Ron Rivest, Adi Sharmir, and Len Adleman at MIT.
+An exponentiation cipher utilizing Euler’s Theorem.
+Choose two prime numbers p and q.
+Let n = p*q.  The totient ?(n) of n is the number of numbers less than n with no factors in common with n.
+?(n)=(p-1)(q-1)
+E.g., ?(10) =4; since 1,3, 7, 9 are relative prime of 10.
+Choose e <n; e be relative prime to ?(n). 
+Find d such that e*d mod ?(n) = 1.
+The public key is (e,n), private key is (d, n).
+Med mod n = M (this holds if e*d mod ?(n) = 1)
+C=Me mod n
+M=cd mod n
+
+
+Let p=7 and q = 11. n=77 and ?(n) =60.
+Alice choose e=17, a relative prime to 60 ? private key is d=53 where e*d mod ?(n) =1; 17*53 mod 60 = 1
+If we represent 07 as  and 25 as Z, 26 as blank, then
+HELLO  WORLD will be 07 04 11 11 14 26 22 14 17 11 03.
+ Using Alice public key the cipher text is:
+07^17 mod 77 = 28
+04^17 mod 77 = 16
+11^17 mod 77 = 44
+…
+03^17 mod 77 = 75.
+Only Alice can decipher with private key 53.
+

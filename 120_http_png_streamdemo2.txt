@@ -1,0 +1,181 @@
+program HTTP_PNG_Streamer;
+// DEMO for mX3ß  maXbox3 !! _1
+// gets a PNG graphic from an URL, stored in Stream, converts to jpg and saved
+// shows new section 101 - 120 http/internet examples, loc's=79 
+
+var 
+  myImage: TImage;
+  inFrm: TForm;
+  myURL: string;
+
+function FileSizeByName2(const AFilename: string): longint;
+begin
+  with TFileStream.Create(AFilename, fmOpenRead or fmShareDenyWrite) do
+  try
+    Result:= Size;
+  finally
+    Free;
+  end;
+end;
+
+procedure FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  myImage.Free;
+  inFrm.Free;
+end;
+  
+procedure buildImageForm;
+begin
+  inFrm:= TForm.create(self)
+  with inFrm do begin
+    position:= poScreenCenter;
+    FormStyle:= fsStayOnTop;
+    color:= clblue;
+    borderStyle:= bsDialog;
+    caption:= 'mX3 StreamDream'
+    width:= 800; height:= 550;
+    OnClose:= @FormClose;
+    Show;
+  end;
+  myImage:= TImage.Create(inFrm);
+  with myImage do begin
+    Parent:= inFrm;
+    width:= inFrm.width; 
+    height:= inFrm.height;
+    Left:= 10;
+    Top:= 10;
+  end;
+end;  
+
+procedure getHTTP_PNG(vimage: TImage); 
+var
+  idHTTP: TIDHTTP;
+  pngStream: TMemoryStream;
+begin
+  myURL:= 'http://www.softwareschule.ch/images/mx4screen.png';
+  with TLinearBitmap.Create do
+  try
+    idHTTP:= TIdHTTP.Create(NIL)
+    pngStream:= TMemoryStream.create;
+    //OptimizeMem
+    idHTTP.Get1(myURL, pngStream)
+    pngStream.Position:= 0;
+    LoadFromStream2(pngstream,'PNG');
+    vimage.Picture:= NIL;
+    AssignTo(vimage.Picture.Bitmap);
+    SaveToFile(ExePath+'mX3GUI.jpg');
+  finally
+    Dispose;
+    Free;
+    idHTTP.Free
+    pngStream.Free;
+  end; 
+end;  
+
+ var mys, file2: ansistring;
+   RawByteString : AnsiString;
+
+begin
+  {buildImageForm;
+  getHTTP_PNG(myImage);
+  searchAndOpenDoc(ExePath+'mX3GUI.jpg')
+  }
+  writeln(booleanToString(logicalAnd(1,2)));
+  mys:= 'const Secret, Seed : AnsiString';
+  mys:= filetostring(Exepath+'firstdemo.txt')
+  //http://www.faqs.org/rfcs/rfc3174.html
+  writeln(uppercase(cstrtoHEX(tlsP_SHA1(mys,'',20))));
+  writeln(uppercase(cstrtoHEX(tlsP_SHA1(mys,'67452301',20))));
+  writeln(SHA1(Exepath+'firstdemo.txt'));
+  stringtofile2(mys, Exepath+'firstdemo3.txt')
+  writeln(SHA1(Exepath+'firstdemo3.txt'));
+  writeln(SHA1('C:\Program Files (x86)\maxbox3\Import\maxbox4.exe'));
+  
+   writeln(SHA1('C:\Program Files (x86)\maxbox3\Import\maxbox4.zip'));
+ 
+  //C:\Program Files (x86)\maxbox3\Import
+  RawByteString := mys;
+  //writeln(mys)
+  SecureClearStr((mys))
+  writeln('sec clear: '+mys)
+  for it:= 1 to 5 do begin
+  RegEnumKey2(HKEY_LOCAL_MACHINE,it, sr)
+    writeln(#9 + sr)
+  end;  
+  
+  //CalcSHA1
+  //https://raw.githubusercontent.com/fundamentalslib/fundamentals4/master/Source/Utils/cHash.pas
+  
+  
+  //SelfTestcHTTPUtils
+end.
+
+ref:
+  http://www.9legacy.org/9legacy/patch/tls-tlshand12.diff
+  
+  
+  { Secure clear helper function                                                 }
+{   Securely clears a piece of memory before it is released to help prevent    }
+{   sensitive information from being exposed.                                  }
+{                                                                              }
+procedure SecureClear(var Buffer; const BufferSize: Integer);
+begin
+  if BufferSize <= 0 then
+    exit;
+  FillChar(Buffer, BufferSize, $00);
+end;
+
+procedure SecureClearStr(var S: RawByteString);
+var L : Integer;
+begin
+  L := Length(S);
+  if L = 0 then
+    exit;
+  SecureClear(S[1], L);
+  S := '';
+end;
+
+
+  
+  The MessageDigest class implements the SHA-1 algorithm (among many others). The SHA-1 algorithm allows one to use different "seeds" or initial digests. See SHA-1 Psuedocode
+
+The algorithm initializes variables, or the seed:
+
+Initialize variables:
+h0 = 0x67452301
+h1 = 0xEFCDAB89
+h2 = 0x98BADCFE
+h3 = 0x10325476
+h4 = 0xC3D2E1F0
+
+//**************************************************program HTTP_PNG_Streamer;
+//**************************************************
+
+	
+
+Tor Browser for Windows has been designed to help you preserve your privacy online. Tor Browser is a tool set that can help you anonymize web browsing and publishing, instant messaging, and other applications that use the TCP protocol. This can be helpful for private use and business use.It means that confidential information can be kept from prying eyes. ISPs, key loggers and other types of malware are not able to track your activities easily.
+
+Tor Browser for Windows works by bouncing traffic around a distributed network of servers which it calls "onion routers". The interface allows you to toggle it on and off based upon when you need anonymity online. Tor Browser for Windows also lets you choose from various proxy tunnels based on a world map that displays exactly where each one is located.
+
+Overall, Tor Browser for Windows is a simple, well organized and effective tool for users who are concerned about security or invasions of privacy whilst they are online. The browser interface is a standard, user friendly affair and the application is relatively lightweight.
+
+********* WORDS MAKE THE MAN *********
+
+
+ To get ahead, just talk about things no one understands - even you!
+
+ Max: What`cha doing?
+ Silvia: Working on a parallel reciprocal stratification test.
+ Max: What`s that?
+ Silvia: Well, basically it is a kind of integrated transitional time-phase
+         using tabulated conversion expectation coupled with
+        total categorial matrix.
+ Max: Hows it going?
+ Silvia: Well, seem to be having a little trouble with
+         participant organizational time-phase.
+ Max: I see. How long before you work the bugs out?
+ Silvia: Probably about a month.
+ Max: Hey, that`s great. Keep me posted.
+ 
+ http://entwickler-konferenz.de/session/gis-daten-und-maps-in-delphi-nutzen/
+

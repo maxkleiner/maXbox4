@@ -1,0 +1,730 @@
+//Example of the memo, thread load and save capabilities of the VCL
+//Task: Make the 3rd algo too as a solution!
+  //Get the text and write your memo memories, locs=455
+  //BubbleSortArray: TSortArray;
+  //SelectionSortArray: TSortArray;
+  //QuickSortArray: TSortArray;
+ 
+Program Sorting_Form_ThreadDemo_3Solution;
+
+//uses StringGridTools, TThread Class;
+
+const LBASE = 20;
+      TBASE = 25; 
+      VARRSIZE = 200;
+      WIDE = 200;
+      SLOWBUBBLE = 0; SLOWSELECT = 0; SLOWQUICK = 0;  //visual slowmotion of thread
+//**************************************************
+
+type
+  //TThreadSortArray = array[0..MaxInt div SizeOf(Integer) - 1] of Integer;
+  TmSortArray =  array[0..VARRSIZE] of Integer;
+
+var 
+  mymemo: TMemo;
+  mpaint, mpaint2, mpaint3: TPaintBox;
+  inFrm: TForm;  
+  stat: TStatusbar;
+  BubbleSArray,SelectionSArray,QuickSArray: TSortArray;
+  selectedFile: string;
+  ArraysRandom: boolean;
+  FA, FB, FI, FJ: Integer;
+  ThreadsRun: byte;
+
+procedure PaintLine(Canvas: TCanvas; I, Len: Integer); forward;
+
+procedure RandomizeArrays;
+var i: Integer;
+begin
+   assert2(high(BubbleSArray) <= 180, 'array too big');
+  //Check(high(BubbleSortArray) <= 170, 'array too big');
+  if not ArraysRandom then begin
+    Randomize;
+    writeln(inttostr(ARRSIZE))
+    for i:= 1 to ARRSIZE - 1 do
+      BubbleSArray[I]:= Random(170);
+    SelectionSArray:= BubbleSArray;
+    QuickSArray:= BubbleSArray;
+    stat.simpletext:= 'Just random array done';
+  end;
+end;  
+
+procedure PaintRandomArray;
+var I: integer;
+begin
+  mPaint2.Canvas.Pen.Color:= clblue;
+  for I:= Low(SelectionSArray) to High(SelectionSArray) do
+    PaintLine(mpaint2.Canvas, I, SelectionSArray[I]);
+  mPaint.Canvas.Pen.Color:= clgreen;
+  for I:= Low(BubbleSArray) to High(BubbleSArray) do
+    PaintLine(mpaint.Canvas, I, BubbleSArray[I]);
+  mPaint3.Canvas.Pen.Color:= clpurple;
+  for I:= Low(QuickSArray) to High(QuickSArray) do
+    PaintLine(mpaint3.Canvas, I, QuickSArray[I])
+end;
+
+procedure PaintLine(Canvas: TCanvas; I, Len: Integer);
+begin
+  canvas.moveTo(0, I * 2 + 1)
+  canvas.LineTo(Len, I * 2 + 1)
+  //Canvas.PolyLine([Point(0, I * 2 + 1), Point(Len, I * 2 + 1)]);
+end;
+
+
+procedure DoVisualSwap2;
+begin
+  with mpaint2 do begin
+    //invalidate;
+    Canvas.Pen.Color:= clBtnFace;
+    PaintLine(Canvas, FI, FA);
+    PaintLine(Canvas, FJ, FB);
+    Canvas.Pen.Color:= clGreen;
+    PaintLine(Canvas, FI, FB);
+    PaintLine(Canvas, FJ, FA);
+  end;
+end;
+
+procedure DoVisualSwap;
+begin
+  with mpaint do begin
+    //invalidate;
+    Canvas.Pen.Color:= clBtnFace;
+    //Canvas.Pen.Color:= clBlue;
+    PaintLine(Canvas, FI, FA);
+    PaintLine(Canvas, FJ, FB);
+    Canvas.Pen.Color:= clRed;
+    PaintLine(Canvas, FI, FB);
+    PaintLine(Canvas, FJ, FA);
+  end;
+end;
+
+procedure VisualSwap2(A, B, I, J: Integer);
+begin
+  //symbol rename
+  FA:= A; FB:= B;
+  FI:= I; FJ:= J;
+  //DoVisualSwap;
+  DoVisualSwap2;
+end;
+
+procedure VisualSwap(A, B, I, J: Integer);
+begin
+  //symbol rename
+  FA:= A;
+  FB:= B;
+  FI:= I;
+  FJ:= J;
+  //if bolTHslowmotion then
+    //  sysutils.sleep(5);
+  DoVisualSwap;
+  DoVisualSwap2;
+end;
+
+  
+procedure TmSelectionSort(var A: TmSortArray);
+// syncedit
+var
+ indx, J, T: Integer;
+begin
+  for indx:= Low(A) to High(A) - 1 do
+    for J:= High(A) downto indx + 1 do
+      if A[indx] > A[J] then begin
+        VisualSwap(A[indx], A[J], indx, J);
+        T:= A[indx];
+        A[indx]:= A[J];
+        A[J]:= T;
+        //if Terminated then Exit;
+      end;
+end; 
+
+{ TBubbleSort }
+procedure TmBubbleSort(var A: TmSortArray);
+var
+  I, J, T: Integer;
+begin
+  for I:= High(A) downto Low(A) do
+    for J:= Low(A) to High(A) - 1 do
+      if A[J] > A[J + 1] then begin
+        VisualSwap2(A[J], A[J + 1], J, J + 1);
+        T:= A[J];
+        A[J]:= A[J + 1];
+        A[J + 1]:= T;
+     end;
+end; 
+
+procedure QuickSort(var A: TmSortArray; iLo, iHi: Integer);
+var
+    Lo, Hi, Mid, T: Integer;
+  begin
+    Lo:= iLo;
+    Hi:= iHi;
+    // inline variable
+    Mid:= A[(Lo + Hi) div 2];
+    repeat
+      while A[Lo] < Mid
+                    do Inc(Lo);
+      while A[Hi] > Mid
+                    do Dec(Hi);
+      if Lo <= Hi then begin
+        VisualSwap(A[Lo], A[Hi], Lo, Hi);
+        T:= A[Lo];
+        A[Lo]:= A[Hi];
+        A[Hi]:= T;
+        Inc(Lo);
+        Dec(Hi);
+      end;
+    until Lo > Hi;
+    if Hi > iLo then QuickSort(A, iLo, Hi);
+    if Lo < iHi then QuickSort(A, Lo, iHi);
+    //if Terminated then Exit;
+end;
+
+procedure TmQuickSort(var A: TmSortArray);
+begin
+  QuickSort(A, Low(A), High(A));
+end;
+
+  
+Function getRandomText: string;
+var i, getback: integer;
+begin
+  for i:= 1 to 1400 do begin
+    getback:= Random(58)+65
+    if (getback < 91) OR (getback > 96) then
+      result:= result + Chr(getback) +Chr(32)
+  end;
+end;  
+  
+
+//Event Handler - Closure *************************************** 
+Procedure GetMediaData(self: TObject);
+begin
+  if PromptForFileName(selectedFile, 'Text files (*.txt)|*.txt','',
+                       'Select your mX3 test file',
+                       ExePath+'examples\', False)  // Means not a Save dialog !
+   then begin
+     // Display this full file/path value
+     ShowMessage('Selected file = '+selectedFile);
+     Stat.simpletext:= selectedFile;
+     mymemo.lines.LoadFromFile(selectedFile);
+   end;
+end; 
+
+//Event Handler - Closure
+procedure ThreadDone(Sender: TObject);
+begin
+  Dec(ThreadsRun);
+  if ThreadsRun = 0 then begin
+    //StartBtn.Enabled:= True;
+    //randArray.ArraysRandom:= False;
+    stat.simpletext:= 'All '+inttoStr(threadsRun)+' threads gone';
+  end;
+end;
+
+procedure BtnStartClick(self: TObject);
+begin
+  //mymemo.lines.savetofile(ExePath+'\examples\mymemo5.txt');
+  mymemo.lines.text:= getRandomText;
+  mPaint.invalidate;
+  mPaint2.invalidate;
+  mPaint3.invalidate;
+  ThreadsRun:= 3;
+  RandomizeArrays;
+  //PaintRandomArray;
+  {with TSortThread.Create(mPaint, bubblesarray) do begin
+    slowmotion:= 200; end;}
+   //marr:= TRandomArray.create;
+   //marr.RandomizeArrays(inFrm, false)
+   //marr.PaintArray(mPaint) 
+   //bubblesortbox
+  with TBubbleSort.Create(mpaint, BubbleSArray) do begin
+    writeln('Thrd Sort ID :'+intToStr(CurrentThreadID))
+    bolTHslowmotion:= true;
+    slowmotion:= SLOWBUBBLE;
+    //sort run
+    OnTerminate:= @ThreadDone;
+  end;
+  //selectionsortbox
+  with TSelectionSort.Create(mpaint2, SelectionSArray) do begin
+    writeln('Thrd Selection ID :'+intToStr(CurrentThreadID))
+    bolTHslowmotion:= true;
+    slowmotion:= SLOWSELECT;
+    OnTerminate:= @ThreadDone;
+  end;
+  //quicksortbox
+  with TQuickSort.Create(mpaint3, QuickSArray) do begin
+    writeln('Thrd Quick ID :'+intToStr(CurrentThreadID))
+    bolTHslowmotion:= true;
+    slowmotion:= SLOWQUICK;
+    OnTerminate:= @ThreadDone;
+  end;
+  //TmSelectionSort(selectionSortArray)
+  //TmBubbleSort(bubbleSortArray)
+  //mymemo.lines.SaveToFile(selectedFile);
+  Stat.simpletext:= ' Start has been sorted' ;
+end; 
+
+procedure GetRandom(self: TObject);
+begin
+  //mymemo.lines.savetofile(ExePath+'\examples\randthread.txt');
+  mymemo.lines.text:= getRandomText;
+  mPaint.invalidate;
+  mPaint2.invalidate;
+  mPaint3.invalidate;
+  RandomizeArrays;
+  PaintRandomArray;
+end; 
+
+procedure BtnCleanClick(self: TObject);
+begin
+  //PaintRandomArray;
+  mPaint.invalidate;
+  mPaint2.invalidate;
+  mPaint3.invalidate;
+  //mymemo.lines.SaveToFile(selectedFile);
+  //Stat.simpletext:= selectedFile+ ' has been saved' ;
+end; 
+
+procedure LabelFactory(l,t,w,h: smallint; atxt: shortstring);
+begin
+  with TLabel.create(self) do begin
+    parent:= infrm;
+    setbounds(l,t,w,h);
+    font.size:= 15;
+    font.color:= clpurple;
+    font.style:= [fsitalic];
+    caption:= atxt;
+  end;  
+end; 
+
+//***********************Form Builder*********************************
+procedure SetForm;
+var
+  mi, mi1, mi2, mi3: TMenuItem;
+  mt: TMainMenu;
+  mPanel: TPanel;
+begin
+  inFrm:= TForm.Create(self);
+  mPaint:= TPaintBox.Create(inFrm);
+  mPaint2:= TPaintBox.Create(inFrm);
+  mPaint3:= TPaintBox.Create(inFrm);
+  stat:= TStatusbar.Create(inFrm);
+  mymemo:= TMemo.create(inFrm);
+
+  with inFrm do begin
+    caption:= '********ThreadSortMonster3************';  
+    height:= 630;
+    width:= 1100;
+    Position:= poScreenCenter;
+    //onClose:= @CloseClick;
+    Show;
+  end;
+
+  mPanel:= TPanel.Create(infrm);
+  with mPanel do begin
+    Parent:= inFrm;  
+    SetBounds(LBASE+10,TBASE+75,590,364)
+    BevelOuter:= bvLowered
+  end; 
+  LabelFactory(LBASE+20,TBASE+40,WIDE,WIDE*2,'BubbleSort '); 
+  with mPaint do begin
+    Parent:= mPanel;  
+    SetBounds(LBASE-10,TBASE-10,WIDE,WIDE*2)
+    //onpaint:= @closeclick;
+  end; 
+  LabelFactory(LBASE+220,TBASE+40,WIDE,WIDE*2,'SelectionSort '); 
+  with mPaint2 do begin
+    Parent:= mPanel;  
+    SetBounds(LBASE+190,TBASE-10,WIDE,WIDE*2)
+  end; 
+  LabelFactory(LBASE+420,TBASE+40,WIDE,WIDE*2,'QuickSort '); 
+  with mPaint3 do begin
+    Parent:= mPanel;  
+    SetBounds(LBASE+390,TBASE-10,WIDE,WIDE*2)
+  end; 
+  
+  with mymemo do begin
+    Parent:= inFrm;
+    SetBounds(LBASE+620,TBASE+40,WIDE*2,WIDE*2)
+    font.size:= 14;
+    color:= clsilver;
+    font.color:= clwhite;
+    wordwrap:= true;
+    scrollbars:= ssVertical;
+  end;
+  
+  with TBitBtn.Create(inFrm) do begin
+    Parent:= inFrm;
+    setbounds(LBASE+ 590, TBASE+ 460,150, 55);
+    caption:= 'Random';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'CL_MPPAUSE'); 
+    mXButton(05,05,width, height,12,12,handle);
+    //event handler
+    onclick:= @GetRandom;
+  end;
+  with TBitBtn.Create(inFrm) do begin
+    Parent:= inFrm;
+    setbounds(LBASE+ 430, TBASE+460,150, 55);
+    caption:= 'Clear';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'CL_MPEJECT');
+    mXButton(05,05,width, height,12,12,handle);
+    onclick:= @BtnCleanClick;
+  end;
+  with TBitBtn.Create(inFrm) do begin
+    Parent:= inFrm;
+    setbounds(LBASE+750,TBASE+460,150, 55);
+    caption:= 'Start Sort';
+    font.size:= 12;
+    //(getHINSTANCE,'PREVIEWGLYPH'); 
+    glyph.LoadFromResourceName(getHINSTANCE,'CL_MPSTEP'); 
+    mXButton(05,05,width, height,12,12,handle);
+    SetFocus;
+    onclick:= @BtnStartClick;
+  end;
+  with TLabel.create(inFrm) do begin
+    parent:= inFrm;
+    setbounds(LBASE+15,TBASE-15,180,20);
+    font.size:= 28;
+    font.color:= clteal;
+    font.style:= [fsunderline]
+    caption:= 'Thread Sort Box ';
+  end;  
+  with TLabel.create(inFrm) do begin
+    parent:= inFrm;
+    setbounds(LBASE+622,TBASE-1,180,20);
+    font.size:= 18;
+    font.color:= clteal;
+    font.style:= [fsunderline]
+    caption:= 'Random Text:';
+  end;  
+  mt:= TMainMenu.Create(infrm)
+  with mt do begin
+   //parent:= frmMon;
+  end;  
+  mi:= TMenuItem.Create(mt)
+  mi1:= TMenuItem.Create(mt)
+  mi2:= TMenuItem.Create(mt)
+  mi3:= TMenuItem.Create(mi)
+  with mi do begin
+    //parent:= frmMon;
+    Caption:='Play Media';
+    Name:='ITEM';
+    mt.Items.Add(mi);   
+    //OnClick:= @GetMediaData;
+  end;
+  with mi1 do begin
+    Caption:='Show Video';
+    Name:='ITEM2';
+    mt.Items.Add(mi1) ;
+    //OnClick:= @GetVideoData
+  end;
+  with mi2 do begin
+    Caption:='Open CD Player';
+    Name:='ITEM3';
+    mt.Items.Add(mi2);
+    //OnClick:= @OPenCD;
+  end;
+  with mi3 do begin
+    Caption:='Open maXbook';
+    Name:='ITEM4';
+    //mi.Items[0].add(mi3);
+  end;
+  with Stat do begin
+    parent:= inFrm;
+    stat.SimplePanel:= true;
+  end;
+end; 
+  
+ 
+begin
+  memo2.font.size:= 14;
+  SetForm;
+  mymemo.lines.text:= getRandomText;
+  getRandom(self);
+  //SearchAndOpenDoc(ExePath+MEDIAPATH)
+  //mylistview:= TFormListView.Create(self);
+  maxForm1.color:= clsilver;
+  //ShellExecute Parallels in W64
+  //ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxbox391.exe c:\maxbook\maxbox3\maxbox3.exe')
+  //ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxboxdef1.ini c:\maxbook\maxbox3\maxboxdef2.ini')
+  writeln('HEXtester '+#65+' '+chr($41)+' '+chr(65))
+  if IsMultiThread then writeln('is multithread');
+End.
+
+//-------------------------------------------------
+
+source is tlistview
+target is tform
+
+procedure TfMerit.SourceLVStartDrag(Sender: TObject;
+var DragObject: TDragObject);
+var TargetLV:TListView;
+begin
+// TargetLV:=nejak urcit dle potreby
+  TargetLV.BeginDrag(True)
+end;
+
+procedure TfMerit.SourceLVMouseDown(Sender: TObject;
+Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+MouseIsDown:=True;
+end;
+
+procedure TfMerit.SourceLVMouseUp(Sender: TObject; Button: TMouseButton;
+Shift: TShiftState; X, Y: Integer);
+begin
+MouseIsDown:=False;
+if (Sender as TListView).Dragging then
+(Sender as TListView).EndDrag(False);
+end;
+
+procedure TfMerit.SourceLVMouseMove(Sender: TObject; Shift: TShiftState;
+X, Y: Integer);
+begin
+if (Sender.ClassNameIs('TListView')) then
+begin
+if MouseIsDown and ((Sender as TListView).SelCount>0) then
+(Sender as TListView).BeginDrag(True);
+end;
+end;
+
+
+procedure TfMerit.TargetLVDragOver(Sender, Source: TObject; X,
+Y: Integer; State: TDragState; var Accept: Boolean);
+var T:TListView;
+begin
+T:=Sender as TListView;
+Accept:=Assigned(T.GetItemAt(X,Y));
+end;
+
+
+procedure TfMerit.TargetLVDragDrop(Sender, Source: TObject; X,
+Y: Integer);
+var It:TListItem;
+LV1,LV2:TListView;
+begin
+LV1:=Source as TListView;
+LV2:=Sender as TListview;
+
+It:=LV2.GetItemAt(X,Y);
+if Assigned(It) then
+begin
+// zpracuj polozku ze zdrojoveho listview
+end;
+end;
+
+
+procedure TControlParentR(Self: TControl; var T:TWinControl); begin T:= Self.Parent; end;
+procedure TControlParentW(Self: TControl; T: TWinControl); begin Self.Parent:= T; end;
+    RegisterPropertyHelper(@TControlParentR, @TControlParentW, 'PARENT');
+    RegisterProperty('Parent', 'TWinControl', iptRW);
+
+procedure TTXPTool.LVPFFDblClick(Sender: TObject);
+var
+tmpList : TListItem;
+fn ; string;
+ft : integer;
+fs : integer;
+begin
+tmpList := LVPFF.Selected;
+if tmplist<>nil then
+begin
+  fn := tmpList.Caption
+  ft := tmpList.SubItems.Strings[1];
+  fs := tmpList.SubItems.Strings[3];
+  if pos('Wave', ft)>0 then
+    PlayThisOne1Click(nil);
+  if pos('Jpg', ft)>0 then
+    ShowJpg1Click(nil);
+  if pos('Targa', ft)>0 then
+    ShowTga1Click(nil);
+  if pos('Pcx', ft)>0 then
+    ShowPcx1Click(nil);
+  if pos('Mission Sound Collection', ft)>0 then
+    ShowPwf1Click(nil);
+end;
+end;
+
+
+
+Changes to V3.9   (five !!)
+
+
+
+//NoErrMsg variable
+//- Controls whether the application displays an error message when a runtime error
+//occurs.
+
+{CompareValue function
+- Returns the relationship between two numeric values.}
+
+{SameValue function
+- Indicates whether two floating-point values are (approximately) equal.}
+
+{Sign function
+- Indicates whether a numeric value is positive, negative, or zero.}
+
+{SimpleRoundTo function
+- Rounds a floating-point value to a specified digit or power of ten using
+asymmetric arithmetic rounding.}
+
+{AddExitProc procedure
+- Add procedure to exit list.}
+{ExitCode variable
+- Contains the application's exit code.}
+{UnicodeToUtf8 function
+- Converts a string of Unicode characters into a UTF-8 string.}
+{WideCharToStrVar procedure
+- Converts Unicode string to a single or multi byte character data.}
+{CreateClassID function
+- CreateClassID generates a new GUID and returns it as a string.
+{OleStrToString function
+- Copies data received from a COM interface to a string.
+{Supports function
+- Indicates whether a given object or interface supports a specified interface.
+{VarComplexToPolar procedure
+- Computes the polar coordinates that correspond to a custom Variant that
+represents a complex number.}
+FindDatabaseID function
+- Returns the ID of a specified database.
+
+FindFieldID function
+- Returns the ID of a specified field.
+
+FindTableID function
+- Returns the ID of a specified table.
+
+GetAttrID function
+- Returns the ID of the attribute set associated with a field.
+{AnsiToNative function
+- Converts a string from the ANSI character set to the character set associated
+with a given locale.}
+{NativeCompareStr function
+- Compares strings based on a database locale case sensitively.
+
+NativeCompareStrBuf function
+- Compares null-terminated strings based on a database locale case sensitively.
+{PasswordDialog function
+- Displays a dialog box that prompts the user for the password of a local
+password-protected table.}
+{CheckSqlTimeStamp procedure
+- Checks whether a TSQLTimeStamp value represents a valid date and time.}
+{DateTimeToSQLTimeStamp function
+- Converts a TDateTime value to a TSQLTimeStamp value.}
+{NullSQLTimeStamp constant
+- Represents a NULL TSQLTimeStamp value.}
+{IsAbortResult function
+- Checks the return value from a modal form dialog and indicates whether the user
+selected Abort or Cancel.}
+{LoginDialog function
+- Brings up the database Login dialog to allow the user to connect to a database
+server.
+
+LoginDialogEx function
+- Brings up the database Login dialog to allow the user to connect to a database
+server.    }
+{RemoteLoginDialog function
+- Brings up the database Login dialog to allow the user to connect to a database
+server. }
+{StripAllFromResult function
+- Converts a TModalResult value from a constant that refers to “all” to the
+corresponding simple constant.}
+{AcquireExceptionObject function
+- Allows an exception object to persist after the except clause exits.}
+(*ExtractShortPathName function
+- Converts a file name to the short 8.3 form.
+
+IncludeTrailingBackslash function
+- Ensures path name ends with delimiter
+
+IncludeTrailingPathDelimiter function
+- Ensures path name ends with delimiter.
+
+IsPathDelimiter function
+- Indicates whether the byte at position Index of a string is the path delimiter.*)
+{FloatToTextFmt function
+- Converts a floating-point value to to an unterminated character string, using
+a specified format.    }
+(*CreateGrayMappedRes function
+- Remaps the standard gray colors in a bitmap resource with the system grays.
+
+CreateMappedBmp function
+- Changes the color table in a bitmap.       *)
+{GetDefFontCharSet function
+- Returns the character set of the default system font.}
+{GraphicExtension function
+- Returns the default file-name extension of a graphics object.}
+{GraphicFilter function
+- Returns a file filter compatible with the Filter property of an Open or Save
+dialog.}
+{GetExtensionVersion function
+- Returns the name and version number of an ISAPI or NSAPI application.}
+{Rename procedure
+- Changes the name of an external file.}  // there are 2 renames!!
+{Truncate procedure
+- Deletes all the records after the current file position.}
+SameFileName function
+- Compares file names based on the current locale.*)
+{DefaultTextLineBreakStyle variable
+- Specifies the characters that are used by default to separate lines in text.}
+{GetEnvironmentVariable function
+- Returns environment variable value..!!!}
+{Slice function
+- Returns a sub-section of an array.}
+{UnloadPackage procedure
+- Unloads a package.         !!!}
+{Exclude procedure
+- Removes an element from a set.}
+
+{Include procedure
+- Adds an element to a set.!!!}
+{FindClass function
+- Finds and returns a class that is derived from TPersistent.}
+
+{FindClassHInstance function
+- Returns the instance handle for the module in which a class type is defined.
+{GetClass function
+- Returns a registered persistent class given its name.
+IntToIdent function
+- Uses a mapping array to convert integers into their corresponding string
+identifiers.  }
+{BeginThread function
+- Spawns a separate thread of execution.
+
+CheckSynchronize function
+- Allows background threads to synchronize their execution with the main thread.
+
+EndThread function
+- Terminates the execution of a thread.
+
+ForegroundTask function
+- Indicates whether the current thread is running in the foreground.
+
+IsMultiThread variable
+- Indicates whether the application spawned additional threads using BeginThread
+or TThread objects.
+
+WakeMainThread variable
+- Represents a method (event handler) that is forced into the main thread’s queue.
+{FindCustomVariantType function
+- Retrieves the object that implements a custom Variant type.
+
+GetVariantManager procedure
+- Returns the entry points of the routines that define variant behavior.
+
+IsVariantManagerSet function
+- Indicates whether variant support is implemented in an application.}
+{VarToStr function
+- Converts a variant to a string.  !!!}
+AllocateHwnd function
+- Creates a window that implements a specified window procedure.
+DestroyMetaPict procedure
+- Frees a metafile resource given its handle.
+NewStyleControls variable
+- Determines whether controls are drawn using the Windows 3.x “look”.}
+SameNamespace function
+- Indicates whether a specified node is defined within a specified namespace.
+
+

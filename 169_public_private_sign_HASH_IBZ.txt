@@ -1,0 +1,612 @@
+//**********************************************
+program Public_Private_Signature_Pass_Hash;
+
+//calculates simple public private with strong string and hash back SHA1 ;)
+//in this lession we want to sign a message with a private key! #locs:232
+//http://en.wikipedia.org/wiki/Hash_function
+//public-private crypto system for education (ppcse), see also ex. 210_
+
+//type
+  //T5x4LongWordRecord = array [0..4] of LongWord;
+ 
+ //A simple Crypto System:
+{1. Prime1: 13 and Prime2: 23
+ 2. RSA Modul Public [p*q] as N: 299
+ 3. phi(N) Private: 264
+ 4. RSA Exponent: 5 or 65537
+ 5. Private D: 53
+ 6. Public (5,299) - Private (53,299)}
+
+const
+   AFILE = 'maxbox4.exe';
+   AMESSAGE = 'HELLO WORLD OF CRYPTOBOX WITH 1 HASH!';  //only to ASCII 100 possible!
+   OFFSET = 65;  // with public(N(35)) are 35 chars available
+
+var   
+   prime1, prime2, i: integer;
+   cryptolist: TStrings;
+   HashSHA1: string;
+   
+function setPublic: integer;
+begin
+  result:= prime1 * prime2;
+end;   
+
+function getPHI_N_Private: integer;
+begin
+  result:= (prime1-1) * (prime2-1);
+end;   
+
+function getEPublic: integer;
+begin
+  result:= round(Power(2,2)+1);  
+end;   
+
+//Find d such that: e*d mod phi(n) = 1. (as inverse modulo)
+function getPrivate: integer;
+begin
+  for i:= 1 to 10 do //or 100 it depends on biginteger
+    if (getEPublic * i mod getPHI_N_Private = 1) then
+      result:= i;
+  //result:= (getEPublic) mod (getPHI_N_Private); 0 tester
+end;  
+
+//---------------------------------------------------------------
+//private d= e^-1 mod phi(N)
+//cipher c[i]   = m[i]^e (mod N)
+//decipher m[i] = c[i]^d (mod N)
+
+procedure cipherMessage(amess: string; acipher: TStrings);
+var k,l: integer; //int64
+    i: integer;
+begin
+  for i:= 1 to length(amess) do begin
+    l:= Ord(amess[i])-OFFSET;
+    //write(inttostr(l)+ 'd ') //debug
+    k:= round(Power(l,getPrivate)) mod setPublic;   //getEPublic to cipher
+    acipher.add(intToStr(k))
+  end;
+end;    
+
+function deCipherMessage(alist: TStrings): string;
+var f,k: int64;
+    i: integer;
+begin
+  for i:= 0 to alist.count -1 do begin
+    //writeln('alist '+(alist[i])) //debug
+    f:= round(Power(strToInt(alist[i]),getEPublic));  //getPrivate to decipher
+    k:= f mod setPublic;
+    result:= result+ Chr(k+OFFSET);
+  end;
+end;   
+//-----------------------------------------------------------
+  
+// a demonstrator to cipher a hash - digital signature 
+function SHA1A(const fileName: string): string;
+var
+  idsha: TIdHashSHA1;
+  fs: TFileStream;
+  hash: T5x4LongWordRecord;
+ begin
+   idsha:= TIdHashSHA1.Create;
+   fs:= TFileStream.Create(fileName, fmOpenRead OR fmShareDenyWrite) ;
+   try
+     //result:= idmd5.AsHex(hash) ;
+     result:= idsha.AsHex(idsha.HashValue(fs)) ;
+   finally
+     fs.Free;
+     idsha.Free;
+   end;
+ end;
+ 
+ 
+ // Function synSHA1( const Value : AnsiString) : AnsiString');
+ // procedure SecureClearStr(var S: AnsiString);');
+ 
+procedure GetSetPasswordHash(Sender: TObject);
+  var AESpassw, hashpass: Ansistring;
+ begin
+  //AESpassw:= InputBox('AES CryptoBox Password' ,'Enter Password:','password');
+  with TPasswordDlg.Create(NIL) do begin
+    showmodal;
+    if modalresult = mrOK then begin
+     AESpassw:= password.Text;
+     writeln('Password is set! at: '+DateTimeToStr(Now));
+     //savetofile(
+     hashpass:= StrToHex1(synSHA1(AESpassw));
+     writeln(Uppercase(StrToHex1(synSHA1(AESpassw))))
+     if fileexists(Exepath+'myhashpass.txt') then begin
+       if hashpass = loadstringJ(Exepath+'myhashpass.txt') then
+       ShowmessageBig('PASS HASH passed!') else 
+         ShowmessageBig('PASS HASH NOT passed!!');
+       //writeln('test drive: '+SHA1(Exepath+'myhashpassclear.txt'))
+     end else 
+       saveString(Exepath+'myhashpass.txt',StrToHex1(synSHA1(AESpassw)));   
+    end else begin
+      //if cancelbtn.modalresult = mrCancel then begin
+      password.Text:= '';
+      AESpassw:= '';
+      writeln('Password empty reset at: '+DateTimeToStr(Now));
+    end;
+    SecureClearStr((AESpassw));
+    Free;
+  end;
+end;  
+
+
+Begin  //main frame 
+  //1. Choose two prime numbers p and q.
+  prime1:= 5;
+  prime2:= 7;
+  Writeln(Format('1. Prime1: %d and Prime2: %d',[prime1, prime2]))
+ 
+  //2. Let n = p*q.
+  Writeln('2. RSA Modul Public [p*q] as N: '+inttostr(setPublic))
+  
+  //3. Totient phi(n) is number of numbers
+  //less than n with no factors in common to n. phi(n)=(p-1)(q-1)
+  Writeln('3. phi(N) Private: '+inttostr(getPHI_N_Private))
+  
+  //4. Choose e <n; e be relative prime to phi(n). 
+  Writeln('4. Public RSA Exponent: '+inttostr(getEPublic))
+  
+  //5. Find d such that e*d mod phi(n)=1. 
+  Writeln('5. Private D: '+inttostr(getPrivate))    
+    
+  //6. Public key is (e,n), private key is (d, n).
+  Writeln(Format('6. Public (%d,%d) - Private (%d,%d)',[getEPublic,setPublic,                                                                  getPrivate,setPublic]))
+  Writeln('');
+  Writeln('7. Hash the message with SHA1');
+  Writeln('7.1 Produce a file of the message');
+  CreateFileFromString(ExePath+'examples\169_hashtester.txt',AMESSAGE)
+  HashSHA1:= SHA1(ExePath+'examples\169_hashtester.txt');
+  Writeln('7.2 This is the hash of file: '+ HashSHA1);
+  
+  Writeln('8. Cipher the hash with Private!: '+HashSHA1);
+  cryptolist:= TStringlist.create;
+  cipherMessage(HashSHA1, cryptolist);
+  for i:= 0 to cryptolist.count -1 do
+    write(Format('/%.4s',[cryptolist[i]]));
+  Writeln('9. Decrypt the cipher above ');
+  Writeln('9.1 Decrypt Hash with Public!:  '+deCipherMessage(cryptolist));
+  Writeln('10. Compare and Validate:  '+HashSHA1);
+  if CompareStr(HashSHA1, deCipherMessage(cryptolist)) = 0 then
+    Writeln('10.1 is Valid!');
+  cryptolist.Free;
+  writeln('');  
+  //maxform1.CipherFile1Click(self)
+  writeln('');  
+  //hashvalue and crc32 test
+  PrintF('From CRC32 of file %s is %s',
+            [AFILE, inttoHEX(ComputeFileCRC32(ExePath+AFILE),4)]);
+  //Writeln('From SHA1 of maXbox:  '+SHA1(ExePath+AFILE))
+  
+  //BinomialCoeff( N, R : Cardinal) : Float
+  for it:= 1 to 64 do 
+   writeln(itoa(it) +': '+floattostr(binomialcoeff(64,it)));
+   // function BinominalCoefficient(n, k: Integer): string;
+  for it:= 1 to 64 do 
+   writeln(itoa(it) +': '+(binominalcoefficient(64,it)));
+   
+   //bigprime and factors
+   writeln(bigpow(2,67))
+   writeln(bigsub(bigpow(2,67),'1'))
+   writeln(bigsub('147573952589676412928','1'))
+   //writeln(inttostr(193707721 ) 
+   writeln(bigmulu('193707721','761838257287'))
+   
+  // Example 3: 87^43 (mod 103). 
+   writeln(bigpow(87,43))
+   //bigmod
+   with TInteger.create(87) do begin
+     //assign2(bigpow(87,43))
+     pow(43)
+     modulo1(103)
+     writeln(tostring(true))
+     free
+   end;  
+   
+   writeln(floattostr(85 mod 103))
+   maXcalcF('sqrt(87^2)')
+   maXcalcF('sqrt(87^8)')
+   maXcalcF('sqrt(87^32)')
+    with TInteger.create(87) do begin
+     //assign2(bigpow(87,43))
+     pow(32)
+     sqroot;
+     writeln(toString(false))
+     writeln(converttoHEXstring)
+     free
+   end;  
+   maXcalcF('(1.07722901337518*31*ln(10))/ln(16)')
+ 
+   writeln(bigpow(87,32))
+   //writeln(bigpow(2,953))
+   writeln(bigsub(bigpow(2,953),'1'))  //2^953-1 --> 8 prime factors found! p.116 
+  
+   maXcalcF('(953*ln(2))/ln(10)')
+   writeln(itoa(length(bigpow(2,953))))
+   
+   GetSetPasswordHash(self)
+  
+End.
+
+The key to your code is maXbox
+----------------------------------------------------
+My Cryptosystem
+
+1. Prime1: 5 and Prime2: 7
+2. RSA Modul Public [p*q] as N: 35
+3. phi(N) Private: 24
+4. Public RSA Exponent: 5
+5. Private D: 5
+6. Public (5,35) - Private (5,35)
+----------------------------------------------------
+
+Public and Private are the same! but the relation is almost set with N as 35.
+Proof: 5^7 mod 11=3
+       3^7 mod 11=9   9<>3
+
+
+prim1:= 23;
+prim2:= 97;
+RSA Modul Public [p*q] as N: 2231
+RSA Exponent: 65537
+phi(N) Private: 2112
+Private D: 65
+
+
+
+
+Explanation:
+Alice lets her public key be known to everyone, but keeps the private key secret. Bob may send a confidential message to Alice like this:
+
+   1. B gets A's public key (you can get it from web, or just send it to him).
+   2. B encrypts the message with A's public key, and sends it.
+   3. A decrypts the message with her private key.
+
+For this to work, the system must guarantee that it is (effectively) impossible to decrypt the message without knowledge of the private key. In particular, it must be impossible to decrypt using the public key, or to derive the private key from the public key.
+
+-1753041190
+-346756791
+SHA1 of mx3
+DA DE 32 22 55 6A EC 69 BC D9 F9 AB 6F 1F C2 1F B6 72 2A 56
+
+from idpop3
+
+if Length(S) > 0 then begin
+          with TIdHashMessageDigest5.Create do
+          try
+            S:= LowerCase(TIdHash128.AsHex(HashValue(S+Password)));
+          finally
+            Free;       
+          end;//try
+          
+Some cryptographic hash functions, such as SHA-1, have even stronger uniformity guarantees than checksums or fingerprints, and thus can provide very good general-purpose hashing functions.
+
+In ordinary applications, this advantage may be too small to offset their much higher cost.[5] However, this method can provide uniformly distributed hashes even when the keys are chosen by a malicious agent. This feature may help protect services against denial of service attacks.          
+
+
+How RSA works
+------------------------------------
+Generating the public and private keys. Pick two large prime numbers, p and q. Let n=pq. Typically, n is a number which in binary is written with 1024 bits (in decimal, that's about 308 digits). Pick e relatively prime to (p-1)(q-1). Now find d such that ed=1 mod (p-1)(q-1). You can use Euclid's algorithm to find this d. The pair of numbers (e, n) is the public key. The pair of numbers (d, n) is the private key. The two primes p,q are no longer needed, and can be discarded, but should never be revealed.
+
+Exercise. Which of the following key pairs are valid?
+
+   1. K=(7,187), K-1=(23,187)
+   2. K=(23,187), K-1=(7,187)
+   3. K=(7,143), K-1=(23,143)
+
+Can you invert the key (7,299)?
+Message format. Divide the message into blocks, each block corresponding to a number less than n. For example, for binary data, the blocks will be (log2 n) bits.
+Encryption. The encryption of message m is  c = me mod n.
+Decryption. To decrypt c,  put m' = cd mod n.
+
+Generating the public and private keys. Pick two large prime numbers, p and q. Let n=pq. Typically, n is a 1024 bit number. Pick e relatively prime to (p-1)(q-1). Now find d such that ed=1 mod (p-1)(q-1). There is an algorithm which will find this d for you. The pair of numbers (e, n) is the public key. The pair of numbers (d, n) is the private key. The two primes p,q are no longer needed, and can be discarded, but should never be revealed.
+
+
+
+A response to Diffie Helleman challenge by Ron Rivest, Adi Sharmir, and Len Adleman at MIT.
+An exponentiation cipher utilizing Euler’s Theorem.
+Choose two prime numbers p and q.
+Let n = p*q.  The totient ?(n) of n is the number of numbers less than n with no factors in common with n.
+?(n)=(p-1)(q-1)
+E.g., ?(10) =4; since 1,3, 7, 9 are relative prime of 10.
+Choose e <n; e be relative prime to ?(n). 
+Find d such that e*d mod ?(n) = 1.
+The public key is (e,n), private key is (d, n).
+Med mod n = M (this holds if e*d mod ?(n) = 1)
+C=Me mod n
+M=cd mod n
+
+
+Let p=7 and q = 11. n=77 and ?(n) =60.
+Alice choose e=17, a relative prime to 60 ? private key is d=53 where e*d mod ?(n) =1; 17*53 mod 60 = 1
+If we represent 07 as  and 25 as Z, 26 as blank, then
+HELLO  WORLD will be 07 04 11 11 14 26 22 14 17 11 03.
+ Using Alice public key the cipher text is:
+07^17 mod 77 = 28
+04^17 mod 77 = 16
+11^17 mod 77 = 44
+…
+03^17 mod 77 = 75.
+Only Alice can decipher with private key 53.
+
+Lima 149756 + 309152 – TEE-Zugset "Blauer Enzian" + den seltenen, offiziellen Ergänzungs-Abteilwagen, Ausführung Deutsche Bundesbahn Epoche 3 im exakten Maßstab 1:87! Das Zugset enthält einen Abteilwagen (Betriebsnummer 10423 Hmb), einen Großraumwagen (Betriebsnummer 10512 Hmb), einen Barwagen (Betriebsnummer 10561 Hmb) und einen Speisewagen (Betriebsnummer 11106 Hmb), der offizielle Ergänzungswagen trägt die Betriebsnummer 10426 Hmb. Abteil- und Großraumwagen habe eine Länge von jeweils 303 mm und Barwagen/Speisewagen haben eine Länge von jeweils 316 mm. Die Wagen verfügen über Kurzkupplungskinematik mit NEM-Schächten und sind bereits mit Kurzkupplungsköpfen ausgerüstet. Der Zug ist unbespielt und sämtliche Zurüstteile sowie die Zuglaufschilder liegen bei!
+
+Der Zug wurde dem Vorbild angepasst: Die Wagen verfügen allesamt über vorbildgerecht schwarze Drehgestelle und die Sitzwagen haben vorbildgerechte Runddächer bekommen. Speise- und Barwagen haben hingegen ihre vorbildgerechten Steildächer behalten. Die schwarzen Drehgestelle der Wagen sind bereits sehr sauber zugerüstet.
+
+Es handelt sich um die letzte Ausführung dieser Wagen von Lima-Italien mit vorbildgerecht dunkel getönten Scheiben, die nicht eingesetzt sind, sondern aus einem Stück mit dem Wagenkasten bestehen. Dadurch wird eine auf dem Modellbahnwagensektor einmalige Filigranität der Fensterrahmen erreicht! Barwagen und Speisewagen verfügen zudem über eingesetzte Tischlampen. Diese sehr schönen TEE-Wagen brauchen sich auch vor ADE-Wagen oder den sehr teuren Roco-Enzian-Sets 64024 und 64025 (mit Wagenpreisen um die 60 Euro pro Stück!) nicht zu verstecken bzw. sind diesen optisch sogar überlegen! Dazu kommt, dass die Fenster der Roco-Wagen einen Tick zu klein sind (es fehlen bis zu 0,5 mm nach allen Seiten) und es keinen passenden Barwagen von Roco gibt! Insgesamt sind diese Lima-Wagen also erstklassige Modelle auch für anspruchsvolle Modellbahner zu einem attraktiven Preis. Lieferung in den drei blauen Collection-Originalkartons. Alles Weitere siehe die vier Bilder, von denen das letzte zeigt, über wie viele freistehende Details ein zugerüsteter Wagenboden verfügt – auch hier kommen die vorstehend genannten deutlich teureren Roco-Enzianwagen nicht mit!
+
+Lima 149756 TEE-Zug Blauer Enzian DB Epoche III 4teilig
+
+Bei diesem Set handelt es sich um unbespielte Sammlerware meines Vaters.
+Die Waggons wurden allerdings bereits zugerüstet ! (deshalb als gebraucht !)
+
+Seht euch bitte die XXL-Bilder an und beurteilt den Zustand selbst.
+(Die Bilder sind alle vom Original-Artikel !)
+
+
+Das Set besteht aus folgenden Wagen :
+
+Personenwagen 1. Klasse   Ap4üm   10512   Hmb
+Personenwagen 1. Klasse   Av4üm   10423   Hmb
+Restaurantwagen   WR4üm   11106   Hmb
+Personenwagen 1.Klasse /Barwagen   ARD4üm   10561   Hmb
+
+Länge über Puffer :
+
+Personenwagen 303mm
+Restaurant- und Barwagen 316mm
+
+
+Hersteller                  : Lima
+Artikelnumer             : 149756
+EAN                          : 8004340197569
+
+Zurüstteile                : ja, bereits montiert
+Anleitung                  : nein
+Originalverpackung  : ja  (Karton mit Styropor-Inlay)
+
+Zustand Wagen        : sehr gut (leichte Spuren vom Zurüsten / Ansehen)
+
+Zustand OVP            : gut  (leichte Gebrauchs- / Lagerspuren, angestoßene Stellen)
+
+Besonderes               :
+- ein Wagen hat ein paar minimale Macken im Dach (Bild 4, der unterste)
+- Zurüstteile wurden bereits montiert
+- Wagen wurden alle mit Roco Kurzkupplungen ausgestattet
+
+Beschreibung: 	TEE Blauer Enzian 4tlg.
+Bemerkung: 	Av4ümh-65 Abteilwagen,1. Kl, Ap4ümh-65 Großraumwagen 1. Kl; 10 423 Hmb WRümh-64 Speisewagen; 11 107 Hmb ARD4ümh-64 Barwagen; 10 561 Hmb Arnold Drehgestell-KKK Wagenlänge Av und Ap jew. 165mm; Wagenlänge WR und ARD jew. 172mm
+Hersteller: 	Arnold
+Vertrieb: 	
+Artikel-Nr.: 	0187
+Modell-Art: 	Set
+Unterart: 	Personen
+Produktstatus: 	Produktion eingestellt
+Vertriebszeitraum: 	1996
+Digitalschnittstelle: 	k.A.
+ca. Preis in €*: 	84,00 Preisinfo! - Aktuellen Preis bei ebay recherchieren zu: Arnold 0187
+Erfahrungen: 	Es liegen 2 Anwenderberichte zu diesem Produkt vor. - Neuen Bericht schreiben.
+	
+Vorbildangaben (Daten ergänzen)
+Epoche: 	III
+Betriebsnr.-Modell: 	81 80 004-6/10 423 Hmb/11 107 Hmb/10 561 Hmb
+Bahn-Gesellsch.: 	DB
+Herkunft-Gesellsch.: 	DB
+Indienststellung: 	1965
+Außerdienststellung: 	2001
+
+
+
+Marke: 	LIMA 	Besonderheit: 	Limitierte Auflage
+Herstellernummer: 	208534 	Farbe: 	Rot, Schwarz, Silber
+Steuerung: 	Analog 	Herstellungsland und -region: 	Italien
+Stromversorgung: 	Gleichstrom 	Baugröße (Spurweite): 	Spur H0 (16,5 mm)
+Herstellungsjahr: 	1996 	Produktart: 	Lok
+Epoche: 	Epoche III - IV (1969 - 1980) 	Präzise Produktart: 	Elektrolok
+Material: 	Teile aus Druckguß, Kunststoff, Messing 	EAN: 	8004340285341
+
+Lima 208534 mit Roco-Stromabnehmern ÖBB 1042.539 E-Lok kaminrot, Ep. III-IV, H0-1:87 - DC, in OVP
+
+Maßstäbliches, detailgetreues Modell im Maßstab H0 1:87 exact „mit erhabenen ÖBB-Adler“, als Sammlermodell fahrbereit zugerüstet, neu und unbespielt in Originalverpackung; OVP weist Lagerspuren auf.
+Die Lok wurde in der Dachausrüstung und dem Fabrikschild dem Vorbild entsprechend farblich angepaßt und verbessert. Die Lima-Pantographen wurden gegen die viel feineren und optisch schöneren Roco-Einholmpantographen Bauart VI ausgetauscht (daher auch der höhere Festpreis).
+Modell einer Lok der 500er-Serie (Höchstgeschwindigkeit von 130 auf 150 km/h angehoben) in kaminroter Farbgebung (Rarität, siehe Vorbildbeschreibung unten), daher begehrtes Sammlermodell.
+3-Licht-Spitzensignal, weiß mit Fahrtrichtung wechselnd, federnde Kupplungs- NEM-Schächte, Bügelkupplung werden mitgeliefert; Antrieb auf alle 4 Achsen der beiden Drehgestelle, keine Haftreifen.
+Die Lok wurde in OVP staubfrei (keine Vitrine) in Nichtraucherhaushalt gelagert und nur zur gelegentlichen Ansicht (Fotos) und Probefahrt aus der Verpackung genommen.
+
+Lieferumfang: Komplett in OVP mit allen Beschreibungen, wegen besserer Optik sauber zugerüstet, weitere Zurüstteile in Säckchen beiliegend.
+Auf Fotos evt. sichtbares Schienenmaterial ist nicht Gegenstand der Auktion.
+
+Beschreibung und Beschriftung
+
+Fabrikat Artikelnr.:                  Lima 208534
+Epochennachbildung:             III – IV; ca. 1968 - 1980
+Betriebsnr.-Beschriftung:       ÖBB 1042.539
+Beschreibung:                         E-Lok, Achsfolge Bo'Bo' Universal- und Schnellzuglok, kaminrot
+gebaut von:                            SGP (vormals  Lokomotivfabrik Floridsdorf)
+Stationierung:                         Wien West
+
+Vorbild:                                 https://de.wikipedia.org/wiki/%C3%96BB_1042
+In den Jahren 1963 bis 1977 wurden insgesamt 257 Lokomotiven an die ÖBB geliefert, deren einzelne Serien sich im Detail voneinander unterschieden. Wegen gestiegener Anforderungen im Schnellzugbetrieb wurde die Höchstgeschwindigkeit ab der 1042.501 von 130 km/h auf 150 km/h erhöht. Die Loks der ersten Serien waren im Ablieferungszustand tannengrün lackiert mit einer umlaufenden aufgeschraubten Aluzierleiste in ca. Kastenmitte. Ende der 1960er-Jahre gingen die ÖBB von der traditionellen grünen Farbgebung ab, und versuchten verschiedene Rot- und Orangetöne. Die ersten Loks in der neuen Farbgebung waren kaminrot und blutorange mit Dach in weißaluminium, wobei die kaminrote Farbe sehr gut zu den damals noch fast durchwegs tannengrün lackierten Personenwagen paßte. Für weitere Lieferungen entschied man sich schließlich für „blutorange“ und elfenbeinfarben für Zierbänder und Dach, passend zu der damals eingeführten Farbkombination „jaffa“ bei den Personenwagen. Die wenigen kaminroten 1042er behielten aber noch lange in die 1970er-Jahre hinein ihr ursprüngliches Aussehen, auch mit „ÖBB-Adler“.
+
+Mit der mapbox Open Source Platform hat man ein Toolset und diverse REST APIs zugleich, die man schlicht zur Next Generation zählen darf.
+Immer mehr Apps der Geoinformationstechnologie basieren auf Basis von HTML5, CSS3 und JavaScript im Umfeld von sog. Responsive Design.
+Mit den modularen APIs, vor allem Static, Geocoding, Distance und Map Matching ist man breit augestellt, was auch die plattformunabhängige Entwicklung fördert.
+Auch mit dem durchdachten Upload API wird man mit dem Stagen von Daten in eine Cloud wie S3 nicht alleine gelassen. Das eigene Tool mapbox Studio hilft beim Editieren von neuen Layern oder ausgefeiltem, interaktivem Kartenmaterial. Das Tool vereint Flexibilität, moderner Look und einfache Bedienung in einem, in der Basic Version sogar kostenlos.
+Für mich ein Highlight ist der Satellite Layer kombiniert mit dem Static API. Mapbox kann auf unterschiedliche Auflösungen in unterschiedlichen Gebieten auch in Detailkarten mit Zoomstufen reagieren. Man darf teilweise DigitalGlobe-Bilder nutzen und erweitern, die genaue Rechtslage ergibt sich aber nicht aus der Veröffentlichung.
+Mit Mapbox lassen sich also Karten auf einfache Weise in Anwendungen oder Artikel integrieren. Die Verwendung setzt ein Account voraus und der Preis ist volumenbasiert. Mit der App lassen sich nicht nur Orte, sondern auch ganze Strecken und Areale deutlich machen um der Erde ein neues Antlitz zu verschaffen.
+
+
+ref bigint:
+
+********** File 864: C:\Program Files (x86)\maxbox3\source\REST\uPSI_UBigIntsV4.pas
+  with CL.AddClassN(CL.FindClass('TObject'),'TInteger') do begin
+75:     RegisterMethod('Constructor Create( const initialValue : int64)');
+    RegisterMethod('Constructor Create1');
+    RegisterMethod('Constructor Create( const initialValue : int64)');
+76:     RegisterMethod('Constructor Create1');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Constructor Create1');
+77:     RegisterMethod('Procedure Free');
+    RegisterProperty('Digits', 'TDigits', iptr);
+    RegisterProperty('Digits', 'TDigits', iptr);
+79:     RegisterMethod('Procedure Assign( const I2 : TInteger);');
+    RegisterMethod('Procedure Assign1( const I2 : int64);');
+    RegisterMethod('Procedure Assign( const I2 : TInteger);');
+80:     RegisterMethod('Procedure Assign1( const I2 : int64);');
+    RegisterMethod('Procedure Assign2( const I2 : string);');
+    RegisterMethod('Procedure Assign1( const I2 : int64);');
+81:     RegisterMethod('Procedure Assign2( const I2 : string);');
+    RegisterMethod('Procedure AbsoluteValue');
+    RegisterMethod('Procedure Assign2( const I2 : string);');
+82:     RegisterMethod('Procedure AbsoluteValue');
+    RegisterMethod('Procedure Add( const I2 : TInteger);');
+    RegisterMethod('Procedure AbsoluteValue');
+83:     RegisterMethod('Procedure Add( const I2 : TInteger);');
+    RegisterMethod('Procedure Add1( const I2 : int64);');
+    RegisterMethod('Procedure Add( const I2 : TInteger);');
+84:     RegisterMethod('Procedure Add1( const I2 : int64);');
+    RegisterMethod('Procedure AssignZero');
+    RegisterMethod('Procedure Add1( const I2 : int64);');
+85:     RegisterMethod('Procedure AssignZero');
+    RegisterMethod('Procedure AssignOne');
+    RegisterMethod('Procedure AssignZero');
+86:     RegisterMethod('Procedure AssignOne');
+    RegisterMethod('Procedure Subtract( const I2 : TInteger);');
+    RegisterMethod('Procedure AssignOne');
+87:     RegisterMethod('Procedure Subtract( const I2 : TInteger);');
+    RegisterMethod('Procedure Subtract1( const I2 : int64);');
+    RegisterMethod('Procedure Subtract( const I2 : TInteger);');
+88:     RegisterMethod('Procedure Subtract1( const I2 : int64);');
+    RegisterMethod('Procedure Mult( const I2 : TInteger);');
+    RegisterMethod('Procedure Subtract1( const I2 : int64);');
+89:     RegisterMethod('Procedure Mult( const I2 : TInteger);');
+    RegisterMethod('Procedure Mult1( const I2 : int64);');
+    RegisterMethod('Procedure Mult( const I2 : TInteger);');
+90:     RegisterMethod('Procedure Mult1( const I2 : int64);');
+    RegisterMethod('Procedure FastMult( const I2 : TInteger)');
+    RegisterMethod('Procedure Mult1( const I2 : int64);');
+91:     RegisterMethod('Procedure FastMult( const I2 : TInteger)');
+    RegisterMethod('Procedure Divide( const I2 : TInteger);');
+    RegisterMethod('Procedure FastMult( const I2 : TInteger)');
+92:     RegisterMethod('Procedure Divide( const I2 : TInteger);');
+    RegisterMethod('Procedure Divide1( const I2 : int64);');
+    RegisterMethod('Procedure Divide( const I2 : TInteger);');
+93:     RegisterMethod('Procedure Divide1( const I2 : int64);');
+    RegisterMethod('Procedure Modulo( const I2 : TInteger);');
+    RegisterMethod('Procedure Divide1( const I2 : int64);');
+94:     RegisterMethod('Procedure Modulo( const I2 : TInteger);');
+    RegisterMethod('Procedure Modulo1( const N : int64);');
+    RegisterMethod('Procedure Modulo( const I2 : TInteger);');
+95:     RegisterMethod('Procedure Modulo1( const N : int64);');
+    RegisterMethod('Procedure ModPow( const I2, m : TInteger)');
+    RegisterMethod('Procedure Modulo1( const N : int64);');
+96:     RegisterMethod('Procedure ModPow( const I2, m : TInteger)');
+    RegisterMethod('Procedure InvMod( I2 : TInteger)');
+    RegisterMethod('Procedure ModPow( const I2, m : TInteger)');
+97:     RegisterMethod('Procedure InvMod( I2 : TInteger)');
+  RegisterMethod('Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure InvMod( I2 : TInteger)');
+98:     RegisterMethod('Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemTrunc( const I2 : TInteger; var remain : TInteger)');
+  RegisterMethod('Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+99:     RegisterMethod('Procedure DivideRemTrunc( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemFloor( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemTrunc( const I2 : TInteger; var remain : TInteger)');
+100:     RegisterMethod('Procedure DivideRemFloor( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemFloor( const I2 : TInteger; var remain : TInteger)');
+101:     RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Function Compare( I2 : TInteger) : integer;');
+    RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+102:     RegisterMethod('Function Compare( I2 : TInteger) : integer;');
+    RegisterMethod('Function Compare1( I2 : int64) : integer;');
+    RegisterMethod('Function Compare( I2 : TInteger) : integer;');
+103:     RegisterMethod('Function Compare1( I2 : int64) : integer;');
+    RegisterMethod('Procedure Factorial');
+    RegisterMethod('Function Compare1( I2 : int64) : integer;');
+104:     RegisterMethod('Procedure Factorial');
+    RegisterMethod('Function ConvertToDecimalString( commas : boolean) : string');
+    RegisterMethod('Procedure Factorial');
+105: RegisterMethod('Function ConvertToDecimalString( commas : boolean) : string');
+    RegisterMethod('Function ToString( commas : boolean) : string');
+    RegisterMethod('Function ConvertToDecimalString( commas : boolean) : string');
+106:     RegisterMethod('Function ToString( commas : boolean) : string');
+    RegisterMethod('Function ConvertToInt64( var N : int64) : boolean');
+    RegisterMethod('Function ToString( commas : boolean) : string');
+107:     RegisterMethod('Function ConvertToInt64( var N : int64) : boolean');
+    RegisterMethod('Function DigitCount : integer');
+    RegisterMethod('Function ConvertToInt64( var N : int64) : boolean');
+108:     RegisterMethod('Function DigitCount : integer');
+    RegisterMethod('Procedure SetSign( s : integer)');
+    RegisterMethod('Function DigitCount : integer');
+109:     RegisterMethod('Procedure SetSign( s : integer)');
+    RegisterMethod('Function GetSign : integer');
+    RegisterMethod('Procedure SetSign( s : integer)');
+110:     RegisterMethod('Function GetSign : integer');
+    RegisterMethod('Function IsOdd : boolean');
+    RegisterMethod('Function GetSign : integer');
+111:     RegisterMethod('Function IsOdd : boolean');
+    RegisterMethod('Function IsPositive : boolean');
+    RegisterMethod('Function IsOdd : boolean');
+112:     RegisterMethod('Function IsPositive : boolean');
+    RegisterMethod('Function IsNegative : boolean');
+    RegisterMethod('Function IsPositive : boolean');
+113:     RegisterMethod('Function IsNegative : boolean');
+    RegisterMethod('Function IsProbablyPrime : boolean');
+    RegisterMethod('Function IsNegative : boolean');
+114:     RegisterMethod('Function IsProbablyPrime : boolean');
+    RegisterMethod('Function IsZero : boolean');
+    RegisterMethod('Function IsProbablyPrime : boolean');
+115:     RegisterMethod('Function IsZero : boolean');
+    RegisterMethod('Procedure ChangeSign');
+    RegisterMethod('Function IsZero : boolean');
+116:     RegisterMethod('Procedure ChangeSign');
+    RegisterMethod('Procedure Pow( const exponent : int64);');
+    RegisterMethod('Procedure ChangeSign');
+117:     RegisterMethod('Procedure Pow( const exponent : int64);');
+    RegisterMethod('Procedure Sqroot');
+    RegisterMethod('Procedure Pow( const exponent : int64);');
+118:     RegisterMethod('Procedure Sqroot');
+    RegisterMethod('Procedure Square');
+    RegisterMethod('Procedure Sqroot');
+119:     RegisterMethod('Procedure Square');
+    RegisterMethod('Procedure FastSquare');
+    RegisterMethod('Procedure Square');
+120:     RegisterMethod('Procedure FastSquare');
+    RegisterMethod('Procedure Gcd( const I2 : TInteger);');
+    RegisterMethod('Procedure FastSquare');
+121:     RegisterMethod('Procedure Gcd( const I2 : TInteger);');
+    RegisterMethod('Procedure Gcd1( const I2 : int64);');
+    RegisterMethod('Procedure Gcd( const I2 : TInteger);');
+122:     RegisterMethod('Procedure Gcd1( const I2 : int64);');
+    RegisterMethod('Procedure NRoot( const Root : int64);');
+    RegisterMethod('Procedure Gcd1( const I2 : int64);');
+123:     RegisterMethod('Procedure NRoot( const Root : int64);');
+    RegisterMethod('Function GetBase : integer');
+    RegisterMethod('Procedure NRoot( const Root : int64);');
+124:     RegisterMethod('Function GetBase : integer');
+    RegisterMethod('Function BitCount : integer');
+    RegisterMethod('Function GetBase : integer');
+125:     RegisterMethod('Function BitCount : integer');
+    RegisterMethod('Function ConvertToHexString : String');
+    RegisterMethod('Function BitCount : integer');
+126:     RegisterMethod('Function ConvertToHexString : String');
+    RegisterMethod('Function AssignRandomPrime( BitLength : integer; seed : String; mustMatchBitLength : boolean) : boolean');
+    RegisterMethod('Function ConvertToHexString : String');
+127:     RegisterMethod('Function AssignRandomPrime( BitLength : integer; seed : String; mustMatchBitLength : boolean) : boolean');
+    RegisterMethod('Function AssignHex( HexStr : String) : boolean');
+    RegisterMethod('Function AssignRandomPrime( BitLength : integer; seed : String; mustMatchBitLength : boolean) : boolean');
+128:     RegisterMethod('Function AssignHex( HexStr : String) : boolean');
+    RegisterMethod('Procedure RandomOfSize( size : integer)');
+    RegisterMethod('Function AssignHex( HexStr : String) : boolean');
+129:     RegisterMethod('Procedure RandomOfSize( size : integer)');
+    RegisterMethod('Procedure Random( maxint : TInteger)');
+    RegisterMethod('Procedure RandomOfSize( size : integer)');
+130:     RegisterMethod('Procedure Random( maxint : TInteger)');
+    RegisterMethod('Procedure Getnextprime');
+    RegisterMethod('Procedure Random( maxint : TInteger)');
+131:     RegisterMethod('Procedure Getnextprime');
+  end;

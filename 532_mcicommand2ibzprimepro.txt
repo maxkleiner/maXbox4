@@ -1,0 +1,150 @@
+{***************************************************************
+ * Project  : System Parallel Function Overview
+ * App Name : \532_mcicommand.txt  tester, #locs:464
+ * Purpose  : Demonstrates parallel output in time
+ * Date     : 09/12/2012  -  17:07
+ * History  : convert outline VCL to maXbox Nov 2011
+ *          : system save demo for mX3.9.2, not finished yet!!
+            : integrate MCISendCommand of MMSystem
+ ****************************************************************}
+  //TODO: check and measure the two isprime functions of performance
+  
+Program PrimeMCICommand3;
+
+var
+  k : int64;  // Quarzfrequenz Timers (1193180Hz)
+  
+function IsPrime(N: Integer): Boolean;
+var I: Integer;
+begin
+  for I:= 2 to N - 1 do
+    if (N mod I) = 0 then
+      exit;
+  result:= true;
+end;
+
+function IsPrime2(acti: integer): boolean;
+var
+  j: Integer;
+  isprim: boolean;
+begin
+  isprim:= true;
+  if acti=1 then isprim:= false;
+  for j:= 2 to round(sqrt(acti)) do 
+   if ((acti mod j) = 0) then begin
+     isprim:= false;
+     break
+   end;
+ result:= isprim;
+end;
+ 
+
+procedure StartPrime(anumb: integer);
+var Total: integer;
+  I: integer;
+Begin
+  Total := 0;
+  for I := 1 to anumb do Begin
+    If IsPrime2(I) then begin   //check IsPrime1
+      inc(Total);
+     writeln(inttostr(I))
+     end;
+  End;
+  Writeln(IntToStr(Total) + ' Found Primes of: '+inttostr(anumb));
+end; 
+
+var Watch: TStopwatch;
+begin
+  Watch:= TStopwatch.Create;
+    Watch.Start;
+      StartPrime(10);
+    Watch.Stop;
+  Writeln((Watch.GetValueStr) + ' ms');
+  //tone(444,1000)
+end.
+
+
+Agenda 21.11.2014 II
+------------------------------
+
+- Aufgabe vom Prime Generator Korrektur
+   1 ist keine Primzahl als -1
+     bugfix can be:
+     o result
+     o inhalt
+     o funktion
+     
+- Einführung Activity Diagram
+   Script UML S. 17 - 22
+     o gcd-pascal.png
+     - Tokens
+     - Synchronisationsbalken
+     - Entscheidtabelle
+Pause----------------------
+     
+- Vortrag Multitasking
+- Uebung 6.1 AD Task
+    -  Zahlenreihe
+Pause --------------------------    
+- Anwenden Workshop Turtle Timer
+    o Herleitung_4
+  jeder übernimmt eine Zahl von 0..9
+  die Zahlen werde dann in einer App als Master Prozess integriert
+  dann wird in einem loop von 0..9 gezählt 
+
+
+//26 Found Primes of: 100
+//0:0:0.156 ms
+
+
+//9593 Found Primes of: 100000
+//0:0:11.608 ms
+
+  //SendMCICommand('play "G:\sonysavefeb2014\maxbox\maxbox3_back\examples\maxbox.wav"');
+  //SendMCICommand('play "G:\sonysavefeb2014\maxbox\maxbox3_back\examples\moon.wav"');
+  
+
+{begin
+end.
+doc:
+
+ Well it returns the number of ticks on the high resolution system clock, which I think is hardware dependant, and that's why you need to use QueryPerformanceFrequency to figure out the frequency of that clock. On my system the frequency is 2,272,000 hz, or about 2.272 ticks per microsecond. –  Ramónster Nov 15 '09 at 23:35 
+
+ Not related to CPU frequency in general
+The high frequency counter need not be tied to the CPU frequency at all. It will only resemble the CPU frequency is the system actually uses the TSC (TimeStampCounter) underneath. As the TSC is generally unreliable on multi-core systems it tends not to be used. When the TSC is not used the ACPI Power Management Timer (pmtimer) may be used. You can tell if your system uses the ACPI PMT by checking if QueryPerformanceFrequency returns the signature value of 3,579,545 (ie 3.57MHz). If you see a value around 1.19Mhz then your system is using the old 8245 PIT chip. Otherwise you should see a value approximately that of your CPU frequency (modulo any speed throttling or power-management that might be in effect.) 
+ 
+ref :
+
+http://www.delphi-treff.de/tutorials/objectpascal/parallelisierung-mit-delphis-parallel-library/2/
+
+uses System.Threading;
+ 
+...
+  TParallel.For(1, 100000, procedure(I: Integer)
+  Begin
+    If IsPrime(i) Then
+      inc(Total);
+  End);
+
+http://www.numberempire.com/974150
+
+Hallo Martin ich grüsse dich
+
+Du kannst die Performance nochmals drastisch reduzieren indem die isPrime optimiert ist:
+
+function IsPrime2(acti: integer): boolean;
+var
+  j: Integer;
+  isprim: boolean;
+begin
+  isprim:= true;
+  for j:= 2 to round(sqrt(acti)) do 
+   if ((acti mod j) = 0) then begin
+     isprim:= false;
+     break
+   end;
+ result:= isprim;
+end;
+
+}
+

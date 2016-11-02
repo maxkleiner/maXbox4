@@ -1,0 +1,37 @@
+{****************************************************************
+ *
+ * Project  : System Information Series
+ * Unit Name: 1314_sysinformation_shell, loc's = 34
+ * Purpose  : Demonstrates the functions of external shell program
+ * History  : system demo for mX3 beta - mX3ß  #host:MAXBOX7
+ ****************************************************************}
+
+program System_Information;
+
+function  MessageBeep(para: integer): byte;
+     external 'MessageBeep@user32.dll stdcall';  
+             
+var
+  mytimestamp: TDateTime;
+  osType: TIdWin32Type;
+  int1, int2, int3: extended;
+
+begin
+  writeln('machine name is: '+getHostName)
+  writeln('user name is: '+getUserName)
+  osType:= Win32Type;
+  writeln(IntToStr(ord(osType))+' is type of Operating System');
+  mytimestamp:= GetFileCreationTime(exepath+'maxbox3_0.exe')
+  writeln(DateTimeToStr(mytimestamp)+' Creation Date of maXbox3')
+  //ExecuteShell('cmd','/k systeminfo > systeminfo_dell.txt')
+  ExecuteShell('cmd','/c systeminfo > systeminfo_machine.txt')
+  SearchAndOpenFile('systeminfo_machine.txt')
+  // BigInt Test
+  int1:= fact(10)
+  int2:= fact(15)
+  int3:= int1 * int2
+  writeln('BigIntTest: '+floatToStr(int3))
+end.   
+
+*******************************************************
+There is no place like 127.0.0.1 
