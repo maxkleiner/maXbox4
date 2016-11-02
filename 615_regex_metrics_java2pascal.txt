@@ -1,0 +1,2202 @@
+program Regex_Metrics_checksofjava_SonarQubetester;
+
+// forth interpreter of runmax _04 - #perf:570:0:2.245
+// shows stringlist manipulations of a file with replace, #locs=1450
+// #sign:Max: MAXBOX10: 01/06/2016 09:01:39 
+//http://www.softwareschule.ch/download/maxbox_starter43.pdf
+
+const emailregex = 
+          '^((?>[a-zA-Z\d!#$%&''*+\-/=?^_`{|}~]+\x20*' +
+          '|"((?=[\x01-\x7f])[^"\\]|\\[\x01-\x7f])*"\' +
+          'x20*)*(?<angle><))?((?!\.)(?>\.?[a-zA-Z\d!' +
+          '#$%&''*+\-/=?^_`{|}~]+)+|"((?=[\x01-\x7f])' +
+          '[^"\\]|\\[\x01-\x7f])*")@(((?!-)[a-zA-Z\d\' +
+          '-]+(?<!-)\.)+[a-zA-Z]{2,}|\[(((?(?<!\[)\.)' +
+          '(25[0-5]|2[0-4]\d|[01]?\d?\d)){4}|[a-zA-Z\' +
+          'd\-]*[a-zA-Z\d]:((?=[\x01-\x7f])[^\\\[\]]|' +
+          '\\[\x01-\x7f])+)\])(?(angle)>)$';
+          
+      ipregex = '\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\' +
+          '.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' +
+          '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' +
+          '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'; 
+          
+       //'Date in mm-dd-yyyy format from between 01-01-1900 and 12-31-2099';   
+       dateintervalregex = '^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[' +
+          '01])[- /.](19|20)\d\d$';     
+          
+       //'Date in dd-mm-yyyy format from between 01-01-1900 and 31-12-2099';   
+       dateintervalregex2 = '^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[01' +
+          '2])[- /.](19|20)\d\d$';    
+
+
+procedure SearchAndReplace(aStrList: TStrings; aSearchStr, aNewStr: string);
+var i, TT1: integer; s1: string;
+begin
+  // old string can't be part of new string!, eg.: max --> climax
+  if pos(aSearchStr, aNewStr) > 0 then begin
+    write('old string cant be part of new string');
+    exit;
+  end;
+  writeln('lines count: '+inttostr(aStrList.Count));
+  for i:= 0 to aStrList.Count -1 do begin
+    s1:= aStrList[i];
+    
+    repeat
+      TT1:= pos(aSearchStr, s1);
+      if TT1 > 0 then begin
+        Delete(s1, TT1, Length(aSearchStr));
+        Insert(aNewStr, s1, TT1);
+        aStrList[i]:= s1;
+      end;
+    until TT1 = 0;
+  end; 
+end;
+
+function GetWebTest: string;
+var lHTTP: TIdHTTP;
+    lStream: TStringStream;
+    asyn: TSynwInfo;
+    dl: TDownloadURL;
+    //FIdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL;
+  FIdSocksInfo: TIdSocksInfo;
+begin
+  lHTTP:= TIdHTTP.Create(NIL);
+  lStream:= TStringStream.Create('');
+  try
+     try
+       //writeln('html back: '+lHTTP.Get(Format(UrlRestAPI,[location])));
+      //writeln(lHTTP.Get('http://www.kleiner.ch'));
+      writeln(lHTTP.Get('http://www.delphipraxis.net/'));
+      //writeln(lHTTP.Get('http://www.softwareschule.ch'));
+     
+      ShowMessage(lhttp.Response.Location);
+      writeln(lhttp.Response.ResponseText)
+      ShowMessage(lhttp.Response.RawHeaders.Text);
+      
+      {with lhttp.CookieManager.CookieCollection do
+      for It := 0 to Count - 1 do // alle Cookies durchsuchen
+        if ('CookieName' = Cookies[I].CookieName) then
+        begin
+          //MacheWasMitDemCookieWert(Cookies[I].Value);
+          break;
+        end;}
+        
+      FIdSocksInfo := TIdSocksInfo.Create(nil);
+      (*
+      //if { SOCKS wird benutzt ??? } then
+        with FIdSocksInfo do begin
+          Host := 'Server';
+          Port := 8080; // Beispiel Port
+
+          //if { SOCKS Version = ??? } then
+             Version := svSocks4
+           //else
+             Version := svSocks5;
+
+         (* case { RequireAuthentication ??? } of
+            True:
+              Authentication := saUsernamePassword;
+            False:
+              Authentication := saNoAuthentication;
+          end; *)
+
+          //Username := 'AccountName';
+          //Password := 'AccountPassword';
+           //*)
+          // Nun SOCKS aktivieren
+          //Enabled := True;
+        //end
+        //else // normale HTTP-Proxy wird benutzt
+          with lhttp.ProxyParams do begin
+            ProxyServer := 'Server';
+            ProxyPort := 80; // Beispiel Port
+            BasicAuthentication := True; // RequireAuthentication ???
+            ProxyUsername := 'AccountName';
+            ProxyPassword := 'AccountPassword';
+          end;   
+        
+     //lhttp.CookieManager.AddServerCookie('werbung_aus=1',
+       // TIdURI.Create('http://www.delphipraxis.net/'));     
+     except
+      // lHTTP.Get1(Format(UrlGeoLookupInfo2,[location]),lStream);
+        //if something wrong try using a backup server.
+       //writeln('html back: '+GetURLAsString('http://api.openweathermap.org'));
+           //writeln('html back: '+GetURLAsString('http://google.com'));
+      // writeln('Exception: '+Gethtm(UrlWeatherReport25))
+
+     end;
+     //lStream.Seek(0,0);
+     //result:= 'GEO_Weather_Report: '+lStream.ReadString(lStream.Size);
+  finally
+    lHTTP.Free;
+    lStream.Free;
+  end;
+end;
+
+
+
+{Exceptions are meant to represent the application's state at which an error occurred.
+
+Making all fields final ensures that this state:
+
+    Will be fully defined at the same time the exception is instantiated.
+    Won't be updated or corrupted by some bogus error handler.
+
+This will enable developers to quickly understand what went wrong.
+
+The following code:  }
+
+function public_class_MyException_extends_Exception: integer; 
+var 
+  private_int_status: integer;                               // Non-Compliant
+
+  begin
+  (*public MyException(String message) {
+    super(message);
+  }
+
+  public int getStatus() {
+    return status;
+  }
+
+  public void setStatus(int status) {
+    this.status = status;
+  } *)
+   result:= private_int_status; 
+
+end;
+
+//should be refactored into:
+
+function public_class_MyException(message: string; astatus: integer): integer;
+ // extends Exception {
+var 
+  {private_final} status: integer;                         // Compliant
+
+  begin
+  (*public MyException(String message, int status) {
+    super(message);
+    this.status = status;
+  } *)
+  writeln(message)
+
+  (*public int getStatus() {
+    return status;
+  } *)
+  result:= astatus;
+
+end;
+
+{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *} { This comment describe the function behaviour. You should include anythin  } { useful to explain what the function does, and what it returns.            } 
+function ThisIsMyFunction(     Value        : Integer;              { This describe the argument       }     const Street : String;               { Yet another argument description }     LastArg      : Byte) : Integer;      { Here the last argument described } var     I      : Integer;     Buffer : String; begin     { This comment applies to the next fex lines.                           }     SetLength(Buffer, 20);               { Allocate string space            }     
+for I := 1 to Length(Buffer) do   Buffer[I] := Chr(Ord('A') + I); 
+{ Fill buffer with some data       }  
+    { New code block with his own comment.                                  } 
+        //DoSomething;                         
+    { Another comment for this line    }     Result := 3;
+     end;   
+{* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *} 
+
+
+function packageNameChecker(asubject: string): boolean;
+begin
+   if ExecRegExpr('^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$',asubject) then
+     result:= true else
+     result:= false;
+end;      
+
+function memberNameChecker(asubject: string): boolean;
+begin
+   if ExecRegExpr('^[a-z][a-zA-Z0-9]*$',asubject) then
+     result:= true else
+     result:= false;
+end; 
+
+function ConstantNameCheck(asubject: string): boolean;
+begin
+   if ExecRegExpr('^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$',asubject) then
+     result:= true else
+     result:= false;
+//.naming.ConstantNameCheckMINORapplyToPackagetrueformat^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$applyToPublictrueapplyToProtectedtrueapplyToPrivatetrue
+end;     
+
+
+function MethodNameCheck(asubject: string): boolean;
+begin
+   if ExecRegExpr('^[a-z][a-zA-Z0-9]*$',asubject) then
+     result:= true else
+     result:= false;
+//.naming.MethodNameCheckMAJORallowClassNamefalseformat^[a-z][a-zA-Z0-9]*$
+end; 
+
+//^[a-z][a-zA-Z0-9]*$   
+
+function ParameterNameCheck(asubject: string): boolean;
+begin
+   if ExecRegExpr('^[a-z][a-zA-Z0-9]*$',asubject) then
+     result:= true else
+     result:= false;
+//.naming.MethodNameCheckMAJORallowClassNamefalseformat^[a-z][a-zA-Z0-9]*$
+end; 
+
+function LocalFinalVariableNameCheck(asubject: string): boolean;
+begin
+   if ExecRegExpr('^[a-z][a-zA-Z0-9]*$',asubject) then
+     result:= true else
+     result:= false;
+//.naming.LocalFinalVariableNameCheckMAJORformat^[a-z][a-zA-Z0-9]*$
+end; 
+
+
+
+function RegexpMultilineCheck(asubject: string): boolean;
+begin
+   if ExecRegExpr('^.*System\.(out|err)\.print(ln)?\(.*',asubject) then
+     result:= true else
+     result:= false;
+//.regexp.RegexpMultilineCheckMAJORignoreCaseformat^.*System\.(out|err)\.print(ln)?\(.*$maximummessageFile contains call to System.out.println or Sytem.err.println.minimum
+end; 
+
+var FTimeStart: Cardinal;
+
+//https://searchcode.com/codesearch/view/62390585/
+
+procedure TDownloadThread_ReceiveDataEvent(const Sender: TObject;
+                                          AContentLength, AReadCount: Integer);
+  //var Abort: Boolean);
+var
+  LTime: Cardinal;
+  LSpeed: Integer;
+begin
+  //if Assigned(FOnThreadData) then
+  //begin
+    LTime := GetTickCount - FTimeStart;
+    if AReadCount = 0 then
+      LSpeed := 0
+    else
+      LSpeed := (AReadCount * 1000) div LTime;
+
+    //FOnThreadData(Sender, FThreadNo, LSpeed, AContentLength, AReadCount, Abort);
+  //end;
+end;
+
+
+procedure TDownloadThread_Execute;
+var
+  LResponse: TALHTTPResponseHeader; //TIdHTTPResponseInfo; //IdHTTPResponse;
+  LStream: TFileStream;
+  LHttpClient: TALHttpClient; //TidHTTP;  //TALHttpClient
+  FURL, FFileName: string;
+  FStartPoint, FEndPoint: Int64;
+    FThreadNo: Integer;
+    
+begin
+  //inherited;
+  LHttpClient:=  TALHttpClient.Create;
+  try
+    //LHttpClient.OnReceiveData:= ReceiveDataEvent;
+    LHttpClient.OnDownloadProgress:= @TDownloadThread_ReceiveDataEvent;
+    LStream:= TFileStream.Create(FFileName, fmOpenWrite or fmShareDenyNone);
+    try
+      FTimeStart := GetTickCount;
+      LStream.Seek(FStartPoint, {TSeekOrigin.}soBeginning);
+      //LResponse := LHttpClient.GetRange(FURL, FStartPoint, FEndPoint, LStream);
+    finally
+      LStream.Free;
+    end;
+  finally
+    LHttpClient.Free;
+  end;
+end;
+
+var FProxyParams: TALHTTPClientProxyParams;
+    FRequestHeader: TALHTTPRequestHeader;
+    FProtocolVersion: TALHTTPProtocolVersion;
+    //FRequestMethod: TALHTTPRequestMethod;
+    FURL: AnsiString;
+    FUserName: AnsiString;
+    FPassword: AnsiString;
+    FConnectTimeout: Integer;
+    FSendTimeout: Integer;
+    FReceiveTimeout: Integer;
+    FOnUploadProgress: TALHTTPClientUploadProgressEvent;
+    FOnDownloadProgress: TALHTTPClientDownloadProgressEvent;
+    FOnRedirect: TAlHTTPClientRedirectEvent;
+    FUploadBufferSize: Integer;
+    eexctp: EALHTTPClientException;
+    
+    
+ {********************************************}
+procedure TALHTTPClient_Post4(aUrl: AnsiString;
+                             aPostDataStream: TStream;
+                             aResponseContentStream: TStream;
+                             aResponseContentHeader: TALHTTPResponseHeader);
+Var OldContentLengthValue: AnsiString;
+   URL: AnsiString;
+   LHttpClient: TALHttpClient;
+   //RequestMethod: TALHTTPRequestMethod;
+begin
+  Url := aURL;
+  //LHttpClient.RequestMethod := HTTPrm_Post;
+  OldContentLengthValue := FrequestHeader.ContentLength;
+  try
+    If assigned(aPostDataStream) then FrequestHeader.ContentLength:= 
+                                            IntToStr(aPostDataStream.Size)
+    else FrequestHeader.ContentLength := '0';
+    LHttpClient.Execute(aPostDataStream,
+            aResponseContentStream,
+            aResponseContentHeader);
+  finally
+    FrequestHeader.ContentLength := OldContentLengthValue;
+  end;
+end;   
+
+
+
+{******************************************************}
+procedure TALHTTPClient_PostUrlEncoded(aUrl: AnsiString;
+                                       aPostDataStrings: TALStrings;
+                                       aResponseContentStream: TStream;
+                                       aResponseContentHeader: TALHTTPResponseHeader;
+                                       Const EncodeParams: Boolean{=True});
+Var aURLEncodedContentStream: TStringStream;
+    OldRequestContentType: AnsiString;
+    Str: AnsiString;
+    I, P: Integer;
+    LHttpClient: TALHttpClient;
+    ahttP: TidHTTPServer;
+begin
+  LHttpClient:=  TALHttpClient.Create;
+  aURLEncodedContentStream := TStringStream.create('');
+  OldRequestContentType := FrequestHeader.ContentType;
+  try
+
+    if EncodeParams then begin
+      for i := 0 to aPostDataStrings.Count - 1 do begin
+        Str := aPostDataStrings[i];
+        //P := Pos(aPostDataStrings.NameValueSeparator, Str);
+        if P > 0 then Str := HTTPEncode(AlCopyStr(Str, 1, P-1)) + 
+                           '=' + HTTPEncode(AlCopyStr(Str, P+1, MAXINT))
+        else Str := HTTPEncode(Str);
+        If i < aPostDataStrings.Count-1 then aURLEncodedContentStream.WriteString(Str + '&')
+        else aURLEncodedContentStream.WriteString(Str);
+      end;
+    end
+    else begin
+      for i := 0 to aPostDataStrings.Count - 1 do begin
+        If i < aPostDataStrings.Count - 1 then 
+            aURLEncodedContentStream.WriteString(aPostDataStrings[i] + '&')
+        else aURLEncodedContentStream.WriteString(aPostDataStrings[i]);
+      end;
+    end;
+
+    FrequestHeader.ContentType := 'application/x-www-form-urlencoded';
+    {LHttpClient.post1(aUrl,
+         aURLEncodedContentStream,
+         aResponseContentStream,
+         aResponseContentHeader);
+     }
+    LHttpClient.post3(aUrl,
+         aURLEncodedContentStream);
+    //LHttpClient.requestmethod:= HTTPrm_Post;
+
+  finally
+    aURLEncodedContentStream.free;
+    FrequestHeader.ContentType := OldRequestContentType;
+  end;
+end;
+
+function  GetUserDefaultLCID: LCID;
+   external 'GetUserDefaultLCID@kernel32.dll stdcall';
+   
+ //LCID GetSystemDefaultLCID(void);  
+
+function  GetSystemDefaultLCID: LCID;
+   external 'GetSystemDefaultLCID@kernel32.dll stdcall';
+   
+ //http://www.distribucon.com/2006/01/10/DelphiStrToDateTimeWithFormatSettings.aspx
+
+{@This allows you to use custom date/time settings within an application without changing the Windows options.}
+ 
+procedure LetFormatSettings(Sender: TObject);
+var
+  MySettings: TFormatSettings;
+  s: string;
+  d: TDateTime;
+  alc: LCID;
+begin
+  GetLocaleFormatSettings(GetUserDefaultLCID, MySettings);
+ // GetLocaleFormatSettings(GetSystemDefaultLCID, MySettings);
+ 
+  MySettings.DateSeparator := '-';
+  MySettings.TimeSeparator := ':';
+  MySettings.ShortDateFormat := 'dd-mmmm-yyyy';
+  MySettings.ShortTimeFormat := 'hh:nn:ss';
+
+  s := DateTimeToStr2(Now, MySettings);
+  ShowMessage(s);
+  //d := StrToDateTime2(s, MySettings);
+  d := VarToDateTime(s)
+  ShowMessage(DateTimeToStr2(d, MySettings));
+end;
+
+
+function GetNthDSTDOW(Y,M,DST_DOW,N:word):integer;
+{For Year "Y" and Month "M"  and DayOfWeek "DST_DOW", return the day of month
+     for "DST_DOW" number "N"}
+{If  N  is larger than the number of DST_DOW's in the month, return the day
+                                                           of the last one}
+{If Y, M, or N are otherwise invalid, return 0}
+var
+  dt:TDateTime;
+  NdayDom, maxdays:integer;
+begin
+  if TryEncodeDate(y,m,1,dt) and (n>0) then {get date of first of month}
+  begin
+    //writeln(datetimetostr(dt))
+    if n>5 then n:=5;
+    NdayDOM:=8+DST_DOW-DayOfTheWeek(dt);  {1st DST_DOW Day of Month}
+    result:=NdayDOM+7*(n-1);
+    maxdays:=JdaysinMonth(dt);
+    If result>maxdays  then
+    repeat dec1(Result,7) until Result<=Maxdays;
+  end
+  else result:=0;
+end;
+
+type 
+ _TIME_ZONE_INFORMATION2 = record
+    Bias: Longint;
+    StandardName: array[0..31] of CHAR;
+    StandardDate: TSystemTime;
+    StandardBias: Longint;
+    DaylightName: array[0..31] of CHAR;
+    DaylightDate: TSystemTime;
+    DaylightBias: Longint;
+  end;
+  
+  TTimezoneinformation2 = _TIME_ZONE_INFORMATION2;
+  
+  { TXRTLTimeZones = class
+  private
+    FItems: TObjectList;
+    function   GetItem(Index: Integer): TXRTLTimeZone;
+    function   Add: TXRTLTimeZone;
+    function   GetCount: Integer;
+    function   GetCurrent: TXRTLTimeZone;
+    procedure  Sort;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property   Item[Index: Integer]: TXRTLTimeZone read GetItem;
+    property   Count: Integer read GetCount;
+    property   Current: TXRTLTimeZone read GetCurrent;
+    function   IndexOf(Display: string): Integer;
+    procedure  Refresh;
+  end; }
+
+
+const
+  SKEY_NT = '\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones\';
+  SKEY_9X = '\SOFTWARE\Microsoft\Windows\CurrentVersion\Time Zones\';
+
+
+  procedure TXRTLTimeZones_Refresh;
+var
+  osV: TOSVERSIONINFO;
+  TimeZonesKey: string;
+  KeyNames: TStringList;
+  Registry: TRegistry;
+  i: Integer;
+  FItems: TStringlist; //TObjectlist;
+  RTZI: REGTIMEZONEINFORMATION;
+  aTimeZone: TXRTLTimeZone;
+  FIndex: DWORD;
+begin
+  //FItems.Clear;
+
+  osV.dwOSVersionInfoSize:= SizeOf(osV);
+  GetVersionEx(osV);
+  if osV.dwPlatformId = VER_PLATFORM_WIN32_NT then
+    TimeZonesKey:= SKEY_NT
+  else
+    TimeZonesKey:= SKEY_9X;
+
+  Registry:= nil;
+  KeyNames:= nil;
+  try
+    Registry:= TRegistry.Create;
+
+    Registry.RootKey:= HKEY_LOCAL_MACHINE;
+    if not Registry.OpenKeyReadOnly(TimeZonesKey) then Exit;
+
+    KeyNames:= TStringList.Create;
+    Registry.GetKeyNames(KeyNames);
+
+    for i:= 0 to KeyNames.Count - 1 do begin
+      if not Registry.OpenKeyReadOnly(TimeZonesKey + KeyNames[i]) then
+        Continue;
+      with fitems do begin
+        //add(Registry.ReadBinaryData('TZI', RTZI, SizeOf(RTZI)));
+        atimezone.Display:= Registry.ReadString('Display');
+        atimezone.Daylight:= Registry.ReadString('Dlt');
+        atimezone.Standard:= Registry.ReadString('Std');
+        if TimeZonesKey = SKEY_NT then
+          FIndex:= Registry.ReadInteger('Index')
+        else
+          FIndex:= Count - 1;
+      end;
+    end;
+
+    fitems.Sort;
+
+  finally
+    Registry.CloseKey;
+    Registry.Free;
+    Registry:= NIL;
+    KeyNames.Free;
+    KeyNames:= NIL;
+    //FreeAndNil(Registry);
+    //FreeAndNil(KeyNames);
+  end;
+end;
+
+
+procedure TimeZone_FormActivate(Sender: TObject);
+var
+  timezoneinfo: TTimezoneinformation2;
+  timezoneinfo2: _TIME_ZONE_INFORMATION;
+  r:word;
+  t:TDatetime;
+  y,m,d,d2:word;
+  tzo: TXRTLTimeZones;
+  aTimeZone: TXRTLTimeZone;
+  tzi: REGTIMEZONEINFORMATION;
+begin
+  //memo1.clear;
+  //SetTimeZoneInformation
+  //setlength(timezoneinfo2.StandardName,40)
+  //tzo:= XRTLGetTimeZones;   -->Failed to get data for 'Index'.
+  writeln('string Bias '+itoa(RFCTimeZoneToGMTBias('W. Europe Standard Time')))
+  writeln('string Bias '+itoa(RFCTimeZoneToGMTBias('UT')))
+  {function  GMTBias: Integer;
+  function  GMTTimeToLocalTime(const D: TDateTime): TDateTime;
+  function  LocalTimeToGMTTime(const D: TDateTime): TDateTime;
+  function  NowAsGMTTime: TDateTime;
+  }
+  
+   writeln('time zone bias: '+itoa(GMTBias))
+   writeln(datetimetoStr(GMTTimeToLocalTime(now)));
+   writeln(datetimetostr(LocalTimeToGMTTime(now)));
+   writeln(datetimetostr(NowAsGMTTime));
+   writeln('');
+ 
+  atimezone:= TXRTLTimeZone.create;
+  writeln(datetimetostr(XRTLDateTimeToTimeZoneTime(now,atimezone)))
+  writeln('time zone display: '+atimezone.display)
+  writeln('time zone daylight: '+atimezone.daylight)
+  writeln('time zone standard: '+atimezone.standard)
+   tzi:= atimezone.RTZI;
+  writeln('time zone bias: '+itoa(tzi.bias))
+  //writeln('time zone bias: '+datetimetostr(SystemTimeToDateTime((tzi.standarddate))))
+  atimezone.Free;
+
+  decodedate(now,y,m,d);{need year later on just for formatting convenience}
+  r:=GetTimezoneInformation(timezoneinfo2);
+  if r>=0 then
+  with timezoneinfo2 do begin
+    daylightdate.wYear:=y;
+    writeln('SYSTEM TIME ZONE INFORMATION');
+    writeln('time zone: '+timezone)
+    writeln('time zone bias: '+itoa(iptimezonebias))
+    writeln('time zone bias time: '+timetoStr(timezonebias))
+ 
+    writeln('');
+
+    writeln('Current Bias from local to UTC: '+inttostr(bias)+' minutes');
+    writeln('Current Standard Bias to UTC: '+inttostr(standardbias)+' minutes');
+    writeln('Current Dailight Bias to UTC: '+inttostr(daylightbias)+' minutes');
+  
+    writeln('        (UTC = Local time + Bias)');
+    //setarraylength(timezoneinfo2.StandardName,40)
+  
+    //writeln('Time zone name: '+ standardname[0]);
+    
+    writeln(itoa(Year(now)))
+    writeln(itoa(month(now)))
+
+    with daylightdate do {dayLight saving start date}
+    begin
+    {Field wDayOfWeek field contains weekday of start (0=Sunday)}
+    {Day of month Field speciies which occurrence of the day of week is the start day}
+    {getNthDSTDOW function takes this information and converts it into day of month}
+      writeln('wyear set '+itoa(wyear))
+    
+      writeln('wday '+itoa(wday))
+      d2:=getNthDSTDOW(y,wmonth,wDayOfWeek,wDay);
+      writeln('d2 '+itoa(d2))
+      t:=encodedate(y,2,4)+encodetime(2,3,4,1);
+   
+      //t:=encodedate(y,wmonth,d2)+encodetime(whour,wminute,wsecond,1);
+    end;
+    writeln(formatdatetime('"Daylight savings starts: " mmmm dd hh:nn am/pm',t));
+
+    with standarddate do {daylight saving end date}
+    begin {same computation as for start time}
+      d2:=getNthDSTDOW(y,wmonth,wDayOfWeek,wday);
+      try
+        t:=encodedate(y,wmonth,d2)+encodetime(whour,wminute,wsecond,wmilliseconds);
+      except
+        writeln('Exception: Invalid argument to date encode.');
+        //raiselastexception;
+      end;   
+    end;
+    writeln(formatdatetime('"Daylight savings ends: " mmmm dd hh:nn am/pm',t));
+
+    //writeln('Daylight savings name: '+Daylightname);
+    writeln('Daylight savings bias: '+inttostr(Daylightbias)+' minutes');
+    writeln('');
+    case r of
+      time_zone_Id_unknown: writeln('Current daylight status is unknown');
+      time_zone_id_standard:writeln('We are not currently in daylight savings time period!');
+      time_zone_id_daylight: writeln('We are currently in the daylight savings time period');
+    end;
+  end
+  else writeln('Time zone information retrieval failed');
+end;
+
+
+{SYSTEM TIME ZONE INFORMATION
+
+Current Bias from local to UTC: -60 minutes
+        (UTC = Local time + Bias)
+Time zone name: W. Europe Standard Time
+Daylight savings starts:  March 29 02:00 am
+Daylight savings ends:  October 25 03:00 am
+Daylight savings name: W. Europe Summer Time
+Daylight savings bias: -60 minutes
+
+We are not currently in the daylight savings time period
+}
+
+procedure TestTimeZone_Button1Click(Sender: TObject);
+var
+  y,m,dst_dow,N,d2:word;
+  t:TDatetime;
+begin
+  y:=2015;
+  for m:=1 to 12 do
+  for DST_DOW := 0 to 6 do
+  for N:=1 to 5 do begin
+    d2:=GetNthDSTDOW(Y,M,DST_DOW,N);
+    begin
+      t:=encodedate(y,M,d2);
+      writeln(Format ('Year:%d, Month:%d, DOW:%d, #:%d',[y,m,DST_DOW,N])
+                +formatdatetime('mmmm dd ',t));
+    end;
+  end;
+end;
+
+
+function EncodeString2(const Input: string): string;
+var
+  InStr, OutStr: TStringStream;
+begin
+  InStr:= TStringStream.Create(Input);
+  try
+    OutStr:= TStringStream.Create('');
+    try
+      EncodeStream(InStr, OutStr);
+      Result:= OutStr.DataString;
+    finally
+      OutStr.Free;
+    end;
+  finally
+    InStr.Free;
+  end;
+end;
+
+
+
+type
+  THandleTagProc2 = function(const TagString: string; TagParams: TStrings): string;
+  THandledTagProc3 = function(const TagString: string; TagParams: TStrings; var ReplaceString: string): Boolean;
+
+
+function ContentFromStream(AStream: TStream;
+  AStripParamQuotes: Boolean; AHandleTag: THandleTagProc; AHandledTag:THandledTagProc):string;
+var                                                       
+  Parser: TCopyParser;
+  OutStream: TStringStream;
+  ParamStr, ReplaceStr, TokenStr, SaveParamStr: string;
+  ParamList: TStringList;
+  //atrans: TIndyTCPClientTransport;
+begin
+  //EncodeStream
+  OutStream:= TStringStream.Create('');
+  try
+    Parser:= TCopyParser.Create(AStream, OutStream);
+    with Parser do
+    try
+      while True do begin
+        //if Token = '<' then Break;
+       // while not (Token in [toEof, '<']) do begin
+        while Not ((Token = toEof) or (token = '<')) do begin
+          CopyTokenToOutput;
+          SkipToken(True);
+        end; 
+        if Token = toEOF then Break;
+        if Token = '<' then begin
+          if SkipToken(False) = '#' then begin
+            SkipToken(False);
+            TokenStr:= TokenString;
+            ParamStr:= TrimLeft(TrimRight(SkipToToken('>')));
+            ParamList:= TStringList.Create;
+            try
+              //if Assigned(TObject(AHandledTag)) then
+              if AHandledTag <> NIL then begin
+                SaveParamStr:= ParamStr;  // ExtractHTTPFields modifies ParamStr
+                if Length(SaveParamStr) > 0 then
+                  SaveParamStr := ' ' + SaveParamStr;
+                //UniqueString(SaveParamStr);
+              end;
+              ExtractHTTPFields([' '],[' '], PChar(ParamStr), ParamList, AStripParamQuotes);
+              //if Assigned(AHandledTag) then
+              if AHandledTag <> NIL then begin
+                if not AHandledTag(TokenStr, ParamList, ReplaceStr) then
+                  ReplaceStr := '<#' + TokenStr + SaveParamStr + '>'
+              end
+              //else if Assigned(AHandleTag) then
+               else if AHandleTag <> NIL then
+                ReplaceStr := AHandleTag(TokenStr, ParamList)
+              else
+                { Replace tag with empty string}
+                ReplaceStr:= '';
+              OutStream.WriteString(ReplaceStr);
+            finally
+              ParamList.Free;
+            end;
+            SkipToken(True);
+          end else begin
+            OutStream.WriteString('<');
+            CopyTokenToOutput;
+            SkipToken(True);
+          end;
+        end;
+      end;
+    finally
+      Parser.Free;
+    end;
+    Result:= OutStream.DataString;
+  finally
+    OutStream.Free;
+  end;
+end;
+
+function ContentFromString(const AValue: string;
+  AStripParamQuotes: Boolean; AHandleTag: THandleTagProc; AHandledTag: THandledTagProc): string;
+var
+  InStream: TStream;
+begin
+  InStream := TStringStream.Create(AValue);
+  try
+    Result := ContentFromStream(InStream, AStripParamQuotes, AHandleTag, AHandledTag);
+  finally
+    InStream.Free;
+  end;
+end;
+
+function GetParentProcessID(const PID: DWORD): DWORD;
+var
+  Snapshot: THandle;    // snapshot of process
+  PE: {TlHelp32.}TProcessEntry32; // structure holding info about a process
+  EndOfList: Boolean;           // indicates end of process list reached
+begin
+  // Assume failure
+  Result := DWORD(-1);
+  // Get snapshot containing process list
+  Snapshot := {TlHelp32.}CreateToolHelp32SnapShot(TH32CS_SNAPPROCESS, 0);
+  if Snapshot = THandle(-1) then
+    Exit;
+  try
+    // Look up process in process list
+    PE.dwSize := SizeOf(PE);
+    EndOfList := not {TlHelp32.}Process32First(Snapshot, PE);
+    while not EndOfList do begin
+      if PE.th32ProcessID = PID then begin
+        // Found process: record parent process ID
+        Result := PE.th32ParentProcessID;
+        Break;
+      end;
+      EndOfList := not {TlHelp32.}Process32Next(Snapshot, PE);
+    end;
+  finally
+    // Free the snapshot
+    {Windows.}CloseHandle(Snapshot);
+  end;
+end;
+
+function GetProcessorName: string;
+var
+  Reg: TRegistry;
+begin
+  Result := '';
+  Reg := {Registry.}TRegistry.Create1(KEY_READ);
+  try
+    Reg.RootKey:= HKEY_LOCAL_MACHINE;
+    if not Reg.OpenKey(
+      'HARDWARE\DESCRIPTION\System\CentralProcessor\0\', False
+    ) then
+      Exit;
+    Result := Reg.ReadString('ProcessorNameString');
+    Reg.CloseKey;
+  finally
+    Reg.Free;
+  end;
+end;
+
+function GetWindowThreadID(const Wnd: HWND): DWORD;
+var
+  GetWindowThreadProcessId: function(Wnd: HWND; // API fn prototype
+    lpdwProcessId: DWORD): DWORD; //&&stdcall;
+begin
+  // We load the API function explicitly to make the routine compatible with as
+  // many compilers as possible: the definition of GetWindowThreadProcessId in
+  // Delphi and FreePascal Windows units varies across compilers
+  //GetWindowThreadProcessId := GetProcAddress(
+    //GetModuleHandle('user32.dll'), pchar('GetWindowThreadProcessId')
+  //);
+  {if Assigned(GetWindowThreadProcessId) and Windows.IsWindow(Wnd) then
+    Result := GetWindowThreadProcessId(Wnd, nil)
+  else
+    Result := Windows.DWORD(-1);    }
+end;
+
+function ProgramFileSpec: string;
+begin
+  Result := ParamStr(0);
+end;
+
+const
+  acOneMB = 1024 * 1024;  // a megabyte in bytes
+
+function BytesToMB(const Bytes: Int64): Extended;
+//const
+  //cOneMB = 1024 * 1024;  // a megabyte in bytes
+begin
+  Result := Bytes / acOneMB;
+end;
+
+function BytesToMBStr(const Bytes: Int64; const DecimalPlaces: Byte;
+  const SeparateThousands: Boolean): string;
+begin
+  Result := FloatToFixed(BytesToMB(Bytes), DecimalPlaces, SeparateThousands);
+end;
+
+function CompilerVer: Double;
+begin
+  {$UNDEF HAVE_RESULT}
+  {$IFNDEF FPC}         // Delphi
+    {$IFDEF VER90}
+      {$DEFINE HAVE_RESULT}
+      Result := 9.0;    // Delphi 2
+    {$ENDIF}
+    {$IFDEF VER100}
+      {$DEFINE HAVE_RESULT}
+      Result := 10.0;   // Delphi 3
+    {$ENDIF}
+    {$IFDEF VER120}
+      {$DEFINE HAVE_RESULT}
+      Result := 12.0;   // Delphi 4
+    {$ENDIF}
+    {$IFDEF VER130}
+      {$DEFINE HAVE_RESULT}
+      Result := 13.0;   // Delphi 5
+    {$ENDIF}
+    {$IFDEF CONDITIONALEXPRESSIONS}
+      //{$IF Declared(CompilerVersion)}
+        {$DEFINE HAVE_RESULT}
+        Result := CompilerVersion;  // Delphi 6 and later
+      //{$IFEND}
+    {$ENDIF}
+  {$ELSE}               // Free Pascal
+    {$IFDEF VER1}
+      {$DEFINE HAVE_RESULT}
+      Result := 1.0;   // FPC v1.x
+    {$ENDIF}
+    {$IFDEF VER2}
+      {$DEFINE HAVE_RESULT}
+      Result := 2.0;   // FPC v2.x
+    {$ENDIF}
+  {$ENDIF}
+  {$IFNDEF HAVE_RESULT}
+    Result := 0.0;
+  {$ENDIF}
+  {$UNDEF HAVE_RESULT}
+end;
+
+function EnglishColorName(AColor: TColor;
+  const AConvertSysColors: Boolean {= False}): string;
+begin
+  if AConvertSysColors then
+    AColor := ColorToRGB(AColor);
+  Result := {Graphics.}ColorToString(AColor);
+  if AnsiStartsText('cl', Result) then
+    Delete(Result, 1, 2);
+end;
+
+function FractionToStr(Num, Denom: Integer): string;
+begin
+  Result := {SysUtils.}Format('%d/%d', [Num, Denom]);
+end;
+
+procedure FreeStringsObjects(const Strings: TStrings);
+var
+  Idx: Integer;
+  Temp: TObject;
+begin
+  for Idx := 0 to Pred(Strings.Count) do begin
+    Temp := Strings.Objects[Idx];
+    Strings.Objects[Idx] := nil;
+    Temp.Free;
+  end;
+end;
+
+procedure NormaliseFractionSign(var Num, Denom: Integer);
+begin
+  if Denom < 0 then
+  begin
+    Num := -Num;
+    Denom := -Denom;
+  end;
+end;
+
+function FractionToStrEx(Num, Denom: Integer; Normalise: Boolean {= False}): string;
+begin
+  if Normalise then
+    NormaliseFractionSign(Num, Denom);
+  Result := {SysUtils.}Format('%d/%d', [Num, Denom]);
+end;
+
+type TLongRec = record
+        Hi: integer;
+        aLo: word;
+       Bytes: array [0..3] of Byte;
+end;
+
+function TryStrToWord(const S: string; out W: Word): Boolean;
+var
+  aValue: integer; // receives integer value of conversion
+  along: TLongRec; 
+begin
+  Result := (TryStrToInt(S, aValue))
+    and ({SysUtils.}along.Hi = 0);
+  if Result then
+    W := along.aLo;
+end;
+
+function FocusedControl: TWinControl;
+begin
+  Result := FindControl({Windows.}GetFocus);
+end;
+
+const
+  TVS_NOTOOLTIPS = $0080;
+          
+  procedure DisableTreeViewToolTips(const TV: {ComCtrls.}TTreeView);
+begin
+  {Windows.}SetWindowLong(
+    TV.Handle,
+    GWL_STYLE,
+    GetWindowLong(TV.Handle, GWL_STYLE)
+      or {CommCtrl.}TVS_NOTOOLTIPS
+  );
+end;
+
+function WindowScrollbars(const Wnd: HWND): TScrollStyle;
+var
+  StyleFlags: DWORD;
+begin
+  StyleFlags:= GetWindowLong(Wnd, GWL_STYLE) and
+    (WS_VSCROLL or WS_HSCROLL);
+  case StyleFlags of
+    0: Result := {StdCtrls.}ssNone;
+    WS_VSCROLL: Result := ssVertical;
+    WS_HSCROLL: Result := ssHorizontal;
+    else Result := {StdCtrls.}ssBoth;
+  end;
+end;
+
+function WinControlScrollbars(const Ctrl: TWinControl): {StdCtrls.}TScrollStyle;
+begin
+  Result := WindowScrollbars(Ctrl.Handle);
+end;
+
+Function HScrollbarHeight(const Ctrl: TWinControl): Integer;
+begin
+  if WinControlScrollbars(Ctrl)
+    in [ssHorizontal, ssBoth] then
+    Result := GetSystemMetrics(SM_CXHSCROLL)
+  else
+    Result := 0;
+end;
+
+function SubLangID(LangID: Word): Word;
+begin
+  Result:= LangID shr 10;
+end;
+
+procedure ClearRecentDocs;
+begin
+  //{ShlObj.}SHAddToRecentDocs(ShlObj.SHARD_PATH, nil);
+end;
+
+function IsShellLink(const LinkFileName: string): Boolean;
+//var ishell: IShellLink;
+begin
+  // Ensure COM is initialized
+  {ActiveX.}CoInitialize(nil);
+  try
+    // Valid shell link if we can load it
+    //Result := Assigned(LoadShellLink(LinkFileName));
+  finally
+    // Finalize COM
+    {ActiveX.}CoUninitialize(nil);
+  end;
+end;
+
+function TaskbarHandle2: THandle;
+begin
+  Result := FindWindow('Shell_TrayWnd', 'nil');
+end;
+
+function TrayHandle2: THandle;
+begin
+  Result := FindWindowEx(TaskbarHandle2, 0, 'TrayNotifyWnd', 'nil');
+end;
+
+function IsRemoteSession: Boolean;
+//const
+  //SM_REMOTESESSION = $1000; // value to pass to GetSystemMetrics
+begin
+  Result := GetSystemMetrics(SM_REMOTESESSION) <> 0;
+end;
+
+function IsTopLevelWindow(const Wnd: HWND): Boolean;
+begin
+  //Result := IsWindow(Wnd) and (GetParent(Wnd) = 0);
+end;
+
+function GetTopLevelWindow(const Wnd: HWND): HWND;
+begin
+  if IsWindow(Wnd) then
+  begin
+    Result := Wnd;
+    while not IsTopLevelWindow(Result) and (Result <> 0) do
+      Result := GetParent(Result);
+  end
+  else
+    Result := 0;
+end;
+
+function MemoCursorPos(const Memo: {StdCtrls.}TCustomMemo): TPoint;
+var
+  Row, Col: Integer;  // row and column containing cursor
+begin
+  Row := SendMessage(
+    Memo.Handle, EM_LINEFROMCHAR, Memo.SelStart, 0
+  );
+  Col := Memo.SelStart - SendMessage(
+    Memo.Handle, EM_LINEINDEX, Row, 0
+  );
+  Result.X := Col;
+  Result.Y := Row;
+end;
+
+const
+  cWdwCurrentVer = '\Software\Microsoft\Windows\CurrentVersion';
+
+function GetCurrentVersionRegStr2(const ValName: string): string;
+begin
+  Result := GetRegistryString(
+    HKEY_LOCAL_MACHINE,
+    cWdwCurrentVer,
+    ValName
+  );
+end;
+
+function ProgramFilesFolder2: string;
+begin
+  Result := GetCurrentVersionRegStr2('ProgramFilesDir');
+end;
+
+function PadRight2(const AString: string; const AChar: Char;
+  const ALen: Integer): string;
+var
+  PadLength: Integer; // number of padding characters required
+begin
+  Result:= AString;
+  PadLength:= ALen - Length(AString);
+  if PadLength < 1 then
+    Exit;
+  Result:= StringOfChar(AChar, PadLength) + AString;
+end;
+
+function PadRight(const AString: string; const AChar: Char;
+  const ALen: Integer): string;
+var
+  PadLength: Integer; // number of padding characters required
+begin
+  Result := AString;
+  PadLength := ALen - Length(AString);
+  if PadLength < 1 then
+    Exit;
+  Result := StringOfChar(AChar, PadLength) + AString;
+end;
+
+function IntToOctal(Value: Integer; const Digits: Byte): string;
+var
+  // Octal digit characters
+  cOctalDigits: array[$0..$7] of Char; // = '01234567';
+begin
+  Result := '';
+  for it:= $0 to $7 do cOctalDigits[it]:= inttochar(it); 
+  while Value <> 0 do begin
+    Result := cOctalDigits[Value and 7] + Result;
+    Value := Value shr 3;
+  end;
+  Result := PadRight(Result, '0', Digits);
+end;
+
+function ShowFindFilesDlg(const Folder: string): Boolean;
+begin
+//Function S_ShellExecute( aFilename : string; aParameters : string; aCommand : TS_ShellExecuteCmd) : string
+  Result:= {mXCindyShellAPI.}cyShellExecute(
+    'find', PChar(Folder), '', '', {Windows.}SW_SHOW
+  ) > 32;
+  //Result:= {mXShellAPI.}ShellExecute3(
+    //'find', Folder, {Windows.}SW_SHOW) <> '';
+end;
+
+Function OpenProcess2(dwDesiredAccess:DWORD; bInheritHandle:BOOL;
+                           dwProcessId:DWORD):THandle;
+     External  'OpenProcess@kernel32.dll stdcall';
+
+  Function GetProcessMemoryInfo(Process: THandle; var MemoryCounters:TProcessMemoryCounters;
+                                    cb: DWORD): BOOL; //stdcall;; 
+     External 'GetProcessMemoryInfo@psapi.dll stdcall';
+  
+ 
+ function ProcessMemoryUsage(ProcessID : DWORD): DWORD;
+var ProcessHandle : THandle;
+    MemCounters   : TProcessMemoryCounters;
+begin
+  Result:= 0;
+  //PROCESS_QUERY_INFORMATION Required to retrieve certain information about process, such as its token, exit code, and priority class   - 0x0400
+  //PROCESS_VM_READ Required to read memory in a process using ReadProcessMemory.
+  ProcessHandle:= OpenProcess2(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ,
+                               false, ProcessID);
+  writeln('Process Handle inside: '+inttostr(ProcessHandle));
+  try
+    if GetProcessMemoryInfo(ProcessHandle,
+                            MemCounters, sizeof(MemCounters))
+    then Result:= MemCounters.WorkingSetSize;
+  finally
+    CloseHandle(ProcessHandle);
+  end;
+end;
+
+
+ var 
+  myfile: TStringList;
+  mystr, httpstr: string; 
+  af: single;
+  ad: double;
+  ae, float: extended;
+  WFormatoBR: TFormatSettings;
+  FS: TFormatSettings;
+  //strResult, strFormat: TStringBuilder;
+  Parser: TCopyParser;
+    ProcessHandle : THandle;
+    MemCounts   : TProcessMemoryCounters;
+    ProcessID : DWORD;
+  
+//main app
+begin
+  //FS := TFormatSettings.Create('en-US');
+  //myfile.loadFromFile('K:\GENERAL\SONARQube51\cs-fxcop-minimum.xml')
+  
+  if fileExists(exepath+'java-checkstyle_min3.txt')
+    then begin
+     myfile:= TStringList.create;
+     myfile.loadFromFile('java-checkstyle_min3.txt');
+ 
+   //memo2.text:= myfile.text;
+   //SearchAndReplace(myfile, '</rule>', '</endrule>'+CRLF);
+   //SearchAndReplace(myfile, '</endrule>', CRLF);
+  
+   //SearchAndReplace(myfile, '<rule><repositoryKey>checkstyle</repositoryKey><key>','');
+
+    SearchAndReplace(myfile, '<parameters><parameter><key>','');
+  
+   myFile.savetoFile('C:\maXbox\maxbox3\work2015\SONAR_2015\java-checkstyle_min4_out.txt')
+     myfile.Free;
+   end;
+//  opendoc('K:\GENERAL\SONARQube51\java-checkstyle_min4_out.txt')
+  
+  //mystr:= 'this is the first line' +#13#10+ 'this is a second line one'
+  //if pos(#13#10, mystr) > 0 then showmessage(' CRLF found')
+  //Assign2(mystr,'assign_file_test_2.txt'); 
+  //if (pos(#$D#$A, memo2.lines[2]) > 0) then showmessage(' HEX CRLFfound')
+   //W(Th)= P*t >J>Ws
+   writeln('watt man: '+maxcalcS('8000*1000/(24*3600)'));
+   writeln('code coverage proc domain module: '+maxcalcS('(120/134)*100'));
+
+   if fileExists(exepath+'java-checkstyle_min3.txt') then begin
+ 
+    myfile:= TStringList.create;
+  //myfile.loadFromFile('K:\GENERAL\SONARQube51\cs-fxcop-minimum.xml')
+    myfile.loadFromFile('C:\maXbox\maxbox3\work2015\SONAR_2015\java-checkstyle_min3.txt')
+
+   for it:= 0 to myfile.count-1 do 
+      myfile[it]:= inttostr(it)+' '+myfile[it];
+   Writeln(ReplaceRegExpr ('<[^>]*>',
+                          myfile.text,' ', True))
+    myfile.Free;
+  end;
+  
+  //PackageNameCheck 
+   
+   Writeln('JAVA PackageNameCheck: '+ReplaceRegExpr('^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$',
+                          'abf.packageX1_fhgh.fkfk45kk.last',' ', True))
+ 
+    writeln(botostr(packageNameChecker('abf.packageX1_fhgh.fkfk45kk.last')))
+   
+   Writeln('JAVA MemberNameCheck: '+ReplaceRegExpr('^[a-z][a-zA-Z0-9]*$',
+                          'abfpackageX1Cfhgh',' ', True))
+    writeln(botostr(memberNameChecker('abfpackagememberX1Cfhgh')))
+    
+    writeln(botostr(ConstantNameCheck('BETTERWEATHER_MAP_GAP')))
+    
+   //writeln(botostr(ExecRegExpr('^[A-Z][A-Z0-9]*(_[A-Z0-9]+)+','RETT_aGHJ33')))
+ 
+    //^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*
+
+   Writeln('JAVA LocalFinalVarNameCheck: '+ReplaceRegExpr('^[a-z][a-zA-Z0-9]*$',
+                          'abflocalFinalX1C',' ', True))
+    writeln(botostr(localFinalVariableNameCheck('abflocalFinalX1C')))
+    
+   if ExecRegExpr(ipregex, '192.168.12.127') then writeln('ip true do');  
+    
+   if ExecRegExpr(dateintervalregex2, '17.12.2015') then writeln('date true do');  
+    
+   //af:= 0,100000001490116119384765625;
+  //ad:= 0.100000001490116119384765625;
+  //ae:= 0.100000001490116119384765625;
+  
+  WFormatoBR.DecimalSeparator:= ',';
+  WFormatoBR.ThousandSeparator:= '''';
+  //System.SysUtils.FormatSettings := WFormatoBR;
+  //FormatSettings := WFormatoBR;
+  setDecimalSeparator(',')
+  sr:= '3,345';
+  //writeln(floattostr(af)) 
+  writeln(floattostr(strtofloat(sr))) 
+  setDecimalSeparator('.')
+  sr:= '3.345';
+  //writeln(floattostr(af)) 
+  writeln(floattostr(strtofloat(sr))) 
+  setDecimalSeparator('.')
+  //ThousandSeparator
+  sr:= '3,345';
+  //writeln(floattostr(af)) 
+  writeln(floattostr(strtofloat2(sr,WFormatoBR))) 
+  
+  writeln('ThousandSeparator: '+ThousandSeparator)
+  sr:= '3345';
+  //writeln(floattostr(af)) 
+  writeln(inttostr(strtointeger(sr)))
+  writeln(inttostr(CurrencyDecimals)+ ' '+itoa(ovFormatSettings.currencydecimals));
+  
+  //LetFormatSettings(self)
+  
+  writeln(longtimeformat)
+  writeln(internationaldate(true))
+  writeln(internationaltime(true))
+  
+  //ovFormatSettings.currencydecimals:= 4;  
+  (*af:= 0.100000001490116119384765625;
+  ad:= 0.100000001490116119384765625;
+  ae:= 0.100000001490116119384765625;
+  
+  writeln(floattostr(af))
+  PrintF('%.18f ',[af])
+  writeln(floattostr(ad))
+  PrintF('%.18f ',[ad])
+
+  writeln(floattostr(ae))
+  PrintF('%.18f ',[ae])
+  writeln(FormatFloat('0.######',ae))
+  writeln('0.0000000E+00 : '+FormatFloat('0.0000000E+00', ae));
+  writeln('Using 8,4 = '+FloatToStrF(ae, ffExponent, 8, 4));
+  writeln('Using 18,4 = '+FloatToStrF(ae, ffExponent, 18, 4));
+
+   // Include freeform text
+  writeln('"Value = "0.0 : '+FormatFloat('"Value = "0.0', ae));
+  writeln('');
+  float := 1234.567;
+  writeln('0.#### : '+FormatFloat('0.####', float));
+  writeln('0.0000 : '+FormatFloat('0.0000', float));
+  *)
+      with maxform1.memo2 do begin
+        color:= clblack;
+        font.color:= clweborange;
+        font.size:= 16;
+      end;  
+      
+       //SimulateKeystroke(76,[ssCTRL])    //ASCII L
+      
+       SimulateKeystroke(70,[ssCTRL])    //ASCII F
+       SimulateKeystroke(65,[])
+       SimulateKeystroke(66,[])
+       SimulateKeystroke(67,[])
+       //SimulateKeystroke(13,[])    RETURN
+       sleep(2000)
+       keybd_event(VK_ESCAPE, Mapvirtualkey( VK_ESCAPE, 0 ), 0, 0);
+       keybd_event(VK_ESCAPE, Mapvirtualkey( VK_ESCAPE, 0 ), KEYEVENTF_KEYUP, 0);
+       {maxcalcF('2^3.7000000')
+       maxcalcF('2^4.7000000')
+       maxcalcF('2^5.7000000')
+       maxcalcF('2^6.7000000')  }
+       
+      //writeln(Sha1('C:\maXbox\maxbox3\work2015\SONAR_2015\SONAR_Quality_Gate_Schlussbericht1_2.pdf'))
+      
+      //GetWebTest;
+      
+      sr:= '3.345';
+  //writeln(floattostr(af)) 
+  writeln(floattostr(strtofloat(sr)))
+   
+  TimeZone_FormActivate(self)
+  
+  //TestTimeZone_Button1Click(self)
+  
+ {repeat 
+    //for it:= 1 to n do 
+      inc(it)
+      writeln(inttostr(it));
+  until isKeypressed; 
+  //keypress in output window below (memo2)
+  }     
+  
+  //ContentFromString 
+  httpstr:= '<li> Preview to V4 <a href="http://www.softwareschule.ch/maxbox4.htm">maXbox4</a></li>';           
+    writeln('encodeString: '+encodeString(httpstr))
+    writeln('encodedecodeString: '+decodeString(encodeString(httpstr)))
+    writeln('encodeString: '+encodeString2(httpstr))
+    writeln('encodeString: '+mimeencodeString(httpstr))
+
+    writeln('encodeDecodeString: '+decodeString(encodeString(httpstr)))
+    writeln('encodeDecodeString: '+mimedecodeString(mimeencodeString(httpstr)))
+    writeln('encodeDecodeString: '+syndecodeString(synencodeString(httpstr)))
+    writeln('encodeDecodeString: '+decodeString1(encodeString1(httpstr)))
+    
+    writeln('ContentFromStringTest: '+ContentFromString(httpstr, true, Nil, Nil))
+     {CL.AddDelphiFunction('Function TestDes : boolean');
+     CL.AddDelphiFunction('Function Test3Des : boolean');
+     CL.AddDelphiFunction('Function TestAes : boolean');} 
+     writeln('GetParentProcessID: '+itoa(GetParentProcessID(GetProcessId)))  
+  writeln(bytetooctal(64)+' = '+IntToOctal(64,4))
+ // writeln('ShowFindFilesDlg: '+botostr(ShowFindFilesDlg(exepath+'examples')));
+ 
+  writeln(CommentLinesWithSlashes('this is a comment for a moment'))
+  writeln(UncommentLinesWithSlashes(CommentLinesWithSlashes('this is a comment for a moment')))
+        
+  // Function xmlComment( const Comment : UnicodeString) : UnicodeString
+        
+  writeln(xmlComment(' const Comment : UnicodeString'))
+  try
+    SelfTestcXMLFunctions;      
+  except
+    writeln(ExceptionToString(ExceptionType, ExceptionParam));
+  end;
+ writeln(xmlComment(' const Comment : UnicodeString'))
+ 
+   maxcalcF('400000078669 / 2000123')
+   
+   processid:= GetCurrentProcessID;
+   writeln('processId '+itoa(processId))
+  
+  ProcessHandle:= OpenProcess2(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ,
+                               false, ProcessID);
+  Writeln('Process Handle inside: '+inttostr(ProcessHandle));
+  try
+    if GetProcessMemoryInfo(ProcessHandle,
+                            MemCounts, sizeof(MemCounts))
+      then writeln('Working Set Mem KB: '+inttostr(MemCounts.WorkingSetSize div 1024));
+   if GetProcessMemoryInfo(ProcessHandle,
+                            MemCounts, sizeof(MemCounts))
+      then writeln('Working Set Peak: '+inttostr(MemCounts.PeakWorkingSetSize div 1024));
+  
+  finally
+    CloseHandle(ProcessHandle);
+  end;
+
+
+  //writeln('workset mem from dll '+inttostr(ProcessMemoryUsage(GetCurrentProcessID)));
+   
+          
+End.
+
+Doc:
+
+maXbox Starter 43 Work with Code Metrics ISO Standard 
+
+http://www.softwareschule.ch/download/maxbox_starter43.pdf
+
+http://www.softwareschule.ch/maxboxblog.htm
+
+http://www.tiobe.com/_userdata/files/TIOBEQualityIndicator_v3_8.pdf
+
+https://www.scribd.com/doc/314271404/maXbox-Starter-43-Work-with-Code-Metrics-ISO-Standard
+
+http://www.slideshare.net/maxkleiner1/maxbox-starter-43-work-with-code-metrics-iso-standard
+
+Today we step through optimize your code with metrics and some style guide conventions. You cannot improve what you don’t measure and what you don’t measure, you cannot prove. A tool can be great for code quality but also provides a mechanism for extending your functions and quality with checks and tests. 
+
+http://www.slideshare.net/maxkleiner1/maxbox-starter-43-work-with-code-metrics-iso-standard
+
+<iframe src="http://www.slideshare.net/maxkleiner1/slideshelf" width="615px" height="470px" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:none;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+
+//https://www.f-secure.com/v-descs/virus_w32_virut.shtml
+
+
+ref:
+#tech:perf: 0:0:2.245 threads: 15 192.168.56.1 09:01:40 4.2.2.98
+
+http://www.practicalarduino.com/projects/weather-station-receiver
+
+http://werosoft.net/Document/Show?documentFullQualifiedName=weroSoft.net\Contents\Products\Triton.content
+
+For learning content in the areas of software in general and software for controlling devices and systems, we provide support for the entire e-learning project. The support can be for the entire e-learning project or part of it. We support you in the following areas of the e-learning:
+
+    Development of a design
+    Creation of the scripts
+    Preparation of the material for the lessons
+    Video recordings of people and machines
+    Creation of screencasts
+    Post-processing of videos and screencasts
+    Creation of the actual lessons (editing)
+    Quality assurance
+    3D animations
+
+For e-learning projects, we work preferentially with the specialists from your development teams or, if required, with your own training experts.
+
+The created learning content can be made available at the weroSoft Academy in an individual protected area for you employees. The administration of this page can be performed by either you or us, or you can provide the learning content on your own website.
+
+For detailed information about the offer and prices, please contact us directly.
+
+https://github.com/practicalarduino/VirtualUsbKeyboard/blob/master/VirtualUsbKeyboard.pde
+
+ Extract from rule set explanation
+Therefore, the use of the equality (==) and inequality (!=) operators on float or double values is almost always an error. Instead the best course is to avoid floating point comparisons altogether. When that is not possible, you should consider using one of Java's float-handling Numbers such as BigDecimal which can properly handle floating point comparisons. A third option is to look not for equality but for whether the value is close enough. I.e. compare the absolute value of the difference between the stored value and the expected value against a margin of acceptable error. Note that this does not cover all cases (NaN and Infinity for instance).
+
+ref:
+.coding.EqualsHashCodeCheck</key><priority>CRITICAL</priority><parameters/>
+
+.coding.EqualsHashCodeCheckCRITICAL
+
+file result style - rule set
+
+45 (42+3) Checkstyle MaxMetrikJava.
+----------------------------------------
+
+ Maintainability 29 
+    Readability 25 
+    Understandability 4 
+ Changeability 2 
+    Data 1 
+    Logic 1 
+ Reliability 10 
+    Architecture 1
+    Data 1
+    Exception handling 1
+    Fault tolerance 1
+    Instruction 5
+    Logic 1 
+ Testability 1 
+    Unit level 1 
+ Uncharacterized 3 
+
+.blocks.AvoidNestedBlocksCheckMAJORallowInSwitchCase
+Allow nested blocks in case statements. Default is false.
+
+.blocks.LeftCurlyCheckMINORmaxLineLengthtokensoption
+Checks for the placement of left curly braces for code blocks. The policy to verify is specified using property option. 
+
+.blocks.NeedBracesCheckMINOR
+Checks for braces around code blocks. 
+
+.blocks.RightCurlyCheckMINORoption
+
+reliability
+.coding.EmptyStatementCheckMINOR
+Detects empty statements (standalone ';'). 
+
+reliability
+.coding.EqualsHashCodeCheckCRITICAL
+Checks that classes that override equals() also override hashCode(). 
+
+reliability
+.coding.IllegalCatchCheckMAJORillegalClassNamesjava.lang.Throwable
+Catching java.lang.Exception, java.lang.Error or java.lang.RuntimeException is almost never acceptable.
+
+reliability
+.coding.IllegalInstantiationCheckMAJORclasses
+Checks for illegal instantiations where a factory method is preferred. Depending on the project, for some classes it might be preferable to create instances through factory methods rather than calling the constructor. A simple example is the java.lang.Boolean class. In order to save memory and CPU cycles, it is preferable to use the predefined constants TRUE and FALSE. Constructor invocations should be replaced by calls to Boolean.valueOf(). Some extremely performance sensitive projects may require the use of factory methods for other classes as well, to enforce the usage of number caches or object pools
+.
+
+reliability
+.coding.InnerAssignmentCheckMAJOR
+
+.coding.MagicNumberCheckMINORignoreAnnotationfalseignoreNumberstokensignoreHashCodeMethodtrue
+
+reliability
+.coding.MissingSwitchDefaultCheckMAJOR
+ Checks for assignments in subexpressions, such as in String s = Integer.toString(i = 2);. 
+
+reliability
+.design.MutableExceptionCheckMAJORformat
+
+Ensures that exceptions (defined as any class name conforming to some regular expression) are immutable.Exceptions are meant to represent the application's state at which an error occurred.
+
+Making all fields final ensures that this state:
+
+    Will be fully defined at the same time the exception is instantiated.
+    Won't be updated or corrupted by some bogus error handler.
+
+This will enable developers to quickly understand what went wrong.
+
+The following code:
+
+public class MyException extends Exception {
+
+  private int status;                               // Non-Compliant
+
+  public MyException(String message) {
+    super(message);
+  }
+
+  public int getStatus() {
+    return status;
+  }
+  public void setStatus(int status) {
+    this.status = status;
+  }
+
+}
+
+should be refactored into:
+
+public class MyException extends Exception {
+
+  private final int status;                         // Compliant
+
+  public MyException(String message, int status) {
+    super(message);
+    this.status = status;
+  }
+
+  public int getStatus() {
+    return status;
+  }
+
+}
+ 
+reliability
+.imports.AvoidStarImportCheckMINORexcludesallowStaticMemberImportsfalseallowClassImportsfalse
+Check that finds import statements that use the * notation.
+
+reliability
+.imports.IllegalImportCheckMAJORillegalPkgs
+
+reliability
+.imports.RedundantImportCheckMINOR
+
+understandability
+.imports.UnusedImportsCheckINFOprocessJavadoctrue
+
+understandability
+.javadoc.JavadocMethodCheckMAJORallowMissingPropertyJavadocallowUndeclaredRTEtruescopeallowMissingJavadocexcludeScopeallowThrowsTagsForSubclassestrueallowMissingThrowsTagstruesuppressLoadErrorstruetokensallowMissingReturnTagtrueallowMissingParamTagstrue
+
+understandability
+.javadoc.JavadocStyleCheckMAJORcheckFirstSentencescopeexcludeScopetokenscheckEmptyJavadoccheckHtml
+
+understandability
+.javadoc.JavadocTypeCheckMAJORallowUnknownTagsauthorFormatscopeexcludeScopeversionFormattokensallowMissingParamTags
+
+.metrics.CyclomaticComplexityCheckMAJORmax
+Checks cyclomatic complexity of methods against a specified limit. The complexity is measured by the number of if, while, do, for, ?:, catch, switch, case statements, and operators && and || (plus one) in the body of a constructor, method, static initializer, or instance initializer. It is a measure of the minimum number of possible paths through the source and therefore the number of required tests. Generally 1-4 is considered good, 5-7 ok, 8-10 consider re-factoring, and 11+ re-factor now ! 
+
+.modifier.ModifierOrderCheckMINOR
+
+.modifier.RedundantModifierCheckMINOR
+
+.naming.ConstantNameCheckMINORapplyToPackagetrueformat^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$applyToPublictrueapplyToProtectedtrueapplyToPrivatetrue
+
+.naming.LocalFinalVariableNameCheckMAJORformat^[a-z][a-zA-Z0-9]*$
+
+.naming.LocalVariableNameCheckMAJORformat^[a-z][a-zA-Z0-9]*$tokens
+
+.naming.MemberNameCheckMAJORapplyToPackagetrueformat^[a-z][a-zA-Z0-9]*$applyToPublictrueapplyToProtectedtrueapplyToPrivatetrue
+
+.naming.MethodNameCheckMAJORallowClassNamefalseformat^[a-z][a-zA-Z0-9]*$
+
+.naming.PackageNameCheckMAJORformat^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$
+
+.naming.ParameterNameCheckMAJORformat^[a-z][a-zA-Z0-9]*$
+
+.naming.StaticVariableNameCheckMAJORapplyToPackagetrueformat^[a-z][a-zA-Z0-9]*$applyToPublictrueapplyToProtectedtrueapplyToPrivatetrue
+
+.naming.TypeNameCheckMAJORapplyToPackagetrueformat^[A-Z][a-zA-Z0-9]*$tokensapplyToPublictrueapplyToProtectedtrueapplyToPrivatetrue
+
+uncharacterrised
+.regexp.RegexpMultilineCheckMAJORignoreCaseformat^.*System\.(out|err)\.print(ln)?\(.*$maximummessageFile contains call to System.out.println or Sytem.err.println.minimum
+
+.regexp.RegexpSinglelineJavaCheckMAJORignoreCommentsignoreCaseformat\.printStackTrace\(\)maximummessageLine contains .printStackTrace().minimum
+
+.regexp.RegexpSinglelineJavaCheck_1402917052222INFOignoreCommentsignoreCaseformat\@IgnoremaximummessageTest is set to @Ignoreminimum
+
+.UpperEllCheckMINOR
+
+.whitespace.EmptyForIteratorPadCheckMINORoption
+
+.whitespace.MethodParamPadCheckMAJORallowLineBreaksoption
+
+.whitespace.NoWhitespaceAfterCheckMINORtokensBNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUSallowLineBreaks
+
+.whitespace.NoWhitespaceBeforeCheckMINORallowLineBreaks
+
+.whitespace.OperatorWrapCheckMINORoption
+
+.whitespace.ParenPadCheckMINORoption
+
+.whitespace.TypecastParenPadCheckMAJORoption
+
+.whitespace.WhitespaceAfterCheckMINOR
+
+.whitespace.WhitespaceAroundCheckMINORallowEmptyConstructorsallowEmptyMethodstokens
+
+S00105MINOR
+
+
+ Ignored Test
+checkstyle:com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck_1402917052222
+
+     Major No tags
+    Available Since June 16 2014
+    Checkstyle (Java)
+    Custom Rule (Show Template)
+
+Test is set to @Ignore.
+Parameters
+ignoreComments 	
+
+Controls whether to ignore text in comments when searching. Default value is false.
+ignoreCase 	
+
+Controls whether to ignore case when searching. Default value is false.
+format 	
+
+illegal pattern. Default value is ^$ (empty).
+Default Value:
+\@Ignore
+maximum 	
+
+The maximum number of matches required in each file. Default value is 0.
+message 	
+
+message which is used to notify about violations, if empty then default(hard-coded) message is used. Default value is "" (empty).
+Default Value:
+Test is set to @Ignore
+minimum 	
+
+The minimum number of matches required in each file. Default value is 0.
+
+
+
+-------------------------------------------------------------------------------
+// SOME REMARKS OF CR AND LF
+# On Mac,  the newline is the CR character (# 13)
+# sous Windows , il se fait par le caractère CR+LF (#13+#10), Win it is the character CR + LF (# 13 + # 10)
+# et sous UNIX , par le caractère LF (#10). , and on Unix, the LF (# 10). 
+
+
+
+http://www.swissdelphicenter.ch/de/showcode.php?id=2283
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Search for a substring positioned between 2 markers.
+Call:
+  filterSubStr([Fullstring],[first mark],[second mark],[repeated searching])
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++}
+
+
+function filterSubStr(tmp, von, bis: string; a: Integer): string;
+var
+  SubStr, bck: string;
+  Pos1, Pos2, i: Integer;
+begin
+  i := 0;
+  while i < a do
+  begin
+    Pos1   := Pos(von, tmp);
+    Pos2   := Pos(bis, tmp);
+    SubStr := Copy(tmp, Pos1 + Length(von), Pos2 - Pos1 - Length(von));
+    Delete(tmp, Pos1, Pos2 - Pos1 + Length(bis));
+    if SubStr = '' then {nothing} 
+    else if bck = '' then
+      bck := SubStr
+    else
+      bck := bck + #13#10 + SubStr;
+    i := i + 1;
+  end;
+  Result := bck;
+end;
+
+
+   Checkstyle Metrik  java  .blocks.AvoidNestedBlocksCheck  MAJOR allowInSwitchCase   
+
+.blocks.LeftCurlyCheck  MINOR maxLineLength    tokens    option   
+.blocks.NeedBracesCheck  MINOR  
+.blocks.RightCurlyCheck  MINOR   option   
+.coding.EmptyStatementCheck  MINOR  
+.coding.EqualsHashCodeCheck  CRITICAL  
+.coding.IllegalCatchCheck  MAJOR illegalClassNames  java.lang.Throwable   
+.coding.IllegalInstantiationCheck  MAJOR classes   
+.coding.InnerAssignmentCheck  MAJOR  
+.coding.MagicNumberCheck  MINOR ignoreAnnotation  false    ignoreNumbers    tokens    ignoreHashCodeMethod  true   
+.coding.MissingSwitchDefaultCheck  MAJOR  
+.design.MutableExceptionCheck  MAJOR format   
+.imports.AvoidStarImportCheck  MINOR excludes    allowStaticMemberImports  false    allowClassImports  false   
+.imports.IllegalImportCheck  MAJOR illegalPkgs   
+.imports.RedundantImportCheck  MINOR  
+.imports.UnusedImportsCheck  INFO processJavadoc  true   
+.javadoc.JavadocMethodCheck  MAJOR allowMissingPropertyJavadoc    allowUndeclaredRTE  true    scope    allowMissingJavadoc    excludeScope    allowThrowsTagsForSubclasses  true    allowMissingThrowsTags  true    suppressLoadErrors  true    tokens    allowMissingReturnTag  true    allowMissingParamTags  true   
+.javadoc.JavadocStyleCheck  MAJOR checkFirstSentence    scope    excludeScope    tokens    checkEmptyJavadoc    checkHtml   
+.javadoc.JavadocTypeCheck  MAJOR allowUnknownTags    authorFormat    scope    excludeScope    versionFormat    tokens    allowMissingParamTags   
+.metrics.CyclomaticComplexityCheck  MAJOR max   
+.modifier.ModifierOrderCheck  MINOR  
+.modifier.RedundantModifierCheck  MINOR  
+.naming.ConstantNameCheck  MINOR applyToPackage  true    format  ^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$    applyToPublic  true    applyToProtected  true    applyToPrivate  true   
+.naming.LocalFinalVariableNameCheck  MAJOR format  ^[a-z][a-zA-Z0-9]*$   
+.naming.LocalVariableNameCheck  MAJOR format  ^[a-z][a-zA-Z0-9]*$    tokens   
+.naming.MemberNameCheck  MAJOR applyToPackage  true    format  ^[a-z][a-zA-Z0-9]*$    applyToPublic  true    applyToProtected  true    applyToPrivate  true   
+.naming.MethodNameCheck  MAJOR allowClassName  false    format  ^[a-z][a-zA-Z0-9]*$   
+.naming.PackageNameCheck  MAJOR format  ^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$   
+.naming.ParameterNameCheck  MAJOR format  ^[a-z][a-zA-Z0-9]*$   
+.naming.StaticVariableNameCheck  MAJOR applyToPackage  true    format  ^[a-z][a-zA-Z0-9]*$    applyToPublic  true    applyToProtected  true    applyToPrivate  true   
+.naming.TypeNameCheck  MAJOR applyToPackage  true    format  ^[A-Z][a-zA-Z0-9]*$    tokens    applyToPublic  true    applyToProtected  true    applyToPrivate  true   
+.regexp.RegexpMultilineCheck  MAJOR ignoreCase    format  ^.*System\.(out|err)\.print(ln)?\(.*$    maximum    message  File contains call to System.out.println or Sytem.err.println.    minimum   
+.regexp.RegexpSinglelineJavaCheck  MAJOR ignoreComments    ignoreCase    format  \.printStackTrace\(\)    maximum    message  Line contains .printStackTrace().    minimum   
+.regexp.RegexpSinglelineJavaCheck_1402917052222  INFO ignoreComments    ignoreCase    format  \@Ignore    maximum    message  Test is set to @Ignore    minimum   
+.UpperEllCheck  MINOR  
+.whitespace.EmptyForIteratorPadCheck  MINOR option   
+.whitespace.MethodParamPadCheck  MAJOR   allowLineBreaks    option   
+.whitespace.NoWhitespaceAfterCheck  MINOR tokens  BNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUS    allowLineBreaks   
+.whitespace.NoWhitespaceBeforeCheck  MINOR   allowLineBreaks   
+.whitespace.OperatorWrapCheck  MINOR   option   
+.whitespace.ParenPadCheck  MINOR   option   
+.whitespace.TypecastParenPadCheck  MAJOR   option   
+.whitespace.WhitespaceAfterCheck  MINOR  
+.whitespace.WhitespaceAroundCheck  MINOR allowEmptyConstructors    allowEmptyMethods    tokens   
+
+ S00105  MINOR  
+
+
+  datacontract[] to literal strings
+
+using System.Runtime.Serialization;
+
+using System.Xml.Serialization;
+
+{
+
+	[Serializable]
+
+
+	public class SerializedDataContainer
+
+	{
+
+		public SerializedDataContainer()
+
+		{
+
+			Items = new Collection<SerializedDataItem>();
+
+		}
+		
+		
+ "switch" statements should end with a "default" clause
+squid:SwitchLastCaseIsDefaultCheck
+
+     Major
+    cert, cwe, misra
+    Available Since May 6 2014
+    SonarQube (Java)
+
+    Reliability > Logic
+    Constant/issue
+    5min
+
+The requirement for a final default clause is defensive programming. The clause should either take appropriate action, or contain a suitable comment as to why no action is taken.
+Noncompliant Code Example
+
+switch (param) {  //missing default clause
+  case 0:
+    doSomething();
+    break;
+  case 1:
+    doSomethingElse();
+    break;
+}
+
+switch (param) {
+  default: // default clause should be the last one
+    error();
+    break;
+  case 0:
+    doSomething();
+    break;
+  case 1:
+    doSomethingElse();
+    break;
+}
+
+Compliant Solution
+
+switch (param) {
+  case 0:
+    doSomething();
+    break;
+  case 1:
+    doSomethingElse();
+    break;
+  default:
+    error();
+    break;
+}
+
+See
+
+    MISRA C:2004, 15.0 - The MISRA C switch syntax shall be used.
+    MISRA C:2004, 15.3 - The final clause of a switch statement shall be the default clause
+    MISRA C++:2008, 6-4-3 - A switch statement shall be a well-formed switch statement.
+    MISRA C++:2008, 6-4-6 - The final clause of a switch statement shall be the default-clause
+    MISRA C:2012, 16.1 - All switch statements shall be well-formed
+    MISRA C:2012, 16.4 - Every switch statement shall have a default label
+    MISRA C:2012, 16.5 - A default label shall appear as either the first or the last switch label of a switch statement
+    MITRE, CWE-478 - Missing Default Case in Switch Statement
+    CERT, MSC01-C - Strive for logical completeness
+    CERT, MSC01-CPP - Strive for logical completeness
+
+   Checkstyle Metrik Java FindBugs Java FindBugs Security Audit Java FindBugs Security Minimal Java FxCop with MS minumum recommended ruleset C# FxCop with MS minumum recommended ruleset for SharePoint C# Sonar way C# Sonar way Java Sonar way PL/SQL Sonar way Python Sonar way Web Sonar way XML Sonar way with Findbugs Java
+   
+   
+  mX Quality Profile 
+  --------------------------------------------- 
+  Checkstyle Metrik Java
+  FindBugs Java
+  FindBugs Security Audit Java
+  FindBugs Security Minimal Java
+  FxCop with MS minumum recommended ruleset C# 
+  FxCop with MS minumum recommended ruleset for SharePoint C# 
+  Sonar way C# 
+  Sonar way Java 
+  Sonar way PL/SQL
+  Sonar way Python 
+  Sonar way Web 
+  Sonar way XML 
+  Sonar way with Findbugs Java
+  
+  		
+using Common.Logging;
+
+ {
+
+	public class UnitTestExceptionHandler : IExceptionHandlingService
+
+	{
+
+		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+		public void HandleException(Exception ex)
+
+		{
+
+			Logger.WarnFormat("Exception catched with Unit Test Exception Handler Service {0} {1}", Environment.NewLine, ex.GetExceptionDetailInformation());
+
+			throw ex.GetBaseException();
+
+		}
+
+	}
+
+}  		
+
+<tr height=17 style='height:12.75pt'>
+  <td height=17 class=xl33 align=right style='height:12.75pt' x:num>96</td>
+  <td class=xl34>La Vie du rail</td>
+  <td class=xl34>Buch</td>
+  <td class=xl34><span style='mso-spacerun:yes'> </span></td>
+  <td class=xl36 x:num>1987</td>
+  <td class=xl34><a href="teebook.jpg">Maurice Mertens TEE</a></td>
+  <td class=xl34>Collection 239S. Histoire et technique</td>
+  <td class=xl34>F</td>
+  <td class=xl34><span style='mso-spacerun:yes'> </span></td>
+  <td class=xl36><span style='mso-spacerun:yes'> </span></td>
+  <td class=xl37><a href="96_mertens.jpg">2902808216</a></td>
+ </tr>
+<tr height=17 style='height:12.75pt'>
+  <td height=17 class=xl33 align=right style='height:12.75pt' x:num>430</td>
+  <td class=xl34>Kraftwerk</td>
+  <td class=xl34>TEEShirt</td>
+  <td class=xl34><span style='mso-spacerun:yes'> </span></td>
+  <td class=xl36 x:num>2014</td>
+  <td class=xl34>T. EUROPA EXPRESS</td>
+  <td class=xl34><a href="teeshirt2.jpg">TEEShirt as a Shirt</a></td>
+  <td class=xl34>B</td>
+  <td class=xl34><span style='mso-spacerun:yes'> </span></td>
+  <td class=xl36><span style='mso-spacerun:yes'> </span></td>
+  <td class=xl37><a href="teeshirt.jpg">Klingklang</a></td>
+ </tr>
+ 
+ Liebe Kollegen
+
+ Ich bin für eine Forschungsarbeit auf der Suche nach einem Tastatursimulator:
+
+ Eine bestimmte Sequenz von Tastaturanschlägen muss wiederholbar und zeitlich präzis (ca 10 msec) ausführbar sein.
+
+Wir wollen damit eine Programm-Eichung bei der Erfassung der zeitlichen Varianz von menschlichen Tastaturanschlägen machen.
+
+Habt ihr so etwas (zum Ausleihen, in Form von Treibersoftware, USB-Gerät oder ähnlich) ?
+
+ 
+Müsste mit Windows-OS zusammenarbeiten können.
+
+Answer:
+Möglich ist auch die Events direkt via Windows API (keybd_event) abzusetzen um bspw. andere Software zu automatisieren, die über keine Command Line Option verfügen. 
+Ich habe damals einen Touchscreen Tester gebaut, der ganze Menüsteuerungen simuliert, das Script sieht dann ungefähr so aus:
+
+// open with Ctrl F a search mask, write abc and close with escape
+SimulateKeystroke(70,[ssCTRL])    //ASCII f
+       SimulateKeystroke(65,[])
+       SimulateKeystroke(66,[])
+       SimulateKeystroke(67,[])
+       Sleep(2000)
+       keybd_event(VK_ESCAPE, Mapvirtualkey( VK_ESCAPE, 0 ), 0, 0);
+       keybd_event(VK_ESCAPE, Mapvirtualkey( VK_ESCAPE, 0 ), KEYEVENTF_KEYUP, 0);
+
+Mit der maXbox als Script lassen sich dann beliebige Tastatureingaben oder Tastenkombinationen in das Programm eingeben.
+Von der Reaktion her sind wir auf etwa 20 msec gekommen, was in etwa denn 50 Hz einer Zeitscheibe entspricht, hängt dann allerdings auch von der CPU- und Tasklast ab.
+
+Virtual USB Keyboard
+
+Communicating with a host computer can allow a simple Arduino-based system to gain access to a wide variety of devices and information. Most people link an Arduino to a host using serial communications across a USB connection with custom code running on the host to send information to the Arduino or receive it in return, but giving your Arduino the ability to pretend to be a keyboard or mouse opens up a whole world of possibilities because it means your Arduino can interact with software that was never intended for external control. That could be desktop software such as a game or a web browser: your Arduino could "type" into a web form and submit it on your behalf, or act as a custom controller for a game!
+
+Or you could use an Arduino to connect a custom input device to your computer so that it emulates a regular keyboard or joystick. The custom input device could be a chording keyboard, a virtual keyboard, or even something like a virtual reality glove or head tracking system controlling your pointer by emulating a joystick.
+
+Simulieren Sie Tastaturanschläge! Mit dem Programm sind Sie in der Lage andere Software zu automatisieren, die über keine Command Line Option verfügen. Mit der Textbox können Sie beliebige Tastatureingaben oder Tastenkombinationen in das Programm eingeben. Das Programm benötigt keine Installation, das Programm einfach entpacken und die Keysim.exe Datei ausführen!
+
+
+/**
+ * VirtualUsbKeyboard
+ *
+ * Enumerates itself as a HID (Human Interface Device) to a host
+ * computer using a USB shield. The Arduino then appears to the host to
+ * be a USB keyboard and keypress events can be sent on demand.
+ *
+ * This example watches the state of 6 push buttons and when a button
+ * is pressed it sends a matching keypress event to the host.
+ *
+ * Copyright 2009 Jonathan Oxer <jon@oxer.com.au>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. http://www.gnu.org/licenses/
+ *
+ * www.practicalarduino.com/projects/easy/virtual-usb-keyboard
+ */
+
+// Requires the use of the "UsbKeyboard" library available from
+//   http://code.rancidbacon.com/ProjectLogArduinoUSB
+#include "UsbKeyboard.h"
+
+// Define the inputs to use for buttons
+#define BUTTON_A 6
+#define BUTTON_B 7
+#define BUTTON_C 8
+#define BUTTON_D 9
+#define BUTTON_MSG 10
+#define BUTTON_ENTER 11
+
+// Use the on-board LED as an activity display
+int ledPin = 13;
+
+/**
+ * Configure button inputs and set up the USB connection to the host
+ */
+void setup()
+{
+  // Set up the activity display LED
+  pinMode (ledPin, OUTPUT);
+  digitalWrite (ledPin, HIGH);
+
+  // Set the button pins to inputs
+  pinMode (BUTTON_A, INPUT);
+  pinMode (BUTTON_B, INPUT);
+  pinMode (BUTTON_C, INPUT);
+  pinMode (BUTTON_D, INPUT);
+  pinMode (BUTTON_MSG, INPUT);
+  pinMode (BUTTON_ENTER, INPUT);
+
+  // Enable the CPU's internal 20k pull-up resistors on the button
+  // inputs so they default to a "high" state
+  digitalWrite (BUTTON_A, HIGH);
+  digitalWrite (BUTTON_B, HIGH);
+  digitalWrite (BUTTON_C, HIGH);
+  digitalWrite (BUTTON_D, HIGH);
+  digitalWrite (BUTTON_MSG, HIGH);
+  digitalWrite (BUTTON_ENTER, HIGH); 
+
+  // Disable timer0 since it can mess with the USB timing. Note that
+  // this means some functions such as delay() will no longer work.
+  TIMSK0&=!(1<<TOIE0);
+
+  // Clear interrupts while performing time-critical operations
+  cli();
+
+  // Force re-enumeration so the host will detect us
+  usbDeviceDisconnect();
+  delayMs(250);
+  usbDeviceConnect();
+
+  // Set interrupts again
+  sei();
+}
+
+
+/**
+ * Main program loop. Scan for keypresses and send a matching keypress
+ * event to the host
+ * FIXME: currently repeats as fast as it can. Add transition detection
+ */
+void loop()
+{
+  UsbKeyboard.update();
+
+  if (digitalRead(BUTTON_A) == LOW) {
+    UsbKeyboard.sendKeyStroke(KEY_A);
+    digitalWrite(ledPin, !digitalRead(ledPin)); // Toggle status LED
+  }
+
+  if (digitalRead(BUTTON_B) == LOW) {
+    UsbKeyboard.sendKeyStroke(KEY_B);
+    digitalWrite(ledPin, !digitalRead(ledPin)); // Toggle status LED
+  }
+
+  if (digitalRead(BUTTON_C) == LOW) {
+    UsbKeyboard.sendKeyStroke(KEY_C);
+    digitalWrite(ledPin, !digitalRead(ledPin)); // Toggle status LED
+  }
+
+  if (digitalRead(BUTTON_D) == LOW) {
+    UsbKeyboard.sendKeyStroke(KEY_D);
+    digitalWrite(ledPin, !digitalRead(ledPin)); // Toggle status LED
+  }
+
+  if (digitalRead(BUTTON_MSG) == LOW) {
+    UsbKeyboard.sendKeyStroke(KEY_H, MOD_SHIFT_LEFT);
+    UsbKeyboard.sendKeyStroke(KEY_E);
+    UsbKeyboard.sendKeyStroke(KEY_L);
+    UsbKeyboard.sendKeyStroke(KEY_L);
+    UsbKeyboard.sendKeyStroke(KEY_O);
+    UsbKeyboard.sendKeyStroke(KEY_SPACE);
+    UsbKeyboard.sendKeyStroke(KEY_W, MOD_SHIFT_LEFT);
+    UsbKeyboard.sendKeyStroke(KEY_O);
+    UsbKeyboard.sendKeyStroke(KEY_R);
+    UsbKeyboard.sendKeyStroke(KEY_L);
+    UsbKeyboard.sendKeyStroke(KEY_D);
+    UsbKeyboard.sendKeyStroke(KEY_ENTER);
+    digitalWrite(ledPin, !digitalRead(ledPin)); // Toggle status LED
+  }
+
+  if (digitalRead(BUTTON_ENTER) == LOW) {
+    UsbKeyboard.sendKeyStroke(KEY_ENTER);
+    digitalWrite(ledPin, !digitalRead(ledPin)); // Toggle status LED
+  }
+}
+
+
+/**
+ * Define our own delay function so that we don't have to rely on
+ * operation of timer0, the interrupt used by the internal delay()
+ */
+void delayMs(unsigned int ms)
+{
+  for (int i = 0; i < ms; i++) {
+    delayMicroseconds(1000);
+  }
+}
+
+^((?>[a-zA-Z\d!#$%&'*+\-/=?^_`{|}~]+\x20*|"((?=[\x01-\x7f])[^"\\]|\\[\x01-\x7f])*"\x20*)*(?<angle><))?((?!\.)(?>\.?[a-zA-Z\d!#$%&'*+\-/=?^_`{|}~]+)+|"((?=[\x01-\x7f])[^"\\]|\\[\x01-\x7f])*")@(((?!-)[a-zA-Z\d\-]+(?<!-)\.)+[a-zA-Z]{2,}|\[(((?(?<!\[)\.)(25[0-5]|2[0-4]\d|[01]?\d?\d)){4}|[a-zA-Z\d\-]*[a-zA-Z\d]:((?=[\x01-\x7f])[^\\\[\]]|\\[\x01-\x7f])+)\])(?(angle)>)$
+
+
+    if ExecRegExpr('^((?>[a-zA-Z\d!#$%&''*+\-/=?^_`{|}~]+\x20*|"((?=[\x01-\x7f])[^"\\]|\\[\x01-\x7f])*"\x20*)*(?<angle><))?((?!\.)(?>\.?[a-zA-Z\d!#$%&''*+\-/=?^_`{|}~]+)+|"((?=[\x01-\x7f])[^"\\]|\\[\x01-\x7f])*")@(((?!-)[a-zA-Z\d\-]+(?<!-)\.)+[a-zA-Z]{2,}|\[(((?(?<!\[)\.)(25[0-5]|2[0-4]\d|[01]?\d?\d)){4}|[a-zA-Z\d\-]*[a-zA-Z\d]:((?=[\x01-\x7f])[^\\\[\]]|\\[\x01-\x7f])+)\])(?(angle)>)$','max@kleiner.ch') then writeln('true do'); 
+
+
+    Integrale Sicherheit: Sieben Spielplätze der Cyberkriminellen
+Denn sie wissen, was sie tun
+
+Kann man 2015 als das Jahr der Sicherheitslücken bezeichnen, wird 2016 das Jahr der Cyber-Erpressung. Dabei wird interessanterweise die Psychologie eine viel grössere Rolle spielen als die technischen Aspekte.
+Auch Hacktivismus wird eine der Aktivitäten sind, derer sich Cyberkriminelle schuldig machen, wobei sie ihre Angriffsmethoden systematisch ausweiten werden. Obwohl sich die Menschen der Sicherheitsrisiken bewusst sind, werden diese wegen der allumfassenden Vernetzung nahezu aller technischer Errungenschaften („Smartifizierung“) weiter zunehmen – inklusive der realistischen Gefahr, dass die Fehlfunktion eines smarten Geräts körperliche Schäden zur Folge hat.
+Die sieben Spielplätze der Cyberkriminellen im Überblick:
+
+1. Erpressung
+2016 wird das Jahr der Cyber-Erpressung. Die Psychologie wird hierbei eine weitaus grössere Rolle spielen als die technischen Aspekte, denn aus Sicht der Kriminellen hat es sich bestens „bewährt“, ihren Opfern Angst einzujagen. In den vergangenen zehn Jahren haben sie mithilfe von Software Lösegeld erpresst.
+Frühere Varianten sperrten den Bildschirm und forderten Geld, Varianten wie der in Deutschland vor allem als „BKA-Trojaner“ bekannte „Polizeitrojaner“ drohten mit Verhaftung und Strafzahlungen, und Crypto-Ransomware zielte auf den wertvollsten Teil des Systems: die Daten.
+
+Im kommenden Jahr wird es neue Taktiken geben, die vor allem auf die Psyche der Opfer zielen. Endanwender werden davon ebenso betroffen sein wie Unternehmen, immer mehr Varianten werden auch explizit auf einzelne Opfer in Firmen zugeschnitten sein; dabei werden auch raffinierte Social Engineering-Tricks zum Einsatz kommen. Der Erfolg von Betrugsmaschen, bei denen Mitarbeiter dazu gebracht werden, Geld auf ein Konto von Cyberkriminellen zu überweisen, wird stark ansteigen. Dazu wird die Kommunikation zwischen Geschäftspartnern abgefangen, wie es bereits bei „HawkEye“ „Cuckoo Miner“ und „Predator Pain“ der Fall war.
+
+2. Hacktivismus
+Um ihre Ziele möglichst öffentlichkeitswirksam zu schädigen, werden Hacktivisten ihre Angriffsmethoden systematisch ausweiten. Die Auswirkungen der dadurch verursachten Datenverluste werden bekannte Unternehmen zu spüren bekommen – ähnlich wie es bei Sony oder dem Hacking Team der Fall war.
+Nutzten Hacktivisten bisher in erster Linie Standardtaktiken wie die Verunstaltung von Websites oder DDoS-Angriffe, werden sie nun nach Methoden suchen, Datenlecks zu verursachen und auszunutzen. Angestachelt werden sie dabei vom Erfolg aktueller Angriffe, die belastende Informationen – wie beispielsweise fragwürdige Unternehmenspraktiken, klassifizierte Nachrichten oder verdächtige Transaktionen – offenlegen.
+
+3. Angriffe auf das „Internet der Dinge“ mit tödlichem Ausgang
+2016 wird mindestens eine Fehlfunktion eines smarten Geräts schwerwiegende, tödliche Folgen haben. Obwohl es 2015 bereits Vorfälle mit gehackten Babyfonen, Fernsehern und Autos gab und obwohl sich die Menschen über die Sicherheitsrisiken im Klaren sind, nimmt die Vernetzung nahezu aller technischer Errungenschaften („Smartifizierung“) weiter ungebremst zu. So wird die Zahl vernetzter Heimgeräte in den kommenden fünf Jahren jährlich um 67 Prozent ansteigen und 2019 fast zwei Milliarden erreichen – was einer deutlich höheren Wachstumsrate als bei Smartphones und Tablets entspricht.
+
+Wegen der Vielzahl an Geräten, Plattformen, Betriebssystemen und Anwendungen sowie der bislang fehlenden gesetzlichen Bestimmungen ist ein gross angelegter Hacking-Angriff bisher nicht in Sicht. Viel grösser ist die Gefahr, dass die Fehlfunktion eines smarten Geräts körperliche Schäden zur Folge hat: Je mehr Drohnen durch die Luft fliegen, je mehr Geräte im Gesundheitsbereich eingesetzt werden und je mehr (private und geschäftliche) Appliances gemeinsame Internetverbindungen nutzen, desto wahrscheinlicher werden Gerätedefekte, Hacking- Angriffe oder Missbrauch.
+
+4. Nachlässige Unternehmen
+Weniger als die Hälfte der Unternehmen wird bis Ende 2016 auf Cybersicherheit spezialisierte Experten beschäftigen. Zwar werden einige von ihnen erkennen, dass es Mitarbeiter braucht, deren Fokus einzig und allein auf der Integrität von Daten innerhalb und ausserhalb des Unternehmens liegt. Ob es sich dabei um einen dedizierten „Data Protection Officer“ oder einen „Chief Risk Officer“ handelt oder die Aufgaben vom „Chief Information Security Officer“ übernommen werden, hängt von Faktoren wie der Grösse des Unternehmens oder dem Budget ab.
+
+Auch jüngste Entwicklungen wie das Urteil des Europäischen Gerichtshofs zur Safe-Harbor-Regelung mit den USA oder die kommende EU-Datenschutzrichtlinie fordern ein höheres Mass an Datenschutz; die gerade angesprochenen Sicherheitsbeauftragten werden bei der Einhaltung der Regeln der jeweiligen Länder, in denen Unternehmensdaten gespeichert werden, eine tragende Rolle spielen. Dennoch haben in diesem Punkt nicht alle Unternehmen ihre Hausaufgaben gemacht.
+
+5. Schädliche Online-Werbung
+2015 war von einer hohen Anzahl an Malvertising-Angriffen geprägt. In der ersten Jahreshälfte wurden dazu vor allem Exploit- Kits eingesetzt: Waren im September rund 3.000 renommierte japanische Websites Opfer einer massiven Kampagne, bei der die Daten von fast einer halben Million Benutzer entwendet wurden, entdeckte Trend Micro im Februar einen Zero-Day-Exploit in „Adobe Flash“, der für entsprechende Angriffe genutzt wurde.
+Zwar werden auch 2016 bösartige Anzeigen ihre Opfer finden, doch scheint es hier zum ersten Mal eine Verbesserung zu geben: Weil immer mehr Anwender Online-Werbeblocker nutzen – allein in den USA ist es fast jeder Zweite (48 Prozent), weltweit stieg dieser Wert um 41 Prozent an –, werden Online-Werbetreibende ihre Anzeigenstrategien ändern. Die zunehmende Verbreitung von Werbeblockern zwingt Cyberkriminelle dazu, neue Angriffswege zu suchen, was wiederum zu weniger schädlichen Werbeeinblendungen führen wird.
+
+6. Mobile Schädlinge
+Die Zahl mobiler Schädlinge wird auf 20 Millionen anwachsen – Mitte 2014 lag diese Zahl noch bei zwei Millionen –, wovon in erster Linie China betroffen sein wird. Bei drei von vier Apps dort handelt es sich um Malware, während Google einen Bericht veröffentlicht hat, wonach weniger als ein Prozent der Apps im „Google Play Store“ potenziell gefährlich sind. Forschungen Trend Micros belegen, dass diese scheinbar widersprüchlichen Angaben korrekt sind: 13 Prozent der Apps in den chinesischen Märkten sind bösartig, während Google Play nur 0,16 Prozent bösartige Apps registriert hat. So ist „Google Play“ in China verfügbar, erreicht aber nur 21 Millionen der geschätzten 800 Millionen mobilen Benutzer. Angesichts dessen kann das exponentielle Wachstum mobiler Malware auf prognostizierte 20 Millionen bis Ende 2016 kaum aufgehalten werden.
+
+Doch auch in anderen Ländern, in denen die Benutzer in der Regel auf offizielle App-Stores zurückgreifen, droht Gefahr, denn weltweit werden neue mobile Zahlungsmöglichkeiten im Visier stehen: Cyberkriminelle werden Tests unter realen Bedingungen durchführen, um Daten aus Zahlungstechnologien wie kontaktlosen RFID-Kreditkarten und mobilen Geldbörsen wie „Apple Pay“ und „Google Wallet“ zu entwenden.
+
+7. Cyber-Straftaten
+Um den Straftaten der Cyberkriminellen wirksam entgegnen zu können, wird es im Bereich der Gesetzgebung in den kommenden zwölf Monaten konkrete Veränderungen – hin zu globalen Anstrengungen – geben, die zu schnellerer Gesetzgebung, mehr Verhaftungen oder Verurteilungen und erfolgreicheren Strafverfahren führen werden. Diese Entwicklung deutete sich bereits in einigen Festnahmen und Verurteilungen an, darunter zwei Fälle aus dem September: Zum einen der russische Strippenzieher hinter der CITADEL-Malware, zum anderen ein russischer Cyberkrimineller, der sich zu Angriffen auf Zahlungsanbieter schuldig bekannte.
+Dass Kooperationen Erfolge zeitigen können, belegt der gemeinsame Einsatz von Sicherheitsanbietern, INTERPOL, dem „Cyber Defense Institute“, der im April zur Stilllegung des SIMDA-Botnetzes führte.
+
+
+
+Quelle: It-daily.de; 12.11.2015

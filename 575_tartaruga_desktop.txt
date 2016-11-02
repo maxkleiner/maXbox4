@@ -1,0 +1,486 @@
+PROGRAM SHELLCTRL_Tartaruga_Turtle123HEXOcta;
+// task: design each number from 0..10
+//#sign:6:55 Max: MAXBOX10: 17/05/2016 22:34:34  PM 
+
+var cfrm: TForm;
+//new desktop in progress called TARTARUGA Desktop
+
+procedure shellctrlclick(sender: TObject);
+begin
+   writeln(TShellTreeView(sender).SelectedFolder.PathName);
+end;      
+
+procedure shellctrlclick2(sender: TObject);
+var select: boolean;
+    alistitems: TListitems;
+    alistitem: TListitem;
+    idx: integer;
+begin
+   try
+     //select:= alistitem.selected;
+     //((RegisterMethod('Function IndexOf( Value : TListItem) : Integer');
+     //idx:= alistitems.indexof(alistitem);   //itemindex;
+      alistitem:= TShellListView(sender).items.item[1];
+      //TShellListView(sender).items.item[1].indexof(index)
+      idx:= TShellListView(sender).selected;
+      writeln('valid link' +objecttostr(sender)+'id: '+itoa(idx));
+     //writeln('shelllistviewcaption: '+
+       //      TShellListView(sender).items[idx].caption);
+     writeln(TShellListView(sender).SelectedFolder.PathName);
+     writeln('shelllistviewcount: '
+            +itoa(TShellListView(sender).items.count))
+     writeln('shelllistviewcaption: '+
+             TShellListView(sender).items[1].caption);
+     //writeln('shelllistviewselected: '+
+       //      TShellListView(sender).items[Tlistitem(sender).selected].caption);
+     TShellListView(sender).items.item[1].listview.gridlines:= true;
+   except
+     writeln('no valid link' +objecttostr(sender));
+   end    
+end; 
+
+
+type
+  TPolygon = array of TPoint;
+
+procedure PlotPolygon(const Canvas: TCanvas; const N: Integer; const R: Single;
+  const XC: Integer; const YC: Integer);
+var
+  aPolygon: TPolygon;
+  I: Integer;
+  C: Extended;
+  S: Extended;
+  A: Single;
+begin
+  SetLength(aPolygon, N);
+  A := 2 * Pi / N;
+  for I := 0 to (N - 1) do begin
+    SinCos(I * A, S, C);
+    aPolygon[I].X := XC + Round(R * C);
+    aPolygon[I].Y := YC + Round(R * S);
+    //Polygon[I].top := YC + Round(R * S);
+    //points.top
+  end;
+  Canvas.Polygon(aPolygon);
+end;
+
+
+const
+  N = 6; R = 10;
+
+procedure PlotPolygonForm(af: Tform);
+var
+  W: Single;
+  H: Single;
+  X: Integer;
+  Y: Integer;
+  //af: TForm;
+begin
+  W := 1.5 * R;
+  H := R * Sqrt(3);
+  //af:= TForm.create(self);
+  {af.height:= 600;
+  af.width:= 600;
+  af.color:= clblack;  }
+  af.canvas.pen.color:= clnavy; //clwebgold;
+  //af.show;
+  for X := 0 to Round(af.ClientWidth / W) do
+    for Y := 0 to Round(af.ClientHeight / H) do
+      if Odd(X) then
+        PlotPolygon(af.Canvas, N, R, Round(X * W), Round((Y + 0.5) * H))
+      else
+        PlotPolygon(af.Canvas, N, R, Round(X * W), Round(Y * H));
+  //af.Show;      
+end;
+
+procedure SQLDropField(dbName,                     
+                       tblName,   {Database Name}  {Table Name}
+                       fldName         : String);  {Field Name to Drop}
+var
+  sqlDrpFld: TQuery;
+begin
+  sqlDrpFld:= TQuery.Create(Application);
+  with sqlDrpFld do begin
+    DatabaseName:= dbName;
+    SQL.Add('ALTER TABLE ' + tblName + ' DROP ' + fldName);
+    try
+      try
+        ExecSQL;
+      except
+        Abort; {Just raise silent exception}
+      end;
+    finally
+      Free;
+    end;
+  end;
+end;
+
+
+{type TCastType = (ctSmallInt, ctInteger, ctDecimal, ctNumeric, ctFloat,
+               ctChar, ctVarChar, ctDate, ctBoolean, ctBLOB, ctTime,
+               ctTimeStamp, ctMoney, ctAutoInc, ctBytes);
+ }
+procedure SQLAddField(dbName,                      
+                      tblName,    {Database Name}  {Table Name}
+                      fldName         : String;    {Field Name to Add}
+                      fldType         : TCastType; {Field Type as described above}
+                      fldLength,                   {Length of Field}
+                      precisOrBlobLen,
+                      scaleOrBlobType : Integer);  {Blob definition type 1 = Memo, 2 = Binary,       3 = Formatted Memo, 4 = OLE Object, 5 = Graphic}
+var
+  sqlAddFld: TQuery;
+  CastType : String;
+
+begin
+  case fldType of
+    ctSmallInt  : CastType := 'SMALLINT';
+    ctInteger   : CastType := 'INTEGER';
+    ctDecimal   : CastType := 'DECIMAL(' + IntToStr(precisOrBlobLen) + ',' +
+                                           IntToStr(scaleOrBlobType) + ')';
+    ctNumeric   : CastType := 'NUMERIC(' + IntToStr(precisOrBlobLen) + ',' +
+                                           IntToStr(scaleOrBlobType) + ')';
+    ctFloat     : CastType := 'FLOAT('   + IntToStr(precisOrBlobLen) + ',' +
+                                           IntToStr(scaleOrBlobType) + ')';
+    ctChar      : CastType := 'CHARACTER(' + IntToStr(fldLength) + ')';
+    ctVarChar   : CastType := 'VARCHAR(' + IntToStr(fldLength) + ')';
+    ctDate      : CastType := 'DATE';
+    ctBoolean   : CastType := 'BOOLEAN';
+    ctBlob      : CastType := 'BLOB('    + IntToStr(precisOrBlobLen) + ',' +
+                                           IntToStr(scaleOrBlobType) + ')';
+    ctTime      : CastType := 'TIME';
+    ctTimeStamp : CastType := 'TIMESTAMP';
+    ctMoney     : CastType := 'MONEY';
+    ctAutoInc   : CastType := 'AUTOINC';
+    ctBytes     : CastType := 'BYTES(' + IntToStr(fldLength) + ')'
+  end;
+
+  sqlAddFld:= TQuery.Create(Application);
+  with sqlAddFld do begin
+    DatabaseName := dbName;
+    SQL.Add('ALTER TABLE ' + tblName + ' ADD ' + fldName + ' ' + CastType);
+    try
+      try
+        ExecSQL;
+      except
+        Abort; {Just raise a silent exception}
+      end;
+    finally
+      Free;
+    end;
+  end;
+end;
+
+     
+
+procedure LoadForm;
+begin
+  cFrm:= TForm.create(self);
+  try
+    with cFrm do begin
+      caption:= '((((TARTARUGA Desktop PENTA Shell))))';  
+      height:= 750;
+      width:= 1200;
+      color:= clblack;
+      Position:= poScreenCenter;
+      show;
+    end;
+  
+   // PlotPolygonForm(cFrm);
+    with TShellTreeView.create(self) do begin
+      parent:= cFrm;
+      setbounds(650,20,490,680)
+      ShowRoot:= true;
+      //ViewStyle:= VSreport;
+       {Items.BeginUpdate;
+       try
+         FullExpand;
+       finally
+         Items.EndUpdate;
+       end; }
+       Items.BeginUpdate;
+       try
+         Items[1].Expand(True);
+       finally
+         Items.EndUpdate;
+       end
+       onclick:=  @shellctrlclick;
+       writeln(SelectedFolder.PathName);
+      //Fullexpand;    very time consuming
+      //rfdesktop RootFolder:= rfPrograms;
+    end;
+    with TShellListView.create(self) do begin
+      parent:= cFrm;
+      setbounds(160,20,450,370)
+      //ShowRoot:= true;
+      //ViewStyle:= VSreport;
+      //rootfolder:= rfdesktop
+      //root:= rfdesktop;
+       //items.beginupdate;
+       //items.indexof
+       writeln('shelllistviewcount: '+itoa(items.count))
+       writeln('shelllistviewcaption: '+items[2].caption);
+       writeln('shelllistviewselected: '+items[selected].caption);
+       items.item[2].listview.gridlines:= true;
+       //items.item[2].listview.viewstyle:= vsreport;
+       writeln('shelllistviewselected: '+itoa(selected));
+       //fullexpand;
+       {Items.BeginUpdate;
+       try
+         FullExpand;
+       finally
+         Items.EndUpdate;
+       end; }
+       onclick:=  @shellctrlclick2;
+       //writeln(SelectedFolder.PathName);
+      //Fullexpand;    very time consuming
+      //rfdesktop RootFolder:= rfPrograms;
+    end;
+  with TColorGrid.create(self) do begin
+    parent:= cfrm;
+    ClickEnablesColor:= true;
+    //gridordering:= go8X2;
+    font.color:= clred;
+    font.size:= 20;
+    setbounds(465,557,140,140);
+  end;
+
+     PlotPolygonForm(cFrm);
+   except
+    Exit;
+  end  
+end;
+
+procedure TurtleEasy1;
+begin
+  with TJVTurtle.create(self) do begin
+    canvas:= cFrm.canvas;
+    canvas.Pen.Color:= clred;
+    penDown:= true;
+    penWidth:= 30;
+    setpos(150,300)
+    turn(45)
+    moveforward(100)
+    right(135)
+    moveforward(200)
+    Free;
+  end;
+end;    
+
+procedure TurtleEasy2;
+var myturtle: TJVTurtle;
+begin
+  myturtle:= TJVTurtle.create(self);
+  with myTurtle do begin
+    //canvas.assign(cFrm)
+    canvas:= cFrm.canvas;
+    canvas.Pen.Color:= clgreen;
+    penDown:= true;
+    //penup
+    penWidth:= 30;
+    setpos(300,300);
+    //turn(45)
+    moveforward(100)
+    right(90)    //180
+    moveforward(100)
+    right(90)    //180
+    moveforward(100)
+    left(90)    //180
+    moveforward(100)
+    left(90)    //180
+    moveforward(100)
+    //movebackward(100)
+   end;
+   myturtle.Free;
+end;    
+
+procedure TurtleEasy3;
+begin
+  with TJVTurtle.create(self) do begin
+    canvas:= cFrm.canvas;
+    //canvas.Pen.Color:= clblue;
+    pencolor:= clblue;
+    penDown:= true;
+    penWidth:= 30;
+    setpos(450,355);
+    moveforward(100)
+    right(90)    
+    moveforward(100)
+    right(90)    
+    moveforward(100)
+    turn(180)    //or movebackward()
+    moveforward(100)
+    right(90)   
+    moveforward(100)
+    right(90)  //180
+    moveforward(100)
+    Free;
+   end;
+end;    
+
+procedure TurtleEasyPentA;
+begin
+  with TJVTurtle.create(self) do begin
+    canvas:= cFrm.canvas;
+    canvas.Pen.Color:= clred;
+    penDown:= true;
+    penWidth:= 15;
+    setpos(10,100)
+    //turn(72)
+    moveforward(250)
+    for it:= 1 to 4 do begin
+      right(144)
+      moveforward(250)
+    end;
+    canvas.Pen.Color:= clpurple;
+    for it:= 1 to 4 do begin
+      right(144.5)
+      moveforward(250)
+    end;  
+    canvas.Pen.Color:= clwebgold;
+    penWidth:= 3;
+    for it:= 1 to 5 do begin
+      right(144.6)
+      moveforward(250)
+    end;  
+    Free;
+  end;
+end;    
+
+
+procedure TurtleEasyHexB;
+begin
+  with TJVTurtle.create(self) do begin
+    canvas:= cFrm.canvas;
+    canvas.Pen.Color:= clnavy;
+    penDown:= true;
+    penWidth:= 21;
+    setpos(100,450)
+    //turn(72)
+    moveforward(120)
+    for it:= 1 to 6 do begin
+      right(60)
+      moveforward(120)
+    end;
+   Free;
+  end;
+end;    
+
+procedure TurtleEasyHexDavid;
+begin
+  with TJVTurtle.create(self) do begin
+    canvas:= cFrm.canvas;
+    canvas.Pen.Color:= clnavy;
+    penDown:= true;
+    penWidth:= 10;
+    setpos(400,80)
+    //turn(72)
+    moveforward(100)
+    for it:= 1 to 2 do begin
+      right(120)
+      moveforward(100)
+    end;
+    setpos(400,140)
+    turn(60)
+    for it:= 1 to 3 do begin
+      right(120)
+      moveforward(100)
+    end;
+   Free;
+  end;
+end;    
+
+procedure TurtleEasyOcta;
+begin
+  with TJVTurtle.create(self) do begin
+    canvas:= cFrm.canvas;
+    canvas.Pen.Color:= clyellow;
+    penDown:= true;
+    penWidth:= 10;
+    setpos(90,555)
+    turn(135+22.5)       //135+22.5
+    //moveforward(120)
+    for it:= 1 to 8 do begin
+      right(135)
+      moveforward(130)
+    end;
+   Free;
+  end;
+end;    
+
+BEGIN  //Main
+ loadform;
+ TurtleEasy1;              
+ TurtleEasy2;   
+ TurtleEasy3;   
+ TurtleEasyPentA;
+ TurtleEasyHexB;
+ TurtleEasyHexDavid;
+ TurtleEasyOcta;
+
+END. 
+
+Doc:
+C:\maxbook\maxbox3\mx39\maxbox3\maxbox3\docs\utils\Herleitung_4.jpg
+
+with CL.AddClassN(CL.FindClass('TPersistent'),'TListItems') do begin
+     RegisterMethod('procedure Assign(Source: TPersistent)');
+     RegisterMethod('Constructor Create( AOwner : TCustomListView)');
+    RegisterMethod('Procedure Free');
+     RegisterMethod('Function Add : TListItem');
+    RegisterMethod('Function AddItem(Item: TListItem; Index : Integer): TListItem');
+    RegisterMethod('Procedure BeginUpdate');
+    RegisterMethod('Procedure Clear');
+    RegisterMethod('Procedure Delete( Index : Integer)');
+    RegisterMethod('Procedure EndUpdate');
+    RegisterMethod('Function GetEnumerator : TListItemsEnumerator');
+    RegisterMethod('Function IndexOf( Value : TListItem) : Integer');
+    RegisterMethod('Function Insert( Index : Integer) : TListItem');
+    RegisterProperty('Count', 'Integer', iptrw);
+    RegisterProperty('Handle', 'HWND', iptr);
+    RegisterProperty('Item', 'TListItem Integer', iptrw);
+    SetDefaultPropery('Item');
+    RegisterProperty('Owner', 'TCustomListView', iptr);
+  end;
+end;
+
+with CL.AddClassN(CL.FindClass('TPersistent'),'TListItem') do begin
+     RegisterMethod('procedure Assign(Source: TPersistent)');
+     RegisterMethod('Constructor Create( AOwner : TListItems)');
+       RegisterMethod('Procedure Free');
+     RegisterMethod('Procedure CancelEdit');
+    RegisterMethod('Procedure Delete');
+    RegisterMethod('Function DisplayRect( Code : TDisplayCode) : TRect');
+    RegisterMethod('Function EditCaption : Boolean');
+    RegisterMethod('Function GetPosition : TPoint');
+    RegisterMethod('Procedure MakeVisible( PartialOK : Boolean)');
+    RegisterMethod('Procedure Update');
+    RegisterMethod('Procedure SetPosition( const Value : TPoint)');
+    RegisterMethod('Function WorkArea : Integer');
+    RegisterProperty('Caption', 'string', iptrw);
+    RegisterProperty('Checked', 'Boolean', iptrw);
+    RegisterProperty('Cut', 'Boolean', iptrw);
+    RegisterProperty('Data', 'Pointer', iptrw);
+    RegisterProperty('Deleting', 'Boolean', iptr);
+    RegisterProperty('DropTarget', 'Boolean', iptrw);
+    RegisterProperty('Focused', 'Boolean', iptrw);
+    RegisterProperty('Handle', 'HWND', iptr);
+    RegisterProperty('ImageIndex', 'TImageIndex', iptrw);
+    RegisterProperty('Indent', 'Integer', iptrw);
+    RegisterProperty('Index', 'Integer', iptr);
+    RegisterProperty('Left', 'Integer', iptrw);
+    RegisterProperty('ListView', 'TCustomListView', iptr);
+    RegisterProperty('Owner', 'TListItems', iptr);
+    RegisterProperty('OverlayIndex', 'TImageIndex', iptrw);
+    RegisterProperty('Position', 'TPoint', iptrw);
+    RegisterProperty('Selected', 'Boolean', iptrw);
+    RegisterProperty('StateIndex', 'TImageIndex', iptrw);
+    RegisterProperty('SubItems', 'TStrings', iptrw);
+    RegisterProperty('SubItemImages', 'Integer Integer', iptrw);
+    RegisterProperty('Top', 'Integer', iptrw);
+    RegisterProperty('PopupMenu', 'TPopupMenu', iptrw);
+  
+
+----app_template_loaded_code----
+----File #file:575_tartaruga_desktop.txt
+
+

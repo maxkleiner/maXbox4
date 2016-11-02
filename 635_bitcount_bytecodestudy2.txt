@@ -1,0 +1,350 @@
+PROGRAM ByteCode_Study;
+
+//test to mX3 #sign> Max: MAXBOX10: 17/05/2016 22:39:05 
+
+{ test the byte code stream with a function}
+  { From maXbox Programs for Scientists and Engineers }
+//{$APPTYPE CONSOLE} #file:635_bitcount_bytecodestudy2.txt
+//USES WinCrt; { Crt for non-windows version }
+
+type ttestrecord = record
+      abyte: byte;
+      along: longint;
+     end; 
+
+var atr: ttestrecord;
+  
+function countBits(ab: byte): byte;
+begin
+ result:= 0;
+ while (ab<>0) do begin
+   if odd(ab) then
+     inc(result);
+   ab:= ab SHR 1;
+   //write(inttostr(ab)+' ')
+   getdeffontcharset
+ end;
+end;     
+
+
+BEGIN  //Main
+  //maxform1.TerminalStyle1Click(self)
+
+  //PI! --> 7.188082728976032702082194345124758718559301763968437162410035...
+    {writeln('esbGamma Ref: '+floattoStr(esbGamma(1+PI)))
+    PrintF('Factorial %-4.16f ',[fact(170)])
+    PrintF('Factorial %-4.16f ',[fact(1754)])
+    PrintF('Big Factorial %s',[bigfact('170')])
+    Writeln(' ')
+    Pascal_Triangle2(12); }
+  {REPEAT
+    REPEAT
+      Write(' X: ');
+      X:= strtofloat(ReadLn('type a  X like 3.1415'))
+    UNTIL X <> 0.0;
+    WriteLn(' Gamma is '+ floattoStr(Gamma(X)))
+  UNTIL X < -22.0;
+  }
+  
+  Writeln('countBits: '+intToStr(countBits(15)))
+  Savebytecode;
+  //CountSelect
+  
+End. 
+
+Ref: ByteCode:
+
+[TYPES]
+Type [0]: Pointer
+Type [1]: U32
+Type [2]: Variant
+Type [3]: Variant
+Type [4]: Unknown 14
+Type [5]: Unknown 24
+Type [6]: Extended
+Type [7]: Double
+Type [8]: Single
+Type [9]: S64
+Type [10]: String
+Type [11]: U32
+Type [12]: S32
+Type [13]: S16
+Type [14]: U16
+Type [15]: S8
+Type [16]: String
+Type [17]: String
+Type [18]: String
+Type [19]: String
+Type [20]: Unknown 28
+Type [21]: WideString
+Type [22]: WideChar
+Type [23]: Char
+Type [24]: U8
+Type [25]: U16
+Type [26]: U32
+Type [27]: U8 Export: BOOLEAN
+Type [28]: U8
+Type [29]: Class Export: TAPPLICATION
+Type [30]: Class Export: TSCREEN
+Type [31]: Class Export: TFORM
+Type [32]: Class Export: TSYNMEMO
+Type [33]: Class Export: TMEMO
+Type [34]: Class Export: TMAXFORM1
+Type [35]: Class Export: TDEBUGOUTPUT
+Type [36]: Class Export: THOTLOG
+Type [37]: Class Export: TSTRINGLIST
+Type [38]: Record(U8,S32)
+[VARS]
+Var [0]: 29 Class TAPPLICATION
+Var [1]: 30 Class TSCREEN
+Var [2]: 31 Class TFORM
+Var [3]: 32 Class TSYNMEMO
+Var [4]: 33 Class TMEMO
+Var [5]: 34 Class TMAXFORM1
+Var [6]: 35 Class TDEBUGOUTPUT
+Var [7]: 36 Class THOTLOG
+Var [8]: 12 S32 
+Var [9]: 18 String 
+Var [10]: 37 Class TSTRINGLIST
+Var [11]: 27 U8 BOOLEAN
+Var [12]: 7 Double 
+Var [13]: 38 Record(U8,S32) 
+[PROCS]
+Proc [0] Export: !MAIN -1
+ [0] PUSHTYPE 18(String) // 1
+ [5] PUSHTYPE 19(String) // 2
+ [10] ASSIGN Base[2], ['countBits: ']
+ [36] PUSHTYPE 18(String) // 3
+ [41] PUSHTYPE 9(S64) // 4
+ [46] PUSHTYPE 28(U8) // 5
+ [51] PUSHTYPE 28(U8) // 6
+ [56] ASSIGN Base[6], [15]
+ [71] PUSHVAR Base[5] // 7
+ [77] CALL 1
+ [82] POP // 6
+ [83] POP // 5
+ [84] ASSIGN Base[4], Base[5]
+ [95] POP // 4
+ [96] PUSHVAR Base[3] // 5
+ [102] CALL 5
+ [107] POP // 4
+ [108] POP // 3
+ [109] CALC Base[2] + Base[3]
+ [121] POP // 2
+ [122] ASSIGN Base[1], Base[2]
+ [133] POP // 1
+ [134] CALL 6
+ [139] POP // 0
+ [140] RET
+Proc [1] Export: COUNTBITS 28 @28
+ [0] ASSIGN Base[-1], [0]
+ [15] PUSHTYPE 27(U8) // 1
+ [20] COMPARE into Base[1]: Base[-2] <> [0]
+ [41] COND_NOT_GOTO currpos + 177 Base[1] [228]
+ [51] PUSHTYPE 27(U8) // 2
+ [56] PUSHTYPE 12(S32) // 3
+ [61] ASSIGN Base[3], Base[-2]
+ [72] PUSHVAR Base[2] // 4
+ [78] CALL 2          //ODD
+ [83] POP // 3
+ [84] POP // 2
+ [85] SETFLAG NOT Base[2]
+ [92] POP // 1
+ [93] FLAGGOTO currpos + 22 [120]
+ [98] PUSHTYPE 0(Pointer) // 2
+ [103] SETPOINTER Base[2]: Base[-1]
+ [114] CALL 3
+ [119] POP // 1
+ [120] CALC Base[-2] SHR [1]
+ [136] PUSHTYPE 18(String) // 2
+ [141] PUSHTYPE 19(String) // 3
+ [146] PUSHTYPE 18(String) // 4
+ [151] PUSHTYPE 9(S64) // 5
+ [156] ASSIGN Base[5], Base[-2]
+ [167] PUSHVAR Base[4] // 6
+ [173] CALL 5
+ [178] POP // 5
+ [179] POP // 4
+ [180] ASSIGN Base[3], Base[4]
+ [191] POP // 3
+ [192] CALC Base[3] + [#32]
+ [205] ASSIGN Base[2], Base[3]
+ [216] POP // 2
+ [217] CALL 4
+ [222] POP // 1
+ [223] GOTO currpos + 4294967088 [20]
+ [228] POP // 0
+ [229] RET
+Proc [2]: External Decl: \01
+\00 ODD
+Proc [3]: External Decl: \00 INC
+Proc [4]: External Decl: \00\00 WRITE
+Proc [5]: External Decl: \01\00 INTTOSTR
+Proc [6]: External Decl: \00\00 WRITELN
+Proc [7] Export: !MASTERPROC -1
+ [0] CALL 0
+ [5] RET
+Decompiled Code maXbox: 635_bitcount_bytecodestudy.txt
+
+
+
+[TYPES]
+Type [0]: Pointer
+Type [1]: U32
+Type [2]: Variant
+Type [3]: Variant
+Type [4]: Unknown 14
+Type [5]: Unknown 24
+Type [6]: Extended
+Type [7]: Double
+Type [8]: Single
+Type [9]: S64
+Type [10]: String
+Type [11]: U32
+Type [12]: S32
+Type [13]: S16
+Type [14]: U16
+Type [15]: S8
+Type [16]: String
+Type [17]: String
+Type [18]: String
+Type [19]: String
+Type [20]: Unknown 28
+Type [21]: WideString
+Type [22]: WideChar
+Type [23]: Char
+Type [24]: U8
+Type [25]: U16
+Type [26]: U32
+Type [27]: U8 Export: BOOLEAN
+Type [28]: U8
+Type [29]: Class Export: TAPPLICATION
+Type [30]: Class Export: TSCREEN
+Type [31]: Class Export: TFORM
+Type [32]: Class Export: TSYNMEMO
+Type [33]: Class Export: TMEMO
+Type [34]: Class Export: TMAXFORM1
+Type [35]: Class Export: TDEBUGOUTPUT
+Type [36]: Class Export: THOTLOG
+Type [37]: Class Export: TSTRINGLIST
+Type [38]: Record(U8,S32)
+[VARS]
+Var [0]: 29 Class TAPPLICATION
+Var [1]: 30 Class TSCREEN
+Var [2]: 31 Class TFORM
+Var [3]: 32 Class TSYNMEMO
+Var [4]: 33 Class TMEMO
+Var [5]: 34 Class TMAXFORM1
+Var [6]: 35 Class TDEBUGOUTPUT
+Var [7]: 36 Class THOTLOG
+Var [8]: 12 S32 
+Var [9]: 18 String 
+Var [10]: 37 Class TSTRINGLIST
+Var [11]: 27 U8 BOOLEAN
+Var [12]: 7 Double 
+Var [13]: 38 Record(U8,S32) 
+[PROCS]
+Proc [0] Export: !MAIN -1
+ [0] PUSHTYPE 18(String) // 1
+ [5] PUSHTYPE 19(String) // 2
+ [10] ASSIGN Base[2], ['countBits: ']
+ [36] PUSHTYPE 18(String) // 3
+ [41] PUSHTYPE 9(S64) // 4
+ [46] PUSHTYPE 28(U8) // 5
+ [51] PUSHTYPE 28(U8) // 6
+ [56] ASSIGN Base[6], [15]
+ [71] PUSHVAR Base[5] // 7
+ [77] CALL 1
+ [82] POP // 6
+ [83] POP // 5
+ [84] ASSIGN Base[4], Base[5]
+ [95] POP // 4
+ [96] PUSHVAR Base[3] // 5
+ [102] CALL 5
+ [107] POP // 4
+ [108] POP // 3
+ [109] CALC Base[2] + Base[3]
+ [121] POP // 2
+ [122] ASSIGN Base[1], Base[2]
+ [133] POP // 1
+ [134] CALL 4
+ [139] POP // 0
+ [140] RET
+Proc [1] Export: COUNTBITS 28 @28
+ [0] ASSIGN Base[-1], [0]
+ [15] PUSHTYPE 27(U8) // 1
+ [20] COMPARE into Base[1]: Base[-2] <> [0]
+ [41] COND_NOT_GOTO currpos + 90 Base[1] [141]
+ [51] PUSHTYPE 27(U8) // 2
+ [56] PUSHTYPE 12(S32) // 3
+ [61] ASSIGN Base[3], Base[-2]
+ [72] PUSHVAR Base[2] // 4
+ [78] CALL 2
+ [83] POP // 3
+ [84] POP // 2
+ [85] SETFLAG NOT Base[2]
+ [92] POP // 1
+ [93] FLAGGOTO currpos + 22 [120]
+ [98] PUSHTYPE 0(Pointer) // 2
+ [103] SETPOINTER Base[2]: Base[-1]
+ [114] CALL 3
+ [119] POP // 1
+ [120] CALC Base[-2] SHR [1]
+ [136] GOTO currpos + 4294967175 [20]
+ [141] POP // 0
+ [142] RET
+Proc [2]: External Decl: \01\00 ODD
+Proc [3]: External Decl: \00 INC
+Proc [4]: External Decl: \00\00 WRITELN
+Proc [5]: External Decl: \01\00 INTTOSTR
+Proc [6] Export: !MASTERPROC -1
+ [0] CALL 0
+ [5] RET
+Decompiled Code maXbox: 635_bitcount_bytecodestudy2.txt
+
+
+
+Doc:
+
+Computes the gamma function, \Gamma(x). The gamma function is a shifted version of the ordinary factorial, satisfying \Gamma(n) = (n-1)! for integers n > 0.
+
+Declaration
+procedure FloatToDecimal(var Result: TFloatRec; Value: Extended; Precision, Decimals:
+Integer);
+FloatToDecimal converts a floating-point value to a decimal representation that is suited for further formatting.
+TFloatRec','record Exponent: Smallint; Negative: Boolean; 
+Digits: array[0..20] of Char; end');
+2666: 149 TFloatValue', '( fvExtended, fvCurrency )');
+2667: 150 TFloatFormat', '( ffGeneral, ffExponent, ffFixed, ffNumber, ffCurrency )');
++
++
+F
+The Precision parameter specifies the requested number of significant digits in the
+result—the allowed range is 1..18.
+The Decimals parameter specifies the requested maximum number of digits to the left of
+the decimal point in the result.
+Precision and Decimals together control how the result is rounded. To produce a result
+that always has a given number of significant digits regardless of the magnitude of the
+number, specify 9999 for the Decimals parameter.
+The result of the conversion is stored in the specified TFloatRec record as follows:
+FloatToStr function SysUtils
+Declaration
+
+Exponent Contains the magnitude of the number, i.e. the number of significant digits to the right of the decimal point. The Exponent field is negative if the absolute value of the number is less than one. If the number is a NAN (not-a-number), Exponent is set to -32768. If the number is INF or -INF (positive or negative infinity), Exponent is set to 32767.
+
+Negative True if the number is negative, False if the number is zero or positive.
+
+Digits Contains up to 18 significant digits followed by a null terminator. The implied decimal point (if any) is not stored in Digits. Trailing zeros are removed, and if the resulting number is zero, NAN, or INF, Digits contains nothing but the null terminator.
+ref: 
+>>> from mpmath import *
+>>> mp.dps = 15; mp.pretty = True
+>>> for n in range(5):
+...     nprint([binomial(n,k) for k in range(n+1)])
+...
+[1.0]
+[1.0, 1.0]
+[1.0, 2.0, 1.0]
+[1.0, 3.0, 3.0, 1.0]
+[1.0, 4.0, 6.0, 4.0, 1.0]
+ 
+----app_template_loaded----

@@ -1,0 +1,116 @@
+program Telnet_TCP_HTTP_PNG_Streamer;
+// DEMO for mX3ß  maXbox4! _1 - TelnetTCPSocketServer TTSS
+// gets a PNG graphic from an URL, stored in Stream, converts to jpg and saved
+// start first: 388_TCPServerSock3.TXT example, #locs=105
+
+var 
+  myImage: TImage;
+  inFrm: TForm;
+  myURL: string;
+
+function FileSizeByName2(const AFilename: string): longint;
+begin
+  with TFileStream.Create(AFilename, fmOpenRead or fmShareDenyWrite) do
+  try
+    Result:= Size;
+  finally
+    Free;
+  end;
+end;
+
+procedure FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  myImage.Free;
+  inFrm.Free;
+end;
+  
+procedure buildImageForm;
+begin
+  inFrm:= TForm.create(self)
+  with inFrm do begin
+    position:= poScreenCenter;
+    FormStyle:= fsStayOnTop;
+    color:= clblue;
+    borderStyle:= bsDialog;
+    caption:= 'mX3 StreamDream'
+    width:= 750; height:= 450;
+    OnClose:= @FormClose;
+    Show;
+  end;
+  myImage:= TImage.Create(inFrm);
+  with myImage do begin
+    Parent:= inFrm;
+    width:= inFrm.width; 
+    height:= inFrm.height;
+    Left:= 10; Top:= 10;
+  end;
+end;  
+
+procedure getHTTP_PNG(vimage: TImage); 
+var   idHTTP: TIDHTTP;
+      pngStream: TMemoryStream;
+begin
+  myURL:= 'http://www.softwareschule.ch/images/maxboxgui29.png';
+  with TLinearBitmap.Create do
+  try
+    idHTTP:= TIdHTTP.Create(NIL)
+    pngStream:= TMemoryStream.create;
+    //OptimizeMem
+    idHTTP.Get1(myURL, pngStream)
+    pngStream.Position:= 0;
+    LoadFromStream2(pngstream,'PNG');
+    vimage.Picture:= NIL;
+    AssignTo(vimage.Picture.Bitmap);
+    SaveToFile(ExePath+'mX3GUI.jpg');
+  finally
+    Dispose;
+    Free;
+    idHTTP.Free
+    pngStream.Free;
+  end; 
+end;  
+
+procedure TelnetTCPDemo;
+var IdTelnet1: TIdTelnet;
+begin
+  IdTelnet1:= TIdTelnet.create(self);
+  with IdTelnet1 do begin
+    IdTelnet1.Host:= '127.0.0.1';
+    Port:= 6001;
+    //Connect(-1);
+    Connect(2000);
+    //memo2.lines.add('telnet first: '+ReadLn('',1000,80));
+    //SendCh();
+    {SendCh('T'); SendCh('I');
+    SendCh('M'); SendCh('E');}
+    Writeln('TIME');
+    Sleep(500)
+    memo2.lines.add('telnet time back: '+ReadLn('',1000,80));
+     //SendCmd('QUIT to TCP - SIGNAL NEWNYM',0);
+    {SendCh('Q'); SendCh('U');
+    SendCh('I'); SendCh('T');}
+    Writeln('QUIT');  //Quit to TCP Server -->Disconnect
+    Disconnect;
+    Free;
+  end;  
+end;
+
+begin
+  {buildImageForm;
+  getHTTP_PNG(myImage);
+  searchAndOpenDoc(ExePath+'mX3GUI.jpg')
+   SaveString(ExePath+'\Examples\envinfo3.txt',GetEnvironmentString);
+   OpenFile(ExePath+'\Examples\envinfo3.txt');}
+   TelnetTCPDemo; 
+End.
+
+//**************************************************program HTTP_PNG_Streamer;
+//**************************************************
+
+Ref:
+
+You cannot use the SendCmd() method with TIdTelnet. TIdTelnet uses an internal reading thread that continuously reads from the socket (since Telnet is an asynchronous protocol that can receive data at any time). SendCmd() does its own internal reading to receive the sent command's response. The two reading operations interfer with each other (this issue also exists in Indy 10's TIdCmdTCPClient component for the same reason).
+
+To send an outgoing command with TIdTelnet, you must use its SendCh() method to send each character individually (if you upgrade to Indy 10, TIdTelnet has a SendString() method whch handles that for you) and then wait until the OnDataAvailable event to process the response as needed.
+
+Unless TOR is actually using the real Telnet protocol (Telnet sequences and all), then you are better off using TIdTCPClient instead of TIdTelnet. TIdTelnet is a Telnet-specific client, not a general purpose TCP/IP client like TIdTCPClient is.

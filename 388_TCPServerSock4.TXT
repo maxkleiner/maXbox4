@@ -1,0 +1,727 @@
+PROGRAM cHTTPUtils_TCPServerSocket4;
+
+//fixed: after close free thread prinfF 
+//#sign 7 Max: MAXBOX10: 17/05/2016 22:23:19 
+//#path:C:\Program Files (x86)\maxbox3\Import\IPC\maxbox4\maxbox4\examples\
+//from E:\maxbox\maxbox3\examples\385_cHTTPUtils.TXT  , #locs>370
+//uses IdBaseComponent, IdComponent, IdTCPServer;
+//hostory: add bindings.add.IP:= 
+// {$ Start the Client on 388_TCPServerSockClient.TXT end }
+                               
+Const
+  //change to your OS TCP Server
+  TCPPORT= 6001;
+  SFILE = 'zipcodes.txt';
+  
+  REG_KEY_TEAMVIEWER8 = '\SOFTWARE\Wow6432Node\TeamViewer\Version8';
+  REG_VAL_CLIENTID = 'ClientID';
+  
+  // HTTP/1.1  Tests
+  TestReq1 =
+      'GET / HTTP/1.1'#13#10 +
+      'Host: www.example.com'#13#10 +
+      'Date: Mon 1 Jan 2010 12:23:34 GMT'#13#10 +
+      'Connection: close'#13#10 +
+      'Cookie: id=123'#13#10 +
+      #13#10;
+
+  // HTTP/1.0; Empty field values; Unknown field values; LWS
+  TestReq2 =
+      'GET / HTTP/1.0'#13#10 +
+      'Host: abc'#13#10 +
+      'Date: '#13#10 +
+      'Connection: '#13#10' invalid'#13#10 +
+      'Cookie: invalid'#13#10 +
+      #13#10;
+   // Pre-HTTP/1.0 response; Incomplete request
+   // HTTP/1.1
+  TestResp1 =
+      'HTTP/1.1 200 OK'#13#10 +
+      'Server: Fundamentals'#13#10 +
+      'Date: Monday, 2 Jan 2010 12:23:34 GMT'#13#10 +
+      'Last-Modified: Monday, 2 Jan 2010 12:23:30 GMT'#13#10 +
+      'Content-Type: text/html; charset=iso123'#13#10 +
+      'Content-Length: 1'#13#10 +
+      'Content-Encoding: gzip'#13#10 +
+      'Age: 15'#13#10 +
+      'Connection: Keep-Alive'#13#10 +
+      'Set-Cookie: Domain=www.example.com; id=123'#13#10 +
+      'Set-Cookie: Domain=www.example.com; id=222'#13#10 +
+      #13#10 +
+      '1';
+
+  // HTTP/1.0; LWS; Empty field value; Custom field
+  TestResp2 =
+      'HTTP/1.0 401 Bad'#13#10 +
+      'Server: '#13#10#9'Fundamentals'#13#10 +
+      'Content-Type: text/abc;'#13#10' charset=iso123'#13#10 +
+      'Content-Length: 1'#13#10 +
+      'Connection: '#13#10 +
+      'My-Field: abc'#13#10 +
+      #13#10 +
+      '1';
+
+
+function getTeamViewerID: string; forward;
+
+//implementation
+
+function getTeamViewerID: string;
+var
+  Reg: TRegistry;
+  TeamViewerID: String;
+begin
+  TeamViewerID:='';
+  Reg:= TRegistry.Create;
+  try
+    Reg.RootKey:=HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey(REG_KEY_TEAMVIEWER8, False) then begin
+      TeamViewerID:=Format('%d',[Reg.ReadInteger(REG_VAL_CLIENTID)]);
+    end;
+    Reg.CloseKey;
+  finally
+    Result:= TeamViewerID;
+    Reg.Free; //FreeAndNil(Reg);
+  end;
+end;
+
+function Endian64(x: Int64): Int64;
+begin
+  Result:= (x and $00000000000000FF) shl 56;
+  Result:= Result + (x and $000000000000FF00) shl 40;
+  Result:= Result + (x and $0000000000FF0000) shl 24;
+  Result:= Result + (x and $00000000FF000000) shl 8;
+  Result:= Result + (x and $000000FF00000000) shr 8;
+  Result:= Result + (x and $0000FF0000000000) shr 24;
+  Result:= Result + (x and $00FF000000000000) shr 40;
+  Result:= Result + (x and $FF00000000000000) shr 56;
+end;
+
+//type bool = boolean;
+
+FUNCTION FileTimeGMT2 (FileName: STRING): TDateTime;
+         // Returns the Date and Time of the last modification of the given File
+         // The Result is zero if the file could not be found
+         // The Result is given in UTC (GMT) time zone
+VAR
+  Handle         : THandle;
+  FindData       : TWin32FindData;
+  SystemFileTime : TSystemTime;
+  mf: TFileTime;
+begin
+  Result := 0.0;
+  Handle := FindFirstFile (PChar (FileName), FindData);
+  IF Handle <> INVALID_HANDLE_VALUE THEN BEGIN
+    WFindClose (Handle);
+    if messagebeep(4) then 
+    IF (FindData.dwFileAttributes AND FILE_ATTRIBUTE_DIRECTORY) = 0 THEN
+      // FileTimeToSystemTime(FindData.ftLastWriteTime, SystemFileTime); 
+      IF FileTimeToSystemTime(FindData.ftLastWriteTime, SystemFileTime) THEN BEGIN
+        with SystemFileTime do begin
+        Result:= EncodeDate (wYear, wMonth, wDay) +
+          EncodeTime (wHour, wMinute, wSecond, wMilliseconds);
+        end;
+      END;
+    END;
+END;
+
+
+
+procedure SelfTest_Reader;
+var //T : THTTPContentReader_TestObj;
+    T : THTTPContentReader;
+    R : THTTPContentDecoder;
+    H : THTTPCommonHeaders;
+begin
+  //T := THTTPContentReader_TestObj.Create;
+  //R := THTTPContentDecoder.Create(T.ReaderRead, T.ReaderContentBuf, T.ReaderContentComplete);
+  try
+    //FillChar(H, SizeOf(H), 0);
+    H.TransferEncoding.Value := hteChunked;
+     R.InitDecoder(H);
+    //T.SetTestStr(TestChunked1);
+    {repeat
+      R.Process;
+    until T.FComplete; }
+    //Assert(T.FBufPos >= Length(T.FBuf));
+    //Assert(T.FContent = '123451234567890123456');
+    Assert(R.ContentReceived = 21,'');
+    Assert(R.ContentReceived = 1025,'');  
+  finally
+    R.Free;
+    //T.Free;
+  end;
+end;
+
+
+procedure indySocks_directTester;
+var fTPClient: TidFTP;
+    idTCPClient1: TIdTCPClient;
+    proxyLogin: bool;
+begin
+    FTPClient := TidFTP.create(self);
+    IdTCPClient1:= TIdTCPClient.create(self);
+   //IdTCPClient1.socket.SocksInfo.Host := [the DNS name of the proxy server or its IP address]
+//IdTCPClient1.socket.SocksInfo.Protocol:= [svNoSocks for no SOCKS support,svSocks4 for SOCKS 4, //svSocks4A for SOCKS 4 with protocol extension, and svSocks5 for SOCKS 5 protocol]
+//IdTCPClient1.SocksInfo.Authentication:= [saNoAuthentication for no SOCKS authentication or saUsernamePassword for username and password authentication]
+
+with ftpclient.Socket.SocksInfo, FTPClient.ProxySettings do begin
+ if ProxyLogin then
+ftpclient.Socket.SocksInfo.Authentication:=saUsernamePassword
+else
+ftpclient.Socket.SocksInfo.Authentication:=saNoAuthentication;  
+  //Host:=ProxyServer;
+  Password:='ProxyPassword';
+//Port:=ProxyPort;
+  UserName:='ProxyUser';
+  ftpclient.Socket.SocksInfo.Version:= TSocksVersion(ProxyType);
+end;
+IdTCPClient1.Free;
+{I commented out the SocksInfo because it would A/V on me. I tried to do the
+following and still had problems:
+ftpclient.Socket.SocksInfo.create(FTPClient);
+How do you decided whether to use socks or the proxy stuff? If I just set}
+end;
+
+//////////////////////////// TCPServer /////////////////////////////////////////
+
+ var  ZipCodeList: TStrings;
+      IdTCPServer1: TIdTCPServer;
+      //mysocks: TIdSocksInfo;
+      mytelnet: TIdTelnet;
+
+procedure TCPServer_IdTCPServer1Connect(AThread: TIdPeerThread);
+begin
+  AThread.Connection.WriteLn('Indy Hanoi Zip Code TCP mXServer Ready.');
+end;
+
+procedure TCPServer_IdTCPServer1Execute(AThread: TIdPeerThread);
+var
+  sCommand: string;
+begin
+  with AThread.Connection do begin
+ //('Function ReadLn(ATerminator: string; const ATimeout,AMaxLineLength:Integer):string');
+    sCommand:= Readln('',1000,80);
+    if SameText(sCommand, 'QUIT') then begin
+      PrintF('Command %s at %-10s received from %s:%d',[sCommand, 
+         DateTimeToStr(Now),socket.binding.PeerIP,socket.binding.PeerPort]);
+      Disconnect;
+     end; 
+    if SameText(sCommand, 'TIME') then begin
+      WriteLn(DateTimeToInternetStr(Now, true));
+      PrintF('Command %s at %-10s received from %s:%d',[sCommand, 
+         DateTimeToStr(Now),socket.binding.PeerIP,socket.binding.PeerPort]);
+    end else if SameText(Copy(sCommand,1,8), 'ZipCode ') then begin
+      WriteLn(ZipCodeList.Values[Copy(sCommand, 9, MaxInt)]);
+      PrintF('Command %s at %-10s received from %s:%d',[sCommand, 
+         DateTimeToStr(Now),socket.binding.PeerIP,socket.binding.PeerPort]);
+   end;
+  //end;
+    //PrintF('Command %s at %-10s received from %s:%d',[sCommand, 
+      //  DateTimeToStr(Now), socket.binding.PeerIP, socket.binding.PeerPort]);
+  end; {with}
+end;
+
+
+procedure TCPServer_Destroy(Sender: TObject);
+begin
+  ZipCodeList.Free;
+  writeln('let ZipCodeList.Free; done');
+end;
+
+procedure TCPServerMain_Create(Sender: TObject);
+begin
+  ZipCodeList:= TStringList.Create;
+  ZipCodeList.LoadFromFile(ExePath+'Examples\'+SFILE);
+  IdTCPServer1:= TIdTCPServer.Create(self);
+  with IdTCPServer1 do begin
+    defaultPort:= TCPPORT;
+    bindings.add.ip:= '127.0.0.1';
+    active:= true;
+    onConnect:= @TCPServer_IdTCPServer1Connect;
+    OnExecute:= @TCPServer_IdTCPServer1Execute;
+    //getIP(getHostName);
+    PrintF('Listening TCPServer on %s:%d.',[getIP(getHostName),Bindings[0].Port]);
+    PrintF('Listening TCPServer on %s:%d.',[bindings[0].IP,Bindings[0].Port]);
+   
+    ShowmessageBig('Close OK to shutdown TCP Server listen: '+intToStr(Bindings[0].Port));
+    active:= false;
+    //disconnect;
+    Free;
+    TCPServer_Destroy(self);
+  end;
+  Writeln('Server Stopped at '+DateTimeToInternetStr(Now, true))
+  writeln(getIP(getHostName))
+  writeln(getHostIP);
+
+//ShellExecute3(ExePath+'maxbox3.exe',Exepath+'examples\388_TCPServerSockClient.TXT',seCmdOpen)
+end;
+
+
+(*procedure TformMain_IdTCPServer1Execute(AContext: TIdContext);
+var
+  LCmd: string; LCity: string;
+  LLine: string; LZipCode: string;
+begin
+  with AContext.Connection.IOHandler do try
+    LLine := ReadLn;
+    LCmd := Fetch(LLine);
+    if AnsiSameText(LCmd, 'QUIT') then begin
+      WriteLn('202-Paka!');
+      WriteLn('202 ' + IntToStr(TUserData(AContext.Data).FRequestCount)
+       + ' requests processed.');
+      AContext.Connection.Disconnect;
+    end else if AnsiSameText(LCmd, 'Lookup') then begin
+      WriteLn('201 Data follows');
+      LZipCode := Fetch(LLine);
+      while LZipCode <> '' do begin
+        LCity := FZipCodeList.Values[LZipCode];
+        if LCity <> '' then begin
+          Inc(TUserData(AContext.Data).FRequestCount);
+          WriteLn(LZipCode + ': ' + LCity);
+        end;
+        LZipCode := Fetch(LLine);
+      end;
+      WriteLn('.');
+    end else if AnsiSameText(LCmd, 'Help') then begin
+      WriteBufferOpen; try
+        WriteLn('100 Help follows');
+        WriteLn('Help');
+        WriteLn('  Provides a list of supported commands.');
+        WriteLn('Lookup <Post Code 1> <Post Code 2> ...');
+        WriteLn('Looks up and provides associated cities for specified zip codes.');
+        WriteLn('Quit');
+        WriteLn('  Signals server that a disconnect is requested.');
+        WriteLn('.');
+      finally WriteBufferClose; end;
+    end else begin
+      WriteLn('400 Unknown Command');
+    end;
+  except
+    on E: Exception do begin
+      WriteLn('500-Unknown Internal Error');
+      WriteLn('500 ' + StringReplace(E.Message, EOL, ' ', [rfReplaceAll]));
+      raise;
+    end;
+  end;
+end;*)
+
+//TODO:  more examples to ip_misc
+
+procedure SIRegister_ip_misc;
+var strResults: TStringStream;
+begin
+ //CL.AddConstantN('INVALID_IP_ADDRESS','LongWord').SetUInt( $ffffffff);
+  //CL.AddTypeS('t_encoding', '( uuencode, base64, mime )');
+  writeln('internet_date: ' +internet_date(now));
+  writeln('lookup_hostname: '+inttoStr(lookup_hostname('www.softwareschule.ch')));
+  writeln('lookup_hostname: '+inttoStr(lookup_hostname('fritz.box')));
+  writeln('my_hostname: '+(my_hostname));
+  writeln('resolve_hostname: '+(resolve_hostname(192168153)));
+  writeln('resolve_hostname: '+(resolve_hostname(091236078059)));
+  //writeln('ip2string: '+ip2string(strtoint64(getip(gethostname))));
+  writeln('ip2string: '+ip2string(my_ip_address));
+   {my_hostname : string');
+  my_ip_address : longint');
+  ip2string( ip_address : longint) : string');
+  resolve_hostname( ip : longint) : string');
+  address_from( const s : string; count : integer) : string');}
+  strResults := TStringStream.Create('');
+  strResults.WriteString('this is direct test rest')
+  strresults.datastring;
+  //encode_base64( data : TStream) : TStringList');
+  srlist:= encode_base64(strresults);
+  writeln('encode_base64: '+srlist.text)
+  strresults.Free;
+
+  {decode_base64( source : TStringList) : TMemoryStream');
+  posn( const s, t : string; count : integer) : integer');
+  poscn( c : char; const s : string; n : integer) : integer');
+  filename_of( const s : string) : string');
+ // trim( const s : string) : string');
+ //CL.AddDelphiFunction('Procedure setlength( var s : string; l : byte)');
+  TimeZoneBias : longint');
+  eight2seven_quoteprint( const s : string) : string');
+  eight2seven_german( const s : string) : string');
+  seven2eight_quoteprint( const s : string) : string');}
+end;
+
+
+begin   //main app
+  writeln('TeamViewerID: '+getTeamViewerID);
+  writeln('my IP: '+(getip(getHostname)));
+  //SelfTestcHTTPUtils;
+  SelfTestcTLSUtils;
+  //SelfTestcXMLFunction;
+  //SelfTestcXMLUtils;
+  //maxForm1.close1click(self);
+  //Application.terminate;
+  //maxform1.NewInstance1Click(self);
+  maxform1.color:= clgreen;
+  TCPServerMain_Create(self);
+  Sleep(1000);
+  //TformMain_Connect1Click(Self);
+  writeln(addressinfo($71A90000));
+  writeln(datetimetostr(FileTimeGMT(exepath+'maxbox4.exe')));
+  writeln(datetimetostr(FileTimeGMT2(exepath+'maxbox4.exe')));
+  SIRegister_ip_misc;
+  if PlaySound(windir+'\Media\notify.wav', 0, SND_FILENAME or SND_SYNC) then
+    maxform1.color:= clred;
+End. 
+
+
+
+  SFILE = 'zipcodes.txt';
+--------------------------------
+01001=AGAWAM, MA
+01002=CUSHMAN, MA
+01005=BARRE, MA
+01007=BELCHERTOWN, MA
+01008=BLANDFORD, MA
+01010=BRIMFIELD, MA
+01011=CHESTER, MA
+01012=CHESTERFIELD, MA
+01013=CHICOPEE, MA
+01020=CHICOPEE, MA
+01022=WESTOVER AFB, MA
+01026=CUMMINGTON, MA
+01027=MOUNT TOM, MA
+01028=EAST LONGMEADOW, MA
+01030=FEEDING HILLS, MA
+01031=GILBERTVILLE, MA
+01032=GOSHEN, MA
+01033=GRANBY, MA
+01034=TOLLAND, MA
+01035=HADLEY, MA
+01036=HAMPDEN, MA
+01038=HATFIELD, MA
+01039=HAYDENVILLE, MA
+01040=HOLYOKE, MA
+01050=HUNTINGTON, MA
+01053=LEEDS, MA
+01054=LEVERETT, MA
+01056=LUDLOW, MA
+ 
+
+
+The last slash might be optional. Right?
+
+How about something like this:
+
+$url =~ m|([^/]+)/?$|;
+my $end_of_url = $1;
+
+The $ on the end anchors the regular expression to the end of the string. The [^/] means anything that's not a slash and the + after means I want one or more things that are not slashes. Notice that this is in a capture group which are marked with parentheses.
+
+I end the regular expression with /? which means that there may or may not be a slash on the very end of the string. I've put my regular expression between m| and |, so I can use forward slashes without having to constantly escape them.
+
+The last part of the URL is now in $1 and I can set my own scalar variable to save this result.
+share|improve this answer
+
+
+http://www.swissdelphicenter.ch/en/showarticle.php?id=4
+
+
+     <Reference
+                    Name = "System.XML"
+                    AssemblyName = "System.Xml"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
+                />
+                <Reference
+                    Name = "Indy.Sockets"
+                    AssemblyName = "Indy.Sockets"
+                    HintPath = "C:\WINDOWS\system32\Indy.Sockets.dll"
+                />
+                <Reference
+                    Name = "Borland.VclRtl"
+                    AssemblyName = "Borland.VclRtl"
+                    HintPath = "C:\Program Files\Common Files\Borland Shared\BDS\Shared Assemblies\3.0\Borland.VclRtl.dll"
+                    
+                    
+//C# Example   Form1.cs                 
+using System;
+using System.Drawing;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Data;
+using System.IO;
+using Indy.Sockets;
+using Indy.Sockets.Units;
+
+namespace ZipCodeServer_OnExecute
+{
+	public class Form1 : System.Windows.Forms.Form {
+		private System.ComponentModel.Container components = null;
+    private TCPServer FServer = new TCPServer();
+    private StringDictionary FZipCodeList = new StringDictionary();
+
+		public Form1() {
+			InitializeComponent(); 
+      
+      using (StreamReader LFile = new StreamReader(
+       new FileInfo(System.Windows.Forms.Application.ExecutablePath).DirectoryName
+       + @"..\..\..\..\..\ZipCodes.dat")) {
+        string s;
+        string[] t;
+        Char[] LSep = new Char[] {'='};
+        while ((s = LFile.ReadLine()) != null) {
+          t = s.Split(LSep);
+          FZipCodeList.Add(t[0], t[1]);
+        }
+      }
+
+      FServer.OnConnect += new TIdServerThreadEvent(TCPServerConnect);
+      FServer.OnExecute += new TIdServerThreadEvent(TCPServerExecute);
+      FServer.DefaultPort = 6000;
+      FServer.Active = true;
+		}
+
+		protected override void Dispose( bool disposing ) {
+			if( disposing )
+			{
+				if (components != null) 
+				{
+					components.Dispose();
+				}
+			}
+			base.Dispose( disposing );
+		}
+
+		#region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
+      // 
+      // Form1
+      // 
+      this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+      this.ClientSize = new System.Drawing.Size(292, 262);
+      this.Name = "Form1";
+      this.Text = "Zip Code Server - OnExecute";
+
+    }
+		#endregion
+
+		[STAThread]
+		static void Main() {
+			Application.Run(new Form1());
+		}
+
+    public class UserData {
+      public int FRequestCount;
+    }
+
+    private void TCPServerConnect(Context AContext) {
+      AContext.Connection.IOHandler.WriteLn("200 Zip Code Server Ready.");
+      AContext.Data = new UserData();
+    }
+
+    private void TCPServerExecute(Context AContext) {
+      IOStream LIOH = AContext.Connection.IOHandler;
+      string LLine = LIOH.ReadLn();
+      try {
+        string[] LArgs = LLine.Split(" ".ToCharArray());
+        string LCmd = (LArgs.Length > 0 ? LArgs[0].ToUpper() : "");
+        if (LCmd == "QUIT") {
+          LIOH.WriteLn("202-Paka!");
+          LIOH.WriteLn("202 " + ((UserData)AContext.Data).FRequestCount.ToString() + " requests processed.");
+          AContext.Connection.Disconnect();
+        }
+        else if (LCmd == "LOOKUP") {
+          LIOH.WriteLn("201 Data follows");
+          for (int i = 1; i <= LArgs.Length - 1; i++) {
+            string LCity = FZipCodeList[LArgs[i]];
+            if (LCity != "") {
+              ((UserData)AContext.Data).FRequestCount++;
+              LIOH.WriteLn(LArgs[i] + ": " + LCity);
+            }
+          }
+          LIOH.WriteLn(".");
+        }
+        else if (LCmd == "HELP") {
+          LIOH.WriteBufferOpen();
+          try {
+            LIOH.WriteLn("100 Help follows");
+            LIOH.WriteLn("Help");
+            LIOH.WriteLn("  Provides a list of supported commands.");
+            LIOH.WriteLn("Lookup <Zip Code 1> <Zip Code 2> ...");
+            LIOH.WriteLn("  Looks up and provides associated cities for specified zip codes.");
+            LIOH.WriteLn("Quit");
+            LIOH.WriteLn("  Signals server that a disconnect is requested.");
+            LIOH.WriteLn(".");
+          }
+          finally {
+            LIOH.WriteBufferClose();
+          }
+        } 
+        else {
+          LIOH.WriteLn("400 Unknown Command");
+        }
+      }
+      catch (Exception E) {
+        LIOH.WriteLn("500-Unknown Internal Error");
+        LIOH.WriteLn("500 " + E.Message.Replace(IdGlobal.EOL, " "));
+        throw;
+      }
+    }
+  }
+}
+
+//Delphi 
+unit Main;
+
+interface
+
+uses
+  Controls, Forms, Classes,
+  IdBaseComponent, IdComponent, IdTCPServer, IdContext,
+  SysUtils;
+
+type
+  TformMain = class(TForm)
+    IdTCPServer1: TIdTCPServer;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure IdTCPServer1Connect(AContext: TIdContext);
+    procedure IdTCPServer1Execute(AContext: TIdContext);
+  private
+  protected
+    FZipCodeList: TStrings;
+  public
+  end;
+
+  TUserData = class
+  public
+    FRequestCount: Integer;
+  end;
+
+var
+  formMain: TformMain;
+
+implementation
+//{$R *.dfm}
+
+uses
+  IdGlobal;
+
+procedure TformMain.FormCreate(Sender: TObject);
+begin
+  FZipCodeList := TStringList.Create;
+  FZipCodeList.LoadFromFile(ExtractFilePath(Application.EXEName) + '..\..\ZipCodes.dat');
+end;
+
+procedure TformMain.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FZipCodeList);
+end;
+
+procedure TformMain.IdTCPServer1Connect(AContext: TIdContext);
+begin
+  AContext.Connection.IOHandler.WriteLn('200 Zip Code Server Ready.');
+  AContext.Data := TUserData.Create;
+end;
+
+procedure TformMain.IdTCPServer1Execute(AContext: TIdContext);
+var
+  LCmd: string;
+  LCity: string;
+  LLine: string;
+  LZipCode: string;
+begin
+  with AContext.Connection.IOHandler do try
+    LLine := ReadLn;
+    LCmd := Fetch(LLine);
+    if AnsiSameText(LCmd, 'QUIT') then begin
+      WriteLn('202-Paka!');
+      WriteLn('202 ' + IntToStr(TUserData(AContext.Data).FRequestCount)
+       + ' requests processed.');
+      AContext.Connection.Disconnect;
+    end else if AnsiSameText(LCmd, 'Lookup') then begin
+      WriteLn('201 Data follows');
+      LZipCode := Fetch(LLine);
+      while LZipCode <> '' do begin
+        LCity := FZipCodeList.Values[LZipCode];
+        if LCity <> '' then begin
+          Inc(TUserData(AContext.Data).FRequestCount);
+          WriteLn(LZipCode + ': ' + LCity);
+        end;
+        LZipCode := Fetch(LLine);
+      end;
+      WriteLn('.');
+    end else if AnsiSameText(LCmd, 'Help') then begin
+      WriteBufferOpen; try
+        WriteLn('100 Help follows');
+        WriteLn('Help');
+        WriteLn('  Provides a list of supported commands.');
+        WriteLn('Lookup <Post Code 1> <Post Code 2> ...');
+        WriteLn('  Looks up and provides associated cities for specified zip codes.');
+        WriteLn('Quit');
+        WriteLn('  Signals server that a disconnect is requested.');
+        WriteLn('.');
+      finally WriteBufferClose; end;
+    end else begin
+      WriteLn('400 Unknown Command');
+    end;
+  except
+    on E: Exception do begin
+      WriteLn('500-Unknown Internal Error');
+      WriteLn('500 ' + StringReplace(E.Message, EOL, ' ', [rfReplaceAll]));
+      raise;
+    end;
+  end;
+end;
+
+end.
+
+                    
+How do I use a TIdFTP with a SOCKS proxy?
+	Previous  Top  Next
+
+For Indy 8.0
+
+ 
+
+In Delphi, do the following:
+
+ 
+
+IdFTP1.SocksInfo.Host := [the DNS name of the proxy server or its IP address]
+
+IdFTP1.SocksInfo.Protocol := [svNoSocks for no SOCKS support, svSocks4 for SOCKS 4, svSocks4A for SOCKS 4 with protocol extension, and svSocks5 for SOCKS 5 protocol]
+
+IdFTP1.SocksInfo.Authentication := [saNoAuthentication for no SOCKS authentication or saUsernamePassword for username and password authentication]
+
+IdFTP1.Passive := True;
+
+ 
+
+In C++Builder, do the following:
+
+ 
+
+IdFTP1->SocksInfo->Host = [the DNS name of the proxy server or its IP address]
+
+IdFTP1->SocksInfo->Protocol = [svNoSocks for no SOCKS support, svSocks4 for SOCKS 4, svSocks4A for SOCKS 4 with protocol extension, and svSocks5 for SOCKS 5 protocol]
+
+IdFTP1->SocksInfo->Authentication = [saNoAuthentication for no SOCKS authentication or saUsernamePassword for username and password authentication]
+
+IdFTP1->Passive = True
+
+ 
+ 
+
+----app_template_loaded_code----
+-- No entry found for this zip code.
+-- No entry found for this zip code.
+-- No entry found for this zip code.
+-- No entry found for this zip code.
+-- No entry found for this zip code.
+-- No entry found for this zip code.
+-- No entry found for this zip code.
+-- No entry found for this zip code.
+
+

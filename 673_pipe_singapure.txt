@@ -1,0 +1,610 @@
+{***************************************************************
+ *            Uptime_4  on progess - namedpipe on work !!
+ * Project  : education system bITbox
+ * Unit Name: 672_regex_ask_task.txt
+ * Purpose  : Demonstrates a RegEx and/or a function doing the same task!
+ * Date     : 18/10/2012  -  14:38:5 
+ *          #sign:Max: MAXBOX10: 18/05/2016 13:10:46 
+ *          : 11/11/2015  - better process on/off  #locs:257
+ ****************************************************************}
+//compilerswitch $N- turns the coprocessor off, {$mode objfpc}{$H+} loc's =1
+
+PROGRAM Uptime_BooleanLAB_RegExTask_NamedPipe_LAB;
+
+function IsDebuggerPresentX: Boolean; 
+      external 'IsDebuggerPresent@KERNEL32.DLL stdcall';
+
+function getUserNameExA(nameform: DWord; namebuffer: array of char; 
+                                               var nsize: DWord): boolean;
+     external 'GetUserNameExA@secur32.dll stdcall';
+     
+
+
+var ApplicationEvents1: TApplicationEvents; 
+   NamedPipe: TNamedPipe2;
+   memoServer: TMemo;
+   NamedPipeClass : TNamedPipeServer;
+   namedpipeclient: TNamedPipeClient;
+   FNamedPipe: TNamedpipe2;
+
+const
+  cFmtText = '%.2x';
+  cBase = 16;
+  cDigitCount = 2;
+
+
+function GetSystemDirectory2(var S: String): Boolean;
+var Len: Integer;
+begin
+  Len:= {Windows.}GetSystemDirectory('Nil', 0);
+  if Len > 0 then begin
+    SetLength(S, Len);
+    //writeln(itoa(len))
+    Len:= {Windows.}GetSystemDirectory(PChar(S), Len);
+    SetLength(S, Len);
+    //writeln(itoa(len))
+    Result:= Len > 0;
+  end else
+    Result:= False;
+end;
+
+function GetNumbers(const Value: string): string;
+var
+  ch: char;
+  Index, Count: integer;
+begin
+  SetLength(Result, Length(Value));
+  Count := 0;      
+  for Index := 1 to length(Value) do begin
+    ch := Value[Index];
+    if (ch >= '0') and (ch <='9') then  begin
+      inc(Count);
+      Result[Count]:= ch;
+    end;
+  end;
+  SetLength(Result, Count);
+end;
+
+{Connecting by server name to a non-default pipe:
+
+Alias Name         <serveralias>
+Pipe Name          \\<servername>\pipe\unit\app
+Protocol           Named Pipes
+Server             <servername>
+
+}
+
+function readLine: widestring;
+var mess: widestring;
+  begin
+    mess:= '10';
+    if FNamedPipe.Connected then
+        FNamedPipe.Read1(mess);
+    while Result = '' do
+    begin
+       Application.ProcessMessages;
+       if FNamedPipe.Connected then begin
+          FNamedPipe.Read1(mess)
+          result:= mess;
+         end  else
+          sleep(10);
+    end;
+
+  end;
+
+procedure TfrmNamedPipeBase_btnConnectClick(Sender: TObject);
+var namedpipe1: TNamedpipe;
+begin
+  if not Assigned(NamedPipe) then
+    begin
+      NamedPipe := TNamedPipeClient.Create('js_debug_pipe', 'maxbox10');
+      writeln('pipe client assigned')
+    end;
+    NamedPipe := TNamedPipeClient.Create('js_debug_pipe', 'maxbox10');
+   
+    writeln('pipe handle '+itoa(namedpipe.handle))
+  if NamedPipe.Open('','') then begin
+      {btnSendMessage.Default := True;
+      btnSendMessage.Enabled := True;
+      btnConnect.Default := False;
+      btnConnect.Enabled := False; }
+      namedpipe1:= namedpipe as TNamedpipe;
+      //TNamedPipeThread.Create(TNamedpipe(NamedPipe1), memoServer); 
+      TNamedPipeThread.Create(NamedPipe, memoServer); 
+    
+      //TNamedPipeThread.Create(TNamedpipe(NamedPipe), memoServer); 
+    end else
+    begin
+      ShowMessage('Unable to connect to server! Activate server first!');
+    end;
+end;
+
+procedure TfrmNamedPipeBase_btnSendMessageClick(Sender: TObject);
+begin
+  if Assigned(NamedPipe) then
+    begin
+      NamedPipe.Write('leMessage.Text');
+      //leMessage.Text := '';
+    end else
+    begin
+      ShowMessage('Named Pipe not opened');
+    end;
+end;
+
+function ParseUrlParams(AParams: string): TStringList;
+
+var
+
+  i : Integer;
+
+  sParams : TStringList;
+
+begin
+
+  AParams := UrlDecode(AParams);
+
+  AParams := StringReplace(AParams, '+', ' ', [rfReplaceAll]);
+
+  sParams := TStringList.Create;
+
+  Result := TStringList.Create;
+
+  try
+
+    //StringOfSplit(sParams, AParams, '&'); // Delimeter ??
+
+    for i := 0 to sParams.Count - 1 do begin
+
+        //Result.Values[StringOfLeft(sParams[i], '=')] := StringOfRight(sParams[i], '=')
+
+    end;
+
+  finally
+
+    sParams.Free;
+
+  end;
+
+end;
+
+//[??] mORMot ?????? ??? NamedPipe ??(In-Process)|??? futurewave
+
+ var FhPipe: THandle;
+
+  //main form list call  
+ Begin
+    //calls some test functions
+    printF('this is %.18f ',[maxCalc('ln(2)^e')]);
+    printF('this is %.18f ',[maxCalc('sqr(cos(ln(2)^e))')]);
+    printF('this is %.4f ',[maxCalc('sqrt(e^(ln(2)))')]);
+    printF('this is Area of r=1  %.18f ',[maxCalc('PI*(1^2)')]);
+    printF('this is Area of d=2r %.18f ',[maxCalc('PI/4*(2^2)')]);
+    writeln(getVersionString(exepath+'maxbox4.exe'));
+    sr:= loadFileAsString(exepath+'maxbox_functions_all.pdf');
+    writeln('file compare J: '+inttoStr(CompText(sr, sr)));
+    writeln('file lenght size: '+intToStr(length(sr)));
+    writeln('getSystemDir: '+botostr(getSystemDirectory2(sr)))   
+      writeln(sr)
+      writeln('UpTime: '+UpTime)
+      writeln(B2X(255)) 
+      
+      FhPipe := CreateNamedPipe('\\.\pipe\ChooseYourPipeName',
+       PIPE_ACCESS_DUPLEX,
+       PIPE_TYPE_MESSAGE or PIPE_READMODE_MESSAGE or PIPE_WAIT,
+       PIPE_UNLIMITED_INSTANCES,
+       4004, 1004, 100, 'nil');
+     if FhPipe = INVALID_HANDLE_VALUE then
+     begin
+       //MyService.LogMessage(Format('Can''t create pipe: %d',
+         //[GetLAstError]), EVENTLOG_INFORMATION_TYPE, 0, 0);
+       writeln('Terminate;')
+       //exit;
+     end; //}
+     closeHandle(fhpipe)
+      
+    {  I was developing a program that validate a CPF, a type of document of my country. I already did all the math. But in the input Edit1, the user will insert like:
+       123.456.789-00
+I have to get only the numbers, without the hyphen and the dots, to my calcs worth. }
+
+    sr := '123.456.789-00$p'
+    writeln(ReplaceRegExpr('\D',sr,'',true))
+    
+    //\D is a non-digit, and \W is a non-word character, both should work)
+    
+    Writeln(GetNumbers('123.456.789-00'));
+    
+   // http://delphi-javascript.googlecode.com/svn-history/r6/trunk/jsDbgServer.pas
+    //NamedPipeClass:= TNamedPipeServer.create('\\.\pipe\boxPipeName', '');
+    NamedPipeClass:= TNamedPipeServer.create('js_debug_pipe', 'maxbox10');
+    
+    //http://www.devsuperpage.com/search/Articles.asp?ArtID=915038
+   // NamedPipeClass:= TNamedPipeServer.create('\\.\pipe\boxPipeName', '');
+   // NamedPipeClass:= TNamedPipeServer.create('boxPipeName', 'box');
+   //  NamedPipeClass:= TNamedPipeServer.Create('js_debug_pipe','');
+     NamedPipe:= TNamedPipe2.Create('js_debug_pipe','maxbox10');
+   
+     NamedPipe.Open('','');
+    //ErrorNamedPipe('some pipe err')
+    writeln('NamedPipehandle '+itoa(NamedPipeClass.handle));
+    //NamedPipeClass.read;
+     // NamedPipeClass.connect;
+    //RegisterVirtualMethod(@TNamedPipe2.Open, 'Open');
+    //if NamedPipeClass.open('','') then
+    
+       TfrmNamedPipeBase_btnConnectClick(self);
+    NamedPipeClass.close;
+    
+    NamedPipeClass.free;
+    namedpipe.Free;
+    
+    writeln(botostr(IsDebuggerPresentX))
+    //PROGRESS_CONTINUE //FILE_FLAG_WRITE_THROUGH CREATE_ALWAYS //CREATE_NEW
+    //SetSwapAreaSize 
+   // HiWord
+    
+    //TRTLCriticalSectionDebug
+     //TRTLCriticalSection    
+     //TImageFileHeader
+      //_CONTEXT //TContext  //SidTypeUser TTokenType //IMAGE_FILE_HEADER
+     
+       //        brInternet
+         //brTemplates
+       //poCustom  //TFolder 
+       //poScreenCenter //podefault
+     
+     
+           
+End.
+
+
+Doc & ref:
+
+procedure SIRegister_TNamedPipeClient(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TNamedPipe2', 'TNamedPipeClient') do
+  with CL.AddClassN(CL.FindClass('TNamedPipe2'),'TNamedPipeClient') do
+  begin
+    RegisterMethod('Procedure CheckConnected');
+    RegisterMethod('Procedure Connect');
+    RegisterMethod('Function Open(const UserName: WideString; const Password: WideString) : Boolean');
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TNamedPipeServer(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TNamedPipe2', 'TNamedPipeServer') do
+  with CL.AddClassN(CL.FindClass('TNamedPipe2'),'TNamedPipeServer') do
+  begin
+    RegisterMethod('Procedure CheckConnected');
+    RegisterMethod('Procedure Connect');
+    RegisterMethod('Function Open(const UserName: WideString; const Password: WideString) : Boolean');
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TNamedPipe2(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TOBJECT', 'TNamedPipe2') do
+  with CL.AddClassN(CL.FindClass('TOBJECT'),'TNamedPipe2') do begin
+    RegisterMethod('Constructor Create( const PipeName : WideString; const Server : WideString)');
+     RegisterMethod('Procedure Free');
+       RegisterMethod('Procedure CheckConnected');
+    RegisterMethod('Function Open(const UserName: WideString; const Password: WideString) : Boolean');
+    RegisterMethod('Procedure Close');
+    RegisterMethod('Function Read : WideString;');
+    RegisterMethod('Procedure Read1( var Buffer : WideString);');
+    RegisterMethod('Procedure Write( const Message : WideString)');
+    RegisterMethod('Procedure Connect');
+    RegisterMethod('Procedure Disconnect');
+    RegisterProperty('Connected', 'Boolean', iptr);
+    RegisterProperty('Handle', 'THandle', iptr);
+    RegisterProperty('TimeOut', 'Cardinal', iptrw);
+    RegisterProperty('OnError', 'TError', iptrw);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_NamedPipesImpl(CL: TPSPascalCompiler);
+begin
+ CL.AddConstantN('NamedPipeLocalHost','String').SetString( '.');
+ CL.AddConstantN('NamedPipeIOBufferSize','LongInt').SetInt( 16384);
+ CL.AddConstantN('NamedPipeOutputBufferSize','longint').SetInt(16384);
+ CL.AddConstantN('NamedPipeInputBufferSize','longint').SetInt(16384);
+  CL.AddTypeS('TError', 'Procedure ( const Msg : string)');
+  SIRegister_TNamedPipe2(CL);
+  SIRegister_TNamedPipeServer(CL);
+  SIRegister_TNamedPipeClient(CL);
+  SIRegister_ENamedPipe(CL);
+  //CL.AddTypeS('TNamedPipeClass', 'class of TNamedPipe');
+ CL.AddDelphiFunction('Function NetLogon( const Server, User, Password : WideString; out ErrorMessage : string) : Boolean');
+ CL.AddDelphiFunction('Function NetLogoff( const Server, User, Password : WideString) : Boolean');
+ CL.AddDelphiFunction('Procedure ErrorNamedPipe( const Message : string)');
+end;
+
+
+  lambda: a+b --> a.+(b)
+
+  type
+    TCaptionTextControl = class(TControl);
+    TCaptionTextControl(Controls[i]).Caption := 'Whatever you Want';
+
+
+Proposal for Abreviation Symbol:
+
+  01 FALSE    //Contradiction
+
+  02 AND      //Conjunction x*y
+
+  03 INHIB    //Inhibition x*^y
+
+  04 PRAEP    //Praependence x
+
+  05 PRAE     //Praesection ^x*y
+
+  06 POST     //Postpendence y
+
+  07 XOR      //Exclusive OR x*^y+^x*y
+
+  08 OR       //Disjunction OR = x+y
+
+  09 NOR      //Rejection
+
+  10 AEQ      //Aequivalence x<-->y, ^x*^y+x*y
+
+  11 NEGY     //YNegation ^y
+
+  12 IMPY     //YImplication y-->x; x+^y
+
+  13 NEGX     //Xnegation ^x
+
+  14 IMPX     //XImplication x-->y; ^x+y
+
+  15 NAND     //Exclusion
+
+  16 TRUE     //TRUE Tautologic
+  
+
+ //ShellExecute in W64
+//ExecuteCommand('cmd','/k FC /L/N C:\maxbook\maxbox3\maxbox391.exe C:\maxbook\maxbox3\maxbox3.exe')
+ //  ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxboxdef1.ini C:\maxbook\maxbox3\maxboxdef2.ini')
+   
+
+getRulesbyContract  
+
+  couple of slides i have but you got the point
+  one important things that i want to stress
+  difference between data and delta is the difference
+  units to add :
+  
+unit SqlExpr;  // is just there integrate?
+unit DBXCommon;
+unit DBXPlatform;
+unit DBConnAdmin;
+unit IdVCard;  //check strtofloat
+unit IdTimeServer;
+unit IdTimeUDPServer;
+unit IdTimeUDP;
+unit TIdUDPServer
+unit IdIPWatch;
+unit IdMessageCollection;
+unit IdRexec;  //sort of remote execution
+unit IdRexecServer;
+unit IdRemoteCMDServer,
+unit IdRemoteCMDClient;
+
+unit uwinplot;   from dmat085
+   File name:        cUtils.pas unit cUtils;
+
+:: ***********************************************
+:: Compilation of DMath library for Delphi/Windows
+:: ***********************************************
+
+dcc32 dmath.dpr -$O+ -U..\units -DDELPHI 
+dcc32 dmath.pas -$O+ -I..\units -DDELPHI                                              }
+
+ add in menu by help dmath.pdf
+ navigator look at dependency viewer at the right site : skip list
+
+  with CL.AddClassN(CL.FindClass('TCustomListView'),'TListView') do begin
+  RegisterPublishedProperties;
+constructor is missing! to define in down class
+
+ListView1.Visible is missing     --->uPSI_ComCtrls.pas 
+ListView1.AddItem is missing
+more properties in downclass
+
+  Col.Width := 140; is missing //tcolumn  check 230_DataSetXMLBackupScholz2.txt
+             SQLQuery1['fullname']; is there a default propertie?
+                   
+ www.jensendatasystems.com/ekon16cds.zip
+
+check TSession.Free
+  writeln(createclassid);  from comobj unit
+
+check  with ListView1 do begin  tlistview constructor of columns.add ?
+   
+check all resources of add ons:
+- mp3 player ->ok
+- cipher file -> Tstringlist
+- memory game -> ok
+- 4 gewinnt ->ok
+- picture game -tbitmap, tbitmapimage  (if new picture or to picture)
+- maxplorer ->ok  (if drag n drop a tList is not freed)
+- cryptobox -> TStringlist
+
+Scan-Report of: maxbox3.zip
+Ahnlab	-
+AntiVir	OK
+Avast	OK
+AVG	OK
+BitDefender	OK
+CA-AV	OK
+Command	OK
+Command (Online)	OK
+Eset Nod32	OK
+Fortinet	OK
+F-Prot	OK
+G Data	OK
+Ikarus	OK
+K7 Computing	OK
+Kaspersky	OK
+Kaspersky (Online)	OK
+McAfee	OK
+McAfee (BETA)	OK
+McAfee (Online)	OK
+McAfee GW Edition (Online)	OK
+Microsoft	OK
+Norman	OK
+Panda	OK
+Panda (Online)	OK
+QuickHeal	Suspicious (warning)
+Rising	OK
+Sophos	OK
+Sophos (Online)	OK
+Sunbelt	OK
+Symantec	OK
+Symantec (BETA)	OK
+Trend Micro	OK
+Trend Micro (Cons.)	OK
+Trend Micro (CPR)	OK
+VBA32	OK
+VirusBuster	OK  
+This unit provides a powerfull hexadecimal editor component @link(TKHexEditor)
+  with following major features:
+  <UL>
+  <LI><I>advanced editing capabilities</I></LI>
+  <LI><I>advanced rendering styles</I></LI>
+  <LI><I>clipboard operations</I></LI>
+  <LI><I>virtually unlimited undo/redo operations</I></LI>
+  <LI><I>key mapping functionality</I></LI>
+  <LI><I>fast search/replace function</I></LI>
+  <LI><I>print/preview function</I></LI>
+  </UL>
+object frmNamedPipeBase: TfrmNamedPipeBase
+  Left = 8
+  Top = 8
+  Width = 525
+  Height = 296
+  Caption = 'Named Pipe Server'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object GroupBox1: TGroupBox
+    Left = 0
+    Top = 0
+    Width = 517
+    Height = 147
+    Align = alTop
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Caption = 'Named Pipe Details'
+    TabOrder = 0
+    DesignSize = (
+      517
+      147)
+    object leServer: TLabeledEdit
+      Left = 12
+      Top = 28
+      Width = 121
+      Height = 21
+      EditLabel.Width = 31
+      EditLabel.Height = 13
+      EditLabel.Caption = 'Server'
+      TabOrder = 0
+      Text = '.'
+    end
+    object lePipeName: TLabeledEdit
+      Left = 146
+      Top = 26
+      Width = 121
+      Height = 21
+      EditLabel.Width = 52
+      EditLabel.Height = 13
+      EditLabel.Caption = 'Pipe Name'
+      TabOrder = 1
+      Text = 'NamedPipeDemo'
+    end
+    object btnConnect: TButton
+      Left = 432
+      Top = 28
+      Width = 75
+      Height = 25
+      Caption = 'Connect'
+      Default = True
+      TabOrder = 2
+      OnClick = btnConnectClick
+    end
+    object leMessage: TLabeledEdit
+      Left = 4
+      Top = 120
+      Width = 511
+      Height = 21
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      EditLabel.Width = 43
+      EditLabel.Height = 13
+      EditLabel.Caption = 'Message'
+      TabOrder = 3
+    end
+    object btnSendMessage: TButton
+      Left = 328
+      Top = 28
+      Width = 75
+      Height = 25
+      Caption = 'Send'
+      Enabled = False
+      TabOrder = 4
+      OnClick = btnSendMessageClick
+    end
+    object LabeledEdit1: TLabeledEdit
+      Left = 12
+      Top = 72
+      Width = 121
+      Height = 21
+      EditLabel.Width = 71
+      EditLabel.Height = 13
+      EditLabel.Caption = 'NT User Name'
+      TabOrder = 5
+    end
+    object LabeledEdit2: TLabeledEdit
+      Left = 146
+      Top = 72
+      Width = 121
+      Height = 21
+      EditLabel.Width = 89
+      EditLabel.Height = 13
+      EditLabel.Caption = 'NT User Password'
+      PasswordChar = '*'
+      TabOrder = 6
+    end
+  end
+  object memoServer: TMemo
+    Left = 0
+    Top = 147
+    Width = 517
+    Height = 122
+    Align = alClient
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 1
+  end
+end
+
+Restposten zum Superpreis so lange der Vorrat reicht! Katalogpreis 2015: 204,00 €
+
+Elektrolokomotive Re 4/4'' in TEE Farbgebung der Schweizerischen Bundesbahnen, Epoche IV - V.
+
+Neukonstruktion 2014.
+Highlights:
+
+- Kurzkupplungskinematik
+- Feine Stromabnehmer
+- LED-Beleuchtung
+- Feine Ätzteile
+- Separate Steckteile
+
+Antrieb auf alle vier Achsen. Schnittstelle nach NEM 651 zur Aufnahme eines Decoders. Kupplungsaufnahme nach NEM 355. Dreilicht-Spitzenbeleuchtung mit der Fahrtrichtung wechselnd (weiß/rot).

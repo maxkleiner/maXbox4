@@ -1,0 +1,309 @@
+PROGRAM GETTYPELIB_List_Attach_Specials;
+
+//////////////////////////////////////////////////////////////////////
+//  #sign:26:48Max: MAXBOX10: 17/05/2016 22:34:50  AM 
+//  Purpose: shows 2 very senseful functions                        //
+//  #path>C:\Program Files (x86)\maxbox3\Import\IPC\maxbox4\maxbox4\examples\
+//  Lines of Code #locs:191
+//////////////////////////////////////////////////////////////////////
+
+Const TEXTOUT = 'Hi CODEsign with cover age';
+
+//############################################################################
+// Archimedes Spiral Function Fun codeSIGN
+//############################################################################
+//TODO: Combine this two functions in one call
+
+
+Function IntToBase32X(Numb: Longint): String;
+begin
+  Result:= '';
+  for It:= 0 to 4 do begin
+    Insert(NUMBLETTS[(Numb And 31)+1], Result, 1);
+    Numb:= Numb Shr 5;
+  end;
+end;
+
+function CountPos(const subtxt: string; Text: string): Integer;
+begin
+  if (Length(subtxt)= 0) Or (Length(Text)= 0) Or (Pos(subtxt,Text)= 0) then
+    result:= 0
+  else
+    result:= (Length(Text)- Length(StringReplace(Text,subtxt,'',
+      [rfReplaceAll]))) div Length(subtxt);
+end;
+
+
+  //myform
+{
+  This is a simple example how to print an Excel file using OLE.
+}
+
+//http://www.swissdelphicenter.ch/en/showcode.php?id=1328
+
+procedure PrintExcel(Sender: TObject);
+var
+  ExcelApp: OLEVariant;
+begin
+  // Create an Excel instance
+  ExcelApp:= CreateOleObject('Excel.Application');
+  try
+    ExcelApp.Workbooks.Open('C:\test\xyz.xls');
+    // you can also modify some settings from PageSetup
+    ExcelApp.ActiveSheet.PageSetup.Orientation:= xlLandscape;
+    // Print it out
+    // Ausdrucken
+    ExcelApp.Worksheets.PrintOut;
+  finally
+    // Close Excel
+    // Excel wieder schliessen
+    if not VarIsEmpty(ExcelApp) then begin
+      ExcelApp.Quit;
+      ExcelApp:= Unassigned;
+    end;
+  end;
+end;
+
+{It's a recursiv one :-}
+function RecurseWin32(const R: TRegistry; const ThePath: string;
+  const TheKey: string): string;
+var
+  TheList: TStringList;
+  i: Integer;
+  LP: string;
+  OnceUponATime: string;
+begin
+  Result  := '-';
+  TheList := TStringList.Create;
+  try
+    R.OpenKey(ThePath, False);
+    R.GetKeyNames(TheList);
+    R.CloseKey;
+    if TheList.Count = 0 then Exit;
+    for i := 0 to TheList.Count - 1 do with TheList do begin
+        LP := ThePath + '\' + TheList[i];
+        if CompareText(Strings[i], TheKey) = 0 then begin
+          Result := LP;
+          Break;
+        end;
+        OnceUponATime := RecurseWin32(R, LP, TheKey);
+        if OnceUponATime <> '-' then begin
+          Result := OnceUponATime;
+          Break;
+        end;
+      end;
+  finally
+    TheList.Clear;
+    TheList.Free;
+  end;
+end;
+
+{ Create the output list: you may change the format as you need ...}
+  //http://www.swissdelphicenter.ch/en/showcode.php?id=866
+  
+function GetWin32TypeLibList(var Lines: TStringList): Boolean;
+var 
+  R: TRegistry;
+  W32: string;
+  i, j, TheIntValue, TheSizeOfTheIntValue: Integer;
+  TheSearchedValue, TheSearchedValueString: string;
+  TheVersionList, TheKeyList: TStringList;
+  TheBasisKey: string;
+begin
+  Result := True;
+  try
+    try
+      R          := TRegistry.Create;
+      TheVersionList := TStringList.Create;
+      TheKeyList := TStringList.Create;
+
+      R.RootKey := HKEY_CLASSES_ROOT;
+      R.OpenKey('TypeLib', False);
+      TheBasisKey := R.CurrentPath;
+
+      (* Basis Informations *)
+      case R.GetDataType('') of
+        rdUnknown: ShowMessage('Nothing ???');
+        rdExpandString, rdString: TheSearchedValueString := R.ReadString('');
+        rdInteger: TheIntValue         := R.ReadInteger('');
+        rdBinary: TheSizeOfTheIntValue := R.GetDataSize('');
+      end;
+      (* Build the List of Keys *)
+      R.GetKeyNames(TheKeyList);
+      R.CloseKey;
+      ShowMessage(TheKeyList.Strings[1]);
+      for i := 0 to TheKeyList.Count - 1 do
+         (* Loop around the typelib entries)
+         (* Schleife um die TypeLib Einträge *)
+        with TheKeyList do
+          if Length(Strings[i]) > 0 then 
+          begin
+            R.OpenKey(TheBasisKey + '\' + Strings[i], False);
+            TheVersionList.Clear;
+            R.GetKeyNames(TheVersionList);
+            R.CloseKey;
+            (* Find "Win32" for each version *)
+            (* Finde der "win32" für jede VersionVersion:*)
+            for j := 0 to TheVersionList.Count - 1 do
+              if Length(TheVersionList.Strings[j]) > 0 then 
+              begin
+                W32 := RecurseWin32(R, TheBasisKey + '\' +
+                  Strings[i] + '\' +
+                  TheVersionList.Strings[j],
+                  'Win32');
+                if W32 <> '-' then 
+                begin
+                  Lines.Add(W32);
+                  R.OpenKey(W32, False);
+                  case R.GetDataType('') of
+                    rdExpandString,
+                    rdString: TheSearchedValue := R.ReadString('');
+                    else
+                      TheSearchedValue := 'Nothing Type!!!';
+                  end;
+                  R.CloseKey;
+                  Lines.Add('-----> ' + TheSearchedValue);
+                end;
+              end;
+          end;
+    finally
+      TheVersionList.Free;
+      TheKeyList.Free;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+
+ var
+  L: TStringList;
+
+
+Begin  //main
+ writeln('IntToBase32 of 1000: '+IntToBase32X(1000))
+ writeln('CountPos: '+itoa(CountPos('max','this is max of maXbox a max numbermax')))
+ PrintF('CountPos: %d',[CountPos('max','this is max of maXbox a max numbermax')])
+  L:= TStringList.Create;
+  GetWin32TypeLibList(L);
+  Memo2.Lines.Assign(L);
+  L.Free;
+End. 
+
+
+Ref:
+
+//############################################################################
+// Archimedes Spiral App
+//############################################################################
+
+unit ArchSpiralMain;
+
+interface
+
+uses
+  w3system, w3components, w3ctrls, w3application, w3game, w3gameapp,
+  w3polygons, w3inet, w3graphics;
+
+type
+  TApplication = class(TW3CustomGameApplication)
+  private
+    FValueA: Float;
+    FValueB: Float;
+    FWait: Boolean;
+    procedure HandleClick(Sender:TObject);
+  protected
+    procedure ApplicationStarting; override;
+    procedure ApplicationClosing; override;
+    procedure PaintView(Canvas: TW3Canvas); override;
+  end;
+
+implementation
+
+//############################################################################
+// TApplication
+//############################################################################
+
+procedure TApplication.ApplicationStarting;
+begin
+  inherited;
+
+  FValueA := 3.0;
+  FValueB := 1.4;
+
+  GameView.OnClick := Self.HandleClick;
+
+  // Initialize refresh interval, set this to 1 for optimal speed
+  GameView.Delay := 10;
+ 
+  // Start the redraw-cycle with framecounter active
+  // Note: the framecounter impacts rendering speed. Disable
+  // the framerate for maximum speed (false)
+  GameView.StartSession(true);
+end;
+
+procedure TApplication.ApplicationClosing;
+begin
+  GameView.EndSession;
+  inherited;
+end;
+
+procedure TApplication.HandleClick(Sender: TObject);
+begin
+  FWait := not FWait;
+end;
+
+// Note: In a real live game you would try to cache as much
+// info as you can. Typical tricks are: 
+//   1: Only get the width/height when resized
+//   2: Pre-calculate strings, especially RGB/RGBA values
+//   3: Only redraw what has changed, avoid a full repaint
+// The code below is just to get you started
+
+procedure TApplication.PaintView(Canvas: TW3Canvas);
+var
+  cx, cy: Integer;
+  i: Integer;
+  angle: Float;
+  x, y: Float;
+begin
+  if FWait then
+    exit;
+
+  FValueB := FValueB + 0.001;
+
+  // Clear background
+  Canvas.FillStyle := 'rgba(0,0,99,0.08)';
+  Canvas.FillRectF(0, 0, GameView.Width, GameView.Height);
+
+  // Draw our framerate on the screen
+//  Canvas.font := '10pt verdana';
+//  Canvas.FillStyle := 'rgb(255,255,255)';
+//  Canvas.FillTextF('FPS:' + IntToStr(GameView.FrameRate) + ' / ' + floatToStr(FbValue) ,10,20,MAX_INT);
+
+  cx := GameView.width div 2;
+  cy := GameView.Height div 2;
+  Canvas.BeginPath;
+
+  for i := 42 downto 0 do
+  begin
+    angle := FValueB * i;
+    x := cx + (FValueA + FValueB * angle) * cos(angle);
+    y := cy + (FValueA + FValueB * angle) * sin(angle);
+    if i = 42 then Canvas.MoveToF(x, y) else Canvas.LineToF(x,y);
+  end;
+
+  Canvas.StrokeStyle := '#FFF';
+  Canvas.Stroke;
+end;
+
+end.
+
+
+  RegisterMethod('Constructor Create(AOwner: TComponent)');
+  RegisterConstructor(@TJvMail.Create, 'Create');
+ 
+   RegisterMethod('Procedure Free');
+   RegisterMethod(@TJvMail.Destroy, 'Free');
+   
+----app_template_loaded_code----

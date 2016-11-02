@@ -1,0 +1,675 @@
+Program ZEOS_TestDemo; //in progress
+
+//////////////////////////////////////////////////////////////////////
+//  Get several functions of ZEOS utilities to test                 //
+//  #sign:max: MAXBOX7: 17.05.2016 14:08:15 
+//  Purpose: checks convert and SQL  controls                       //
+//  #path>save\C:\maxbook\maxbox3\mx39\maxbox3\maxbox3\examples_save\/
+//  2 func, 0 proc: Lines of Code #locs:212
+//////////////////////////////////////////////////////////////////////
+
+{unit uPSI_ZSysUtils; }
+
+//uPSI_uLkJSON.pas, uPSI_HotLog; IndyPac3}
+//TODO: find an example for all functions
+//TODO: Save image to webserver_file, turn procedure [DownloadJPEGTo..] to function
+
+Const
+   UrlGoogleQrCode= 'http://chart.apis.google.com/chart?chs=%dx%d&cht=qr&chld=%s&chl=%s';
+   AFILENAME= 'mX3QRCode3.png';
+   QDATA= 'this is maXland on a maXbox stream dream firebox';
+  
+type
+  TQrImage_ErrCorrLevel=(L,M,Q,H);
+
+var
+  js:TlkJSONobject;
+  xs:TlkJSONbase;
+  ws: String;
+  
+// i improve test for version 0.94 - add random part to names of fields;
+// it smaller decrease speed of generation, but much better for testing
+// Leon, 27/03/2007
+{.$define usefastmm}
+
+
+procedure SIRegister_ZSysUtils_Demo;
+var //lv: TTreeview;
+     lv: TListView;
+     Item: TListItem;
+     mybuffer: TObject;
+     mybuffer2: TStrings;
+     bytebuffer: TDynBytearray;
+     i: integer;
+    findtext: string;
+begin
+ // CL.AddTypeS('TZListSortCompare', 'Function (Item1, Item2 : TObject): Integer');
+  //SIRegister_TZSortedList(CL);
+  //FirstDelimiter( const Delimiters, Str : string) : Integer');
+  //LastDelimiter( const Delimiters, Str : string) : Integer');
+ // MemLCompUnicode( P1, P2 : PWideChar; Len : Integer) : Boolean');
+ // MemLCompAnsi( P1, P2 : PAnsiChar; Len : Integer) : Boolean');
+  //StartsWith( const Str, SubStr : WideString) : Boolean;');
+  //StartsWith1( const Str, SubStr : RawByteString) : Boolean;');
+  //EndsWith( const Str, SubStr : WideString) : Boolean;');
+  //EndsWith1( const Str, SubStr : RawByteString) : Boolean;');
+  //SQLStrToFloatDef( Str : RawByteString; Def : Extended) : Extended;');
+  //SQLStrToFloatDef1( Str : String; Def : Extended) : Extended;');
+  //SQLStrToFloat( const Str : AnsiString) : Extended');
+ // BufferToStr( Buffer : PWideChar; Length : LongInt) : string;');
+ // BufferToStr1( Buffer : PAnsiChar; Length : LongInt) : string;');
+   
+   mybuffer2:= TStringlist.create;
+   mybuffer2.text:='this is text trex';
+   findtext:= 'A this is text trex';
+   //bytebuffer:= BufferToBytes(TObject(findtext), length(findtext));
+   
+   bytebuffer:= BufferToBytes(mybuffer2, length(mybuffer2.text));
+   for i:= 0 to length(bytebuffer)-1 do 
+    write(inttoStr(bytebuffer[i])+' ');
+   //writeln('StrToBoolEx '+( Str : string) : Boolean');
+   writeln('BoolToStrEx  '+BoolToStrEx(true));
+  if IsIpAddr('192.168.117.4') then writeln('is IP Addr');
+  //SplitString( const Str, Delimiters : string) : TStrings');
+ //PutSplitString( List : TStrings; const Str, Delimiters : string)');
+ //AppendSplitString( List : TStrings; const Str, Delimiters : string)');
+  //ComposeString( List : TStrings; const Delimiter : string) : string');
+  writeln('FloatToSQLStr '+FloatToSQLStr(345.567));
+ //PutSplitStringEx( List : TStrings; const Str, Delimiter : string)');
+  //SplitStringEx( const Str, Delimiter : string) : TStrings');
+ //AppendSplitStringEx( List : TStrings; const Str, Delimiter : string)');
+  //BytesToStr( const Value : TByteDynArray) : AnsiString');
+  //StrToBytes( const Value : AnsiString) : TByteDynArray;');
+  {StrToBytes1( const Value : UTF8String) : TByteDynArray;');
+  StrToBytes2( const Value : RawByteString) : TByteDynArray;');
+  StrToBytes3( const Value : WideString) : TByteDynArray;');
+  StrToBytes4( const Value : UnicodeString) : TByteDynArray;');}
+  //BytesToVar( const Value : TByteDynArray) : Variant');
+  //VarToBytes( const Value : Variant) : TByteDynArray');
+  //AnsiSQLDateToDateTime( const Value : string) : TDateTime');
+  //TimestampStrToDateTime( const Value : string) : TDateTime');
+  //DateTimeToAnsiSQLDate( Value : TDateTime; WithMMSec : Boolean) : string');
+  //EncodeCString( const Value : string) : string');
+  //DecodeCString( const Value : string) : string');
+   writeln('zReplaceChar '+zReplaceChar('m','o', 'this is maxbox'));
+   writeln('zReplaceChar '+zReplaceChar('x','n', 'this is maxbox'));
+ 
+  //MemPas( Buffer : PChar; Length : LongInt) : string');
+ //DecodeSQLVersioning( const FullVersion : Integer; out MajorVersion : Integer; out MinorVersion : Integer; out SubVersion : Integer)');
+  //EncodeSQLVersioning( const MajorVersion : Integer; const MinorVersion : Integer; const SubVersion : Integer) : Integer');
+  //FormatSQLVersion( const SQLVersion : Integer) : String');
+  {ZStrToFloat( Value : AnsiChar) : Extended;');
+  ZStrToFloat1( Value : AnsiString) : Extended;');
+ ZSetString( const Src : AnsiChar; var Dest : AnsiString);');
+ ZSetString1( const Src : AnsiChar; const Len : Cardinal; var Dest : AnsiString);');
+ ZSetString2( const Src : AnsiChar; var Dest : UTF8String);');
+ ZSetString3( const Src : AnsiChar; const Len : Cardinal; var Dest : UTF8String);');
+ ZSetString4( const Src : AnsiChar; const Len : Cardinal; var Dest : WideString);');
+ ZSetString5( const Src : AnsiChar; var Dest : RawByteString);');
+ ZSetString6( const Src : AnsiChar; const Len : Cardinal; var Dest : RawByteString);');}
+ //getdiskspace2
+  //item := lv.GetItemAt(X, Y);
+   //Findtext:= lv.Items.item[4].SubItems[1]; //'nd.';
+   //Findtext:= lv.Items.item[lv.ItemIndex].SubItems[1]; //'nd.';
+   //Findtext:= lv.Items.item[lv.ItemIndex].text; //'nd.';
+
+end;
+
+  
+
+  
+function DownloadJPGToBitmap(const URL : string; ABitmap: TBitmap): Boolean;
+var
+  idHttp: TIdHTTP;
+  ImgStream: TMemoryStream;
+  JpgImage: TJPEGImage;
+begin
+  Result:= False;
+  ImgStream:= TMemoryStream.Create;
+  try
+    idHttp:= TIdHTTP.Create(nil);
+    try
+      idHttp.Get1(URL, ImgStream);
+    finally
+      idHttp.Free;
+    end;
+    ImgStream.Position:= 0;
+    JpgImage:= TJPEGImage.Create;
+    try
+      JpgImage.LoadFromStream(ImgStream);
+      ABitmap.Assign(JpgImage);
+    finally
+      Result:= True;
+      JpgImage.Free;
+    end;
+  finally
+    ImgStream.Free;
+  end;
+end;
+
+
+//TODO:#1 Returns the QR Code direct of the last modification of the given File
+
+ var image2: TImage;
+    z,x,y: smallint;
+
+begin
+  Writeln(datetimetostr(FileTimeGMT(exepath+'maxbox4.exe')));
+  //call of the script
+  //GetQrCodeIndy(150,150,'Q',ExePath+AFILENAME, QData);
+  //call of the Lib
+  //GetQrCode2(150,150,'Q',QDATA, ExePath+AFILENAME);
+  //http://entwickler-konferenz.de/
+  //http://www.softwareschule.ch/images/Ekon17_2013.jpg
+  
+  //SIRegister_ZSysUtils_Demo;
+
+  image2:= TImage.create(self); 
+  if isInternet then
+    DownloadJPGToBitmap('http://www.softwareschule.ch/images/Ekon17_2013.jpg',
+                              Image2.Picture.Bitmap);
+    
+   { with TCustomDrawForm.create(self) do begin
+       width:=820;
+       height:=820;
+       image1.height:= 600; //add properties
+       image1.picture.bitmap:= image2.picture.bitmap;
+       //SelectionBackground1Click(self)
+       //CustomDraw1Click(self);  
+       //Selection1Click(self);
+       Background1.click;
+       bitmap1.click;
+       Tile1.click;
+       Showmodal;           //add methods
+       Free;                
+     end;
+    }
+    
+   //if IsTCPPortOpen(80,'192.168.1.53') then
+      if IsTCPPortOpen(80,getIP(getHostName)) then
+       writeln('Port 80 Open Started') else 
+       writeln('Port not open');
+   maxCalcF('SQRT(PI)');
+   PrintF('gcd %d * lcm %d = %d ',[gcd(4,6), lcm(4,6), 4*6]);
+     //SetAlias(Alias, aAliasDir);
+     //SetBde('\DRIVERS\PARADOX\INIT','NET DIR',aNetDir);
+     //SetBde('\SYSTEM\INIT','LOCAL SHARE','TRUE');
+    //JSONTest;
+    //hexofsha1 
+    writeln(sha1tohex('this is fake'))
+    writeln(sha1tohex('this is fake2'))
+    writeln(sha1tohex('fake'))
+    
+    writeln(floattostrF(1200.576878,fffixed,8,2))
+    
+    fmtstr(sr,'%8s',[floattostr(1290456.586867584743)])
+    writeln(sr)
+    x:=1; y:=2; z:=3;
+    writeln(botostr(not((x>=y)and(x>=z))and not((y>=x)and(y>=z))));
+    //de morgan
+    writeln(botostr(((x<y)or(x<z))and((y<x)or(y<z))));
+    
+End.  
+
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TlkJSONobject(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TlkJSONcustomlist', 'TlkJSONobject') do
+  with CL.AddClassN(CL.FindClass('TlkJSONcustomlist'),'TlkJSONobject') do begin
+    RegisterProperty('UseHash', 'Boolean', iptr);
+    RegisterProperty('HashTable', 'TlkHashTable', iptr);
+    RegisterProperty('HashTable', 'TlkBalTree', iptr);
+    RegisterMethod('Function Add6(const aname:WideString; aobj: TlkJSONbase) : Integer;');
+    RegisterMethod('Function OldGetField( nm : WideString) : TlkJSONbase');
+    RegisterMethod('Procedure OldSetField(nm: WideString; const AValue : TlkJSONbase)');
+    RegisterMethod('Function Add7(const aname:WideString; aboolean: Boolean) : Integer;');
+    RegisterMethod('Function Add8( const aname : WideString; nmb : double) : Integer;');
+    RegisterMethod('Function Add9( const aname : WideString; s : string) : Integer;');
+    RegisterMethod('Function Add10(const aname:WideString;const ws:WideString):Integer;');
+    RegisterMethod('Function Add11(const aname: WideString; inmb : Integer) : Integer;');
+    RegisterMethod('Procedure Delete( idx : Integer)');
+    RegisterMethod('Function IndexOfName( const aname : WideString) : Integer');
+    RegisterMethod('Function IndexOfObject( aobj : TlkJSONbase) : Integer');
+    RegisterProperty('Field', 'TlkJSONbase WideString', iptrw);
+    SetDefaultPropery('Field');
+    RegisterMethod('Constructor Create( bUseHash : Boolean)');
+    RegisterMethod('Function Generate( AUseHash : Boolean) : TlkJSONobject');
+    RegisterMethod('Function SelfType : TlkJSONtypes');
+    RegisterMethod('Function SelfTypeName : string');
+    RegisterProperty('FieldByIndex', 'TlkJSONbase Integer', iptrw);
+    RegisterProperty('NameOf', 'WideString Integer', iptr);
+    RegisterMethod('Function getDouble( idx : Integer) : Double;');
+    RegisterMethod('Function getInt( idx : Integer) : Integer;');
+    RegisterMethod('Function getString( idx : Integer) : string;');
+    RegisterMethod('Function getWideString( idx : Integer) : WideString;');
+    RegisterMethod('Function getBoolean( idx : Integer) : Boolean;');
+    RegisterMethod('Function getDouble1( nm : string) : Double;');
+    RegisterMethod('Function getInt1( nm : string) : Integer;');
+    RegisterMethod('Function getString1( nm : string) : string;');
+    RegisterMethod('Function getWideString1( nm : string) : WideString;');
+    RegisterMethod('Function getBoolean1( nm : string) : Boolean;');
+  end;
+end;
+
+  myformtemplate
+     with TCustomDrawForm.create(self) do begin
+       image1.height:= 600; //add properties
+       SelectionBackground1Click(self)
+       Drawing1Click(self)'
+       showmodal;           //add methods
+       free;                //free it
+     end;
+  
+  myform 
+
+In order to make your life easier, the unit HotLog.pas declares an instance of THotLog, and calls its constructor automatically, as soon as your programm is loaded (in fact, as soon as the HotLog unit's part of your programm is loaded).
+
+This instance is called "hLog". It is the object instance you'll use to access HotLog.pas/ThotLog properties and routines.
+
+All the following examples will allways use it. However, and as stated before, THotLog being an object, you can declare as many instances of it as you want.
+
+// and the written result will be :
+
+********************************************************************************
+>>>> Start HotLogTest.exe  v 1.0.0.4                         2004-03-09 23:38:54
+           From : C:\Program Files\Borland\Delphi9\Projects\HotLog\
+           Prms : (No params)
+
+(....)
+
+<<<< Stop  HotLogTest.exe                                    2004-03-09 23:38:55
+********************************************************************************
+
+
+http://theroadtodelphi.wordpress.com/2010/12/06/generating-qr-codes-with-delphi/
+
+Using the Google Chart Tools / Image Charts (aka Chart API) you can easily generate QR codes, this kind of images are a special type of two-dimensional barcodes. They are also known as hardlinks or physical world hyperlinks.
+
+The QR Codes store up to 4,296 alphanumeric characters of arbitrary text. QR codes can be read by an optical device with the appropriate software. Such devices range from dedicated QR code readers to mobile phones.
+
+
+Using Delphi there are several ways you can generate QR codes - to encode any text (URL, phone number, simple message). QR Codes store up to 4,296 alphanumeric characters of arbitrary text.
+
+The 2D Barcode VCL components is a set of components designed for generating and printing barcode symbols in your Delphi or C++ Builder applications. Use the components set like any other VCL components.
+
+J4L Components includes the QR-code implementation featuring: auto, byte, alpha, numeric and kanji encoding.
+
+The Google Chart Tools (Chart API) also let you generate QR-code images using an HTTP POST or 
+
+All do you need to generate a QrCode is make a get request to this URI
+
+http://chart.apis.google.com/chart?chs=200x200&cht=qr&chld=M&chl=Go+Delphi+Go
+
+uses
+ PngImage,
+ HTTPApp,
+ WinInet;
+ 
+type
+TQrImage_ErrCorrLevel=(L,M,Q,H);
+ 
+const
+UrlGoogleQrCode='http://chart.apis.google.com/chart?chs=%dx%d&cht=qr&chld=%s&chl=%s';
+QrImgCorrStr   : array [TQrImage_ErrCorrLevel] of string=('L','M','Q','H');
+ 
+procedure WinInet_HttpGet(const Url: string;Stream:TStream);
+const
+BuffSize = 1024*1024;
+var
+  hInter   : HINTERNET;
+  UrlHandle: HINTERNET;
+  BytesRead: DWORD;
+  Buffer   : Pointer;
+begin
+  hInter := InternetOpen('', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+  if Assigned(hInter) then
+  begin
+    Stream.Seek(0,0);
+    GetMem(Buffer,BuffSize);
+    try
+        UrlHandle := InternetOpenUrl(hInter, PChar(Url), nil, 0, INTERNET_FLAG_RELOAD, 0);
+        if Assigned(UrlHandle) then
+        begin
+          repeat
+            InternetReadFile(UrlHandle, Buffer, BuffSize, BytesRead);
+            if BytesRead>0 then
+             Stream.WriteBuffer(Buffer^,BytesRead);
+          until BytesRead = 0;
+          InternetCloseHandle(UrlHandle);
+        end;
+    finally
+      FreeMem(Buffer);
+    end;
+    InternetCloseHandle(hInter);
+  end
+end;
+ 
+//this function return a Stream (PngImage inside) with a Qr code.
+procedure GetQrCode(Width,Height:Word;Correction_Level:TQrImage_ErrCorrLevel;const Data:string;StreamImage : TMemoryStream);
+Var
+ EncodedURL  : string;
+begin
+  EncodedURL:=Format(UrlGoogleQrCode,[Width,Height,QrImgCorrStr[Correction_Level],HTTPEncode(Data)]);
+  WinInet_HttpGet(EncodedURL,StreamImage);
+end;
+
+
+http://www.delphi-central.com/callback.aspx
+
+ public
+    { Public-Deklarationen }
+    constructor Create(Owner:TComponent); override;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent);override;
+
+    procedure DrawBarcode(Canvas:TCanvas);
+    procedure DrawText(Canvas:TCanvas);
+    property CanvasHeight :Integer read GetCanvasHeight;
+    property CanvasWidth :Integer read GetCanvasWidth;
+  published
+    { Published-Deklarationen }
+   { Height of Barcode (Pixel)}
+    property Height : integer read FHeight write SetHeight;
+    property Text   : string read FText write SetText;
+    property Top    : Integer read FTop write SetTop;
+    property Left   : Integer read FLeft write SetLeft;
+   { Width of the smallest line in a Barcode }
+    property Modul  : integer read FModul  write SetModul;
+    property Ratio  : Double read FRatio write SetRatio;
+    property Typ    : TBarcodeType read FTyp write SetTyp default bcCode_2_5_interleaved;
+   { build CheckSum ? }
+    property Checksum:boolean read FCheckSum write SetCheckSum default FALSE;
+    property CheckSumMethod:TCheckSumMethod read FCheckSumMethod write FCheckSumMethod default csmModulo10;
+
+   { 0 - 360 degree }
+    property Angle  :double read FAngle write SetAngle;
+
+    property ShowText:TBarcodeOption read FShowText write SetShowText default bcoNone;
+    property ShowTextFont: TFont read FShowTextFont write SetShowTextFont;
+    property ShowTextPosition: TShowTextPosition read FShowTextPosition write SetShowTextPosition default stpTopLeft;
+    property Width : integer read GetWidth write SetWidth stored False;
+    property Color:TColor read FColor write FColor default clWhite;
+    property ColorBar:TColor read FColorBar write FColorBar default clBlack;
+      property OnChange:TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+function CheckSumModulo10(const data:string):string;
+
+function ConvertMmToPixelsX(const Value:Double):Integer;
+function ConvertMmToPixelsY(const Value:Double):Integer;
+function ConvertInchToPixelsX(const Value:Double):Integer;
+function ConvertInchToPixelsY(const Value:Double):Integer;
+
+  
+procedure GetQrCodeImage(Width,Height: Word; Correct_Level: string;
+           const Data:string; aimage: TImage; apath: string);
+var
+  encodedURL: string;
+  idhttp: TIdHttp;// THTTPSend;
+  pngStream: TMemoryStream;
+begin
+  encodedURL:= Format(UrlGoogleQrCode,[Width,Height, Correct_Level, HTTPEncode(Data)]);
+  //WinInet_HttpGet(EncodedURL,StreamImage);
+  idHTTP:= TIdHTTP.Create(NIL)
+  pngStream:= TMemoryStream.create;
+  with TLinearBitmap.Create do try
+    idHTTP.Get1(EncodedURL, pngStream)
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    aImage.Picture:= NIL;
+    AssignTo(aimage.picture.bitmap);
+    SaveToFile(apath);
+    //OpenDoc(apath);
+  finally
+    Dispose;
+    Free;
+    idHTTP.Free
+    pngStream.Free;
+  end;
+end;
+
+procedure GetQrCode3(Width,Height: Word; Correct_Level: string;
+           const Data:string; apath: string);
+var
+  encodedURL: string;
+  idhttp: TIdHttp;// THTTPSend;
+  png: TLinearBitmap;//TPNGObject;
+  pngStream: TMemoryStream;
+begin
+  encodedURL:= Format(UrlGoogleQrCode,[Width,Height, Correct_Level, HTTPEncode(Data)]);
+  //WinInet_HttpGet(EncodedURL,StreamImage);
+  idHTTP:= TIdHTTP.Create(NIL)
+  pngStream:= TMemoryStream.create;
+  with TLinearBitmap.Create do try
+    idHTTP.Get1(EncodedURL, pngStream)
+    pngStream.Position:= 0;
+    LoadFromStream2(pngStream,'PNG');
+    //aImage.Picture:= NIL;
+    //AssignTo(aimage.picture.bitmap);
+    SaveToFile(apath);
+    OpenDoc(apath);
+  finally
+    Dispose;
+    Free;
+    idHTTP.Free
+    pngStream.Free;
+  end;
+end;
+
+//BDE Install Test
+
+procedure TForm1.BtnSetupClick(Sender: TObject);
+var aAliasDir, aNetDir:String;
+begin
+  Application.ProcessMessages;
+  aAliasDir:=EditDataDir.Text;
+  aNetDir:=EditNetDir.Text;
+
+//  aAliasDir:='E:\SAS\Daten';
+//  aNetFileDir:='E:\';
+//  ShowMessage(ExpandUNCFileName(aAliasDir));
+
+  if trim(aAliasDir)='' then raise Exception.Create('Geben Sie bitte das Datenverzeichnis an.');
+ if trim(aNetDir)='' then raise Exception.Create('Geben Sie bitte das Netzverzeichnis an.');
+  if not DirectoryExists(aAliasDir) then raise Exception.Create('Das Datenverzeichnis konnnte nicht gefunden werden.');
+  if not DirectoryExists(aNetDir) then raise Exception.Create('Das Netzverzeichnis konnnte nicht gefunden werden.');
+
+  try
+     Screen.Cursor:=crHourGlass;
+     SetAlias(Alias, aAliasDir);
+     SetBde('\DRIVERS\PARADOX\INIT','NET DIR',aNetDir);
+     SetBde('\SYSTEM\INIT','LOCAL SHARE','TRUE');
+//     SetBde('\DRIVERS\PARADOX\TABLE CREATE','BLOCK SIZE','4096'); // Standard 2048 KB
+//     SetBde('\DRIVERS\PARADOX\TABLE CREATE','LEVEL','7');
+     SetBde('\DRIVERS\PARADOX\INIT','LANGDRIVER','ANSIINTL'); // ANSIINTL ist der Kurzname für Pdox ANSI Intl
+     SetBde('\SYSTEM\INIT','LANGDRIVER','ANSIINTL');
+
+     // soll angeblich die Performance verbessern
+     SetBde('\System\Init','MAXFILEHANDLES','100'); // (Standard: 48)
+     SetBde('\System\Init','MAXBUFSIZE','2048'); // Cachepuffer in KB (Standard: 2048 KB)
+     SetBde('\System\Init','MINBUFSIZE','128');
+
+     //SetBde('\System\Init','MEMSIZE','64'); // max. BDE-Speicher (Standard: 16 MB)
+     //SetBde('\System\Init','SHAREDMEMSIZE','8192'); // Speicher (Standard: 2048 KB)
+  finally
+     Screen.Cursor:=crDefault;
+  end;
+  Close;
+
+(*
+  // Versionen der redirector-files testen (nur Win 95)
+  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then CheckRedirector;
+  // Registry checken
+  case Win32Platform of
+    VER_PLATFORM_WIN32_WINDOWS: CheckWin95Registry;
+    VER_PLATFORM_WIN32_NT:      CheckWinNTRegistry;
+  end;
+  // Neustart
+  if RebootRequired then RestartDialog(0, nil, ew_RestartWindows);
+*)
+end;
+
+
+
+
+    six spaces!
+    Findtext:= lv.Items.item[lv.ItemIndex].SubItems[1]; //'End.';
+
+
+
+procedure SIRegister_TCustomDrawForm(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TForm', 'TCustomDrawForm') do
+  with CL.AddClassN(CL.FindClass('TForm'),'TCustomDrawForm') do
+  begin
+    RegisterProperty('TV', 'TTreeView', iptrw);
+    RegisterProperty('ImageList', 'TImageList', iptrw);
+    RegisterProperty('MainMenu1', 'TMainMenu', iptrw);
+    RegisterProperty('Drawing1', 'TMenuItem', iptrw);
+    RegisterProperty('Font1', 'TMenuItem', iptrw);
+    RegisterProperty('Background1', 'TMenuItem', iptrw);
+    RegisterProperty('Color1', 'TMenuItem', iptrw);
+    RegisterProperty('Bitmap1', 'TMenuItem', iptrw);
+    RegisterProperty('DefaultDrawing1', 'TMenuItem', iptrw);
+    RegisterProperty('OnCustomDraw1', 'TMenuItem', iptrw);
+    RegisterProperty('OnCustomDrawItem1', 'TMenuItem', iptrw);
+    RegisterProperty('BrushStyle1', 'TMenuItem', iptrw);
+    RegisterProperty('Solid1', 'TMenuItem', iptrw);
+    RegisterProperty('Clear1', 'TMenuItem', iptrw);
+    RegisterProperty('Horizontal1', 'TMenuItem', iptrw);
+    RegisterProperty('Vertical1', 'TMenuItem', iptrw);
+    RegisterProperty('FDiagonal1', 'TMenuItem', iptrw);
+    RegisterProperty('BDiagonal1', 'TMenuItem', iptrw);
+    RegisterProperty('Cross1', 'TMenuItem', iptrw);
+    RegisterProperty('DiagCross1', 'TMenuItem', iptrw);
+    RegisterProperty('File1', 'TMenuItem', iptrw);
+    RegisterProperty('Exit1', 'TMenuItem', iptrw);
+    RegisterProperty('N2', 'TMenuItem', iptrw);
+    RegisterProperty('TVFontDialog', 'TFontDialog', iptrw);
+    RegisterProperty('Tile1', 'TMenuItem', iptrw);
+    RegisterProperty('Stretch1', 'TMenuItem', iptrw);
+    RegisterProperty('None1', 'TMenuItem', iptrw);
+    RegisterProperty('Selection1', 'TMenuItem', iptrw);
+    RegisterProperty('SelectedFontDialog', 'TFontDialog', iptrw);
+    RegisterProperty('BkgColorDialog', 'TColorDialog', iptrw);
+    RegisterProperty('SelBkgColorDialog', 'TColorDialog', iptrw);
+    RegisterProperty('SelectionBackground1', 'TMenuItem', iptrw);
+    RegisterProperty('ButtonColor1', 'TMenuItem', iptrw);
+    RegisterProperty('ButtonSize1', 'TMenuItem', iptrw);
+    RegisterProperty('ButtonColorDialog', 'TColorDialog', iptrw);
+    RegisterProperty('Image1', 'TImage', iptrw);
+    RegisterProperty('TreeView1', 'TMenuItem', iptrw);
+    RegisterProperty('Color2', 'TMenuItem', iptrw);
+    RegisterProperty('TVColorDialog', 'TColorDialog', iptrw);
+    RegisterProperty('CustomDraw1', 'TMenuItem', iptrw);
+    RegisterProperty('Font2', 'TMenuItem', iptrw);
+    RegisterMethod('Procedure FormCreate( Sender : TObject)');
+    RegisterMethod('Procedure TVCustomDraw( Sender : TCustomTreeView; const ARect : TRect; var DefaultDraw : Boolean)');
+    RegisterMethod('Procedure TVCustomDrawItem( Sender : TCustomTreeView; Node : TTreeNode; State : TCustomDrawState; var DefaultDraw : Boolean)');
+    RegisterMethod('Procedure TVGetImageIndex( Sender : TObject; Node : TTreeNode)');
+    RegisterMethod('Procedure TVGetSelectedIndex( Sender : TObject; Node : TTreeNode)');
+    RegisterMethod('Procedure Exit1Click( Sender : TObject)');
+    RegisterMethod('Procedure Selection1Click( Sender : TObject)');
+    RegisterMethod('Procedure Color1Click( Sender : TObject)');
+    RegisterMethod('Procedure SelectionBackground1Click( Sender : TObject)');
+    RegisterMethod('Procedure Solid1Click( Sender : TObject)');
+    RegisterMethod('Procedure None1Click( Sender : TObject)');
+    RegisterMethod('Procedure OnCustomDraw1Click( Sender : TObject)');
+    RegisterMethod('Procedure OnCustomDrawItem1Click( Sender : TObject)');
+    RegisterMethod('Procedure TVExpanded( Sender : TObject; Node : TTreeNode)');
+    RegisterMethod('Procedure ButtonColor1Click( Sender : TObject)');
+    RegisterMethod('Procedure ButtonSize1Click( Sender : TObject)');
+    RegisterMethod('Procedure Drawing1Click( Sender : TObject)');
+    RegisterMethod('Procedure Color2Click( Sender : TObject)');
+    RegisterMethod('Procedure CustomDraw1Click( Sender : TObject)');
+    RegisterMethod('Procedure Font2Click( Sender : TObject)');
+  end;
+end;
+
+
+{.$define usefastmm}
+
+program test;
+
+//{$APPTYPE CONSOLE}
+
+uses
+{$ifdef usefastmm}
+  fastmm4,
+{$endif}
+  windows,
+  SysUtils,
+  uLkJSON in 'uLkJSON.pas';
+
+var
+  js:TlkJSONobject;
+  xs:TlkJSONbase;
+  i,j,k,l: Integer;
+  ws: String;
+begin
+{$ifdef USE_D2009}
+  ReportMemoryLeaksOnShutdown := True;
+{$endif}
+  Randomize;
+  js := TlkJSONobject.Create(true);
+//  js.HashTable.HashOf := js.HashTable.SimpleHashOf;
+  k := GetTickCount;
+// syntax of adding changed to version 0.95+
+  for i := 0 to 50000 do
+    begin
+      l := random(9999999);
+      ws := 'param'+inttostr(l);
+      js.add(ws,ws);
+      ws := 'int'+inttostr(l);
+      js.add(ws,i);
+    end;
+  k := GetTickCount-k;
+  writeln('records inserted:',js.count);
+  writeln('time for insert:',k);
+  writeln('hash table counters:');
+  writeln(js.hashtable.counters);
+
+  k := GetTickCount;
+  ws := TlkJSON.GenerateText(js);
+  writeln('text length:',length(ws));
+  k := GetTickCount-k;
+// free the object
+  writeln('release memory...');
+  js.Free;
+//  js.Free;
+
+  writeln('time for gentext:',k);
+
+  k := GetTickCount;
+  xs := TlkJSON.ParseText(ws);
+
+  k := GetTickCount-k;
+  writeln('time for parse:',k);
+  writeln('approx speed of parse (th.bytes/sec):',length(ws) div k);
+  writeln('press enter...');
+  readln;
+  writeln(ws);
+  writeln('press enter...');
+  readln;
+// works in 0.94+ only!
+  js := TlkJSONobject(xs);
+  for i := 1 to 10 do
+    begin
+      writeln('field ',i,' is ',js.NameOf[i]);
+      writeln('type of field ',i,' is ',js.FieldByIndex[i].SelfTypeName);
+      writeln('value of field ',i,' is ',js.FieldByIndex[i].Value);
+      writeln;
+    end;
+  writeln('release memory...');
+  if assigned(xs) then FreeAndNil(xs);
+//  js.Free;
+//}
+  writeln('press enter...');
+  ws := '';
+  readln;
+end.
+
+
+
+----app_template_loaded_code----

@@ -1,0 +1,365 @@
+PROGRAM cHTTPUtils_TCPServerSock_Client;
+// dont#locs:302
+//#sign Max: MAXBOX10: 08/05/2016 09:57:35 
+//#path:C:\maXbox\maxbox3\maxbox3\maXbox3\examples\
+//from E:\maxbox\maxbox3\examples\388_TCPServerSock.TXT
+//http://www.swissdelphicenter.ch/en/showarticle.php?id=4
+
+{START the 3_TCPServerSock3.TXT First!!}
+
+//uses
+  //System.SysUtils, // FreeAndNil
+  //System.Win.Registry, // TRegistry
+  //IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient;
+
+Const
+  //change host&port of TCPServer to your OS:
+
+  TCPHOST = '127.0.0.1';//'0.1.0.7'; //'192.168.1.47'; //'192.168.174.1'; //'192.168.1.53';
+  TCPPORT = 6001;
+  
+  REG_KEY_TEAMVIEWER8 = '\SOFTWARE\Wow6432Node\TeamViewer\Version8';
+  REG_VAL_CLIENTID = 'ClientID';
+  SFILE = 'hanoilist.txt';
+  // HTTP/1.1
+  TestReq1 =
+      'GET / HTTP/1.1'#13#10 +
+      'Host: www.example.com'#13#10 +
+      'Date: Mon 1 Jan 2010 12:23:34 GMT'#13#10 +
+      'Connection: close'#13#10 +
+      'Cookie: id=123'#13#10 +
+      #13#10;
+
+  // HTTP/1.0; Empty field values; Unknown field values; LWS
+  TestReq2 =
+      'GET / HTTP/1.0'#13#10 +
+      'Host: abc'#13#10 +
+      'Date: '#13#10 +
+      'Connection: '#13#10' invalid'#13#10 +
+      'Cookie: invalid'#13#10 +
+      #13#10;
+
+   // HTTP/1.1
+  TestResp1 =
+      'HTTP/1.1 200 OK'#13#10 +
+      'Server: Fundamentals'#13#10 +
+      'Date: Monday, 2 Jan 2010 12:23:34 GMT'#13#10 +
+      'Last-Modified: Monday, 2 Jan 2010 12:23:30 GMT'#13#10 +
+      'Content-Type: text/html; charset=iso123'#13#10 +
+      'Content-Length: 1'#13#10 +
+      'Content-Encoding: gzip'#13#10 +
+      'Age: 15'#13#10 +
+      'Connection: Keep-Alive'#13#10 +
+      'Set-Cookie: Domain=www.example.com; id=123'#13#10 +
+      'Set-Cookie: Domain=www.example.com; id=222'#13#10 +
+      #13#10 +
+      '1';
+
+  // HTTP/1.0; LWS; Empty field value; Custom field
+  TestResp2 =
+      'HTTP/1.0 401 Bad'#13#10 +
+      'Server: '#13#10#9'Fundamentals'#13#10 +
+      'Content-Type: text/abc;'#13#10' charset=iso123'#13#10 +
+      'Content-Length: 1'#13#10 +
+      'Connection: '#13#10 +
+      'My-Field: abc'#13#10 +
+      #13#10 +
+      '1';
+
+
+Function getTeamViewerID: string; forward;
+
+//implementation
+function getTeamViewerID: string;
+var
+  Reg: TRegistry;
+  TeamViewerID: String;
+begin
+  TeamViewerID:='';
+  Reg:= TRegistry.Create;
+  try
+    Reg.RootKey:=HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey(REG_KEY_TEAMVIEWER8, False) then begin
+      TeamViewerID:=Format('%d',[Reg.ReadInteger(REG_VAL_CLIENTID)]);
+    end;
+    Reg.CloseKey;
+  finally
+    Result:= TeamViewerID;
+    Reg.Free; //FreeAndNil(Reg);
+  end;
+end;
+
+procedure SelfTest_Reader;
+var //T : THTTPContentReader_TestObj;
+    //T : THTTPContentReader;
+    R : THTTPContentDecoder;
+    H : THTTPCommonHeaders;
+begin
+  //T := THTTPContentReader_TestObj.Create;
+  //R := THTTPContentDecoder.Create(T.ReaderRead, T.ReaderContentBuf, T.ReaderContentComplete);
+  try
+    //FillChar(H, SizeOf(H), 0);
+    H.TransferEncoding.Value := hteChunked;
+    R.InitDecoder(H);
+    //T.SetTestStr(TestChunked1);
+    {repeat
+      R.Process;
+    until T.FComplete; }
+    //Assert(T.FBufPos >= Length(T.FBuf));
+    //Assert(T.FContent = '123451234567890123456');
+    Assert(R.ContentReceived = 21,'');
+     R.InitDecoder(H);
+    //T.SetTestStr(TestChunked2);
+   { repeat
+      R.Process;
+    until T.FComplete; }
+   // Assert(T.FBufPos >= Length(T.FBuf));
+   // Assert(T.FContent = '');
+    Assert(R.ContentReceived = 0,'');
+     R.InitDecoder(H);
+    //T.SetTestStr(TestChunked3);
+    //Assert(T.FBufPos >= Length(T.FBuf));
+    //Assert(T.FContent = TestStr512 + TestStr512 + 'X');
+    Assert(R.ContentReceived = 1025,'');  
+  finally
+    R.Free;
+    //T.Free;
+  end;
+end;
+
+procedure TForm3_Button1ClickTest(Sender: TObject);
+var
+  AByte, nextbyte: Byte;
+  IdTCPClient1: TIdTCPClient;
+begin
+  IdTCPClient1.Connect(500);
+  //Memo2.Lines.Add(IdTCPClient1.IOHandler.ReadLn);  //we know there must be a welcome message!
+  Memo2.Lines.Add('');// a new line to write in!
+  AByte := 0;
+  while (IdTCPClient1.Connected) and (AByte <> 65) do begin
+    AByte := NextByte;
+   // IdTCPClient1.threads
+    //IdTCPClient1.IOHandler[0].Write(AByte);
+    //AByte := IdTCPClient1.ReadByte;
+    Memo1.Lines[Memo1.Lines.Count - 1] :=  Memo1.Lines[Memo1.Lines.Count - 1] + Chr(AByte);
+  end;
+  Memo1.Lines.Add(IdTCPClient1.ReadLn(#10,1000,80));  
+  //we know there must be a goodbye message!
+  IdTCPClient1.Disconnect;
+end;
+
+
+// Server Code in another Instance!  - just for information
+
+ var ZipCodeList: TStrings;
+     IdTCPServer1: TIdTCPServer;
+
+procedure TCPServer_IdTCPServer1Connect(AThread: TIdPeerThread);
+begin
+  AThread.Connection.WriteLn('Indy Hanoi Zip Code Server Ready.');
+end;
+
+procedure TCPServer_IdTCPServer1Execute(AThread: TIdPeerThread);
+var
+  sCommand: string;
+begin
+  with AThread.Connection do begin
+    sCommand:= Readln('',1000,80);
+    if SameText(sCommand, 'QUIT') then begin
+      Disconnect;
+    end else if SameText(Copy(sCommand, 1, 8), 'ZipCode ') then begin
+      WriteLn(ZipCodeList.Values[Copy(sCommand, 9, MaxInt)]);
+    end;
+  end;
+end;
+
+procedure TCPServer_Destroy(Sender: TObject);
+begin
+  ZipCodeList.Free;
+end;
+
+procedure TCPServerMain_Create(Sender: TObject);
+begin
+  ZipCodeList:= TStringList.Create;
+  ZipCodeList.LoadFromFile(ExtractFilePath(Application.EXEName)+'Examples\'+SFILE);
+  IdTCPServer1:= TIdTCPServer.create(self);
+  with IdTCPServer1 do begin
+    //IP:= '192.168.1.53';
+    defaultPort:= 6000;
+    active:= true;
+    threads
+    onConnect:= @TCPServer_IdTCPServer1Connect;
+    OnExecute:= @TCPServer_IdTCPServer1Execute;
+    PrintF('Listening TCPServer on %s:%d.', [getIP(getHostName),Bindings[0].Port]);
+    ShowmessageBig('Close OK to the TCP Server');
+    active:= false;
+    Free;
+  end;
+  Writeln('Server Stopped at '+DateTimeToInternetStr(Now, true))
+end;
+//////////////////////////////Server Code End///////////////////////
+
+ 
+//////////////////////////////TCP Client Code/////////////////////// 
+  var Client: TIdTCPClient;
+     //IdAntiFreeze1: TIdAntiFreeze;
+
+procedure TCPMain_Connect1Click(Sender: TObject);
+var
+  i: integer;
+  s: string;
+begin
+  //butnLookup.Enabled:= true;
+  client:= TIdTCPClient.create(self);
+  client.host:= TCPHOST; //'127.0.0.1';
+  client.port:= TCPPORT;
+  //client.port:= 8090;
+  try
+    with Client do begin
+      Connect(2000); try
+        //lboxResults.Items.Add(ReadLn());
+        //lboxResults.Items.Add(ReadLn('',1000,100));
+        memo2.lines.add(ReadLn('',1000,80));   //hello from TCP Server
+        //for i:= 0 to memoInput.Lines.Count-1 do begin
+       for i:= 01001 to 01013 do begin
+          WriteLn('ZipCode ' + '0'+inttoStr(i));
+          //println(inttostr(i)); debug
+          //lboxResults.Items.Add(memoInput.Lines[i]);
+          s:= ReadLn('',1000,80);
+          if s = '' then begin
+          s:= '-- No entry found for this zip code.';
+          end;
+          memo2.lines.Add(s);
+         //lboxResults.Items.Add('');
+       end;
+      //WriteLn('LST');
+      //writeln('telnet time back: '+ReadLn(LF,500,1000));
+        
+      client.writeln('TIME'); 
+      Writeln('TIME');
+      ReadTimeout := 500;
+    Sleep(200)
+     memo2.lines.add('telnet time back: '+ReadLn(LF,500,80));
+      Client.WriteLn('Quit');          
+      finally Disconnect; 
+     end;
+    end; {with}
+  finally 
+   //butnLookup.Enabled:= true;
+  end;
+end;
+
+procedure getTCPHeader;
+var header: string;
+strResults: TStringStream;
+IdTCPClient1: TIdTCPClient;
+begin
+try
+ IdTCPClient1:= TIdTCPClient.create(self);
+ 
+strResults := TStringStream.Create('');
+header := 'GET Something To get HTTP/1.1'+ #13#10;
+//header := 'GET TIME HTTP/1.1'+ #13#10;
+
+IdTCPClient1.Host := 'www.kleiner.ch';
+//IdTCPClient1.Host := '127.0.0.1';
+//IdTCPClient1.Host := 'www.softwareschule.ch';
+IdTCPClient1.Port := 80;
+IdTCPClient1.Connect(500);
+// Send the request header
+IdTCPClient1.Write(header);
+// while connected, get all the returned data
+While IdTCPClient1.Connected do begin
+   strResults.WriteString(IdTCPClient1.ReadLn('',500,200));
+    writeln(strResults.DataString);
+end;
+except
+//on E: Exception do ShowMessage('Error: ' +E.Message);
+  writeln('except:')
+    writeln(ExceptionToString(ExceptionType, ExceptionParam)); 
+ end;
+end;
+
+
+begin   //main
+  writeln('TeamViewerID: '+getTeamViewerID);
+  //SelfTestcHTTPUtils;
+  SelfTestcTLSUtils;
+  //SelfTestcXMLFunction;
+  //SelfTestcXMLUtils;
+  //maxForm1.close1click(self);
+  //application.terminate;
+  //maxform1.NewInstance1Click(self);
+  
+  //TCPServerMain_Create(self);
+
+  //ShellExecute3(ExePath+'maxbox3.exe',Exepath+'examples\388_TCPServerSock.TXT',seCmdOpen)
+  Sleep(1000);
+  TCPMain_Connect1Click(Self);
+  maxform1.color:= clblue;
+  
+  //getTCPHeader;
+End.  
+
+ref error:
+
+Indy ImageServer TCP mXServer Ready.
+ERR : Unknown command / action
+Exception: Socket Error # 10053
+Software caused connection abort.
+
+
+Button1Click is a method that is hooked to the OnClick event of Button1. When the button is clicked it executes this method. The Indy portion of this method can be reduced to the following:
+
+  1  Connect to Server ( Connect; )
+  2  Read welcome message from the server.
+  3  For each line the user entered in the TMemo:
+      3.1  Send request to server ( WriteLn('ZipCode ' + memoInput.Lines[i]); )
+      3.2  Read response from server ( s := ReadLn; )
+  4  Send Quit command ( WriteLn('Quit'); )
+  5 Disconnect ( Disconnect; )
+
+
+
+The last slash might be optional. Right?
+
+How about something like this:
+
+$url =~ m|([^/]+)/?$|;
+my $end_of_url = $1;
+
+The $ on the end anchors the regular expression to the end of the string. The [^/] means anything that's not a slash and the + after means I want one or more things that are not slashes. Notice that this is in a capture group which are marked with parentheses.
+
+I end the regular expression with /? which means that there may or may not be a slash on the very end of the string. I've put my regular expression between m| and |, so I can use forward slashes without having to constantly escape them.
+
+The last part of the URL is now in $1 and I can set my own scalar variable to save this result.
+share|improve this answer
+
+
+http://www.swissdelphicenter.ch/en/showarticle.php?id=4
+ 
+
+----app_template_loaded_code----
+-- No entry found for this zip code.
+-- No entry found for this zip code.
+-- No entry found for this zip code.
+-- No entry found for this zip code.
+
+
+Coole Scheisse: 
+
+GLUECKWUENSCH!!!!
+
+Herzlichen Glueckwuensch!!! Ihre e-mail in die 2 Kategorie 666.500, 00
+euro gewonnen hat. Es ist eine Promotion, dass in Sapnien ein mal pro Jahr 
+EuroJackpot
+Loterie voranstaltet. Die Loterie hat die e-mail Adressen von ganzen Welt in
+Kompyter System ausgesucht und ein Spiel vorgespielt. Dieses Jahr Ihre
+e-mail Adresse gewonnen hat. Um der Gewinn gueltig zu machen, sollen Sie an
+unsere e-mail seguros.allianza@yahoo.es, Referenznummer und Gewinnumer 
+angeben.
+
+
+Referenznummer- ESPYO 66614
+
+Gewinnumer- 34 27 10 28 22

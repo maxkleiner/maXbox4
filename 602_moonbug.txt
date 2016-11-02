@@ -1,0 +1,546 @@
+program Multilang_Swat_Game_Test_toAndroid;
+
+//*********************************************************************
+// Game to hit the invaders, loc's=370, ex. 239_  
+// strange worlds of mandelbrot, lorenz attractors & bifurcations;)
+// enhanced to multilang #locs:482
+//*********************************************************************
+(*RRRR    EEEEEE   AAAA   DDDDD    MM     MM   EEEEEE 
+ RR  RR   EE       AA AA  DD  DD   MMMM MMMM   EE    
+ RRRRR    EEEE    AAAAAA  DD   DD  MM MMM MM   EEEE
+ RR  RR   EE      AA   AA DD   DD  MM  M  MM   EE
+ RR   RR  EEEEEE AA    AA DDDDD    MM  M  MM   EEEEEE *)
+ 
+Const
+  DAT = 1200;
+  CHDAT = 450;  
+  crMaletUp = 5;
+  crMaletDown = 6;
+  MissedPoints = -2;
+  HitPoints = 5;
+  MissedCritter = -1;
+  CritterSize = 72;
+  
+Type
+  THole = record
+    Time: integer;
+    gone: boolean;
+  end;
+  
+var
+  cFrm: TForm;
+  time1, time2, diff: TDateTime;
+  scaleX1, scaleX2, scaleY1, scaleY2: double;
+  Score, Hits, Miss: integer;
+  LiveTime, Frequence, GameTime: integer;
+  IsGameOver, IsPause: Boolean;
+
+  timer1: TTimer;
+  Live, Gone, Test: TBitmap;
+  holeInf: array[0..4] of THole;
+  Holes: array[0..4] of TPoint;
+  TimeLbl, HitsLbl, MissLbl, ScoreLbl: TLabel;
+  mMenu1: TMainMenu; 
+  new1, options1, stop1, pause1: TMenuItem;
+
+  procedure TSwatFrm_WriteScore; forward;
+  procedure ModelLorenzsetup(vForm: TForm); forward;
+
+
+procedure TSwatFrm_Options1Click(Sender: TObject);
+var my: string;
+begin
+ my:= intToStr(GameTime)
+ if InputQuery('Change Speed and Time', 'Try about 150',my) then begin
+    //showmessage(inttostr(gametime))
+    Timer1.Interval:= strtoInt(my); 
+  end;
+end;   
+
+  
+procedure TSwatFrm_Pause1Click(Sender: TObject);
+begin
+  if (IsGameOver) then
+    Exit;
+  if (IsPause) then begin
+    IsPause:= false;
+    Pause1.Caption:= '&Pause';
+    Stop1.Enabled:= true;
+    Timer1.Enabled:= true;
+  end else begin
+    IsPause:= true;
+    Pause1.Caption:= '&Continue';
+    Stop1.Enabled:= false;
+    Timer1.Enabled:= false;
+  end;
+end;
+
+procedure TSwatFrm_Stop1Click(Sender: TObject);
+var i: integer;
+begin
+  Timer1.Enabled:= false;
+  IsPause:= false;
+  IsGameOver:= true;
+  Timer1.Tag:= GameTime;
+  New1.Enabled:= true;
+  //Options1.Enabled:= true;
+  Stop1.Enabled:= false;
+  for i:= 0 to 4 do
+    if (holeInf[i].Time <> 0) then begin
+      cFrm.Canvas.FillRect(Rect(Holes[i].x, Holes[i].y, Holes[i].x + Gone.Width,
+        Holes[i].y + Gone.Height));
+      cFrm.canvas.stretchdraw(rect(Holes[i].x,Holes[i].y,
+                      Holes[i].x+ gone.width,Holes[i].y+ gone.height), 
+             getbitmap(Exepath+'\examples\brightfullmoon.bmp'));
+   end;     
+end;
+
+
+{******************* FormClose *****************}
+procedure TSwatFrm_Close(Sender: TObject; var Action: TCloseAction);
+begin
+  //runflag:=false;
+  //inFrm.Release;
+  live.Free;
+  gone.Free;
+  test.free;
+  if assigned(timer1) then begin
+    timer1.enabled:= false;
+    timer1.free;
+    timer1:= NIL;
+  end;  
+  action:=caFree;
+  //inFrm.release;
+  writeln('Bug Moon Form closed and Timer Free... ');
+end;
+
+procedure TSwatFrm_FormInit(Sender: TObject);
+begin
+  Holes[0]:= Point( 50, 50 );
+  Holes[1]:= Point( 260, 40 );
+  Holes[2]:= Point( 140, 140 );  //middle
+  Holes[3]:= Point( 40, 250 );
+  Holes[4]:= Point( 240, 220 );
+
+  //Screen.Cursors[crMaletUp] := LoadCursor(HInstance, 'Malet');
+  //Screen.Cursors[crMaletDown] := LoadCursor(HInstance, 'MaletDown');
+  //Loadcursor(TCursor(crMaletUp);
+  Screen.Cursor:= TCursor(crMaletUp);
+  Screen.Cursor:= crDefault;
+   //Cursor = crHandPoint
+  Randomize;
+  //register hinstance
+  Live:= TBitmap.Create;
+  Live.transparent:= true;
+  Live.LoadFromResourceName(getHInstance, 'LIVE');
+  Gone:= TBitmap.Create;
+  Gone.transparent:= true;
+  Gone.LoadFromResourceName(getHInstance, 'DEAD');
+  Test:= TBitmap.Create;
+  //Test.transparent:= true;
+  Test.LoadFromFile(Exepath+'\examples\brightfullmoon.bmp');
+
+  IsGameOver:= true;
+  IsPause:= false;
+  LiveTime:= 10;
+  Frequence:= 20;
+  GameTime:= 150;        // 1/7 seconds
+  Application.OnMinimize:= @TSwatFrm_Pause1Click;
+  Application.OnRestore:= @TSwatFrm_Pause1Click;
+end;
+  
+
+procedure TSwatFrm_Timer1Timer(Sender: TObject);
+var
+  i: integer;
+begin
+  Timer1.Tag:= Timer1.Tag + 1;
+  i:= Random(Frequence);
+  if (i < 5) then begin
+    if (holeInf[i].Time = 0) then begin
+      holeInf[i].Time:= Timer1.Tag + LiveTime;
+      holeInf[i].Gone:= false;
+      cFrm.Canvas.Draw(Holes[i].x, Holes[i].y, Live);
+    end;
+  end;
+  for i:= 0 to 4 do begin
+    if ((Timer1.Tag > holeInf[i].Time) and (holeInf[i].Time <> 0)) then begin
+      holeInf[i].Time:= 0;
+      if not(holeInf[i].Gone) then begin
+        score:= score + missedcritter;
+        //inc(Escaped);
+      end;
+      cFrm.Canvas.FillRect(Rect(Holes[i].x, Holes[i].y, 
+                      Holes[i].x + Gone.Width, Holes[i].y+ Gone.Height));
+      cFrm.canvas.stretchdraw(rect(Holes[i].x,Holes[i].y,
+                      Holes[i].x+ gone.width,Holes[i].y+ gone.height),test); 
+             //getbitmap(Exepath+'\examples\brightfullmoon.bmp'));
+      //cfrm.canvas.stretchdraw(rect(0,0,cfrm.width,cfrm.height), 
+        //     getbitmap(Exepath+'\examples\brightfullmoon.bmp'));
+    end;
+  end;
+  TSwatFrm_WriteScore;
+  if (Timer1.Tag >= GameTime) then
+    TSwatFrm_Stop1Click(self);
+end;
+
+procedure TSwatFrm_FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  i: integer;
+  hit: boolean;
+begin
+  //Screen.Cursor:= TCursor(crMaletDown);
+  if (IsGameOver or IsPause) then
+    Exit;
+  hit:= false;
+  for i:= 0 to 4 do
+    if ((not holeInf[i].Gone) and (holeInf[i].Time <> 0)) then
+      if (X > Holes[i].x) and (X < (Holes[i].x + Live.Width)) and
+         (Y > Holes[i].y) and (Y < (Holes[i].y + Live.Height)) then begin
+        //inc( Score, HitPoints );
+        Score:= Score + HitPoints;
+        holeInf[i].Gone:= true;
+        holeInf[i].Time:= Timer1.Tag + 2 * LiveTime;
+        inc(Hits);
+        hit:= true;
+        cfrm.Canvas.Draw(Holes[i].x, Holes[i].y, Gone);
+      end;
+  if not (hit) then begin
+    score:= score+ missedPoints;
+    inc(Miss);
+  end;
+  TSwatFrm_WriteScore;
+end;
+
+
+procedure TSwatFrm_FormMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  //Screen.Cursor:= TCursor(crMaletUp);
+  //cFrm.Cursor:= crMaletUp;
+end;
+
+procedure TSwatFrm_New1Click(Sender: TObject);
+var i: integer;
+begin
+  Timer1.Enabled:= true;
+  Timer1.Tag:= 0; Score:= 0;
+  Hits:= 0; Miss:= 0;
+  //ModelLorenzsetup(cFrm);
+  //Escaped := 0;
+  if (IsPause) then begin
+    IsPause:= false;
+    Pause1.Caption:= '&Pause';
+  end;
+  IsGameOver:= false;
+  //FillChar(holeInf, sizeof(holeInf), 0);  see tetris
+   for i:= 0 to 4 do holeInf[i].time:= 0;
+   for i:= 0 to 4 do holeInf[i].Gone:= false;
+  New1.Enabled:= false;
+  //Options1.Enabled := false;
+  Stop1.Enabled:= true;
+  cFrm.canvas.stretchdraw(rect(0,0,cfrm.width,cfrm.height), test)
+end;
+
+procedure LoadQForm;
+begin
+  cFrm:= TForm.create(self);
+  try
+    with cFrm do begin
+      caption:= 'Multi SWAT by maXbox(((*)))';  
+      height:= 425;  
+      width:= 420;
+      color:= clTeal;
+      Position:= poScreenCenter;
+      Show;
+      onMouseDown:= @TSwatFrm_FormMouseDown;
+      onMouseUp:= @TSwatFrm_FormMouseUp;
+      onClose:= @TSwatFrm_Close;
+      cursor:= crHandPoint;
+      canvas.stretchdraw(rect(0,0,width,height), 
+             getbitmap(Exepath+'\examples\brightfullmoon.bmp'));
+     // canvas.stretchdraw(rect(0,0,width,height), Test);
+   end;
+  timer1:= TTimer.create(cFrm);
+  timer1.onTimer:= @TSwatFrm_Timer1Timer;
+  Timer1.Interval:= GameTime;    //as shorter game as more speed
+  
+  timelbl:= TLabel.create(cFrm)
+  with timelbl do begin
+    parent:= cFrm;
+    setbounds(20,330,5,5)
+    font.color:= clBlack;
+    font.size:= 22;
+    caption:= 'Time';
+  end;  
+  //timelbl.caption.LoadFromResourceID(getHINSTANCE,'UNKNOWNFILE'); 
+  hitslbl:= TLabel.create(cFrm)
+  with hitslbl do begin
+    parent:= cFrm;
+    setbounds(120,330,15,10)
+    font.color:= clyellow;
+    font.size:= 22;
+    caption:= 'Hits';
+  end;  
+  misslbl:= TLabel.create(cFrm)
+  with misslbl do begin
+    parent:= cFrm;
+    setbounds(220,330,15,10)
+    font.color:= clyellow;
+    font.size:= 22;
+    caption:= 'Miss';
+  end;  
+  scorelbl:= TLabel.create(cFrm)
+  with scorelbl do begin
+    parent:= cFrm;
+    setbounds(320,330,15,10)
+    font.color:= clred;
+    font.size:= 22;
+    caption:= 'Score';
+  end;  
+  mmenu1:= TMainMenu.Create(cfrm)
+  with mmenu1 do begin
+   //parent:= frmMon;
+  end;  
+  new1:= TMenuItem.Create(mmenu1)
+  stop1:= TMenuItem.Create(mmenu1)
+  pause1:= TMenuItem.Create(mmenu1)
+  options1:= TMenuItem.Create(mmenu1)
+  with new1 do begin
+    Caption:='New Game';
+    Name:='ITEM';
+    mmenu1.Items.Add(new1);   
+    OnClick:= @TSwatFrm_New1Click;
+  end;
+  with pause1 do begin
+    Caption:='Pause Game';
+    Name:='ITEM2';
+    mmenu1.Items.Add(pause1) ;
+    OnClick:= @TSwatFrm_Pause1Click;
+  end;
+  with stop1 do begin
+    Caption:='Stop Gamer';
+    Name:='ITEM3';
+    mmenu1.Items.Add(stop1);
+    OnClick:= @TSwatFrm_Stop1Click;
+  end;
+  with options1 do begin
+    Caption:='Options';
+    Name:='ITEM4';
+    mmenu1.Items.Add(options1);
+    OnClick:= @TSwatFrm_Options1Click;
+  end;
+    Application.ProcessMessages;
+  except
+    Exit
+  end  
+end;
+
+procedure TSwatFrm_WriteScore;
+begin
+  TimeLbl.Caption:= IntToStr(GameTime - Timer1.Tag);
+  HitsLbl.Caption:= IntToStr(Hits);
+  MissLbl.Caption:= IntToStr(Miss);
+  ScoreLbl.Caption:= IntToStr(Score);
+end;
+
+procedure scaleResults(const X, Y: double; var intX, intY : integer;
+                                        width, height: integer);
+var scaledX, scaledY: double; 
+ begin
+   scaledX:= (X-scaleX1)/(scaleX2-scaleX1);
+   scaledY:= (Y-scaleY2)/(scaleY1-scaleY2);
+   intX:= round(scaledX * width);
+   intY:= round(scaledY * height);
+ end; 
+
+procedure Lorenz_process(var X, Y, Z: double; vForm: TForm);
+var intX, intY : integer;
+  dX, dY, dZ: double; 
+begin 
+  dY:= X * (28-Z)-Y; 
+  dX:= 10 * (Y-X); 
+  dZ:= X * Y- (8/3) * Z; 
+  scaleResults(X,Y,intX,intY, vForm.ClientWidth, vForm.ClientHeight);
+  {$IFDEF LINUX}
+    vForm.Canvas.DrawPoint(intX,intY);
+  {$ELSE}
+    vForm.Canvas.Pixels[intX, intY]:= clRed; 
+  {$ENDIF}
+  X:= X+ 0.01 * dX;
+  Y:= Y+ 0.01 * dY; 
+  Z:= Z+ 0.01 * Dz;
+end;
+
+procedure ModelLorenzsetup(vForm: TForm);
+var
+  i: integer;
+  x, y, z: double; 
+begin
+  scaleX1:=-20; scaleX2:=20;
+  scaleY1:=-25; scaleY2:=30; 
+  X:= 0.1; Y:= 0.1; Z:= 0.1; 
+  for i:= 1 to 10500 do 
+    Lorenz_process(X,Y,Z, vForm);
+end; 
+
+
+Const
+ UrlGeoLookupInfo2  ='http://ipinfodb.com/ip_query.php?timezone=true&ip=%s';
+ UrlGeoLookupInfo3 = 'http://api.hostip.info/get_html.php?ip=%s&position=true';
+
+function GetGEOInfo4(const IpAddress: string;
+                       const UrlGeoLookupInfo: string): string;
+var
+  lHTTP: TIdHTTP;
+  lStream: TStringStream;
+begin
+  lHTTP:= TIdHTTP.Create(NIL);
+  lStream:= TStringStream.Create('');
+  try
+     try
+       lHTTP.Get1(Format(UrlGeoLookupInfo,[IpAddress]), lStream);
+        //get the request
+     except
+       lHTTP.Get1(Format(UrlGeoLookupInfo2,[IpAddress]), lStream);
+        //if something wrong try using a backup server.
+     end;
+     lStream.Seek(0,0);
+     result:= 'GEO_IP Out: '+lStream.ReadString(lStream.Size);
+  finally
+    lHTTP.Free;
+    lStream.Free;
+  end;
+end;
+
+procedure PerlRegExTest;
+var  perlRegEx1: TPerlRegEx; 
+begin
+  perlRegEx1:= TPerlRegEx.Create; 
+  PerlRegEx1.RegEx:= '<title>(.+?)</title>'; 
+  PerlRegEx1.Options:= [preCaseLess]; 
+  PerlRegEx1.Subject:= 'test <title>CODEsign is mine</title> test'; 
+  If PerlRegEx1.Match then  
+     //ShowMessage(PerlRegEx1.SubExpressions[1]) 
+     ShowMessage(PerlRegEx1.groups[1]) 
+  else  
+     ShowMessage('RegEx Not found'); 
+  perlregex1.Free; 
+end;
+
+procedure PDFCreator_COM;
+var
+  srcfldr, destfldr, pdfobj, options, oldoptions: OleVariant;
+  numt: integer;
+  filter: string;
+begin
+  pdfobj:= CreateOleObject('PDFCreator.clsPDFCreator');
+  pdfobj.cDefaultPrinter:= 'PDFCreator';
+  PDFobj.cStart('/NoProcessingAtStartup', 1)
+  
+  options:= PDFObj.cOptions
+  oldOptions:= PDFObj.cOptions
+  options.UseAutosave:= 1     
+  options.UseAutosaveDirectory:= 1
+  options.AutosaveFormat:= 0                            //# 0 = PDF
+  options.AutosaveDirectory:= exepath;
+	options.AutosaveFilename:=  'firstdemo4.pdf';
+   //os.path.splitext(os.path.basename(ifname))[0]
+   PDFobj.cSaveOptions(options)
+  PDFobj.cPrintFile(exepath+'firstdemo.txt')
+  
+  //PDFObj.cOptions:= options
+  PDFObj.cSaveOptions(oldOptions)
+  pdfobj.cclose;
+  //pdfobj.cPrintFile:= exepath+'PDFCreatormx3.pdf';
+  pdfobj:= unassigned;
+  	//_PDFCreator.cDefaultPrinter = "PDFCreator";
+	//				_PDFCreator.cPrintFile(fi.FullName);
+  //srcfldr:= TShellZip_GetNameSpaceObj(sourcefolder);
+end;
+
+
+//multi main form theme
+begin
+//*************maXbox Game Series***********************************
+  //processMessagesOff;
+  time1:= time;
+  writeln(formatdatetime('"main start is:" hh:mm:ss:zzz', time)) 
+  TSwatFrm_FormInit(self);
+  LoadQForm();
+  TSwatFrm_New1Click(Self);
+  //Sleep(1000);
+  time2:= time;
+  writeln(formatdatetime('"main stop is:" hh:mm:ss:zzz', time)) 
+  Diff:= time2 - time1; 
+  writeln(IntToStr(Trunc(Diff * 24)) + 
+              FormatDateTime('" h elapsed time is:" nn:ss:zzz',Diff));
+  //Voice('Chaos done and gone') 
+  Screen.Cursor:= crDefault;  
+  //writeln(GetGeoInfo4('178.196.192.131', UrlGeoLookupInfo3));
+  
+End.
+
+
+Doc:
+just inside maxbox
+         ____    ___   _      ____    _   _   _
+        |  _ \  |  _| | |    |  _ \  | | | | | |
+        | | . | | |_  | |    | |_| | | |_| | | |
+        | | | | |  _| | |    |  __/  |  _  | | |          
+        | |_. | | |_  | |__  | |     | | | | | |                      
+        |____/  |___| |____| |_|     |_| |_| |_| 
+                              
+                              
+ Ref:                             
+
+new record: when you are on the finish line, you should keep going
+performance start is: 11:56:14:171
+performance stop is: 11:57:09:140
+0 h elapsed run time is: 00:54:969
+ mX3 executed on: 07.10.2011 11:57:20
+ 
+
+
+procedure TOptionsDlg.OKBtnClick(Sender: TObject);
+begin
+  SwatFrm.LiveTime := SpeedSet.Max + 1 - SpeedSet.Position;
+  SwatFrm.Frequence := PopulationSet.Position;
+  SwatFrm.GameTime := StrToInt(GameTimeSet.Text);
+
+  // limit the value of GameTime to a reasonable length
+  if (SwatFrm.GameTime < 1) then
+    SwatFrm.GameTime := 150;
+  if (SwatFrm.GameTime > 9999) then
+    SwatFrm.GameTime := 9999;
+end;
+
+procedure TOptionsDlg.FormShow(Sender: TObject);
+begin
+  SpeedSet.Position := SpeedSet.Max + 1 - SwatFrm.LiveTime;
+  PopulationSet.Position := SwatFrm.Frequence;
+  GameTimeSet.Text := inttoStr(SwatFrm.GameTime);
+end;
+
+
+Cursors
+You can store mouse cursors as resources. If you use Image Editor, then be sure to change the names - the default names do not work. (It only took me 5 days of working on nothing else to discover this trick.)
+According to the Delphi 5 help (see TScreen.Cursors), this is how to use a cursor located in a resource file.
+
+     Screen.Cursors[2] := LoadCursor(HInstance, 'Cursor2');
+     cursor := 2;
+
+(The resource name is not case sensitive.)
+
+The Delphi components use numbers instead of strings (see Delphi5\Lib\controls.res).
+
+     Screen.Cursors[2] := LoadCursor(HInstance, MAKEINTRESOURCE(1234));
+     cursor := 2;
+
+Notice that in Image Editor, "1234" is a string, but in the command above, it is an integer (it also appears to be an integer in the *.res file). (Of course, you must make sure to select a number between 0 and 32K that no one else has ever used ... and that no one else WILL ever use. Yeah, right!)
+Strangely, this code also works
+
+     Screen.Cursors[2] := LoadCursor(HInstance, PChar(1234));
+     cursor := 2;
+
+(Casting an integer as a null terminated string is definitely weird. The Resource Workshop Reference provided with Borland C++ 5.02 specifically says that "You must either typecast the integer into a long pointer to char or use [the MAKEINTRESOURCE] macro.") 

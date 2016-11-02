@@ -1,0 +1,663 @@
+{**********************************************************************}
+{ Unit archived using Team Coherence                                   }
+{ Team Dream Software Components    CoolCode                           }
+{                                                                      }
+{ For further information / comments, visit our WEB site at            }
+{ http://www.softwareschule.ch                                         }
+{**********************************************************************}
+
+  //Notes:
+    //Demonstrates using the ICMP client and mX4 news to generate PING stats.
+ 
+ { Version History: #sign:Max: MAXBOX10: 18/05/2016 13:34:51 
+   12th Sept 03: Andy Neillans
+                 Added option for ping count.
+                 Updated the Indy URL and KDialogs
+
+  Tested:
+   Indy 9:
+     D5:     Untested
+     D6:     Partial Untested
+     D2007:     25th Oct 2015 by Max
+}
+program pingMaintest_mX4News;
+
+//interface   #sign:Max: MAXBOX10: 18/05/2016 13:34:51 
+
+{uses
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
+  SysUtils, Classes, IdIcmpClient, IdBaseComponent, IdComponent, IdRawBase, IdRawClient,
+  Spin;  #locs-500
+   }
+
+//type
+  //TfrmPing = class(TForm)
+   var 
+    lstReplies: TListBox;
+    ICMP: TIdIcmpClient;
+    Panel1: TPanel;
+    btnPing: TButton;
+    edtHost: TEdit;
+    spnPing: TSpinEdit;
+    Label1: TLabel;
+    ppform, ppform2: Tform;
+    procedure btnPingClick(Sender: TObject); forward;
+    procedure ICMPReply(ASender: TComponent; const ReplyStatus: TReplyStatus); forward;
+  //private
+  //public
+  //end;
+  procedure paintprocessingstar; forward;
+
+var
+  frmPing: TForm; //TfrmPing;
+
+//implementation
+//{$R *.DFM}
+
+procedure btnPingClick(Sender: TObject);
+var
+  i: integer;
+  AQuote: string;
+begin
+  Icmp:=  TIdIcmpClient.Create(self);
+  ICMP.OnReply := @ICMPReply;
+  //ICMP.ReceiveTimeout := 1000;
+  //property ReceiveTimeout default Id_TIDICMP_ReceiveTimeout;
+  //btnPing.Enabled := False;
+   try
+    //ICMP.Host := edtHost.Text;
+    icmp.port
+    try
+      TIDRawBase(icmp).receivetimeout:= 1500;
+      TIDRawBase(icmp).ttl:= 20;
+      icmp.ttl:= 30;
+      //Tinteger(icmp).tostring(false);
+      writeln(TIDRawBase(icmp).localname);
+      Icmp.host:= 'www.projectindy.org'; //'www.swisscom.ch'
+    for i := 1 to 5 {spnPing.Value} do begin
+      ICMP.Ping(aQuote, 0);
+      Application.ProcessMessages;
+    end;
+    except
+      writeln('must run as admin! - if you accept the UAC will continue...') 
+    end
+  finally 
+  //btnPing.Enabled := True;
+  //icmp.disconnect;
+    writeln('ffree ping & raw socket')
+    Icmp.Free;
+   end;
+end;
+
+procedure ICMPReply(ASender: TComponent; const ReplyStatus: TReplyStatus);
+var
+  sTime: string;
+begin
+  // TODO: check for error on ping reply (ReplyStatus.MsgType?)
+  if ReplyStatus.ReplyStatusType = rsEcho then
+      writeln('FPingDead := false');
+  if (ReplyStatus.MsRoundTripTime = 0) then
+    sTime := '<1'
+  else
+    sTime := '=';
+ // lstReplies.Items.Add(Format('%d bytes from %s: icmp_seq=%d ttl=%d time%s%d ms',
+    writeln(Format('%d bytes from %s: icmp_seq=%d ttl=%d time%s%d ms',
+    [ReplyStatus.BytesReceived,
+    ReplyStatus.FromIpAddress,
+    ReplyStatus.SequenceId,
+    ReplyStatus.TimeToLive,
+    sTime,
+    ReplyStatus.MsRoundTripTime]));
+end;
+
+const apitch=33;
+      cx=440; cy=440;
+
+function CurveZ(x,y: smallInt): TPoint;
+ //modify x,y acc. to z 
+ var dx,dy: single;
+  begin  
+   dy:= 5*exp(-0.02*(x*x+ y*y))
+   dx:= 0.02*x*y;
+   result.X:= round(apitch*(x+dx))+ cx;
+   result.Y:= round(apitch*(y+dy)*0.8)+ cy
+  end; 
+
+
+{procedure ; paintGrid var , : ; xy smallInt     : [- ,- ]  ; a TPoint array of 10..10 10..10 begin   := -   for to do y 10 10    := -    [ , ] := ( , ); for to do x a xy curveZ xy 10 10  . with do bmCanvas  begin   . := ; penWidth 1   . := ; penColor penColor     := -   for to do y 10 10    begin     ( [- , ]. , [- , ]. ); moveto a y Xa y y 10 10       := -    ( [ , ]. , [ , ]. ); for to do x lineto a xy xa xy Y 9 10    ; end     := -   for to do x 10 10    begin     ( [ ,- ]. , [ ,- ]. ); moveto a x Xa x Y 10 10       := -    ( [ , ]. , [ , ]. ) for to do y lineto a xy Xa xy Y 9 10    ; end  ; end end;
+
+procedure ; paintGrid var , : ; xy smallInt     : [- ,- ]  ; a TPoint array of 10..10 10..10 begin   := -   for to do y 10 10    := -    [ , ] := ( , ); for to do x a xy curveZ xy 10 10  . with do bmCanvas  begin   . := ; penWidth 1   . := ; penColor penColor     := -   for to do y 10 10    begin     ( [- , ]. , [- , ]. ); moveto a y Xa y y 10 10       := -    ( [ , ]. , [ , ]. ); for to do x lineto a xy xa xy Y 9 10    ; end     := -   for to do x 10 10    begin     ( [ ,- ]. , [ ,- ]. ); moveto a x Xa x Y 10 10       := -    ( [ , ]. , [ , ]. ) for to do y lineto a xy Xa xy Y 9 10    ; end  ; end end; 
+
+function string ( : ): ; GetHash aPassword int64 var   : ;  : ;    : ; lTemp int64 pwBytes TBytes lByte bytebegin      := ; := ; Result lTemp 0 0     := . . ( ); pwBytes TEncodingUTF8GetBytes aPassword           >  for in doif thenbegin lByte pwBytes lByte 0       := * + ; lTemp lTemp lByte 37        >  if thenbegin lTemp $0FFFFFFFFFFFFFFF         :=  ; result resultXORlTemp         := ; lTemp 0       ; end     ; end     :=  ; Result ResultXORlTemp end;
+}
+
+//procedure saveproimage(sender: TObject);
+  //7/  ondblclick:=  @saveproimage;
+procedure saveproimageMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if( ssRight in Shift ) then begin
+    SaveCanvas2(ppform.Canvas, Exepath+'processingimage.png');
+    opendoc(Exepath+'processingimage.png');
+  end;
+end;  
+
+procedure newimage(sender: TObject);
+begin
+  ppform.invalidate;
+  for it:= 1 to 170 do 
+         paintprocessingstar;
+         //maxform1.KeyPressedFalse
+  //application.processmessages;       
+  //resetkeypressed;     
+  //memo2.click;  
+end;  
+
+
+procedure loadPForm(vx, vy: smallint);
+begin
+  //psize:= vx*vy
+  //constructor
+  ppform:= Tform.create(self);
+  with ppform do begin
+    caption:= 'LEDBOX, click to new image and right mouse down to save out pattern';  
+    //width:= (vx*psize)+ 10;
+    //height:= (vy*psize)+ 30;
+    color:= clblack;
+    formstyle:= fsstayOnTop;
+    setBounds(0,0,500,500)
+    BorderStyle:= bsDialog;
+    Position:= poScreenCenter;
+    //OnClick:= @Label1Click;
+    //ondblclick:=  @saveproimage;
+    onmousedown:=  @saveproimagemousedown;
+
+    onclick:=  @newimage;
+    show;
+  end  
+end;
+
+procedure passwordGen;
+begin
+ with TBKPwdGen.create(self) do begin
+    //RegisterProperty('PassWord', 'string', iptr);
+        Length:= 8;
+        Digits:= true;
+        Special:= true;
+        SmallLetters:= true;
+
+    CreatePassword;
+    writeln('CreatePassword: '+password)
+    Free;
+   end; 
+   { RegisterMethod('Constructor Create( AOwner : TComponent)');
+    RegisterProperty('Length', 'integer', iptrw);
+    RegisterProperty('Digits', 'Boolean', iptrw);
+    RegisterProperty('Special', 'Boolean', iptrw);
+    RegisterProperty('SmallLetters', 'Boolean', iptrw);}
+  end;
+  
+ procedure Kronos;
+ begin 
+    with TKronos.create(self) do begin
+      GotoYesterday
+      writeln('daynumber: ' +itoa(daynumber))
+      writeln('monthday: ' +itoa(monthday))
+      GotoToday
+      writeln('daynumber: ' +itoa(daynumber))
+      writeln('monthday: ' +itoa(monthday))
+ 
+    Free;
+    end
+  end;  
+  
+ procedure enumerateFilesX;
+  
+  Var
+  Path    : String;
+  SR      : TFindRec; //TSearchRec;
+  DirList : TStrings;
+  cnt: integer;
+begin
+  //if OpenPictureDialog1.Execute then
+  begin
+    //Path:=ExtractFileDir(OpenPictureDialog1.FileName); //Get the path of the selected file
+    Path:= ExtractFileDir(exepath); //Get the path of the selected file
+  
+    DirList:=TStringList.Create;
+    try
+          if FindFirst3(Path + '\*.*', SR) = true then begin
+            repeat
+            //if ((SR.Attributes and faDirectory) <> 0) then
+                inc(cnt)
+                DirList.Add(itoa(cnt)+' '+path+'\'+SR.Name); //Fill the list
+            until not FindNext3(SR); // <> 0;
+            FindClose3(SR);
+          end;
+
+     //do your stuff
+     for it:= 0 to dirlist.count-1 do 
+       writeln(dirlist.strings[it]); 
+
+    finally
+     DirList.Free;
+    end;
+  end;
+
+end;
+
+var winkel, laenge, dx,dy: double;
+    breite, mousex, mousey: integer;
+
+procedure paintprocessingstar;
+begin
+  mousex:= ppform.width div 2
+  mousey:= ppform.height div 2
+  
+  breite:= random(7)+1
+  ppform.canvas.pen.width:= breite;
+  ppform.canvas.pen.color:= random(clred+clgreen);
+  //winkel:= random2(round(2*PI))
+  winkel:= randomF *(2*PI)
+  laenge:= random2(round((ppform.height/2)*(7-breite/6)))-550;
+  // orig processing laenge:= random2(min(width/2, height/2))*(7-breite)/6);
+   //+(ppform.width/2);
+    //laenge:= random2(round((ppform.height/2)*(7-breite/6)))+(ppform.width/2);
+  dx:= cos(winkel)*laenge;
+  dy:= sin(winkel)*laenge;
+  ppform.canvas.moveto(mousex, mouseY);
+  ppform.canvas.lineto(round(mouseX+dx), round(mouseY+dy))
+  
+  //for it:= 1 to 100 do
+    //  curvez(it,it)
+end;
+
+procedure SIRegister_KGraphics(CL: integer);
+{TPSPascalCompiler}
+var MulX, MulY, DivX, DivY: integer;
+begin
+ //PNGHeader','String').SetString( #137 'PNG' #13#10#26#10);
+ //MNGHeader','String').SetString( #138 'MNG' #13#10#26#10);
+  //TKBrightMode', '( bsAbsolute, bsOfBottom, bsOfTop )');
+  //TKColorRec', 'record R : byte; G : byte; B : byte; A : Byte; Val'
+   //+'ue : Cardinal; end');
+  //PKColorRec', '^TKColorRec // will not work');
+  //TKDynColorRecs', 'array of TKColorRec');
+  //TKImageHeaderString', 'string');
+  //TKPngImage', 'TPortableNetworkGraphic');     !
+  //TKPngImage', 'TPngImage');
+  //TKPngImage', 'TPngObject');
+  //taLineBreak
+  //TKTextAttribute', '( taCalcRect, taClip, taEndEllipsis, taFillRe'
+   //+'ct, taFillText, taIncludePadding, taLineBreak, taPathEllipsis, taWordBreak'
+   //+', taWrapText, taTrimWhiteSpaces, taStartEllipsis )');
+  //TKTextAttributes', 'set of TKTextAttribute');
+  //TKHAlign', '( halLeft, halCenter, halRight, halJustify )');
+  //stmNone
+  //TKStretchMode', '( stmNone, stmZoomOutOnly, stmZoomInOnly, stmZoom )');
+  //TKTextHAlign', 'TKHAlign');
+  //TKVAlign', '( valTop, valCenter, valBottom )');
+  //TKTextVAlign', 'TKVAlign');
+  //TKButtonDrawState', '( bsUseThemes, bsDisabled, bsPressed, bsFocused, bsHot )');
+  //TKButtonDrawStates', 'set of TKButtonDrawState');
+  //SIRegister_TKGraphic(CL);
+  //SIRegister_TKAlphaBitmap(CL);
+  //SIRegister_TKMetafile(CL);
+  //TKTextBoxFunction', '( tbfMeasure, tbfGetIndex, tbfGetRect, tbfDraw )');
+  //SIRegister_TKTextBox(CL);
+  //SIRegister_TKDragWindow(CL);
+  //SIRegister_TKHintWindow(CL);
+  //SIRegister_TKTextHint(CL);
+  //SIRegister_TKGraphicHint(CL);
+  //BlendLine( Src, Dest : PKColorRecs; Count : Integer)');
+  //! TKBrightColor(Color: TColor; Percent: Single; Mode : TKBrightMode) : TColor');
+  //CanvasGetScale( ACanvas : TCanvas; out MulX, MulY, DivX, DivY : Integer)');
+  CanvasGetScale(ppform.canvas,  MulX, MulY, DivX, DivY);
+  writeln('CanvasGetScale is '+format('MulX: %d  MulY: %d  DivX: %d  DivY: %d',
+                                  [MulX, MulY, DivX, DivY]));
+  writeln(itoa(TKColorToGrayScale(ppform.color)));
+  //CanvasResetScale( ACanvas : TCanvas)');
+  //CanvasScaled( ACanvas : TCanvas) : Boolean');
+  //CanvasSetScale( ACanvas : TCanvas; MulX, MulY, DivX, DivY : Integer)');
+  //CanvasSetOffset( ACanvas : TCanvas; OfsX, OfsY : Integer)');
+  //ColorRecToColor( Color : TKColorRec) : TColor');
+  //ColorToColorRec( Color : TColor) : TKColorRec');
+  //!TKColorToGrayScale( Color : TColor) : TColor');
+  //CompareBrushes( ABrush1, ABrush2 : TBrush) : Boolean');
+  //CompareFonts( AFont1, AFont2 : TFont) : Boolean');
+  //CopyBitmap(DestDC : HDC; DestRect: TRect; SrcDC : HDC; SrcX, SrcY : Integer)');
+  //CreateEmptyPoint : TPoint');
+  //CreateEmptyRect : TRect');
+  //CreateEmptyRgn : HRGN');
+  //DrawAlignedText( Canvas : TCanvas; var ARect : TRect; HAlign : TKHAlign; VAlign : TKVAlign; HPadding, VPadding : Integer; const AText : TKKString; BackColor : TColor; Attributes : TKTextAttributes)');
+  //!TKDrawButtonFrame(ACanvas: TCanvas; const ARect : TRect; AStates : TKButtonDrawStates)');
+  //DrawEdges( Canvas : TCanvas; const R : TRect; HighlightColor, ShadowColor : TColor; Flags : Cardinal)');
+  //DrawFilledRectangle(Canvas: TCanvas; const ARect : TRect; BackColor : TColor)');
+  //DrawGradientRect( Canvas : TCanvas; const ARect : TRect; AStartColor, AEndColor : TColor; AColorStep : Integer; AHorizontal : Boolean)');
+  //ExcludeShapeFromBaseRect( var BaseRect : TRect; ShapeWidth, ShapeHeight : Integer; HAlign : TKHAlign; VAlign : TKVAlign; HPadding, VPadding : Integer; StretchMode : TKStretchMode; out Bounds, Interior : TRect)');
+  //ExtSelectClipRect(DC : HDC; ARect : TRect; Mode : Integer; var PrevRgn : HRGN) : Boolean');
+  //ExtSelectClipRectEx( DC : HDC; ARect : TRect; Mode : Integer; CurRgn, PrevRgn : HRGN) : Boolean');
+  //FillAroundRect( ACanvas : TCanvas; const Boundary, Interior : TRect; BackColor : TColor)');
+  //GetFontHeight( DC : HDC) : Integer');
+  //GetFontAscent( DC : HDC) : Integer');
+  //GetFontDescent( DC : HDC) : Integer');
+  //GDICheck( Value : Integer) : Integer');
+  //HorizontalShapePosition( AAlignment : TKHAlign; const ABoundary : TRect; const AShapeSize : TPoint) : Integer');
+  //ImageByType( const Header : TKImageHeaderString) : TGraphic');
+  //IntersectClipRectIndirect( DC : HDC; ARect : TRect) : Boolean');
+  //IsBrightColor( Color : TColor) : Boolean');
+  //LoadCustomCursor( Cursor : TCursor; const ResName : string)');
+  LoadCustomCursor(screen.Cursor, 'CROCE2');
+
+  //!TKLoadGraphicFromResource( Graphic : TGraphic; const ResName : string; ResType : PChar)');
+  //MakeColorRec( R, G, B, A : Byte) : TKColorRec;');
+  //MakeColorRec5( Value : LongWord) : TKColorRec;');
+  //PixelFormatFromBpp( Bpp : Cardinal) : TPixelFormat');
+  //TK!RectInRegion( Rgn : HRGN; ARect : TRect) : Boolean');
+  //RgnCreateAndGet( DC : HDC) : HRGN');
+  //RgnSelectAndDelete( DC : HDC; Rgn : HRGN)');
+  //RoundRectangle( ACanvas : TCanvas; const ARect : TRect; AXRadius, AYRadius : Integer)');
+  //SafeStretchDraw(ACanvas: TCanvas; ARect:TRect; AGraphic : TGraphic; ABackColor : TColor)');
+  //SelectClipRect( DC : HDC; const ARect : TRect)');
+  //!TKStretchBitmap( DestDC : HDC; DestRect : TRect; SrcDC : HDC; SrcRect : TRect)');
+  //SwitchRGBToBGR( Value : TColor) : TColor');
+  //TranslateRectToDevice( DC : HDC; var ARect : TRect)');
+  //VerticalShapePosition( AAlignment : TKVAlign; const ABoundary : TRect; const AShapeSize : TPoint) : Integer');
+  //cPipeFormat
+  //cShutDownMsg
+  
+  
+ (* CL.AddTypeS('TTypeKind', '(tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat,'
+    +'tkString, tkSet, tkClass, tkMethod, tkWChar, tkLString, tkWString,'
+    +'tkVariant, tkArray, tkRecord, tkInterface, tkInt64, tkDynArray);');
+   {TTypeKind = (tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat,
+    tkString, tkSet, tkClass, tkMethod, tkWChar, tkLString, tkWString,
+    tkVariant, tkArray, tkRecord, tkInterface, tkInt64, tkDynArray);}
+  CL.AddTypeS('TTypeKinds', 'set of TTypeKind;');
+   *)
+end;
+
+
+   function RPos2(const ASub, AIn: String): integer;
+   begin
+     result:= pos(asub, ain)
+   end;  
+
+
+
+ var ch: char;
+   xt,yt: integer;
+   apt: TPoint;
+   afunc: TIncludeItemFunc;
+  IndyPos: TPosProc; // = nil;
+  
+
+begin
+
+  //if IdRawBuildIcmpRedirect() then
+  writeln('isAdmin: '+botoStr(getisAdmin))
+  {if getisAdmin then 
+    btnPingClick(self) else 
+       ShowMessage('you must start as Admin Mode!');
+   }    
+       loadPForm(10,10)
+       for it:= 1 to 170 do 
+         paintprocessingstar;
+         //maxform1.setkeypressed
+         
+     (*  repeat 
+         for it:= 1 to 14 do
+            paintprocessingstar;
+            //maxform1.setkeypressed
+            //  maxform1.memo2keypress(self, ch)
+            //maxform1.resetkeypressed;
+            //maxform1.KeyPressedFalse
+            //setkey
+          delay(250)
+          ppform.invalidate;
+          //application.processmessages; 
+       until iskeypressed;  
+       if isKeypressed then writeln('key pressed!');
+       //maxform1.memo2keypress(self, ch)
+       *)
+       
+  //ShellExecuteExAsAdmin( hWnd : HWND; Filename : string; Parameters : string)');
+  //ShellExecuteExAsAdmin(hinstance,exepath+'maxbox4.exe',+ 
+            //'"C:\Program Files (x86)\maxbox3\examples\116_ping2.txt"');    
+   
+   {ShellExecuteExAsAdmin(hinstance,exepath+'maxbox4sign.exe',+ 
+                '"C:\maXbox\maxbox3\maxbox3\maXbox3\examples\677_pingtest.txt"');    
+    }
+   
+   {ShellExecuteExAsAdmin(hInstance,exepath+'maxbox4.exe',+ 
+                '"C:\maXbox\maxbox3\maxbox3\maXbox3\examples\677_pingtest.txt"');    
+    }
+  
+  // RunAsAdmin(hInstance,exepath+'maxbox4.exe',+ 
+    //            '"C:\maXbox\maxbox3\maxbox3\maXbox3\examples\677_pingtest4.txt"');    
+    
+     maxCalcF('5*e^(0.1)');
+     maxCalcF('5*e^(-0.1*(10^2))');
+    // ppform.canvas.lineto(round(mouseX+dx), round(mouseY+dy))
+  
+  {ppform.canvas.moveto(50,200)
+  ppform.canvas.pen.color:= clyellow;
+  for it:= 1 to 2 do
+      ppform.canvas.lineto(curveZ(it,30).y,curveZ(it,30).x);
+   }
+  ppform.canvas.pen.color:= clyellow;    
+  ppform.canvas.moveto(50,200)    
+  for it:= 1 to 100 do begin    
+    apt:= curveZ(30-it,30-it)    
+    ppform.canvas.moveto(it+220,apt.y+it);
+    ppform.canvas.lineto(apt.y,apt.x);
+  end;  
+  
+  writeln('HInstance: '+itoa(hinstance))
+  writeln('application.handle: '+itoa(application.handle))
+  passwordGen;
+  Kronos;
+  //enumerateFiles;
+  //rocedure EnumerateFiles(const StartDir:AnsiString;FL:TStrings;SubDirs:Bool IncludeItem:TIncludeItemFunc);
+   srlist:= TStringlist.create;
+   EnumerateFiles2(exepath,srlist, false, 0)
+   //EnumerateDirectories2(exepath+'\',srlist, false, NIL)
+   for it:= 0 to srlist.count-1 do 
+      writeln(srlist.strings[it]);
+   srlist.Free; 
+   
+   with TKBrowseFolderDialog.create(self) do begin
+    writeln(botoStr(execute))
+    free
+  end; 
+  
+  //ppform.free; 
+  //OpenFileMapping
+  printF('this is %.18f ',[maxCalc('ln(2)^e')]); //this is 0.369248502937272178 
+  
+  writeln(GetNewFormatedGUID); 
+  writeln(GetNewGUID)   
+  
+  SIRegister_KGraphics(422)
+      //new loadform as instance!
+      ppform2:= loadForm(500,510)
+       //ppform.show;
+       for it:= 1 to 170 do 
+         //paintprocessingstar;
+         //maxform1.setkeypressed
+          paintprocessingstar2(ppform2);
+          //getform
+          
+     IndyPos:= NIL;
+     indypos:= @rpos2;      //function pointer!
+  
+  writeln('SubstringCount : '+inttostr(SubstringCount('ell', 'Hello bell world!')));   //returns 2
+      writeln(itoa(indypos('ell','AHello')));
+      Assert2(SubstringCount('ell', 'Hello bell world!')=2, 'must be 2 you')
+     if indypos('ell','Hello') > 0 then writeln('found');
+     
+ 
+End.
+
+Ref:
+                                                                               
+https://www.diffnow.com/
+
+http://kudruavtsev.narod.ru/delphi_y_p/systools-low-levelproceduresfunctions.htm
+
+http://stackoverflow.com/questions/923350/delphi-prompt-for-uac-elevation-when-needed
+
+  You can't "elevate" an existing process. Elevated processes under UAC have a different token with a different LUID, different mandatory integrity level, and different group membership. This level of change can't be done within a running process - and it would be a security problem if that could happen.
+
+You need to launch a second process elevated that would do the work or by creating a COM object that runs in an elevated dllhost.
+
+  if not Admin rights:: Exception: Cannot allocate socket.
+  
+  Exception: System Error.  Code: 1223.
+  The operation was canceled by the user.
+  
+  with CL.AddClassN(CL.FindClass('TIdRawClient'),'TIdIcmpClient') do begin
+  type
+  TIdRawClient = class(TIdRawBase)
+  published
+    property ReceiveTimeout;
+    property Host;
+    property Port;
+    property Protocol;
+  end;
+  with CL.AddClassN(CL.FindClass('TIdComponent'),'TIdRawBase') do begin
+
+doc:
+ The PingGUI demo in Indy doesn't seem to work correctly on my system.
+When
+> I
+> > try to ping a host, I get an EIdInvalidSocket exception with the message
+> > "cannot allocate socket".
+> Do you have admin privilegies on this system?
+> Ping require admin privilegies. 
+
+Your program must be running with admin rights in order to use TIdIcmpClient. This is because TIdIcmpClient uses a RAW socket, which Microsoft has restricted access to.
+
+Otherwise, to send pings without admin rights, you have to stop using TIdIcmpClient altogether and use Microsoft's ICMP.DLL instead, such as the IcmpSendEcho() function:
+
+TIdIcmpClient uses a RAW socket to implement the ICMP protocol manually.
+On most platforms, use of RAW sockets is restricted to admin users only.
+So you would likely have to gain root access to your iOS device in order
+to use TIdIcmpClient, assuming iOS even supports RAW sockets at all.
+
+You will have to find another solution to send pings on iOS.
+
+
+published
+    property ReceiveTimeout default Id_TIDICMP_ReceiveTimeout;
+    property Host;
+    property Port;
+    property Protocol Default Id_IPPROTO_ICMP;
+    property OnReply: TOnReplyEvent read FOnReply write FOnReply;
+  end;
+
+[Stats]
+EditorSecs=23
+DesignerSecs=2
+InspectorSecs=1
+CompileSecs=1662
+OtherSecs=11
+StartTime=25/10/2004 22:37:21
+RealKeys=0
+EffectiveKeys=0
+DebugSecs=9
+
+
+http://chapmanworld.com/2015/06/08/elevated-privileges-for-delphi-applications/
+
+How can I force Windows Vista/7 to execute (run) my application as a user with full Administrator-rights?
+I want the "run as administrator" procedure to be set automatically in application and not manually by user (manually right-click on exe, left-click on "Run as administrator") as when user launches application, the UAC popup to be triggered automatically and ask for confirmation.
+
+
+1 28 "CommCtrlAdmin.manifest"
+
+Build CommCtrlAdmin.res file using brcc32 and ad it to the project.
+Code:
+
+//{$R CommCtrlAdmin.res}
+
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <assemblyIdentity
+    type="win32"
+    name="<your description>"
+    version="2.0.0.2552"
+    processorArchitecture="*"/>
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity
+        type="win32"
+        name="Microsoft.Windows.Common-Controls"
+        version="6.0.0.0"
+        publicKeyToken="6595b64144ccf1df"
+        language="*"
+        processorArchitecture="*"/>
+    </dependentAssembly>
+  </dependency>
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+    <security>
+      <requestedPrivileges>
+        <requestedExecutionLevel
+          level="requireAdministrator"
+          uiAccess="false"/>
+        </requestedPrivileges>
+    </security>
+  </trustInfo>
+</assembly>   asm end
+
+
+If you do not use a handle UAC will always give direct foreground elevation.
+?
+1	
+function RunAsAdmin(hWnd: HWND; filename: string; Parameters: string): Boolean;
+{
+    See Step 3: Redesign for UAC Compatibility (UAC)
+    http://msdn.microsoft.com/en-us/library/bb756922.aspx
+}
+var
+    sei: TShellExecuteInfo;
+begin
+    ZeroMemory(@sei, SizeOf(sei));
+    sei.cbSize := SizeOf(TShellExecuteInfo);
+    sei.Wnd := hwnd;
+    sei.fMask := SEE_MASK_FLAG_DDEWAIT or SEE_MASK_FLAG_NO_UI;
+    sei.lpVerb := PChar('runas');
+    sei.lpFile := PChar(Filename); // PAnsiChar;
+    if parameters <> '' then
+        sei.lpParameters := PChar(parameters); // PAnsiChar;
+    sei.nShow := SW_SHOWNORMAL; //Integer;
+ 
+    Result := ShellExecuteEx(@sei);
+end;
+
+Source:
+* http://edn.embarcadero.com/article/33942
+
+function RunAsAdmin(hWnd: HWND; filename: string; Parameters: string): Boolean;
+{
+    See Step 3: Redesign for UAC Compatibility (UAC)
+    http://msdn.microsoft.com/en-us/library/bb756922.aspx
+
+    This code is released into the public domain. No attribution required.
+}
+var
+    sei: TShellExecuteInfo;
+begin
+    ZeroMemory(@sei, SizeOf(sei));
+    sei.cbSize := SizeOf(TShellExecuteInfo);
+    sei.Wnd := hwnd;
+    sei.fMask := SEE_MASK_FLAG_DDEWAIT or SEE_MASK_FLAG_NO_UI;
+    sei.lpVerb := PChar('runas');
+    sei.lpFile := PChar(Filename); // PAnsiChar;
+    if parameters <> '' then
+        sei.lpParameters := PChar(parameters); // PAnsiChar;
+    sei.nShow := SW_SHOWNORMAL; //Integer;
+
+    Result := ShellExecuteEx(@sei);
+end;

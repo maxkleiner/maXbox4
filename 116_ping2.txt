@@ -1,0 +1,129 @@
+program Ping_ICMP;
+// gets a ping protocol - draft works not!
+// shows new section 101 - 120 http/internet examples, #locs=87
+//#sign:Max: MAXBOX10: 17/05/2016 20:29:01 
+
+var 
+  Idcmp: TIdIcmpClient;
+  RoundTripTime : Double;
+
+function FileSizeByName2(const AFilename: string): longint;
+begin
+  with TFileStream.Create(AFilename, fmOpenRead or fmShareDenyWrite) do
+  try
+    Result:= Size;
+  finally
+    Free;
+  end;
+end;
+
+
+function MPing(const AHost: string; const ATimes: integer; out AvgMS: Double): Boolean;
+var
+R : array of Cardinal;
+i : integer;
+AQuote: string;
+begin
+  Result := True;
+  AvgMS := 0;
+  if ATimes > 0 then
+  with TIdIcmpClient.Create(Self) do
+  try
+    Host:= AHost;
+    SetLength(R, ATimes);
+    {Pinguer le client}
+    for i:= 0 to Pred(ATimes) do begin
+      try
+       Ping(AQuote,1);
+       R[i]:= ReplyStatus.MsRoundTripTime;
+      except
+        Result := False;
+        Exit;
+      end;
+    end;
+  {Faire une moyenne}
+    for i:= Low(R) to High(R) do
+      AvgMS := AvgMS + R[i];
+      AvgMS := AvgMS / i;
+  finally
+    //Free;
+  end;
+end;
+
+
+procedure PutPing;
+var
+  AQuote: string;
+begin
+  Idcmp:=  TIdIcmpClient.Create(self);
+  //Idcmp.Host := 'http://www.brainyquote.com/link'
+  idcmp.host:= 'www.google.com';
+ //IdQOTD1.Host:= 'http://zytugadgets.googlepages.com'
+  //Idcmp.host:= 'www.swisscom.ch'
+  try
+    Idcmp.Ping(AQuote, 1);
+  except
+    writeln('you must be admin...')
+    showmessage('start as admin! - see below ')
+  end  
+  //AQuote := IdQOTD1.Quote;
+  Idcmp.Free;
+  //IdQOTD1.Disconnect;
+  ShowMessage('QUOTE: ' + AQuote);
+end;
+
+
+begin
+  PutPing;
+  if MPing('www.google.com', 4, RoundTripTime) then
+    MessageDlg(Format('Ping moyen : %s',[FormatFloat('0.00',RoundTripTime)]),
+     mtInformation, [mbOK], 0)
+  else
+    MessageDlg('Erreur. L''hôte est sans doute injoignable.',
+    mtInformation, [mbOK], 0); //Host unreachable
+    
+   //  ShellExecuteExAsAdmin(hinstance,exepath+'maxbox4.exe',+ 
+    //'"C:\Program Files (x86)\maxbox3\examples\116_ping2.txt"');
+end.
+------------------------------------------------
+AHost =>server to ping
+ATimes =>number of pings to send
+AvgMS =>average time calculated
+
+      <script src="http://www.gmodules.com/gadgets/ifr?url=http://zytugadgets.googlepages.com/einstein.xml&amp;synd=open&amp;w=320&amp;h=200&amp;title=Albert+Einstein+quotes&amp;border=%23ffffff%7C0px%2C1px+solid+%2382CAFA%7C0px%2C2px+solid+%23BDEDFF%7C0px%2C3px+solid+%23E0FFFF&amp;output=js"></script>
+
+
+
+A nice feature in many software applications is the Help Quote that comes up whenever you start the software.  The number of features or how extensive the documentation is for the application will have a direct effect on how many different help topics are covered.  However, what if that content did not have to remain static?  What if there was a way to have a special kind of server setup to deliver the Quote of the Day?  With Indy, there is.  The TidQOTDServer handles the standard Quote of the Day protocol.  Basically this is just another example of how Indy has implemented pretty much every standard protocol.  
+
+
+//**************************************************program HTTP_PNG_Streamer;
+//**************************************************
+
+
+
+Here's the constant that is used to build the HTML…
+  WEB_PAGE = '<html>' + #13#10 +
+            '<head>' + #13#10 +
+            '<title>The Amazing HTTP Server</title>' + #13#10 +
+            '</head>' + #13#10 +
+            '<body>' + #13#10 +
+            '<p align="center"><font face="Arial" size="5"><i><b>' +
+            'The color of your magnificent Indy based HTTP ' +
+            'Server is...</b></i></font></p>' + #13#10 +
+            '<p align="center"><i><b><font face="Arial" ' +
+            'color="%s" size="6">%s</font></b></i></p>' + #13#10 +
+            '<p align="center"><font face="Arial" size="5"><i><b>' +
+            'Please pick a color for the HTTP Server:</b></i>' +
+            '</font></p>' + #13#10 + '<p align="center"><i><b>' +
+            '<a href="http://127.0.0.1/blue.htm"><font ' +
+            'face="Arial" size="5" color="#0000FF">BLUE</font>' +
+            '</a></b></i></p>' + #13#10 + '<p align="center">' +
+            '<i><b><a href="http://127.0.0.1/red.htm">' +
+            '<font face="Arial" size="5" color="#FF0000">RED' +
+            '</font></a></b></i></p>' + #13#10 + '<p align="center">' +
+            '<i><b><a href="http://127.0.0.1/yellow.htm">' +
+            '<font face="Arial" size="5" color="#FFFF00">YELLOW' +
+            '</font></a></b></i></p>' + #13#10 + '</body>' + #13#10 +
+            '</html>' + #13#10;
+

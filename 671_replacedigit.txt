@@ -1,0 +1,398 @@
+{***************************************************************
+ *            Uptime_4  replace digit - doesnt work as expected!?
+ * Project  : education system bITbox
+ * Unit Name: 668_uptime.txt
+ * Purpose  : Demonstrates uptime of the operating system as string
+ * Date     : 18/10/2012  -  14:38:5 
+ *          #sign:Max: MAXBOX10: 18/05/2016 13:10:19 
+ *          : 11/11/2015  - better process on/off  #locs:239
+ ****************************************************************}
+//compilerswitch $N- turns the coprocessor off, {$mode objfpc}{$H+} loc's =1
+
+PROGRAM Uptime_BooleanLAB;
+
+var ApplicationEvents1: TApplicationEvents; 
+
+const
+  cFmtText = '%.2x';
+  cBase = 16;
+  cDigitCount = 2;
+
+
+function GetSystemDirectory2(var S: String): Boolean;
+var Len: Integer;
+begin
+  Len:= {Windows.}GetSystemDirectory('Nil', 0);
+  if Len > 0 then begin
+    SetLength(S, Len);
+    //writeln(itoa(len))
+    Len:= {Windows.}GetSystemDirectory(PChar(S), Len);
+    SetLength(S, Len);
+    //writeln(itoa(len))
+    Result:= Len > 0;
+  end else
+    Result:= False;
+end;
+
+
+function ReplaceDigit(Value, Digit, aPos: Integer): Integer;
+var
+  I, Mask, O: Integer;
+begin
+  O := 1;
+  for I := aPos to cDigitCount - 2 do
+    O := O * cBase;
+  Mask := cBase - 1;
+  Result:= (((Value div O) and not Mask) + (Digit and Mask)) * O + Value mod O;
+end;
+
+function DigitToBin(Value: AnsiChar): Integer;
+begin
+  if ((Value >= 'a') and (Value <= 'f')) then Result := Ord(Value) - Ord('a') + 10
+  else if ((Value >= 'A') and (Value <= 'F')) then Result := Ord(Value) - Ord('A') + 10
+  else if ((Value >= '0') and (Value <= '9')) then Result := Ord(Value) - Ord('0')
+  else Result := -1;
+end;
+
+function DigitsToBinStr(var S: AnsiString; Convert: Boolean): Boolean;
+var
+  I, J, K: Integer;
+  T: AnsiString;
+begin
+  // check and convert text characters to hex values 0..15
+  Result := True;
+  if Convert then
+    SetLength(T, Length(S));
+  J := 0;
+  for I := 1 to Length(S) do if not CharInSetEx(S[I], [cTAB, cSPACE]) then
+  begin
+    K := DigitToBin(S[I]);
+    if K >= 0 then
+    begin
+      if Convert then
+      begin
+        Inc(J);
+        T[J] := Chr(K) //AnsiChar(K)
+      end;
+    end else
+    begin
+      Result := False;
+      Break;
+    end;
+  end;
+  if Result and Convert then
+  begin
+    SetLength(T, J);
+    S := T;
+  end;
+end;
+
+function BinStrToBinary(const S: AnsiString): AnsiString;
+var
+  I, J, L: Integer;
+  B1, B2: Byte;
+begin
+  L := Length(S);
+  Result := '';
+  if L > 0 then
+  begin
+    SetLength(Result, DivUp(L, 2));
+    if L = 1 then
+      Result := S
+    else
+    begin
+      J := 1;
+      for I := 1 to Length(Result) do
+      begin
+        B1 := ord(S[J]); Inc(J); //Byte(S[J]); Inc(J);
+        if J <= L then
+        begin
+          B2 := ord(S[J]); Inc(J);
+        end else
+          B2 := 0;
+        Result[I] := chr{AnsiChar}(B1 shl 4 + B2);
+      end;
+    end;
+  end;
+end;
+
+function BinToDigit(Value: Byte): AnsiChar;
+begin
+  if Value >= $10 then
+    Result := '0'
+  else if Value >= $A then
+    Result := chr{AnsiChar}(Ord('A') + Value - 10)
+  else
+    Result := chr{AnsiChar}(Ord('0') + Value)
+end;
+
+function BinStrToDigits(const Source: AnsiString; AInsertSpaces: Boolean): AnsiString;
+var
+  I, J, CharLen, SpaceCount: Integer;
+begin
+  CharLen := Length(Source) div 2;
+  //writeln(itoa(charlen))
+  if AInsertSpaces then
+    SpaceCount := CharLen - 1
+  else
+    SpaceCount := 0;
+  SetLength(Result, CharLen * 2 + SpaceCount);
+  J := 1;
+  for I := 1 to CharLen do begin
+    Result[J] := BinToDigit(Ord(Source[I * 2 - 1]));
+    Inc(J);
+    Result[J] := BinToDigit(Ord(Source[I * 2]));
+    Inc(J);
+    if AInsertSpaces and (I < CharLen) then
+    begin
+      Result[J] := ' ';
+      Inc(J);
+    end;
+  end;
+end;
+
+
+function UpTime: string;
+var t: Longword;
+  d, h, m, s: Integer;
+  ticksperday, ticksperhour: Integer;   
+  ticksperminute, tickspersecond: Integer; 
+  B2X: byte;
+  //apt: _pointer;
+  //aptb: _pointerback;
+  secatt: TSecurityAttributes;
+  atp: TOverlapped; 
+begin
+  ticksperday:= 1000 * 60 * 60 * 24;
+  ticksperhour:= 1000 * 60 * 60;
+  ticksperminute:= 1000 * 60;
+  tickspersecond:= 1000;
+  t := GetTickCount;
+  d := t div ticksperday;
+  t:=t- d * ticksperday;
+  h := t div ticksperhour;
+  //Dec(t, h * ticksperhour);
+  t:= t- h * ticksperhour;
+  m := t div ticksperminute;
+  //Dec(t, m * ticksperminute);
+  t:= t- m * ticksperminute;
+  s := t div tickspersecond;
+  Result := 'OS Uptime: ' + IntToStr(d) + ' Days ' + IntToStr(h) + ' Hours ' + IntToStr(m) +
+    ' Minutes ' + IntToStr(s) + ' Seconds';
+end;
+
+  //main form list call  
+ Begin
+    //calls some test functions
+    writeln(floattostr(maxCalc('e^ln(2)')));
+    printF('this is %.18f ',[maxCalc('ln(2)^e')]);
+    printF('this is %.18f ',[maxCalc('sqr(cos(ln(2)^e))')]);
+    printF('this is %.4f ',[maxCalc('sqrt(e^(ln(2)))')]);
+    printF('this is Area of r=1  %.18f ',[maxCalc('PI*(1^2)')]);
+    printF('this is Area of d=2r %.18f ',[maxCalc('PI/4*(2^2)')]);
+    writeln(getVersionString(exepath+'maxbox4.exe'));
+    sr:= loadFileAsString(exepath+'maxbox_functions_all.pdf');
+    writeln('file compare J: '+inttoStr(CompText(sr, sr)));
+    writeln('file lenght: '+intToStr(length(sr)));
+    
+      writeln('getSystemDir: '+botostr(getSystemDirectory2(sr)))   
+      writeln(sr)
+      writeln('UpTime: '+UpTime)
+      writeln(B2X(255))  
+    
+    //SendMessage(0, WM_SYSCOMMAND, SC_TASKLIST, 0); 
+ //--------------------------Main Topic--------------------------
+    //CreateMyFastForm;
+    //GetConnectionNames
+    //reversebits  
+    //MessageDlg('Data file must contain 2 variables !', mtError, [mbOK], 0);
+    //findexecutable      
+    //NamedPipeIOBufferSize
+    //NamedPipeLocalHost
+     // NamedPipeOutputBufferSize
+     //FormatSettings  //formattsettings
+     //NewStyleControls 
+     writeln(itoa(WM_SETTINGCHANGE)); // = 0x1a;
+     //BroadcastChange
+     //dEcryptFile
+//     GetCursorPos
+   //TSecurityAttributes
+     //RaiseWindowsError 
+      //FinalizeSecurity(var SA: TSecurityAttributes);
+      //InitializeSecurity
+      //IsHandle  //HPIPE
+      //FlushMessages
+      writeln(ComputerName2)
+      //Example: Value = $A18D, Digit = $C, Pos = 3: Result = $AC8D }
+   writeln(itoa(ReplaceDigit($A18D, $C, 3)));
+   writeln(inttohex(ReplaceDigit($A18D, $F, 4),2));
+   writeln(itoa(ReplaceDigit($12345899, 6, 2)));
+   
+   writeln(BinStrToBinary('#A#F#0#1#D#C#0#5#30'))
+   writeln(BinToDigit(14))
+   writeln(BinStrToDigits('#A#F#0#1#D#C#0#5#3',true))
+   writeln(BinStrToDigits('AF01DC053',true))
+   writeln(chr(ord('A')))
+   writeln(bigfact(555))
+   writeln(itoa(length(bigfact(555))))
+                
+End.
+
+  lambda: a+b --> a.+(b)
+
+  type
+    TCaptionTextControl = class(TControl);
+    TCaptionTextControl(Controls[i]).Caption := 'Whatever you Want';
+
+
+Proposal for Abreviation Symbol:
+
+  01 FALSE    //Contradiction
+
+  02 AND      //Conjunction x*y
+
+  03 INHIB    //Inhibition x*^y
+
+  04 PRAEP    //Praependence x
+
+  05 PRAE     //Praesection ^x*y
+
+  06 POST     //Postpendence y
+
+  07 XOR      //Exclusive OR x*^y+^x*y
+
+  08 OR       //Disjunction OR = x+y
+
+  09 NOR      //Rejection
+
+  10 AEQ      //Aequivalence x<-->y, ^x*^y+x*y
+
+  11 NEGY     //YNegation ^y
+
+  12 IMPY     //YImplication y-->x; x+^y
+
+  13 NEGX     //Xnegation ^x
+
+  14 IMPX     //XImplication x-->y; ^x+y
+
+  15 NAND     //Exclusion
+
+  16 TRUE     //TRUE Tautologic
+  
+
+ //ShellExecute in W64
+//ExecuteCommand('cmd','/k FC /L/N C:\maxbook\maxbox3\maxbox391.exe C:\maxbook\maxbox3\maxbox3.exe')
+ //  ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxboxdef1.ini C:\maxbook\maxbox3\maxboxdef2.ini')
+   
+
+getRulesbyContract  
+
+  couple of slides i have but you got the point
+  one important things that i want to stress
+  difference between data and delta is the difference
+  units to add :
+  
+unit SqlExpr;  // is just there integrate?
+unit DBXCommon;
+unit DBXPlatform;
+unit DBConnAdmin;
+unit IdVCard;  //check strtofloat
+unit IdTimeServer;
+unit IdTimeUDPServer;
+unit IdTimeUDP;
+unit TIdUDPServer
+unit IdIPWatch;
+unit IdMessageCollection;
+unit IdRexec;  //sort of remote execution
+unit IdRexecServer;
+unit IdRemoteCMDServer,
+unit IdRemoteCMDClient;
+
+unit uwinplot;   from dmat085
+   File name:        cUtils.pas unit cUtils;
+
+:: ***********************************************
+:: Compilation of DMath library for Delphi/Windows
+:: ***********************************************
+
+dcc32 dmath.dpr -$O+ -U..\units -DDELPHI 
+dcc32 dmath.pas -$O+ -I..\units -DDELPHI                                              }
+
+ add in menu by help dmath.pdf
+ navigator look at dependency viewer at the right site : skip list
+
+  with CL.AddClassN(CL.FindClass('TCustomListView'),'TListView') do begin
+  RegisterPublishedProperties;
+constructor is missing! to define in down class
+
+ListView1.Visible is missing     --->uPSI_ComCtrls.pas 
+ListView1.AddItem is missing
+more properties in downclass
+
+  Col.Width := 140; is missing //tcolumn  check 230_DataSetXMLBackupScholz2.txt
+             SQLQuery1['fullname']; is there a default propertie?
+                   
+ www.jensendatasystems.com/ekon16cds.zip
+
+check TSession.Free
+  writeln(createclassid);  from comobj unit
+
+check  with ListView1 do begin  tlistview constructor of columns.add ?
+   
+check all resources of add ons:
+- mp3 player ->ok
+- cipher file -> Tstringlist
+- memory game -> ok
+- 4 gewinnt ->ok
+- picture game -tbitmap, tbitmapimage  (if new picture or to picture)
+- maxplorer ->ok  (if drag n drop a tList is not freed)
+- cryptobox -> TStringlist
+
+Scan-Report of: maxbox3.zip
+Ahnlab	-
+AntiVir	OK
+Avast	OK
+AVG	OK
+BitDefender	OK
+CA-AV	OK
+Command	OK
+Command (Online)	OK
+Eset Nod32	OK
+Fortinet	OK
+F-Prot	OK
+G Data	OK
+Ikarus	OK
+K7 Computing	OK
+Kaspersky	OK
+Kaspersky (Online)	OK
+McAfee	OK
+McAfee (BETA)	OK
+McAfee (Online)	OK
+McAfee GW Edition (Online)	OK
+Microsoft	OK
+Norman	OK
+Panda	OK
+Panda (Online)	OK
+QuickHeal	Suspicious (warning)
+Rising	OK
+Sophos	OK
+Sophos (Online)	OK
+Sunbelt	OK
+Symantec	OK
+Symantec (BETA)	OK
+Trend Micro	OK
+Trend Micro (Cons.)	OK
+Trend Micro (CPR)	OK
+VBA32	OK
+VirusBuster	OK  
+This unit provides a powerfull hexadecimal editor component @link(TKHexEditor)
+  with following major features:
+  <UL>
+  <LI><I>advanced editing capabilities</I></LI>
+  <LI><I>advanced rendering styles</I></LI>
+  <LI><I>clipboard operations</I></LI>
+  <LI><I>virtually unlimited undo/redo operations</I></LI>
+  <LI><I>key mapping functionality</I></LI>
+  <LI><I>fast search/replace function</I></LI>
+  <LI><I>print/preview function</I></LI>
+  </UL>

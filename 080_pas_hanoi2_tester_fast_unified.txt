@@ -1,0 +1,863 @@
+PROGRAM Tower_of_Hanoi_Steps_SolutionSequence;
+//Uses Crt;
+{
+ **************************************************************************
+ solution of the tower of hanoi with a codelist, double recursion!,
+ codelist with 12 patterns of 4 steps, codesequence in 24 solution steps!
+  loc's= 138, ex. _80ff
+ try to program it with a canvas object to visualize
+ https://github.com/ProgerXP/D7X/blob/master/Units/StringUtils.pas
+ ************************************************************************** }
+//uses crt;
+
+Const SOLUTIONFILE = 'hanoilist4.txt';
+
+Type 
+    TPatterns=  array[1..12] of shortstring;
+    
+  //  type
+  TEncoding = (eANSI, eUTF8, eUnicode, eUnicodeBE);
+
+var answer: string;
+    steps, step4, i: integer;
+    patt: shortstring;
+    varray: TPatterns;
+    pattlst, seqlist: TStringlist;
+    
+ function ParamStrEx(CmdLine: WideString; Index: Integer; out Pos: Integer): WideString; forward;
+
+    
+    
+procedure initPatternArray;    //codelist
+begin
+  varray[1]:=   'a to b a to c b to c a to b ';
+  varray[2]:=   'a to b a to c b to c b to a ';
+  varray[3]:=   'a to c a to b c to b a to c ';
+  varray[4]:=   'a to c a to b c to b c to a ';
+  varray[5]:=   'b to a b to c a to c b to a ';
+  varray[6]:=   'b to a b to c a to c a to b ';
+  varray[7]:=   'b to c b to a c to a b to c ';
+  varray[8]:=   'b to c b to a c to a c to b ';
+  varray[9]:=   'c to a c to b a to b c to a ';
+  varray[10]:=  'c to a c to b a to b a to c ';
+  varray[11]:=  'c to b c to a b to a c to b ';
+  varray[12]:=  'c to b c to a b to a b to c ';
+  //SplitNameValue
+end;  
+
+procedure pngTest;
+var FImageList: TImageList;
+ ststream: TStringStream;
+  dstemp: TDataset; 
+  btBitmap : TBitmap;
+  res: byte;
+begin
+FImageList := TImageList.Create(nil);
+   FImageList.Masked:=false;
+   //FImageList.ColorDepth:=cd32bit;
+   //FImageList.SetSize(32,32);//I am sure that all images are 32x32
+  // while not dsTemp.eof do//dstemp is a Tdatasetdescendant
+    //begin
+     //ststream := dsTemp.CreateBlobStream(dsTemp.FieldByName('FLAG'), bmRead);
+
+     //pngImage := TPngImage.Create;
+     //pngImage.LoadFromStream(ststream);
+
+     btBitmap := TBitmap.Create;
+     btBitmap.PixelFormat := pf32bit;
+     //btBitmap.Width := pngImage.Width ;
+     //btBitmap.Height := pngImage.Height ;
+     //pngImage.AssignTo(btBitmap);
+     //btBitmap.AlphaFormat:=afIgnored;
+
+     res := FImageList.Add(btBitmap,nil);
+//     pngImage.savetofile('C:\a\'+inttostr(res)+'.png');-works. image is ok
+//     btBitmap.savetofile('C:\a\'+inttostr(res)+'.bmp');-works. image is ok
+     dsTemp.Next;
+     //freeandnil(btBitmap);
+     //freeandnil(pngImage);
+    end;
+    
+    //type constarray = array of const;
+
+//type    
+  //  TRawCharset = set of Char;
+  //TInetHeaders = array of String;
+  
+
+  const
+    Prefix = '---------------------------';
+    SaltLength = 15;
+
+
+  function RandomBoundary: String;
+  var
+    I: Byte;
+  begin
+    Result := Prefix;
+
+      Randomize;
+
+    for I := 1 to SaltLength do
+      if I mod 2 = 0 then
+        Result := Result + Chr( Ord('a') + Random(Ord('z') - Ord('a') + 1) )
+        else
+          Result := Result + Chr( Ord('0') + Random(Ord('9') - Ord('0') + 1) );
+  end;
+    
+ function CustomEncode(const Str: WideString; const RawChars: TRawCharset): String;
+var
+  UTF8: String;
+  I, J: Integer;
+begin
+  Result := '';
+
+  for I := 1 to Length(Str) do
+    if (Hi(ord(Str[I])) = 0) and (Chr(ord(Str[I])) in RawChars) then
+      Result := Result + Str[I]
+      else
+      begin
+        UTF8 := UTF8Encode(Str[I]);
+
+        for J := 1 to Length(UTF8) do
+          Result := Result + '%' + UpperCase(IntToHex(ord(UTF8[J]), 2 ));
+      end;
+end;
+
+  function EncodeURI(const Str: WideString): String;
+  begin
+    //Result := CustomEncode(Str, FullURIRawChars);
+  end;
+
+  function EncodeURIComponent(const Str: WideString): String;
+  begin
+    //Result := CustomEncode(Str, URIComponentRawChars);
+  end;
+  
+  
+  function AppendQueryTo(const URL: String; const Arguments: array of byte): String;
+begin
+  Result := URL;
+
+  if Length(Arguments) <> 0 then
+  begin
+    if HasQueryPart(URL) then
+      Result := Result + '&'
+      else
+        Result := Result + '?';
+    Result := Result + BuildQueryFrom(Arguments);
+  end;
+end;
+   
+    
+ function BuildURL(Protocol, Host: String; Port: Word; Path, Script: String;
+  const Arguments: array of byte): String;
+begin
+  if Protocol = '' then
+    Protocol := 'http:'
+    else if (Protocol[Length(Protocol)] <> ':') and
+            (Protocol = 'http') or (Protocol = 'https') or (Protocol = 'ftp') then
+      Insert(':', Protocol, $FFFF);  // missing ":"
+
+  if Port = 0 then
+    Port := 80;
+  if (Path = '') or (Path[1] <> '/') then
+    Insert('/', Path, 1);
+  if (Path = '') or (Path[Length(Path)] <> '/') then
+    Insert('/', Path, $FFFF);
+
+  Result := Format('%s//%s:%d%s%s', [Protocol, Host, Port, EncodeURI(Path), EncodeURI(Script)]);
+  Result := AppendQueryTo(Result, Arguments);
+end;
+   
+ 
+ function GetClipboardText: WideString;
+var
+  Handle: THandle;
+begin
+  if IsClipboardFormatAvailable(CF_UNICODETEXT) then
+  begin
+    OpenClipboard(0);
+    try
+      Handle := GetClipboardData(CF_UNICODETEXT);
+      //Result := WideString(WideChar(GlobalLock(Handle)) );
+      //result:= widestring(handle);
+      GlobalUnlock(Handle);
+    finally
+      CloseClipboard;
+    end;
+  end;
+end;
+
+function MaskForBytes(const NumberOfBytes: Byte): DWord;
+begin
+  if NumberOfBytes < 4 then
+    Result := (1 shl (NumberOfBytes * 8)) - 1
+    else
+      Result := $FFFFFFFF;
+end;
+  
+
+procedure initPatternArray2; //just a test draft
+begin
+  varray[1]:=   'a to b a to c b to c '; 
+  varray[2]:=   'a to b a to c c to b ';
+  varray[3]:=   'a to b c to a c to b ';
+  varray[4]:=   'a to c b to a b to c ';
+  varray[5]:=   'a to c b to a c to b ';
+  varray[6]:=   'a to c a to b c to b ';
+ // varray[5]:=   'b to a b to c a to c ';
+ // varray[6]:=   'b to a b to c a to c ';
+ // varray[7]:=   'b to c b to a c to a ';
+ // varray[8]:=   'b to c b to a c to a ';
+  varray[7]:=   'c to a b to a c to b ';
+  varray[8]:=   'c to a b to a b to c ';  //2ba
+  varray[9]:=   'c to a c to b a to b ';
+  varray[10]:=  'c to b c to a b to a ';
+  varray[11]:=  'c to b c to a a to b ';
+  varray[12]:=  'c to b a to b b to a ';
+end;  
+
+procedure Search_Write_Codes;
+var vs, tmp: shortstring;
+   i,k, found: integer;
+begin
+  found:= 0;
+  writeln('pattern codes ---------- for solution: '+answer);
+  for i:= 0 to pattlst.count - 1 do begin
+    vs:= pattlst.strings[i]
+    for k:= 1 to high(varray) do
+      if vs = varray[k] then begin
+        //writeln('patt code: '+inttostr(k));
+        inc(found)
+        tmp:= tmp +(inttostr(k)+'-')
+        //write(inttostr(k)+'-');               //-fast
+        //if found mod 32 = 0 then writeln(''); //-fast
+      if found mod 24 = 0 then begin 
+        seqlist.add(tmp);
+        tmp:= '';
+      end; 
+    end;    
+  end;
+  seqlist.add(tmp) //last/first segment
+  writeln('Nr of codes: ' +inttostr(found))
+end; 
+
+ 
+procedure move(high: integer; a,c,b: char);
+begin
+  if high > 1 then begin
+    move(high-1,a,b,c);
+    //writeln(a+' to '+c);   //-fast
+    inc(step4)
+    patt:= patt+a+' to '+c+' ';
+    if step4 mod 4 = 0 then begin
+      pattlst.add(patt)
+      patt:= '';
+    end;   
+    move(high-1,b,c,a);
+    inc(steps)
+  end else begin
+    //writeln(a+' to '+c)   //-fast
+    inc(step4)
+    patt:= patt+a +' to '+c+' ';
+    if step4 mod 4 = 0 then begin
+      pattlst.add(patt)
+      patt:= '';
+    end;   
+    inc(steps)
+  end; 
+  //writeln(' very last test') 
+end;
+
+
+function TextSize(const DC: HDC; const Str: WideString): TSize;
+var
+  Rect: TRect;
+begin
+  DrawText(DC, PChar(Str), Length(Str), Rect, DT_CALCRECT);
+  Result.cx := Rect.Right - Rect.Left;
+  Result.cy := Rect.Bottom - Rect.Top;
+end;
+
+function TextWidth(const DC: HDC; const Str: WideString): Integer;
+begin
+  Result := TextSize(DC, Str).cx
+end;
+
+function TextHeight(const DC: HDC; const Str: WideString): Integer;
+begin
+  Result := TextSize(DC, Str).cy
+end;
+
+
+ {type TWrapTextSettings = record
+    DC: HDC;
+    Str: WideString;
+    Delimiter: WideString;
+    MaxWidth: Word;     // pixels.
+    LeftMargin: Word;
+    CharSpacing: Word; // vertical spacing in pixels between the two chars.
+
+    LastChar: TSize;   // is set by the function.
+  end; }
+
+function TextSizeEx(const DC: HDC; const Str: WideString; const CharSpacing: Word {= 0}): TSize;
+var
+  Settings: TWrapTextSettings;
+begin
+  Settings.Str := Str;
+  Settings.DC := DC;
+  Settings.Delimiter := #10;
+  Settings.LeftMargin := 0;
+  Settings.CharSpacing := CharSpacing;
+  //Result := TextWithBreaksSize(Settings);
+end;
+
+function MaskForBytes2(const NumberOfBytes: Byte): DWord;
+begin
+  if NumberOfBytes < 4 then
+    Result := (1 shl (NumberOfBytes * 8)) - 1
+    else
+      Result := $FFFFFFFF;
+end;
+
+function SysErrorMessage(ErrorCode: Integer): WideString;
+var
+  Buffer: array[0..255] of WideChar;
+var
+  Len: Integer;
+begin
+  //Len := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_IGNORE_INSERTS or
+    //FORMAT_MESSAGE_ARGUMENT_ARRAY, nil, ErrorCode, 0, Buffer,
+    //SizeOf(Buffer), nil);
+  while (Len > 0) and ((((Buffer[Len - 1] >= #0) and (Buffer[Len - 1] <= #32))) or
+        (Buffer[Len - 1] = '.')) do Dec(Len);
+  //Result := Trim(Buffer);
+end;
+
+procedure ChangeWindowStyle(const Form: HWND; Style: DWord; AddIt: Boolean);
+var
+  Styles: DWord;
+begin
+  Styles := DWord(GetWindowLong(Form, GWL_STYLE));
+
+  if AddIt then
+    Styles := Styles or Style
+    else
+      Styles := Styles and not Style;
+
+  SetWindowLong(Form, GWL_STYLE, Styles)
+end;
+
+
+// From http://delphi.about.com
+//function IntToBin(Int: DWord; Digits: Byte = 32; SpaceEach: Byte = 8): String;
+function IntToBinX(Int: DWord; Digits: Byte; SpaceEach: Byte): String;
+
+var
+  Current: Byte;
+begin
+  Result := StringOfChar('0', Digits);
+
+  Current := Digits;
+  while Int > 0 do begin
+    if Int and 1 = 1 then
+      Result[Current] := '1';
+    Dec(Current);
+    Int := Int shr 1
+  end;
+
+  for Int := 1 to (Digits - 1) div SpaceEach do
+    Insert(' ', Result, Digits - Int * SpaceEach + 1)
+end;
+
+
+function IntToBin(Int: Byte): String;
+begin
+  Result := IntToBinX(word(Int), 8,8)
+end;
+
+function IntToBinWord(Int: Word): String;
+begin
+  Result := IntToBinX(Word(Int), 16,16)
+end;
+
+
+function WriteWS(const Stream: TStream; const Str: WideString): Word;
+begin
+  Result := Length(Str);
+  //Stream.WriteInt(Result, SizeOf(Result));
+  Stream.Write(Str[1], Result * 2);
+
+  Result := Result * 2 + SizeOf(Result);
+end;
+
+
+function CurrentWinUser: String;
+var
+  aLength: DWord;
+begin
+  aLength := 300;
+
+  SetLength(Result, aLength);
+  GetUserNameAPI(PChar(Result), aLength);
+  SetLength(Result, aLength - 1) { one for null char }
+end;
+
+function ParamStrFrom(CmdLine: WideString; Index: Integer): WideString;
+var
+  Pos: Integer;
+begin
+  Result := ParamStrEx(CmdLine, Index, Pos);
+  //findclose
+end;
+
+function ParamStrEx(CmdLine: WideString; Index: Integer; out Pos: Integer): WideString;
+var
+  CurrentIndex: Word;
+  Join: Boolean;
+begin
+  Result := '';
+  Join := False;
+  CurrentIndex := 0;
+
+  Pos := 1;
+  while Pos <= Length(CmdLine) do begin
+    if CmdLine[Pos] = '"' then
+      Join := not Join
+      else if (CmdLine[Pos] = ' ') and not Join then begin
+        if (Pos >= Length(CmdLine)) or (CmdLine[Pos + 1] <> ' ') then
+          Inc(CurrentIndex)
+      end
+        else if CurrentIndex = Index then
+          Result := Result + CmdLine[Pos]
+          else if CurrentIndex > Index then
+            Exit;
+    Inc(Pos);
+  end;
+end;
+
+function ApplicationPathWS: WideString;
+begin
+  Result := ExtractFilePath(ParamStr(0));
+end;
+
+function ApplicationPathS: String;
+begin
+  Result := ExtractFilePath(ParamStr(0));
+end;
+
+procedure FindAll(BasePath, Mask: WideString; aResult: TStrings);
+var
+  I: DWord;
+  S: TStringList;
+begin
+  if BasePath <> '' then
+    BasePath := IncludeTrailingBackslash(BasePath);
+
+  S := TStringList.Create;
+  //FindMask(BasePath + Mask, S);
+  //TEncoding
+
+  {if S.Count <> 0 then
+    for I := 0 to S.Count - 1 do
+      if S.Tags[I] and FILE_ATTRIBUTE_DIRECTORY = 0 then
+        Result.Add(BasePath + S[I])
+        else
+          FindAll(BasePath + S[I], Mask, Result);
+   }
+  S.Free
+end;
+
+
+
+begin     //main
+  steps:= 0;
+  step4:= 0;
+  initPatternArray;
+  pattlst:= TStringlist.create;
+  seqlist:= TStringlist.create;
+  //answer:= readln('How much on a pile ?');
+  answer:= '16';    //
+  Writeln('Pile solution of: '+(answer))
+  move(strtoInt(answer),'a','b','c');
+  Writeln('had total '+inttoStr(steps)+ ' steps');
+  Writeln('must be '+maxcalcS('2^'+answer+'-1'))
+  for i:= 0 to pattlst.count - 1 do      //-fast
+    writeln(pattlst.strings[i]);
+  Search_Write_Codes; 
+  writeln('Nr of codelines: '+inttostr(seqlist.count)+ ' in file '+SOLUTIONFILE)
+  seqlist.savetoFile(exepath+'examples\'+SOLUTIONFILE)
+   Writeln('had total '+inttoStr(steps)+ ' steps');
+  Writeln('must be '+maxcalcS('2^'+answer+'-1'))
+ 
+  seqlist.Free; 
+  pattlst.Free;
+  
+  {Writeln('or '+chr(bintoint(inttobin(ord('A') OR ord('B')))))
+  Writeln('xor '+chr(ord('A') XOR ord('B')))
+  Writeln('and '+chr(ord('A') AND ord('B')))
+  Writeln('not and'+chr((NOT ord('A') AND ord('B'))))}
+  
+     writeln(RandomBoundary);
+     
+     writeln(CurrentWinUser)
+  
+    writeln('ApplicationPath: '+ApplicationPath)
+    writeln('ApplicationPathWS: '+ApplicationPathWS)
+    writeln('ApplicationPathS: '+ApplicationPathS)
+    writeln('gettemppathW: '+gettemppathW)
+       writeln('GetDesktopFolderW: '+GetDesktopFolderW)
+ 
+     writeln(inttobin(9))
+     writeln(inttobinword(9))
+     
+     writeln(strtooem('this is box 9---'))
+     //chartooem(sr, 't')
+     wchartooem(sr, 't')
+     writeln(sr)
+     //chartooem2
+     
+     writeln(DomainOf('http://www.softwareschule.ch'))
+      writeln(InetGetLastErrorMsg)
+      CopyToClipboard('this os board667');
+      writeln(GetClipboardText) 
+ End.
+
+The 12 Main Step Patterns!
+
+this os board   this os board667
+
+--1-------2-------3-------4-------  A 1,2,3,4
+a to b  a to b   a to c  a to c   
+a to c  a to c   a to b  a to b
+b to c  b to c   c to b  c to b
+a to b  b to a   a to c  c to a
+--5-------6--------7-------8------  B 5,6,7,8
+b to a  b to a   b to c  b to c    
+b to c  b to c   b to a  b to a
+a to c  a to c   c to a  c to a
+b to a  a to b   b to c  c to b
+--9-------10-------11------12-----  C 9,10,11,12
+c to a  c to a   c to b  c to b   
+c to b  c to b   c to a  c to a
+a to b  a to b   b to a  b to a
+c to a  a to c   c to b  b to c
+----------------------------------
+//***********************************************************************
+This is the solution code sequence for all even piles! repeat n/24:
+
+3-6-11-3-5-12-3-(5/6)-11-4-5-11-3-6-11-(3/4)-5-12-3-5-11-4-5-(11/12)
+
+This is the solution code sequence for all odd piles!:
+
+1-10-7-1-9-8-1-(9/10)-7-2-9-7-1-10-7-(1/2)-9-8-1-9-7-2-9-(7/8)
+//***********************************************************************
+---------------------------------------------------------------------------
+
+Example for 10 piles(n) 2^10-1 Tester repeat n/24 lines
+                     X                  X                 X
+  12 3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-    
+
+Those are the 5 work Patterns:
+
+move from    1   a to   c     2   a to   c     3  a to   c     a to c
+move from        a to   b         b to   a        b to   a     b to c
+move from        c to   b         b to   c        c to   b     b to a
+
+move from    4   c to   a     5   c to   a   (Inv 1) c to a   c to a 
+move from        b to   a         b to   a           b to c   c to b
+move from        c to   b         b to   c           a to b   a to b
+
+NEW Sequence of Step  / Patterns
+  2  3               
+  3  1-9
+  4  3-6-11-3
+  5  1-10-7-1-9-8-1-10
+  6  3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-3
+  7  1-10-5-1-9-6-1-10-5-2-9-5-1-10-5-
+     1-9-6-1-9-5-2-9-6-1-10-5-1-9-6-1-9
+  
+  8  3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-
+     3-5-12-3-5-11-4-5-12-3-6-11-3-5-12-
+     3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-
+     4-5-11-3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-
+  
+  9  1-10-7-1-09-8-1-10-7-2-09-7-1-10-7-
+     1-09-8-1-09-7-2-09-8-1-10-7-1-09-8-
+     1-10-7-2-09-7-1-10-7-2-09-8-1-09-7-
+     2-09-7-1-10-7-1-09-8-1-10-7-2-09-7-
+     1-10-7-1-09-8-1-09-7-2-09-8-1-10-7-
+     1-09-8-1-09-7-2-09-7-1-10-7-2-09-8-
+     1-09-7-2-09-8-1-10-7-1-09-8-1-10-7-
+     2-09-7-1-10-7-1-09-8-1-09-7-2-09-8-
+     1-10-7-1-09-8-1-   
+     
+ 10  3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-    (15*17=255*4=1020+3=2^10-1)
+     3-5-12-3-5-11-4-5-12-3-6-11-3-5-12-
+     3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-
+     4-5-11-3-6-11-3-5-12-3-6-11-4-5-11-
+     3-6-11-3-5-12-3-5-11-4-5-12-3-6-11-
+     3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-
+     3-5-11-4-5-12-3-6-11-3-5-12-3-6-11-
+     4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-
+     4-5-12-3-5-11-4-5-11-3-6-11-3-5-12-
+     3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-
+     4-5-12-3-6-11-3-5-12-3-5-11-4-5-11-
+     3-6-11-4-5-12-3-5-11-4-5-11-3-6-11-
+     3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-
+     3-5-11-4-5-12-3-6-11-3-5-12-3-6-11-
+     4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-  
+     
+ 12  3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-      Diagonal Pattern 4-6-12!
+     3-5-12-3-5-11-4-5-12-3-6-11-3-5-12-                       3-5-11
+     3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-
+     4-5-11-3-6-11-3-5-12-3-6-11-4-5-11-
+     3-6-11-3-5-12-3-5-11-4-5-12-3-6-11-
+     3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-
+     3-5-11-4-5-12-3-6-11-3-5-12-3-6-11-
+     4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-
+     4-5-12-3-5-11-4-5-11-3-6-11-3-5-12-
+     3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-
+     4-5-12-3-6-11-3-5-12-3-5-11-4-5-11-
+     3-6-11-4-5-12-3-5-11-4-5-11-3-6-11-
+     3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-
+     3-5-11-4-5-12-3-6-11-3-5-12-3-6-11-
+     4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-
+     3-5-12-3-5-11-4-5-12-3-6-11-3-5-12-
+     3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-
+     4-5-12-3-6-11-3-5-12-3-6-11-4-5-11-
+     3-6-11-3-5-12-3-5-11-4-5-12-3-6-11-
+     3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-
+     3-5-11-4-5-11-3-6-11-3-5-12-3-6-11-
+     4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-
+     4-5-12-3-5-11-4-5-12-3-6-11-3-5-12-
+     3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-
+     4-5-12-3-6-11-3-5-12-3-6-11-4-5-11-
+     3-6-11-4-5-12-3-5-11-4-5-11-3-6-11-
+     3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-
+     3-5-11-4-5-12-3-6-11-3-5-12-3-5-11-
+     4-5-11-3-6-11-4-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-
+     3-5-12-3-5-11-4-5-12-3-6-11-3-5-12-
+     3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-
+     4-5-11-3-6-11-3-5-12-3-6-11-4-5-11-
+     3-6-11-4-5-12-3-5-11-4-5-12-3-6-11-
+     3-5-12-3-5-11-4-5-11-3-6-11-4-5-12-
+     3-5-11-4-5-11-3-6-11-3-5-12-3-6-11-
+     4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-
+     4-5-12-3-5-11-4-5-11-3-6-11-3-5-12-
+     3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-
+     4-5-12-3-6-11-3-5-12-3-5-11-4-5-11-
+     3-6-11-4-5-12-3-5-11-4-5-12-3-6-11-
+     3-5-12-3-6-11-4-5-11-3-6-11-3-5-12-
+     3-5-11-4-5-12-3-6-11-3-5-12-3-5-11-
+     4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-
+     4-5-12-3-5-11-4-5-12-3-6-11-3-5-12-
+     3-5-11-4-5-11-3-6-11-4-5-12-3-5-11-
+     4-5-11-3-6-11-3-5-12-3-6-11-4-5-11-
+     3-6-11-3-5-12-3-5-11-4-5-12-3-6-11-
+     3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-
+     3-5-11-4-5-11-3-6-11-3-5-12-3-6-11-
+     4-5-11-3-6-11-3-5-12-3-5-11-4-5-12-
+     3-6-11-3-5-12-3-5-11-4-5-11-3-6-11-
+     4-5-12-3-5-11-4-5-12-3-6-11-3-5-12-
+     3-6-11-4-5-11-3-6-11-3-5-12-3-5-11-
+     4-5-12-3-6-11-3-5-12-3-6-11-4-5-11-
+     3-6-11-4-5-12-3-5-11-4-5-11-3-6-11-
+     3-5-12-3-6-11-4-5-11-3-6-11-4-5-12-
+     3-5-11-4-5-12-3-6-11-3-5-12-3-5-11-
+     4-5-11-3-6-11-4-5-12-3-5-11-4-5-11-
+     3-6-11-3-5-12-3-6-11-4-5-11-3-6-11-
+     3-5-12-3-5-11-4-5-12-3-6-11-3-5-12-
+     3-6-11-4-5-11-3-6-11-4-5-12-3-5-11-
+     4-5-11-3-6-11-3-5-12-3-6-11-4-5-11-
+     3-6-11-    
+
+
+
+just inside maxbox
+         ____    ___   _      ____    _   _   _
+        |  _ \  |  _| | |    |  _ \  | | | | | |
+        | | . | | |_  | |    | |_| | | |_| | | |
+        | | | | |  _| | |    |  __/  |  _  | | |          
+        | |_. | | |_  | |__  | |     | | | | | |                      
+        |____/  |___| |____| |_|     |_| |_| |_| 
+                                     
+
+Old
+--5-------6--------7-------8------ 5-->7, 6-->8
+b to c  b to c   b to a  b to a   5 6 7 8  a,b,c 
+b to a  b to a   b to c  b to c
+c to a  c to a   a to c  a to c
+b to c  c to b   b to a  a to b
+
+ doc:
+ 
+The tower of Hanoi (commonly also known as the "towers of Hanoi"), is a puzzle invented by E. Lucas in 1883. It is also known as the Tower of Brahma puzzle and appeared as an intelligence test for apes in the film Rise of the Planet of the Apes (2011) under the name "Lucas Tower."
+
+Given a stack of n disks arranged from largest on the bottom to smallest on top placed on a rod, together with two empty rods, the towers of Hanoi puzzle asks for the minimum number of moves required to move the stack from one rod to another, where moves are allowed only if they place smaller disks on top of larger disks. The puzzle with n=4 pegs and n disks is sometimes known as Reve's puzzle.
+
+The problem is isomorphic to finding a Hamiltonian path on an n-hypercube (Gardner 1957, 1959).
+TowersofHanoiSolution
+
+Given three rods and n disks, the sequence S_1={a_k} giving the number of the disk (i=1 to n) to be moved at the kth step is given by the remarkably simple recursive procedure of starting with the list S_1={1} for a single disk, and recursively computing
+S_n={S_(n-1),n,S_(n-1)}. 	
+(1)
+
+For the first few values of n, this gives the sequences shown in the following table. A solution of the three-rod four-disk problem is illustrated above.
+n	S_n
+1	1
+2	1, 2, 1
+3	1, 2, 1, 3, 1, 2, 1
+4	1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1
+
+As the number of disks is increases (again for three rods), an infinite sequence is obtained, the first few terms of which are illustrated in the table above (Sloane's A001511). Amazingly, this is exactly the binary carry sequence plus one. Even more amazingly, the number of disks moved after the kth step is the same as the element which needs to be added or deleted in the kth addend of the Ryser formula (Gardner 1988, Vardi 1991). A simple method for hand-solving uses disks painted with alternating colors. No two disks of the same color are ever placed atop each other, and no disk is moved twice in a row (P. Tokarczuk, pers. comm. Jun. 23, 2004).
+
+As a result of the above procedure, the number of moves h_n required to solve the puzzle of n disks on three rods is given by the recurrence relation
+h_n=2h_(n-1)+1 	
+(2)
+
+with h_1=1. Solving gives
+h_n=2^n-1, 	
+(3)
+
+i.e., the Mersenne numbers.
+
+For three rods, the proof that the above solution is minimal can be achieved using the Lucas correspondence which relates Pascal's triangle to the Hanoi graph. While algorithms are known for transferring disks on four rods, none has been proved minimal.
+
+A Hanoi graph can be constructed whose graph vertices correspond to legal configurations of n towers of Hanoi, where the graph vertices are adjacent if the corresponding configurations can be obtained by a legal move. The puzzle itself can be solved using a binary Gray code.
+
+Poole (1994) and Rangel-Mondragón give Mathematica routines for solving the Hanoi towers problem. Poole's algorithm works for an arbitrary disk configuration, and provides the solution in the fewest possible moves.
+
+The minimal numbers of moves required to order n=1, 2, ... disk on four rods are given by 1, 3, 5, 9, 13, 17, 25, 33, ... (Sloane's A007664). It is conjectured that this sequence is given by the recurrence
+s_n=s_(n-1)+2^x, 	
+(4)
+
+with s_1=1 and x the positive floor integer solution to
+n-1=1/2x(x+1), 	
+(5)
+
+i.e.,
+x=|_(sqrt(8n-7)-1)/2_|. 	
+(6)
+
+This would then given the explicit formula
+s_n=1+[n-1/2x(x-1)-1]2^x. 	
+(7)
+
+SEE ALSO: Binary Carry Sequence, Gray Code, Pancake Sorting, Puz-Graph, Ryser Formula
+
+ref REFERENCES:
+
+Allouche, J.-P. and Shallit, J. "The Ring of k-Regular Sequences." Theoret. Comput. Sci. 98, 163-197, 1992.
+
+Allouche, J.-P. "Note on the Cyclic Towers of Hanoi." Theor. Comput. Sci. 123, 3-7, 1994.
+
+Bogomolny,A. "Towers of Hanoi." http://www.cut-the-knot.org/recurrence/hanoi.shtml.
+
+Brousseau, A. "Tower of Hanoi with More Pegs." J. Recr. Math. 8, 169-176, 1972.
+
+Chartrand, G. "The Tower of Hanoi Puzzle." §6.3 in Introductory Graph Theory. New York: Dover, pp. 135-139, 1985.
+
+Daiev, V. "Problem 636: Greatest Divisors of Even Integers." Math. Mag. 40, 164-165, 1967.
+
+Dubrovsky, V. "Nesting Puzzles, Part I: Moving Oriental Towers." Quantum 6, 53-57 (Jan.) and 49-51 (Feb.), 1996.
+
+Flajolet, P.; Raoult, J.-C.; and Vuillemin, J. "The Number of Registers Required for Evaluating Arithmetic Expressions." Theoret. Comput. Sci. 9, 99-125, 1979.
+
+Frame, J. S. "Solution to Problem 3918." Amer. Math. Monthly 41, 216-217, 1941.
+
+Gardner, M. "Mathematical Games: About the Remarkable Similarity between the Icosian Game and the Towers of Hanoi." Sci. Amer. 196, 150-156, May 1957. 
+
+had total 65535 steps
+must be 65535
+ mX4 executed: 25/01/2016 22:27:35  Runtime: 0:0:30.948  Memload: 22% use
+ 
+ pattern codes ---------- for solution: 16
+Nr of codes: 16383
+Nr of codelines: 683 in file hanoilist4.txt
+had total 65535 steps
+must be 65535
+ mX4 executed: 25/01/2016 22:29:28  Runtime: 0:0:30.421  Memload: 22% use
+ 
+ had total 65535 steps
+must be 65535
+ mX4 executed: 28/01/2016 17:19:49  Runtime: 0:0:31.285  Memload: 19% use
+ 
+  mX4 executed: 28/01/2016 17:21:33  Runtime: 0:0:31.204  Memload: 18% use
+must be 65535
+ mX4 executed: 31/01/2016 22:19:46  Runtime: 0:0:31.921  Memload: 27% use
+must be 65535
+ mX4 executed: 31/01/2016 22:24:40  Runtime: 0:0:31.229  Memload: 27% use
+
+ mX4 executed: 28/01/2016 17:31:14  Runtime: 0:0:30.252  Memload: 19% use
+ 
+had total 65535 steps
+must be 65535
+ mX4 executed: 29/01/2016 23:14:05  Runtime: 0:0:30.980  Memload: 21% use
+  mX4 executed: 31/01/2016 22:18:38  Runtime: 0:0:31.607  Memload: 27% use
+ mX4 executed: 02/02/2016 18:20:56  Runtime: 0:0:33.228  Memload: 29% use
+  mX4 executed: 02/02/2016 18:22:08  Runtime: 0:0:32.109  Memload: 29% use
+  
+ mX4 executed: 02/02/2016 19:35:59  Runtime: 0:0:30.529  Memload: 30% use
+  mX4 executed: 06/02/2016 23:45:40  Runtime: 0:0:30.679  Memload: 25% use
+ mX4 executed: 06/02/2016 23:47:01  Runtime: 0:0:30.626  Memload: 25% use
+ mX4 executed: 17/05/2016 20:09:40  Runtime: 0:0:29.418  Memload: 15% use
+ mX4 executed: 17/05/2016 20:10:36  Runtime: 0:0:22.353  Memload: 15% use
+ mX4 executed: 17/05/2016 20:11:30  Runtime: 0:0:21.805  Memload: 15% use
+ mX4 executed: 17/05/2016 20:14:33  Runtime: 0:0:29.3  Memload: 16% use
+
+
+
+ https://github.com/ProgerXP/D7X/blob/master/Units/InetUtils.pas

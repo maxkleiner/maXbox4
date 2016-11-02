@@ -1,0 +1,1473 @@
+{***************************************************************
+ *            Hidden_Uptime_4
+ * Project  : education system bITbox
+ * Unit Name: 668_uptime.txt
+ * Purpose  : Demonstrates hidden features of the API system 
+ * Date     : 18/10/2012  -  14:38:5 
+ *          #sign:Max: MAXBOX10: 18/05/2016 13:09:14 
+ *          : 11/11/2015  - better process on/off  #locs:930
+ ****************************************************************}
+//compilerswitch $N- turns the coprocessor off, {$mode objfpc}{$H+} loc's =1
+
+PROGRAM Exciting_Uptime_BooleanLAB;
+
+   {$Define VER170}
+   {$Define Win32}
+       
+
+var ApplicationEvents1: TApplicationEvents; 
+   Barcode1: TStDBBarcode;
+   upscode: TSTMaxiCodeBarcode;
+   barcode11, bcode22: TASBarcode;
+   bcode: TStCustom2DBarCode;
+   midip: TIdIgmpHdr;
+     adoQry: TAdoQuery;
+    adoqrySet: TAdoDataSet;
+    tmpDataSrc: TDataSource;
+    dbFrm: TForm;
+    //apt: _pointer;
+
+ 
+
+function GetSystemDirectory2(var S: String): Boolean;
+var Len: Integer;
+begin
+  Len:= {Windows.}GetSystemDirectory('Nil', 0);
+  if Len > 0 then begin
+    SetLength(S, Len);
+    //writeln(itoa(len))
+    Len:= {Windows.}GetSystemDirectory(PChar(S), Len);
+    SetLength(S, Len);
+    //writeln(itoa(len))
+    Result:= Len > 0;
+  end else
+    Result:= False;
+end;
+
+
+function UpTime: string;
+var t: Longword;
+  d, h, m, s: Integer;
+  ticksperday, ticksperhour: Integer;   
+  ticksperminute, tickspersecond: Integer; 
+
+begin
+  ticksperday:= 1000 * 60 * 60 * 24;
+  ticksperhour:= 1000 * 60 * 60;
+  ticksperminute:= 1000 * 60;
+  tickspersecond:= 1000;
+  t := GetTickCount;
+  d := t div ticksperday;
+  t:=t- d * ticksperday;
+  h := t div ticksperhour;
+  //Dec(t, h * ticksperhour);
+  t:= t- h * ticksperhour;
+  m := t div ticksperminute;
+  //Dec(t, m * ticksperminute);
+  t:= t- m * ticksperminute;
+  s := t div tickspersecond;
+  Result := 'OS Uptime: ' + IntToStr(d) + ' Days ' + IntToStr(h) + ' Hours ' + IntToStr(m) +
+    ' Minutes ' + IntToStr(s) + ' Seconds';
+end;
+ 
+ 
+  function delphiVersion: string;
+  begin
+    if IsDelphiProject(exepath+'maXbox4.exe') then begin
+    {$Ifdef VER70}
+      result:= 'Borland Pascal 7.0 Compiler';
+    {$else}
+      {$Ifdef VER80}
+        result:= 'Delphi 1.0 Compiler';
+      {$else}
+         {$Ifdef VER90}
+            result:= 'Delphi 2.0 Compiler';
+         {$else}
+            result:= 'another X Compiler';
+         {$Endif} 
+      {$Endif}
+    {$Endif}
+    end;
+  end;  
+  
+  procedure FloattoStrGames;
+  var r: double;
+    P,D: integer;
+  begin
+    r:= 1234.456789;
+    writeln(floatToStrF(r,ffGeneral,P,D))
+    P:= 6; D:= 4;
+    writeln(floatToStrF(r,ffGeneral,P,D))
+    writeln(floatToStrF(r,ffExponent,P,D))   //1.23446E+3  at D=5
+    writeln(floatToStrF(r,ffFixed,P,D))
+    writeln(floatToStrF(r,ffNumber,P,D))
+    //r:= 0;
+    writeln(FormatFloat('#,##0.00;;Zero',r))
+  end;  
+  
+  type duplicate = (red, green, blue);
+  
+  procedure enumeratoralligator;
+  var  foreground, background: (ared, agreen, ablue);
+     //ared: byte;
+     //red
+     dup: duplicate;
+  begin
+    background:= ablue;
+    foreground:= ared;
+    dup:= red;
+    //if background > foreground then writeln('blue before red')
+      writeln(itoa(ord(foreground)))
+      writeln(itoa(ord(background)))
+      writeln(itoa(ord(dup)))
+
+    //if red in foreground then
+  
+  end;
+    
+  procedure settest;
+  var  foreground, background: (ared, agreen, ablue);
+     //ared: byte;
+     //red
+     dup: duplicate;
+     days: Tsyscharset; //set of char; //(mo, di);
+  begin
+    background:= ablue;
+    foreground:= ared;
+    dup:= red;
+    //days:= ['m','f','s','z']
+    days:= ['z','f','a']
+    
+    //if background > foreground then writeln('blue before red')
+      writeln(itoa(ord(foreground)))
+      writeln(itoa(ord(background)))
+      writeln(itoa(ord(dup)))
+      //if (days='z') then writeln('in set')
+       writeln(botostr(inCharInSet('a',days))); 
+       writeln(botostr(CharInSet('a',days))); 
+     
+       //if days in ['a','z'] then writeln(' in set')
+    //if red in foreground then
+  
+  end;
+  
+  //--------------------------------------------------------------------------
+  
+  procedure exceptionGhost;
+  begin
+    showmessage('the fruits of wrath')
+  end;
+  
+  function F:integer;
+  var i:integer;
+  begin
+    i:=0;
+    result:= 1 div i;
+  end;
+  
+  function T:integer;
+  begin
+     try
+       result:= F;  //is div by null
+     except
+       writeln('except: something is wrotten!');
+       RaiseException(erCustomError, 'Exception: Div by Zero');
+       //  {raise} Exception.create('in except')
+     end;    
+   end;
+      
+  function U:integer;
+  begin
+     try
+       result:= T;
+     except
+       writeln('except: oh nooooo - missing');  //will miss the except block
+       //raise Exception.create('Etimeout.create')
+       writeln(ExceptionToString(ExceptionType, ExceptionParam));
+     end;    
+   end;
+   
+   //------------------------------------------------------------------------
+   
+     function BirthdayParadox: string;
+     begin
+       ft:= 1;
+       for it:= 1 to 50 do begin
+         ft:= ft*(365-it+1)/365;
+         if it mod 5 = 0 then 
+           result:= result + Format('i=%.2d p=%.4f',[it,1-ft])+CRLF;
+       end
+     end; 
+     
+     function DiceParadox: string;
+     begin
+       ft:= 1;
+       for it:= 1 to 7 do begin
+         ft:= ft*(6-it+1)/6;
+         //if it mod 5 = 0 then 
+           result:= result + Format('i=%.2d p=%.4f ft=%.4f',[it,1-ft,ft])+CRLF;
+       end
+     end; 
+     
+     //monte carlo simulation
+     
+     const DAYS = 365;
+     
+     function BirthdayParadox_Simulate: string;
+     var grand: array[1..DAYS] of integer;
+         trials, persons, hits, i,j: integer;
+         found: boolean; 
+         //apipe: TPipeClient;
+         //CreateNamedPipe
+         //i2: TIoexp TI2c;
+     begin
+       trials:= 1000;
+       persons:= 23;
+       hits:= 0;
+       //CreateNamedPipe
+       
+       for it:= 1 to trials do begin
+         for j:= 1 to DAYS do grand[j]:= 0;
+         for j:= 1 to persons do 
+           inc(grand[random(DAYS)+1]);
+         found:= false;  
+         for j:= 1 to DAYS do
+           if grand[j]>1 then found:= true;
+         if found then inc(hits);
+       end;
+       writeln('result of birthday paradox simulation: '+chr(10))
+       writeln(Format('n=%d w=%.4f',[persons,hits/trials])+chr(10));
+     end; 
+          
+     function DiceParadox_Simulate: string;
+     var grand: array[1..6] of integer;
+         trials, persons, hits, i,j: integer;
+         found: boolean; 
+     begin
+       trials:= 1000;
+       persons:= 3;
+       hits:= 0;
+       for it:= 1 to trials do begin
+         for j:= 1 to 6 do grand[j]:= 0;
+         for j:= 1 to persons do 
+           inc(grand[random(6)+1]);
+         found:= false;  
+         for j:= 1 to 6 do
+           if grand[j]>1 then found:= true;
+         if found then inc(hits);
+       end;
+       writeln('result of dice paradox simulation: '+chr(10))
+       writeln(Format('n=%d w=%.4f',[persons,hits/trials])+chr(10));
+     end; 
+    
+     
+     function NumericalIntegrateTrapez: string;
+     var a,b,s,tt,h: extended;
+        i,n: integer;
+     begin
+       a:= 0;
+       b:= 1;
+       n:= 10000;
+       s:= (sqrt(1-a*a)+sqrt(1-b*b))/2;
+       h:= (b-a)/n;
+       for i:= 1 to n-1 do 
+         s:= s + sqrt(1-sqr(a+i*h));
+         tt:= s*h; 
+           result:= 'T= '+floattoStr(4*tt);
+           //esult + Format('i=%.2d p=%.4f',[it,1-ft])+CRLF;
+     end;      
+    
+     function FacultryPrecision(cnt: integer): string;
+     var ff: extended;
+        i,n: integer;
+     begin
+       for it:= 1 to cnt do begin 
+         ff:= 1;
+         for i:= 1 to it do ff:= ff*i; 
+           //result:= 'T= '+floattoStr(4*tt);
+           writeln(inttostr(it)+'! = '+floattostr(ff)+#9#9+'t='+floattostr(ff/1000000.0)+#9#9
+                                      +'j='+floattostr(ff/(1000000.0*60*60*24*365)))
+           //esult + Format('i=%.2d p=%.4f',[it,1-ft])+CRLF;
+     end; 
+     end;     
+    
+    
+     procedure Show_BarcodeBitcoin;
+     var acod, emsg: string;
+     begin 
+      barcode1:= TStDBBarcode.create(self)
+      with Barcode1 do begin
+       Top := 330;
+       Left := 900;
+       Height:= 230;
+       parent:= dbFrm;
+       Width:= 230;
+       //Font
+       Color:= cllime;
+       BarCodeType:= bcEAN_13;
+       //Code:= InttoStr(HextoInt(AsciitoHex('maXbox4.2')))
+       //Code:= StringtoBin('maXbox4.2')
+       //hextobin
+       //Code:= InttoStr(HextoBin(Hex('maXbox4.2')))
+       ///showmessage(AsciitoHex('maXbox4.2'))
+       //showmessage(inttostr(Hextoint(AsciitoHex('maXbox4.2'))))
+       sr:= 'maXbox';
+       for it:= 1 to length(sr) do 
+         //acod:= acod + inttostr(ord(sr[it]));
+         acod:= acod + inttostr(ord(sr[it]));
+         writeln('acod: '+acod)
+         //caption
+         Code:= acod;
+        // text:= '2324';
+       //Code:= InttoStr(HextoInt(AsciitoHex('maXbox4.2')))
+       // code:= '1234564848488';
+       //barcode1.assign
+       //Barcode1.Angle := 70;
+       //datasource
+       //datafield:= 'filed';
+       writeln(code)
+       try
+         valiDATE(true)
+       except
+         writeln('this Exception: Invalid code length (must be 12 or 13).')
+       end;    
+       showcode:= true;
+       BarCodeType:=bcCode128;
+       Code128Subset:=csCodeB;
+       BarWidth:=10;
+       addcheckchar:= true;
+       //text:= 'fg'
+       //PainttoCanvas();
+       //Typ := bcCode_2_5_interleaved;
+       //Showtext:= bcoBoth;
+       //text:= '0123456789';
+       //DrawBarcode(Canvas);
+       //Typ := bcCodeEAN128C; //bcCode_2_5_interleaved;
+       //text:= '0123456789';
+       //DrawBarcode(Canvas);
+       //Typ := bcCode128C; //bcCodePostNet; //,bcCodeEAN128C; //bcCode_2_5_interleaved;
+       //text:= '0123456789';
+       //DrawBarcode(Canvas);
+      end;
+     end;
+     
+     procedure Show_BarcodeBitcoin2;
+     var emsg: string;
+     begin 
+      with TStDBBarcode.create(self) do begin
+        setBounds(900,90,230,230)
+         parent:= dbFrm;
+         datasource:= tmpDataSrc;
+         //datafield:= 'LastName';
+         //datafieldcode
+         Code:= datasource.DataSet.FieldByName('Phone').AsString;
+         //datafield:= 'Phone';
+         //text
+       try
+         valiDATE(true)
+       except
+         Writeln('dbbarcode exception')
+         emsg:=ExceptionToString(ExceptionType, ExceptionParam);
+         writeln(emsg+' '+exceptionparam)
+       end
+       showcode:= true;
+      end;
+     end;
+     
+     procedure GetDBProviders;
+      var  ws: TWideStrings;
+      begin
+        ws:= TWideStringList.Create;
+        getProviderNames(ws)
+        for it:= 1 to ws.count -1 do 
+          writeln(intToStr(it) +' '+ws.strings[it]);
+        ws.free;
+     end;
+     
+     PROcedure barCodemode;
+     var image : TImage;
+         BarCodeNumber: integer;
+         BarCode: TStBarCode;
+     begin
+    //(This code is called once for each page of the report)
+     image := TImage.create(nil);
+     try
+       Inc(BarCodeNumber);
+         BarCode.BarCodeType := bcCode128; {What kind of encoding to use}
+         BarCode.ShowCode := True;
+         BarCode.Code := IntToStr(BarCodeNumber);
+         BarCode.CopyToClipboard;
+      
+         clipboard.open;
+         Image.Picture.Bitmap.LoadFromClipboardFormat(cf_BitMap,
+                                       ClipBoard.GetAsHandle(cf_Bitmap),0);
+         clipboard.clear;
+         ClipBoard.Close;
+         //PrintGraphic(5.50, 0.25, 2.55, 0.65, Image);
+      finally
+         image.free;
+         image := nil;
+      end;
+   end;
+
+   procedure CloseDBGrid(sender: TObject);
+   begin
+     writeln('dummy DBGrid closed test...')
+   end;
+   
+   procedure TForm_DBGridTitleClick(Column: TColumn);
+    begin
+     with TCustomADODataSet(TColumn(Column).Grid.DataSource.DataSet) do begin
+      if (Pos(Column.FieldName, Sort) = 1) and (Pos(' DESC', Sort)= 0) then
+         Sort:= Column.FieldName + ' DESC' else Sort:= Column.FieldName + ' ASC';
+       end;
+       writeln(column.fieldname +'Sort has been clicked');
+    end;   
+ 
+   procedure TFormMain_DBGrid1DrawColumnCell(Sender: TObject;
+    const Rect: TRect; DataCol: Integer; Column: TColumn;
+    State: TGridDrawState);
+    begin
+     // only do the next line if this event generated for 
+     // the first columnn (column with index 0)
+     if DataCol=0 then
+     //vDBGrid.DataSource.DataSet.FieldByName('Shortname').Value:= 'DBEdit1.Text';
+     TDBGrid(sender).Canvas.TextOut(Rect.Left + 2 , Rect.Top + 2
+                      , IntToStr(TDbGrid(sender).DataSource.DataSet.RecNo));
+   end;  
+
+
+procedure FormClose(Sender: TObject; var action: TCloseAction);
+ begin
+   //if MessageDlg('Wanna Leave?',mtConfirmation,[mbYes, mbNo],0)= mrYes then begin
+   //form1.Free; //bmp.Free;
+  // adoqryset: TAdoDataSet;
+  if adoqryset <> NIL then begin
+    adoqryset.Close;
+    adoqryset.Free;
+    adoqryset:= NIL
+    writeln('adoqrySet close & free')
+  end;
+   tmpDataSrc.Free;
+   action:= caFree;
+   writeln('DBGridDigi Free and Closer finished');
+   //end else
+     //Action:= caNone;
+end;
+
+  
+procedure CreateDBGridForm(aSet: TADODataSet);
+var 
+    dbGrid: TDBGrid;
+    //dbFrm: TForm;
+    acustdata: TCustomADODataSet;
+
+begin
+  dbFrm:= CreateMessageDialog('FastForm SQL DBGrid',mtwarning,[mball,mbhelp,mbok]);
+  with dbFrm do begin
+    caption:= 'SQL DBGrid Barcode Demo';
+    setBounds(50,50,1200,700)
+    formstyle:= fsstayontop;
+    color:= clWebGold;
+    Show;
+    onClose:= @FormClose;
+  end;   
+  //btnOK:= dbFrm.FindComponent('OK'); 
+  TButton(dbFrm.FindComponent('OK')).onClick:= @CloseDBGrid;
+   tmpDataSrc:= TDatasource.Create(self);
+    with tmpDataSrc do begin
+      //DataSource is linked to a DataSet.
+      IsLinkedto(TDataSet(aSet))
+      dataSet:= TDataSet(aSet); 
+      Enabled:= true;
+      AutoEdit:= true;
+      //Edit;
+      writeln('fcount of tmpdatasource '+intToStr(dataset.fieldcount))
+    end;
+  dbgrid:= TDBGrid.Create(self)
+  with dbGrid do begin
+    Parent:= dbFrm;
+    SetBounds(50,110,800,450);
+    ReadOnly:= False;
+    //ondblclick:= TForm_DBGridTitleClick(dbgrid.column);
+    Options:= DBGrid.Options + [dgEditing]; 
+     {Options:= [dgEditing, dgTitles, dgColumnResize, dgColLines,
+             dgRowLines, dgTabs, dgAlwaysShowSelection, dgCancelOnExit];}
+    dataSource:= tmpDataSrc;
+    color:= clmoneygreen;
+    font.size:= 13;
+    columns[0].width:= 60; columns[1].width:= 250;
+    columns[2].width:= 300; columns[3].width:= 150;
+    //ExecuteAction
+    onTitleClick:= @TForm_DBGridTitleClick;
+    onDrawColumnCell:= @TFormMain_DBGrid1DrawColumnCell;
+    if AnsiUpperCase(dbgrid.Columns.Items[2].FieldName)='LastName' then write('X');
+    //Show; //Update
+    writeln('fcount of dbgrid '+intToStr(fieldcount))
+    writeln('rcount of dataset '+intToStr(dataSource.Dataset.recordcount)+CR+LF)
+  end;
+  with TDBNavigator.create(self) do begin
+     parent:= dbFrm; 
+     SetBounds(50,600,300,40)
+     datasource:= tmpDataSrc;
+     ConfirmDelete:= True;
+     ShowHint:= True;
+     //OnClick:= @NavInsertClick
+     Enabled:= True;
+     VisibleButtons:= [nbFirst,nbPrior,nbNext,nbLast,nbEdit,nbCancel,nbPost,nbRefresh];
+     Show
+   end;  
+   //dbGrid.Free;
+   //dbFrm.Free;
+end;
+
+  
+  Procedure SetADOAccessSQL_Query;
+  var 
+  //adoqryset: TAdoDataSet;
+  i,z: integer;
+  begin  
+    adoQryset:= TAdoDataSet.Create(self);//TAdoQuery.Create(self);
+    with adoQryset do begin
+      cacheSize:= 500;
+      commandType:= cmdText; //or ctQuery;
+      connectionString:= 'Provider=MSDASQL;DSN=mx3base;Uid=sa;Pwd=admin';
+    
+    {connectionString:= 'Provider=MSDASQL;Persist Security Info=False;Extended Properties=DSN=mx3base;DBQ=\\boiler.bfh.ch\knm4\maxbox3\maxbox3\examples\maxbase3.mdb;DriverId=25;FIL=MS Access;MaxBufferSize=2048;PageTimeout=5;UID=admin'; }
+    
+      {commandText:= 'INSERT INTO Table1 (FirstName, LastName, Phone)'+
+                        'VALUES (''Max9942'', ''Boxima5459'', ''031-333 77 88'')';
+      }
+      CommandText:= 'SELECT * FROM Table1';
+      CommandTimeout:= 5;  
+      //SQL.Text:= commandText;
+      Open;
+      Writeln(intToStr(Recordcount)+' records found: ')
+      for i:= 0 to Recordcount - 1 do begin
+        for z:= 0 to Fieldcount - 1 do 
+          Write((Fields[z].asString)+'  ');
+        Writeln(#13#10)
+        Next;
+      end;
+      CreateDBGridForm(adoQryset); 
+    //Close;  //to do at formclose!
+    //Free;        
+    end; //with
+  end;
+  
+ // type
+  //TParentControl = class(TWinControl);
+  
+  { This procedure is copied from RxLibrary VCLUtils }  
+procedure CopyParentImage(Control: TControl; Dest: TCanvas);
+var
+  I, Count, X, Y, SaveIndex: Integer;
+  DC: HDC;
+  R, SelfR, CtlR: TRect;
+begin
+  if (Control = nil) or (Control.Parent = nil) then Exit;
+  Count := Control.Parent.ControlCount;
+  DC := Dest.Handle;
+  with Control.Parent do ControlState := ControlState + [csPaintCopy];
+  try
+    with Control do begin
+      SelfR := Bounds(Left, Top, Width, Height);
+      X := -Left; Y := -Top;
+    end;
+    { Copy parent control image }
+    SaveIndex := SaveDC(DC);
+    try
+      SetViewportOrgEx(DC, X, Y, 'nil');
+      IntersectClipRect(DC, 0, 0, Control.Parent.ClientWidth,
+        Control.Parent.ClientHeight);
+      //with T{Parent}Control(Control.Parent) do
+      with TControl(Control.Parent) do begin
+        Perform(WM_ERASEBKGND, DC, 0);
+        //PaintWindow(DC);
+      end;  //}
+    finally
+      RestoreDC(DC, SaveIndex);
+    end;
+    { Copy images of graphic controls }
+    for I := 0 to Count - 1 do begin
+      if Control.Parent.Controls[I] = Control then Break
+      else if (Control.Parent.Controls[I] <> nil) and
+        (Control.Parent.Controls[I] is TGraphicControl) then begin
+        with TGraphicControl(Control.Parent.Controls[I]) do begin
+          CtlR := Bounds(Left, Top, Width, Height);
+          if Boolean(IntersectRect(R, SelfR, CtlR)) and Visible then begin
+            ControlState := ControlState + [csPaintCopy];
+            SaveIndex := SaveDC(DC);
+            try
+              SetViewportOrgEx(DC, Left + X, Top + Y, 'nil');
+              IntersectClipRect(DC, 0, 0, Width, Height);
+              Perform(WM_PAINT, DC, 0);
+            finally
+              RestoreDC(DC, SaveIndex);
+              ControlState := ControlState - [csPaintCopy];
+            end;
+          end;
+        end;
+      end;
+    end;
+  finally
+    with Control.Parent do ControlState:= ControlState - [csPaintCopy];
+  end;
+end;
+
+procedure TForm1_FormPaint(Sender: TObject);
+var x,y: Integer;
+   mousepos: TPoint;
+   amouse: TMouse; // = class;
+   aposrec: Tpoint;
+begin
+  //x := Mouse.CursorPos.X - 10;
+  //y := Mouse.CursorPos.Y - 10;
+  //x := ScreentoClient(point(x,y)).X - 10;
+  //y := ScreenToClient(point(x,y)).Y - 10;
+  //aposrec:= mouse.cursorpos;
+  writeln(itoa(aposrec.X))
+  GetCursorPos(MousePos);
+  writeln(IntToStr(MousePos.x));
+  writeln(IntToStr(MousePos.y));
+  dbfrm.Canvas.Brush.Color := clRed;
+  dbfrm.Canvas.FillRect(rect(x, y, x + 10, y + 10));
+  /////dbfrm.Invalidate;
+end;
+
+{Do not 'invalidate' in a paint handler. Invalidating causes a WM_PAINT to be sent, which of course starts the paint handling all over. Even if you don't move the mouse, the code sample you posted will cause the 'OnPaint' event to run again and again. Since your drawing depends on the position of the cursor, you'd use the 'OnMouseMove' event for this. But you need to intercept mouse messages for other windowed controls as well. The below sample uses a 'ApplicationEvents' component for this reason. If your application will have more than one form, you need to device a mechanism to differentiate which form you are drawing on.}
+
+ procedure HexStringToBin;
+var
+  BinaryStream: TMemoryStream;
+  HexStr: AnsiString;
+begin
+  HexStr := 'FAA4F4AAA44444';
+  BinaryStream := TMemoryStream.Create;
+  try
+    BinaryStream.Size := Length(HexStr) div 2;
+    if BinaryStream.Size > 0 then begin
+      //HexToBin(PChar(HexStr), BinaryStream.Memory, BinaryStream.Size);
+      BinaryStream.SaveToFile('c:\myfile.bin')
+    end;
+  finally
+    BinaryStream.Free;
+  end;
+end;
+
+procedure HexToBinStream(const Hex: string; Stream: TStream);
+var
+  B: Byte;
+  C: Char;
+  Idx, Len: Integer;
+begin
+  Len := Length(Hex);
+  If Len = 0 then Exit;
+  If (Len mod 2) <> 0 then 
+    RaiseException(erCustomError, 'Exception: bad hex length');
+    //raise; //Exception.Create('bad hex length');
+  Idx := 1;
+  repeat
+    C := Hex[Idx];
+    case C of
+      '0'..'9': B := (Ord(C) - ord('0')) shl 4;
+      'A'..'F': B := (Ord(C) - ord('A') + 10) shl 4;
+      'a'..'f': B := (Ord(C) - ord('a') + 10) shl 4;
+    else
+      //raise; // Exception.Create('bad hex data'); 
+      RaiseException(erCustomError, 'bad hex data');
+    end; 
+    C := Hex[Idx+1];
+    case C of
+      '0'..'9': B := B or (Ord(C) - ord('0'));
+      'A'..'F': B := B or (Ord(C) - ord('A') + 10);
+      'a'..'f': B := B or (Ord(C) - ord('a') + 10);
+    else
+      raise; //Exception.Create('bad hex data'); 
+    end; 
+    Stream.WriteBuffer(itoa(B)+'-',length(itoa(B))+1); //writeint or writebyte
+    Inc1(Idx, 2);
+  until Idx > Len;
+end;
+
+procedure EXceptionsOnmaXbox;
+var
+   filename,emsg:string;
+begin
+   filename:= '';
+   try
+     if filename = '' then
+       RaiseException(erCustomError, 'Exception: File name cannot be blank');
+   except
+     emsg:= ExceptionToString(ExceptionType, ExceptionParam);
+       //do act with the exception message i.e. email it or
+       //save to a log etc
+     writeln(emsg)  
+   end;
+end;
+
+function GetStreamAsText2( stm : TStream) : string;
+// Liefert den Inhalt von stm als String
+var pchrtest: Pchar;
+   //ahead: TNMNNTP
+begin
+  pchrtest:= 'NIL';
+  SetString(result, 'nil', stm.Size);   // benötigten Speicher allozieren
+  stm.Position := 0;
+  //if stm.Size > 0 then stm.ReadBuffer( result[1], stm.Size);
+  if stm.Size > 0 then stm.ReadBuffer(result, stm.Size);
+end;
+
+procedure loadlongSTRing;
+// Load ASCII file into (long) String
+VAR
+  CommentFilename       :  STRING;
+  Filename              : STRING;
+  RecommendationsRemarks: STRING;
+  Stream                : TMemoryStream; 
+//...
+begin
+  filename:= exepath+'firstdemo.txt';
+  CommentFilename := ChangeFileExt(Filename, '.Recommendations');
+  writeln(commentfilename)
+  //msRenamefile(filename,commentfilename)
+   IF  FileExists(CommentFilename) THEN BEGIN
+     Stream := TMemoryStream.Create;
+     TRY
+       Stream.LoadFromFile(CommentFilename);
+       SetLength(RecommendationsRemarks, Stream.Size);
+       //Stream.Read(RecommendationsRemarks[1], Stream.Size)
+       Stream.Read(RecommendationsRemarks, Stream.Size)
+       //writeln('stream '+RecommendationsRemarks)
+       Stream.Write(RecommendationsRemarks,
+                 LENGTH(RecommendationsRemarks));
+       Stream.SaveToFile(CommentFilename)
+       
+     FINALLY
+       Stream.Free
+     END;
+   END;
+end;
+
+
+function FibonacciPrecisiontestE(n: integer): extended;
+var x0,x1: extended;
+begin
+  x0:= (1+sqrt(5))/2;
+  x1:= (1-sqrt(5))/2;
+  result:= (power(x0,n)-power(x1,n))/sqrt(5)
+end;  
+
+function FiboMaxE(n: byte): Extended;
+begin
+  result:= (pow((1+sqrt(5))/2,n)-pow((1-sqrt(5))/2,n))/sqrt(5)   
+end;  
+
+  
+function FibonacciPrecisiontestR(n: integer): Real;
+var x0,x1: real;
+begin
+  x0:= (1+sqrt(5))/2;
+  x1:= (1-sqrt(5))/2;
+  result:= (power(x0,n)-power(x1,n))/sqrt(5)
+end;  
+
+function FibonacciPrecisiontestS(n: integer): Single;
+var x0,x1: single;
+begin
+  x0:= (1+sqrt(5))/2;
+  x1:= (1-sqrt(5))/2;
+  result:= (power(x0,n)-power(x1,n))/sqrt(5)
+end; 
+
+function FibonacciPrecisiontestI(n: integer): longint;
+var x0,x1: longint;
+begin
+  x0:= round((1+sqrt(5))/2);
+  x1:= round((1-sqrt(5))/2);
+  result:= round((power(x0,n)-power(x1,n))/sqrt(5))
+end;  
+ 
+
+{begin call
+  FStream := TFileStream.Create('myfile.jpg', fmCreate);
+  HexToBin(myFileHex, FStream);
+  FStream.Free;
+end;}
+
+
+ var FStream : TFileStream;  
+ var MS:  TMemoryStream;
+     lpv: Tobject;
+     amess: Tmessage;
+     apts: ___pointer;
+     asi: integer;
+     apop: TPopupmenu;
+  
+  //main form list call  
+ Begin
+    //calls some test functions
+    writeln(floattostr(maxCalc('e^ln(2)')));
+    printF('this is %.18f ',[maxCalc('ln(2)^e')]);
+    printF('this is %.18f ',[maxCalc('sqr(cos(ln(2)^e))')]);
+    printF('this is %.4f ',[maxCalc('sqrt(e^(ln(2)))')]);
+    printF('this is Area of r=1  %.18f ',[maxCalc('PI*(1^2)')]);
+    printF('this is Area of d=2r %.18f ',[maxCalc('PI/4*(2^2)')]);
+    //writeln(getVersionString(exepath+'maxbox4_0.exe'));
+    writeln(getVersionString(exepath+'maxbox4.exe'));
+ 
+    sr:= loadFileAsString(exepath+'maxbox_functions_all.pdf');
+    writeln('file compare J: '+inttoStr(CompText(sr, sr)));
+    writeln('file lenght: '+intToStr(length(sr)));
+    
+      writeln('getSystemDir: '+botostr(getSystemDirectory2(sr)))   
+      writeln(sr)
+      writeln('UpTime: '+UpTime) 
+      
+      writeln('delphiVersion> '+delphiVersion)
+      FloattoStrGames;
+      enumeratoralligator
+      //settest;
+      U;                 //exception backtrack test
+   //DB SQL Query and Insert possible! DDL + DML   
+     {  SetADOAccessSQL_Query;
+       Show_BarcodeBitcoin;
+       Show_BarcodeBitcoin2;
+      }
+     
+     
+  GetDBProviders;
+  Writeln('Data Link Dir is: '+ DataLinkDir);
+  Writeln('Machinename is: '+getHostName)
+  Writeln('Username is: '+getUserName)
+  Writeln('BDE/DB Parameters: ******************************');
+  Writeln('BDE Directory '+GetBdeDirectory);
+  //writeln('DB Alias Path '+GetAliasPath('DBDEMOS'));
+  writeln('Temp File Path'+getTempDir)
+  Writeln('*************************************************');
+
+  
+  //writeln(hextobin2('FF'))
+  
+  FStream:= TFileStream.Create(exepath+'examples\myfilebin.txt', fmCreate);
+  try
+    HexToBinStream('FAA4F4AAA44444FFFF'{myFileHex}, FStream);
+    //Exception: Cannot create file 
+    //174-132-133-170-132-4-4-176-176-170-
+    //174-132-133-170-132-68-68-176-176-170-
+    //186-132-196-170-132-68-68-191-191-170-
+    //250-164-244-170-164-68-68-255-255-170-
+  finally
+    FStream.Free;
+  end;
+    
+    //SendMessage(0, WM_SYSCOMMAND, SC_TASKLIST, 0); 
+ //--------------------------Main Topic--------------------------
+    //CreateMyFastForm;
+    //GetConnectionNames
+    //reversebits  
+    //MessageDlg('Data file must contain 2 variables !', mtError, [mbOK], 0);
+    //extracticon  
+    //findexecutable    
+    
+    Exception.create('in except test') 
+    //RaiseException3('in except test3') 
+    EXceptionsOnmaXbox  
+    writeln('birthday: '+birthdayparadox)
+    writeln('diceparadox: '+diceparadox)
+    writeln('NumericalIntegrateTrapez: '+NumericalIntegrateTrapez);
+    //Function IntToBinWord( Int : Word) : String;');
+    writeln(IntToBinWord(12335));
+    writeln(IntToBinWord(round(intpower(2,16-1)))); 
+    writeln(IntToBinWord(round(intpower(2,16)-1))); 
+    
+    BirthdayParadox_Simulate  
+    DiceParadox_Simulate  
+    FacultryPrecision(30) 
+    
+ //begin
+    MS := TMemoryStream.Create;
+    SetStreamAsText(' message const aTxt : string; at: '+timetostr(now) ,ms);
+    
+    writeln(GetStreamAsText2(ms))
+    
+    //http://archiv.twoday.net/stories/345355/ plakate
+   { RichEdit1.Lines.SaveToStream(MS);
+   MemoryStream.Seek(0,soFromBeginning);
+   RichEdit2.Lines.LoadFromStream(MS); }
+     MS.Free;
+    
+    // Function GetStreamAsText( stm : TStream) : string'); 
+    // 16868:  Procedure SetStreamAsText( const aTxt : string; stm : TStream)'); 
+    
+    //loadlongSTRing;
+    
+    writeln(floattosTr(fibonacciprecisiontestE(39)))
+    writeln(floattosTr(fibonacciprecisiontestE(40)))
+    writeln(floattosTr(fiboMaxE(39)))
+    writeln(floattosTr(fiboMaxE(40)))
+    writeln(floattosTr(fiboMaxE(10)))
+    writeln(floattosTr(fiboMaxE(100)))
+   
+    writeln(floattostr(fibo(100)))
+    writeln(floattostr(fibo(40)))
+    writeln(floattosTr(fibonacciprecisiontestR(39)))
+    writeln(floattosTr(fibonacciprecisiontestR(40)))
+    writeln(floattosTr(fibonacciprecisiontestS(39)))
+    writeln(floattosTr(fibonacciprecisiontestS(40)))
+    //writeln(floattosTr(fibonacciprecisiontestI(39)))
+    //writeln(floattosTr(fibonacciprecisiontestI(40)))  
+    // GetMappedFileName( hProcess : THandle; lpv : ___Pointer; lpFilename : PChar; nSize : DWORD) : DWORD'); 
+     
+     lpv:= TStrings.create;
+     //GetMappedFileName(hinstance,'lpv',exepath+'maxbox4.exe',2000);
+     lpv.free;
+     //ReadMessageData(amess, 'apt' ,asi);
+     //writeln(WindowClassName(application.handle))
+     //apt:= 'nil';
+     //memo1.popupmenu:= apop;
+     //memo1.onexit
+End.
+
+Ref:
+
+https://www.rosettacode.org/wiki/Category:Pascal
+
+http://www.bom.gov.au/australia/uv/
+
+
+The C# guys love to brag about their cool using (uses) feature. It’s sort of like a combination of Delphi’s with and try...finally statements. It defines a particular scope which, when left, will automatically dispose of the object in question. Delphi doesn’t have this specifi clanguage construct, but by combining anonymous methods and generics, you can provide the same functionality:
+
+Obj = class class procedure Using<T: class>(O: T; Proc: TProc<T>); static; end;
+class procedure Obj.Using<T>(O: T; Proc: TProc<T>); begin try Proc(O); finally O.Free; end; end;
+
+
+This is basically a (sorry) generic way of wrapping up try...finally blocks just like we did with the cursor above.
+
+  a+b --> a.+(b)
+
+
+Proposal for Abreviation Symbol:
+
+  01 FALSE    //Contradiction
+
+  02 AND      //Conjunction x*y
+
+  03 INHIB    //Inhibition x*^y
+
+  04 PRAEP    //Praependence x
+
+  05 PRAE     //Praesection ^x*y
+
+  06 POST     //Postpendence y
+
+  07 XOR      //Exclusive OR x*^y+^x*y
+
+  08 OR       //Disjunction OR = x+y
+
+  09 NOR      //Rejection
+
+  10 AEQ      //Aequivalence x<-->y, ^x*^y+x*y
+
+  11 NEGY     //YNegation ^y
+
+  12 IMPY     //YImplication y-->x; x+^y
+
+  13 NEGX     //Xnegation ^x
+
+  14 IMPX     //XImplication x-->y; ^x+y
+
+  15 NAND     //Exclusion
+
+  16 TRUE     //TRUE Tautologic
+  
+
+
+ //ShellExecute in W64
+//ExecuteCommand('cmd','/k FC /L/N C:\maxbook\maxbox3\maxbox391.exe C:\maxbook\maxbox3\maxbox3.exe')
+ //  ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxboxdef1.ini C:\maxbook\maxbox3\maxboxdef2.ini')
+   
+
+getRulesbyContract  
+
+  couple of slides i have but you got the point
+  one important things that i want to stress
+  difference between data and delta is the difference
+  units to add :
+  
+unit SqlExpr;  // is just there integrate?
+unit DBXCommon;
+unit DBXPlatform;
+unit DBConnAdmin;
+
+unit IdVCard;  //check strtofloat
+unit IdTimeServer;
+unit IdTimeUDPServer;
+unit IdTimeUDP;
+unit TIdUDPServer
+unit IdIPWatch;
+unit IdMessageCollection;
+unit IdRexec;  //sort of remote execution
+unit IdRexecServer;
+unit IdRemoteCMDServer,
+unit IdRemoteCMDClient;
+
+unit uwinplot;   from dmat085
+   File name:        cUtils.pas unit cUtils;
+
+:: ***********************************************
+:: Compilation of DMath library for Delphi/Windows
+:: ***********************************************
+
+dcc32 dmath.dpr -$O+ -U..\units -DDELPHI 
+dcc32 dmath.pas -$O+ -I..\units -DDELPHI                                              }
+
+ add in menu by help dmath.pdf
+ navigator look at dependency viewer at the right site : skip list
+
+  with CL.AddClassN(CL.FindClass('TCustomListView'),'TListView') do begin
+  RegisterPublishedProperties;
+constructor is missing! to define in down class
+
+ListView1.Visible is missing     --->uPSI_ComCtrls.pas 
+ListView1.AddItem is missing
+more properties in downclass
+
+  Col.Width := 140; is missing //tcolumn  check 230_DataSetXMLBackupScholz2.txt
+             SQLQuery1['fullname']; is there a default propertie?
+                   
+ www.jensendatasystems.com/ekon16cds.zip
+
+check TSession.Free
+  writeln(createclassid);  from comobj unit
+
+check  with ListView1 do begin  tlistview constructor of columns.add ?
+   
+check all resources of add ons:
+- mp3 player ->ok
+- cipher file -> Tstringlist
+- memory game -> ok
+- 4 gewinnt ->ok
+- picture game -tbitmap, tbitmapimage  (if new picture or to picture)
+- maxplorer ->ok  (if drag n drop a tList is not freed)
+- cryptobox -> TStringlist
+
+Scan-Report of: maxbox3.zip
+Ahnlab	-
+AntiVir	OK
+Avast	OK
+AVG	OK
+BitDefender	OK
+CA-AV	OK
+Command	OK
+Command (Online)	OK
+Eset Nod32	OK
+Fortinet	OK
+F-Prot	OK
+G Data	OK
+Ikarus	OK
+K7 Computing	OK
+Kaspersky	OK
+Kaspersky (Online)	OK
+McAfee	OK
+McAfee (BETA)	OK
+McAfee (Online)	OK
+McAfee GW Edition (Online)	OK
+Microsoft	OK
+Norman	OK
+Panda	OK
+Panda (Online)	OK
+QuickHeal	Suspicious (warning)
+Rising	OK
+Sophos	OK
+Sophos (Online)	OK
+Sunbelt	OK
+Symantec	OK
+Symantec (BETA)	OK
+Trend Micro	OK
+Trend Micro (Cons.)	OK
+Trend Micro (CPR)	OK
+VBA32	OK
+VirusBuster	OK  
+  
+  
+  Barcode1
+  
+  // <auto-generated />
+// This file was generated by a T4 template.
+// Don't change it directly as your change would get overwritten.  Instead, make changes
+// to the .tt file (i.e. the T4 template) and save it to regenerate this file.
+
+// Make sure the compiler doesn't complain about missing Xml comments and CLS compliance
+// 0108: suppress "Foo hides inherited member Foo. Use the new keyword if hiding was intended." when a controller and its abstract parent are both processed
+// 0114: suppress "Foo.BarController.Baz()' hides inherited member 'Qux.BarController.Baz()'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword." when an action (with an argument) overrides an action in a parent controller
+#pragma warning disable 1591, 3008, 3009, 0108, 0114
+#region T4MVC
+
+using System;
+using System.Diagnostics;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Hosting;
+using System.Web.Mvc;
+using System.Web.Mvc.Ajax;
+using System.Web.Mvc.Html;
+using System.Web.Routing;
+using T4MVC;
+namespace CodingAcademy.Web.Controllers
+{
+    public partial class CourseExerciseController
+    {
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public CourseExerciseController() { }
+
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        protected CourseExerciseController(Dummy d) { }
+
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        protected RedirectToRouteResult RedirectToAction(ActionResult result)
+        {
+            var callInfo = result.GetT4MVCResult();
+            return RedirectToRoute(callInfo.RouteValueDictionary);
+        }
+
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        protected RedirectToRouteResult RedirectToAction(Task<ActionResult> taskResult)
+        {
+            return RedirectToAction(taskResult.Result);
+        }
+
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        protected RedirectToRouteResult RedirectToActionPermanent(ActionResult result)
+        {
+            var callInfo = result.GetT4MVCResult();
+            return RedirectToRoutePermanent(callInfo.RouteValueDictionary);
+        }
+
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        protected RedirectToRouteResult RedirectToActionPermanent(Task<ActionResult> taskResult)
+        {
+            return RedirectToActionPermanent(taskResult.Result);
+        }
+
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.ActionResult Index()
+        {
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Index);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.ActionResult Create()
+        {
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Create);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.ActionResult Details()
+        {
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Details);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.ActionResult Edit()
+        {
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Edit);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.ActionResult Delete()
+        {
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Delete);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.JsonResult ValidateCode()
+        {
+            return new T4MVC_System_Web_Mvc_JsonResult(Area, Name, ActionNames.ValidateCode);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.JsonResult Read_ExerciseShedulerEvents()
+        {
+            return new T4MVC_System_Web_Mvc_JsonResult(Area, Name, ActionNames.Read_ExerciseShedulerEvents);
+        }
+
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public CourseExerciseController Actions { get { return MVC.CourseExercise; } }
+        [GeneratedCode("T4MVC", "2.0")]
+        public readonly string Area = "";
+        [GeneratedCode("T4MVC", "2.0")]
+        public readonly string Name = "CourseExercise";
+        [GeneratedCode("T4MVC", "2.0")]
+        public const string NameConst = "CourseExercise";
+        [GeneratedCode("T4MVC", "2.0")]
+        static readonly ActionNamesClass s_actions = new ActionNamesClass();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionNamesClass ActionNames { get { return s_actions; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionNamesClass
+        {
+            public readonly string Index = "Index";
+            public readonly string Create = "Create";
+            public readonly string Details = "Details";
+            public readonly string Edit = "Edit";
+            public readonly string Delete = "Delete";
+            public readonly string ValidateCode = "ValidateCode";
+            public readonly string GetExerciseTemplateVariations = "GetExerciseTemplateVariations";
+            public readonly string Read_ExerciseShedulerEvents = "Read_ExerciseShedulerEvents";
+        }
+
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionNameConstants
+        {
+            public const string Index = "Index";
+            public const string Create = "Create";
+            public const string Details = "Details";
+            public const string Edit = "Edit";
+            public const string Delete = "Delete";
+            public const string ValidateCode = "ValidateCode";
+            public const string GetExerciseTemplateVariations = "GetExerciseTemplateVariations";
+            public const string Read_ExerciseShedulerEvents = "Read_ExerciseShedulerEvents";
+        }
+
+
+        static readonly ActionParamsClass_Index s_params_Index = new ActionParamsClass_Index();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_Index IndexParams { get { return s_params_Index; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_Index
+        {
+            public readonly string courseId = "courseId";
+        }
+        static readonly ActionParamsClass_Create s_params_Create = new ActionParamsClass_Create();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_Create CreateParams { get { return s_params_Create; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_Create
+        {
+            public readonly string courseId = "courseId";
+            public readonly string viewModel = "viewModel";
+        }
+        static readonly ActionParamsClass_Details s_params_Details = new ActionParamsClass_Details();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_Details DetailsParams { get { return s_params_Details; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_Details
+        {
+            public readonly string id = "id";
+        }
+        static readonly ActionParamsClass_Edit s_params_Edit = new ActionParamsClass_Edit();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_Edit EditParams { get { return s_params_Edit; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_Edit
+        {
+            public readonly string id = "id";
+            public readonly string viewModel = "viewModel";
+        }
+        static readonly ActionParamsClass_Delete s_params_Delete = new ActionParamsClass_Delete();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_Delete DeleteParams { get { return s_params_Delete; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_Delete
+        {
+            public readonly string id = "id";
+            public readonly string viewModel = "viewModel";
+        }
+        static readonly ActionParamsClass_ValidateCode s_params_ValidateCode = new ActionParamsClass_ValidateCode();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_ValidateCode ValidateCodeParams { get { return s_params_ValidateCode; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_ValidateCode
+        {
+            public readonly string code = "code";
+            public readonly string currentCode = "currentCode";
+            public readonly string courseId = "courseId";
+        }
+        static readonly ActionParamsClass_Read_ExerciseShedulerEvents s_params_Read_ExerciseShedulerEvents = new ActionParamsClass_Read_ExerciseShedulerEvents();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_Read_ExerciseShedulerEvents Read_ExerciseShedulerEventsParams { get { return s_params_Read_ExerciseShedulerEvents; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_Read_ExerciseShedulerEvents
+        {
+            public readonly string request = "request";
+            public readonly string courseId = "courseId";
+        }
+        static readonly ViewsClass s_views = new ViewsClass();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ViewsClass Views { get { return s_views; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ViewsClass
+        {
+            static readonly _ViewNamesClass s_ViewNames = new _ViewNamesClass();
+            public _ViewNamesClass ViewNames { get { return s_ViewNames; } }
+            public class _ViewNamesClass
+            {
+                public readonly string Create = "Create";
+                public readonly string Delete = "Delete";
+                public readonly string Details = "Details";
+                public readonly string Edit = "Edit";
+                public readonly string Index = "Index";
+            }
+            public readonly string Create = "~/Views/CourseExercise/Create.cshtml";
+            public readonly string Delete = "~/Views/CourseExercise/Delete.cshtml";
+            public readonly string Details = "~/Views/CourseExercise/Details.cshtml";
+            public readonly string Edit = "~/Views/CourseExercise/Edit.cshtml";
+            public readonly string Index = "~/Views/CourseExercise/Index.cshtml";
+        }
+    }
+
+    [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+    public partial class T4MVC_CourseExerciseController : CodingAcademy.Web.Controllers.CourseExerciseController
+    {
+        public T4MVC_CourseExerciseController() : base(Dummy.Instance) { }
+
+        [NonAction]
+        partial void IndexOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, System.Guid courseId);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult Index(System.Guid courseId)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Index);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "courseId", courseId);
+            IndexOverride(callInfo, courseId);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void CreateOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, System.Guid courseId);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult Create(System.Guid courseId)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Create);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "courseId", courseId);
+            CreateOverride(callInfo, courseId);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void CreateOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, CodingAcademy.Web.Models.ExerciseViewModel viewModel);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult Create(CodingAcademy.Web.Models.ExerciseViewModel viewModel)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Create);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "viewModel", viewModel);
+            CreateOverride(callInfo, viewModel);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void DetailsOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, System.Guid id);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult Details(System.Guid id)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Details);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
+            DetailsOverride(callInfo, id);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void EditOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, System.Guid id);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult Edit(System.Guid id)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Edit);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
+            EditOverride(callInfo, id);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void EditOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, CodingAcademy.Web.Models.ExerciseViewModel viewModel);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult Edit(CodingAcademy.Web.Models.ExerciseViewModel viewModel)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Edit);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "viewModel", viewModel);
+            EditOverride(callInfo, viewModel);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void DeleteOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, System.Guid id);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult Delete(System.Guid id)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Delete);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
+            DeleteOverride(callInfo, id);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void DeleteOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, CodingAcademy.Web.Models.ExerciseListItemViewModel viewModel);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult Delete(CodingAcademy.Web.Models.ExerciseListItemViewModel viewModel)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Delete);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "viewModel", viewModel);
+            DeleteOverride(callInfo, viewModel);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void ValidateCodeOverride(T4MVC_System_Web_Mvc_JsonResult callInfo, string code, string currentCode, string courseId);
+
+        [NonAction]
+        public override System.Web.Mvc.JsonResult ValidateCode(string code, string currentCode, string courseId)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_JsonResult(Area, Name, ActionNames.ValidateCode);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "code", code);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "currentCode", currentCode);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "courseId", courseId);
+            ValidateCodeOverride(callInfo, code, currentCode, courseId);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void GetExerciseTemplateVariationsOverride(T4MVC_System_Web_Mvc_JsonResult callInfo);
+
+        [NonAction]
+        public override System.Web.Mvc.JsonResult GetExerciseTemplateVariations()
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_JsonResult(Area, Name, ActionNames.GetExerciseTemplateVariations);
+            GetExerciseTemplateVariationsOverride(callInfo);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void Read_ExerciseShedulerEventsOverride(T4MVC_System_Web_Mvc_JsonResult callInfo, Kendo.Mvc.UI.DataSourceRequest request, string courseId);
+
+        [NonAction]
+        public override System.Web.Mvc.JsonResult Read_ExerciseShedulerEvents(Kendo.Mvc.UI.DataSourceRequest request, string courseId)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_JsonResult(Area, Name, ActionNames.Read_ExerciseShedulerEvents);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "request", request);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "courseId", courseId);
+            Read_ExerciseShedulerEventsOverride(callInfo, request, courseId);
+            return callInfo;
+        }
+
+    }
+}
+
+#endregion T4MVC
+#pragma warning restore 1591, 3008, 3009, 0108, 0114
+
+
+http://wiki.freepascal.org/Pascal_Script_Examples
+Wasser verdunstet eigentlich immer, es wird eigentlich nur durch den Luftdruck zurückgehalten. Bei 100 Grad ist über dem Wasser nur noch Wasserdampf und keine Luft mehr, also hält niemand mehr das Wasser zurück, es fängt heftig an zu sprudeln und verdampft deshalb so schlagartig. Wie schnell, dass hängt davon ab, wie schnell die Energiequelle unter dem Wassertopf Energie nachliefern kann.
+ mX4 executed: 08/04/2016 17:49:45  Runtime: 0:0:3.708  Memload: 24% use

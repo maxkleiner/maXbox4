@@ -1,0 +1,526 @@
+PROGRAM ReverseGeoCoding4;
+
+//#sign:38:22Max: MAXBOX10: 18/05/2016 10:27:37  AM 
+//#path:C:\Program Files (x86)\maxbox3\Import\IPC\maxbox4\maxbox4\examples\
+//Ex. of Reverse Geocoding with OpenStreetMap /mapquestAPI #locs:310
+//ref--> http://open.mapquestapi.com/nominatim/
+//Tutorial ---> http://www.softwareschule.ch/maxbox_starter39_1.pdf
+
+
+CONST 
+  UrlMapQuestAPICode2='http://open.mapquestapi.com/nominatim/v1/search.php?format=%s&json_callback=renderBasicSearchNarrative&q=%s';  
+  
+  UrlMapQuestAPIReverse= 'http://open.mapquestapi.com/nominatim/v1/reverse.php?format=%s&json_callback=renderExampleThreeResults&lat=%s&lon=%s';
+
+  
+{TYPE <Type declarations>} 
+
+Var 
+  topPath: string;
+  
+ function StreamToString1(Stream: TStream): string;
+ var
+  ms: TMemoryStream;
+ begin
+   Result:= '';
+   ms:= TMemoryStream.Create;
+   try
+     ms.LoadFromStream(Stream);
+    //SetString(Result, PChar(ms.memory), ms.Size);
+   finally
+    ms.Free;
+  end;
+ end;
+
+//1) read the available Size of the TStream, allocate a String of that length,
+//and then Read() the TStream contents into the String:
+
+ function StreamToString2(Stream: TStream): String;
+ var
+  len: Integer;
+ begin
+    len:= Stream.Size - Stream.Position;  
+    SetLength(Result, len);
+    if len > 0 then Stream.ReadBuffer(Result, len);
+      writeln('test - buffer read check!')
+ end;
+ {code}
+
+//2) create an intermediate TStringStream, CopyFrom() the TStream to the
+//TStringStream, and then read the TStringStream.DataString property:
+
+{code:delphi}
+ function StreamToString3(Stream: TStream): String;
+ begin
+    with TStringStream.Create('') do 
+    try
+        CopyFrom(Stream, Stream.Size - Stream.Position);
+        Result:= DataString;
+    finally
+        Free;
+    end;
+ end;
+
+//<FUNCTION>
+function GetMapXScript(C_form,apath: string; const Data: string): boolean;
+var encodedURL: string;
+begin
+//encodedURL:= Format(UrlGoogleQrCode,[Width,Height, C_Level, HTTPEncode(Data)]);
+  encodedURL:= Format(UrlMapQuestAPICode2,[c_form,HTTPEncode(Data)]);
+  try
+   //HttpGet(EncodedURL, mapStream);   //WinInet
+  Result:= UrlDownloadToFile(Nil,PChar(encodedURL),PChar(apath),0,Nil)= 0;
+  OpenDoc(apath);
+  finally
+    encodedURL:= '';
+  end;
+end;
+
+function GetMapXGeoReverse2(C_form,apath: string; const lat,long: string):boolean;
+ var encodedURL, UrlMapQuestAPI, bufstr: string;
+    mapStream: TMemoryStream;
+ begin
+  UrlMapQuestAPI:= 'http://open.mapquestapi.com/nominatim/v1/reverse.php?format=%s&json_callback=renderExampleThreeResults&lat=%s&lon=%s';
+  encodedURL:= Format(UrlMapQuestAPI,[c_form, lat, long]);
+   mapStream:= TMemoryStream.create;
+   try
+    HttpGet(EncodedURL, mapStream);  {WinInet}
+    //Result:= UrlDownloadToFile(Nil,PChar(encodedURL),PChar(apath),0,Nil)= 0;
+     mapStream.Position:= 0;
+     writeln('stream size: '+inttostr(mapstream.size));
+      //mapStream.readbufferp(bufstr, mapStream.Size-1);
+      //mapStream.memory; 
+      bufstr:= StreamToString(mapstream);
+      memo2.lines.add(encodedURL);
+   // mapstream.savetofile(apath)
+   // OpenDoc(apath);
+    writeln('stream back: '+bufstr)
+  finally
+    encodedURL:= '';
+    mapStream.Free;
+  end;
+end;   
+
+function TRestRequest_createStringStreamFromStringList(strings:
+    TStringList): TStringStream;
+var
+  key, value, strParam: string;
+begin
+  Result:= TStringStream.Create('');
+  for it:= 0 to strings.Count - 1 do begin
+    key:= strings.Names[it];
+    value:= strings.ValueFromIndex[it];
+    strParam:= urlEncode(key) + '=' + urlEncode(value);
+    if not (it = strings.Count - 1) then strParam:= strParam + '&';
+    Result.WriteString(strParam);
+  end;
+end;
+                         
+
+function ComponentToStringProc(Component: TComponent): string;
+var
+  BinStream:TMemoryStream;
+  StrStream: TStringStream;
+  s: string;
+begin
+  BinStream:= TMemoryStream.Create;
+  try
+    StrStream:= TStringStream.Create(s);
+    try
+      BinStream.WriteComponent(Component);
+      BinStream.Seek(0, soFromBeginning);
+      ObjectBinaryToText(BinStream, StrStream);
+      StrStream.Seek(0, soFromBeginning);
+      Result:= StrStream.DataString;
+    finally
+      StrStream.Free;
+    end;
+  finally
+    BinStream.Free
+  end;
+end;
+
+function StringToComponentProc(Value: string): TComponent;
+var
+  StrStream: TStringStream;
+  BinStream: TMemoryStream;
+begin
+  StrStream:= TStringStream.Create(Value);
+  try
+    BinStream:= TMemoryStream.Create;
+    try
+      ObjectTextToBinary(StrStream, BinStream);
+      BinStream.Seek(0, soFromBeginning);
+      Result:= BinStream.ReadComponent(nil);
+    finally
+      BinStream.Free;
+    end;
+  finally
+    StrStream.Free;
+  end;
+end;
+
+//  //mapStream.writestring(mapstream)  //writes string to the stream.
+   //with stringstream demo
+   
+procedure GetMapScriptStream(C_form,apath: string; const Data: string);
+var encodURL: string;
+    mapStrm: TStringStream;
+begin
+  encodURL:= Format(UrlMapQuestAPICode2,[c_form,HTTPEncode(Data)]);
+  mapStrm:= TStringStream.create('');
+  try
+    HttpGet(EncodURL, mapStrm);  //WinInet
+    mapStrm.Position:= 0;
+    SaveStringtoFile(apath, mapStrm.datastring)
+    OpenDoc(apath);
+  finally
+    mapStrm.Free;
+    encodURL:= '';
+  end;
+end;
+
+
+function GetMapXGeocodeReverse(C_form,apath:string; const data:string): string;
+ var encodURL, alat, alon: string;
+    mapStream: TStringStream;
+    xmlDoc: TXmlVerySimple; //TALXMLDocument;
+    Nodes: TXmlNodeList;
+    Node: TXmlNode;
+ begin
+   encodURL:= Format(UrlMapQuestAPICode2,[c_form,HTTPEncode(Data)]);
+   mapStream:= TStringStream.create('');
+   xmldoc:= TXmlVerySimple.create;
+   try
+     HttpGet(EncodURL, mapStream);  {WinInet}
+     //local tester
+     //mapstream.writestring(loadstringfromfile(apath));
+     mapStream.Position:= 0;
+     writeln('string stream size: '+inttostr(mapstream.size));
+     writeln('string stream cont: '+mapstream.datastring);
+     {SaveStringtoFile(apath, mapStream.datastring) OpenDoc(apath); }
+   
+     xmlDoc.loadfromStream(mapstream);
+     writeln('childcounts: '+inttostr(xmlDoc.root.childnodes.count))  
+     if xmlDoc.root.childnodes.count > 0 then begin  
+       Nodes:= XmlDoc.Root.FindNodes('place');    //or result
+       for it:= 0 to TXMLNodeList(nodes).count-1 do begin
+         //for Node in Nodes do
+         Node:= TXMLNode(nodes.items[it]);
+         alon:= node.attribute['lon']
+         alat:= node.attribute['lat']
+       end;
+       //result:= 'GEO Topic found: '+(node.text)+CRLF
+       result:= result+(#13#10+'latitude: '+alat+'  longitude: '
+                   +alon+' of place: '+data+#13#10)
+       Nodes.Free;
+     end;
+   finally
+     encodURL:= '';
+     mapStream.Free;
+     xmlDoc.Free;
+   end;
+ end;                            
+
+function GetGeocodeCoord(C_form: string; const data:string; atxt: boolean): string;
+ var encodURL, alat, alon: string;
+    mapStream: TStringStream;
+    xmlDoc: TXmlVerySimple; //TALXMLDocument;
+    Nodes: TXmlNodeList;
+    Node: TXmlNode;
+ begin
+   encodURL:= Format(UrlMapQuestAPICode2,[c_form,HTTPEncode(Data)]);
+   mapStream:= TStringStream.create('');
+   xmldoc:= TXmlVerySimple.create;
+   try
+     HttpGet(EncodURL, mapStream);  {WinInet}
+     //local tester
+     //mapstream.writestring(loadstringfromfile(apath));
+     mapStream.Position:= 0;
+     //writeln('string stream size: '+inttostr(mapstream.size));
+     //writeln('string stream cont: '+mapstream.datastring);
+     {SaveStringtoFile(apath, mapStream.datastring) OpenDoc(apath); }
+     xmlDoc.loadfromStream(mapstream);
+     //writeln('childcounts: '+inttostr(xmlDoc.root.childnodes.count))  
+     if xmlDoc.root.childnodes.count > 0 then begin  
+       Nodes:= XmlDoc.Root.FindNodes('place');    //or result
+       for it:= 0 to TXMLNodeList(nodes).count-1 do begin
+         //for Node in Nodes do
+         Node:= TXMLNode(nodes.items[it]);
+         alon:= node.attribute['lon']
+         alat:= node.attribute['lat']
+       end;
+       if atxt then
+         result:= 'GEOMapX Coordinates Topic found: '+(node.text)+CRLF;
+       result:= result+(#13#10+'latitude: '+alat+'  longitude: '
+                   +alon+' of place: '+data+#13#10)
+       Nodes.Free;
+     end;
+   finally
+     encodURL:= '';
+     mapStream.Free;
+     xmlDoc.Free;
+   end;
+ end;                            
+
+Begin  //Main
+//<Executable statements>
+   topPath:= ExePath+'outputmap_2cologne3.xml';
+   //if GetMAPX('html',toppath,'Oberburg') then
+   //if GetMAPXScript('html',toppath,'cathedral cologne') then
+  // writeln('cologne map found'); OpenDoc(toppath); //  }
+  // if GetMapXGeoReverse2('XML',topPath,'50.94133705','6.95812611100766') then
+    //writeln('reverse geocode map data found!');   
+   //writeln(GetMapXGeoReverse('XML','47.0397826','7.62914761277888'))
+   //writeln(GetMapXGeoReverse('XML','50.94134','6.95813'))
+      
+{procedure GEOMapView1Click(Sender: TObject);'); 
+      maxform1.GEOMapView1Click(self);}
+      //if GetMapXLocal('XML',topPath,'47.0397826','7.62914761277888') then
+    //writeln('reverse geocode local map data found!');   
+    //TStMemoryMappedFile
+    //TStStreamToHTML
+    {with TStFileToHTML.create(self) do begin
+      infilename:= topPath;
+      outfilename:= ExePath+'outputmap_22.txt';
+      execute;
+     free
+   end;} 
+    
+// GetMAPScriptStream('html&polygon=1&addressdetails=1&polygon_kml=1',ExePath+'colXstream.html','cathedral cologne')
+//GetMAPScriptStream('html',ExePath+'cologne2mapXstream.html','cathedral cologne') 
+  writeln('Coordinates back test: ')
+  //writeln(GetMapXGeocodeReverse('xml',ExePath+'outputmap_2cologne.xml',                                                   'cathedral cologne'))
+  //writeln(GetMapXGeocodeReverse('xml',ExePath+'outmap_2cefalu.xml',                                                   'church cefalu sicily'))
+ 
+  writeln(GetGeoCoord('xml','church cefalu sicily',true))
+ 
+ //original latitude,original longitude,"returned address",returned latitude,returned longitude
+//38.0413342, 14.0219323887382,"Piazza Francesco Crispi, 2, 90015 Cefalù PA, Italy",38.041289,14.021725
+ 
+ 
+  //writeln(GetMapXGeoReverse('XML','38.0339193','14.0153433'))
+  //latitude: '38.0339193'  longitude: '14.0153433'
+  //latitude: '38.0413342'  longitude: '14.0219323887382'
+
+  for it:= 1 to 50 do
+     ft:= ft + 1 / power(2,it);
+     writeln('test numb '+floattostr(ft))   
+    
+End. 
+
+Ref:
+C:\maXbook\maxbox3\mX3999\maxbox3\source2\source\REST\uPSI_ALXmlDoc.pas
+
+http://embarcadero.newsgroups.archived.at/public.delphi.vcl.components.using/200907/0907292775.html
+Note: in both cases, this code is assuming D2007 or earlier.  In D2009 and
+later, String is Unicode now, so you need to know the Encoding of the
+TStream contents ahead of time in order for the bytes to be interpretted as,
+or converted to, Unicode correctly.  Otherwise, you would have to change #1
+to operate on AnsiString or RawByteString instead (#2 may not work correctly
+in D2009+ is a proper Encoding is not specified).
+
+ //inbuilt
+  // Function GetMapXGeoReverse(C_form: string; const lat,long: string): string;
+//1201: //if GetMapXGeoReverse('XML',topPath,'47.0397826','7.62914761277888') then
+{Procedure GetGEOMap(C_form,apath: string; const Data: string);
+Function GetMapX(C_form,apath: string; const Data: string): boolean; 
+   if GetMAPX('html',ExePath+'cologne2mapX.html','cathedral cologne') then
+Function GetMapXGeoReverse(C_form: string; const lat,long: string): string;
+   if GetMapXGeoReverse('XML',topPath,'47.0397826','7.62914761277888') then}
+
+{Function OpenMap(const Data: string): boolean;
+Function OpenMapX(const Data: string): boolean;}
+
+
+-- 
+Test Ref:  XML, JSON, HTML
+
+<reversegeocode timestamp="Thu, 11 Sep 14 20:52:32 +0000" attribution="Data © OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright" querystring="format=html&json_callback=renderExampleThreeResults&lat=47.0397826&lon=7.62914761277888"><result place_id="15120759" osm_type="node" osm_id="1378799522" ref="UBS AG" lat="47.0398676" lon="7.6291424">UBS AG, Bahnhofstrasse, Oberstadt, Burgdorf, Verwaltungskreis Emmental, Verwaltungsregion Emmental-Oberaargau, Bern, 3414, Switzerland</result><addressparts><atm>UBS AG</atm><road>Bahnhofstrasse</road><neighbourhood>Oberstadt</neighbourhood><town>Burgdorf</town><county>Verwaltungskreis Emmental</county><state_district>Verwaltungsregion Emmental-Oberaargau</state_district><state>Bern</state><postcode>3414</postcode><country>Switzerland</country><country_code>ch</country_code></addressparts></reversegeocode>
+
+----app_template_loaded_code----
+
+function TMapViewer_GetLongLat(X, Y, Z: Integer): TRealArea;
+var
+n: Extended;
+ zoom: integer;
+begin
+{
+http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+== lon/lat to tile numbers ==
+n = 2 ^ zoom
+xtile = ((lon_deg + 180) / 360) * n
+ytile = (1 - (log(tan(lat_rad) + sec(lat_rad)) / ?)) / 2 * n
+== tile numbers to lon/lat ==
+n = 2 ^ zoom
+lon_deg = xtile / n * 360.0 - 180.0
+lat_rad = arctan(sinh(? * (1 - 2 * ytile / n)))
+lat_deg = lat_rad * 180.0 / ?
+}
+n:= IntPower(zoom,2);
+  Result.left := x / n * 360.0 - 180.0;
+  Result.right := Result.left + (360.0 / n);
+  Result.top := radtodeg(arctan(sinh(PI * (1 - 2 * Y / n))));
+  Result.bottom := radtodeg(arctan(sinh(PI * (1 - 2 * (Y+1) / n))));
+end;
+
+
+type TStringStream = class(TStream)
+
+public
+  constructor Create();
+Creates a new stringstream and sets its initial content.
+
+  function Read(); override;
+Reads from the stream.
+
+  function ReadString();
+Reads a string of length Count
+
+  function Seek(); override;
+Sets the position in the stream.
+
+  function Write(); override;
+Write overries the TStream.Write method.
+
+  procedure WriteString();
+WriteString writes a string to the stream.
+
+  property DataString: string; [r]
+Contains the contents of the stream in string form
+
+end;
+
+<!-- Script Size:  1.00 KB  --><!-- TWO STEPS TO INSTALL DYNAMIC CLOCK:
+
+  1.  Copy the coding into the HEAD of your HTML document
+  2.  Add the last code into the BODY of your HTML document  --><!-- STEP ONE: Paste this code into the HEAD of your HTML document  -->
+<SCRIPT language=JavaScript>
+<!-- Original:  Craig Lumley -->
+<!-- Web Site:  http://www.ws4all.co.uk -->
+
+<!-- This script and many more are available free online at -->
+<!-- The JavaScript Source!! http://javascript.internet.com -->
+
+<!-- Begin
+function MakeArrayday(size) {
+this.length = size;
+for(var i = 1; i <= size; i++) {
+this[i] = "";
+}
+return this;
+}
+function MakeArraymonth(size) {
+this.length = size;
+for(var i = 1; i <= size; i++) {
+this[i] = "";
+}
+return this;
+}
+function funClock() {
+if (!document.layers && !document.all)
+return;
+var runTime = new Date();
+var hours = runTime.getHours();
+var minutes = runTime.getMinutes();
+var seconds = runTime.getSeconds();
+var dn = "AM";
+if (hours >= 12) {
+dn = "PM";
+hours = hours - 12;
+}
+if (hours == 0) {
+hours = 12;  }
+if (minutes <= 9) {
+minutes = "0" + minutes; }
+if (seconds <= 9) {
+seconds = "0" + seconds; }
+movingtime = "<b>"+ hours + ":" + minutes + ":" + seconds + " " + dn + "</b>";
+if (document.layers) {
+document.layers.clock.document.write(movingtime);
+document.layers.clock.document.close();   
+else if (document.all) {
+clock.innerHTML = movingtime; }
+setTimeout("funClock()", 1000) }
+window.onload = funClock;
+//  End -->
+</SCRIPT>
+<!-- STEP TWO: Copy this code into the BODY of your HTML document  -->Currently, it's <SPAN id=clock style="POSITION: relative"></SPAN><!-- Script Size:  1.66 KB -->
+----File newtemplate.txt not exists - now saved!----
+----Simple Browser started----
+
+We show GEO map search request with The Nominatim Search Service and one GPS Example. It has a Map Quest Search with a simple and efficient interface and powerful capabilities, and relies solely on data contributed to OpenStreetMap. 
+On the menu View/GEO Map View you can use the function without scripting.
+
+http://www.softwareschule.ch/download/maxbox_starter39.pdf
+Posted by Max Kleiner less than 1 minute ago | Edit Labels: GEO OpenStreetMap Nominatim GPS 
+
+<p  style=" margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block;">   <a title="View maXbox Starter 39 GEO Maps Tutorial on Scribd" href="http://www.scribd.com/doc/240595275/maXbox-Starter-39-GEO-Maps-Tutorial"  style="text-decoration: underline;" >maXbox Starter 39 GEO Maps Tutorial</a></p><iframe class="scribd_iframe_embed" src="//www.scribd.com/embeds/240595275/content?start_page=1&view_mode=scroll&show_recommendations=true" data-auto-height="false" data-aspect-ratio="undefined" scrolling="no" id="doc_90800" width="100%" height="600" frameborder="0"></iframe>
+
+http://www.scribd.com/doc/240595275/maXbox-Starter-39-GEO-Maps-Tutorial
+
+https://www.academia.edu/8439220/maXbox_Starter_39_GEO_Maps_Tutorial
+
+https://www.academia.edu/8551465/maXbox_Starter_39_GEO_Maps_Tutorial_Volume_2
+
+<iframe src="//www.slideshare.net/slideshow/embed_code/39392685" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+
+We show GEO map search request with The Nominatim Search Service and one GPS Example. It has a Map Quest Search with a simple and efficient interface and powerful capabilities, and relies solely on data contributed to OpenStreetMap.
+On the menu View/GEO Map View you can use the function without scripting.
+
+http://www.softwareschule.ch/download/maxbox_starter39.pdf
+
+
+We show GEO map search request with Nominatim Web Service, XML and Layers. It has a Map Quest Search with simple and efficient GET and request capabilities, and relies solely on data contributed to OpenStreetMap.
+
+
+On the menu View/GEO Map View you can use the function without scripting.
+
+<?xml version="1.0" encoding="UTF-8"?>
+-<reversegeocode querystring="format=XML&json_callback=renderExampleThreeResults&lat=50.94134&lon=6.95813" attribution="Data © OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright" timestamp="Wed, 24 Sep 14 19:47:13 +0000"> <result lon="6.95812611100766" lat="50.94133705" ref="Kölner Dom" osm_id="4532022" osm_type="way" place_id="40406499">Kölner Dom, 4, Domkloster, Ursula-Viertel, Altstadt-Nord, Innenstadt, Köln, Regierungsbezirk Köln, Nordrhein-Westfalen, 50667, Deutschland</result>-<addressparts><place_of_worship>Kölner Dom</place_of_worship><house_number>4</house_number><pedestrian>Domkloster</pedestrian><neighbourhood>Ursula-Viertel</neighbourhood><suburb>Altstadt-Nord</suburb><city_district>Innenstadt</city_district><county>Köln</county><state_district>Regierungsbezirk Köln</state_district><state>Nordrhein-Westfalen</state><postcode>50667</postcode><country>Deutschland</country><country_code>de</country_code></addressparts></reversegeocode>
+
+
+The DOM is basically an API you use to interface the document with, and is available in many languages as a library ( JS is one of those languages ). The browser converts all the HTML in your web page to a tree based on the nesting. Pop open Firebug and look at the HTML structure. That is the tree I'm talking about.
+
+If you want to change any HTML you can interact with the DOM API in order to do so.
+
+<html>
+ <head><script src="file.js"></script></head>
+ <body>blah</body>
+</html>
+
+In file.js I can reference the body using:
+
+onload = function() {
+    document.getElementsByTagName('body')[0].style.display='none';
+}
+
+The getElementsByTagName is a method of the document object. I am manipulating the body element, which is a DOM element. If I wanted to traverse and find say, a span I can do this:
+
+onload = function() {
+ var els = document.getElementsByTagName('*');
+ for ( var i = els.length; i--; ) {
+    if ( els[i].nodeType == 1 && els[i].nodeName.toLowerCase() == 'span' ) {
+       alert( els[i] )
+    }
+ }
+}
+
+I am traversing the nodeList given back by getElementsByTagName in the snippet above, and looking for a span based on the nodeName property.
+mx35 text:
+
+Nr 5 / 2014 BLAISE PASCAL MAGAZINE
+
+ HttpGet(EncodedURL, mapStream);  //instead WinInet
+ 
+
+The maXbox series is a collection of tutorials to support the PEP (Pascal Education Program) and the script power pack for Delphi and Lazarus Applications.
+
+These are supporting materials for Pascal Script on maXbox and other environments.
+
+I designed this tutorial course to accompany the programming starter pack analysis and design and software engineering I and II at our school.
+
+These are the supporting materials for Pascal Script on the maXbox environment.
+the Adafruit webshop. The pack contains all the components you need (minus any ...
+Arduino Microcontroller Platform.
+

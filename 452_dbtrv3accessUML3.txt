@@ -1,0 +1,579 @@
+program TestDbTreeViewMainForm2_ACCESS;
+//#sign:Max: MAXBOX10: 17/05/2016 22:26:04 
+// works with BDE or ADO , update with sync, #locs:525
+{interface:   you need a BDE install or an ODBC Name DSN=mx3base
+  or just two files:  detail.mdb / detail.db
+#head:Max: MAXBOX10: 17/05/2016 22:26:04 C:\Program Files (x86)\maxbox3\Import\IPC\maxbox4\maxbox4\examples\452_dbtrv3accessUML3.txt 
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  DB, DBTables, Grids, ComCtrls, DBGrids, DBCGrids, ExtCtrls, DBCtrls,
+  StdCtrls, Mask, Buttons, dbTree, Menus, TreeVwEx;}
+
+//type
+  //TFrmDbTreeViewDemo = class(TForm)
+  
+  //BDE or ACCESS table: detail.db or detail.mdb
+  Const ONBDE= false; //false;
+  
+  var  
+    Table1: TTable;
+    Table2: TAdoTable;
+    //table2: TAdoDataSet;
+    Table1ID: TIntegerField;
+    Table1Parent: TIntegerField;
+    Table1Text: TStringField;
+    Query1: TQuery;
+    Query2: TADOQuery;
+    dbSrc1: TDataSource;
+    DBTreeView1: TDBTreeView;
+    DBGrid1: TDBGrid;
+    //DBNavigator1: TDBNavigator;
+    BitBtn1: TBitBtn;
+    CkBox1: TCheckBox;
+    CkBox2: TCheckBox;
+    CkBox3: TCheckBox;
+    CkBox4: TCheckBox;
+    PopupMenu1: TPopupMenu;
+    Popup1: TMenuItem;
+    Menu1, N1, Selected1: TMenuItem;
+    FrmDbTree: TForm; //TfrmDBTreeViewDemo;
+    abd: TBaseDialect;
+    
+       procedure TDBFrm_FormCreate(Sender: TObject); forward;
+       procedure TDBFrm_FormCloseQuery(Sender: TObject; var CanClose: Boolean); forward;
+       procedure TDBFrm_BitBtn1Click(Sender: TObject); forward;
+       procedure TDBFrm_DBNavigator1Click(Sender: TObject;aButton:TNavigateBtn); forward;
+       procedure TDB_CBox1Click(Sender: TObject); forward;
+       procedure TDB_CBox2Click(Sender: TObject); forward;
+       procedure TDB_CBox3Click(Sender: TObject); forward;
+       procedure TDB_CBox4Click(Sender: TObject); forward;
+       procedure TDBFrm_Selected1Click(Sender: TObject); forward;
+   //  end;
+
+
+//implementation
+//{$R *.DFM}
+
+procedure OpenTable(Table: TTable);
+var
+  TableName: String;
+begin
+  if Table.Active then
+    exit;
+  if (Table.DatabaseName = '') then begin
+    TableName:= Table.TableName;
+    if (Pos('.DB', UpperCase(TableName)) = 0) then
+      TableName:= TableName + '.DB';
+    if FileExists(Exepath+'examples\'+TableName) then begin
+      Table.DatabaseName:= ExtractFileDir(Application.ExeName)+'\examples\'
+        writeln('DB NAME path: ' +Table.DatabaseName) end
+    else begin
+      ShowMessage(
+        'Please set ' + Table.Name + '.DatabaseName to the location of ' +
+        TableName + ' or copy ' + TableName +
+        ' to the location of ' + Exepath+'\examples\');
+      //Halt;
+    end;
+  end;
+  try
+    //table.constraints;
+    Table.Open;
+  except
+  end;  
+end;
+
+procedure OpenTable2(Table: {TAdoDataSet}TAdoTable);
+var TableName: String;
+begin
+  if Table.Active then
+    exit;
+   //open table2
+    with Table do begin
+     //connectionString:= 'Provider=MSDASQL;DSN=mx3base;Uid=sa;Pwd=admin';
+       cacheSize:= 500;
+       commandType:= cmdText; //or ctQuery;
+       //C:\maXbook\maxbox3\mX3999\maxbox3\examples
+       connectionString:='Provider=Microsoft.Jet.OLEDB.4.0;Data Source='
+                  +Exepath+'\examples\detail.mdb;Persist Security Info=False';
+       commandText:= 'SELECT * FROM Table1';
+       //tablename:= 'Table1';
+       Open;
+       Writeln(intToStr(Recordcount)+' records found: ')
+    {else begin
+      ShowMessage(
+        'Please set ' + Table.Name + '.DatabaseName to the location of ' +
+        TableName + ' or copy ' + TableName +
+        ' to the location of ' + Application.ExeName+'\examples\');
+      //halt;
+    end;}
+  end;
+end;
+
+procedure OpenQuery2(query: TAdoQuery);
+var TableName: String;
+begin
+  if query.Active then
+    exit;
+   //open table2
+    with query do begin
+     //connectionString:= 'Provider=MSDASQL;DSN=mx3base;Uid=sa;Pwd=admin';
+       cacheSize:= 500;
+       commandType:= cmdText; //or ctQuery;
+       //C:\maXbook\maxbox3\mX3999\maxbox3\examples
+       connectionString:='Provider=Microsoft.Jet.OLEDB.4.0;Data Source='
+                  +Exepath+'\examples\detail.mdb;Persist Security Info=False';
+       //commandText:= 'SELECT * FROM Table1';
+       SQL.add('SELECT * FROM Table1');
+       //tablename:= 'Table1';
+       Open;
+       Writeln(intToStr(Recordcount)+' SQL records found: ')
+    {else begin
+      ShowMessage(
+        'Please set ' + Table.Name + '.DatabaseName to the location of ' +
+        TableName + ' or copy ' + TableName +
+        ' to the location of ' + Application.ExeName+'\examples\');
+      //halt;
+    end;}
+  end;
+end;
+ 
+procedure TDBFrm_FormCreate(Sender: TObject);
+begin
+  //if (GetBdeDirectory <> ' ') and ONACCESS then
+  if ONBDE then begin 
+     if GetBdeDirectory <> ' ' then
+      OpenTable(Table1) 
+    end else begin
+     Table2:= TAdoTable.create(self);
+     Query2:= TAdoQuery.create(self);
+    //table2{adoQryset}:= TAdoDataSet.Create(self);//TAdoQuery.Create(self);
+    {with Table2 do begin 
+      IndexFieldNames:= 'ID'
+      TableName:= 'DETAIL'
+    end;}
+    OpenTable2(table2);
+    OpenQuery2(query2);
+  end;  
+  Query1:= TQuery.create(self);
+  if not Query1.Active and (Query1.DatabaseName = '') then
+    if ONBDE then Query1.DatabaseName:= Table1.DatabaseName else begin
+      Query1.databasename:= Exepath+'examples\detail.mdb'; //Table1.databasename;
+    writeln('DB found '+Query1.DatabaseName) 
+   end;  
+end;
+
+procedure TDBFrm_FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+ if assigned(dbSrc1) and (dbSrc1 <> Nil) then
+  with dbSrc1.DataSet do
+    //if (State in [dsEdit, dsInsert]) then
+    if (State = dsEdit) or (state = dsInsert) then
+       //mbYesNoCancel
+    case MessageDlg('Save changes?', mtConfirmation,[mbYes,mbNo,mBCancel],0) of
+       mrYes: Post;
+       mrNo: Cancel;
+       else CanClose:= false;
+    end;
+   //dbSrc1.close;   
+   if ONBDE then
+     table1.close           //otherwise exceptions
+   else table2.close;
+   dbtreeview1.free;
+   Writeln('DB Table Set closed');
+end;
+
+procedure TDBFrm_BitBtn1Click(Sender: TObject);
+begin
+  frmDBTree.close;
+  Writeln('FrmDbTreeViewDemo.closed');
+end;
+
+procedure TDBFrm_DBNavigator1Click(Sender: TObject; aButton: TNavigateBtn);
+begin
+{ Please note that a TTreeView can end the edit-mode when you leave it
+  - therefore the Dataset is not always in edit-mode no more when a
+  DBNavigator-button gets pressed. }
+  //[abutton];
+  writeln('navi click: '+ObjecttoString(sender)+ ' btnname '+inttoStr(ord(abutton)));
+end;
+
+procedure TDB_CBox1Click(Sender: TObject);
+var
+  s, SelectedID: String;
+begin
+  s:= DBTreeView1.GetExpanded(','); { save all Items[].Expanded }
+  SelectedID:= DBTreeView1.SelectedID;
+  DBTreeView1.Options:= DBTreeView1.Options -[dtAutoExpand];
+  dbSrc1.DataSet.Close;
+  if CkBox1.Checked then begin
+    dbSrc1.DataSet:= TDataSet(Query1)
+    //DataSet:= TDataSet(Table2);  //ADO
+       dbSrc1.Enabled:= true;
+     //AutoEdit:= true;
+    writeln('query set set'); 
+    dbSrc1.DataSet.Open;
+   end
+  else begin
+    if ONBDE then 
+      dbSrc1.DataSet:= Table1
+    else 
+      dbSrc1.DataSet:= TDataSet(Table2);
+  end;  
+  dbSrc1.DataSet.Open;
+  if (s <> '') then
+    DBTreeView1.SetExpanded(s, ','); { restore all Items[].Expanded }
+  DBTreeView1.SelectedID:= SelectedID; 
+end;
+
+procedure TDB_CBox2Click(Sender: TObject);
+begin
+  if CkBox2.Checked then
+    DBTreeView1.Options:= DBTreeView1.Options +[dtSynchronizeDataSet]
+  else
+    DBTreeView1.Options:= DBTreeView1.Options -[dtSynchronizeDataSet];
+end;
+
+procedure TDB_CBox3Click(Sender: TObject);
+begin
+  if CkBox3.Checked then
+    DBTreeView1.Options:= DBTreeView1.Options +[dtFocusOnEdit]
+  else
+    DBTreeView1.Options:= DBTreeView1.Options -[dtFocusOnEdit];
+end;
+
+procedure TDB_CBox4Click(Sender: TObject);
+begin
+  if CkBox4.Checked then
+    DBTreeView1.Options:= DBTreeView1.Options +[dtRebuildFocusedOnly]
+  else
+    DBTreeView1.Options:= DBTreeView1.Options -[dtRebuildFocusedOnly];
+end;
+
+procedure TDBFrm_Selected1Click(Sender: TObject);
+var
+  sSelected, sRSelected: string;
+begin
+  if (DBTreeView1.Selected = Nil) then
+    sSelected:= ''
+  else
+    sSelected:= DBTreeView1.Selected.Text;
+  if (DBTreeView1.RSelected = Nil) then
+    sRSelected:= ''
+  else sRSelected:= DBTreeView1.RSelected.Text;
+  ShowMessage('Selected:  ' + sSelected +  #10 +
+              'RSelected: ' + sRSelected)
+end;
+
+//const WS_EX_CLIENTEDGE = $00000
+procedure loadDBForm;
+begin
+  frmDBTree:= TForm.Create(self);
+  with frmDBTree do begin
+  Left:= 235; Top:= 84;
+  BorderIcons:= [biSystemMenu, biMinimize]
+  BorderStyle:= bsSingle;
+  Caption:= 'mX DbTreeView-Demo'
+  ClientHeight:= 394
+  ClientWidth:= 621
+  Font.Charset:= DEFAULT_CHARSET
+  Font.Name:= 'MS Sans Serif'
+  Font.Style:= []
+  Position:= poScreenCenter
+  OnCloseQuery:= @TDBFrm_FormCloseQuery;
+  //OnCreate:= FormCreate
+  PixelsPerInch:= 96
+  //TextHeight:= 13
+  //PopupMenu;
+  Show;
+  end;
+  with TLabel.create(self) do begin
+    parent:= frmDBTree;
+    SetBounds(8,16,70,13)
+    Caption:= 'TDBTreeView:';
+  end;
+  with TLabel.create(self) do begin
+    parent:= frmDBTree;
+    SetBounds(218,16,200,13);
+    Caption:= 'TDBGrid (to see what happens to table):';
+  end;
+  Table1:= TTable.create(frmDBTree);   //default
+  with Table1 do begin 
+    //parent:= frmDBTree;
+    IndexFieldNames:= 'ID'
+    TableName:= 'DETAIL'
+  end;  
+   
+   TDBFrm_FormCreate(frmDBTree);
+ 
+    //object Table1ID: TIntegerField
+    with TIntegerField.create(self) do begin
+      //parent:= Table1;
+      DisplayWidth:= 5
+      FieldName:= 'ID'
+    end;
+    with TIntegerField.create(self) do begin
+      //parent:= Table1;
+      DisplayWidth:= 8
+      FieldName:= 'Parent'
+    end;
+    //object Table1Text: TStringField
+    with TStringField.create(self) do begin
+      DisplayWidth:= 20
+      FieldName:= 'Text1'
+    end;
+  //end
+  dbSrc1:= TDataSource.create(frmDBTree);
+  with dbSrc1 do begin
+   //parent:= frmDBTree;
+   if ONBDE then begin 
+     if GetBdeDirectory <> ' ' then
+     DataSet:= Table1
+     end else begin
+       DataSet:= TDataSet(Table2);  //ADO
+       Enabled:= true;
+       AutoEdit:= true;
+     end;
+    writeln('fieldcount of dbsource '+intToStr(dataset.fieldCount))
+    writeln('recordcount of dbsource '+intToStr(dataset.recordCount))
+  end;
+  //Query1:= TQuery.Create(frmDBTree)
+  with Query1 do begin
+    //parent:= frmDBTree;
+    //databasename:= Exepath+'examples';
+    ParamCheck:= False
+    RequestLive:= True;
+    if ONBDE then
+      SQL.add('SELECT * FROM DETAIL.DB') else
+      SQL.add('SELECT * FROM Table1.MDB');
+  end;
+  DBTreeView1:= TDBTreeView.create(frmDBTree)
+   PopupMenu1:= TPopupMenu.create(self)
+ 
+  with DBTreeView1 do begin
+    parent:= frmDBTree;
+    SetBounds(8,32,169,200)
+    HideSelection:= False
+    Indent:= 19
+    ParentColor:= False
+    borderstyle:= bsSingle;
+    TabOrder:= 0
+    PopupMenu:= PopupMenu1;
+    DataSource:= dbSrc1;
+    if ONBDE then begin
+      TableIDField:= 'ID'
+      TableParentField:= 'Parent'
+      TableTextField:= 'Text'
+    end else begin
+      TableIDField:= 'Int'
+      TableParentField:= 'FirstName'
+      TableTextField:= 'LastName'
+    end;  
+    RootID:= '0'
+    //Show;
+    Options:= [dtAllowDelete,dtAllowInsert,dtAutoDragMove,dtAutoExpand,dtCancelOnExit, dtConfirmDelete, dtSynchronizeDataSet]
+  end;   
+  SetWindowLong(DBTreeView1.Handle, GWL_EXSTYLE, GetWindowLong(DBTreeView1.Handle,
+           GWL_EXSTYLE) and not WS_EX_CLIENTEDGE);
+ DBGrid1:= TDBGrid.create(frmDBTree);
+  with DBGrid1 do begin
+    parent:= frmDBTree;
+    Setbounds(214,32,370,170);
+    DataSource:= dbSrc1
+    //TabOrder:= 1
+    Color:= clmoneygreen;
+    TitleFont.Charset:= DEFAULT_CHARSET
+    TitleFont.Color:= clWindowText
+    TitleFont.Height:= -11
+    TitleFont.Name:= 'MS Sans Serif'
+    TitleFont.Style:= []
+    columns[0].Width:= 30
+    columns[1].Width:= 50
+    columns[2].Width:= 130
+
+  end;
+  with TDBNavigator.create(self) do begin
+     parent:= frmDBTree;
+    Setbounds(212,300,300,30);
+    DataSource:= dbSrc1
+    ConfirmDelete:= False
+    TabOrder:= 2;
+    OnClick:= @TDbFrm_DBNavigator1Click;
+  end;
+  with TBitBtn.create(self) do begin
+     parent:= frmDBTree;
+    Setbounds(455,340,87,35);
+    Caption:= '&Close'
+    ModalResult:= 1
+    TabOrder:= 3
+    glyph.LoadFromRes(getHINSTANCE,'TZSQLProcessor');
+    OnClick:= @TDBFrm_BitBtn1Click;
+    //NumGlyphs:= 2;
+  end;
+  with TBitBtn.create(self) do begin
+     parent:= frmDBTree;
+    Setbounds(24,340,87,35);
+    Caption:= '&Query'
+    ModalResult:= 1
+    glyph.LoadFromRes(getHINSTANCE,'TWWStoredProc');
+  end;
+  
+  with TBitBtn.create(self) do begin
+     parent:= frmDBTree;
+    Setbounds(120,340,87,35);
+    Caption:= '&UpSQL'
+    ModalResult:= 1
+    glyph.LoadFromRes(getHINSTANCE,'TZupdateSQL');
+  end;
+  
+  ckBox1:= TCheckBox.create(self)
+  with CkBox1 do begin
+    parent:= frmDBTree;
+    Setbounds(214,216,141,17);
+    Caption:= 'Source = TQuery'
+    TabOrder:= 4
+    OnClick:= @TDB_CBox1Click;
+  end;
+  ckBox2:= TCheckBox.create(self)
+  with CkBox2 do begin
+    parent:= frmDBTree;
+    Setbounds(214,232,141,17);
+    checked:= true;
+    Caption:= 'dtSynchronizeDataSet'
+    TabOrder:= 5
+    OnClick:= @TDB_CBox2Click;
+  end;
+  ckBox3:= TCheckBox.create(self)
+  with CkBox3 do begin
+    parent:= frmDBTree;
+    Setbounds(214,248,141,17);
+    Caption:= 'dtFocusOnEdit'
+    TabOrder:= 6
+    OnClick:= @TDB_CBox3Click;
+  end;
+  ckBox4:= TCheckBox.create(self)
+  with CkBox4 do begin
+    parent:= frmDBTree;
+    Setbounds(214,264,141,17);
+    Caption:= 'dtRebuildFocusedOnly'
+    TabOrder:= 7
+    OnClick:= @TDB_CBox4Click;
+  end;
+  //PopupMenu1:= TPopupMenu.create(self)
+    selected1:= TMenuItem.Create(popupmenu1)
+    with selected1 do begin
+      //parent:= popupmenu1;
+      popupmenu1.Items.Add(selected1);
+      Caption:= 'Selected / RSelected';
+      OnClick:= @TDBFrm_Selected1Click;
+    end;
+    N1:= TMenuItem.Create(popupmenu1)
+    with N1 do begin
+      popupmenu1.Items.Add(N1);
+      Caption:= '-';
+    end;
+    popup1:= TMenuItem.Create(popupmenu1)
+    with popup1 do begin
+      popupmenu1.Items.Add(popup1);
+      Caption:= 'Popup';
+    end;
+ 
+    {object N1: TMenuItem
+      Caption = '-' end
+    object Popup1: TMenuItem
+      Caption = 'Popup'
+    end  object Menu1: TMenuItem
+      Caption = 'Menu'
+    end }
+  //end;
+ end;
+
+begin
+  //GetDBProviders;
+  Writeln('Data Link Dir is: '+ DataLinkDir);
+  Writeln('Machinename is: '+getHostName)
+  Writeln('Username is: '+getUserName)
+  Writeln('BDE/DB Parameters: ******************************');
+  Writeln('BDE Directory '+GetBdeDirectory);
+  //writeln('DB Alias Path '+GetAliasPath('DBDEMOS'));
+  writeln('Temp File Path: '+getTempDir)
+  Writeln('*************************************************');
+
+  loadDBForm;
+    // TDataSourceLink
+    //TListSourceLink
+    
+    PathFuncRunTests(false);
+    //TFile
+    //abd:= TBaseDialect.create;
+    //test drive
+    with TInterval.create do begin
+      start;
+    try
+    with TConnectedCTSHelper.create(TBaseDialect.create) do begin
+     Free;
+    end;
+    except
+    end; 
+      stop;
+      writeln('perf: '+tostring)
+      Free;
+    end;  
+  //writeDebug('//TCustomDBLookupControl ---');
+  //StripAllFromResult
+  //BASE62
+End.
+
+ref:
+
+// Earlier versions where not numbered with a VERxx.
+(*{$IFDEF VER40}  - Turbo pascal 4
+{$IFDEF VER50}  - Turbo pascal 5
+{$IFDEF VER55}  - Turbo pascal 5.5
+{$IFDEF VER60}  - Turbo pascal 6
+{$IFDEF VER70}  - Borland pascal 7 (And turbo pascal 1.5 for windows)
+{$IFDEF VER80}  - Delphi 1
+{$IFDEF VER90}  - Delphi 2
+{$IFDEF VER100} - Delphi 3
+{$IFDEF VER120} - Delphi 4
+{$IFDEF VER130} - Delphi 5
+{$IFDEF VER140} - Delphi 6
+{$IFDEF VER150} - Delphi 7
+{$IFDEF VER160} - Delphi 8
+{$IFDEF VER170} - Delphi 2005
+{$IFDEF VER180} - Delphi 2006
+{$IFDEF VER180} - Delphi 2007
+{$IFDEF VER185} - Delphi 2007
+{$IFDEF VER200} - Delphi 2009
+{$IFDEF VER210} - Delphi 2010
+{$IFDEF VER220} - Delphi XE
+{$IFDEF VER230} - Delphi XE2
+{$IFDEF VER240} - Delphi XE3
+{$IFDEF VER250} - Delphi XE4
+{$IFDEF VER260} - Delphi XE5
+{$IFDEF VER265} - Appmethod 1.0
+{$IFDEF VER270} - Delphi XE6
+{$IFDEF VER280} - Delphi XE7
+*)
+
+{connectionString:= 'Provider=MSDASQL;Persist Security Info=False;Extended Properties=DSN=mx3base;DBQ=\\boiler.bfh.ch\knm4\maxbox3\maxbox3\examples\maxbase3.mdb;DriverId=25;FIL=MS Access;MaxBufferSize=2048;PageTimeout=5;UID=admin'; }
+    
+
+
+Embarcadero hat eine Roadmap für Delphi und C++Builder für das Jahr 2014 sowie einen Ausblick für die Zeit danach veröffentlicht.
+
+Die Schwerpunkte für 2014 liegen darin, Android für C++Builder zu vervollständigen. Außerdem wird wieder einmal ein Auge auf Performance und Qualität gelegt. Geplant ist außerdem ein Multi-Device-Designer, die Unterstützung von Android Kitkat und künftigen Versionen von Android und iOS, aber auch eine Erweiterung und neue Komponenten für die VCL sowie der RTL (inkl. XML- und JSON-Verarbeitung).
+
+Für die Zeit nach 2014 steht Linux auf Serverumgebungen auf dem Plan sowie Max OS X 64-Bit, Windows 8 ARM/WinRT, die nächste Windows-Desktop-Version und Android für Intel-Prozessoren.
+
+
+  //WS_OVERLAPPED
+    //WS_MAXIMIZE
+    //WS_THICKFRAME
+     // WS_EX_MDICHILD
+     //CS_CLASSDC
+     //  CS_GLOBALCLASS
+      // CS_DROPSHADOW
+
+      https://www.virustotal.com/en/file/0b348bac75597ffb4cbe888d5258e86833161afe8a8ae1e8124297fee506bb47/analysis/1425392113/
+----Simple Browser started----

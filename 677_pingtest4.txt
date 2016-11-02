@@ -1,0 +1,266 @@
+{ $HDR$}
+{**********************************************************************}
+{ Unit archived using Team Coherence                                   }
+{ Team Coherence is Copyright 2002 by Quality Software Components      }
+{                                                                      }
+{ For further information / comments, visit our WEB site at            }
+{ http://www.TeamCoherence.com                                         }
+{**********************************************************************}
+{}
+{ $Log:  23313: Main.pas 
+{
+{   Rev 1.1    25/10/2004 22:49:18  ANeillans    Version: 9.0.17
+{ Verified
+}
+{
+{   Rev 1.0    12/09/2003 23:02:58  ANeillans
+{ Initial Checkin.
+{ Minor GUI Updates
+{ Verified against Indy 9 and D7
+}
+{
+  Demo Name:  Ping GUI
+  Created By: Unknown
+          On: Unknown
+
+  Notes:
+    Demonstrates using the ICMP client to generate PING stats.
+
+
+  Version History:
+   12th Sept 03: Andy Neillans
+                 Added option for ping count.
+                 Updated the Indy URL
+
+  Tested:
+   Indy 9:
+     D5:     Untested
+     D6:     Untested
+     D7:     25th Oct 2004 by Andy Neillans
+}
+program pingMaintest;
+
+//interface   #sign:Max: MAXBOX10: 18/05/2016 13:32:22 
+
+{uses
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
+  SysUtils, Classes, IdIcmpClient, IdBaseComponent, IdComponent, IdRawBase, IdRawClient,
+  Spin;
+   }
+
+//type
+  //TfrmPing = class(TForm)
+   var 
+    lstReplies: TListBox;
+    ICMP: TIdIcmpClient;
+    Panel1: TPanel;
+    btnPing: TButton;
+    edtHost: TEdit;
+    spnPing: TSpinEdit;
+    Label1: TLabel;
+    procedure btnPingClick(Sender: TObject); forward;
+    procedure ICMPReply(ASender: TComponent; const ReplyStatus: TReplyStatus); forward;
+  //private
+  //public
+  //end;
+
+var
+  frmPing: TForm; //TfrmPing;
+
+//implementation
+//{$R *.DFM}
+
+procedure btnPingClick(Sender: TObject);
+var
+  i: integer;
+  AQuote: string;
+begin
+  Icmp:=  TIdIcmpClient.Create(self);
+  ICMP.OnReply := @ICMPReply;
+  ICMP.ReceiveTimeout := 1000;
+  //property ReceiveTimeout default Id_TIDICMP_ReceiveTimeout;
+  //btnPing.Enabled := False;
+   try
+    //ICMP.Host := edtHost.Text;
+    icmp.port
+    icmp.receivetimeout:= 1500;
+    icmp.ttl:= 20;
+    writeln(TIDRawBase(icmp).localname);
+    Icmp.host:= 'www.projectindy.org'; //'www.swisscom.ch'
+    for i := 1 to 5 {spnPing.Value} do begin
+      ICMP.Ping(aQuote, 0);
+      Application.ProcessMessages;
+    end;
+  finally 
+  //btnPing.Enabled := True;
+  //icmp.disconnect;
+    writeln('ffree ping & raw socket')
+    Icmp.Free;
+   end;
+end;
+
+procedure ICMPReply(ASender: TComponent; const ReplyStatus: TReplyStatus);
+var
+  sTime: string;
+begin
+  // TODO: check for error on ping reply (ReplyStatus.MsgType?)
+  if ReplyStatus.ReplyStatusType = rsEcho then
+      writeln('FPingDead := false');
+  if (ReplyStatus.MsRoundTripTime = 0) then
+    sTime := '<1'
+  else
+    sTime := '=';
+ //lstReplies.Items.Add(Format('%d bytes from %s: icmp_seq=%d ttl=%d time%s%d ms',
+    writeln(Format('%d bytes from %s: icmp_seq=%d ttl=%d time%s%d ms',
+    [ReplyStatus.BytesReceived,
+    ReplyStatus.FromIpAddress,
+    ReplyStatus.SequenceId,
+    ReplyStatus.TimeToLive,
+    sTime,
+    ReplyStatus.MsRoundTripTime]));
+end;
+
+begin
+
+  //if IdRawBuildIcmpRedirect() then
+ // writeln('isAdmin: '+botoStr(isAdministrator))
+  writeln('isAdmin: '+botoStr(getisAdmin))
+
+  if getisAdmin then 
+    btnPingClick(self) else 
+      ShowMessageBig('Sorry, You must start as Admin Mode! we do that for you..');
+       
+  //ShellExecuteExAsAdmin( hWnd : HWND; Filename : string; Parameters : string)');
+ // ShellExecuteExAsAdmin(hinstance,exepath+'maxbox4.exe',+ 
+   // '"C:\Program Files (x86)\maxbox3\examples\116_ping2.txt"');  
+   
+   //GetLocaleFormatSettings   
+
+   RunAsAdmin2(hinstance,exepath+'maxbox4.exe',+ 
+    '"C:\Program Files (x86)\maxbox3\examples\116_ping2.txt"');  
+ 
+end.
+
+Ref:
+  with CL.AddClassN(CL.FindClass('TIdRawClient'),'TIdIcmpClient') do begin
+  type
+  TIdRawClient = class(TIdRawBase)
+  published
+    property ReceiveTimeout;
+    property Host;
+    property Port;
+    property Protocol;
+  end;
+  with CL.AddClassN(CL.FindClass('TIdComponent'),'TIdRawBase') do begin
+
+doc:
+ The PingGUI demo in Indy doesn't seem to work correctly on my system.
+When
+> I
+> > try to ping a host, I get an EIdInvalidSocket exception with the message
+> > "cannot allocate socket".
+> Do you have admin privilegies on this system?
+> Ping require admin privilegies. 
+
+Your program must be running with admin rights in order to use TIdIcmpClient. This is because TIdIcmpClient uses a RAW socket, which Microsoft has restricted access to.
+
+Otherwise, to send pings without admin rights, you have to stop using TIdIcmpClient altogether and use Microsoft's ICMP.DLL instead, such as the IcmpSendEcho() function:
+
+TIdIcmpClient uses a RAW socket to implement the ICMP protocol manually.
+On most platforms, use of RAW sockets is restricted to admin users only.
+So you would likely have to gain root access to your iOS device in order
+to use TIdIcmpClient, assuming iOS even supports RAW sockets at all.
+
+You will have to find another solution to send pings on iOS.
+
+
+published
+    property ReceiveTimeout default Id_TIDICMP_ReceiveTimeout;
+    property Host;
+    property Port;
+    property Protocol Default Id_IPPROTO_ICMP;
+    property OnReply: TOnReplyEvent read FOnReply write FOnReply;
+  end;
+
+[Stats]
+EditorSecs=23
+DesignerSecs=2
+InspectorSecs=1
+CompileSecs=1662
+OtherSecs=11
+StartTime=25/10/2004 22:37:21
+RealKeys=0
+EffectiveKeys=0
+DebugSecs=9
+
+
+http://chapmanworld.com/2015/06/08/elevated-privileges-for-delphi-applications/
+
+How can I force Windows Vista/7 to execute (run) my application as a user with full Administrator-rights?
+I want the "run as administrator" procedure to be set automatically in application and not manually by user (manually right-click on exe, left-click on "Run as administrator") as when user launches application, the UAC popup to be triggered automatically and ask for confirmation.
+
+
+1 28 "CommCtrlAdmin.manifest"
+
+Build CommCtrlAdmin.res file using brcc32 and ad it to the project.
+Code:
+
+//{$R CommCtrlAdmin.res}
+
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <assemblyIdentity
+    type="win32"
+    name="<your description>"
+    version="2.0.0.2552"
+    processorArchitecture="*"/>
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity
+        type="win32"
+        name="Microsoft.Windows.Common-Controls"
+        version="6.0.0.0"
+        publicKeyToken="6595b64144ccf1df"
+        language="*"
+        processorArchitecture="*"/>
+    </dependentAssembly>
+  </dependency>
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+    <security>
+      <requestedPrivileges>
+        <requestedExecutionLevel
+          level="requireAdministrator"
+          uiAccess="false"/>
+        </requestedPrivileges>
+    </security>
+  </trustInfo>
+</assembly>   asm end
+
+
+If you do not use a handle UAC will always give direct foreground elevation.
+?
+1	
+function RunAsAdmin(hWnd: HWND; filename: string; Parameters: string): Boolean;
+{
+    See Step 3: Redesign for UAC Compatibility (UAC)
+    http://msdn.microsoft.com/en-us/library/bb756922.aspx
+}
+var
+    sei: TShellExecuteInfo;
+begin
+    ZeroMemory(@sei, SizeOf(sei));
+    sei.cbSize := SizeOf(TShellExecuteInfo);
+    sei.Wnd := hwnd;
+    sei.fMask := SEE_MASK_FLAG_DDEWAIT or SEE_MASK_FLAG_NO_UI;
+    sei.lpVerb := PChar('runas');
+    sei.lpFile := PChar(Filename); // PAnsiChar;
+    if parameters <> '' then
+        sei.lpParameters := PChar(parameters); // PAnsiChar;
+    sei.nShow := SW_SHOWNORMAL; //Integer;
+ 
+    Result := ShellExecuteEx(@sei);
+end;
+
+Source:
+* http://edn.embarcadero.com/article/33942

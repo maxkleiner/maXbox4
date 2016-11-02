@@ -1,0 +1,227 @@
+//****************************************************************************
+//maXbox is a scripter tool with an inbuild delphi engine in one exe!
+//Demo shows the functions of maXbook in images, sound and text, #locs:186
+//#head@Max: MAXBOX10: 17/05/2016 21:16:41 C:\Program Files (x86)\maxbox3\Import\IPC\maxbox4\maxbox4\examples\182_maXbook_v6.txt 
+//****************************************************************************
+//TODO: set the graph on save - needs local avi cool.avi
+
+program maXbook6;
+
+const LOGO = 'Welcome to maXbook5 look!';
+      myPIC1 = 'http://www.softwareschule.ch/images/maxlindau2.png';
+      myPIC2 = 'http://www.softwareschule.ch/images/maxworld.png';
+      myPIC3 = 'http://www.softwareschule.ch/images/pascalandroid.png';
+      myMusic = 'http://www.softwareschule.ch/download/maxbox.mp3';
+      mySong = 'maxbox.mp3';
+      myText = ' Hi maXbook 2016 ';
+
+var
+  inFrm: TForm;
+  image1, image2, image3: TImage;
+  aE: Exception;
+
+procedure drawText(vFrm: TForm; vcolor: TColor);
+var
+  theRect: TRect;
+begin
+  //XRTLFetch
+  //XRTLIsInMainThread
+  with vFrm.canvas do begin
+    brush.Color:= clred;
+    //.left/.top/.right/.bottom
+    theRect:= Rect(400,350,600,400);
+    font.color:= vColor;
+    font.size:= 22;
+    TextOut(400,355,myText);
+  end;
+end;  
+ 
+procedure getMP3File;
+var 
+  fStream: TFileStream;
+begin
+  fStream:= TFileStream.create(mySong, fmCreate)
+  with TIdHTTP.create(NIL) do begin
+    try
+      Get1(myMusic, fStream)
+    finally
+      Free
+      fStream.Free;
+    end;
+  end;    
+end;
+
+procedure getHTTP_PNG(vimage: TImage; vURL: string); 
+var
+  idHTTP: TIDHTTP;
+  pngStream: TMemoryStream;
+begin
+  with TLinearBitmap.Create do
+  try
+    idHTTP:= TIdHTTP.Create(NIL)
+    pngStream:= TMemoryStream.create;
+    try
+      idHTTP.Get1(vURL, pngStream)
+    except
+      showmessage(aE.message)
+    end  
+    pngStream.Position:= 0;
+    LoadFromStream2(pngstream,'PNG');
+    vimage.Picture:= NIL;
+    AssignTo(vimage.picture);
+    //SaveToFile(ExePath+'mX3_open.png');
+  finally
+    Dispose;
+    Free;
+    idHTTP.Free
+    pngStream.Free;
+  end; 
+end;  
+
+//----------------------------------------------------------------
+procedure loadForm;
+begin
+  with inFrm do begin
+    position:= poScreenCenter;
+    color:= clred;
+    setBounds(5,5, 670, 510);
+    caption:= LOGO;
+    formstyle:= fsstayonTop;
+    show;
+  end; 
+  image1:= TImage.create(inFrm);
+  with image1 do begin
+    parent:= infrm;
+    setBounds(100,100, 250,200);
+    //onMousedown:= @Image1MouseDown;
+    //stretch:= true;
+  end;
+  image2:= TImage.create(inFrm);
+  with image2 do begin
+    parent:= infrm;
+    setBounds(0,0, inFrm.width, inFrm.height);
+    show;
+  end;
+  with TJvStarfield.Create(inFrm) do begin
+    parent:= inFrm;
+    stars:= 250;
+    showhint:= true;
+    hint:= 'a Star is born: mX4';
+    maxSpeed:= 12;
+    setBounds(265,20,200,100);
+    active:= true; 
+  end; 
+    with TJvAnalogClock.Create(inFrm) do begin  //widgets set
+    parent:= inFrm;
+    bevelwidth:= 0;
+    colormin:= clblue;
+    //timeoffSet:= -60;
+    ColorHr:= clRed;
+    //WidthHandHr:= 1;
+    ColorHandHr:= clWhite;
+    ColorHandMin:= clWhite; //clRed;
+    setBounds(310,320,100,100);
+    showhint:= true;
+    hint:= 'Clock the Rock - Match or Swatch';
+    //centercol:= clyellow; //cldarkblue32; //clwebgold; 
+    //centersize:= 8;
+    color:= clRed;
+  end;
+  image3:= TImage.create(inFrm);
+  with image3 do begin
+    parent:= infrm;
+    setBounds(10,280, 300, 300);
+    //foreground
+    show;
+  end;
+  
+ { with TWebMainForm.create(self) do begin
+    URLs.Text:= 'http://www.kleiner.ch';
+    URLsClick(self);
+    Show;
+  end;}
+
+end; 
+
+procedure SaveComposition(vCanvas: TCanvas; FileName: string);
+var
+  Bmp: TBitmap;
+  MyRect: TRect;
+begin
+  Bmp:= TBitmap.Create;
+  try
+    MyRect:= vCanvas.ClipRect;
+    Bmp.Width:= MyRect.Right;
+    Bmp.Height:= MyRect.Bottom;
+    Bmp.Canvas.CopyRect(MyRect, vCanvas, MyRect);
+    Bmp.SaveToFile(FileName);
+  finally
+    Bmp.Free;
+  end;
+end;
+
+//--------------------------------------------------------------
+begin
+  ProcessMessagesON;
+  inFrm:= TForm.create(self)
+    aE:= Exception.create('Any internet connect problem'); 
+
+  with TWebMainForm.create(self) do begin
+    URLs.Text:= 'http://www.kleiner.ch';
+    URLsClick(self);
+    //Show;
+  end;
+  
+  loadForm;
+  if fileExists(mySong) = false then 
+    getMP3File;
+  closeMP3;
+  playMP3(mySong); 
+  getHTTP_PNG(image2, myPIC2);
+  getHTTP_PNG(image1, myPIC1); 
+  getHTTP_PNG(image3, myPIC3); 
+     inFrm.Canvas.draw(10,10,image1.picture.bitmap);
+  drawText(inFrm, clPurple);
+  //SaveComposition(inFrm.canvas, 'mycard.bmp')
+end.
+
+Pictures from:
+
+http://www.softwareschule.ch/images/maxboxlogo.bmp
+http://www.softwareschule.ch/images/maxlindau2.png
+http://www.softwareschule.ch/images/citymax.bmp
+http://www.softwareschule.ch/images/oposlogo.gif
+
+---------------------------------------------------------------------
+code of version mX3.0 from http://www.softwareschule.ch/maxbox.htm
+//Load examples pas_*.txt from directory examples and press F9!
+//please read the readmefirst...
+//or start with the tutorial in /help
+//memo1 is script editor
+//memo2 is output space
+  new version and examples from
+     http://www.softwareschule.ch/maxbox.htm }
+
+
+just inside maXbox
+
+         ____    ___   _      ____    _   _   _
+        |  _ \  |  _| | |    |  _ \  | | | | | |
+        | | . | | |_  | |    | |_| | | |_| | | |
+        | | | | |  _| | |    |  __/  |  _  | | |          
+        | |_. | | |_  | |__  | |     | | | | | |                      
+        |____/  |___| |____| |_|     |_| |_| |_|  
+        
+
+Latest News of Free Pascal
+
+November 12th, 2010 A new release 2.4.2 is available from our sites. 2.4.2 is the first fixes release from the 2.4 series. Improvements, amongst others:
+
+    * Delphi 2006 like for..in support
+    * Support for sealed and abstract class modifiers,
+    * new targets
+          o 64-bit FreeBSD (x86_64)
+    * Many improvements and fixes to the XML, database and CHM packages
+    * Long term bug in OS/2 implementation of unit Video finally fixed which among others allows inclusion of the text-mode IDE (without debugger) for this platform as part of the distribution again.
+    * Many compiler bugfixes and more than a year of library updates(since 2.4.0)
+                                         

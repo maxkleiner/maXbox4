@@ -1,0 +1,302 @@
+{**********************************************************************}
+{ Unit archived using Team Coherence                                   }
+{ Team Dream Software Components    coolCode@maXlab                    }
+{                                                                      }
+{ For further information / comments, visit our WEB site at            }
+{ http://www.softwareschule.ch                                         }
+{**********************************************************************}
+
+  //Notes:
+    //Demonstrates using Procedure Type Alias and mX4 news.
+ 
+ { Version History: #sign:Max: MAXBOX10: 18/05/2016 13:43:10 
+   12th Sept 03: Andy Neillans
+                 Added option for ping count.
+                 Updated the Indy URL and KDialogs
+
+  Tested:
+       D2007:     25th Oct 2015 by Max
+}
+program pingMaintest_mX4News;
+
+//interface   #sign:Max: MAXBOX10: 18/05/2016 13:43:10 
+
+{uses
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
+  SysUtils, Classes, IdIcmpClient, IdBaseComponent, IdComponent, IdRawBase, IdRawClient,
+  Spin;  #locs-269
+   }
+
+
+function SubstringCount (Substring : string; Str : string): Integer;
+var Offset : Integer;
+begin
+ Result := 0;
+  while Pos(Substring, Str) <> 0 do
+  begin
+  Result := Result + 1;
+  Offset := Pos(Substring, Str);
+  Str := RightStr(Str, Length(Str) - Offset);
+  end;
+end;
+
+//type TStringArray = array of string;
+
+function SplitStr(sInput:string; Delimiter:string): TStringArray;
+ {By Viotto - Infos on http://viotto-security.net
+ Based off Steve10120's Split function}
+ var
+  DelimPos:     Cardinal;
+  LastDelimPos: Cardinal;
+  StartIndex:   Cardinal;
+  ElemCount:    Cardinal;
+  sTemp:        string;
+begin
+  StartIndex := 1;
+  ElemCount := 0;
+  repeat
+    sTemp := Copy(sInput, StartIndex, Length(sInput));
+    DelimPos := Pos(Delimiter, sTemp);
+    if DelimPos > 0 then
+         LastDelimPos := DelimPos - 1
+    else LastDelimPos := Length(sTemp);
+
+    sTemp := Copy(sInput, StartIndex, LastDelimPos);
+    SetLength(Result, Length(Result) + 1);
+    Result[ElemCount] := sTemp;
+    StartIndex := StartIndex + Length(sTemp) + Length(Delimiter);
+    ElemCount := ElemCount + 1;
+  until DelimPos = 0;
+
+end;
+
+ 
+procedure TIdCookieManager_CleanupCookieList;
+Var
+  S: String;
+  i, j, LLastCount: Integer;
+  LCookieList: TIdCookieList;
+  LCookiesByDomain: TIdCookieList;
+  FCookieCollection: TIdCookies;
+
+begin
+  LCookiesByDomain := FCookieCollection.LockCookieListByDomain(caReadWrite);
+  try
+    if LCookiesByDomain.Count > 0 then
+    begin
+      for i := 0 to LCookiesByDomain.Count - 1 do
+      begin
+        LCookieList := LCookiesByDomain.Objects[i] as TIdCookieList;
+        for j := LCookieList.Count - 1 downto 0 do
+        begin
+          S := LCookieList.Cookies[j].Expires;
+          if (Length(S) > 0) and (GMTToLocalDateTime(S) < Now) then
+          begin
+            // The Cookie has expired. It has to be removed from the collection
+            LLastCount := LCookieList.Count; // RLebeau
+            LCookieList.Cookies[j].Free;
+            // RLebeau - the cookie may already be removed from the list via
+            // its destructor.  If that happens then doing so again below can
+            // cause an "index out of bounds" error, so don't do it if not needed.
+            if LLastCount = LCookieList.Count then begin
+              LCookieList.Delete(j);  //FLX
+            end;
+          end;
+        end;
+      end;
+    end;
+  finally
+    FCookieCollection.UnlockCookieListByDomain(caReadWrite);
+  end;
+end;
+ 
+   
+  function TIdCookieManager_GenerateCookieList(URL: TIdURI; SecureConnection:Boolean): String;
+Var
+  S: String;
+  i, j: Integer;
+  LCookieList: TIdCookieList;
+  LResultList: TIdCookieList;
+  LCookiesByDomain: TIdCookieList;
+  FCookieCollection: TIdCookies;
+
+begin
+
+  TIdCookieManager_CleanupCookieList;
+  S := '';    {Do not Localize}
+  LCookiesByDomain := FCookieCollection.LockCookieListByDomain(caRead);
+  try
+    if LCookiesByDomain.Count > 0 then
+    begin
+      LResultList := TIdCookieList.Create;
+      LResultList.Duplicates := dupAccept;
+      LResultList.Sorted := true;
+      try
+        // Search for cookies for this domain
+        for i := 0 to LCookiesByDomain.Count - 1 do begin
+          if Pos(Uppercase(LCookiesByDomain[i]), Uppercase(URL.Host+ URL.path))> 0 then {FLX}
+
+          begin
+            LCookieList := LCookiesByDomain.Objects[i] as TIdCookieList;
+            for j := LCookieList.Count - 1 downto 0 do
+            begin
+              if Pos(LCookieList.Cookies[j].Path, URL.Path) = 1 then
+              begin
+                with LCookieList.Cookies[j] do
+                begin
+                  if ((Secure and SecureConnection) or (not Secure)) and (Value <> '') then    {Do not Localize}
+                  begin
+                    LResultList.AddObject(Path, LCookieList.Cookies[j]);
+                  end;
+                end;
+              end;
+            end;
+          end;
+        end;
+
+        for i := LResultList.Count - 1 downto 0 do
+        begin
+          if Length(S) > 0  then S := S + '; ';    {Do not Localize}
+          S := S + LResultList.Cookies[i].CookieName + '=' + LResultList.Cookies[i].Value;    {Do not Localize}
+        end;
+      finally
+        LResultList.Free;
+      end;
+    end;
+  finally
+    FCookieCollection.UnlockCookieListByDomain(caRead);
+  end;
+  result := S;
+end;
+         
+
+function RPos(const ASub, AIn: String; AStart: Integer): Integer;
+var
+  i: Integer;
+  LStartPos: Integer;
+  LTokenLen: Integer;
+begin
+  result := 0;
+  LTokenLen := Length(ASub);
+  // Get starting position
+  if AStart = -1 then begin
+    AStart := Length(AIn);
+  end;
+  if AStart < (Length(AIn) - LTokenLen + 1) then begin
+    LStartPos := AStart;
+  end else begin
+    LStartPos := (Length(AIn) - LTokenLen + 1);
+  end;
+  // Search for the string
+  for i := LStartPos downto 1 do begin
+    if AnsiSameText(Copy(AIn, i, LTokenLen), ASub) then begin
+      result := i;
+      break;
+    end;
+  end;
+end;
+
+
+function RPos2(const ASub, AIn: String): integer;
+begin
+  result:= pos(asub, ain)
+end;  
+
+function RPos3(const ASub, AIn: String): integer;
+begin
+  result:= rpos(asub, ain, -1)
+end;  
+
+
+ type  TPosProc2 = function(const Substr, S: string): Integer;
+
+ var
+   apt: TPoint;
+   afunc: TIncludeItemFunc;
+   indypos: TPosProc2;
+   
+
+begin
+
+  //if IdRawBuildIcmpRedirect() then
+  writeln('isAdmin: '+botoStr(getisAdmin))
+  {if getisAdmin then 
+    btnPingClick(self) else 
+       ShowMessage('you must start as Admin Mode!');
+   }    
+      { ppform:= loadForm(510,510)
+       for it:= 1 to 170 do 
+         //paintprocessingstar;
+         //maxform1.setkeypressed
+         paintprocessingstar2(ppform);
+       }
+         
+    {ShellExecuteExAsAdmin(hinstance,exepath+'maxbox4sign.exe',+ 
+                '"C:\maXbox\maxbox3\maxbox3\maXbox3\examples\677_pingtest.txt"');    
+    }
+    // RunAsAdmin(hInstance,exepath+'maxbox4.exe',+ 
+    //            '"C:\maXbox\maxbox3\maxbox3\maXbox3\examples\677_pingtest4.txt"');    
+    
+    
+    maxCalcF('5*e^(0.1)');
+    maxCalcF('5*e^(-0.1*(10^2))');
+    // ppform.canvas.lineto(round(mouseX+dx), round(mouseY+dy))
+  
+  writeln('HInstance: '+itoa(hinstance))
+  writeln('application.handle: '+itoa(application.handle))
+   
+   (*srlist:= TStringlist.create;
+   EnumerateFiles2(exepath,srlist, false, 0)
+   //EnumerateDirectories2(exepath+'\',srlist, false, NIL)
+   for it:= 0 to srlist.count-1 do 
+      writeln(srlist.strings[it]);
+   srlist.Free; 
+   *)
+   
+  printF('this is %.18f ',[maxCalc('ln(2)^e')]); //this is 0.369248502937272178 
+  writeln(GetNewFormatedGUID); 
+  writeln(GetNewGUID)   
+  
+  IndyPos:= NIL;
+  indypos:= @RPos2;
+  // try also with two func pointers
+  //indypos:= @RPos3;
+  
+  writeln('SubstringCount : '+inttostr(SubstringCount('ell', 'Hello bell world!')));//returns 2
+     writeln('pos found: '+itoa(indypos('ell','AHello')));
+     Assert(SubstringCount('ell', 'Hello bell world!')=2, 'must be 2 you')
+     if indypos('ell','Hello') > 0 then writeln('found!');
+End.
+
+Ref:
+                                                                               
+https://www.diffnow.com/
+
+http://kudruavtsev.narod.ru/delphi_y_p/systools-low-levelproceduresfunctions.htm
+
+http://stackoverflow.com/questions/923350/delphi-prompt-for-uac-elevation-when-needed
+
+  add:
+  
+    type  TPosProc = function(const Substr, S: string): Integer;
+   SubstringCount
+    SplitStr
+    GetDataFromFile2
+      ExtractFileNameWithoutExt
+       loadform
+      getform   --> alias
+         paintprocessingstar2(ppform);
+       
+
+
+  You can't "elevate" an existing process. Elevated processes under UAC have a different token with a different LUID, different mandatory integrity level, and different group membership. This level of change can't be done within a running process - and it would be a security problem if that could happen.
+
+You need to launch a second process elevated that would do the work or by creating a COM object that runs in an elevated dllhost.
+
+  if not Admin rights:: Exception: Cannot allocate socket.
+  
+  Exception: System Error.  Code: 1223.
+  The operation was canceled by the user.
+  
+
+http://breakingsecurity.net/delphisources.php

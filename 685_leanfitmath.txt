@@ -1,0 +1,202 @@
+PROGRAM Least1_History_retrolib;
+  { parabolic least-squares fit }
+  { From Borland Pascal Programs for Scientists and Engineers }
+  { by Alan R. Miller, Copyright C 1993, SYBEX Inc } //#locs:200
+
+//USES WinCrt; { Crt for non-win version } #sign:Max: MAXBOX10: 18/05/2016 13:42:48 
+
+CONST
+  Maxr = 20;
+  Maxc = 3;
+
+TYPE
+  Ary   = ARRAY[1..Maxr] OF Real;
+  Arys  = ARRAY[1..Maxc] OF Real;
+   ary2s2 =  array[1..Maxc] OF Real;
+  Ary2s = ARRAY[1..Maxc] OF ary2s2;
+
+  //Ary2s = ARRAY[1..Maxc, 1..Maxc] OF Real;
+
+VAR
+  X, Y, Y_Calc: Ary;
+          Coef: Arys;
+    Nrow, Ncol: Integer;
+   Correl_Coef: Real;
+
+//{$I PLOT} {Listing 5.2}
+
+PROCEDURE Get_Data(VAR X, Y: Ary;
+                   VAR Nrow: Integer);
+{ Get values for Nrow and arrays X, Y }
+
+VAR
+  I: Integer;
+
+BEGIN
+  Nrow := 9;
+  FOR I := 1 TO Nrow DO X[I] := I;
+  Y[1]:=  2.07; Y[2]:=  8.6;
+  Y[3]:= 14.42; Y[4]:= 15.80;
+  Y[5]:= 18.92; Y[6]:= 17.96;
+  Y[7]:= 12.98; Y[8]:=  6.45;
+  Y[9]:=  0.27
+END; { procedure Get_Data }
+
+
+FUNCTION Deter(A: Ary2s): Real;
+{ calculate the determinant of a 3-by-3 matrix }
+
+BEGIN   { function Deter }
+  result:= A[1][1] *(A[2][2]*A[3][3] - A[3][2]*A[2][3])
+         - A[1][2] *(A[2][1]*A[3][3] - A[3][1]*A[2][3])
+         + A[1][3] *(A[2][1]*A[3][2] - A[3][1]*A[2][2])
+END;  { function Deter }
+
+PROCEDURE Setup(VAR  B: Ary2s;
+             VAR  Coef: Arys;
+                     J: Integer; A: Ary2s; Det: Real; Y:Arys;Nrow: integer);
+VAR
+  I: Integer;
+ // A: Ary2s;    Det: Real; //interface from solve
+
+BEGIN   { Setup }
+  FOR I := 1 TO Nrow DO
+    BEGIN
+      B[I][J] := Y[I];
+      IF J > 1 THEN B[I][J-1] := A[I][J-1]
+    END;
+    Coef[J] := Deter(B) / Det
+END; { Setup }
+
+
+PROCEDURE Solve(A: Ary2s;
+                Y: Arys;
+        VAR  Coef: Arys;
+             Nrow: Integer;
+        VAR Error: Boolean);
+VAR
+     B: Ary2s;
+  I, J: Integer;
+   Det: Real;
+
+BEGIN  { procedure Solve }
+  Error := False;
+  FOR I := 1 TO Nrow DO
+    FOR J := 1 TO Nrow DO
+      B[I][J] := A[I][J];
+  Det := Deter(B);
+  IF  Det = 0.0 THEN
+    BEGIN
+      Error := True;
+      WriteLn(' ERROR: matrix singular')
+    END
+  ELSE
+    BEGIN
+      Setup(B, Coef, 1,A,det,Y,nrow);
+      Setup(B, Coef, 2,A,det,Y,nrow);
+      Setup(B, Coef, 3,A,det,Y,nrow)
+    END  { else }
+END; { procedure Solve }
+
+PROCEDURE Linfit(X, Y: Ary;
+           VAR Y_Calc: Ary;
+           VAR Coef  : Arys;
+               Nrow  : Integer;
+           VAR Ncol  : Integer);
+{ least-squares fit to a parabola }
+{ Nrow sets of X and Y pairs of points }
+
+VAR
+  A: Ary2s;
+  G: Arys;
+  I: Integer;
+  aError: Boolean;
+  Sum_X, Sum_Y, Sum_XY, Sum_X2,
+  Sum_Y2, Xi, Yi, SXY ,SXX, SYY,
+  Sum_X3, Sum_X4, Sum_2Y, Denom,
+  SRS, X2: Real;
+
+BEGIN  { Linfit }
+  Ncol := 3; { polynomial terms }
+  Sum_X := 0;
+  Sum_Y := 0;
+  Sum_XY := 0;
+  Sum_X2 := 0;
+  Sum_Y2 := 0;
+  Sum_X3 := 0;
+  Sum_X4 := 0;
+  Sum_2Y := 0;
+  FOR I := 1 TO Nrow DO
+    BEGIN
+      Xi := X[I];
+      Yi := Y[I];
+      X2 := Xi*Xi;
+      Sum_X := Sum_X + Xi;
+      Sum_Y := Sum_Y + Yi;
+      Sum_XY := Sum_XY + Xi * Yi;
+      Sum_X2 := Sum_X2 + X2;
+      Sum_Y2 := Sum_Y2 + Yi * Yi;
+      Sum_X3 := Sum_X3 + Xi * X2;
+      Sum_X4 := Sum_X4 + X2 * X2;
+      Sum_2Y := Sum_2Y + X2 * Yi
+    END;
+  A[1][1] := Nrow;
+  A[2][1] := Sum_X;  A[1][2] := Sum_X;
+  A[3][1] := Sum_X2; A[1][3] := Sum_X2;
+  A[2][2] := Sum_X2; A[3][2] := Sum_X3;
+  A[2][3] := Sum_X3; A[3][3] := Sum_X4;
+  G[1] := Sum_Y;
+  G[2] := Sum_XY;
+  G[3] := Sum_2Y;
+  Solve(A, G, Coef, Ncol, aError);
+  IF aError THEN Halt;
+  SRS := 0.0;
+  FOR I := 1 TO Nrow DO BEGIN
+      Y_Calc[I] :=
+        Coef[1] + Coef[2] * X[I] + Coef[3] * Sqr(X[I]);
+      SRS := SRS + Sqr(Y[I] - Y_Calc[I])
+    END;
+  Correl_Coef :=
+        Sqrt(1.0 - SRS/(Sum_Y2 -Sqr(Sum_Y)/Nrow))
+END; { Linfit }
+
+PROCEDURE Write_Data;
+ { print out the answers }
+
+VAR
+  I: Integer;
+
+BEGIN
+  WriteLn('');
+  WriteLn('  I      X       Y     Y CALC');
+  FOR I := 1 TO Nrow DO
+    WriteLn(itoa(I)+'  '+ floattostr(X[I])+'  '+floattostr(Y[I])+'  '
+                               +floattostr(Y_Calc[I]));
+  WriteLn(''); WriteLn(' Coefficients');
+  FOR I := 1 TO Ncol DO
+    WriteLn(floattostr(Coef[I]));
+  WriteLn('');
+  WriteLn(' Correlation coefficient is '+floattostr(Correl_Coef))
+END; { Write_Data }
+
+BEGIN  { main program }
+  maxform1.orangestyle1click(self)
+  Get_Data(X, Y, Nrow);
+  Linfit(X, Y, Y_Calc, Coef, Nrow, Ncol);
+  Write_Data;
+  WriteLn(' Press Enter for plot...to continue');
+  memo2.setfocus;
+  REPEAT UNTIL isKeyPressed;
+  //Plot(X, Y, Y_Calc, Nrow);
+  //ReadLn; 
+  Writeln('   Press Enter to end');
+  REPEAT UNTIL isKeyPressed;
+  //DoneWinCrt  { for Windows version only }
+//<Executable statements>
+  for it:= 1 to 3 do 
+    //Writeln(TEXTOUT+CRLF);
+  maXcalcF('2^64 /(60*60*24*365)')  
+//<Definitions>  
+END. 
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----

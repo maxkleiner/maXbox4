@@ -1,0 +1,553 @@
+program ArduinoCOMOutputTester;
+
+//interface
+
+{uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, CPortCtl, CPort, StdCtrls, ComCtrls, ExtCtrls, IniFiles;
+}
+
+//type
+  //TForm1 = class(TForm)
+
+Const
+  //BACKMAP = '\examples\images\bmp47.bmp';  //bmp33.bmp
+  BACKMAP = '\examples\bmp47.bmp';  //bmp33.bmp
+
+  SIG ='<--------->';
+  ACOMPORT = 4;
+
+    
+   var 
+    ComPort: TComPort;
+    ComDataPacket1: TComDataPacket;
+    Edit1: TEdit;
+    Button3: TBitBtn;
+    StatusBar1: TStatusBar;
+    acb5: TCheckBox;
+    acb4: TCheckBox;
+    acb3: TCheckBox;
+    acb2: TCheckBox;
+    acb1: TCheckBox;
+    acb0: TCheckBox;
+    Label1: TLabel;
+    Label3: TLabel;
+    Label2: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    cbAuto: TCheckBox;
+    Label16: TLabel;
+    Label17: TLabel;
+    Label18: TLabel;
+    Label19: TLabel;
+    Label20: TLabel;
+    Label21: TLabel;
+    Label22: TLabel;
+    Panel1: TPanel;
+    Button2: TBitBtn;
+    ComLed1, comLed2: TComLed;
+    Button1: TBitBtn;
+    acbClear: TCheckBox;
+   
+var
+  comFrm1: TForm;
+  BinVal: Byte;
+  iniPath: string;
+
+//implementation
+
+//uses Unit2;
+
+//{$R *.dfm}
+
+procedure Button2Click(Sender: TObject);
+var
+  Str: String;
+begin
+   ComPort.ShowSetupDialog;
+   ComPort.StoreSettings(stIniFile, inipath);
+   writeln('StoreSettings at: '+inipath)
+   if not ComPort.Connected then begin 
+    try
+      ComPort.Open;
+    except
+      ShowMessage('Unable to open COM port.');
+    end;
+  end;
+  if ComPort.Connected then
+    ComLed1.Kind:= lkGreenLight
+  else
+   ComLed1.Kind:= lkRedLight;
+   Str:= ComPort.Port;
+  Statusbar1.SimpleText:= Str;
+end;
+
+procedure Button3Click(Sender: TObject);
+var
+  Str: String;
+begin
+  Str := Edit1.Text;
+  if Str = '' then Exit;
+  Edit1.SetFocus();
+  if StrToInt(Str) > 63 then begin
+  // CL.AddDelphiFunction('Function SystemParametersInfoA( uiAction, uiParam : UINT; pvParam : UINT; fWinIni : UINT) : BOOL');
+   SystemParametersInfoA(SPI_SETBEEP, 1, 0, SPIF_SENDWININICHANGE);
+    Beep();
+    Exit;
+  end;
+  ComPort.WriteStr(Str);
+  Edit1.Text:= '';
+end;
+
+procedure PIN_Checker(ab: boolean; checker: boolean);
+begin
+  if checker then begin
+    acb0.Checked:= ab; acb1.Checked:= ab;
+    acb2.Checked:= ab; acb3.Checked:= ab;
+    acb4.Checked:= ab; acb5.Checked:= ab;
+  end else begin  
+    acb0.Enabled:= ab; acb1.Enabled:= ab;
+    acb2.Enabled:= ab; acb3.Enabled:= ab;
+    acb4.Enabled:= ab; acb5.Enabled:= ab;
+  end;
+end;  
+
+
+procedure Edit1KeyPress(Sender: TObject; var Key: Char);
+begin
+  if Edit1.Focused and (Key = #13) then begin
+    Key := #0; // Cancels the keypress
+    SystemParametersInfoA(SPI_SETBEEP, 0, 0, SPIF_SENDWININICHANGE);
+    Button3Click(Self);
+    Exit;
+  end;
+  SystemParametersInfoA(SPI_SETBEEP, 1, 0, SPIF_SENDWININICHANGE);
+  // #8 is Backspace
+  //if not (Key in [#8, '0'..'9']) then begin
+  if not ((Key >= '0') And (Key <= '9')) then begin
+   Beep();
+    // Discard the key
+    Key := #0;
+  end;
+end;
+
+
+procedure COMPortCreate(Sender: TObject);
+var
+  Ini: TIniFile;
+    //inipath: string;
+begin
+  comPort:= TComPort.Create(self);
+  with comPort do begin
+    BaudRate:= br9600;
+    //Port:= 'COM'+InttoStr(ACOMPORT);
+    Parity.Bits:= prNone;
+    StopBits:= sbOneStopBit;
+    DataBits:= dbEight;
+    Events:= [evRxChar, evTxEmpty, evRxFlag, evRing, evBreak, 
+                              evCTS, evDSR, evError, evRLSD, evRx80Full]
+    FlowControl.OutCTSFlow:= False
+    FlowControl.OutDSRFlow:= False
+    FlowControl.ControlDTR:= dtrDisable
+    FlowControl.ControlRTS:= rtsDisable
+    FlowControl.XonXoffOut:= False
+    FlowControl.XonXoffIn:= False
+    StoredProps:= [spBasic]
+    name:= 'comport2ini';     //section name for ini file!
+    TriggersOnRxChar:= False
+  end;
+  
+  ComDataPacket1:= TComDataPacket.create(self);
+  ComDataPacket1.ComPort:= ComPort;
+  ComLed1:= TCOMLed.create(self)
+  with comLed1 do begin
+    parent:= comfrm1
+    setbounds(300,30,30,30)
+     ComPort:= ComPort
+      LedSignal:= lsConn
+      Kind:= lkRedLight
+   end;   
+  ComLed2:= TCOMLed.create(self)
+  with comLed2 do begin
+    parent:= comfrm1
+    setbounds(350,30,30,30)
+     ComPort:= ComPort
+      LedSignal:= lsConn
+      Kind:= lkYellowlight
+   end;   
+    
+ BinVal:= 0;
+ //Ini:= TIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
+ Ini:= TIniFile.Create(iniPath);
+ if FileExists(iniPath) then begin
+   writeln('COM Inifile: '+iniPath)
+   cbAuto.Checked:= Ini.ReadBool('ComPort', 'Auto',  True);
+   acbClear.Checked:= Ini.ReadBool('ComPort', 'Clear', False);
+    ini.Free;
+   try
+   ComPort.LoadSettings(stIniFile, iniPath);
+    //ComPort.LoadSettings(stIniFile, inipath);
+    Comport.Port:= 'COM4';
+    ComPort.Open;
+   except
+     Showmessage('Unable to open COM port' +#10+#13 + 'Check the Port settings');
+   end;
+  if ComPort.Connected then begin
+    PIN_Checker(true, false);
+    ComLed1.Kind:= lkGreenLight
+    writeln('connected')
+  end else
+   ComLed1.Kind:= lkRedLight;
+  Statusbar1.SimpleText:= ComPort.Port;
+ end;
+end;
+
+
+
+procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  Ini: TIniFile;
+  ainif: TStoreType;
+begin
+ if acbClear.Checked then begin
+   ComPort.WriteStr('0');
+ end;
+ Ini:= TIniFile.Create(iniPath);
+  if FileExists(iniPath) then begin
+   Ini.WriteBool('ComPort', 'Auto', cbAuto.Checked);
+   Ini.WriteBool('ComPort', 'Clear', acbClear.Checked);
+   ini.WriteTime('DateSection','timemax2',time);
+   ini.Free;
+   //writeln(inttostr(ord(TStoreType(stIniFile))))
+   try
+     //comport.storeinifile internal;
+     ComPort.StoreSettings(stIniFile,inipath);
+     writeln('StoreSettings at: '+inipath)
+   except
+     showmessage(SysErrorMessage(GetLastError))
+   end
+   //ComPort.StoreSettings(stIniFile, ChangeFileExt(ParamStr(0), '.ini'));
+  end else begin
+    Ini.WriteBool('ComPort', 'Auto', cbAuto.Checked);
+    Ini.WriteBool('ComPort', 'Clear', acbClear.Checked);
+    ComPort.StoreSettings(stIniFile, ChangeFileExt(maxform1.scriptname, '.ini'));
+    ini.WriteTime('DateSection','timemax2',time);
+    ini.Free;
+  end;
+  ComDataPacket1.Free;
+  if comport.connected then 
+   comport.close;
+  comport.Free;
+  writeln('comform &port closed');
+end;
+
+
+
+Procedure BtnFactory(a,b,c,d: smallint; title,apic: string;
+                        var abtn: TBitBtn; anEvent: TNotifyEvent);
+begin
+  abtn:= TBitBtn.create(comfrm1);
+  with abtn do begin
+    parent:= comfrm1;
+    setBounds(a,b,c,d)
+    font.size:= 12;
+    glyph.LoadFromResourceName(HINSTANCE, apic); 
+    mXButton(5,5,width, height,12,12,handle);
+    caption:= title;
+    onClick:= anEvent As TNotifyEvent; 
+  end;
+end; 
+
+Procedure CheckBoxFactory(a,b,c,d: byte; title: shortstring;
+                          var abox: TCheckbox; anevent: TNotifyEvent);
+begin
+  abox:= TCheckBox.create(comfrm1)
+  with abox do begin
+    parent:= comfrm1;
+    SetBounds(a,b,c,d)
+    Caption:= title;
+    Enabled:= False;
+    OnClick:= anevent as TNotifyEvent;
+  end;
+end;
+
+
+Procedure LabelFactory(a,b,c,d: integer; title: shortstring);
+begin
+  with TLabel.create(self) do begin
+    parent:= comfrm1;
+    SetBounds(a,b,c,d);
+    Caption:= title
+  end;
+end;
+
+
+procedure cb0Click(Sender: TObject);
+begin
+  if acb0.Checked then
+     BinVal:= BinVal + 1
+  else
+    BinVal:= BinVal - 1;
+  Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure cb1Click(Sender: TObject);
+begin
+   if acb1.Checked then
+     BinVal:= BinVal + 2
+  else
+    BinVal:= BinVal - 2;
+   Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure cb2Click(Sender: TObject);
+begin
+   if acb2.Checked then
+     BinVal:= BinVal + 4
+  else
+    BinVal:= BinVal - 4;
+  Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure cb3Click(Sender: TObject);
+begin
+   if acb3.Checked then
+     BinVal:= BinVal + 8
+  else
+    BinVal:= BinVal - 8;
+  Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure cb4Click(Sender: TObject);
+begin
+    if acb4.Checked then
+     BinVal:= BinVal + 16
+  else
+    BinVal:= BinVal - 16;
+   Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure cb5Click(Sender: TObject);
+begin
+    if acb5.Checked then
+     BinVal:= BinVal + 32
+  else
+    BinVal:= BinVal - 32;
+   Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure Button1Click(Sender: TObject);
+begin
+  //Form2.left:= Form1.Left-25;
+  //Form2.Top:= Form1.Top+40;
+  //Form2.ShowModal;
+end;
+
+procedure InitComPortForm;
+var lbls: byte;
+begin
+ comFrm1:= TForm.create(self);
+ with comFrm1 do begin
+   //FormStyle := fsStayOnTop;
+   Position:= poScreenCenter;
+   caption:='COM Port meets Arduino Pin PortB';
+   width:= 700; height:= 560;
+   //onCreate:= @TFrm_FormCreate;        
+   onCloseQuery:= @FormCloseQuery;
+   Show;
+   canvas.brush.bitmap:= getBitmapObject(Exepath+BACKMAP);
+   Canvas.FillRect(Rect(600,400,410,100));
+ end;
+  //Constructors & settings
+  
+  iniPath:= ChangeFileExt(maxform1.scriptname, '.ini');
+  BtnFactory(500,440,150,55,'&COM About','LEDbulbon',button1,@Button1click);
+  BtnFactory(180,440,150,55,'&COM Setup','CL_MPNEXT',button2,@Button2click);
+  BtnFactory(340,440,150,55,'&COM Send','CL_MPPLAY',button3,@Button3click);
+  CheckBoxFactory(16,42,57,17, 'Led 1',acb0,@cb0click);
+  CheckBoxFactory(16,66,57,17, 'Led 2',acb1,@cb1click);
+  CheckBoxFactory(16,90,57,17, 'Led 3',acb2,@cb2click);
+  CheckBoxFactory(16,114,57,17, 'Led 4',acb3,@cb3click);
+  CheckBoxFactory(16,138,57,17, 'Led 5',acb4,@cb4click);
+  CheckBoxFactory(16,160,57,17, 'Led 6',acb5,@cb5click);
+
+  CheckBoxFactory(460,90,77,17, 'Send Now',cbauto,nil);
+  CheckBoxFactory(460,114,77,17, 'Clear Ini',acbclear,nil);
+  LabelFactory(302,70,39,13, 'Decimal:');
+  
+
+  with TLabel.create(self) do begin
+    parent:= comfrm1;
+     setBounds(16,12,69,13)
+     Caption:= 'PIN Control';
+     Font.Color:= clMaroon;
+     Font.Size:= 13;
+     Font.Style:= [fsBold];
+  end;
+  with TLabel.create(self) do begin
+    parent:= comfrm1;
+     setBounds(155,12,69,13)
+     Caption:= 'Arduino PIN';
+     Font.Color:= clNavy;
+     Font.Size:= 13;
+     Font.Style:= [fsBold];
+  end;
+  Edit1:= TEdit.create(comfrm1)
+  with edit1 do begin
+    parent:= comfrm1;
+    setBounds(300,90,45,22)
+    MaxLength:= 2
+    TabOrder:= 0
+    Text:= '0'
+    OnKeyPress:= @Edit1KeyPress;
+  end;
+ 
+  lbls:= 42;
+  for it:= 1 to 5 do begin
+    LabelFactory(80,lbls,39,13, SIG);
+    lbls:= lbls+24
+  end;
+  lbls:= 42;
+  for it:= 1 to 6 do begin
+    LabelFactory(156,lbls,38,13,'Digit '+inttoStr(it+7));
+    lbls:= lbls+24
+  end;
+ 
+  with TDateTimePicker.Create(self) do begin
+    parent:= comfrm1;
+    Date;
+    top:= 220; left:= 15;
+    calAlignment:= albottom;
+  end;
+  statusBar1:= TStatusBar.create(self);
+  with statusBar1 do begin
+    parent:= comFrm1;
+    //simplepanel:= true;
+    showhint:= true;
+    hint:= 'this is LED BOX State';
+     Panels.add;
+     panels.items[0].width:= 200;
+     Panels.add;
+     panels.items[1].width:= 150;
+  end;
+  COMPortCreate(self); 
+end;   //*********************End Form Build************************
+
+
+
+begin
+
+  InitComPortForm
+
+end.
+
+
+Doc: 
+
+Comtest.exe is a simple Delphi-to-Arduino application to select Arduino
+digital pins from the PC via the USB 'virtual' COM port.
+
+http://www.entwickler-ecke.de/topic_Seriell+Empfangene+Daten+auswerten_107856,0.html
+
+It assumes the use of Arduino digital pins: 8, 9, 10, 11, 12 and 13.
+These are 'PORT B' on the ATMega168 and 328 chips and provide a
+6-bit wide output. Bits 6 and 7 are unusable because the chip's
+16MHz crystal makes use of them.
+
+Comtest simply sends a 6-bit 'word' via the USB port. Different Arduino
+digital pins may be used but 'Comtest' will always write to the lowest
+6 bits which would seriously upset the Arduino's Tx and Rx pins
+(digital pins 0 and 1) if Port D is used.
+
+http://www.arduino.cc/en/Reference/PortManipulation
+
+
+A basic Arduino sketch is:
+
+----------------------------------------------------------------------
+/* This sketch receives a text string via the serial port as a numerical
+   value and sets the lower 6 bits of Port B accordingly (digital pins
+   13, 12, 11, 10, 9 and 8)
+ */
+ 
+String inputString;
+int val;
+
+void setup() {
+  DDRB = B00111111;               // Set pins 8 to 13 as outputs
+  PORTB = 0;                      // All outputs OFF
+  Serial.begin(9600);
+}
+
+void loop() {
+  inputString = "";               // Clear inputString
+  while (Serial.available()) {
+    char digit = Serial.read();   // Read one byte from serial buffer
+    inputString += digit;         // Add new character to the string
+    delay(2);                     //
+
+    val = inputString.toInt();    // Convert inputString into a number
+  }
+  PORTB = val;                    // Set PortB register bits.
+}
+
+
+-----------------------------------------------------------------------
+
+(c) Jan 2012 vwlowen.co.uk
+
+
+    {procedure Button2Click(Sender: TObject);
+       procedure Button3Click(Sender: TObject);
+       procedure Edit1KeyPress(Sender: TObject; var Key: Char);
+       procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+       procedure COMPortCreate(Sender: TObject);
+       procedure cb0Click(Sender: TObject);
+       procedure cb1Click(Sender: TObject);
+       procedure cb2Click(Sender: TObject);
+       procedure cb3Click(Sender: TObject);
+       procedure cb4Click(Sender: TObject);
+       procedure cb5Click(Sender: TObject);
+       procedure Button1Click(Sender: TObject); }
+     //private
+    { Private declarations }
+  //public
+    { Public declarations }
+  //end;
+
+// store settings to ini file
+procedure TCustomComPort.StoreIniFile(IniFile: TIniFile);
+begin
+  if spBasic in FStoredProps then
+  begin
+    IniFile.WriteString(Name, 'Port', Port);
+    IniFile.WriteString(Name, 'BaudRate', BaudRateToStr(BaudRate));
+    if BaudRate = brCustom then
+      IniFile.WriteInteger(Name, 'CustomBaudRate', CustomBaudRate);
+    IniFile.WriteString(Name, 'StopBits', StopBitsToStr(StopBits));
+    IniFile.WriteString(Name, 'DataBits', DataBitsToStr(DataBits));
+    IniFile.WriteString(Name, 'Parity', ParityToStr(Parity.Bits));
+    IniFile.WriteString(Name, 'FlowControl', FlowControlToStr(FlowControl.FlowControl));
+  end;

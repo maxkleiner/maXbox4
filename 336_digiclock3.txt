@@ -1,0 +1,727 @@
+PROGRAM DigiClocks3;
+
+// kind of an Idea from bitbox, locs= 625; 13Intf;
+// Clock Composition art work  #locs=650
+// digiclock from the book delphi software praxis, modified on mX by max 
+// stat.bar dyn time added thanks to IBZ
+
+Const
+  PicPath = '\examples\';
+  FBOX = 4;
+
+VAR 
+//<Variable declarations>                         
+  frmMon: TForm;
+  ShowDate, ShowTime: boolean;
+  pg,py,pr: Array[0..5] of TPaintBox;
+  div_dbl: double;
+  a,b,bin1, bin2, bin3: integer;
+  //afg: naturalnumber;
+  arb: TRadioButton;
+  //acl: TColorBox;
+  wd: word;
+  Image1: TImage;
+  frmsg: TStringGrid;
+  stat: TStatusbar;
+  panstep: TPanel;
+  Progress: TProgressBar;
+  tm1: TTimer;          
+    ilGreen: TCustomImageList;  
+    ilYellow: TCustomImageList;
+    ilRed: TCustomImageList;
+    panRed, panYell, panGreen: TPanel;       //Panel und Bildkomponenten je Farbe
+    pr5, pr4, pr3, pr2, pr1, pr0: TPaintBox;
+    py5, py4, py3, py2, py1, py0: TPaintBox;
+    pg5, pg4, pg3, pg2, pg1, pg0: TPaintBox;
+    pan: TPanel;
+    mm1: TMainMenu;      
+    mPrg, mmEnde, mAnsicht: TMenuItem;
+    mmDatum, mmZeit: TMenuItem;
+  
+    zeit: Array[1..6] of byte;
+    pb: Array[1..6] of TPaintBox;
+    pb1, pb2, pb3, pb4, pb5, pb6: TPaintBox; //PaintBoxen zur Zifferndarstellung
+    imgL: TCustomImageList;
+    digTimer: TTimer;  
+    Panel1: TPanel;
+    Label1: TLabel;
+  //  procedure FormActivate(Sender: TObject);
+    //procedure TimerTimer(Sender: TObject);
+
+//<FUNCTION>
+//<PROCEDURE> 
+Procedure AllBooleanPattern(aX, aY: integer);
+begin
+    Writeln(#13#10+'************** All Booolean Functions **************');
+    PrintF('%-36s 01 False',[inttobin(0)])
+    PrintF('%-36s 02 AND',[inttobin(aX AND aY)])
+    PrintF('%-36s 03 Inhibit',[inttobin(aX AND NOT aY)])
+    PrintF('%-36s 04 Prepend',[inttobin(aX)])
+    PrintF('%-36s 05 Praesect',[inttobin(NOT aX AND aY)])
+    PrintF('%-36s 06 Postpend',[inttobin(aY)])
+    PrintF('%-36s 07 XOR',[inttobin(aX XOR aY)])
+    PrintF('%-36s 08 OR',[inttobin(aX OR aY)])
+    PrintF('%-36s 09 NOR',[inttobin(NOT(aX OR aY))])
+    PrintF('%-36s 10 Aequival',[inttobin((NOT aX OR aY)AND(NOT aY OR aX))])
+    PrintF('%-36s 11 NegY',[inttobin(NOT aY)])
+    PrintF('%-36s 12 ImplicatY',[inttobin(aX OR NOT aY)])
+    PrintF('%-36s 13 NegX',[inttobin(NOT aX)])
+    PrintF('%-36s 14 ImplicatX',[inttobin(NOT aX OR aY)])
+    PrintF('%-36s 15 NAND',[inttobin(NOT(aX AND aY))])
+    PrintF('%-36s 16 True',[inttobin(NOT 0)])
+end;
+
+function getBmp(apath: string): TBitmap;
+  begin
+    result:= TBitmap.Create;
+    with result do try
+      LoadFromFile(apath);
+    finally
+      //Free;
+    end;
+  end;
+
+//////////////////// digi clock rock
+procedure DigiTForm1_FormActivate(Sender: TObject);
+//Startinit on Form
+var i,t: integer;
+begin
+  pb[1]:=pb1; pb[2]:=pb2; pb[3]:=pb3;
+  pb[4]:=pb4; pb[5]:=pb5; pb[6]:=pb6;
+  for i:= 1 to 6 do zeit[i]:= 0;
+  imgL:= TCustomImageList.Create(self);
+  ReadComponentResFile(ExePath+picpath+'MyImageClockList7Segment.dat', imgl);
+  with imgL do begin
+    //@Bitmap.DrawMode:= dmBlend  //assign; setbounds
+     Height:= 50;
+     Width:= 30;
+    {for t:= 0 to 9 do //image, mask
+       Add(getbmp(exePath+picpath+'7seg'+inttostr(t)+'.bmp'),
+                    getbmp(exePath+picpath+'7segaus.bmp'));} 
+  end;
+  //WriteComponentResFile(ExePath+picpath+'MyImageClockList7Segment.dat', imgL);
+end;
+
+procedure DigiTForm1_TimerTimer(Sender: TObject);
+var i: integer; 
+    s,s1: String;
+    t: TDateTime;
+begin
+  t:= Now;
+  //Formate, 6-parts of s
+  DateTimeToString(s,'hhmmss',t);
+  //Number assign and draw
+  for i:= 1 to 6 do begin
+    s1:= MidStr(s,i,1);
+    zeit[i]:= strToInt(s1);
+    imgL.Draw(pb[i].Canvas,1,1,zeit[i],true);
+  end;
+end;
+//////////////////////digi clock end
+
+
+procedure TForm1_FormShow(Sender: TObject);
+//Programm-Starteinstellungen
+var  mask, image: TBitmap;
+begin
+// Make sure that transparency pixel in the image is taken
+ //MyImage.Picture.Bitmap.TransparentMode:= tmFixed;
+ { ilGreen:= TBitmap32List.Create(self);
+    with ilGreen do begin
+        //Bitmap.DrawMode:= dmBlend
+        bitmaps.add;
+        bitmap[0]:= getbitmap32(exepath+'\examples\images\green0.bmp');
+    end;}
+  pg[0]:=pg0; pg[1]:=pg1; pg[2]:=pg2; pg[3]:=pg3; pg[4]:=pg4; pg[5]:=pg5;
+  py[0]:=py0; py[1]:=py1; py[2]:=py2; py[3]:=py3; py[4]:=py4; py[5]:=py5;
+  pr[0]:=pr0; pr[1]:=pr1; pr[2]:=pr2; pr[3]:=pr3; pr[4]:=pr4; pr[5]:=pr5;
+  ShowDate:=true; ShowTime:=true; 
+  ilGreen:= TCustomImageList.Create(self);
+  //ReadComponentResFile(ExePath+picpath+'MyImageClockList.dat', ilGreen);
+  image:= getbitmap(exepath+picpath+'green0.bmp')
+  mask:= getbitmap(exepath+picpath+'green1.bmp');
+  with ilGreen do begin
+       Height:= 39; Width:= 39;
+       Add(image,NIL);
+       Add(mask,NIL);
+  end;
+  ilyellow:= TCustomImageList.Create(self);
+  image:= getbitmap(exepath+picpath+'yellow0.bmp')
+  mask:= getbitmap(exepath+picpath+'yellow1.bmp');
+  with ilyellow do begin
+       Height:= 39; Width:= 39;
+       Add(image,NIL);
+       Add(mask,NIL);
+  end;
+  ilred:= TCustomImageList.Create(self);
+  image:= getbitmap(exepath+picpath+'red0.bmp')
+  mask:= getbitmap(exepath+picpath+'red1.bmp');
+  mask.transparent:= true;
+  with ilred do begin
+      Height:= 39; Width:= 39;
+      Add(image,NIL);
+      Add(mask,NIL);
+  end;
+  //WriteComponentResFile('MyImageClockList.dat', ilGreen);
+  //ReadComponentResFile('MyImageClockList.dat', ilGreen);
+  //tm1.Enabled:=true;
+end;
+
+
+procedure TForm1_tm1Timer(Sender: TObject);
+var
+  i,zh,zm,zs,p: integer;
+  t,m,j,hh,mm,ss,ms: Word;
+  mtime: TDateTime;
+  s,s1,s2: String;
+begin
+  mtime:= Now; s:= '';
+  DecodeDate(mTime,j,m,t);
+  DecodeTime(mTime,hh,mm,ss,ms);
+  DateTimeToString(s1,'dd.mm.yyyy',mTime);
+  DateTimeToString(s2,' hh:mm:ss',mTime);
+  if ShowDate then s:=s+s1; //+#9;
+  if ShowTime then s:=s+s2;
+  if s='' then s:=' ... the real binarytime ... ';
+  pan.Caption:= s;
+  p:= 1;
+  for i:= 0 to 5 do begin //Binaries cut and draw
+    //zh:=0; if (hh and p)<>0 then zh:=1;
+    //zm:=0; if (mm and p)<>0 then zm:=1;
+    //zs:=0; if (ss and p)<>0 then zs:=1;
+    zh:=(hh and p) shr i;
+    zm:=(mm and p) shr i;
+    zs:=(ss and p) shr i;
+    //pr[i].canvas.draw(Rect.Left, Rect.Top, TBitmap(ilRed[0]));
+    //py[i].canvas.draw(Rect.Left, Rect.Top, TBitmap(ilRed[0]));
+    //pg[i].canvas.draw(Rect.Left, Rect.Top, TBitmap(ilRed[0]));
+    ilRed.Draw(pr[i].Canvas,1,2,zh,true);
+    ilYellow.Draw(py[i].Canvas,1,2,zm,true);
+    ilGreen.Draw(pg[i].Canvas,1,2,zs,true);
+
+    frmsg.Cells[0,1]:= 'Dez';
+    frmsg.Cells[1,1]:= inttoStr(hh);
+    frmsg.Cells[2,1]:= inttoStr(mm);
+    frmsg.Cells[3,1]:= inttoStr(ss);
+    frmsg.Cells[0,2]:= 'Hex';
+    frmsg.Cells[1,2]:= inttohex(hh,3);
+    frmsg.Cells[2,2]:= inttohex(mm,3);
+    frmsg.Cells[3,2]:= inttohex(ss,3);
+    Progress.Position:= (hh * 60)+mm;
+    panStep.Caption:= formatFloat('0',(((hh*60)+mm)/1440)*100)+' %'; //prorgess
+    p:= p*2;
+  end;
+  stat.SimpleText:='Clock Composition Dyn is running ...at: '+DateTimeToInternetStr(now, true);
+end;
+
+procedure TForm1_mmDatumClick(Sender: TObject);
+begin
+  mmDatum.Checked:= not mmDatum.Checked;
+  ShowDate:= mmDatum.Checked;
+end;
+
+procedure TForm1_mmZeitClick(Sender: TObject);
+begin
+  mmZeit.Checked:= not mmZeit.Checked;
+  ShowTime:= mmZeit.Checked;
+end;
+
+procedure btnCloseClick(Sender: TObject);
+begin
+  stat.SimpleText:= 'Closed Clicked';
+  //il.Free;
+  frmMon.Close;
+end;
+
+procedure CloseClick(Sender: TObject; var action: TCloseAction);
+begin
+   //if MessageDlg('Wanna Leave?',mtConfirmation,[mbYes, mbNo],0)= mrYes then begin
+   //form1.Free; //bmp.Free;
+  if digtimer <> NIL then begin
+    digtimer.enabled:= false;
+    digtimer.Free;
+    digtimer:= NIL;
+  end;
+  if tm1 <> NIL then begin
+    tm1.enabled:= false;
+    tm1.Free;
+    tm1:= NIL;
+  end;
+   action:= caFree;
+   imgL.Free;
+   ilGreen.Free;
+   ilRed.Free;
+   ilyellow.Free;
+   frmMon:= NIL;
+   screen.cursor:= crDefault;
+   //showmessage('free');
+   writeln('Digi Free and Closer test finished');
+   //end else
+     //Action:= caNone;
+end;
+
+
+//*************************Form Create********************************//
+procedure InitCreateForms;
+var panImg, panR: TPanel;
+    //mis : array[0..3] of TMenuItem;
+begin
+ // seq --> panel-image-drawgrid-bitmap
+  //panimg1.DoubleBuffered:= true;
+  
+ frmMon:= TForm.Create(self);
+ with frmMon do begin
+   //FormStyle := fsStayOnTop;
+   Position:= poScreenCenter;
+   BorderIcons:= [biSystemMenu, biMinimize];
+   BorderStyle:= bsSingle;
+   PixelsPerInch:= 96;
+   caption:='22 Clocks around the Socks';
+   color:= clteal;
+   width:= 650;
+   height:= 540;
+   Menu:= mm1;
+   Show;
+   canvas.brush.bitmap:= getBitmapObject(Exepath+'examples\timer2.bmp');
+   Canvas.FillRect(Rect(340,335,430,50))
+
+    //image:= getbitmap(exepath+picpath+'green0.bmp')
+ 
+   onClose:= @CloseClick;
+ end;
+  Screen.cursor:= crHourGlass;
+ 
+  Panel1:= TPanel.Create(frmMon)
+  with panel1 do begin
+    parent:= frmMon;
+    SetBounds(18,18,241,65);
+    BevelOuter:= bvLowered;
+    Color:= clBlack;
+    TabOrder:= 0;
+  end;  
+  pb1:= TPaintBox.Create(frmMon);
+    with pb1 do begin
+      parent:= panel1;
+      SetBounds(8,8,30,50);
+    end;  
+    pb2:= TPaintBox.Create(frmMon);
+    with pb2 do begin
+      parent:= panel1;
+      SetBounds(40,8,30,50);
+    end;  
+    pb3:= TPaintBox.Create(frmMon);
+    with pb3 do begin
+      parent:= panel1;
+      SetBounds(88,8,30,50);
+    end;  
+    pb4:= TPaintBox.Create(frmMon);
+    with pb4 do begin
+      parent:= panel1;
+      SetBounds(120,8,30,50);
+    end;  
+    pb5:= TPaintBox.Create(frmMon);
+    with pb5 do begin
+      parent:= panel1;
+      SetBounds(168,8,30,50);
+    end;  
+    pb6:= TPaintBox.Create(frmMon);
+    with pb6 do begin
+      parent:= panel1;
+      SetBounds(200,8,30,50);
+    end;  
+    with TLabel.Create(self) do begin
+      SetBounds(74,12,10,38);
+      parent:= panel1;
+      Caption:= ':';
+      Font.Charset:= ANSI_CHARSET;
+      Font.Color:= clGreen;
+      Font.Height:= -27;
+      Font.Name:= 'Arial Black';
+      Font.Style:= [fsBold];
+      ParentFont:= False;
+    end;
+    with TLabel.Create(self) do begin
+      SetBounds(154,12,10,38);
+      parent:= panel1;
+      Caption:= ':';
+      Font.Charset:= ANSI_CHARSET;
+      Font.Color:= clGreen;
+      Font.Height:= -27;
+      Font.Name:= 'Arial Black';
+      Font.Style:= [fsBold];
+      ParentFont:= False;
+    end;
+    
+  //////////digi binary controls 
+  Pan:= TPanel.Create(frmMon)   //just set text time
+  with pan do begin
+    parent:= frmMon;
+    SetBounds(18,350,312,45);
+    //BevelOuter:= bvLowered;
+    BevelOuter:= bvLowered
+    //Color:= clBtnHighlight;
+    Color:= clred;
+    Font.Style:= [fsBold];
+    Font.Size:= 20;
+    Font.Color:= clwhite;
+    TabOrder:= 0;
+  end;  
+ 
+  Panred:= TPanel.Create(frmMon)
+  with panred do begin
+    parent:= frmMon;
+    SetBounds(18,150,240,40);
+    BevelOuter:= bvLowered;
+    //transparent;
+    Color:= clwhite;
+    TabOrder:= 0;
+  end;  
+  pr5:= TPaintBox.Create(frmMon);
+    pr5.parent:= panred;
+    pr5.SetBounds(0,0,39,39);
+    pr4:= TPaintBox.Create(frmMon);
+    pr4.parent:= panred;
+    pr4.SetBounds(40,0,39,39);
+    pr3:= TPaintBox.Create(frmMon);
+    pr3.parent:= panred;
+    pr3.SetBounds(80,0,39,39);
+    pr2:= TPaintBox.Create(frmMon);
+    pr2.parent:= panred;
+    pr2.SetBounds(120,0,39,39);
+    pr1:= TPaintBox.Create(frmMon);
+    pr1.parent:= panred;
+    pr1.SetBounds(160,0,39,39);
+    pr0:= TPaintBox.Create(frmMon);
+    pr0.parent:= panred;
+    pr0.SetBounds(200,0,39,39);
+
+  Panyell:= TPanel.Create(frmMon)
+  with panyell do begin
+    parent:= frmMon;
+    SetBounds(18,200,240,40);
+    BevelOuter:= bvLowered;
+    Color:= clWhite;
+    TabOrder:= 0;
+  end;  
+  py5:= TPaintBox.Create(frmMon);
+    py5.parent:= panyell;
+    py5.SetBounds(0,0,39,39);
+  py4:= TPaintBox.Create(frmMon);
+    py4.parent:= panyell;
+    py4.SetBounds(40,0,39,39);
+  py3:= TPaintBox.Create(frmMon);
+    py3.parent:= panyell;
+    py3.SetBounds(80,0,39,39);
+  py2:= TPaintBox.Create(frmMon);
+    py2.parent:= panyell;
+    py2.SetBounds(120,0,39,39);
+  py1:= TPaintBox.Create(frmMon);
+    py1.parent:= panyell;
+    py1.SetBounds(160,0,39,39);
+  py0:= TPaintBox.Create(frmMon);
+    py0.parent:= panyell;
+    py0.SetBounds(200,0,39,39);
+
+  Pangreen:= TPanel.Create(frmMon)
+  with pangreen do begin
+    parent:= frmMon;
+    SetBounds(18,250,240,40);
+    BevelOuter:= bvLowered;
+    Color:= clWhite;
+    TabOrder:= 0;
+  end;  
+  pg5:= TPaintBox.Create(frmMon);
+    pg5.parent:= pangreen;
+    pg5.SetBounds(0,0,39,39);
+  pg4:= TPaintBox.Create(frmMon);
+    pg4.parent:= pangreen;
+    pg4.SetBounds(40,0,39,39);
+  pg3:= TPaintBox.Create(frmMon);
+    pg3.parent:= pangreen;
+    pg3.SetBounds(80,0,39,39);
+  pg2:= TPaintBox.Create(frmMon);
+    pg2.parent:= pangreen;
+    pg2.SetBounds(120,0,39,39);
+  pg1:= TPaintBox.Create(frmMon);
+    pg1.parent:= pangreen;
+    pg1.SetBounds(160,0,39,39);
+  pg0:= TPaintBox.Create(frmMon);
+    pg0.parent:= pangreen;
+    pg0.SetBounds(200,0,39,39);
+  
+  DigiTForm1_FormActivate(Self);
+  digtimer:= TTimer.Create(self);
+  digtimer.enabled:= true;
+  digtimer.onTimer:= @DigiTForm1_TimerTimer;
+  digtimer.interval:= 1000;
+  
+  TForm1_FormShow(Self);
+  tm1:= TTimer.Create(self);
+  tm1.enabled:= true;
+  tm1.onTimer:= @TForm1_tm1Timer;
+  tm1.interval:= 1000;
+
+  PanR:= TPanel.create(frmMon);
+    with PanR do begin
+      parent:= frmMon;
+      setBounds(472,9,155,450);
+      BevelOuter:= bvLowered
+    end;
+    with TBitBtn.Create(frmMon) do begin
+      Parent:= frmMon;        
+      SetBounds(488,30,121,30)        //30
+      Caption:= 'Load Clock'
+      Hint:= 'Load your own clock picture!';
+      ShowHint:= true;
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPEJECT'); 
+      //OnClick:= @BtnPictureLoad;
+    end;
+    with TBitBtn.Create(frmMon) do begin
+      Parent:= frmMon;        
+      SetBounds(488,68,121,30)       //68
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPSTEP'); 
+      Caption:= 'New Clock'
+      //Enabled:= False
+      //OnClick:= @btnNewClockClick
+    end;
+    with TBitBtn.Create(frmMon) do begin
+      Parent:= frmMon;        
+      SetBounds(488,420,121,30)
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPSTOP'); 
+      Caption:= 'Close'
+      OnClick:= @btnCloseClick
+    end;
+    panstep:= TPanel.Create(frmMon); 
+    with panstep do begin
+      Parent:= frmMon;        
+      SetBounds(488,120,121,25)
+      BevelOuter:= bvLowered
+      Caption:= '0 %'
+      Color:= clyellow;//$30809000;
+      //Color:= 8404992
+    end;
+   frmsg:= TStringGrid.Create(frmMon);
+   with frmsg do begin
+    //SetBounds(512,320,79,79)  
+     parent:= frmMon;
+     Left:= 500; Top:= 320;
+     Width:= 95; Height:= 79;
+     ColCount:= 4
+     DefaultColWidth:= 22
+     DefaultRowHeight:= 18
+     FixedCols:= 0
+     RowCount:= 4
+     FixedRows:= 0
+   end;
+  with TJvAnalogClock.Create(frmMon) do begin 
+    parent:= PanR;
+    bevelwidth:= 0;
+    colormin:= clblue;
+    //transparent
+    //repaint;
+    //timeoffSet:= -60;
+    align:= alclient;
+    ColorHr:= clRed;
+    Color:= clTeal;
+    //WidthHandHr:= 1;
+    ColorHandHr:= clRed;
+    ColorHandMin:= clRed;
+    setBounds(28,5,100,100);
+    centercol:= clyellow; //cldarkblue32; //clwebgold; 
+    centersize:= 8;
+  end;  
+  with TLabel.Create(frmMon) do begin
+     Parent:= PanR;        
+     SetBounds(18,140,50,18)
+     Caption:= 'Progress:'
+     bringtofront;
+  end;
+  with TLabel.Create(frmMon) do begin
+     Parent:= PanR;        
+     SetBounds(18,290,50,18)
+     Caption:= 'Navigation:'
+  end;
+   
+  mm1:= TMainMenu.Create(frmMon);
+    mPrg:= TMenuItem.Create(frmMon);
+    mPrg.Caption:= 'Program';
+    mm1.Items.Add(mPrg);
+    //mm1.Items[0].Add(mPrg);
+    mmEnde:= TMenuItem.Create(frmmon)
+    with mmEnde do begin
+      //parent:= mPrg;
+      Caption:= 'Shotdown'
+      tag:= mprg;
+      //submenu.add
+      //items[0].add(mprg);
+      OnClick:= @btnCloseClick;
+    end;
+     mprg.add(mmende);
+      //SubItem:= TMenuItem.Create(MainMenu1);
+      //MainMenu1.Items[0].Add(SubItem);
+      //mPrg.Items[mmEnde];
+      mAnsicht:= TMenuItem.Create(frmMon);
+      mAnsicht.Caption:= 'View';
+      mm1.Items.Add(mAnsicht);
+      mmDatum:= TMenuItem.Create(mAnsicht);
+      with mmdatum do begin
+        Caption:= 'Date';
+        Checked:= True;
+        OnClick:= @TForm1_mmDatumClick;
+      end;
+      mAnsicht.Add(mmdatum);
+      mmZeit:= TMenuItem.Create(mAnsicht);
+      with mmZeit do begin
+        Caption:= 'Time';
+        Checked:= True;
+        OnClick:= @TForm1_mmZeitClick;
+      end;
+      mAnsicht.Add(mmzeit);
+      frmMon.Menu:= mm1;
+  
+   stat:= TStatusbar.Create(FrmMon);
+   with Stat do begin
+     parent:= frmMon;
+     stat.SimplePanel:= true;
+   end;
+   stat.SimpleText:='Clock Composition is running ...at: '+DateTimeToInternetStr(now, true);
+   Progress:= TProgressBar.Create(frmMon);
+   with progress do begin
+     parent:= frmMon;
+     Align:= alBottom;
+     //step:= 10;
+     Max:= (24*60);
+   end;
+end; 
+
+  var sysinfo: TSystemInfo;
+
+BEGIN  //Main  APP
+//<Executable statements>
+   div_dbl:= 5.0 / 2.0; // 2.500000
+   writeln(Format('%0.6f', [div_dbl]))
+   div_dbl:= 20 mod 3;  // 2.00000
+   writeln(Format('%f', [div_dbl]))
+   a:= 5; b:= 6;
+   if not (A<>B) then writeln('even') else
+                    writeln('odd');   
+   if (A=B) then writeln('even') else
+                    writeln('odd');   
+
+   // wholee ASCII Table
+   { writeln(Chr(67))
+   for i:= 0 to 255 do
+     writeln(format('wert %d %s',[i, Chr(i)]))}
+    writeln(Format('%s',[inttobin(97)]))
+    writeln(Format('%s',[inttobin(223)]))
+    writeln(Format('%s',[inttobin(97 XOR 223)]))
+    bin1:= 97; bin2:= 223;
+    bin3:= bin1 XOR bin2;
+    writeln(Format('%s',[IntToBin(bin3)]))
+    writeln(' ');
+    wd:= 150;
+    writeln('first     '+IntToBin(wd))
+    writeln(IntToStr(wd))
+    //double the value
+    wd:= wd SHL 1
+    writeln('double '+IntToBin(wd))
+    writeln(IntToStr(wd))
+    //half the value
+    wd:= wd SHR 1
+    writeln('half     '+IntToBin(wd))
+    writeln(IntToStr(wd))
+    //init the value
+    writeln('init      '+IntToBin(wd))
+    writeln('          '+IntToBin(wd XOR wd))
+
+    AllBooleanPattern(10,12);
+    InitCreateForms;
+    with tradiogroup.create(self) do begin
+      //flipchildren
+      free;
+    end;
+    GetSystemInfo(sysinfo);
+    writeln(inttostr(sysinfo.wProcessorLevel));  
+    writeln(inttostr(sysinfo.dwProcessorType));  
+    if openmapX('church trier') then 
+      writeln('done gone')
+    
+
+END. 
+
+
+       (A<>B)  NOT --> A=B
+        0  0 0 1       0 0
+        0  1 1 0
+        1  0 1 0
+        1  1 0 1       1 1
+        
+        //19.8. um 16 Uhr PT1 Update
+        
+  XOR App      
+  0110 0001
+^ 1101 1111
+-----------
+  1011 1110
+        
+        
+  00000000000000000000000100101100 XOR
+  00000000000000000000000100101100
+                         000000000
+                         
+00000000000000000000000000000000     01 False
+00000000000000000000000000001000     02 AND
+00000000000000000000000000000010     03 Inhibit
+00000000000000000000000000001010     04 Prepend
+00000000000000000000000000000100     05 Praesect
+00000000000000000000000000001100     06 Postpend
+00000000000000000000000000000110     07 XOR
+00000000000000000000000000001110     08 OR
+11111111111111111111111111110001     09 NOR
+11111111111111111111111111111001     10 Aequival
+11111111111111111111111111110011     11 NegY
+11111111111111111111111111111011     12 ImplicatY
+11111111111111111111111111110101     13 NegX
+11111111111111111111111111111101     14 ImplicatX
+11111111111111111111111111110111     15 NAND
+11111111111111111111111111111111     16 True                         
+
+----app_template_loaded----
+
+  {K:= add(getbmp(exepath+picpath+'7seg0.bmp'),getbmp(exepath+picpath+'7segaus.bmp'));
+    k:= add(getbmp(exepath+'\examples\images\7seg1.bmp'),getbmp(exepath+'\examples\images\7segaus.bmp'));
+    add(getbmp(exepath+'\examples\images\7seg2.bmp'),getbmp(exepath+'\examples\images\7segaus.bmp'));
+    add(getbmp(exepath+'\examples\images\7seg3.bmp'),getbmp(exepath+'\examples\images\7segaus.bmp'));
+    add(getbmp(exepath+'\examples\images\7seg4.bmp'),getbmp(exepath+'\examples\images\7segaus.bmp'));
+    add(getbmp(exepath+'\examples\images\7seg5.bmp'),getbmp(exepath+'\examples\images\7segaus.bmp'));
+    add(getbmp(exepath+'\examples\images\7seg6.bmp'),getbmp(exepath+'\examples\images\7segaus.bmp'));
+    add(getbmp(exepath+'\examples\images\7seg7.bmp'),getbmp(exepath+'\examples\images\7segaus.bmp'));
+    add(getbmp(exepath+'\examples\images\7seg8.bmp'),getbmp(exepath+'\examples\images\7segaus.bmp'));
+    add(getbmp(exepath+'\examples\images\7seg9.bmp'),getbmp(exepath+'\examples\images\7segaus.bmp'));}
+Let’s say you have placed Image list and an Image on your form and populated the list with few state images
+	
+var
+  MyImageList: TImageList;
+  MyImage: TImage;
+Canvas
+
+That is probably the easiest case. Lets draw an image on canvas of some control (OwnerDraw situation) and also center it. X, Y are top left corner of the future image and Width is a width of the rectangle we want to center image in.
+MyImageIndex is an index of the image in the Image List.
+?
+1
+	
+MyImageList.Draw(Canvas, X + Width div 2 - MyImageList.Width div 2, Y, MyImageIndex, dsNormal, itImage);
+TImage
+
+Being a little bit more complex, it does require some extra code.
+	
+// Make sure that any prior state is cleared.
+// If you do not do that with transparency enabled, you would see
+// images on top of each other
+MyImage.Picture.Bitmap := nil;
+// Make sure that transparency pixel in the image is taken
+// in consideration
+MyImage.Picture.Bitmap.TransparentMode := tmFixed;
+MyImage.Picture.Bitmap.TransparentColor := clWhite;
+// Load image from the Image list into TImage
+MyImageList.GetBitmap(MyImageIndex, MyImage.Picture.Bitmap);

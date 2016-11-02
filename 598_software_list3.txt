@@ -1,0 +1,392 @@
+PROGRAM Softwarelist_Installed_Form_2;
+
+//////////////////////////////////////////////////////////////////////
+//  #sign:53:03Max: MAXBOX10: 17/05/2016 22:35:00  PM 
+//  Purpose: shows installed software on PC and all Software        //
+//  #path>C:\Program Files (x86)\maxbox3\Import\IPC\maxbox4\maxbox4\examples\
+//  Lines of Code #locs:240
+//////////////////////////////////////////////////////////////////////
+
+Const TEXTOUT = 'Hi world of softage coverage';
+      UNINST_PATH = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall';
+
+//############################################################################
+// Archimedes Spiral Function Fun CODEsign
+//############################################################################
+//DONE: Display the count (#1) of software found on listview  -SOLVED
+
+
+Function IntToBase32X(Numb: Longint): String;
+begin
+  Result:= '';
+  for It:= 0 to 4 do begin
+    Insert(NUMBLETTS[(Numb And 31)+1], Result, 1);
+    Numb:= Numb Shr 5;
+  end;
+end;
+
+function CountPos(const subtxt: string; Text: string): Integer;
+begin
+  if (Length(subtxt)= 0) Or (Length(Text)= 0) Or (Pos(subtxt,Text)= 0) then
+    result:= 0
+  else
+    result:= (Length(Text)- Length(StringReplace(Text,subtxt,'',
+      [rfReplaceAll]))) div Length(subtxt);
+end;
+
+
+procedure LV_InsertFilesTest(strPath: string; ListView: TListView; ImageList: TImageList);
+var
+  i: Integer;
+  Icon: TIcon;
+  SearchRec: TSearchRec;
+  ListItem: TListItem;
+  FileInfo: SHFILEINFO;
+begin
+  // Create a temporary TIcon
+  Icon := TIcon.Create;
+  ListView.Items.BeginUpdate;
+  try
+    // search for the first file
+    i := FindFirst(strPath + '*.*', faAnyFile);
+    while i = 0 do begin
+      with ListView do begin
+        // On directories and volumes
+        if ((SearchRec.Attr and FaDirectory <> FaDirectory) and
+          (SearchRec.Attr and FaVolumeId <> FaVolumeID)) then begin
+          ListItem := ListView.Items.Add;
+          //Get The DisplayName
+          SHGetFileInfo(PChar(strPath + SearchRec.Name), 0, FileInfo,
+            SizeOf(FileInfo), SHGFI_DISPLAYNAME);
+          //Listitem.Caption := pchar(FileInfo.szDisplayName);
+          // Get The TypeName
+          SHGetFileInfo(PChar(strPath + SearchRec.Name), 0, FileInfo,
+            SizeOf(FileInfo), SHGFI_TYPENAME);
+          //ListItem.SubItems.Add(FileInfo.szTypeName);
+          //Get The Icon That Represents The File
+          SHGetFileInfo(PChar(strPath + SearchRec.Name), 0, FileInfo,
+            SizeOf(FileInfo), SHGFI_ICON or SHGFI_SMALLICON);
+          icon.Handle := FileInfo.hIcon;
+          //ListItem.ImageIndex := ImageList.AddIcon(Icon);
+          // Destroy the Icon
+          DestroyIcon(FileInfo.hIcon);
+        end;
+      end;
+      //i := FindNext(SearchRec);
+      i := FindNext;
+
+    end;
+  finally
+    Icon.Free;
+    ListView.Items.EndUpdate;
+  end;
+end;
+
+
+
+procedure GetAllSoftwareInstalled(Sender: TObject);
+var
+  Reg: TRegistry;
+  SubKeys: TStringList;
+  ListItem: TlistItem;
+  i: integer;
+  afrm: Tform;
+  ListView1: TListView;
+  sDisplayName, sUninstallString: string;
+
+begin
+  afrm:= TForm.create(self)
+  afrm.setBounds(0,0,1000,600)
+  afrm.show;
+  ListView1:= TListView.create(afrm);
+  ListView1.parent:= afrm;
+  ListView1.align:= alClient;
+  ListView1.ViewStyle := vsReport;
+  ListView1.Columns.add;
+  ListView1.Columns.add;
+  ListView1.Columns.add;
+  ListView1.Columns[0].caption := 'Count';
+  ListView1.Columns[1].caption := 'DisplayName';
+  ListView1.Columns[2].caption := 'UninstallString';
+  ListView1.Columns[0].Width := 40;
+  ListView1.Columns[1].Width := 300;
+  ListView1.Columns[2].Width := 600;
+
+  Reg:= TRegistry.Create;
+  with Reg do
+    try
+      with ListView1.Items do
+        try
+          BeginUpdate;
+          Clear;
+          RootKey := HKEY_LOCAL_MACHINE;
+          if OpenKeyReadOnly(UNINST_PATH) then begin
+            SubKeys := TStringList.Create;
+            try
+              GetKeyNames(SubKeys);
+              CloseKey;
+              for i := 0 to subKeys.Count - 1 do
+                if OpenKeyReadOnly(Format('%s\%s',[UNINST_PATH, SubKeys[i]])) then
+                  try
+                    sDisplayName     := ReadString('DisplayName');
+                    sUninstallString := ReadString('UninstallString');
+                    if sDisplayName <> '' then begin
+                      //ListItem         := Add;
+                      //ListItem.Caption := 'Count';
+                      ListItem         := Add;
+                      ListItem.subitems.Add(sDisplayName)
+                      //ListItem.subitems.Add(sDisplayName);
+                      ListItem.Caption := itoa(i);
+                      ListItem.subitems.Add(sUninstallString);
+                    end;
+                  finally
+                    CloseKey;
+                  end;
+            finally
+              SubKeys.Free;
+            end;
+          end;
+        finally
+          ListView1.AlphaSort;
+          EndUpdate;
+        end;
+    finally
+      CloseKey;
+      Free;
+    end;
+end;
+
+
+  function StreamToString(Stream: TStream): string;
+   var
+     ms: TMemoryStream;
+   begin
+     Result := '';
+     ms := TMemoryStream.Create;
+     try
+       ms.LoadFromStream(Stream);
+       //SetString(Result, PChar(ms.memory), ms.Size);
+     finally
+       ms.Free;
+     end;
+   end;
+
+
+procedure LoadfromResName(Sender: TObject);
+var
+ BitMap1 : TBitMap;
+ aform: TForm;
+begin
+  aform:= TForm.create(self);
+  BitMap1:= TBitMap.Create;
+  bitmap1.transparent:= true;
+  aform.SetBounds(0,0,300,250)
+  aform.borderstyle:= bsDialog;
+  try
+    aform.Show;
+    BitMap1.LoadFromResourceName(HInstance,'Live');
+    aform.Canvas.Draw(12,12,BitMap1);
+    BitMap1.LoadFromResourceName(HInstance,'Dead');
+    aform.Canvas.Draw(120,102,BitMap1);
+    //aform.Show;
+  finally
+    BitMap1.Free;
+  end;
+end;
+
+procedure TForm1_Button1Click(Sender: TObject);
+var ListView1: TListview;
+       ImageList1: TCustomImagelist;
+       afrm: Tform;
+begin
+  // Assign a Imagelist to the ListView
+  //ListView1.SmallImages := ImageList1;
+  // Show Listview in Report Style and add 2 Columns
+  
+  afrm:= TForm.create(self)
+  afrm.setBounds(0,0,1000,600)
+  afrm.show;
+  ImageList1:= TCustomImagelist.create(afrm)
+  ListView1:= TListView.create(afrm);
+  ListView1.parent:= afrm;
+  ListView1.align:= alClient;
+  ListView1.SmallImages:= ImageList1;
+  
+  ListView1.ViewStyle:= vsReport;
+  ListView1.Columns.Add;
+  ListView1.Columns.Add;
+  ListView1.Columns[0].Width:= 160;
+  ListView1.Columns[1].Width:= 340;
+  LV_InsertFiles('C:\Windows\', ListView1, imagelist1 as TImagelist);
+end;
+
+
+Begin  //main
+ writeln('IntToBase32 of 1000: '+IntToBase32X(1000))
+ writeln('CountPos: '+itoa(CountPos('max','this is max of maXbox a max numbermax')))
+ PrintF('CountPos: %d',[CountPos('max','this is max of maXbox a max numbermax')])
+ 
+  //writeln(getFormRes('TMaxForm1'))
+  
+  //LoadfromResName(self)
+  
+  //GetAllSoftwareInstalled(self)
+  
+  TForm1_Button1Click(self)
+ 
+  // Example: RoundTime('07.08.02 10:41', '15', True) -- > 07.08.02 10:45
+  
+  //maxform1.myscript1click(self)
+End. 
+
+
+Ref: http://www.swissdelphicenter.ch/en/showcode.php?id=1365
+
+function getFormRes(classname: string): string;
+var
+  rs: TResourceStream;
+  ms: TMemoryStream;
+begin
+  rs := TResourceStream.Create(HInstance, ClassName, RT_RCDATA);
+  try
+    ms := TMemoryStream.Create;
+    try
+      ObjectBinaryToText(rs, ms);
+      ms.Seek(0, 0);
+       if ms.Size > 0 then begin
+        SetLength(result, ms.Size);
+      Move(mS.Memory^, result[1], mS.Size);
+    end;
+    finally
+      ms.Free;
+    end;
+    //QS_ALLINPUT
+  finally
+    rs.Free;
+  end;
+end;
+
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  case CheckCC(Edit1.Text) of
+    0: Label1.Caption := 'Card is invalid or unknown';
+    1: Label1.Caption := 'Card is a valid AmEx';
+    2: Label1.Caption := 'Card is a valid Visa';
+    3: Label1.Caption := 'Card is a valid MasterCard';
+  end;
+end;
+
+http://www.swissdelphicenter.ch/en/showcode.php?id=1089
+
+//############################################################################
+// Archimedes Spiral App
+//############################################################################
+
+unit ArchSpiralMain;
+
+interface
+
+uses
+  w3system, w3components, w3ctrls, w3application, w3game, w3gameapp,
+  w3polygons, w3inet, w3graphics;
+
+type
+  TApplication = class(TW3CustomGameApplication)
+  private
+    FValueA: Float;
+    FValueB: Float;
+    FWait: Boolean;
+    procedure HandleClick(Sender:TObject);
+  protected
+    procedure ApplicationStarting; override;
+    procedure ApplicationClosing; override;
+    procedure PaintView(Canvas: TW3Canvas); override;
+  end;
+
+implementation
+
+//############################################################################
+// TApplication
+//############################################################################
+
+procedure TApplication.ApplicationStarting;
+begin
+  inherited;
+
+  FValueA := 3.0;
+  FValueB := 1.4;
+
+  GameView.OnClick := Self.HandleClick;
+
+  // Initialize refresh interval, set this to 1 for optimal speed
+  GameView.Delay := 10;
+ 
+  // Start the redraw-cycle with framecounter active
+  // Note: the framecounter impacts rendering speed. Disable
+  // the framerate for maximum speed (false)
+  GameView.StartSession(true);
+end;
+
+procedure TApplication.ApplicationClosing;
+begin
+  GameView.EndSession;
+  inherited;
+end;
+
+procedure TApplication.HandleClick(Sender: TObject);
+begin
+  FWait := not FWait;
+end;
+
+// Note: In a real live game you would try to cache as much
+// info as you can. Typical tricks are: 
+//   1: Only get the width/height when resized
+//   2: Pre-calculate strings, especially RGB/RGBA values
+//   3: Only redraw what has changed, avoid a full repaint
+// The code below is just to get you started
+
+procedure TApplication.PaintView(Canvas: TW3Canvas);
+var
+  cx, cy: Integer;
+  i: Integer;
+  angle: Float;
+  x, y: Float;
+begin
+  if FWait then
+    exit;
+
+  FValueB:= FValueB + 0.001;
+  // Clear background
+  Canvas.FillStyle := 'rgba(0,0,99,0.08)';
+  Canvas.FillRectF(0, 0, GameView.Width, GameView.Height);
+
+  // Draw our framerate on the screen
+//  Canvas.font := '10pt verdana';
+//  Canvas.FillStyle := 'rgb(255,255,255)';
+//  Canvas.FillTextF('FPS:' + IntToStr(GameView.FrameRate) + ' / ' + floatToStr(FbValue) ,10,20,MAX_INT);
+
+  cx := GameView.width div 2;
+  cy := GameView.Height div 2;
+  Canvas.BeginPath;
+  for i := 42 downto 0 do begin
+    angle := FValueB * i;
+    x := cx + (FValueA + FValueB * angle) * cos(angle);
+    y := cy + (FValueA + FValueB * angle) * sin(angle);
+    if i = 42 then Canvas.MoveToF(x, y) else Canvas.LineToF(x,y);
+  end;
+  Canvas.StrokeStyle := '#FFF';
+  Canvas.Stroke;
+end;
+
+end.
+
+  RegisterMethod('Constructor Create(AOwner: TComponent)');
+  RegisterConstructor(@TJvMail.Create, 'Create');
+   RegisterMethod('Procedure Free');
+   RegisterMethod(@TJvMail.Destroy, 'Free');
+   
+   Der Microsoft-Fehlerberichterstattungsdienst unterstützt Microsoft und deren Partner beim Diagnostizieren von Problemen in der von Ihnen verwendeten Software und beim Bereitstellen von Lösungen. Nicht für alle Probleme können Lösungen bereitgestellt werden. Falls jedoch Lösungen verfügbar sind, werden sie in Form von schrittweisen Anleitungen zur Lösung des gemeldeten Problems oder in Form von zu installierenden Updates bereitgestellt. Um Probleme zu verhindern und die Zuverlässigkeit der Software zu erhöhen, sind einige Lösungen auch in Service Packs und zukünftigen Versionen der Software enthalten.
+
+   Der Microsoft-Fehlerberichtbestattungsdienst unterstützt Microsoft und deren Partner beim   
+----app_template_loaded_code----

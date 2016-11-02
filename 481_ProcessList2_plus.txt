@@ -1,0 +1,646 @@
+program ProcessListUnitApp;
+
+{  Coder: Counterstrikewi , by maXbox 2014 - 2016 #locs:609
+   Compiled: Delphi 2007 , #sign: Max: MAXBOX10: 17/05/2016 22:29:59 
+   Website: www.delphibasics.info   }
+
+//interface
+//7uses
+  //Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  //Dialogs, StdCtrls, ComCtrls, Menus, ProcessUnit;
+
+//type
+  //TFormMain = class(TForm)
+  var 
+    PM : TProcessManager;
+    LV: TListView;
+    afrm: TForm;
+    KillProcessbyName1: TMenuItem;
+    KillProcessbyPID1: TMenuItem;
+    RefreshProcessList1: TMenuItem;
+       procedure FormCreate(Sender: TObject); forward;
+       procedure KillProcessbyName1Click(Sender: TObject); forward;
+       procedure KillProcessbyPID1Click(Sender: TObject); forward;
+       procedure FormDestroy(Sender: TObject); forward;
+       procedure RefreshProcessList1Click(Sender: TObject); forward;
+       //procedure FormDestroy(Sender: TObject); forward;
+     
+     
+      //private
+       //procedure ListProcesses;
+ { Public declarations }
+  //end;
+//var
+  //FormMain: TFormMain;
+
+//implementation
+//{$R *.dfm}
+
+ const
+  { For Windows >= XP }
+  //{$EXTERNALSYM HDF_SORTUP}
+  HDF_SORTUP              = $0400;
+  //{$EXTERNALSYM HDF_SORTDOWN}
+  HDF_SORTDOWN            = $0200;
+
+type
+  TSortSpecification = record
+    Column: TListColumn;
+    Ascending: Boolean;
+    CompareItems: function(const s1, s2: string): Integer;
+  end;
+  
+  type
+  THeaderSortState = (hssNone, hssAscending, hssDescending);
+  
+  const
+  //{$EXTERNALSYM LVM_GETHEADER}
+  LVM_FIRST               = $1000;      { ListView messages }
+  LVM_GETHEADER               = 4127;
+  HDI_FORMAT              = $0004;
+  HDM_GETITEM              = 4611;
+  LVM_SETCOLUMNWIDTH          = 4096;
+  LVM_SETTEXTCOLOR        = LVM_FIRST + 36;
+  LVM_GETTEXTCOLOR        = LVM_FIRST + 35;
+
+
+function ListView_SetColumnWidth(hwnd: HWnd; iCol: Integer; cx: Integer): Bool;
+begin
+  Result := Bool( SendMessage(hwnd, LVM_SETCOLUMNWIDTH, iCol,
+    MakeLong(Word(cx), 0)) );
+end;
+
+function ListView_GetHeader(hwnd: HWND): HWND;
+begin
+  Result := SendMessage(hwnd, LVM_GETHEADER, 0, 0);
+end;
+
+function ListView_GetTextColor(hwnd: HWND): TColorRef;
+begin
+  Result := SendMessage(hwnd, LVM_GETTEXTCOLOR, 0, 0);
+end;
+
+function ListView_SetTextColor(hwnd: HWND; clrText: TColorRef): Bool;
+begin
+  Result := Bool( SendMessage(hwnd, LVM_SETTEXTCOLOR, 0, clrText) );
+end;
+
+
+function CompareTextAsInt(const s1, s2: string): Integer;
+begin
+  //Result := CompareValue(StrToInt(s1), StrToInt(s2));
+  result:= CompareIntegers(StrToInt(s1), StrToInt(s2))
+end;
+
+function CompareTextAsDateTime(const s1, s2: string): Integer;
+begin
+  Result := CompareDateTime(StrToDateTime(s1), StrToDateTime(s2));
+end;
+
+function ListViewFromColumn(Column: TListColumn): TListView;
+begin
+ // Result := (Column.Collection as TListColumns).Owner as TListView;
+end;
+
+
+var ColumnToSort: integer;
+
+procedure lvwTagsColumnClick(Sender: TObject; Column: TListColumn);
+//var ColumnToSort: integer;
+begin
+ ColumnToSort := Column.Index;
+ (Sender as TCustomListView).AlphaSort;
+   writeln('alphA SORT'+ itoa(column.index));
+    //RainbowColor(CONST fraction:  Double; VAR R,G,B:  BYTE);
+
+end;
+
+procedure lvwTagsCompare(Sender: TObject; Item1, Item2: TListItem;
+  Data: Integer; var Compare: Integer);
+var
+ ix: Integer;
+ begin
+ if ColumnToSort = 0 then
+ Compare := CompareText(Item1.Caption,Item2.Caption)
+ else 
+  if ColumnToSort = 1 then
+  Compare := CompareTextAsInt(Item1.subitems[0],Item2.subitems[0])
+else
+  if ColumnToSort = 2 then
+  Compare := CompareTextAsInt(Item1.subitems[1],Item2.subitems[1])
+ else
+if ColumnToSort = 3 then
+  Compare := CompareTextAsInt(Item1.subitems[2],Item2.subitems[2])
+ else begin
+ ix := ColumnToSort - 1;
+ Compare := CompareText(Item1.SubItems[ix],Item2.SubItems[ix]);
+ end;
+end;
+
+procedure lvwTagsCompareCase(Sender: TObject; Item1, Item2: TListItem;
+                                     Data: Integer; var Compare: Integer);
+var
+ ix: Integer;
+ begin
+ Case ColumnToSort of
+ 0: Compare:= CompareText(Item1.Caption,Item2.Caption);
+ 1: Compare:= CompareTextAsInt(Item1.subitems[0],Item2.subitems[0]);
+ 2: Compare:= CompareTextAsInt(Item1.subitems[1],Item2.subitems[1]);
+ 3: Compare:= CompareTextAsInt(Item1.subitems[2],Item2.subitems[2]);
+   else begin
+     ix:= ColumnToSort - 1;
+     Compare:= CompareText(Item1.SubItems[ix],Item2.SubItems[ix]);
+   end;
+ end;  
+end;
+
+procedure TfrmFind_lvwTagsColumnClick(Sender: TObject; Column: TListColumn);
+begin
+ ColumnToSort := Column.Index;
+ Column.Tag:= Column.Tag * -1;
+ if Column.Tag = 0 then Column.Tag:=1;
+     (Sender as TCustomListView).AlphaSort;
+end;
+
+procedure TfrmFind_lvwTagsCompare(Sender: TObject; Item1, Item2: TListItem;
+  Data: Integer; var Compare: Integer);
+begin
+Case ColumnToSort of
+    0:  Compare := TListView(Sender).Tag * CompareText(Item1.Caption, Item2.Caption);
+    1:  Compare := TListView(Sender).Tag * CompareTextAsInt(Item1.subitems[0],Item2.subitems[0]);
+    2:  Compare := TListView(Sender).Tag * CompareTextAsDateTime(Item1.subitems[1],Item2.subitems[1]);
+    else
+    Compare := TListView(Sender).Tag * CompareText(Item1.Caption, Item2.Caption);
+  End;
+end;
+
+procedure TfrmFind_lvwTagsCompare2(Sender: TObject; Item1, Item2: TListItem;
+  Data: Integer; var Compare: Integer);
+var
+ ix: Integer;
+ begin
+ if ColumnToSort = 0 then
+  Compare := CompareText(Item1.Caption,Item2.Caption)
+ else
+ if ColumnToSort = 1 then
+  Compare := CompareTextAsInt(Item1.subitems[0],Item2.subitems[0])
+ else
+if ColumnToSort = 2 then
+  Compare := CompareTextAsInt(Item1.subitems[1],Item2.subitems[1])
+ else
+if ColumnToSort = 3 then
+  Compare := CompareTextAsInt(Item1.subitems[2],Item2.subitems[2])
+
+ else begin
+ ix := ColumnToSort - 1;
+ Compare := CompareText(Item1.SubItems[ix],Item2.SubItems[ix]);
+ end;
+end;
+
+procedure createProcessForm;
+var nc: TListColumn;
+    mt: TMainMenu;
+    Popup: TPopupMenu;
+begin
+  afrm:= TForm.create(self);
+  with afrm do begin
+     Left:= 0; Top:= 0;
+     Caption:= 'Aphex ProcessUnit Example by maXbox4 strikewi'
+     ClientHeight:= 271
+     ClientWidth:= 634
+     Color:= clBtnFace
+     Font.Charset:= DEFAULT_CHARSET
+     Font.Color:= clWindowText
+     Font.Height:= -11
+     Font.Name:= 'Tahoma'
+     Font.Style:= []
+     OldCreateOrder:= False
+     //OnCreate:= @FormCreate;
+     OnDestroy:= @FormDestroy;
+     PixelsPerInch:= 96
+     Show;
+  end;
+  Popup:= TPopupMenu.create(afrm)
+  LV:= TListView.create(self);
+  with lv do begin
+    parent:= afrm;
+    font.size:= 12;
+    SetBounds(0,0,634,271)
+    Align:= alClient
+      nc:= columns.add
+        nc.Caption:= 'EXE Path (check as Admin)'
+        nc.Width:= 400
+      nc:= columns.add
+        nc.Caption:= 'PID'
+        nc.Width:= 70
+      nc:= columns.add
+        nc.Caption:= 'Thread'
+        nc.Width:= 70
+      nc:= columns.add
+        nc.Caption:= 'Priority'
+        nc.Width:= 70
+    writeln('setcolumn '+botoStr(ListView_SetColumnWidth(lv.handle, 2, 150)))
+    //ListView_SetTextColor(hwnd: HWND; clrText: TColorRef): Bool;   
+    //http://docwiki.embarcadero.com/RADStudio/Seattle/en/Colors_in_the_VCL 
+    ListView_SetTextColor(lv.handle, $008000); //$008000  $701919
+    RowSelect:= True
+    PopupMenu:= Popup
+    SortType:= stText
+    gridlines:= true;
+    ViewStyle:= vsReport
+    alphasort
+    oncolumnclick:= @lvwTagsColumnClick;
+    oncompare:= @lvwTagsCompareCase;
+    //sort
+    Show;
+  end;
+  //mt:= TMainMenu.Create(afrm)
+  //Popup.parent:= afrm;
+    RefreshProcessList1:= TMenuItem.Create(popup)
+    with RefreshProcessList1 do begin
+      //parent;
+      popup.Items.Add(RefreshProcessList1);
+      Caption:= 'Refresh Process List'
+      OnClick:= @RefreshProcessList1Click
+    end;
+    KillProcessbyName1:= TMenuItem.create(popup)
+    with KillProcessbyName1 do begin
+      popup.Items.Add(KillProcessbyName1);
+      Caption:= 'Kill Process by Name'
+      OnClick:= @KillProcessbyName1Click
+    end;
+    KillProcessbyPID1:= TMenuItem.create(popup)
+    with KillProcessbyPID1 do begin
+      popup.Items.Add(KillProcessbyPID1);
+      Caption:= 'Kill Process by PID'
+      OnClick:= @KillProcessbyPID1Click
+    end
+ end;
+
+procedure ListProcesses;
+var C : Integer;
+    CD: TStringArray;
+begin
+  LV.Clear;
+  PM.Free;
+  PM:= TProcessManager.Create;
+  PM.ListProcesses;
+  for C:= 0 to PM.Count do begin
+    with LV.Items.Add do begin
+      CD:= PM.ExePathList;
+      Caption:= CD[C];
+      CD:= PM.PIDList;
+      SubItems.Add(CD[C]);
+      CD:= PM.ThreadList;
+      SubItems.Add(CD[C]);
+      CD:= PM.PriorityList;
+      SubItems.Add(CD[C]);
+      //SubItems.Add(PM.PIDList[C]);
+      //SubItems.Add(PM.ThreadList[C]);
+      //SubItems.Add(PM.PriorityList[C]);
+      //lv.alphasort;
+    end;
+  end;
+end;
+
+procedure FormCreate(Sender: TObject);
+begin
+  PM:= TProcessManager.Create;
+  ListProcesses;
+end;
+
+procedure FormDestroy(Sender: TObject);
+begin
+  PM.Free;
+end;
+
+procedure KillProcessbyName1Click(Sender: TObject);
+begin
+  PM.KillProcessByExePath(LV.Selected.Caption);
+  ListProcesses;
+end;
+
+procedure KillProcessbyPID1Click(Sender: TObject);
+begin
+  PM.KillProcessByPID(LV.Selected.SubItems[0]);
+  ListProcesses;
+end;
+
+procedure RefreshProcessList1Click(Sender: TObject);
+begin
+  ListProcesses;
+  writeln('Refresh ListProcesses')
+end;
+
+function PathCharIsSlash(const C: Char): Boolean;
+{ Returns True if C is a backslash or slash. }
+begin
+  Result := (C = '\') or (C = '/');
+end;
+
+type
+  TOSVersionInfoEx2 = record
+    dwOSVersionInfoSize: DWORD;
+    dwMajorVersion: DWORD;
+    dwMinorVersion: DWORD;
+    dwBuildNumber: DWORD;
+    dwPlatformId: DWORD;
+    szCSDVersion: array[0..127] of AnsiChar;
+    wServicePackMajor: WORD;
+    wServicePackMinor: WORD;
+    wSuiteMask: WORD;
+    wProductType: Byte;
+    wReserved: Byte;
+  end;
+  
+ (* typedef struct tagMODULEENTRY32 {
+  DWORD dwSize;
+  DWORD th32ModuleID;
+  DWORD th32ProcessID;
+  DWORD GlblcntUsage;
+  DWORD ProccntUsage;
+  BYTE *modBaseAddr;
+  DWORD modBaseSize;
+  HMODULE hModule;
+  TCHAR szModule[MAX_PATH];
+  TCHAR szExePath[MAX_PATH];
+  DWORD dwFlags;
+} MODULEEN     *)
+
+function NeedWin2kFix: Boolean;
+var
+  aInfo: TOSVersionInfoEx;
+begin
+  Result := False;
+  aInfo.dwOSVersionInfoSize := SizeOf(aInfo);
+  if GetVersionEx3((aInfo)) then
+    if (aInfo.dwMajorVersion = 5) and (aInfo.dwMinorVersion = 0) then {and}
+       //(aInfo.wServicePackMajor < 4) then
+      Result := True;
+end;
+
+function InternalGetFileAttr(const Name: String): Integer;
+begin
+  //Result := GetFileAttributes(PChar(RemoveBackslashUnlessRoot(Name)));
+end;
+
+function GetCmdTail: String;
+{ Returns all command line parameters passed to the process as a single
+  string. }
+var
+  S: String;
+begin
+  //Result:= GetParamStr(GetCommandLine, S);
+end;
+
+//examples of the mX3 Power: Central Station is my Destination
+procedure ConvertImage(vsource, vdestination: string);
+begin
+  with TLinearBitmap.Create do
+  try
+    LoadFromFile(vsource);
+    //Assign(Bmp);
+    SaveToFile(vdestination);
+  finally
+    Dispose;
+    Free;
+  end;
+end;
+
+//If you have two strings that contain integers and you wish to compare as integers then convert them from text to integer, and compare numerically.
+//TValueRelationship supports the following values :
+{LessThanValue 	-1
+EqualsValue 	0
+GreaterThanValue 	1}
+
+function CompareTextAsIntegerX(const s1, s2: string): Integer;
+var av: TValueRelationship;
+begin
+  //av:= CompareValueI(StrToInt(s1), StrToInt(s2));
+  result:= ord(CompareValueI(StrToInt(s1), StrToInt(s2)));
+  case CompareValueI(StrToInt(s1), StrToInt(s2)) of
+    -1   : ShowMessage('A < B');
+    EqualsValue      : ShowMessage('A = B');
+    1 : ShowMessage('A > B');
+  end;
+  writeln(itoa(av[1]));
+  case CompareValueI(StrToInt(s1), StrToInt(s2)) of
+    -1   : ShowMessage('A < B');
+    EqualsValue      : ShowMessage('A = B');
+    1 : ShowMessage('A > B');
+  end;
+  //result:= av[1];
+  //result:= CompareValueI;
+end;
+
+//And similarly for dates. Convert them from text to numeric values, for example TDateTime values. And then compare numerically.
+
+//And similarly for dates. Convert them from text to numeric values, for example TDateTime values. And then compare numerically.
+
+function CompareTextAsDateTimeX(const s1, s2: string): Integer;
+begin
+  Result := CompareDateTime(StrToDateTime(s1), StrToDateTime(s2));
+end;
+
+
+procedure Comparingfloatingpointnumbers;
+var
+  A : Single;
+  B : Single;
+  C : Single;
+ //LessThanValue, GreaterThanValue: byte;
+
+begin
+  A := 23.0;
+  B := 23.0;
+  C := 23.1;
+  //LessThanValue:=-1;
+  //GreaterThanValue:=1
+
+  // Compare 2 equal floats
+  case TValueRelationship(CompareValueS(A, B,0)) of
+    LessThanValue    : Writeln('A < B');
+    EqualsValue      : Writeln('A = B');
+    GreaterThanValue : Writeln('A > B');
+  end;
+
+  // Compare 2 unequal floats
+  writeln(itoa(ord(CompareValueS(A, C, 0))))
+  case CompareValueS(A, C,0) of
+    LessThanValue    : Writeln('A < C');
+    EqualsValue      : Writeln('A = C');
+    GreaterThanValue : Writeln('A > C');
+  end;
+
+  // Compare 2 unequal floats - but allow for a difference of up to +/- 0.2
+  writeln(itoa(ord(CompareValueS(A, C, 0.2))))
+  case CompareValueS(A, C, 0.2) of
+    LessThanValue    : Writeln('A < C');
+    EqualsValue      : Writeln('A = C');
+    GreaterThanValue : Writeln('A > C');
+  end;
+end;
+
+procedure DB_XML_AliasConverter;
+//uses Classes, SysUtils, DB, DBTables, Provider, DBClient;
+var
+   i: Integer;
+   BDEAlias: string;
+   abase, abasepath: string;
+   aParams, TableNames: TStringList;
+   aDataSetProvider: TDataSetProvider;
+   CDataSet: TClientDataSet;
+   Table: TTable;
+begin
+  BDEAlias:= 'DBDEMOS';
+  TableNames:= TStringList.Create;
+  AParams:= TStringList.Create; 
+  with TSession.Create(NIL) do try
+    //AutoSessionName: = True;
+    SessionName:= 'MainSession3'; 
+    GetAliasParams(BDEAlias, AParams); 
+    OpenDatabase(BDEAlias); 
+    abasepath:= aParams[0];
+    Delete(abasepath,1,7)
+    GetTableNames(abasepath,'', True, False, TableNames);
+  finally
+    Close;
+    Free;
+  end {TSession};
+  Table:= TTable.Create(NIL);
+  aDataSetProvider:= TDataSetProvider.Create(NIL);
+  CDataSet:= TClientDataSet.Create(NIL);
+  try
+    Table.DatabaseName:=  BDEAlias; //tablenames[2];
+    //Table.Params.Assign(AParams); 
+    Writeln('base name '+Table.DatabaseName);
+    for i:= 0 to Pred(TableNames.Count) do begin
+      Table.TableName:= TableNames[i];
+      writeln('table to XML '+Table.Tablename)
+      Table.Open;
+      aDataSetProvider.DataSet:= Table;
+      CDataSet.SetProvider(TComponent(aDataSetProvider));
+      CDataSet.Open;
+      CDataSet.SaveToFile(ExePath+'crypt\'+
+                           ChangeFileExt(Table.TableName,'.xml'),dfXMLUTF8);
+      CDataSet.Close;
+      Table.Close
+    end;
+    //CreateDBGridForm(tableNames);
+  finally
+    Table.Free;
+    CdataSet.Free;
+    aDataSetProvider.Free; 
+    //ASession.Free;  
+    AParams.Free;
+    tableNames.Free;
+  end;
+end;
+
+
+//Performance Checker Code Snippet
+procedure timewatch;
+begin
+with TStopwatch.Create do begin
+  Start
+    writeln(('Quaddrillion '+(powerBig(11,24))))
+    writeln(('too big? '+(powerBig(11,24))))
+    sleep(500)
+  Stop
+    Writeln('Time: ' +(floattoStr(GetValueMSec/1000)));
+    Writeln('Time: ' +GetValueStr);
+  Free;
+ end;   
+end;
+
+function bigpow(a,b: byte): string;
+begin
+  result:= powerbig(a,b)
+end;  
+
+var av: TValueRelationship;
+    atlong: longint;
+
+begin
+  createProcessForm;
+  FormCreate(self);
+  writeln(botostr(IsPortAvailable(1)));
+  //test bed
+ { with TComSelectForm.Create(self) do begin
+    Showmodal;
+    free;
+   end; 
+  }
+    writeln(inttostr(ord(cyGetWindowsVersion)));
+    writeln(inttostr(ord(GetWindowsVersion)));
+    writeln('NeedWin2kFix '+botoStr(NeedWin2kFix))
+    timewatch;
+    ft:= 0.6;
+    it:= 23;
+    Comparingfloatingpointnumbers;
+    CompareValueI(it, it);
+    //atlong:= -34;
+    //writeln(itoa(atlong))
+    //av:= TValueRelationship(CompareValueI(it, it));
+    //writeln(itoa(av[0]))
+    case CompareValueS(ft+5.7, ft,0) of
+    LessThanValue {-1}    : Writeln('A < B');
+    EqualsValue      : Writeln('A = B');
+    GreaterThanValue {1} : Writeln('A > B');
+    end;
+    case CompareValueS(ft, ft+5.7,0) of
+    255 {LessThanValue {-1}    : Writeln('A < B');
+    EqualsValue      : Writeln('A = B');
+    GreaterThanValue {1} : Writeln('A > B');
+    end;
+    case CompareValueS(ft, ft,0) of
+    255 {LessThanValue {-1}    : Writeln('A < B');
+    EqualsValue      : Writeln('A = B');
+    GreaterThanValue {1} : Writeln('A > B');
+    end;
+    
+    writeln(powerbig(2,128))
+    writeln(bigpow(2,128))
+ 
+    writeln(floattostr(power(2,128)))
+    printF('just big %.18f',[power(2,128)])
+    
+    
+end.
+
+//Doc
+
+//Ref closure
+   {Columns = <  item
+        Caption = 'EXE'
+        Width = 400
+      end
+      item
+        Caption = 'PID'
+        Width = 70
+      end
+      item
+        Caption = 'Thread'
+        Width = 70
+      end
+      item
+        Caption = 'Priority'
+        Width = 70
+      end:>}
+ 
+ 
+ </script><script type="text/javascript">
+    (function() {
+      function async_load(){
+        var s = document.createElement('script');
+        //var u=(("https:" == document.location.protocol) ? "https://web-statistics.bfh.ch/" : "http://web-statistics.bfh.ch/");
+        var u=(("https:" == document.location.protocol) ? "https://www.bfh.ch/" : "http://www.bfh.ch/");
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = u+'fileadmin/piwik/www.bfh.ch/tracker.js';
+        var x = document.getElementsByTagName('script')[0];
+        x.parentNode.insertBefore(s, x);
+      }
+      window.attachEvent ? window.attachEvent('onload', async_load) : window.addEventListener('load', async_load, false);
+    })();
+</script>

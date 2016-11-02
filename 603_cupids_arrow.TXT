@@ -1,0 +1,355 @@
+
+unit U_CupidsArrow3;
+{Copyright  © 2003, Gary Darby,  www.DelphiForFun.org
+ This program may be used or modified for any non-commercial purpose
+ so long as this original notice remains in place.
+ All other rights are reserved adapt for maXbox by max, #locs:316
+ }
+{ http://www.delphiforfun.org/Programs/cupidsarrow.htm
+ Selecting from the numbers 1 through 9, place one digit in each of the
+circles representing points on Cupid's bow according to the following rule:
+
+Each pair of digits connnectect by a black line must form a 2-digit
+number that is evenly divisible by 7 or13,  For example 7 and 8
+connected by a line would be appropriate because the number 78 is
+divisible by 13.  You can consider the 2 digits in either order and no
+digit may be used more than once.
+
+"For every solution you find" said Cupid before flying off, "you win
+someone's heart. If you can find a solution in which the numbers
+connected by the yellow lines qualify as well,  you will always be in
+love!"
+Adapted from "Wonder of Numbers", Clifford Pickover
+}
+
+interface
+
+{uses
+Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, ComCtrls;
+ }
+ 
+//type
+//TForm1 = class(TForm)
+  
+  var  SolveBtn: TButton;
+    ListBox1: TListBox;
+    aMemo1: TMemo;
+    C1: TShape;
+    C2: TShape;
+    C3: TShape;
+    C4: TShape;
+    C5: TShape;
+    Label1: TLabel;
+    StatusBar1: TStatusBar;
+  var
+    combos: TComboSet;  {created at initialization time}
+    select: TBytearray64;
+
+      procedure SolveBtnClick(Sender: TObject);
+      procedure FormActivate(Sender: TObject);
+      procedure FormPaint(Sender: TObject);
+      procedure ListBox1Click(Sender: TObject);
+//public
+  var  
+    p: array[1..5] of Tpoint; {Centers of the 5 points on the bow}
+//end;
+
+var Form1: TForm;
+
+implementation
+
+//{$R *.DFM}
+//uses combo;
+                                    
+type tedges = array[1..2] of integer;
+var
+{All edges, connected pairs of vertices,
+   these connected vertices must contain numbers divisible by 7 or 13}
+  
+  edges: array[1..8] of tedges;
+  //= ((1,5),(2,5),(3,5),(4,5),(3,4),(2,3),(1,2),(4,1));
+
+//***File 21: C:\Program Files\maXbox\maxbox3\Examples\267_SquareWordGrids2.txt
+
+
+function isOK(i:integer):boolean;
+{check if nu.mbers connected by edge are valid}
+//var select: TBytearray64;
+begin   
+    //selected:= combos.selected;
+   if ((10*select[edges[i][1]]+select[edges[i][2]]) mod 7=0) or
+   ((10*select[edges[i][1]]+select[edges[i][2]]) mod 13=0) or
+   ((10*select[edges[i][2]]+select[edges[i][1]]) mod 7=0) or
+   ((10*select[edges[i][2]]+select[edges[i][1]]) mod 13=0)
+   then result:=true else result:=false;
+end;
+
+
+procedure SolveBtnClick(Sender: TObject);
+var
+ ok:boolean;
+  i, cnt, cnt2:integer;
+  msg:string;
+begin
+  form1.invalidate;  {force repaint to clear any numbers from image}
+  listbox1.clear;
+   listbox1.items.add('Click a solution to see the numbers in Cupid''s bow');
+   //select:= combos.selected;
+   combos.setup(5,9,upermutations);
+  //select:= combos.selected;
+  writeln('init test: '+itoa(select[1]))
+
+{we will just check all ways to choose 5 of the 9 digits}
+with combos do
+  while getnext do begin
+   //writeln('444')
+   inc(cnt)
+   //for it:= low(select) to high(select) do select[it]:= 0; 
+   select:= combos.selected;
+   ok:=true;
+   for i:= 1 to 6 do 
+    if not isOK(i) then {check first 6 edges} begin
+      OK:=false;
+       break;
+    end;
+    if Ok then {1st 6 edges OK, check the bow string} begin
+if isOK(7) and isOK(8) then msg:=' (Bow string(yellow) also satisfies condition)'
+    else msg:='';
+       listbox1.items.add(format('%d, %d, %d, %d, %d ',
+     [select[1],select[2],select[3],select[4],select[5]])+msg);
+     //[tsel[1],tsel[2],tsel[3],tsel[4],tsel[5]])+msg);
+    inc(cnt2)
+    end;
+  end;
+ writeln('Solutions found: '+inttostr(cnt2)+' of Permutations '+inttostr(cnt));
+end;
+
+procedure FormActivate(Sender: TObject);
+begin
+ combos:= TComboset.create;
+  edges[1][1]:= 1;   edges[2][1]:= 2;
+  edges[1][2]:= 5;   edges[2][2]:= 5;
+  edges[3][1]:= 3;   edges[4][1]:= 4;
+  edges[3][2]:= 5;   edges[4][2]:= 5;
+  edges[5][1]:= 3;   edges[6][1]:= 2;
+  edges[5][2]:= 4;   edges[6][2]:= 3;
+  edges[7][1]:= 1;   edges[8][1]:= 4;
+  edges[7][2]:= 2;   edges[8][2]:= 1;
+ //= ((1,5),(2,5),(3,5),(4,5),(3,4),(2,3),(1,2),(4,1));
+
+   with c1 do p[1]:=point(left+ width div 2, top+height div 2);     
+   with c2 do p[2]:=point(left+ width div 2, top+height div 2);
+   with c3 do p[3]:=point(left+ width div 2, top+height div 2);
+   with c4 do p[4]:=point(left+ width div 2, top+height div 2);
+   with c5 do p[5]:=point(left+ width div 2, top+height div 2);
+end;
+
+procedure loadForm;
+begin
+ Form1:= TForm.create(self)
+ with form1 do begin
+  setbounds(263,103,696,490)
+  Caption:= 'Cupid'#39's Arrows by maXbox'
+  Color:= clBtnFace
+  Font.Charset:= DEFAULT_CHARSET
+  Font.Color:= clWindowText                                                     Font.Height:= -11
+  Font.Name:= 'MS Sans Serif'
+  Font.Style:= []
+  OldCreateOrder:= False
+  Position:=poScreenCenter
+  //OnActivate = FormActivate
+  OnPaint:= @FormPaint
+  PixelsPerInch:= 96
+  //TextHeight:= 13
+  Show;
+  end;
+  //FormActivate(self)
+  
+  C1:= TShape.create(form1)
+  with c1 do begin
+    parent:= form1;
+    setbounds(56,328,33,30)
+    Shape:= stCircle
+  end;
+  C2:= TShape.create(form1)
+  with c2 do begin
+    parent:= form1;
+    setbounds(152,264,33,30)
+    Shape:= stCircle
+  end;
+  C3:= TShape.create(form1)
+  with c3 do begin
+    parent:= form1;
+    setbounds(200,328,33,30)
+    Shape:= stCircle
+  end;
+  C4:= TShape.create(form1)
+  with c4 do begin
+    parent:= form1;
+    setbounds(152,392,33,30)
+    Shape:= stCircle
+  end;
+  C5:= TShape.create(form1)
+  with c5 do begin
+    parent:= form1;
+    setbounds(152,328,33,30)
+    Shape:= stCircle
+  end;
+  with TLabel.creATE(form1) do begin
+    parent:= form1;
+    setbounds(392,16,43,13)
+    Caption:= 'Solutions'
+  end;
+  SolveBtn:= TButton.create(form1)
+  with solvebtn do begin
+    parent:= form1;
+    setbounds(376,365,209,25)
+   Caption:= 'Search for Solutions'
+    TabOrder:= 0
+    OnClick:= @SolveBtnClick
+  end;
+ 
+  FormActivate(self)
+ 
+  ListBox1:= TListBox.create(form1)
+  with listbox1 do begin
+    parent:= form1;
+    setbounds(376,40,289,313)
+    ItemHeight:= 13
+    TabOrder:= 1
+    OnClick:= @ListBox1Click
+  end;
+  with TMemo.create(self) do begin
+    parent:= form1;
+    setbounds(16,16,337,233)
+    Color:= clYellow
+    Lines.add('Selecting from the numbers 1 through 9, place one digit in each ' +
+        'of the'
+      +'circles on Cupid'#39's bow according to the following rule:'
+      +''+#13#10#13#10
+       +'Each pair of digits connnected by a black line (the bow and arro' +
+        'w) '
+         +'must form a 2-digit number that is evenly divisible by 7 or 13, ' +
+        ' For '
+            +'example 7 and 8 connected by a line would be appropriate because' +
+        ' '
+        +'the number 78 is divisible by 13.  You can consider the 2 digits' +
+        ' in '
+      +'either order and each circle must contain a different digit.'
+      +''+#13#10#13#10
+      
+        +'"For every solution you find" said Cupid before flying off, "you' +
+        +' win'
+      +'someone'#39's heart. If you can find a solution in which the numbers'
+       +'connected by the bow string (the blue lines) qualify as well,  y' +
+        +'ou will '
+        +'always be in love!"   Try it yourself before clicking the "Searc' +
+        'h" '
+      +'button!'
+      +'' +#13#10#13#10
+      +'Adapted from "Wonders of Numbers", Clifford Pickover'
+      +' '
+      +' ');
+    TabOrder:= 2
+  end;
+  StatusBar1:= TStatusBar.create(self)
+    with statusbar1 do begin
+    parent:= form1;
+    setbounds(0,427,688,19)
+    panels.add;
+    Panels[0].text:='Copyright  © 2003, Gary Darby,  www.DelphiForFun.org';
+    panels[0].Alignment:= taCenter
+    panels[0].Width:= 50
+    SimplePanel:= False
+  end;
+end;
+
+
+{**************** FormPaint **********}
+procedure FormPaint(Sender: TObject);
+{draw Cupids Bow }
+begin
+with form1.canvas do begin
+pen.width:=3;
+    pen.color:=clblack;
+    arc(2*p[2].x-p[3].x,p[2].y,p[3].x,p[4].y,p[4].x,p[4].y,p[2].x,p[2].y); 
+    {the bow}
+
+with p[5] do moveto(x,y);  with p[1] do lineto(x,y);
+with p[5] do moveto(x,y);  with p[2] do lineto(x,y);
+with p[5] do moveto(x,y);  with p[3] do lineto(x,y);
+with p[5] do moveto(x,y);  with p[4] do lineto(x,y);
+    pen.width:=1;
+    pen.color:=clyellow;
+with p[1] do moveto(x,y);  with p[2] do lineto(x,y);
+with p[4] do moveto(x,y);  with p[1] do lineto(x,y);
+end;
+end;
+
+
+{***************** ListBox1Click *************}
+procedure listBox1Click(Sender: TObject);
+{Show the solution clicked by the user}
+var line:string;
+begin
+with form1.canvas do begin
+writeln('list out')
+if listbox1.itemindex>0 then begin  {show the numbers assigned to each vertex (circle)}
+writeln('list out2: '+listbox1.items[listbox1.itemindex])
+with listbox1 do line:=items[itemindex];
+    textout(p[1].x-4,p[1].y-6,line[1]);
+    textout(p[2].x-4,p[2].y-6,line[4]);
+    textout(p[3].x-4,p[3].y-6,line[7]);
+    textout(p[4].x-4,p[4].y-6,line[10]);
+    textout(p[5].x-4,p[5].y-6,line[13]);
+end;
+end;
+end;
+
+begin
+
+ loadForm;
+ writeln(floattoStr(permutation(9,5)))
+ writeln(floattoStr(permutationJ(9,5)))
+
+end.
+
+
+(*Type
+ bytearray=array[1..maxentries] of byte;
+ TCombotype=(Combinations,Permutations);
+ TComboSet=class(TObject)
+  private
+   N:           word;
+   R:           word;
+   NumberOfSubsets:int64;
+   Ctype: TComboType; {Generate Combinations or permutations}
+   loops:    bytearray;  {for efficiency, truncate search at loops for
+                             each position, eg if n=10, then leftmost
+                             has 10 of 10, for each of these,next position
+                             has 9, next 8, etc. }
+   public
+   Selected:    bytearray;
+
+   {Setup to retrieve R of N objects}
+   Procedure Setup(newR, newN:word; NewCtype:TComboType);
+   Function Getnext:boolean;
+   Function GetNextCombo:Boolean;
+   Function GetNextPermute:boolean;
+   Function GetCount:int64;
+   function GetR:integer;
+  End;
+
+  var
+    combos:TComboSet;  {created at initialization time}
+    
+    https://basta.net/2015/speakers
+    
+    In case you have never done it, the conversion from Polar coordinates (R, Theta) to Cartesian coordinates (X, Y) is pretty simple.  X=R*Cos(Theta) and Y:=R*Sin(Theta).
+
+  *)
+
+
+
+//----code_cleared_checked_clean----

@@ -1,0 +1,1804 @@
+//*************************************************************************
+//Example of the memo load and save capabilities of the VCL
+//Task: Code the button with Open a Video!
+//Get the text and write your sinmemo memories, #locs=1390
+//#perf>1280:0:1.345
+//#head@Max: MAXBOX10: 17/05/2016 22:21:31 C:\Program Files (x86)\maxbox3\Import\IPC\maxbox4\maxbox4\examples\370_synedit2_mxtester4.txt 
+//*************************************************************************
+//TODO: 1 the search for timestamp
+
+program SynMemo_Form_Demo_bookmarktestert;
+
+const LEFTBASE = 20;
+      TOPBASE = 25; 
+      MEDIAPATH =  '..\maxbox3\examples\mymemomemoire.txt';
+      //ACTFILE = '370_synedit2_mxtester.txt';
+      ACTFILE = '003_pas_motion.txt';
+var 
+  mymemo: TSynMemo;
+  //arpc: TRpcClientParser;
+  adf: TDataType;
+  mpanel: TPanel;
+  mPlayer: TMediaPlayer;            //
+  inFrm: TForm;  
+  mbtn3: TBitBtn;
+  Lstbox: TListbox;
+  stat: TStatusbar;
+  cal: TCalendar;
+  selectedFile: string;
+  
+  procedure GutterPaintEvent(Sender: TObject; aLine: integer;
+    X, Y: integer); forward;
+
+  
+function getRandomText: string;
+var i, getback: integer;
+begin
+  for i:= 1 to 1400 do begin
+    getback:=  random(58)+65;
+    if (getback < 91) OR (getback > 96) then
+      result:= result + Chr(getback) +Chr(32)
+  end;    
+end;  
+
+procedure setblackstar;
+begin
+    with memo2 do begin
+        color:= clblack;
+        font.color:= clweborange;
+        font.size:= 16;
+      end;
+   maxform1.Color:=clsilver;
+   with memo1 do begin
+      color:=clwhite;
+      font.color:= clblack; 
+      font.size:= 15; 
+      ActiveLineColor:= clgreen;
+      Gutter.BorderColor:= clweborange;
+    //mymemo.BorderRightColor:= clred;
+      RightEdgeColor:= clpurple; 
+    //memo1.highlighter.keywordattribute.color
+      //highlighter.KeyAttri.foreground:= clblue;
+      //like pas style
+   end;  
+end;  
+
+
+function ColorToIndex(AColor: TColor): integer;
+var
+  i: integer; 
+begin
+  Result := 0;
+  {for i := Low(Colors) to High(Colors) do
+    if Colors[i] = AColor then begin
+      Result := i - 1;
+      break;
+    end;}
+    //with SelfSession do
+    //if FileExists(FileUploa
+   { with TExtWindow.Create do begin
+    Title  := 'Object Pascal Source: ' + FName + IfThen(Proc = '', '', ', procedure ' + Proc);
+    Width  := 600;
+    Height := 400;
+    Modal  := true;
+    with TExtUxCodePress.AddTo(Items) do begin
+      ReadOnly := true;
+      Code     := Lines;
+    end;
+    if Proc <> 'ShowSource' then
+      AddShowSourceButton(Buttons, 'Session', 'ShowSource');
+    Show;
+    Free;     dd
+  end;}
+
+end;
+
+//TODO: check the ype on type kist
+
+function IndexToColor(AIndex: integer): TColor;
+begin
+  //Result := Colors[AIndex + 1];
+end;
+
+//DONE: ZZZZZZZ check the remarks on type kist
+
+
+//TODO: #4: check the priority remarks on type kist
+//DONE: check the remarks on type kist
+
+//TODO (#3#):  check the priority BIG remarks on type kist
+
+procedure TDemoMainForm_RebuildMarks;
+var
+  i: integer;
+begin
+  with mymemo do begin
+    BeginUpdate;
+    try
+      for i := 0 to Marks.Count-1 do begin
+        if Marks[i].IsBookmark then
+          Marks[i].InternalImage := true; {cbInternalImages.Checked;}
+      end;
+    finally
+      EndUpdate;
+    end;
+  end;
+end;
+
+procedure TDemoMainForm_ReloadAttributes;
+var
+  i: integer;
+begin
+  if mymemo.Highlighter <> nil then begin
+    //cbxAttrSelect.Items.Clear;
+    for i := 0 to mymemo.Highlighter.AttrCount - 1 do
+      lstbox.Items.Add(mymemo.Highlighter.Attribute[i].Name);
+    lstbox.ItemIndex := 0;
+  end;
+  //cbxAttrSelectChange(Self);
+end;
+
+function TDemoMainForm_GetSelectedExporter: TSynCustomExporter;
+var
+  i: integer;
+begin
+  for i := 0 to mymemo.ComponentCount - 1 do begin
+    if not (mymemo.Components[i] is TSynCustomExporter) then
+      continue;
+    Result := TSynCustomExporter(mymemo.Components[i]);
+    if Result.FormatName = 'cbxExporterSelect.Text' then
+      exit;
+  end;
+  Result := nil;
+end;
+
+procedure TDemoMainForm_EnumerateExporters;
+var
+  i: integer;
+  s: string;
+begin
+  lstbox.Items.Add('(All registered formats)');
+  for i := 0 to mymemo.ComponentCount - 1 do begin
+    if not (mymemo.Components[i] is TSynCustomExporter) then
+      continue;
+    s := (mymemo.Components[i] as TSynCustomExporter).FormatName;
+    if s <> '' then
+      lstbox.Items.Add(s);
+  end;    
+  lstbox{cbxExporterSelect}.ItemIndex := 0;
+  //cbxExporterSelectChange(Self);
+end;
+
+
+
+procedure TDemoMainForm_btnExportToFileClick(Sender: TObject);
+var
+  Exporter: TSynCustomExporter;
+  savedialog1: TSaveDialog;
+begin
+  Exporter := TDemoMainForm_GetSelectedExporter;
+  // can't export to file in several formats at the same time...
+  if Assigned(Exporter) then
+    with SaveDialog1 do begin
+      Filter := Exporter.DefaultFilter;
+      if Execute then with Exporter do begin
+        ExportAsText := TRUE;
+        Highlighter := mymemo.Highlighter;
+        if FileName <> '' then
+          Title := '"' + FileName + '" exported as ' + FormatName;
+        if {cbExportSelected.Checked} true and mymemo.SelAvail then
+          ExportRange(mymemo{SynEditor}.Lines, mymemo.BlockBegin, mymemo.BlockEnd)
+        else
+          ExportAll(mymemo.Lines);
+        SaveToFile(FileName);
+      end;
+    end;
+  mymemo{SynEditor}.SetFocus;
+end;
+
+
+
+
+
+
+procedure PasToHTML_Export;
+var
+  ALines: TStringList;
+  Syn: TSynPasSyn;
+  Exp: TSynExporterHTML;
+begin
+  if Clipboard.HasFormat(CF_TEXT) then begin
+    ALines := TStringList.Create;
+    try
+      Syn := TSynPasSyn.Create(nil);
+      try
+        // get syntax highlighter settings
+        Syn.EnumUserSettings(ALines);
+        if ALines.Count > 0 then
+          Syn.UseUserSettings(ALines.Count - 1);
+        // load text from clipboard
+        ALines.Text := Clipboard.AsText;  
+        // export ALines to HTML, as HTML fragment in text format
+        Exp:= TSynExporterHTML.Create(nil);
+        try
+          Exp.Highlighter := Syn;
+          Exp.ExportAsText := TRUE;
+          Exp.CreateHTMLFragment := TRUE;
+          Exp.ExportAll(ALines);
+          Exp.CopyToClipboard;
+        finally
+          Exp.Free;
+        end;
+      finally
+        Syn.Free;
+      end;
+    finally
+      ALines.Free;
+    end;
+  end;
+end;
+
+procedure PasToHTML_Export_SynMemo;
+var
+  ALines: TStringList;
+  Syn: TSynPasSyn;
+  Exp: TSynExporterHTML;
+begin
+  if Clipboard.HasFormat(CF_TEXT) then begin
+    ALines := TStringList.Create;
+    Alines.LoadFromFile(exepath+'examples\003_pas_motion.txt');
+    try
+      Syn := TSynPasSyn.Create(nil);
+      try
+        // get syntax highlighter settings
+         Syn.EnumUserSettings(ALines);
+        if ALines.Count > 0 then
+          Syn.UseUserSettings(ALines.Count - 1);
+        // load text from clipboard
+        ALines.Text := Clipboard.AsText;  
+        // export ALines to HTML, as HTML fragment in text format
+        Exp:= TSynExporterHTML.Create(nil);
+        try
+          Exp.Highlighter := Syn;
+          Exp.ExportAsText := TRUE;
+          Exp.CreateHTMLFragment := TRUE;
+          Exp.ExportAll(ALines);
+          Exp.CopyToClipboard;
+        finally
+          Exp.Free;
+        end;
+      finally
+        Syn.Free;
+      end;
+    finally
+      ALines.Free;
+    end;
+  end;
+end;
+  
+//Event Handler - Closure  
+procedure GetMediaData(self: TObject);
+begin
+  if PromptForFileName(selectedFile,
+                       'Text files (*.txt)|*.txt',
+                       '',
+                       'Select your mX3 test file',
+                       ExePath+'examples\', False)  // Means not a Save dialog !
+   then begin
+     // Display this full file/path value
+     ShowMessage('Selected file = '+selectedFile);
+     Stat.simpletext:= selectedFile;
+     mymemo.lines.LoadFromFile(selectedFile);
+     // Split this full file/path value into its constituent parts
+     //writeln('PromptForFileName_28: Res of processpath '+tmp)
+   end;
+end;  
+  
+//Event Handler - Closure
+procedure BtnSaveClick(self: TObject);
+begin
+  //mymemo.lines.savetofile(ExePath+'\examples\mymemomemoire.txt');
+  mymemo.lines.SaveToFile(selectedFile);
+  Stat.simpletext:= selectedFile+ ' has been saved' ;
+end; 
+
+procedure test;
+begin
+  //TODO: clearbookmark
+  //GetExpandedLength
+  //CaretPos2CharIndex
+end;
+
+var 
+  fMarkList: TSynEditMarkList;
+  fBookMarks: array[0..15] of TSynEditMark;
+  
+  
+{procedure TDemoMainForm_ReloadAttributes2;
+var
+  i: integer;
+begin
+  if mymemo.Highlighter <> nil then begin
+    cbxAttrSelect.Items.Clear;
+    for i := 0 to SynEditor.Highlighter.AttrCount - 1 do
+      cbxAttrSelect.Items.Add(SynEditor.Highlighter.Attribute[i].Name);
+    cbxAttrSelect.ItemIndex := 0;
+  end;
+  cbxAttrSelectChange(Self);
+end;}
+
+procedure TDemoMainForm_ResetMarkButtons;
+var
+  marks: TSynEditLineMarks;
+  i: integer;
+  syneditor: TSynedit;
+  ast: TSynMethodChain;
+  itm: TSynInternalImage;
+  fMarkButtons: array [0..4] of TSpeedButton;
+   
+  //afs: TJclFileStream;
+  //ahs: TJclHandleStream
+begin
+  //fDisableMarkButtons := true;
+  try
+    SynEditor.Marks.GetMarksForLine(SynEditor.CaretY, marks);
+    for i := 0 to 4 do
+      fMarkButtons[i].Down := false;
+    for i := 1 to MAX_MARKS do begin
+      if not assigned(marks[i]) then break;
+      if not marks[i].IsBookmark then
+        fMarkButtons[marks[i].ImageIndex-10].Down := true;
+    end;
+  finally
+    //fDisableMarkButtons := false;
+  end;
+end;
+  
+    
+
+procedure TDemoMainForm_RebuildMarks2;
+var
+  i: integer; syneditor: TSynedit;
+begin
+  with SynEditor do begin
+    BeginUpdate;
+    try
+      for i := 0 to Marks.Count-1 do begin
+        if Marks[i].IsBookmark then
+          Marks[i].InternalImage := true; //cbInternalImages.Checked;
+      end;
+    finally
+      EndUpdate;
+    end;
+  end;
+end;
+
+
+procedure ClearBookMark(BookMark: Integer);
+begin
+  if (BookMark >0) And assigned(fBookMarks[BookMark]) then begin
+    //DoOnClearBookmark(fBookMarks[BookMark]);
+    FMarkList.Remove(fBookMarks[Bookmark]);
+    fBookMarks[BookMark] := nil;
+  end
+end;
+
+procedure TCustomSynEdit_SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
+var
+  amark: TSynEditMark;
+begin
+  //if (BookMark > 0 ) and (bookmark < 9) and (Y >= 1) and (Y <= Max(1, mymemo.lines.Count)) then begin
+    amark:= TSynEditMark.Create();
+     fMarkList := TSynEditMarkList.Create();
+
+    with amark do begin
+      Line := Y;
+      Char := X;
+      ImageIndex := Bookmark;
+      //BookmarkNumber := Bookmark;
+      Visible := true;
+      //InternalImage := 14;
+    end;
+    //DoOnPlaceMark(Mark);
+    if (amark <> nil) then begin
+       if assigned(fBookMarks[BookMark]) then
+       ClearBookmark(BookMark);
+      fBookMarks[BookMark] := amark;
+      FMarkList.Add(fBookMarks[BookMark]);
+    end;
+  //end;
+  //fmarklist.free;
+end;
+
+
+procedure SetInterfacesMarks2(myFile: string);
+var
+  i, it1, it2, itstr: integer;
+  s1: string;
+  aStrList: TStringList;
+begin
+  aStrList:= TStringList.create;
+  aStrList.loadFromfile(myFile);
+  itstr:= 0;
+  try
+    for i:= 0 to aStrList.Count -1 do begin
+      s1:= aStrList[i];
+      it1:= pos(uppercase('function '), uppercase(s1));
+      it2:= pos(uppercase('procedure '), uppercase(s1));
+     //t1:= mymemo.searchReplace(uppercase('function '),'',[]);
+      if pos(uppercase('end.'),uppercase(s1)) > 0 then break;  
+      if (it2 > 0) or (it1 > 0) and (itstr < 9) then begin
+        inc(itstr);
+        mymemo.SetBookmark(itstr,2,i+1);
+        //showmessage('bookmark found at ' +inttostr(i+1));
+      end;
+    end;
+  finally
+    mymemo.CaretY:= 8;  //test
+    aStrList.Free;
+  end;
+end;
+
+procedure SetInterfacesMarksMemo3;
+var
+  i, it1, it2, itstr: integer;
+  s1: string;
+begin
+  itstr:= 0;
+  try
+    for i:= 0 to mymemo.lines.Count -1 do begin
+      s1:= mymemo.lines[i];
+      it1:= pos(uppercase('function '), uppercase(s1));
+      it2:= pos(uppercase('procedure '), uppercase(s1));
+     //t1:= mymemo.searchReplace(uppercase('function '),'',[]);
+      if pos(uppercase('end.'),uppercase(s1)) > 0 then break;  
+      if (it2 > 0) or (it1 > 0) and (itstr < 9) then begin
+        inc(itstr);
+        mymemo.SetBookmark(itstr,2,i+1);
+        //showmessage('bookmark found at ' +inttostr(i+1));
+      end;
+    end;
+  finally
+    //aStrList.Free;  ddd   ss
+    //mymemo.CaretY:= 10; d d dd
+  
+  end;
+end;
+
+
+procedure TMaxForm1_SetInterfacesMarks(myFile: string);
+var
+  i, t1, t2, tstr, actline: integer;
+  s1, mstr: string;
+  aStrList: TStringList;
+  mysearch: TSynEditSearchCustom;
+begin
+  aStrList:= TStringList.create;
+  aStrList.loadfromfile(myFile);
+  tstr:= 0;
+//  TSynSearchOption = (ssoMatchCase, ssoWholeWord, ssoBackwards,
+       //mymemo.SetBookmark(5,2,20);
+       //mymemo.SetBookmark(5,2,21);
+   
+  try
+    for i:= 0 to aStrList.Count -1 do begin
+      s1:= aStrList[i];
+      //t1:= pos(uppercase('function'), uppercase(s1));
+      //t2:= pos(uppercase('procedure'), uppercase(s1));
+   mysearch:= TSynEditSearch.create(self);
+   //mymemo.searchengine:= mysearch;
+   mymemo.searchengine:= maxform1.SynEditSearch1;
+ 
+   if pos(uppercase('end.'),uppercase(s1)) > 0 then break;  //bug 3.9.3
+
+   //t2:= mymemo.searchReplace(uppercase('procedure '),'',[]);
+               
+      actline:= mymemo.CaretY;
+      if ((t1 or t2) > 0) and (tstr < 9) then begin
+        inc(tstr);
+        //mymemo.activeline
+        //mymemo.SetBookmark(tstr,2,actline);
+        mymemo.SetBookmark(tstr,2,actline);
+        //showmessage('bookmark found at ' +inttostr(t2));
+      end;
+    end;
+  //ShowMessage(mstr+'----------------------'+#13+#10
+    //                       +inttoStr(tstr)+' Interface(s) Found');
+  finally
+    aStrList.Free;
+    mysearch.Free;
+  end;
+end;
+
+procedure letbookmarks(sender: TObject);
+begin
+    SetInterfacesMarksMemo3;
+    with tprimes.create do begin
+      //isprime
+      factors
+      prime
+      free
+    end; 
+    
+end;
+
+procedure letCompile(sender: TObject);
+begin
+    ShowmessageBig2('Will be in V4, the great gig in the sky',false);
+end;
+
+
+function GetHighlighterFromFileExt(AHighlighters: TStringList;
+  Extension: string): TSynCustomHighlighter;
+var
+  ExtLen: integer;
+  i, j: integer;
+  Highlighter: TSynCustomHighlighter;
+  Filter: string;
+begin
+  Extension := LowerCase(Extension);
+  ExtLen := Length(Extension);
+  if Assigned(AHighlighters) and (ExtLen > 0) then begin
+    for i := 0 to AHighlighters.Count - 1 do begin
+      if not (AHighlighters.Objects[i] is TSynCustomHighlighter) then
+        continue;
+      Highlighter := TSynCustomHighlighter(AHighlighters.Objects[i]);
+      Filter := LowerCase(Highlighter.DefaultFilter);
+      j := Pos('|', Filter);
+      if j > 0 then begin
+        Delete(Filter, 1, j);
+        j := Pos(Extension, Filter);
+        if (j > 0) and
+           ((j + ExtLen > Length(Filter)) or (Filter[j + ExtLen] = ';'))
+        then begin
+          Result := Highlighter;
+          exit;
+        end;
+      end;
+    end;
+  end;
+  Result := nil;
+end;
+
+
+
+
+procedure TDemoMainForm_LoadFile(const AFileName: string; AReadOnly: boolean);
+var
+  backCursor: TCursor;
+  bWasText: boolean;
+  ffilename: string;
+begin
+  backCursor := mymemo.Cursor;
+  try
+    mymemo.Cursor := crHourGlass;
+    SetCursor(Screen.Cursors[crHourGlass]);
+
+    fFileName := AFileName;
+    //outFilename.Caption := AFileName;
+    //outFilename.Visible := TRUE;
+    with mymemo do begin
+      Highlighter := GetHighlighterFromFileExt(TStringlist(mymemo.Highlighter),
+        ExtractFileExt(AFileName));
+      with lstbox do begin
+        if Highlighter <> nil then
+          ItemIndex := Items.IndexOf(Highlighter.LanguageName)
+        else
+          ItemIndex := 0;
+      end;
+      //cbxHighlighterSelectChange(Self);
+      //if Highlighter = SynDfmSyn1 then
+        //LoadDFMFile2Strings(AFileName, SynEditor.Lines, bWasText)
+      //else
+        Lines.LoadFromFile(AFileName);
+      Modified := FALSE;
+      ReadOnly := AReadOnly;
+      //cbReadonly.Checked := AReadOnly;
+      SetFocus;
+    end;
+  finally
+    mymemo.Cursor := backCursor;
+  end;
+end;
+
+
+function LoadDFMFile2Strings(const AFile: string; AStrings: TStrings;
+  var WasText: boolean): integer;
+var
+  Src, Dest: TStream;
+{$IFDEF SYN_COMPILER_5_UP}
+  origFormat: TStreamOriginalFormat;
+{$ENDIF}
+  //origFormat: TStreamOriginalFormat;
+
+begin
+
+  Result := 0;
+  WasText := FALSE;
+  AStrings.Clear;
+  try
+    Src := TFileStream.Create(AFile, fmOpenRead or fmShareDenyWrite);
+    try
+      Dest := TMemoryStream.Create;
+      try
+{$IFDEF SYN_COMPILER_5_UP}
+        origFormat := sofUnknown;
+        ObjectResourceToText(Src, Dest, origFormat);
+        WasText := origFormat = sofText;
+{$ELSE}
+        ObjectResourceToText(Src, Dest);
+{$ENDIF}
+        Dest.Seek(0, soFromBeginning);
+        AStrings.LoadFromStream(Dest);
+      finally
+        Dest.Free;
+      end;
+    finally
+      Src.Free;
+    end;
+  except
+    //on E: EInOutError do Result := -E.ErrorCode;
+    //else Result := -1;
+  end;
+end;
+
+
+
+
+procedure TestHTTPUTilsTypes;
+ // var
+  //var stringbuilder: TAnsiStringBuilder;
+   //LStr: TJCLStringBuilder;
+ var   aoi: TSeekOrigin;
+ 
+begin
+ //THTTPProtocolEnum', '( hpNone, hpCustom, hpHTTP, hpHTTPS )');
+  //THTTPVersionEnum', '( hvNone, hvCustom, hvHTTP10, hvHTTP11 )');
+  //THTTPVersion', 'record Version : THTTPVersionEnum; Protocol : TH'
+   //+'TTPProtocolEnum; CustomProtocol : AnsiString; CustomMajVersion : Integer; '
+   //+'CustomMinVersion : Integer; end');
+  {THTTPHeaderNameEnum', '( hntCustom, hntHost, hntContentType, hnt'
+   +'ContentLength, hntContentTransferEncoding, hntContentLocation, hntContentL'
+   +'anguage, hntContentEncoding, hntTransferEncoding, hntDate, hntServer, hntU'
+   +'serAgent, hntLocation, hntConnection, hntExpires, hntCacheControl, hntSetC'
+   +'ookie, hntCookie, hntAuthorization, hntVia, hntWarning, hntContentRange, h'
+   +'ntXForwardedFor, hntPragma, hntXPoweredBy, hntWWWAuthenticate, hntLastModi'
+   +'fied, hntETag, hntProxyAuthorization, hntReferer, hntAge, hntAcceptRanges,'
+   +' hntAcceptEncoding, hntAcceptLanguage, hntAcceptCharset, hntIfModifiedSinc'
+   +'e, hntIfUnmodifiedSince, hntRetryAfter, hntUpgrade, hntStatus, hntProxyCon'
+   +'nection, hntOrigin, hntKeepAlive )');    }
+  //THTTPHeaderName', 'record Value : THTTPHeaderNameEnum; Custom: AnsiString; end');
+  //THTTPCustomHeader', 'record FieldName : AnsiString; FieldValue :'
+   //+' AnsiString; end');
+  //PHTTPCustomHeader', '^THTTPCustomHeader // will not work');
+  //THTTPContentLengthEnum', '( hcltNone, hcltByteCount )');
+  //THTTPContentLength', 'record Value : THTTPContentLengthEnum; ByteCount : Int64; end');
+  //PHTTPContentLength', '^THTTPContentLength // will not work');
+  //THTTPContentTypeMajor', '( hctmCustom, hctmText, hctmImage )');
+  {THTTPContentTypeEnum', '( hctNone, hctCustomParts, hctCustomStri'
+   +'ng, hctTextHtml, hctTextAscii, hctTextCss, hctTextPlain, hctTextXml, hctTe'
+   +'xtCustom, hctImageJpeg, hctImagePng, hctImageGif, hctImageCustom, hctAppli'
+   +'cationJSON, hctApplicationOctetStream, hctApplicationJavaScript, hctApplic'
+   +'ationCustom, hctAudioCustom, hctVideoCustom )');  }
+  //THTTPContentType', 'record Value : THTTPContentTypeEnum; CustomM'
+   //+'ajor : AnsiString; CustomMinor : AnsiString; Parameters : AnsiStringArray;'
+   //+' CustomStr : AnsiString; end');
+  //THTTPDateFieldEnum', '( hdNone, hdCustom, hdParts, hdDateTime )');
+  {THTTPDateField', 'record Value : THTTPDateFieldEnum; DayOfWeek :'
+   +' Integer; Day : integer; Month : integer; Year : Integer; Hour : integer; '
+   +'Min : integer; Sec : Integer; TimeZoneGMT : Boolean; CustomTimeZone : Ansi'
+   +'String; DateTime : TDateTime; Custom : AnsiString; end');}
+  //THTTPTransferEncodingEnum', '( hteNone, hteCustom, hteChunked )');
+  //THTTPTransferEncoding', 'record Value : THTTPTransferEncodingEnu'
+  // +'m; Custom : AnsiString; end');
+  //THTTPConnectionFieldEnum', '( hcfNone, hcfCustom, hcfClose, hcfKeepAlive )');
+  //THTTPConnectionField', 'record Value : THTTPConnectionFieldEnum;'
+   //+' Custom : AnsiString; end');
+  //THTTPAgeFieldEnum', '( hafNone, hafCustom, hafAge )');
+  //THTTPAgeField', 'record Value : THTTPAgeFieldEnum; Age : Int64; '
+   //+'Custom : AnsiString; end');
+  //THTTPCacheControlFieldEnum', '( hccfNone, hccfDecoded, hccfCustom )');
+  //THTTPCacheControlRequestSubField', '( hccsfNoCache, hccsfNoStore'
+   //+', hccsfMaxAge, hccsfMaxStale, hccsfMinFresh, hccsfNoTransform, hccsfOnlyIfCached )');
+  {THTTPCacheControlResponseSubField', '( hccrfPublic, hccrfPrivate'
+   +', hccrfNoCache, hccrfNoStore, hccrfNoTransform, hccrfMustRevalidate, hccrf'
+   +'ProxyRevalidate, hccrfMaxAge, hccrfSMaxAge )');}
+  //THTTPCacheControlField', 'record Value : THTTPCacheControlFieldEnum; end');
+  //THTTPContentEncodingEnum', '( hceNone, hceCustom, hceIdentity, h'
+   //+'ceCompress, hceDeflate, hceExi, hceGzip, hcePack200Gzip )');
+  //THTTPContentEncoding', 'record Value : THTTPContentEncodingEnum;'
+   //+' Custom : AnsiString; end');
+  //THTTPContentEncodingFieldEnum', '( hcefNone, hcefList )');
+  //THTTPContentEncodingField', 'record Value : THTTPContentEncoding'
+   //+'FieldEnum; List : array of THTTPContentEncoding; end');
+  //THTTPRetryAfterFieldEnum', '( hrafNone, hrafCustom, harfDate, harfSeconds )');
+  //THTTPRetryAfterField', 'record Value : THTTPRetryAfterFieldEnum;'
+   //+' Custom : AnsiString; Date : TDateTime; Seconds : Int64; end');
+  //THTTPContentRangeFieldEnum', '( hcrfNone, hcrfCustom, hcrfByteRange )');
+  //THTTPContentRangeField', 'record Value : THTTPContentRangeFieldE'
+   //+'num; ByteFirst : Int64; ByteLast : Int64; ByteSize : Int64; Custom : AnsiString; end');
+  //THTTPSetCookieFieldEnum', '( hscoNone, hscoDecoded, hscoCustom )');
+  //THTTPSetCookieCustomField', 'record Name : AnsiString; Value : AnsiString; end');
+  //THTTPSetCookieCustomFieldArray', 'array of THTTPSetCookieCustomField');
+  {THTTPSetCookieField', 'record Value : THTTPSetCookieFieldEnum; D'
+   +'omain : AnsiString; Path : AnsiString; Expires : THTTPDateField; MaxAge : '
+   +'Int64; HttpOnly : Boolean; Secure : Boolean; CustomFields : THTTPSetCookie'
+   +'CustomFieldArray; Custom : AnsiString; end');}
+  //PHTTPSetCookieField', '^THTTPSetCookieField // will not work');
+  //THTTPSetCookieFieldArray', 'array of THTTPSetCookieField');
+  //THTTPCookieFieldEnum', '( hcoNone, hcoDecoded, hcoCustom )');
+  //THTTPCookieFieldEntry', 'record Name : AnsiString; Value : AnsiString; end');
+  //PHTTPCookieFieldEntry', '^THTTPCookieFieldEntry // will not work');
+  //THTTPCookieFieldEntryArray', 'array of THTTPCookieFieldEntry');
+  //THTTPCookieField', 'record Value : THTTPCookieFieldEnum; Entries'
+  // +' : THTTPCookieFieldEntryArray; Custom : AnsiString; end');
+  {THTTPCommonHeaders', 'record TransferEncoding : THTTPTransferEnc'
+   +'oding; ContentType : THTTPContentType; ContentLength : THTTPContentLength;'
+   +' Connection : THTTPConnectionField; ProxyConnection : THTTPConnectionField'
+   +'; Date : THTTPDateField; ContentEncoding : THTTPContentEncodingField; end');}
+  //THTTPCustomHeaders', 'array of THTTPCustomHeader');
+
+  //THTTPFixedHeaders','array[THTTPHeaderNameEnum] of AnsiString');
+  //THTTPFixedHeaders','array[0..42] of AnsiString');
+
+  //THTTPMethodEnum', '( hmNone, hmCustom, hmGET, hmPUT, hmPOST, hmC'
+   //+'ONNECT, hmHEAD, hmDELETE, hmOPTIONS, hmTRACE )');
+  //THTTPMethod', 'record Value : THTTPMethodEnum; Custom : AnsiString; end');
+  //THTTPRequestStartLine', 'record Method : THTTPMethod; URI : Ansi'
+  // +'String; Version : THTTPVersion; end');
+  {THTTPRequestHeader', 'record CommonHeaders : THTTPCommonHeaders;'
+   +' FixedHeaders : THTTPFixedHeaders; CustomHeaders : THTTPCustomHeaders; Coo'
+   +'kie : THTTPCookieField; IfModifiedSince : THTTPDateField; IfUnmodifiedSinc'
+   +'e : THTTPDateField; end');}
+  //PHTTPRequestHeader', '^THTTPRequestHeader // will not work');
+  //THTTPRequest', 'record StartLine : THTTPRequestStartLine; Header'
+   //+' : THTTPRequestHeader; HeaderComplete : Boolean; HasContent : Boolean; end;');
+  //THTTPResponseStartLineMessage', '( hslmNone, hslmCustom, hslmOK)');
+  //THTTPResponseStartLine', 'record Version : THTTPVersion; Code : '
+   //+'Integer; Msg : THTTPResponseStartLineMessage; CustomMsg : AnsiString; end');
+  {THTTPResponseHeader', 'record CommonHeaders : THTTPCommonHeaders'
+   +'; FixedHeaders : THTTPFixedHeaders; CustomHeaders : THTTPCustomHeaders; Co'
+   +'okies : THTTPSetCookieFieldArray; Expires : THTTPDateField; LastModified :'
+   +' THTTPDateField; Age : THTTPAgeField; end');} 
+  //PHTTPResponseHeader', '^THTTPResponseHeader // will not work');
+  //cTHTTPResponse', 'record StartLine : THTTPResponseStartLine; Head'
+   //+'er : THTTPResponseHeader; HeaderComplete : Boolean; HasContent : Boolean; end');
+    //TDynDynIntegerArrayArray', 'array of TDynIntegerArray');
+  //TDynPointArray', 'array of TPoint');
+  //TDynDynPointArrayArray', 'array of TDynPointArray');
+  //TPointF', 'record X : Single; Y : Single; end');
+  //TDynPointArrayF', 'array of TPointF');
+  //TDrawMode', '( dmOpaque, dmBlend )');
+  //TStretchFilter', '( sfNearest, sfLinear, sfSpline )');
+  //TConversionKind', '( ckRed, ckGreen, ckBlue, ckAlpha, ckUniformR'
+   //TOptexSharedInfo', 'record SpinCount : Integer; LockCount : Inte'
+   //+'ger; ThreadId : Longword; RecursionCount : Integer; end');
+  //TMrewPreferred', '( mpReaders, mpWriters, mpEqual )');
+  //TMrewThreadInfo', 'record ThreadId : Longword; RecursionCount : '
+   //+'Integer; Reader : Boolean; end');
+  //TMrewThreadInfoArray', 'array of TMrewThreadInfo');
+  //PMetSectSharedInfo', '^TMetSectSharedInfo // will not work');
+  //&&TMetSectSharedInfo', 'record Initialized : Bool; SpinLock : '
+  //'Longint; ThreadsWaiting : Longint; AvailableCount : Longint; MaximumCount: Longint; end');
+  //PMeteredSection', '^TMeteredSection // will not work');
+  //TMeteredSection', 'record Event : THandle; FileMap : THandle; SharedInfo : PMetSectSharedInfo; end');
+  //TEventInfo', 'record EventType : Longint; Signaled : LongBool; end');
+  //TMutexInfo', 'record SignalState : Longint; Owned : Boolean; Abandoned : Boolean; end');
+  //TSemaphoreCounts', 'record CurrentCount : Longint; MaximumCount: Longint; end');
+  //TTimerInfo', 'record Remaining : TLargeInteger; Signaled : LongBool; end');
+
+     //colortoindex
+     
+     //TtkTokenKind
+     //TRangeState
+       //TProcTableProc
+       
+       //leftstr
+         //isuncpath
+         
+        //expanduncfilename 
+        //COPYDIRTREE
+        
+      //CompareFilenames( const Filename1, Filename2 : string) : integer');
+  //CompareFilenamesIgnoreCase( const Filename1, Filename2 : string) : integer');
+  //CompareFileExt( const Filename, Ext : string; CaseSensitive : boolean) : integer;');
+  //CompareFileExt1( const Filename, Ext : string) : integer;');
+  //CompareFilenameStarts( const Filename1, Filename2 : string) : integer');
+  //CompareFilenames2(Filename1:PChar;Len1:integer; Filename2:PChar;Len2:integer):integer');
+  //CompareFilenamesP( Filename1, Filename2 : PChar; IgnoreCase : boolean) : integer');
+  //DirPathExists( DirectoryName : string) : boolean');
+  //DirectoryIsWritable( const DirectoryName : string) : boolean');
+  //ExtractFileNameOnly( const AFilename : string) : string');
+  //FilenameIsAbsolute( const TheFilename : string) : boolean');
+  //FilenameIsWinAbsolute( const TheFilename : string) : boolean');
+  //FilenameIsUnixAbsolute( const TheFilename : string) : boolean');
+  //ForceDirectory( DirectoryName : string) : boolean');
+ //CheckIfFileIsExecutable( const AFilename : string)');
+ //CheckIfFileIsSymlink( const AFilename : string)');
+   if FileIsText(exepath+'firstdemo.txt') then writeln('fils is text ext');
+  //FileIsText2( const AFilename : string; out FileReadable : boolean) : boolean');
+  //FilenameIsTrimmed( const TheFilename : string) : boolean');
+  //FilenameIsTrimmed2( StartPos : PChar; NameLen : integer) : boolean');
+  //TrimFilename( const AFilename : string) : string');
+  //ResolveDots( const AFilename : string) : string');
+  //ForcePathDelims( var FileName : string)');
+  //(GetForcedPathDelims( const FileName : string) : String');
+  //CleanAndExpandFilename( const Filename : string) : string');
+  //CleanAndExpandDirectory( const Filename : string) : string');
+  //TrimAndExpandFilename( const Filename : string; const BaseDir : string) : string');
+  //TrimAndExpandDirectory( const Filename : string; const BaseDir : string) : string');
+  //TryCreateRelativePath( const Dest, Source : String; UsePointDirectory : boolean; AlwaysRequireSharedBaseFolder : Boolean; out RelPath : String) : Boolean');
+  //CreateRelativePath( const Filename, BaseDirectory : string; UsePointDirectory : boolean; AlwaysRequireSharedBaseFolder : Boolean) : string');
+  //FileIsInPath( const Filename, Path : string) : boolean');
+  //AppendPathDelim( const Path : string) : string');
+  //ChompPathDelim( const Path : string) : string');
+  //CreateAbsoluteSearchPath( const SearchPath, BaseDirectory : string) : string');
+  //CreateRelativeSearchPath( const SearchPath, BaseDirectory : string) : string');
+  //MinimizeSearchPath( const SearchPath : string) : string');
+  //FindPathInSearchPath( APath : PChar; APathLen : integer; SearchPath : PChar; SearchPathLen : integer) : PChar');
+ (* FileExistsUTF8( const Filename : string) : boolean');
+  FileAgeUTF8( const FileName : string) : Longint');
+  DirectoryExistsUTF8( const Directory : string) : Boolean');
+  ExpandFileNameUTF8( const FileName : string; BaseDir : string) : string');
+  FindFirstUTF8( const Path : string; Attr : Longint; out Rslt : TSearchRec) : Longint');
+  FindNextUTF8( var Rslt : TSearchRec) : Longint');
+ CL.AddDelphiFunction('Procedure FindCloseUTF8( var F : TSearchrec)');
+  FileSetDateUTF8( const FileName : String; Age : Longint) : Longint');
+  FileGetAttrUTF8( const FileName : String) : Longint');
+  FileSetAttrUTF8( const Filename : String; Attr : longint) : Longint');
+  DeleteFileUTF8( const FileName : String) : Boolean');
+  RenameFileUTF8( const OldName, NewName : String) : Boolean');
+  FileSearchUTF8( const Name, DirList : String; ImplicitCurrentDir : Boolean) : String');
+  FileIsReadOnlyUTF8( const FileName : String) : Boolean');
+  GetCurrentDirUTF8 : String');
+  SetCurrentDirUTF8( const NewDir : String) : Boolean');
+  CreateDirUTF8( const NewDir : String) : Boolean');
+  RemoveDirUTF8( const Dir : String) : Boolean');
+  ForceDirectoriesUTF8( const Dir : string) : Boolean');
+  FileOpenUTF8( const FileName : string; Mode : Integer) : THandle');
+  FileCreateUTF8( const FileName : string) : THandle;');
+  FileCreateUTF81( const FileName : string; Rights : Cardinal) : THandle;');
+  FileCreateUtf82(const FileName : String; ShareMode : Integer; Rights : Cardinal) : THandle;');
+  FileSizeUtf8( const Filename : string) : int64');
+  GetFileDescription( const AFilename : string) : string');
+  GetAppConfigDirUTF8( Global : Boolean; Create : boolean) : string');
+  GetAppConfigFileUTF8( Global : Boolean; SubDir : boolean; CreateDir : boolean) : string');
+  GetTempFileNameUTF8( const Dir, Prefix : String) : String');*)
+  //IsUNCPath( const Path : String) : Boolean');
+  //ExtractUNCVolume( const Path : String) : String');
+  //ExtractFileRoot( FileName : String) : String');
+  //GetDarwinSystemFilename( Filename : string) : string');
+ //SplitCmdLineParams( const Params : string; ParamList : TStrings; ReadBackslash : boolean)');
+  //StrToCmdLineParam( const Param : string) : string');
+  //MergeCmdLineParams( ParamList : TStrings) : string');
+ //InvalidateFileStateCache( const Filename : string)');
+   //FindAllFiles( const SearchPath : String; SearchMask : String; SearchSubDirs : Boolean) : TStringList');
+  //FindAllDirectories( const SearchPath : string; SearchSubDirs : Boolean) : TStringList');
+  writeln('ReadFileToString: '+ReadFileToString(exepath+'firstdemo.txt'));
+// TextToXML(const aText: TXmlStrifunctionng): TXmlString;
+   writeln(TextToXML('const aText: XML TXmlStrifunctionng'));
+   //TRPCDataType
+   
+    //StreamSeek( Stream : TStream; const Offset : Int64; const Origin : TSeekOrigin) : Int64');
+ //StreamCopy( Source : TStream; Dest : TStream; BufferSize : Integer) : Int64');
+ //CompareStreams( A, B : TStream; BufferSize : Integer) : Boolean');
+ //CompareFiles
+ //JCompareFiles( const FileA, FileB : TFileName; BufferSize : Integer) : Boolean');
+   //TSeekOrigin
+   //Streamcopy
+    //TRC4
+   //procedure SIRegister_XmlRpcCommon(CL: TPSPascalCompiler);
+//begin
+  //SIRegister_TRC4(CL);
+  //TRPCDataType', '( rpNone, rpString, rpInteger, rpBoolean, rpDoub'
+  // +'le, rpDate, rpBase64, rpStruct, rpArray, rpName, rpError )');
+ //GetTempDirRPC : string');
+ //FileIsExpired( const FileName : string; Elapsed : Integer) : Boolean');
+  //EncodeEntities( const Data : string) : string');
+  //DecodeEntities( const Data : string) : string');
+  //ReplaceRPC( const Data : string; const Find : string; const Replace : string) : string');
+  //InStr( Start : Integer; const Data : string; const Find : string) : Integer');
+  //Mid( const Data : string; Start : Integer) : string');
+  //DateTimeToISO( ConvertDate : TDateTime) : string');
+  //IsoToDateTime( const ISOStringDate : string) : TDateTime');
+  //ParseStringRPC( const SearchString : string; Delimiter : Char; Substrings : TStrings; const AllowEmptyStrings : Boolean; ClearBeforeParse : Boolean) : Integer');
+  //ParseStream( SearchStream : TStream; Delimiter : Char; Substrings : TStrings; AllowEmptyStrings : Boolean; ClearBeforeParse : Boolean) : Integer');
+  //FixEmptyString( const Value : string) : string');
+  //URLEncodeRPC( const Value : string) : string');
+  //StreamToStringRPC( Stream : TStream) : string');
+  //StringToStream( const Text : string; Stream : TStream)');
+  //StreamToVariant( Stream : TStream) : OleVariant');
+  //VariantToStream( V : OleVariant; Stream : TStream)');
+  //Hash128AsHex( const Hash128Value : T4x4LongWordRecord) : string');
+ //ValidURLChars','String').SetString( 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$-_@.&+-!''*"(),;/#?:');
+//end;
+
+//TRpcFunction
+
+  
+     
+end; 
+
+var changestat: boolean;
+
+
+procedure SynEdit1StatusChange(Sender: TObject; Changes: TSynStatusChanges);
+var itstr: integer;
+begin
+  //if scModified in Changes then begin
+  //if scInsertMode in Changes then begin
+   if mymemo.modified then begin
+    writeln('syn memo changed');
+  //TSynmemo(sender).gutter.color:= clred;
+  TSynmemo(sender).gutter.bordercolor:= clyellow;
+    writeln('syn memo changed line '+itoa(TSynmemo(sender).caretY));
+    changestat:= true;
+    //mymemo.invalidateGutterlines(10,20);
+    //mymemo.SetBookmark(5,2,mymemo.carety);
+    //mymemo.onGutterPaint:= @GutterPaintEvent;
+   // mymemo.gutter.canvas
+   // TSynmemo(sender).Gutter.MarksPart(0).AutoSize
+    //TSynmemo(sender).Gutter.bordercolors carety draw  .AutoSize
+     //mymemo.selectedcolor:= clnavy;
+  end else begin 
+    TSynmemo(sender).gutter.bordercolor:= clblue;
+      mymemo.modified:= false;
+    //changes:= []; //changes-[scmodified];
+    //mymemo.onGutterPaint:= NIL;
+  end;
+  //mymemo.modified:= false;
+     //SpinLine.MaxValue := SynEdit1.Lines.Count;
+end;
+
+
+procedure SynEditclick(Sender: TObject);
+var itstr: integer;
+begin
+  //if scModified in Changes then begin
+  //if scInsertMode in Changes then begin
+   if mymemo.modified then begin
+    writeln('syn memo click changed');
+  //TSynmemo(sender).gutter.color:= clred;
+  TSynmemo(sender).gutter.bordercolor:= clyellow;
+    writeln('syn memo click changed line '+itoa(TSynmemo(sender).caretY));
+    changestat:= true;
+    //mymemo.invalidateGutterlines(10,20);
+    mymemo.SetBookmark(5,2,mymemo.carety);
+    //mymemo.onGutterPaint:= @GutterPaintEvent;
+   // mymemo.gutter.canvas
+   // TSynmemo(sender).Gutter.MarksPart(0).AutoSize
+    //TSynmemo(sender).Gutter.bordercolors carety draw  .AutoSize
+     //mymemo.selectedcolor:= clnavy;
+  end; // else begin 
+    TSynmemo(sender).gutter.bordercolor:= clblue;
+      mymemo.modified:= false;
+    //changes:= []; //changes-[scmodified];
+    //mymemo.onGutterPaint:= NIL;
+  //end;
+  //mymemo.modified:= false;
+     //SpinLine.MaxValue := SynEdit1.Lines.Count;
+end;
+
+//change tracker
+procedure SynEdit1Change(Sender: TObject);
+begin
+  infrm.Caption:= infrm.Caption + '!';
+  mymemo.SetBookmark(3,2,mymemo.carety);
+end;
+
+
+procedure SynEditorSpecialLineColors(Sender: TObject;
+  Line: Integer; var Special: Boolean; var FG, BG: TColor);
+var
+  LI: integer; //TDebuggerLineInfos;
+  myplug: TSynEditPlugin;
+  //auto: TSynAutoComplete;  TSynAutoComplete
+begin
+  //if fDebugger <> nil then begin
+    //LI := fDebugger.GetLineInfos(Line);
+   
+    //if changestat then begin
+    if mymemo.modified then begin
+    //li:= mymemo.caretY;
+      li:= line;
+    //if dlCurrentLine in LI then begin
+      Special := TRUE;
+      FG := clblue;
+      BG := clyellow;
+      //mymemo.gutter.borderstyle:= gbsmiddle;
+      //mymemo.SetBookmark(5,li,1);
+      //special:= false;
+   { end else if dlBreakpointLine in LI then begin
+      Special := TRUE;
+      FG := clWhite;
+      if dlExecutableLine in LI then
+        BG := clRed
+      else
+        BG := clGray;
+    end;}
+  end;
+  mymemo.modified:= false;  
+end;
+
+
+//TGutterPaintEvent = procedure(Sender: TObject; aLine: integer;
+  //  X, Y: integer) of object;
+  
+  {if Assigned(OnGutterPaint) then
+        for cLine := vFirstLine to vLastLine do
+        begin
+          vGutterRow := LineToRow( cLine );
+          OnGutterPaint( Self, cLine, aGutterOffs[vGutterRow - aFirstRow],
+            (vGutterRow - TopLine) * LineHeight );
+        end;}
+
+procedure GutterPaintEvent(Sender: TObject; aLine: integer;
+    X, Y: integer);
+    begin
+      //if aline = 16 then mymemo.gutter.bordercolor:= clyellow;
+      writeln(itoa(aline)+' '+itoa(y))
+      //if aline = mymemo.carety then mymemo.gutter.bordercolor:= clyellow;
+      //if X = mymemo.carety then mymemo.gutter.bordercolor:= clyellow;
+      if aline = 16 then mymemo.gutter.bordercolor:= clyellow;
+      //else 
+        //mymemo.gutter.bordercolor:= clred;
+     
+      //mymemo.gutter.firstline
+      //openfilehandle
+      //HResultFromWin32
+      //HResultSeverity
+      //C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Windows.pas
+    end;
+    
+ procedure TForm1_FormCreate(Sender: TObject);
+ var fAutoComplete : TSynAutoComplete;
+begin
+  if Application.MainForm = nil then begin
+    fAutoComplete := TSynAutoComplete.Create(Self);
+    fAutoComplete.Editor := mymemo;
+    fAutoComplete.AutoCompleteList.LoadFromFile('Delphi32.dci');
+  end else
+    //Form1.fAutoComplete.AddEditor(SynEdit1);
+  //SynEdit1.AddKey(ecAutoCompletion, word('J'), [ssCtrl], 0, []);
+  mymemo.AddKey(ecAutoCompletion, ord('J'), [ssCtrl], 0, []);
+
+end;   
+
+//http://www.bonecode.com/downloads/EditBone/changes.html
+
+procedure SetForm;
+var
+  mbtn, mbtn2: TBitBtn;
+  mi, mi1, mi2, mi3: TMenuItem;
+  mt: TMainMenu;
+  mlbl, mlbl1: TLabel; 
+  mspas: TSynPasSyn;
+  myattr: TSynHighlighterAttributes;
+  amark, amark2: TSyneditmark;
+  mychange: TSynStatusChanges;
+  synedit4: TSynedit;
+  fAutoComplete : TSynAutoComplete; 
+
+
+
+begin
+  inFrm:= TForm.Create(self);
+  mLbl:= TLabel.create(inFrm);
+  mLbl1:= TLabel.create(inFrm);
+  mPanel:= TPanel.Create(inFrm);
+  stat:= TStatusbar.Create(inFrm);
+  Lstbox:= TListbox.create(inFrm);
+  mymemo:= TSynMemo.create(inFrm);
+  //mymemo2:= TSynEdit.create(inFrm);
+  //synedit4: TSynedit;
+ 
+  with inFrm do begin
+    caption:= '********MediaMonster3************';  
+    height:= 810;
+    width:= 1100;
+    //color:= clred;
+    Position:= poScreenCenter;
+    //onClose:= @CloseClick;
+    Show;
+  end;
+  with mPanel do begin
+     caption:= '*****maXboxTV*****';  
+     Parent:= inFrm;  
+     SetBounds(LEFTBASE+10,TOPBASE+40,420,400)
+     color:= clsilver;
+     font.color:= clyellow;
+     font.size:= 30;
+     ondblclick:= @letbookmarks;
+     Show;
+  end; 
+  
+  mspas:= TSynPasSyn.create(self);
+  //mspas.StringAttri:= 1;//InternalSaveDefaultValues; ??
+  //mspas.CommentAttri:=1;
+  //NumberAttri:=2;
+  mspas.GetDefaultAttribute(1);
+  mspas.Enabled:= true;
+  //mspas.KeywordAttribute:= 4;
+  mspas.KeyAttri.foreground:= clblue;
+  
+  writeln('highlander attrib count '+intToStr(mspas.AttrCount));
+  with mymemo do begin
+    Parent:= inFrm;
+    //readonly:= true;
+    SetBounds(LEFTBASE+470, TOPBASE+40, 600, 580)
+    font.size:= 13;
+    //color:= clYellow;
+    wordwrap:= true;
+    scrollbars:= ssvertical;
+    //scrollbars:= sshorizontal;
+    RightEdgeColor:= clred;
+    gutter.color:= clmoneygreen;
+    onStatusChange:= @SynEdit1StatusChange;
+    //SHGetFileInfo
+    //ondblclick:= @SynEditclick;
+    //synedit4.onStatusChange
+     
+     
+     mymemo.gutter.borderstyle:= gbsmiddle; //gbsNone; //gbsmiddle;
+    
+     mymemo.invalidateGutterline(20)
+     mymemo.invalidateGutterlines(10, 20)
+     Gutter.BorderColor:= clred;
+     mymemo.invalidateGutterlines(10, 20)
+     Gutter.BorderColor:= clblack;
+     //change traxxer
+     onchange:= @SynEdit1Change;
+    
+    //gutter.onPaintGutterGlyphs
+    onSpecialLineColors:= @SynEditorSpecialLineColors;
+    //onGutterPaint:= @GutterPaintEvent;
+    gutter.linenumberstart:= 1;
+    
+  //TMaxForm1_SetInterfacesMarks(ExePath+'\examples\003_pas_motion.txt');
+    gutter.digitcount:= 4;
+    SetBookmark(5,1,1);
+    lines.loadfromfile(ExePath+'\examples\003_pas_motion.txt');
+    
+    
+    fAutoComplete := TSynAutoComplete.Create(Self);
+    fAutoComplete.Editor := mymemo; //SynEdit1;
+    fAutoComplete.AutoCompleteList.LoadFromFile(exepath+'bds_delphi.dci'); //Delphi32.dci
+  {end else
+    Form1.fAutoComplete.AddEditor(SynEdit1);
+    SynEdit1.AddKey(ecAutoCompletion, word('J'), [ssCtrl], 0, []);
+   }
+    writeln('lines count '+inttostr(mymemo.lines.count));
+    //lines.count:= 30;
+    SetBookmark(9,2,12);
+     aMark:= TSynEditMark.Create;
+     with aMark do begin
+        Line:= 15;
+        ImageIndex:= 2;//(Sender as TSpeedButton).Tag;  10-13
+        Visible:= TRUE;
+      end;
+     aMark2:= TSynEditMark.Create;
+     with aMark2 do begin
+        Line:= 17;
+        char:=2;
+        ImageIndex:= 3;//(Sender as TSpeedButton).Tag;  10-13
+        Visible:= TRUE;
+      end;
+    //marks.add(amark);
+    //marks.add(amark2);
+  
+    //marks[3].line:=5;
+    //marks.clear;
+    
+    //SetBookmark(4,4,1);
+    //SetBookmark(1,1,1);
+    mspas.EnumUserSettings(mymemo.lines);
+     //if mymemo.Lines.Count > 0 then
+       //mspas.UseUserSettings(mymemo.Lines.Count - 1);
+
+    if extractFileName(maxform1.appname) = '370_synedit2.txt' then begin
+      Options:= +[eoShowSpecialChars];
+      ActiveLineColor:= clyellow;
+      maxform1.tbtnUseCase.caption:= 'SynScript'; 
+      maxform1.ShellStyle1Click(self)
+    end else   
+      ActiveLineColor:= clgreen;
+   
+    //WordWrapGlyph    
+    //selectedColor:= clyellow;
+    //borderStyle:= bsdialog;
+    //Options
+    Gutter.ShowLineNumbers:= true;
+    Gutter.BorderColor:= clred;
+    //Gutter.LineNumberStart:= 10;
+    Gutter.LineNumberStart:= 1;
+
+    //mymemo.BorderRightColor:= clred;
+    RightEdgeColor:= clpurple;
+    //RIRegister_SynEditKeyCmds(CL: TPSRuntimeClassImporter);
+    keystrokes.items[1].command:= ecLineSelect;
+    //MaxForm1.DoEditorExecuteCommand(ecBlockindent);
+    //MaxForm1.DoEditorExecuteCommand(ecSelectAll);
+     //mymemo.CommandProcessor(TSynEditorCommand(ecBlockindent),' ',0);
+    //mymemo.CommandProcessor(TSynEditorCommand(ecSelectAll),' ',0);
+    mymemo.CommandProcessor2(TSynEditorCommand(ecSelectAll),' ');
+    
+    //mymemo.InsertTextAtCaret('Text');
+    //mymemo.TextBetweenPoints[Point(2,10), Point(4,20)] := Str;
+
+    //memo1.Gutter.BorderStyle:=bsSingle;    //---> reflection to box!
+    //memo1.Gutter.BorderColor:= clred;      //---> reflection to box!
+    //memo1.Gutter.BorderColor:= clsilver;   //---> reflection to box!
+    //memo1.Gutter.ShowLineNumbers:= true;   //---> reflection to box!
+    
+    highlighter:= mspas;
+     //memo1.Options:= +[SYNEDIT_DEFAULT_OPTIONS];
+       //memo1.RightEdgeColor := clSilver;
+    //lines.loadfromfile(ExePath+'\examples\mymemomemoire.txt');
+//370_synedit2_mxtester.txt 
+   // lines.loadfromfile(ExePath+'\examples\003_pas_motion.txt');
+    
+    //mymemo.CommandProcessor2(TSynEditorCommand(ecSelectAll),' ');
+    //mymemo.CommandProcessor(TSynEditorCommand(ecSelectAll),' ',0);
+    lines.loadfromfile(ExePath+'examples\'+ACTFILE);
+  
+   // TMaxForm1_SetInterfacesMarks(ExePath+'examples\'+ACTFILE);
+    SetInterfacesMarks2(ExePath+'examples\'+ACTFILE);
+    
+    //onclick:= @ChangeSong;  
+  end;
+  //mspas.Free;
+  
+  mBtn:= TBitBtn.Create(inFrm)
+  with mBtn do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 690, TOPBASE+ 660,150, 40);
+    caption:= 'Open Text';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'OPENFOLDER'); 
+    //event handler
+    onclick:= @GetMediaData;
+  end;
+  mBtn2:= TBitBtn.Create(inFrm)
+  with mBtn2 do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 530, TOPBASE+660,150, 40);
+    caption:= 'Open Video';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'FLOPPY'); 
+    //event handler
+    //onclick:= @GetVideoData;
+  end;
+  mbtn3:= TBitBtn.Create(inFrm)
+  with mbtn3 do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 850, TOPBASE+660,150, 40);
+    caption:= 'Save Text';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'PREVIEWGLYPH'); 
+    //event handler
+    onclick:= @BtnSaveClick;
+  end;
+  with TBitBtn.Create(inFrm) do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 330, TOPBASE+660,180, 40);
+    caption:= 'CompileCompile!';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TPSIMPORT_CONTROLS'); 
+    //event handler
+    onclick:= @letcompile;
+  end;
+ 
+ 
+  cal:= TCalendar.Create(self);
+  with cal do begin
+    enabled:= true;
+    updateCalendar
+    Parent:= inFrm;
+    top:= 100;
+    left:= 50;
+    CalendarDate:= Now;
+  end;
+
+  with mlbl do begin
+    parent:= inFrm;
+    setbounds(LEFTBASE+15,TOPBASE-15,180,20);
+    font.size:= 28;
+    font.color:= clred;
+    //font.style:= [fsunderline]
+    caption:= 'MediaMemoApp';
+  end;  
+  with mlbl1 do begin
+    parent:= inFrm;
+    setbounds(LEFTBASE+495,TOPBASE-1,180,20);
+    font.size:= 20;
+    font.color:= clred;
+    caption:= 'SynMemo Text File:';
+  end;  
+  mt:= TMainMenu.Create(inFrm)
+  with mt do begin
+   //parent:= frmMon;
+  end;  
+  mi:= TMenuItem.Create(mt)
+  mi1:= TMenuItem.Create(mt)
+  mi2:= TMenuItem.Create(mt)
+  mi3:= TMenuItem.Create(mi)
+  with mi do begin
+    //parent:= frmMon;
+    Caption:='Play Media';
+    Name:='ITEM';
+    mt.Items.Add(mi);   
+    //onclick:= @GetMediaData;
+  end;
+  with mi1 do begin
+    //parent:= frmMon;
+    Caption:='Show Video';
+    Name:='ITEM2';
+    mt.Items.Add(mi1) ;
+    //onclick:= @GetVideoData
+  end;
+  with mi2 do begin
+    //parent:= frmMon;
+    Caption:='Open CD Player';
+    Name:='ITEM3';
+    mt.Items.Add(mi2);
+    //onclick:= @OPenCD;
+  end;
+  with mi3 do begin
+    Caption:='Open maXbook';
+    Name:='ITEM4';
+    //mi.Items[0].add(mi3);
+  end;
+  with Stat do begin
+    parent:= inFrm;
+    stat.SimplePanel:= true;
+  end;
+  MPlayer:= TMediaPlayer.create(self);
+  with MPlayer do begin
+    parent:= inFrm; 
+    height:= 38;
+    top:= TOPBASE + 460;
+    left:= LEFTBASE+ 10;
+    Display:= mPanel;   //for video show
+  end;
+end; 
+  
+ 
+begin
+  memo2.font.size:= 11;
+  SetForm;
+  //mymemo.lines.text:= getRandomText;
+  //SearchAndOpenDoc(ExePath+MEDIAPATH)
+  //mylistview:= TFormListView.Create(self);
+  //exit;
+  maxform1.color:= clsilver;
+  //PasToHTML_Export_SynMemo;
+  //IconToBitmap
+  //DrawBitmap
+  //ScreenShot
+  //Transform
+    //FillGradient
+    //Stretch
+    //Invert
+ //ShowMessageBig3('procedure ShowMessageBig3(const aText : string; aautosize: boolean);',50,true);
+   //  TestHTTPUTilsTypes;
+     
+     TCustomSynEdit_SetBookMark(6, 1,6);
+     
+     setblackstar;
+
+     
+end.
+
+//-------------------------------------------------
+
+
+
+procedure TDemoMainForm.UpdateEditorSettings;
+begin
+  with SynEditor do begin
+    cbReadonly.Checked := ReadOnly;
+    cbHideSelection.Checked := HideSelection;
+    cbScrollPastEOL.Checked := eoScrollPastEOL in Options;
+    cbHalfPageScroll.Checked := eoHalfPageScroll in Options;
+    inpExtraLineSpacing.Value := ExtraLineSpacing;
+    inpRightEdge.Value := RightEdge;
+    cbxREColor.ItemIndex := ColorToIndex(RightEdgeColor);
+    cbxScrollBars.ItemIndex := Ord(Scrollbars);
+    with SynEditor.Font do
+      btnFont.Caption := Name + ' ' + IntToStr(Size);
+    cbxColor.ItemIndex := ColorToIndex(Color);
+    cbxForeground.ItemIndex := ColorToIndex(SelectedColor.Foreground);
+    cbxBackground.ItemIndex := ColorToIndex(SelectedColor.Background);
+    cbAutoIndent.Checked := eoAutoIndent in Options;
+    cbWantTabs.Checked := WantTabs;
+    inpTabWidth.Value := TabWidth;
+    cbDragDropEdit.Checked := eoDragDropEditing in Options;
+    cbxInsertCaret.ItemIndex := Ord(InsertCaret);
+    cbxOverwriteCaret.ItemIndex := Ord(OverwriteCaret);
+    cbInsertMode.Checked := InsertMode;
+    cbxGutterColor.ItemIndex := ColorToIndex(Gutter.Color);
+    inpGutterWidth.Value := Gutter.Width;
+    inpDigitCount.Value := Gutter.DigitCount;
+    inpLeftOffset.Value := Gutter.LeftOffset;
+    inpRightOffset.Value := Gutter.RightOffset;
+    cbLineNumbers.Checked := Gutter.ShowLineNumbers;
+    cbLeadingZeros.Checked := Gutter.LeadingZeros;
+    cbZeroStart.Checked := Gutter.ZeroStart;
+    cbAutoSize.Checked := Gutter.AutoSize;
+    cbGutterVisible.Checked := Gutter.Visible;
+    cbUseFontStyle.Checked := Gutter.UseFontStyle;
+    cbEnableKeys.Checked := BookMarkOptions.EnableKeys;
+    cbGlyphsVisible.Checked := BookMarkOptions.GlyphsVisible;
+    cbInternalImages.Checked := BookMarkOptions.BookmarkImages = nil;
+    inpLeftMargin.Value := BookMarkOptions.LeftMargin;
+    inpXOffset.Value := BookmarkOptions.XOffset;
+    inpMaxUndo.Value := MaxUndo;
+    cbxAttrSelect.ItemIndex := 0;
+    cbxAttrSelectChange(Self);
+  end;
+end;
+
+
+source is tlistview
+target is tform
+
+procedure TfMerit.SourceLVStartDrag(Sender: TObject;
+var DragObject: TDragObject);
+var TargetLV:TListView;
+begin
+// TargetLV:=nejak urcit dle potreby
+  TargetLV.BeginDrag(True)
+end;
+
+procedure TfMerit.SourceLVMouseDown(Sender: TObject;
+Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+begin
+MouseIsDown:=True;
+end;
+
+procedure TfMerit.SourceLVMouseUp(Sender: TObject; Button: TMouseButton;
+Shift: TShiftState; X, Y: integer);
+begin
+MouseIsDown:=False;
+if (Sender as TListView).Dragging then
+(Sender as TListView).EndDrag(False);
+end;
+
+procedure TfMerit.SourceLVMouseMove(Sender: TObject; Shift: TShiftState;
+X, Y: integer);
+begin
+if (Sender.ClassNameIs('TListView')) then
+begin
+if MouseIsDown and ((Sender as TListView).SelCount>0) then
+(Sender as TListView).BeginDrag(True);
+end;
+end;
+
+
+procedure TfMerit.TargetLVDragOver(Sender, Source: TObject; X,
+Y: integer; State: TDragState; var Accept: Boolean);
+var T:TListView;
+begin
+T:=Sender as TListView;
+Accept:=Assigned(T.GetItemAt(X,Y));
+end;
+
+
+procedure TfMerit.TargetLVDragDrop(Sender, Source: TObject; X,
+Y: integer);
+var It:TListItem;
+LV1,LV2:TListView;
+begin
+LV1:=Source as TListView;
+LV2:=Sender as TListview;
+
+It:=LV2.GetItemAt(X,Y);
+if Assigned(It) then
+begin
+// zpracuj polozku ze zdrojoveho listview
+end;
+end;
+
+
+procedure TControlParentR(Self: TControl; var T:TWinControl); begin T:= Self.Parent; end;
+procedure TControlParentW(Self: TControl; T: TWinControl); begin Self.Parent:= T; end;
+    RegisterPropertyHelper(@TControlParentR, @TControlParentW, 'PARENT');
+    RegisterProperty('Parent', 'TWinControl', iptRW);
+
+procedure TTXPTool.LVPFFDblClick(Sender: TObject);
+var
+tmpList : TListItem;
+fn ; string;
+ft : integer;
+fs : integer;
+begin
+tmpList := LVPFF.Selected;
+if tmplist<>nil then
+begin
+  fn := tmpList.Caption
+  ft := tmpList.SubItems.Strings[1];
+  fs := tmpList.SubItems.Strings[3];
+  if pos('Wave', ft)>0 then
+    PlayThisOne1Click(nil);
+  if pos('Jpg', ft)>0 then
+    ShowJpg1Click(nil);
+  if pos('Targa', ft)>0 then
+    ShowTga1Click(nil);
+  if pos('Pcx', ft)>0 then
+    ShowPcx1Click(nil);
+  if pos('Mission Sound Collection', ft)>0 then
+    ShowPwf1Click(nil);
+end;
+end;
+
+
+  #date-17/05/2016 22:21:31
+  date-01.06.2013 10:20:08
+  
+Topic:
+SynEdit change markers (yellow or green line on gutter)
+
+does anyone know how to add "change markers" functionality to SynEdit? I mean those lines, green for modified & saved, yellow for modified & unsaved parts of document... here is an example from other
+
+Yes, I've added it to my copy of SynEdit. I originally snagged the code from another project.
+
+It is broken across (at least) two different units IIRC.
+
+You need to modify SynEditTextBuffer.pas as well as SynEdit.pas.
+
+The code is rather complex because you need to modify several spots in SynEditTextBuffer.pas as well as 1 or 2 spots in SynEdit.pas.
+
+The original project I snagged the code from was being very ambitious in that they were trying to develop code folding and line blocking (as shown in your image) as well.
+
+I couldn't get the code folding to work reliably so I dropped that mod and just used the line change code. I believe that dropping the code folding also dropped the line blocking.
+
+The name of that project is SynEditSudio, it from a Chinese website, but I believe the Firefox translator plugins work pretty well in converting it.
+
+EDIT: contact me directly if you want to get a copy of my changes.
+
+HTH Ryan.
+
+I decided to have a concerted effort to get the excellent DWScript (Delph Web Script DWS) integrated into a simple IDE using SynEdit. DWScript is currently being agressively developed and has a number of advantages over other Pascal Script libraries, however it does not contain an editor or any IDE example beyond a simple memo control to prove execution capability. It does contain a number of hooks for editor / debugger integration and in fact when DWS was reawakened a while ago, releases did contain an example of a SynEdit / DWS2 (as it was then) integration. An example can be found in the file dws2src20-20030907.zip in the \dws2rel\dwstools\idedialog\source where there is a 'mini-IDE' with editor window, call stack, breakpoint window etc. Really nice. I did get this working some months ago using an old SynEdit and the DWS2 that was included in this file.
+
+So, I have now tried achieve this (or a similar) ide using the latest SynEdit (downloaded from SVN) and the latest DWScript (also from the SVN). Both libraries are installed fine into XE and their demos run fine. I then tried taking the ide example from the old "\dws2rel\dwstools\idedialog\source" and updating the code but much has changed. Frustratingly, not so much has changed that I gave up quickly - I tried searching for the various 'old' type definitions in old source and matching them up with 'new' definitions. Finally though, after several hours mired in code I decided that someone, somewhere must surely have been down this route?
+
+Has anyone got an example of a DWScript - SynEdit integration using recent DWScript code please? I'm very happy with something simple that I can learn / build upon. Thanks
+
+<pre>
+<code><span style="font: 10pt Courier New;"><span class="pas1-symbol">&lt;pre&gt;
+&lt;code&gt;&lt;span style=&quot;font: </span><span class="pas1-number">10</span><span class="pas1-identifier">pt Courier New;&quot;&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-symbol&quot;&gt;&amp;lt;pre&amp;gt;
+&amp;lt;code&amp;gt;&amp;lt;span style=&amp;quot;font: &lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-number&quot;&gt;</span><span class="pas1-number">10</span><span class="pas1-symbol">&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-identifier&quot;&gt;pt Courier New;&amp;quot;&amp;gt;&amp;lt;span &lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-reservedword&quot;&gt;</span><span class="pas1-reservedword">class</span><span class="pas1-symbol">&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-symbol&quot;&gt;=&amp;quot;pas1-space&amp;quot;&amp;gt;    Alines.LoadFromFile(exepath+&amp;lt;/span&amp;gt;&amp;lt;span &lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-reservedword&quot;&gt;</span><span class="pas1-reservedword">class</span><span class="pas1-symbol">&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-symbol&quot;&gt;=&amp;quot;pas1-&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-reservedword&quot;&gt;</span><span class="pas1-reservedword">string</span><span class="pas1-symbol">&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-symbol&quot;&gt;&amp;quot;&amp;gt;&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-</span><span class="pas1-reservedword">string</span><span class="pas1-symbol">&quot;&gt;</span><span class="pas1-string">'\examples\003_pas_motion.txt'
+</span><span class="pas1-symbol">&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-symbol&quot;&gt;&amp;lt;/span&amp;gt;&amp;lt;/span&amp;gt;
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+</span></span>
+</code></pre>
+
+
+procedure TForm1.SynEdit1StatusChange(Sender: TObject; Changes: TSynStatusChanges);
+begin
+  if scModified in Changes then SpinLine.MaxValue := SynEdit1.Lines.Count;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  m: TSynEditMark;
+begin
+  if chkBookMark.Checked
+  then begin
+    SynEdit1.SetBookMark(spinImg.Value, 1, SpinLine.Value);
+  end
+  else begin
+    m := TSynEditMark.Create(SynEdit1);
+    m.Line := SpinLine.Value;
+    m.ImageList := ImageList1;
+    m.ImageIndex := spinImg.Value;
+    m.Visible := true;
+    SynEdit1.Marks.Add(m);
+  end;
+end;
+
+procedure TForm1.chkDrawBookMarkFirstChange(Sender: TObject);
+begin
+  SynEdit1.BookMarkOptions.DrawBookmarksFirst := chkDrawBookMarkFirst.Checked;
+end;
+
+procedure TForm1.chkBookMarkChange(Sender: TObject);
+begin
+  if chkBookMark.Checked
+  then spinImg.MaxValue := 9
+  else spinImg.MaxValue := 4;
+end;
+
+procedure TForm1.chkMarkGutterAutoSizeChange(Sender: TObject);
+begin
+  SynEdit1.Gutter.MarksPart(0).AutoSize := chkMarkGutterAutoSize.Checked;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  (* SynEdit currently does not include own images for bookmarks.
+     If no images are given it will currently crash  *)
+  SynEdit1.BookMarkOptions.BookmarkImages := imgBookMarks;
+  spinMarkGutterWidth.Value := SynEdit1.Gutter.MarksPart(0).Width;
+  chkMarkGutterAutoSize.Checked := SynEdit1.Gutter.MarksPart(0).AutoSize;
+  chkDrawBookMarkFirst.Checked := SynEdit1.BookMarkOptions.DrawBookmarksFirst;
+end;
+
+procedure TForm1.spinMarkGutterWidthChange(Sender: TObject);
+begin
+  SynEdit1.Gutter.MarksPart(0).Width := spinMarkGutterWidth.Value;
+end;
+
+procedure TSimpleIDEMainForm.PaintGutterGlyphs(ACanvas: TCanvas; AClip: TRect;
+  FirstLine, LastLine: integer);
+var
+  LH, X, Y: integer;
+  LI: TDebuggerLineInfos;
+  ImgIndex: integer;
+begin
+  if fDebugger <> nil then
+  begin
+    FirstLine := SynEditor.RowToLine(FirstLine);
+    LastLine := SynEditor.RowToLine(LastLine);
+    X := 14;
+    LH := SynEditor.LineHeight;
+    while FirstLine <= LastLine do
+    begin
+      Y := (LH - imglGutterGlyphs.Height) div 2
+           + LH * (SynEditor.LineToRow(FirstLine) - SynEditor.TopLine);
+      LI := fDebugger.GetLineInfos(FirstLine);
+      if dlCurrentLine in LI then begin
+        if dlBreakpointLine in LI then
+          ImgIndex := 2
+        else
+          ImgIndex := 1;
+      end else if dlExecutableLine in LI then begin
+        if dlBreakpointLine in LI then
+          ImgIndex := 3
+        else
+          ImgIndex := 0;
+      end else begin
+        if dlBreakpointLine in LI then
+          ImgIndex := 4
+        else
+          ImgIndex := -1;
+      end;
+      if ImgIndex >= 0 then
+        imglGutterGlyphs.Draw(ACanvas, X, Y, ImgIndex);
+      Inc(FirstLine);
+    end;
+  end;
+end;
+
+procedure TSimpleIDEMainForm.SetCurrentLine(ALine: integer);
+begin
+  if fCurrentLine <> ALine then
+  begin
+    SynEditor.InvalidateGutterLine(fCurrentLine);
+    SynEditor.InvalidateLine(fCurrentLine);
+    fCurrentLine := ALine;
+    if (fCurrentLine > 0) and (SynEditor.CaretY <> fCurrentLine) then
+      SynEditor.CaretXY := BufferCoord(1, fCurrentLine);
+    SynEditor.InvalidateGutterLine(fCurrentLine);
+    SynEditor.InvalidateLine(fCurrentLine);
+  end;
+end;
+
+
+ TSynGutter = class(TPersistent)
+  private
+    fFont: TFont;
+    fColor: TColor;
+    fBorderColor: TColor;
+    fWidth: integer;
+    fShowLineNumbers: boolean;
+    fDigitCount: integer;
+    fLeadingZeros: boolean;
+    fZeroStart: boolean;
+    fLeftOffset: integer;
+    fRightOffset: integer;
+    fOnChange: TNotifyEvent;
+    fCursor: TCursor;
+    fVisible: boolean;
+    fUseFontStyle: boolean;
+    fAutoSize: boolean;
+    fAutoSizeDigitCount: integer;
+    fBorderStyle: TSynGutterBorderStyle;
+    fLineNumberStart: Integer;
+    fGradient: Boolean;
+    fGradientStartColor: TColor;
+    fGradientEndColor: TColor;
+    fGradientSteps: Integer;
+    procedure SetAutoSize(const Value: boolean);
+    procedure SetBorderColor(const Value: TColor);
+    procedure SetColor(const Value: TColor);
+    procedure SetDigitCount(Value: integer);
+    procedure SetLeadingZeros(const Value: boolean);
+    procedure SetLeftOffset(Value: integer);
+    procedure SetRightOffset(Value: integer);
+    procedure SetShowLineNumbers(const Value: boolean);
+    procedure SetUseFontStyle(Value: boolean);
+    procedure SetVisible(Value: boolean);
+    procedure SetWidth(Value: integer);
+    procedure SetZeroStart(const Value: boolean);
+    procedure SetFont(Value: TFont);
+    procedure OnFontChange(Sender: TObject);
+    procedure SetBorderStyle(const Value: TSynGutterBorderStyle);
+    procedure SetLineNumberStart(const Value: Integer);
+    procedure SetGradient(const Value: Boolean);
+    procedure SetGradientStartColor(const Value: TColor);
+    procedure SetGradientEndColor(const Value: TColor);
+    procedure SetGradientSteps(const Value: Integer);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    procedure AutoSizeDigitCount(LinesCount: integer);
+    function FormatLineNumber(Line: integer): string;
+    function RealGutterWidth(CharWidth: integer): integer;
+  published
+    property AutoSize: boolean read fAutoSize write SetAutoSize default FALSE;
+    property BorderStyle: TSynGutterBorderStyle read fBorderStyle
+      write SetBorderStyle default gbsMiddle;
+    property Color: TColor read fColor write SetColor default clBtnFace;
+    property BorderColor: TColor read fBorderColor write SetBorderColor default clWindow;
+    property Cursor: TCursor read fCursor write fCursor default crDefault;
+    property DigitCount: integer read fDigitCount write SetDigitCount
+      default 4;
+    property Font: TFont read fFont write SetFont;
+    property LeadingZeros: boolean read fLeadingZeros write SetLeadingZeros
+      default FALSE;
+    property LeftOffset: integer read fLeftOffset write SetLeftOffset
+      default 16;
+    property RightOffset: integer read fRightOffset write SetRightOffset
+      default 2;
+    property ShowLineNumbers: boolean read fShowLineNumbers
+      write SetShowLineNumbers default FALSE;
+    property UseFontStyle: boolean read fUseFontStyle write SetUseFontStyle
+      default True;
+    property Visible: boolean read fVisible write SetVisible default TRUE;
+    property Width: integer read fWidth write SetWidth default 30;
+    property ZeroStart: boolean read fZeroStart write SetZeroStart
+      default False;
+    property LineNumberStart: Integer read fLineNumberStart write SetLineNumberStart default 1;
+    property Gradient: Boolean read fGradient write SetGradient default False;
+    property GradientStartColor: TColor read fGradientStartColor write SetGradientStartColor default clWindow;
+    property GradientEndColor: TColor read fGradientEndColor write SetGradientEndColor default clBtnFace;
+    property GradientSteps: Integer read fGradientSteps write SetGradientSteps default 48;
+    property OnChange: TNotifyEvent read fOnChange write fOnChange;
+  end;
+
+
+  
+I have just discovered the fantastic SynEdit and SynMemo and have three questions.
+
+1. Is there any manual or FAQ for these?
+
+2. What is the main difference between these two?
+
+3. How do I use the SynPasSyn to take effect?
+
+/Kamau
+« Last Edit: January 24, 2013, 02:53:42 pm by Kamau »
+Logged
+Martin_fr
+
+    Administrator
+    Hero Member
+    *
+    Posts: 3655
+        wiki 
+
+Re: SynEdit and SynMemo
+« Reply #1 on: January 23, 2013, 02:18:30 pm »
+1) Not really: http://wiki.lazarus.freepascal.org/SynEdit
+For all else: Ask here.
+
+2) They are 99% identical. You should use SynEdit. SynMemo has:
+- less published properties (they exist, but are public or protected
+- 2 wrappers: like you can use SynMemo.Append as short for SynEdit.Lines.Append
+- 2 extra functions (rather slow) converting the x/y into a bytepos it the complete text
+
+3) Assign it to the SynEdit.Highlighter property. In Object inspector. The SynPasSyn will be i the dropdown, IF you dropped one (or more) on the form.

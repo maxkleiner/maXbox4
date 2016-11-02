@@ -1,0 +1,1007 @@
+{***************************************************************
+ *            Uptime_4  on progess - namedpipe on work !!
+ * Project  : education system bITbox pipe - coolcode
+ * Unit Name: 672_regex_ask_task.txt
+ * Purpose  : Demonstrates a RegEx and/or a function doing the same task!
+ * Date     : 18/10/2012  -  14:38:5 
+ *          #sign:Max: MAXBOX10: 18/05/2016 13:42:59 
+ *          : 11/11/2015  - better process on/off  #locs:384
+ ****************************************************************}
+//compilerswitch $N- turns the coprocessor off, {$mode objfpc}{$H+} loc's =1
+
+PROGRAM Uptime_BooleanLAB_RegExTask_NamedPipe_LAB;
+
+function IsDebuggerPresentX: Boolean; 
+      external 'IsDebuggerPresent@KERNEL32.DLL stdcall';
+
+function getUserNameExA(nameform: DWord; namebuffer: array of char; 
+                                               var nsize: DWord): boolean;
+     external 'GetUserNameExA@secur32.dll stdcall';
+     
+ function  wCreateNamedPipeX(
+  lpName:     pchar;
+  dwOpenMode, dwPipeMode,   nMaxInstances, nOutBufferSize,   nInBufferSize: DWORD;                   nDefaultTimeOut:  DWORD;    
+  lpSecurityAttributes: integer): THandle;
+        external 'CreateNamedPipeA@KERNEL32.DLL stdcall';
+
+
+var ApplicationEvents1: TApplicationEvents; 
+   NamedPipe: TNamedPipe2;
+   memoServer: TMemo;
+   NamedPipeClass : TNamedPipeServer;
+   namedpipeclient: TNamedPipeClient;
+   FNamedPipe: TNamedpipe2;
+
+const
+  cFmtText = '%.2x';
+  cBase = 16;
+  cDigitCount = 2;
+
+
+function GetSystemDirectory2(var S: String): Boolean;
+var Len: Integer;
+begin
+  Len:= {Windows.}GetSystemDirectory('Nil', 0);
+  if Len > 0 then begin
+    SetLength(S, Len);
+    //writeln(itoa(len))
+    Len:= {Windows.}GetSystemDirectory(PChar(S), Len);
+    SetLength(S, Len);
+    //writeln(itoa(len))
+    Result:= Len > 0;
+  end else
+    Result:= False;
+end;
+
+function GetNumbers(const Value: string): string;
+var
+  ch: char;
+  Index, Count: integer;
+begin
+  SetLength(Result, Length(Value));
+  Count := 0;      
+  for Index := 1 to length(Value) do begin
+    ch := Value[Index];
+    if (ch >= '0') and (ch <='9') then  begin
+      inc(Count);
+      Result[Count]:= ch;
+    end;
+  end;
+  SetLength(Result, Count);
+end;
+
+{Connecting by server name to a non-default pipe:
+
+Alias Name         <serveralias>
+Pipe Name          \\<servername>\pipe\unit\app
+Protocol           Named Pipes
+Server             <servername>
+
+}
+
+function readLine: widestring;
+var mess: widestring;
+  begin
+    mess:= '10';
+    if FNamedPipe.Connected then
+        FNamedPipe.Read1(mess);
+    while Result = '' do
+    begin
+       Application.ProcessMessages;
+       if FNamedPipe.Connected then begin
+          FNamedPipe.Read1(mess)
+          result:= mess;
+         end  else
+          sleep(10);
+    end;
+
+  end;
+
+procedure TfrmNamedPipeBase_btnConnectClick(Sender: TObject);
+var namedpipe1: TNamedpipe;
+begin
+  if not Assigned(NamedPipe) then
+    begin
+      NamedPipe := TNamedPipeClient.Create('js_debug_pipe', 'maxbox10');
+      writeln('pipe client assigned')
+    end;
+    NamedPipe := TNamedPipeClient.Create('js_debug_pipe', 'maxbox10');
+   
+    writeln('pipe handle '+itoa(namedpipe.handle))
+  if NamedPipe.Open('','') then begin
+      {btnSendMessage.Default := True;
+      btnSendMessage.Enabled := True;
+      btnConnect.Default := False;
+      btnConnect.Enabled := False; }
+      namedpipe1:= namedpipe as TNamedpipe;
+      //TNamedPipeThread.Create(TNamedpipe(NamedPipe1), memoServer); 
+      TNamedPipeThread.Create(NamedPipe, memoServer); 
+    
+      //TNamedPipeThread.Create(TNamedpipe(NamedPipe), memoServer); 
+    end else
+    begin
+      ShowMessage('Unable to connect to server! Activate server first!');
+    end;
+end;
+
+procedure TfrmNamedPipeBase_btnSendMessageClick(Sender: TObject);
+begin
+  if Assigned(NamedPipe) then
+    begin
+      NamedPipe.Write('leMessage.Text');
+      //leMessage.Text := '';
+    end else
+    begin
+      ShowMessage('Named Pipe not opened');
+    end;
+end;
+
+function ParseUrlParams(AParams: string): TStringList;
+
+var
+
+  i : Integer;
+
+  sParams : TStringList;
+
+begin
+
+  AParams := UrlDecode(AParams);
+
+  AParams := StringReplace(AParams, '+', ' ', [rfReplaceAll]);
+
+  sParams := TStringList.Create;
+
+  Result := TStringList.Create;
+
+  try
+
+    //StringOfSplit(sParams, AParams, '&'); // Delimeter ??
+
+    for i := 0 to sParams.Count - 1 do begin
+
+        //Result.Values[StringOfLeft(sParams[i], '=')] := StringOfRight(sParams[i], '=')
+
+    end;
+
+  finally
+
+    sParams.Free;
+
+  end;
+
+end;
+
+//[??] mORMot ?????? ??? NamedPipe ??(In-Process)|??? futurewave
+
+ var FhPipe, FHandle: THandle;
+  FPipeName: string;
+ 
+ //const
+  //cShutDownMsg = 'shutdown pipe ';
+  //cPipeFormat = '\\%s\pipe\%s';
+  
+  //NMPWAIT_USE_DEFAULT_WAIT = $00000000;
+  //NMPWAIT_WAIT_FOREVER = $ffffffff;
+
+
+
+type
+  RPIPEMessage = record
+    Size: DWORD;
+    Kind: Byte;
+    Count: DWORD;
+    Data: array[0..8095] of Char;
+  end;
+  
+  var aRPIPEMessage: RPIPEMessage;
+
+ procedure TPipeServer_StartUpServer;
+begin
+  // check whether pipe does exist
+  if WaitNamedPipe(PChar(FPipeName), 100 {ms}) then
+    raise; // Exception.Create('Requested PIPE exists already.');
+  // create the pipe
+  FHandle := wCreateNamedPipeX(
+    PChar(FPipeName), PIPE_ACCESS_DUPLEX,
+    PIPE_TYPE_MESSAGE or PIPE_READMODE_MESSAGE or PIPE_WAIT,
+    PIPE_UNLIMITED_INSTANCES, SizeOf(aRPIPEMessage), SizeOf(aRPIPEMessage),
+    NMPWAIT_USE_DEFAULT_WAIT, 0 );
+  // check if pipe was created
+      writeln('pipe handle '+itoa(fhandle))
+  if FHandle = INVALID_HANDLE_VALUE then begin
+    //raise; 
+    writeln(ExceptionToString(ExceptionType, ExceptionParam));
+    writeln('// Exception.Create(''Could not create PIPE.');
+    //writeln(getlasterrorMessage);
+    //createfilemapping
+    end;
+    closehandle(FHandle)
+end;
+
+procedure{constructor} TPipeServer_CreatePipeServer(
+  aServer, aPipe: String; StartServer: Boolean
+);
+begin
+  if aServer = '' then
+    FPipeName := Format(cPipeFormat, ['.', aPipe])
+  else
+    FPipeName := Format(cPipeFormat, [aServer, aPipe]);
+  // clear server handle
+  FHandle := INVALID_HANDLE_VALUE;
+  if StartServer then
+    TPipeServer_StartUpServer;
+  // create the class
+  //Create(not StartServer);
+end;
+
+
+procedure WriteToStreamAsString(const Stream: TStream; const Content: string);
+var achar: char;
+begin
+  if Length(Content) > 0 then
+    Stream.Write(Content[1], Length(Content) * SizeOf(aChar));
+end;
+
+function ReadFromStreamAsString(const Stream: TStream): string;
+var achar: char;
+begin
+  Result := '';
+  if Stream.Size > 0 then begin
+    Stream.Seek(0, soFromBeginning);
+    SetLength(Result, Stream.Size div SizeOf(aChar));
+    Stream.Read(Result[1], Stream.Size);
+  end;
+end;
+
+//         Add the private variable:
+
+  var FServer: TPipeServermax;
+
+   //main form list call  
+ Begin
+    //calls some test functions
+    printF('this is %.18f ',[maxCalc('ln(2)^e')]);
+    printF('this is %.18f ',[maxCalc('sqr(cos(ln(2)^e))')]);
+    printF('this is %.4f ',[maxCalc('sqrt(e^(ln(2)))')]);
+    printF('this is Area of r=1  %.18f ',[maxCalc('PI*(1^2)')]);
+    printF('this is Area of d=2r %.18f ',[maxCalc('PI/4*(2^2)')]);
+    writeln(getVersionString(exepath+'maxbox4.exe'));
+    sr:= loadFileAsString(exepath+'maxbox_functions_all.pdf');
+    writeln('file compare J: '+inttoStr(CompText(sr, sr)));
+    writeln('file lenght size: '+intToStr(length(sr)));
+    writeln('getSystemDir: '+botostr(getSystemDirectory2(sr)))   
+      writeln(sr)
+      writeln('UpTime: '+UpTime)
+      writeln(B2X(255)) 
+      
+      
+    {  I was developing a program that validate a CPF, a type of document of my country. I already did all the math. But in the input Edit1, the user will insert like:
+       123.456.789-00
+I have to get only the numbers, without the hyphen and the dots, to my calcs worth. }
+
+    sr := '123.456.789-00$p'
+    writeln(ReplaceRegExpr('\D',sr,'',true))
+    
+    //\D is a non-digit, and \W is a non-word character, both should work)
+    
+    Writeln(GetNumbers('123.456.789-00'));
+    
+   // http://delphi-javascript.googlecode.com/svn-history/r6/trunk/jsDbgServer.pas
+    //NamedPipeClass:= TNamedPipeServer.create('\\.\pipe\boxPipeName', '');
+    NamedPipeClass:= TNamedPipeServer.create('js_debug_pipe', 'maxbox10');
+    
+    //http://www.devsuperpage.com/search/Articles.asp?ArtID=915038
+   // NamedPipeClass:= TNamedPipeServer.create('\\.\pipe\boxPipeName', '');
+   // NamedPipeClass:= TNamedPipeServer.create('boxPipeName', 'box');
+   //  NamedPipeClass:= TNamedPipeServer.Create('js_debug_pipe','');
+    writeln(botostr(IsDebuggerPresentX))
+    //PROGRESS_CONTINUE //FILE_FLAG_WRITE_THROUGH CREATE_ALWAYS //CREATE_NEW
+    //SetSwapAreaSize 
+   // HiWord
+    
+    //TRTLCriticalSectionDebug
+     //TRTLCriticalSection    
+     //TImageFileHeader
+      //_CONTEXT //TContext  //SidTypeUser TTokenType //IMAGE_FILE_HEADER
+     
+       //        brInternet
+         //brTemplates
+       //poCustom  //TFolder 
+       //poScreenCenter //podefault
+     
+       writeln('SizeOf(aRPIPEMessage): '+itoa(SizeOf(aRPIPEMessage)))
+        
+      //  TPipeServer_CreatePipeServer('','maxpipe',true)
+        
+        //GetNewGUID
+        //FormatGUID
+         //GetNewFormatedGUID  
+   //       function GetNewGUID: string;
+    //function FormatGUID(const GUID: string): string;
+    //function GetNewFormatedGUID: string;
+
+//For the OnClick Event of the chkRunServer add the following code:
+
+ // procedure TForm1.chkRunServerClick(Sender: TObject);
+ // begin
+   // if chkRunServer.Checked then
+    try
+      FServer:= TPipeServermax.CreatePipeServer('','maxpipe', True);
+       //FServer.StartUpServer;
+    except
+      //on E: Exception do
+      begin
+        ShowMessage('E.Message PipeServer failed - try again');
+        //chkRunServer.Checked := False;
+        //FServer.Free;
+      end;
+    //end else begin
+      //FServer.ShutDownServer;
+      //FServer.Free;
+      if assigned(FServer) then
+          FServer.ShutDownServer;
+    end;
+  //end;
+  
+  writeln('must have a pipeServerName like: '+gethostname)
+  
+  // with TPipeClientmax.Create('maxbox10'{edtServer.Text}, 'maxpipe') do
+   with TPipeClientmax.Create(getHostname{edtServer.Text}, 'maxpipe') do
+    try
+      //reverse string?!
+      //try 
+      writeln('pipe response: '+
+             reversestring(SendString('to send edtTextToSend.Text')));
+       //except
+          //writeln(ExceptionToString(ExceptionType, ExceptionParam));
+      // end;      
+    finally
+      Free;
+      if assigned(FServer) then
+          FServer.ShutDownServer;
+   
+    end;
+    
+     //FServer.ShutDownServer;
+     //FServer.Free;
+   
+
+{For the OnClick Event of the btnSend add the following code:
+
+  procedure TForm1.btnSendClick(Sender: TObject);
+  begin
+    with TPipeClient.Create(edtServer.Text, 'testit') do
+    try
+      edtResponse.Text := SendString(edtTextToSend.Text);
+    finally
+      Free;
+    end;
+  end;
+
+ }
+         
+End.
+
+
+Doc & ref:
+
+procedure SIRegister_TNamedPipeClient(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TNamedPipe2', 'TNamedPipeClient') do
+  with CL.AddClassN(CL.FindClass('TNamedPipe2'),'TNamedPipeClient') do
+  begin
+    RegisterMethod('Procedure CheckConnected');
+    RegisterMethod('Procedure Connect');
+    RegisterMethod('Function Open(const UserName: WideString; const Password: WideString) : Boolean');
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TNamedPipeServer(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TNamedPipe2', 'TNamedPipeServer') do
+  with CL.AddClassN(CL.FindClass('TNamedPipe2'),'TNamedPipeServer') do
+  begin
+    RegisterMethod('Procedure CheckConnected');
+    RegisterMethod('Procedure Connect');
+    RegisterMethod('Function Open(const UserName: WideString; const Password: WideString) : Boolean');
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TNamedPipe2(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TOBJECT', 'TNamedPipe2') do
+  with CL.AddClassN(CL.FindClass('TOBJECT'),'TNamedPipe2') do begin
+    RegisterMethod('Constructor Create(const PipeName:WideString; const Server: WideString)');
+     RegisterMethod('Procedure Free');
+       RegisterMethod('Procedure CheckConnected');
+    RegisterMethod('Function Open(const UserName: WideString; const Password: WideString) : Boolean');
+    RegisterMethod('Procedure Close');
+    RegisterMethod('Function Read : WideString;');
+    RegisterMethod('Procedure Read1( var Buffer : WideString);');
+    RegisterMethod('Procedure Write( const Message : WideString)');
+    RegisterMethod('Procedure Connect');
+    RegisterMethod('Procedure Disconnect');
+    RegisterProperty('Connected', 'Boolean', iptr);
+    RegisterProperty('Handle', 'THandle', iptr);
+    RegisterProperty('TimeOut', 'Cardinal', iptrw);
+    RegisterProperty('OnError', 'TError', iptrw);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_NamedPipesImpl(CL: TPSPascalCompiler);
+begin
+ CL.AddConstantN('NamedPipeLocalHost','String').SetString( '.');
+ CL.AddConstantN('NamedPipeIOBufferSize','LongInt').SetInt( 16384);
+ CL.AddConstantN('NamedPipeOutputBufferSize','longint').SetInt(16384);
+ CL.AddConstantN('NamedPipeInputBufferSize','longint').SetInt(16384);
+  CL.AddTypeS('TError', 'Procedure ( const Msg : string)');
+  SIRegister_TNamedPipe2(CL);
+  SIRegister_TNamedPipeServer(CL);
+  SIRegister_TNamedPipeClient(CL);
+  SIRegister_ENamedPipe(CL);
+  //CL.AddTypeS('TNamedPipeClass', 'class of TNamedPipe');
+ CL.AddDelphiFunction('Function NetLogon( const Server, User, Password : WideString; out ErrorMessage : string) : Boolean');
+ CL.AddDelphiFunction('Function NetLogoff( const Server, User, Password : WideString) : Boolean');
+ CL.AddDelphiFunction('Procedure ErrorNamedPipe( const Message : string)');
+end;
+
+
+  lambda: a+b --> a.+(b)
+
+  type
+    TCaptionTextControl = class(TControl);
+    TCaptionTextControl(Controls[i]).Caption := 'Whatever you Want';
+
+
+Proposal for Abreviation Symbol:
+
+  01 FALSE    //Contradiction
+
+  02 AND      //Conjunction x*y
+
+  03 INHIB    //Inhibition x*^y
+
+  04 PRAEP    //Praependence x
+
+  05 PRAE     //Praesection ^x*y
+
+  06 POST     //Postpendence y
+
+  07 XOR      //Exclusive OR x*^y+^x*y
+
+  08 OR       //Disjunction OR = x+y
+
+  09 NOR      //Rejection
+
+  10 AEQ      //Aequivalence x<-->y, ^x*^y+x*y
+
+  11 NEGY     //YNegation ^y
+
+  12 IMPY     //YImplication y-->x; x+^y
+
+  13 NEGX     //Xnegation ^x
+
+  14 IMPX     //XImplication x-->y; ^x+y
+
+  15 NAND     //Exclusion
+
+  16 TRUE     //TRUE Tautologic
+  
+
+ //ShellExecute in W64
+//ExecuteCommand('cmd','/k FC /L/N C:\maxbook\maxbox3\maxbox391.exe C:\maxbook\maxbox3\maxbox3.exe')
+ //  ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxboxdef1.ini C:\maxbook\maxbox3\maxboxdef2.ini')
+   
+
+getRulesbyContract  
+
+  couple of slides i have but you got the point
+  one important things that i want to stress
+  difference between data and delta is the difference
+  units to add :
+  
+unit SqlExpr;  // is just there integrate?
+unit DBXCommon;
+unit DBXPlatform;
+unit DBConnAdmin;
+unit IdVCard;  //check strtofloat
+unit IdTimeServer;
+unit IdTimeUDPServer;
+unit IdTimeUDP;
+unit TIdUDPServer
+unit IdIPWatch;
+unit IdMessageCollection;
+unit IdRexec;  //sort of remote execution
+unit IdRexecServer;
+unit IdRemoteCMDServer,
+unit IdRemoteCMDClient;
+
+unit uwinplot;   from dmat085
+   File name:        cUtils.pas unit cUtils;
+
+:: ***********************************************
+:: Compilation of DMath library for Delphi/Windows
+:: ***********************************************
+
+dcc32 dmath.dpr -$O+ -U..\units -DDELPHI 
+dcc32 dmath.pas -$O+ -I..\units -DDELPHI                                              }
+
+ add in menu by help dmath.pdf
+ navigator look at dependency viewer at the right site : skip list
+
+  with CL.AddClassN(CL.FindClass('TCustomListView'),'TListView') do begin
+  RegisterPublishedProperties;
+constructor is missing! to define in down class
+
+ListView1.Visible is missing     --->uPSI_ComCtrls.pas 
+ListView1.AddItem is missing
+more properties in downclass
+
+  Col.Width := 140; is missing //tcolumn  check 230_DataSetXMLBackupScholz2.txt
+             SQLQuery1['fullname']; is there a default propertie?
+                   
+ www.jensendatasystems.com/ekon16cds.zip
+
+check TSession.Free
+  writeln(createclassid);  from comobj unit
+
+check  with ListView1 do begin  tlistview constructor of columns.add ?
+   
+check all resources of add ons:
+- mp3 player ->ok
+- cipher file -> Tstringlist
+- memory game -> ok
+- 4 gewinnt ->ok
+- picture game -tbitmap, tbitmapimage  (if new picture or to picture)
+- maxplorer ->ok  (if drag n drop a tList is not freed)
+- cryptobox -> TStringlist
+
+Scan-Report of: maxbox3.zip
+Ahnlab	-
+AntiVir	OK
+Avast	OK
+AVG	OK
+BitDefender	OK
+CA-AV	OK
+Command	OK
+Command (Online)	OK
+Eset Nod32	OK
+Fortinet	OK
+F-Prot	OK
+G Data	OK
+Ikarus	OK
+K7 Computing	OK
+Kaspersky	OK
+Kaspersky (Online)	OK
+McAfee	OK
+McAfee (BETA)	OK
+McAfee (Online)	OK
+McAfee GW Edition (Online)	OK
+Microsoft	OK
+Norman	OK
+Panda	OK
+Panda (Online)	OK
+QuickHeal	Suspicious (warning)
+Rising	OK
+Sophos	OK
+Sophos (Online)	OK
+Sunbelt	OK
+Symantec	OK
+Symantec (BETA)	OK
+Trend Micro	OK
+Trend Micro (Cons.)	OK
+Trend Micro (CPR)	OK
+VBA32	OK
+VirusBuster	OK  
+This unit provides a powerfull hexadecimal editor component @link(TKHexEditor)
+  with following major features:
+  <UL>
+  <LI><I>advanced editing capabilities</I></LI>
+  <LI><I>advanced rendering styles</I></LI>
+  <LI><I>clipboard operations</I></LI>
+  <LI><I>virtually unlimited undo/redo operations</I></LI>
+  <LI><I>key mapping functionality</I></LI>
+  <LI><I>fast search/replace function</I></LI>
+  <LI><I>print/preview function</I></LI>
+  </UL>
+object frmNamedPipeBase: TfrmNamedPipeBase
+  Left = 8
+  Top = 8
+  Width = 525
+  Height = 296
+  Caption = 'Named Pipe Server'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object GroupBox1: TGroupBox
+    Left = 0
+    Top = 0
+    Width = 517
+    Height = 147
+    Align = alTop
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Caption = 'Named Pipe Details'
+    TabOrder = 0
+    DesignSize = (
+      517
+      147)
+    object leServer: TLabeledEdit
+      Left = 12
+      Top = 28
+      Width = 121
+      Height = 21
+      EditLabel.Width = 31
+      EditLabel.Height = 13
+      EditLabel.Caption = 'Server'
+      TabOrder = 0
+      Text = '.'
+    end
+    object lePipeName: TLabeledEdit
+      Left = 146
+      Top = 26
+      Width = 121
+      Height = 21
+      EditLabel.Width = 52
+      EditLabel.Height = 13
+      EditLabel.Caption = 'Pipe Name'
+      TabOrder = 1
+      Text = 'NamedPipeDemo'
+    end
+    object btnConnect: TButton
+      Left = 432
+      Top = 28
+      Width = 75
+      Height = 25
+      Caption = 'Connect'
+      Default = True
+      TabOrder = 2
+      OnClick = btnConnectClick
+    end
+    object leMessage: TLabeledEdit
+      Left = 4
+      Top = 120
+      Width = 511
+      Height = 21
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      EditLabel.Width = 43
+      EditLabel.Height = 13
+      EditLabel.Caption = 'Message'
+      TabOrder = 3
+    end
+    object btnSendMessage: TButton
+      Left = 328
+      Top = 28
+      Width = 75
+      Height = 25
+      Caption = 'Send'
+      Enabled = False
+      TabOrder = 4
+      OnClick = btnSendMessageClick
+    end
+    object LabeledEdit1: TLabeledEdit
+      Left = 12
+      Top = 72
+      Width = 121
+      Height = 21
+      EditLabel.Width = 71
+      EditLabel.Height = 13
+      EditLabel.Caption = 'NT User Name'
+      TabOrder = 5
+    end
+    object LabeledEdit2: TLabeledEdit
+      Left = 146
+      Top = 72
+      Width = 121
+      Height = 21
+      EditLabel.Width = 89
+      EditLabel.Height = 13
+      EditLabel.Caption = 'NT User Password'
+      PasswordChar = '*'
+      TabOrder = 6
+    end
+  end
+  object memoServer: TMemo
+    Left = 0
+    Top = 147
+    Width = 517
+    Height = 122
+    Align = alClient
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 1
+  end
+end
+
+Restposten zum Superpreis so lange der Vorrat reicht! Katalogpreis 2015: 204,00 €
+
+Elektrolokomotive Re 4/4'' in TEE Farbgebung der Schweizerischen Bundesbahnen, Epoche IV - V.
+
+Neukonstruktion 2014.
+Highlights:
+
+- Kurzkupplungskinematik
+- Feine Stromabnehmer
+- LED-Beleuchtung
+- Feine Ätzteile
+- Separate Steckteile
+
+Antrieb auf alle vier Achsen. Schnittstelle nach NEM 651 zur Aufnahme eines Decoders. Kupplungsaufnahme nach NEM 355. Dreilicht-Spitzenbeleuchtung mit der Fahrtrichtung wechselnd (weiß/rot).
+
+  http://delphi.cjcsoft.net/viewthread.php?tid=48178
+
+unit uPipes;
+
+interface
+
+uses
+  Classes, Windows;
+
+const
+  cShutDownMsg = 'shutdown pipe ';
+  cPipeFormat = '\\%s\pipe\%s';
+
+type
+  RPIPEMessage = record
+    Size: DWORD;
+    Kind: Byte;
+    Count: DWORD;
+    Data: array[0..8095] of Char;
+  end;
+
+  TPipeServermax = class(TThread)
+  private
+    FHandle: THandle;
+    FPipeName: String;
+
+  protected
+  public
+    constructor CreatePipeServer(aServer, aPipe: String; StartServer: Boolean);
+    destructor Destroy; override;
+
+    procedure StartUpServer;
+    procedure ShutDownServer;
+    procedure Execute; override;
+  end;
+
+  TPipeClientmax = class
+  private
+    FPipeName: String;
+    function ProcessMsg(aMsg: RPIPEMessage): RPIPEMessage;
+  protected
+  public
+    constructor Create(aServer, aPipe: String);
+
+    function SendString(aStr: String): String;
+  end;
+
+implementation
+
+uses
+  SysUtils;
+
+procedure CalcMsgSize(var Msg: RPIPEMessage);
+begin
+  Msg.Size :=
+    SizeOf(Msg.Size) +
+    SizeOf(Msg.Kind) +
+    SizeOf(Msg.Count) +
+    Msg.Count +
+    3;
+end;
+
+{ TPipeServer }
+
+constructor TPipeServer.CreatePipeServer(
+  aServer, aPipe: String; StartServer: Boolean
+);
+begin
+  if aServer = '' then
+    FPipeName := Format(cPipeFormat, ['.', aPipe])
+  else
+    FPipeName := Format(cPipeFormat, [aServer, aPipe]);
+  // clear server handle
+  FHandle := INVALID_HANDLE_VALUE;
+  if StartServer then
+    StartUpServer;
+  // create the class
+  Create(not StartServer);
+end;
+
+destructor TPipeServer.Destroy;
+begin
+  if FHandle  INVALID_HANDLE_VALUE then
+    // must shut down the server first
+    ShutDownServer;
+  inherited Destroy;
+end;
+
+procedure TPipeServer.Execute;
+var
+  I, Written: Cardinal;
+  InMsg, OutMsg: RPIPEMessage;
+begin
+  while not Terminated do
+  begin
+    if FHandle = INVALID_HANDLE_VALUE then
+    begin
+      // suspend thread for 250 milliseconds and try again
+      Sleep(250);
+    end else begin
+      if ConnectNamedPipe(FHandle, nil) then
+      try
+        // read data from pipe
+        InMsg.Size := SizeOf(InMsg);
+        ReadFile(FHandle, InMsg, InMsg.Size, InMsg.Size, nil);
+        if
+          (InMsg.Kind = 0) and
+          (StrPas(InMsg.Data) = cShutDownMsg + FPipeName)
+        then
+        begin
+          // process shut down
+          OutMsg.Kind := 0;
+          OutMsg.Count := 3;
+          OutMsg.Data := 'OK'#0;
+          Terminate;
+        end else begin
+          // data send to pipe should be processed here
+          OutMsg := InMsg;
+          // we'll just reverse the data sent, byte-by-byte
+          for I := 0 to Pred(InMsg.Count) do
+            OutMsg.Data[Pred(InMsg.Count) - I] := InMsg.Data[I];
+        end;
+        CalcMsgSize(OutMsg);
+        WriteFile(FHandle, OutMsg, OutMsg.Size, Written, nil);
+      finally
+        DisconnectNamedPipe(FHandle);
+      end;
+    end;
+  end;
+end;
+
+procedure TPipeServer.ShutDownServer;
+var
+  BytesRead: Cardinal;
+  OutMsg, InMsg: RPIPEMessage;
+  ShutDownMsg: String;
+begin
+  if FHandle  INVALID_HANDLE_VALUE then
+  begin
+    // server still has pipe opened
+    OutMsg.Size := SizeOf(OutMsg);
+    // prepare shut down message
+    with InMsg do
+    begin
+      Kind := 0;
+      ShutDownMsg := cShutDownMsg + FPipeName;
+      Count := Succ(Length(ShutDownMsg));
+      StrPCopy(Data, ShutDownMsg);
+    end;
+    CalcMsgSize(InMsg);
+    // send shut down message
+    CallNamedPipe(
+      PChar(FPipeName), @InMsg, InMsg.Size, @OutMsg, OutMsg.Size, BytesRead, 100
+    );
+    // close pipe on server
+    CloseHandle(FHandle);
+    // clear handle
+    FHandle := INVALID_HANDLE_VALUE;
+  end;
+end;
+
+procedure TPipeServer.StartUpServer;
+begin
+  // check whether pipe does exist
+  if WaitNamedPipe(PChar(FPipeName), 100 {ms}) then
+    raise Exception.Create('Requested PIPE exists already.');
+  // create the pipe
+  FHandle := CreateNamedPipe(
+    PChar(FPipeName), PIPE_ACCESS_DUPLEX,
+    PIPE_TYPE_MESSAGE or PIPE_READMODE_MESSAGE or PIPE_WAIT,
+    PIPE_UNLIMITED_INSTANCES, SizeOf(RPIPEMessage), SizeOf(RPIPEMessage),
+    NMPWAIT_USE_DEFAULT_WAIT, nil
+  );
+  // check if pipe was created
+  if FHandle = INVALID_HANDLE_VALUE then
+    raise Exception.Create('Could not create PIPE.');
+end;
+
+{ TPipeClient }
+
+constructor TPipeClient.Create(aServer, aPipe: String);
+begin
+  inherited Create;
+  if aServer = '' then
+    FPipeName := Format(cPipeFormat, ['.', aPipe])
+  else
+    FPipeName := Format(cPipeFormat, [aServer, aPipe]);
+end;
+
+function TPipeClient.ProcessMsg(aMsg: RPIPEMessage): RPIPEMessage;
+begin
+  CalcMsgSize(aMsg);
+  Result.Size := SizeOf(Result);
+  if WaitNamedPipe(PChar(FPipeName), 10) then
+    if not CallNamedPipe(
+      PChar(FPipeName), @aMsg, aMsg.Size, @Result, Result.Size, Result.Size, 500
+    ) then
+      raise Exception.Create('PIPE did not respond.')
+    else
+  else
+    raise Exception.Create('PIPE does not exist.');
+end;
+
+function TPipeClient.SendString(aStr: String): String;
+var
+  Msg: RPIPEMessage;
+begin
+  // prepare outgoing message
+  Msg.Kind := 1;
+  Msg.Count := Length(aStr);
+  StrPCopy(Msg.Data, aStr);
+  // send message
+  Msg := ProcessMsg(Msg);
+  // return data send from server
+  Result := Copy(Msg.Data, 1, Msg.Count);
+end;
+
+end.
+
+
+A SAMPLE USING UPIPES.PAS
+=========================
+
+Create a new application and add the unit uPipes.pas to the uses clause.
+Add the following Controls to the Main Form
+Checkbox: (Name: chkRunServer; Caption: Run Server)
+Edit: (Name: edtServer)
+Edit: (Name:edtTextToSend)
+Button: (Name: btnSend)
+Edit: (Name: edtResponse)
+
+
+Add the private variable:
+
+  FServer: TPipeServer;
+
+For the OnClick Event of the chkRunServer add the following code:
+
+  procedure TForm1.chkRunServerClick(Sender: TObject);
+  begin
+    if chkRunServer.Checked then
+    try
+      FServer := TPipeServer.CreatePipeServer('', 'testit', True);
+    except
+      on E: Exception do
+      begin
+        ShowMessage(E.Message);
+        chkRunServer.Checked := False;
+      end;
+    end else begin
+      FServer.Destroy;
+    end;
+  end;
+
+For the OnClick Event of the btnSend add the following code:
+
+  procedure TForm1.btnSendClick(Sender: TObject);
+  begin
+    with TPipeClient.Create(edtServer.Text, 'testit') do
+    try
+      edtResponse.Text := SendString(edtTextToSend.Text);
+    finally
+      Free;
+    end;
+  end;
+
+Real-Time Tool Localization in Endovascular Treatment
+
+Bei endovaskulären Eingriffen ist es nötig, einen Guide-Wire vom Einführen in den Körper bis zum Zielgefäss zu navigieren. Dies wird konventionell mittels Röntgenbildern gemacht. Um Strahlung und Eingriffszeit zu minimieren, wurde ein elektro-magnetischer (EM) Sensor am Guide-Wire angebracht, der eine 5D Position im Raum liefert. Zusammen mit einer 3D Karte der vaskulären Zielstruktur ist somit eine röntgenbildfreie, dreidimensionale Navigation möglich. Um die Qualität der Navigation mittels dem EM-tracking System zu erhöhen und um einen möglichst registrierungsfreien Eingriff zu erhalten, wurde im Rahmen meiner Masterarbeit ein wahrscheinlichkeitsbasierender Lokalisierungsansatz aus der mobilen Robotik implementiert.   

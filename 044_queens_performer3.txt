@@ -1,0 +1,224 @@
+//shows the recursive solution to the 8 queens chess problem, max@kleiner.com
+//small output of solutions codestring in text mode or file list!, #locs=173
+//Performance tester for N solutions {N8 = 92 solutions] - see below
+//{#sign:Max: MAXBOX10: 17/05/2016 20:23:33 
+
+Program Performer_QueensSolutions3_multiprocessing;
+            
+Const NB = 10;
+      N_LEFT = 2 * NB;
+      N_RIGHT_R = NB - 1;
+      N_RIGHT_L = 1 - NB;
+      //FILESAVE = 'ChessSolution_Res9codes.txt';
+
+Type
+  TPlay = array[1..NB] of boolean;
+  TPlay2 = array[1..NB] of TPlay;
+  RowCheck = array[1..NB] of boolean;
+  LDiagCheck = array[2..N_LEFT] of boolean;
+  RDiagCheck = array[N_RIGHT_L..N_RIGHT_R] of boolean;
+  
+var 
+  safeRow: RowCheck;
+  safeLD: LDiagCheck; safeRD: RDiagCheck;
+  RList: TStringList;
+  Time1: TDateTime;
+  Count, NB1: integer;
+  parastr, FILESAVE: string;
+  //adi: TADOVersion;
+ 
+
+function Safe(row,col: shortint; asaferow: rowCheck; sLDia: LDiagCheck;
+                      sRDia: RDiagCheck): boolean;
+//true if queen can be safely placed in current position
+begin
+  result:= asafeRow[row] And sLDia[row+col] And sRDia[row-col]
+end;
+ 
+procedure chessPrint(board: TPlay2);
+var i,j: integer;
+    stmp,scod: string;
+begin
+  stmp:=''; scod:='';
+  RList.add(inttostr(count+1))
+  //i is column, j is row ! 
+  for j:= 1 to NB do begin
+    for i:= 1 to NB do
+      if (board[i][j]) then begin
+        stmp:= stmp+ 'Q'
+        scod:= scod+ inttostr(i)+'/'
+      end else stmp:= stmp+'-';
+    RList.add(stmp)
+    stmp:= '';
+       { write('Q') else write('*'); 
+         writeln('');}
+  end;//for   
+  RList.add(scod); 
+  RList.add('-----------------');
+  inc(Count)
+end;
+
+procedure TryColumn(col: integer; aboard: TPlay2);
+//recursive procedure for attempting queen placement
+var row: integer;
+begin
+  row:= 1
+  repeat 
+    if Safe(row,col,saferow, safeLD,safeRD) then begin
+      //set a queen
+      safeRow[row]:= false;
+      safeLD[row+col]:= false;
+      safeRD[row-col]:= false;
+      aboard[row][col]:= true;
+      if col < NB then
+        Trycolumn(col+1, aboard) else 
+           chessPrint(aboard);
+      //remove queens
+      safeRow[row]:= true;
+      safeLD[row+col]:= true;
+      safeRD[row-col]:= true;
+      aBoard[row][col]:= false;
+    end; //row was safe
+    inc(row);
+  until row > NB
+end;
+
+function initAndStartBoard: boolean;
+var row,col, i: integer;
+    board : TPlay2;
+begin
+  RList:= TStringlist.Create;
+  Count:= 0;
+  result:= false;
+  try
+    for row:= 1 to NB do safeRow[row]:= true;    
+    for i:= 2 to N_LEFT do safeLD[i]:= true;
+    for i:= N_RIGHT_L to N_RIGHT_R do safeRD[i]:= true;
+    for row:= 1 to NB do 
+      for col:= 1 to NB do
+        board[row][col]:= false;
+      //first recursive call
+    tryColumn(1, board);
+    PrintF('Solutions: %d   -ASCIITest: %s',[Count,Chr(64)]);
+  finally
+    rlist.add(Format('Solutions: %d   -ASCIITest: %s',[Count,Chr(64)]))
+    rlist.add(Format('%d %s',[Trunc((Time-Time1)*24),
+                  FormatDateTime('"h runtime:" nn:ss:zzz',Time-Time1)]))
+    RList.saveToFile(FILESAVE)
+    RList.Free;
+    result:= true;
+  end;   
+ end;
+ 
+  function JustName(PathName : string) : string;
+    {-Return just the name (no extension, no path) of a pathname}
+  var
+    DotPos : Byte;
+  begin
+    PathName := ExtractFileName(PathName);
+    DotPos := Pos('.', PathName);
+    if DotPos > 0 then
+      PathName := Copy(PathName, 1, DotPos-1);
+    Result := PathName;
+  end;
+
+
+
+begin //init & main
+  //processMessagesOFF;  //performance gain
+  //TGSMMode
+  Set_ReportMemoryLeaksOnShutdown(false)
+  
+  //ShowMessage(CmdLine);
+
+  if ParamStr(2) = 'para1' then begin
+    NB1:= 10;
+    FILESAVE:= Exepath +'examples\ChessSolution_Res10_1codes.txt';
+  end; 
+  if ParamStr(2) = 'para2' then begin
+    NB1:= 10;
+    FILESAVE:= Exepath +'examples\ChessSolution_Res10_2codes.txt';
+  end; 
+  if ParamStr(2) = 'para3' then begin
+    NB1:= 10;
+    FILESAVE:= Exepath +'examples\ChessSolution_Res10_3codes.txt';
+  end; 
+  if ParamStr(2) = 'para4' then begin
+    NB1:= 10;
+    FILESAVE:= Exepath +'examples\ChessSolution_Res10_4codes.txt';
+  end; 
+  
+  if  FILESAVE = '' then FILESAVE:= 'ChessSolution_Res9codes.txt';
+
+  Time1:= Time;
+  writeln(formatdatetime('"start:" hh:mm:ss:zzz',Time)) 
+  if initAndStartBoard then
+    writeln('Filesize: '+inttoStr(filesize(FILESAVE)));
+  writeln(formatDateTime('"stop:" hh:mm:ss:zzz',Time)) 
+  PrintF('%d %s',[Trunc((Time-Time1)*24),
+                  FormatDateTime('"h runtime:" nn:ss:zzz',Time-Time1)])
+  OpenDoc(FILESAVE);
+  //CreateRotatedFont
+  //TO32IntList
+  //StringToPDU
+  //trecordbuffer
+  //TUpdateCriteria
+  //TRefreshType
+  //AlGSMComm_BuildPDUMessage
+  //writeln(inttostr(cobuildversion))
+  {for it:= 0 to ParamCount do
+    ShowMessage('Parameter '+IntToStr(it)+' = '+ParamStr(it));
+   }        
+   //Application.terminate;       
+End.                                                                             
+
+
+Doc: Change N as Const in line 7 for another NB
+
+start is: 21:30:32:233
+all codestrings of solutions
+stop is: 23:19:44:183
+1 h run time: 49:11:950
+ mX3 executed: 23.05.2014 23:19:44  Runtime: 1:49:13.10  Memoryload: 52% use
+
+
+Ref:    
+08 Queens:    92  solutions: 0 h run time: 00:00:376
+09 Queens:   352  solutions: 0 h run time: 00:01:493
+10 Queens:   724  solutions: 0 h run time: 00:06:460  //runtime: 00:05:983
+11 Queens:  2680  solutions: 0 h run time: 00:32:107  //00:30:140   procm: 00:25:323
+12 Queens: 14200  solutions: 0 h run time: 02:58:011
+13 Queens: 73712  solutions: 0 h run time: 17:24:995
+
+0 h runtime: 00:06:069
+ mX3 executed: 10/08/2014 09:08:07 PM  Runtime: 0:0:6.989  Memoryload: 29% use
+0 h runtime: 00:05:928
+ mX3 executed: 11/08/2014 01:50:00 PM  Runtime: 0:0:6.817  Memoryload: 36% use
+
+stop: 22:34:27:933
+0 h runtime: 00:05:946
+ mX3 executed: 12/05/2015 10:34:27 PM  Runtime: 0:0:7.120  Memload: 47% use
+
+
+    http://www.delphitage.de/index.php/programm/agenda/
+    
+    “Es werde Licht mit Arduino”     Delphuino
+Max Kleiner
+Gezeigt wird Entwicklung und Ansteuern des Microcontroller- Board via USB, HTTP oder drahtlos mit Android. Dazu gehören vor allem zwei Zutaten: Eine serielle Schnittstelle und ein Flash-Uploader der den Code auf den Controller bringt. Mit dem Trio AMD (Arduino, maXbox und Delphi) zeige ich das Schalten einer RGB-LED, die nebst Farbmix auch noch gehörig Krach macht. Für die Geeks aus dem Hackerspace ist noch ein Oszilloskop dabei, mit dem wir nebst steuern den Codefluss auch messen wollen.
+
+old code:
+  writeln(IntToStr(Trunc(Dif * 24)) + 
+                      FormatDateTime('" h run time:" nn:ss:zzz',Dif));
+
+    
+ 
+ stop: 22:31:07:144
+0 h runtime: 00:04:511
+ mX3 executed: 12/01/2016 22:31:07  Runtime: 0:0:5.498  Memload: 24% use
+ 
+ 0 h runtime: 00:04:476
+ mX3 executed: 13/01/2016 16:08:27  Runtime: 0:0:5.503  Memload: 24% use
+ 0 h runtime: 00:04:447
+ mX4 executed: 17/05/2016 20:22:47  Runtime: 0:0:5.608  Memload: 16% use
+0 h runtime: 00:04:444
+ mX4 executed: 17/05/2016 20:23:39  Runtime: 0:0:5.603  Memload: 16% use

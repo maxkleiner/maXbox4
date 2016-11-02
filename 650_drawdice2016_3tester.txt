@@ -1,0 +1,1217 @@
+unit U_Drawdice3;
+
+//https://youtu.be/xvKF3WQYADk
+
+
+interface
+
+{unit design for probability in two pages}
+//http://www.delphiforfun.org/Programs/Delphi_Techniques/Beginners.htm#Dice
+// adopt /enlarge to script engine maXbox by max , #locs:1145
+//#sign:8 Max: MAXBOX10: 18/05/2016 08:50:49 
+
+{uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls;
+ }
+//type
+  //TForm1 = class(TForm)
+  
+  function  CreateMutex2(aobj : TObject; init: boolean; aname: pchar): Longint;
+     external 'CreateMutexA@kernel32.dll stdcall';
+     
+  
+   type TWrapper2 = function(ArgC : TArgC {byte}; ArgV : TVector): double;
+
+  
+  //procedure  SetFunction2(FuncName : String; Wrapper : TWrapper2);
+    // external 'SetFunction@dmath.dll stdcall';
+     
+ // procedure SetFunction(FuncName : String; Wrapper : TWrapper); external '@dmath.dll';
+  
+  
+ var form1: TForm;  
+    Image1, image2: TImage;
+    chk1, chk2: TCheckbox;
+    DrawDiceBtn, SimuDiceBtn, SimuDiceBtn2: TBitBtn;
+    procedure TForm1_DrawDiceBtnClick(Sender: TObject);
+    procedure TForm1_FormActivate(Sender: TObject);
+  //end;
+
+
+implementation
+//{$R *.DFM}
+
+var
+  colwidth, rowheight:integer;
+  dotleft,dottop,dotsize:integer;
+
+    procedure drawdot(col,row :integer; lefttop: TPoint);
+    {local procedure to draw a single dot}
+    begin
+      image1.canvas.ellipse(lefttop.x+col*colwidth+dotleft,
+                           lefttop.y+row*rowheight+dottop,
+                           lefttop.x+col*colwidth+dotleft+dotsize,
+                           lefttop.y+row*rowheight+dottop+dotsize);
+    end;
+
+{************ DrawDie *********}
+procedure drawdie(image:TImage; LeftTop:TPoint; diesize, n :integer);
+{Draw a single die at "lefttop" with side "diesize" and "n" dots}
+begin  {drawdie}
+  with image do {this will let us automatically refer to properties and
+                 methods of image inside the following
+                 Begin ... End structure without writing image. each time}
+  begin
+    {clear the image and draw the outine}
+    canvas.brush.color:=clYellow;
+    canvas.Pen.color:=clBlack;
+    //rect(lefttop.x, lefttop.y,lefttop.x, lefttop.y);
+    canvas.rectangle1(rect(lefttop.x,lefttop.y, lefttop.x+diesize,lefttop.y+diesize));
+    canvas.brush.color:=clblack; {set brush to dot color}
+    {to draw the dots we will divide the die face into 3 rows and 3 columns and
+     put dots in the proper rows and colums for each number}
+    colwidth:=diesize div 3;  {column width, 1/3 of image width}
+    rowheight:=diesize div 3; {row height, 1/3 of image height}
+    dotleft:=colwidth div 4; {we'll put the left side of the dot 1/4 of the way
+                              across the column}
+    dottop:=rowheight div 4; {and the dot top 1/4 of the way down from the row top}
+    dotsize:=colwidth div 2; {make the size of the dot equal 1/2 the column width}
+    case n of      {draw a specific number by calling a "drawdot" procedure with
+                    the column and row number for each dot in the number.
+                    rows and columns are assumed to be numbered 0,1,2}
+      1: begin
+           drawdot(1,1,lefttop); {draw a simgle dot in the middle column and row}
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE1');
+         end;  
+      2: begin         {draw 2 dots, top left and bottom righht}
+           drawdot(0,0,lefttop);
+           drawdot(2,2,lefttop);
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE2');
+         end;
+      3: begin       {etc.}
+           drawdot(0,0,lefttop);
+           drawdot(1,1,lefttop);
+           drawdot(2,2,lefttop);
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE3');
+           end;
+      4: begin
+           drawdot(0,0,lefttop);
+           drawdot(0,2,lefttop);
+           drawdot(2,0,lefttop);
+           drawdot(2,2,lefttop);
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE4');
+         end;
+      5: begin
+           drawdot(0,0,lefttop);
+           drawdot(0,2,lefttop);
+           drawdot(1,1,lefttop);
+           drawdot(2,0,lefttop);
+           drawdot(2,2,lefttop);
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE5');
+         end;
+      6: begin
+           drawdot(0,0,lefttop);
+           drawdot(0,1,lefttop);
+           drawdot(0,2,lefttop);
+           drawdot(2,0,lefttop);
+           drawdot(2,1,lefttop);
+           drawdot(2,2,lefttop);
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE6');
+        end;
+    end; {case}
+  end;
+end;
+
+{*********** DrawDiceBtnClick *********}
+procedure TForm1_DrawDiceBtnClick(Sender: TObject);
+var size, offset:integer;
+begin
+  image1.canvas.brush.color:=form1.color;
+  with image1 do canvas.fillrect(clientrect);
+  size:=9*image1.height div 10; {make size 90% of height}
+  offset:=image1.height div 20; {make offset 5% of height}
+  drawdie(image1,point(offset,offset),size,random(6)+1); {draw 1st die}
+  drawdie(image1,point(offset+image1.width div 2,offset),size,random(6)+1); {draw 2nd}
+end;
+
+function DiceSimulation_SameNumberPair: integer;
+var size, offset, rand1, rand2:integer;
+begin
+  image1.canvas.brush.color:=form1.color;
+  with image1 do canvas.fillrect(clientrect);
+  size:=9*image1.height div 10; {make size 90% of height}
+  offset:=image1.height div 20; {make offset 5% of height}
+  result:= 0;
+  repeat 
+   rand1:= random(6)+1;
+   rand2:= random(6)+1;
+   inc(result)
+   drawdie(image1,point(offset,offset),size,rand1); {draw 1st die}
+   drawdie(image1,point(offset+image1.width div 2,offset),size,rand2); {draw 2nd}
+  until rand1 = rand2;
+end;
+
+function DiceSimulation_OneNumberPair(anumb: byte): integer;
+var size, offset, rand1, rand2:integer;
+begin
+  image1.canvas.brush.color:=form1.color;
+  with image1 do canvas.fillrect(clientrect);
+  size:=9*image1.height div 10; {make size 90% of height}
+  offset:=image1.height div 20; {make offset 5% of height}
+  result:= 0;
+  repeat 
+   rand1:= random(6)+1;
+   rand2:= random(6)+1;
+   inc(result)
+   drawdie(image1,point(offset,offset),size,rand1); {draw 1st die}
+   drawdie(image1,point(offset+image1.width div 2,offset),size,rand2); {draw 2nd}
+  until rand1 And rand2 = anumb; //(rand1 = anumb) or (rand2 = anumb); 11/36
+end;
+
+function DrawDiceSameSimulationMany(aturn: integer; atype: char): float;
+var asum, aret: integer;
+begin
+ asum:= 0;
+ with TStopwatch.Create do begin
+     Start;
+    if atype = 'A' then begin
+      for it:= 1 to aturn do begin
+        aret:= DiceSimulation_SameNumberPair;
+        writeln(itoa(it)+' '+'simulation count: '+itoa(aret))
+        asum:= asum + aret;
+      end;   
+      result:= aturn / asum;
+      writeln('simulation same number count total: '+itoa(aturn)+' ~6/36');
+    end else begin
+      for it:= 1 to aturn do begin
+        aret:= DiceSimulation_OneNumberPair(6);
+        writeln(itoa(it)+' '+'simulation count: '+itoa(aret))
+        asum:= asum + aret;
+      end;
+      result:= aturn / asum;
+      writeln('simulation one number count total: '+itoa(aturn)+' ~1/36');
+    end; 
+    Stop;
+    Free;
+     writeln('Time runs: '+GetValueStr +' of: '+inttoStr(aturn)+' rolling'); 
+  end; //stopwatch   
+end;  
+  
+function wichtelSimulation_OneNumberPair(anumb,aturn: byte): float;
+var size, offset, rand1, rand2, aret,asum:integer;
+   warr: array[1..6] of byte;
+begin
+   aret:= 0;
+    for it:= 1 to aturn do begin
+    aret:= 0;
+  repeat 
+   
+   warr[1]:= random(6)+1;
+   warr[2]:= random(6)+1;
+   warr[3]:= random(6)+1;
+   warr[4]:= random(6)+1;
+   warr[5]:= random(6)+1;
+   warr[6]:= random(6)+1;
+   
+   //rand1:= random(6)+1;
+   //rand2:= random(6)+1;
+   inc(aret)
+  //until (rand1 And rand2) <> anumb; //(rand1 = anumb) or (rand2 = anumb); 11/36
+  until (warr[1] <> anumb) And (warr[2] <> anumb) And (warr[3] <> anumb)
+                   And (warr[4] <> anumb) ; //(rand1 = anumb) or (rand2 = anumb); 11/36
+                   
+     //0.48225308641975308641975308641975  ---> 5/6^4              
+
+   writeln(itoa(it)+' '+'simulation count: '+itoa(aret))
+        asum:= asum + aret;
+      end;
+         
+      result:= aturn / asum;
+  
+end;
+
+procedure CycleTime(Sender: TObject);
+var n : byte;
+ t1,t2 : dword;
+ s : string;
+begin
+//memo1.Clear;
+n := 0;
+t1 := GetTickCount;
+repeat
+    sleep(500)
+    t2 := getTickcount;
+    if t2 > t1 then begin
+    inc(n);
+    s := inttostr(t2 - t1);
+    t1 := t2;
+    writeln((s));
+    end
+    else application.ProcessMessages;
+until n = 25;
+    //getcputime
+   //cputime
+   //getcpuspeed;
+   with TStopwatch.Create do begin
+    start
+     application.ProcessMessages
+    stop
+      writeln('Time runs: '+GetValueStr); 
+    Free
+    end;
+end;
+
+procedure CycleTimeHiRes(Sender: TObject);
+var n : byte;
+ t1,t2 : dword;
+ s : string;
+begin
+//memo1.Clear;
+{n := 0;
+t1 := GetTickCount;
+repeat
+    sleep(500)
+    t2 := getTickcount;
+    if t2 > t1 then begin
+    inc(n);
+    s := inttostr(t2 - t1);
+    t1 := t2;
+    writeln((s));
+    end
+    else application.ProcessMessages;
+until n = 25;    }
+    //getcputime
+   //cputime
+   //getcpuspeed;
+   with TStopwatch.Create do begin
+    start
+    sleep(100)
+     application.ProcessMessages
+    stop
+      writeln('Time runs: '+GetValueStr); 
+    Free
+    end;
+    
+    // HighResTimer1:= 
+  with THighResTimer.create(self) do begin
+    {   Accuracy:= 0;
+    Resolution:= 5;
+    ThreadPriority:= tpHighest
+    UseTSC:= True
+     }
+     //TBarSeries.Create
+    //start
+   // Calibrate(1000);
+    UseTSC:= True
+   Enabled:= True;
+ 
+   StartTimeMeasure;
+
+    //sleep(100)
+     application.ProcessMessages
+     StopTimeMeasure;
+    writeln('HighResTimer1.GetTimeDifference: '
+                     +FloatToStr(GetTimeDifference) + ' us');
+    writeln(' Freq: '+FloatToStr(CountSpeed) + ' MHz');                 
+      Enabled:= False;
+ 
+     // writeln('Time runs: '+GetValueStr); 
+    //Free
+  end;
+ 
+end;
+
+procedure CycleTimeHiRes2(Sender: TObject);
+var n : byte;
+ t1,t2 : dword;
+ s : string;
+begin
+//memo1.Clear;
+{n := 0;
+t1 := GetTickCount;
+repeat
+    sleep(500)
+    t2 := getTickcount;
+    if t2 > t1 then begin
+    inc(n);
+    s := inttostr(t2 - t1);
+    t1 := t2;
+    writeln((s));
+    end
+    else application.ProcessMessages;
+until n = 25;    }
+    //getcputime
+   //cputime
+   //getcpuspeed;
+   with TStopwatch.Create do begin
+    start
+    sleep(100)
+     ProcessMessage
+    stop
+      writeln('Time runs: '+GetValueStr); 
+    Free
+    end;
+    
+    // HighResTimer1:= 
+  with THighResTimer.create(self) do begin
+    {   Accuracy:= 0;
+    Resolution:= 5;
+    ThreadPriority:= tpHighest
+    UseTSC:= True
+     }
+     //TBarSeries.Create
+    //start
+   // Calibrate(1000);
+    UseTSC:= True
+   Enabled:= True;
+    StartTimeMeasure;
+     //sleep(100)
+     ProcessMessage
+     StopTimeMeasure;
+    writeln('HighResTimer1.GetTimeDifference: '
+                     +FloatToStr(GetTimeDifference) + ' us');
+    writeln(' Freq: '+FloatToStr(CountSpeed) + ' MHz');                 
+      Enabled:= False;
+    // writeln('Time runs: '+GetValueStr); 
+    //Free
+  end;
+ 
+end;
+
+procedure TForm1_MouseClickSim(Sender: TObject);
+begin
+  if chk1.checked then
+   writeln('N same pair simulation probability: '+
+                 floattoStr(DrawDiceSameSimulationMany(150,'A'))+' %')
+   else
+    writeln('simulation count: '+intToStr(DiceSimulation_SameNumberPair));
+end;
+
+procedure TForm1_MouseClickSim2(Sender: TObject);
+begin
+  if chk2.checked then
+   writeln('N one pair simulation probability: '+
+                 floattoStr(DrawDiceSameSimulationMany(150,'B'))+' %')
+  else
+    writeln('simulation count: '+intToStr(DiceSimulation_OneNumberPair(6)));
+end;
+
+procedure TForm1_MouseDownClick(Sender: TObject; Button: TMouseButton;
+                                        Shift: TShiftState; X,Y: Integer);
+begin
+  TBitBtn(sender).glyph.LoadFromResourceName(getHINSTANCE,'LED_RED_ON');
+end;
+
+procedure TForm1_MouseUpClick(Sender: TObject; Button: TMouseButton;
+                                      Shift: TShiftState; X,Y: Integer);
+begin
+  TBitBtn(sender).glyph.LoadFromResourceName(getHINSTANCE,'LED_GREEN_ON');
+end;
+
+procedure letBuildForm;
+var RS : TResourceStream;
+begin
+ Form1:= TForm.create(self)
+ with form1 do begin
+  setBounds(192,133,696,210)
+  Caption:= 'Dice Simulation 2016'
+  FormStyle:= fsstayonTop;
+  Color:= clGreen; //clBtnFace
+  Font.Charset:= DEFAULT_CHARSET; Font.Color:= clWindowText;
+  Font.Height:= -11; Font.Name:= 'MS Sans Serif';
+  Font.Style:= []
+  OldCreateOrder:= False
+  Position:= poScreenCenter
+  OnActivate:= @TForm1_FormActivate;
+  PixelsPerInch:= 96
+  //TextHeight(13)
+  Show;
+ end;
+  Image1:= TImage.create(form1)
+  with image1 do begin
+    parent:= form1;
+    setBounds(320,28,249,113)
+  end;
+  Image2:= TImage.create(form1)
+  with image2 do begin
+    parent:= form1;
+    transparent:= true;
+    //RS:= TResourceStream.Create(HInstance,'Splashscreen_Background', RT_RCDATA);   
+    setBounds(580,50,249,113)
+    Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE6');
+  end;
+  DrawDiceBtn:= TBitBtn.create(form1);
+   with DrawDiceBtn do begin
+     parent:= form1;
+     font.size:= 12; //font.style:= [fsbold]
+     setBounds(80,15,220,36)
+     Caption:= '&Draw pair random dice'
+     glyph.LoadFromResourceName(getHINSTANCE,'LED_GREEN_ON'); 
+     TabOrder:= 0
+     OnClick:= @TForm1_DrawDiceBtnClick;
+     onMouseDown:= @TForm1_MouseDownClick;
+     onMouseUp:= @TForm1_MouseUpClick;
+   end;
+   SimuDiceBtn:= TBitBtn.create(form1);
+   with SimuDiceBtn do begin
+     parent:= form1;
+     font.size:= 12; //font.style:= [fsbold]
+     setBounds(80,65,220,36)
+     Caption:= '&Run same pair of dice'
+     glyph.LoadFromResourceName(getHINSTANCE,'AQUA'); 
+     TabOrder:= 1
+     OnClick:= @TForm1_MouseClickSim
+   end;
+   SimuDiceBtn2:= TBitBtn.create(form1);
+   with SimuDiceBtn2 do begin
+     parent:= form1;
+     font.size:= 12; //font.style:= [fsbold]
+     setBounds(80,115,220,36)
+     Caption:= 'R&uns one pair of dice'
+     glyph.LoadFromResourceName(getHINSTANCE,'BLUE'); 
+     TabOrder:= 2
+     OnClick:= @TForm1_MouseClickSim2
+   end;
+   chk1:= TCheckbox.create(form1);
+   with chk1 do begin
+     parent:= form1;
+     caption:= 'P(n)=6/36';
+     font.color:= clRed;
+     setBounds(8,65,70,22)
+   end;  
+   chk2:= TCheckbox.create(form1);
+   with chk2 do begin
+     parent:= form1;
+     caption:= 'P(n)=1/36';
+     font.color:= clRed;
+     setBounds(8,115,70,22)
+   end;  
+end;
+
+procedure TForm1_FormActivate(Sender: TObject);
+begin
+  RANDOMIZE;  {start with a random seed so results do not repeat from run ro run}
+              {for testing it is often a good idea not to set the random seed}
+  writeln('FormActivate RANDOMIZE Set');  
+end;
+
+ function evalw(ab: TArgC {byte}; av: TVector): double;
+ begin
+   result:= av[1]
+ end;  
+ 
+ function DAverage(N : TArgC; X : TVector): double;
+ var I : Integer; S : double;
+   begin
+   S := 0.0;
+   setLength(X,N)  //memalloc
+   for I := 0 to N-1 do
+   S := S + X[I];
+     result:= S / N;
+ end;
+ 
+ const
+ MutexName =
+ 'Mutex for Max''s Dice Monitor' ;
+  //unique name
+ DUPLICATE_MSG =
+ 'Another instance of this program is already running. This one will shutdown' ;
+ 
+ ERROR_ALREADY_EXISTS = 183;
+
+  {  183 (0xB7)
+
+    Cannot create a file when that file already exists.
+   }       //$
+   
+   
+  procedure RestoreWindow(aFormName : string);
+   var
+      Wnd,
+      App : HWND;
+      semafor: THandle;
+   begin
+        Wnd:= FindWindow(pchar(aFormName), '');
+        if (Wnd <> 0)
+           then begin // Set Window to foreground
+             writeln('found TMaxForm1');
+                App:= GetWindowLong(Wnd, GWL_HWNDPARENT);
+                if IsIconic(App)
+                   then ShowWindow(App, SW_RESTORE);
+                SetForegroundwindow(App);
+                end;
+     // Semafor := CreateSemaphore('nil', 0, 1, 'MY_APPLICATION_IS_RUNNING');
+            
+   end;
+ 
+procedure testMutex; 
+ var
+ vMutex, semafor: THandle;
+ jvappinst: TJvAppInstances;
+begin
+ //vMutex := CreateMutex('', True, MutexName);
+ vMutex := CreateMutex2(Nil, True, MutexName);
+
+ //done to prevent two instances
+ if GetLastError = ERROR_ALREADY_EXISTS
+ then {//accessing the same files}  begin
+   MessageDlg(DUPLICATE_MSG, mtError, [mbOk], 0);
+   closeHandle(vmutex)
+   Exit;
+   //RunError(12345);
+ end;
+  {Semafor := CreateSemaphore('nil', 0, 1, 'MY_APPLICATION_IS_RUNNING');
+     if ((Semafor <> 0) and // application is already running
+         (GetLastError = ERROR_ALREADY_EXISTS))
+        then begin
+             RestoreWindow('TMyApplication');
+             CloseHandle(Semafor);
+             Halt;
+             end;  }
+             
+end; 
+
+Const {CRLF = #13#10;} DCRLF = CRLF+CRLF;
+
+procedure Constructor_TMKSourceFile_Create(Const ModuleIdent,
+ FormWizardIdent, AncestorIdent, UsesClause: String);
+  var FSource : TStringList;
+begin
+ //Inherited Create;
+ FSource := TStringList.Create;
+ With FSource Do Begin
+ Add(Format('Unit %s;' +DCRLF, [ModuleIdent]));
+ Add(Format('Interface' +DCRLF+'Uses' +CRLF+' System.SysUtils, System.Classes,'+
+ 'WinAPI.Windows,' + ' WinAPI.Messages, VCL.Graphics, VCL.Controls,' +
+ ' VCL.Forms, VCL.Dialogs, %s;' +DCRLF,[UsesClause]));
+ Add(Format('Type' +CRLF+' T%s = Class(T%s)' ,[FormWizardIdent, AncestorIdent]));
+ Add(' Private' +CRLF+' { private declarations }' +CRLF+' Public' +CRLF+
+ ' { public declarations }' +CRLF+ ' end;' +DCRLF);
+ Add(Format('Var' +CRLF+ ' %s: T%s;' +DCRLF,[FormWizardIdent, FormWizardIdent]));
+ Add('Implementation' +DCRLF+ '{$R *.DFM}' +DCRLF);
+ Add('End.' +CRLF);
+ end;
+end;
+
+//const
+  //NSDelim = ':';
+
+function IsPrefixedX(const AName: DOMString): Boolean;
+begin
+  Result := Pos(NSDelim, AName) > 0;
+end;
+
+function IsPrefixedW(const AName: wideString): Boolean;
+begin
+  Result := Pos(NSDelim, AName) > 0;
+end;
+
+function ProcessMessage2: Boolean;
+var
+  Msg: TMsg;
+begin
+  Result:= False;
+  if PeekMessage(Msg, 0, 0, 0, PM_REMOVE) then
+  begin
+    TranslateMessage(Msg);
+    DispatchMessage(Msg);
+    Result:= True;
+  end;
+end;
+
+procedure ProcessMessages(Timeout: DWORD);
+var
+  StopTime: DWORD;
+begin
+  StopTime:= GetTickCount + Timeout;
+  repeat
+    ProcessMessage;
+  until GetTickCount > StopTime;
+end;
+
+function LastInput: DWord;
+var
+  LInput: TLastInputInfo;
+begin
+  //LInput.cbSize := SizeOf(TLastInputInfo);
+  GetLastInputInfo(LInput);
+  Result := GetTickCount - LInput.dwTime;
+end;
+
+
+const
+sRegPolicies = '\Software\Microsoft\Windows\CurrentVersion\Policies';
+
+procedure EnableCTRLALTDEL(YesNo : boolean);
+begin
+  with TRegistry.Create do
+  try
+    RootKey:=HKEY_CURRENT_USER;
+    if OpenKey(sRegPolicies+'\System\',True) then
+    begin
+      case YesNo of
+        False:
+          begin
+            WriteInteger('DisableTaskMgr',1);
+          end;
+        True:
+          begin
+            WriteInteger('DisableTaskMgr',0);
+          end;
+      end;
+    end;
+    CloseKey;
+    if OpenKey(sRegPolicies+'\Explorer\',True) then
+    begin
+      case YesNo of
+        False:
+          begin
+            WriteInteger('NoChangeStartMenu',1);
+            WriteInteger('NoClose',1);
+            WriteInteger('NoLogOff',1);
+          end;
+        True:
+          begin
+            WriteInteger('NoChangeStartMenu',0);
+            WriteInteger('NoClose',0);
+            WriteInteger('NoLogOff',0);
+          end;
+      end;
+    end;
+    CloseKey;
+  finally
+    Free;
+  end;
+end;
+
+
+function GetCookieDirectory: string;
+var
+  reg : TRegistry;
+begin
+  reg := TRegistry.Create;
+  try
+    reg.RootKey := HKEY_LOCAL_MACHINE;
+    reg.OpenKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Special Paths\Cookies',
+      False);
+    Result := reg.ReadString('Directory');
+  finally
+    reg.Free;
+  end;
+end;
+
+
+ // type TWrapper2 = function(ArgC : TArgC {byte}; ArgV : TVector) : double;
+ 
+ var myfunc: TWrapper2;
+ cppt: TCppTokenizer;
+ lpFileInformation: TByHandleFileInformation;
+ cppp: TCppParser;
+ fhand: Thandle;
+  //  var
+  AsciiString: string;
+  AnsiString:  string;
+
+
+begin   //main
+  letBuildForm;
+  TForm1_FormActivate(Self);
+  //writeln('many same pair simulation probability: '+
+    //              floattoStr(DrawDiceSameSimulationMany(150,'A')))
+  //writeln('many one pair simulation probability: '+
+    //              floattoStr(DrawDiceSameSimulationMany(150,'B')))
+  maxcalcF('1/6 * 100')  
+  maxcalcF('1/36 * 100')  
+  maxcalcF('11/36 * 100')  
+  
+  //SetVariable('t', 12);
+  
+   myfunc:= @evalw;
+  
+  Writeln(floatToStr(DAverage(5, [1, 2, 3,4,5])));
+  
+  
+  //SetFunction2('Average', @DAverage);
+  Writeln(floatToStr(Eval('DAverage(1, 2, 3)')));
+  
+  Writeln(floatToStr(Eval('1 + 40')));
+  
+    Writeln(floatToStr(CalcMathString('10^2 +1 + ln(40)')));
+
+    Writeln(floatToStr(CalcMathString('+1 + ln(40)')));
+    
+     writeln(floattoStr(maxcalc('4 + -4')))  
+ 
+     writeln(botoStr(logicaland(089 ,89)))  
+     
+     writeln(GetComputerNameStr)
+     //openfile(exepath+'maxbox3.exe')
+     
+     {record TByHandleFileInformation dwFileAttributes : DWORD; '
+7130:  +'ftCreationTime : TFileTime; ftLastAccessTime : TFileTime; ftLastWriteTime '
+7131:  +': TFileTime; dwVolumeSerialNumber : DWORD; nFileSizeHigh : DWORD; nFileSiz'
+7132:  +'eLow : DWORD; nNumberOfLinks : DWORD; nFileIndexHigh : DWORD; nFileIndexLow : DWORD; end  }
+     
+     fhand:= OpenFileForSequentialReadOnly(exepath+'maxbox3.exe')
+     
+     writeln('modified time: '+datetimetoStr(FileTimeGMT(exepath+'maxbox3.exe')))
+     writeln(itoa(fhand))
+     
+     if GetFileInformationByHandle(fhand, lpFileInformation) then begin
+          writeln('links: '+itoa(lpFileInformation.nnumberoflinks));
+       writeln('time: '+datetimetoStr(FileTimeToDateTime(lpFileInformation.ftcreationtime)));
+       writeln('time: '+FileTimeToStr(lpFileInformation.ftcreationtime));
+       writeln('time: '+datetimetoStr(FileTimeToLocalDateTime(lpFileInformation.ftcreationtime)));
+   
+   
+       end;
+          
+         closefilehandle(fhand)
+    //evalcheck('4 > 5')
+    
+    //AddLambdaTransitionTo
+    
+    writeln('wichtel '+floattostr(wichtelSimulation_OneNumberPair(3,150)))
+    maxcalcF('(5/6)^6')
+    maxcalcF('(6/7)^7')
+    maxcalcF('(7/8)^8')
+    maxcalcF('(8/9)^9')
+
+    writeln('test cylce time: ')
+    CycleTimeHiRes2(self)
+    
+   //7 testmutex;
+     
+   //myfunc:= @evalw;
+    
+    //setfunction2('myvector',myfunc)
+    
+    //Application.Initialize;
+ //Application.MainFormOnTaskbar := True;
+ 
+  RestoreWindow('TMaxForm1');
+  //smallestsort
+  //TStatementKind
+  //TStatement
+  //TIntList2
+  
+   //maxcalc('5 or 6')
+  //writeln(botostr(maxcalc('5 and 6')))
+  //SelfTestcXMLFunctions
+  writeln(floattostr(celsiustoFahrenheit(FahrenheitToCelsius(50))))
+  
+  //TSockWebRequest
+  //TWebAppSockObjectFactory
+  //TWebAppInfo
+  //TISAPIApplication
+  
+  //LogMessage
+    //UnixPathToDosPath2
+    //TDataBindings
+    //TDBOleControl
+    //savebytecode
+    //maxlistsize2
+    //maxform1.ResetKeyPressed
+    //GetPerftime
+     // maxform1.savebytecode
+     //ContentFromString
+  //ContentFromStream
+    //gettagid
+      //a_bc              
+        //MAXROUNDS
+        //TCompletionEvent  TStatement
+        
+    //domstring    
+          //IsPrefixed( const AName : DOMString) : Boolean');
+  //ExtractLocalName( const AName : DOMString) : DOMString');
+  //ExtractPrefix( const AName : DOMString) : DOMString');
+  //MakeNodeName( const Prefix, LocalName : DOMString) : DOMString');
+  //SameNamespace( const Node : IDOMNode; const namespaceURI : WideString) : Boolean;');
+  writeln(botostr(SameNamespace2( 'const URI1', 'URI2 : WideString'))) //: Boolean;');
+  //NodeMatches( const Node : IDOMNode; const TagName, NamespaceURI : DOMString) : Boolean;');
+  //GetDOMNodeEx( const Node : IDOMNode) : IDOMNodeEx');
+  //RegisterDOMVendor( const Vendor : TDOMVendor)');
+  //UnRegisterDOMVendor( const Vendor : TDOMVendor)');
+  //GetDOMVendor( VendorDesc : string) : TDOMVendor');
+  //GetDOM( const VendorDesc : string) : IDOMImplementation');
+  //DOMVendorNotSupported( const PropOrMethod, VendorName : string)');
+
+         //isprefixed
+         {InitISAPIApplicationList
+         logmessage
+         sExecWaitToken
+         TWebAppInfo
+          TCompletionEvent
+          TCompletionEvent
+          }
+  
+  //IDOMNode
+  //absfloat
+   writeln('isprefixed '+botostr(isprefixedX(': this : is a prefix')))
+  writeln('isprefixed '+botostr(isprefixedW(' this : is a prefix')))
+  
+  //openfile
+  
+  //TIdEntityHeaderInfo
+ 
+    //ARequestInfo: TIdHTTPRequestInfo
+    //'<br />URI: ' + ARequestInfo.URI +
+  //'<br />URI: ' + ARequestInfo.params.name +
+  
+  writeln(inttostr(getmemoryload))
+  //getmemorydata
+  TimeSeparator
+  
+  //getTimeSeparator
+  //getdateseparator
+  //gettimeseparator
+  
+  //tvardata
+  
+  //_VarArrayRedim
+  
+  //_varcast
+  //_varcopynoind
+ 
+    //varcopy
+ 
+   //varcast
+   
+   //TComponentStyle
+   
+   with tcontrol.create(self) do begin
+     action
+     free
+     end;
+     
+   //TDBGridColumns  
+    // TMenuItem
+    //TDrawItemEvent
+      raiselastwin32;
+    //writeln(getusernameA('max'))
+    //StrToDecimal
+    //TCpuInfo
+    //TCacheInfo
+    
+    //TFloat
+    //TGameboard
+    
+    //ProcessMessage
+    //TExprToken
+    //TExprSym
+    //TExprLexer
+    
+    GetFreePageFileMemory
+    
+    //TService
+    
+    //TFuncBool
+    
+    //TFreqInfo
+    
+    //TEvaluator
+    
+    //SaveStringToStream
+    //TFloat64
+    
+    //NONE
+      //MAX_VALUE
+      //TPlayer
+        //TPiece
+      //TSquare', 'Integer');
+  //TMovementPath', 'array of TSquare');
+ //TGameboard');
+  //TGameboardClass', 'class of TGameboard');
+  //TGameboardControl');
+  //TPositionKey', 'Int64');
+  //TPositionFlag', '( tfNone, tfExact, tfUpper, tfLower )');
+  //PPositionNode', '^TPositionNode // will not work');
+  //TPositionNode', 'record Key : TPositionKey; Value : Integer; Depth_Flag : Byte; BestMove : ShortInt; end');
+  //TPositionTable(CL);
+  //PSearchControl', '^TSearchControl // will not work');
+  //TSearchControl', '( scContinue, scStop, scAbort )');
+  //TGameEndState', '( gesUnknown, gesDraw, gesLightWon, gesDarkWon )');
+  //TGameStage', '( gsStartGame, gsMidGame, gsEndGame )');
+  //SIRegister_TGameboard(CL);
+  //SIRegister_TGameSolver(CL);
+  //TAnimator(CL);
+  //SIRegister_TGameHistoryRec(CL);
+  //SIRegister_TGameHistory(CL);
+  //TSelectionOption', '( soAutoComplete, soAutoPlayStep, soAutoPlayComplete )');
+  //TSelectionOptions', 'set of TSelectionOption');
+  //TBoardLabel', '( blLeft, blTop, blRight, blBottom )');
+  //TBoardLabels', 'set of TBoardLabel');
+  //TSquareLabel', '( slNone, slCenter, slLeftCenter, slLeftTop, slT'
+   //+'opCenter, slRightTop, slRightCenter, slRightBottom, slBottomCenter, slLeftBottom )');
+  //TGameboardMode', '( gbmSetup, gbmPlay )');
+  //TSquareDrawState', '( sdsSelected, sdsMarked, sdsFocused, sdsNoC'
+  // +'ache, sdsReserved1, sdsReserved2, sdsReserved3 )');
+  //TSquareDrawStates', 'set of TSquareDrawState');
+  //TSquareDragOverEvent', 'Procedure ( Sender : TObject; Source, Ta'
+  // +'rget : TSquare; var Accept : Boolean)');
+  //TSquareDragDropEvent', 'Procedure ( Sender : TObject; Source, Target : TSquare)');
+  //TSquareInfoTipEvent', 'Procedure ( Sender : TObject; Square : TS'
+  // +'quare; var InfoTip : String)');
+  //TSquareActionEvent', 'Procedure ( Sender : TObject; Square : TSq'
+  // +'uare; var Handled : Boolean)');
+  //TSquareEvent', 'Procedure ( Sender : TObject; Square : TSquare)');
+  //TMoveVarEvent', 'Procedure ( Sender : TObject; var Index : Integer)');
+  //TMoveEvent', 'Procedure ( Sender : TObject; Index : Integer)');
+  //TSquareDrawInfo', 'record States : TSquareDrawStates; ImageIndex : Integer; end');
+  
+    
+    
+    //WaitForSyncObject
+        //ProcessMessages
+     //ProcessMessage
+    //WaitForSyncObject2
+    //Opponent
+    //LoadStringFromStream
+    //SaveStringToStream
+    
+    //JSDateToDateTime
+    //TRecType
+    //TRole
+      //TProtocolStatus
+     //TRequestMethod
+       //TExtProcedure
+       //TArrayOfString
+       //TArrayOfInteger
+       //TRegExp
+       //TRecord
+         //TRegEx
+         //TArrays
+         
+     //TArrayOfString', 'array of string');
+  //TArrayOfInteger2', 'array of Integer');
+  //TExtObjectList');
+  //TExtFunction');
+  //SIRegister_TExtThread(CL);
+  //TExtObject(CL);
+  //TExtFunction');
+  //SIRegister_TExtObjectList(CL);
+  //THTMLElement');
+  //TStyleSheet');
+  //TRegExp', 'string');
+  //TCSSRule');
+  //TXMLDocument2');
+  //TNodeList');
+  //TExtDataNode');
+  //TRegion', 'string');
+  //TNativeMenu', 'TExtObject');
+  //Tel', 'string');
+  //TEvent');
+  //TEventObject', 'TEvent');
+  //TExtEventObject', 'TEventObject');
+  //THTMLNode', 'TExtObject');
+  //TConstructor');
+  //TExtLibRegion');
+  //TvisMode', 'Integer');
+  //TThe', 'TExtObject');
+  //TThis', 'TExtObject');
+  //TairNativeMenu', 'TExtObject');
+  //TX', 'TExtObject');
+  //TN1', 'TExtObject');
+  //TN2', 'TExtObject');
+  //TLayout', 'TExtObject');
+  //TId', 'TExtObject');
+  //TiPageX', 'TExtObject');
+  //TiPageY', 'TExtObject');
+  //TExtGridGrid', 'TExtObject');
+  //TTreeSelectionModel', 'TExtObject');
+  //TSelectionModel', 'TExtObject');
+  //TDataSource2', 'TExtObject');
+  //TAirNotificationType', 'TExtObject');
+  //TIterable', 'TExtObjectList');
+  //TAnything', 'TExtObject');
+  //TNodeLists');
+  //TArrays', 'TExtObjectList');
+  //TExtDirectExceptionEvent', 'TEvent');
+  //TExtDirectEvent', 'TEvent');
+  //TExtDirectTransaction', 'TExtObject');
+  //                        TDOMElement2', 'TExtObject');
+  //TRecord', 'TExtObject');
+  //TNull', 'TExtObject');
+  //TMisc', 'TExtObject');
+  //THash', 'TExtObject');
+  //TXMLElement', 'TExtObject');
+  //TExtListView', 'TExtObject');
+  //TExtSlider', 'TExtObject');
+ //DeclareJS','String').SetString( '/*var*/ ');
+ //CommandDelim','Char').SetString( #3);
+ //IdentDelim','Char').SetString( #4);
+ //JSDelim','Char').SetString( #5);
+   //MakeEditNumeric
+   //SaveComponents
+    //AutoLoad
+   //GetStorage
+     //SaveComponents
+      //TPersistStorage
+    //FloatToDecimal  
+    //FloatToText
+   
+     //GetUserDefaultLCID
+   
+ {     CL.AddDelphiFunction('Function IsValidLocale( Locale : LCID; dwFlags : DWORD) : BOOL');
+ CL.AddDelphiFunction('Function ConvertDefaultLocale( Locale : LCID) : LCID');
+ CL.AddDelphiFunction('Function GetThreadLocale : LCID');
+ CL.AddDelphiFunction('Function SetThreadLocale( Locale : LCID) : BOOL');
+ CL.AddDelphiFunction('Function GetSystemDefaultLangID : LANGID');
+ CL.AddDelphiFunction('Function GetUserDefaultLangID : LANGID');
+ CL.AddDelphiFunction('Function GetSystemDefaultLCID : LCID');
+ CL.AddDelphiFunction('Function GetUserDefaultLCID : LCID');
+ }
+ 
+ //  IsValidLocale( Locale : LCID; dwFlags : DWORD) : BOOL');
+ //ConvertDefaultLocale( Locale : LCID) : LCID');
+ //GetThreadLocale : LCID');
+ //SetThreadLocale( Locale : LCID) : BOOL');
+ //GetSystemDefaultLangID : LANGID');
+ //GetUserDefaultLangID : LANGID');
+ //GetSystemDefaultLCID : LCID');
+ //GetUserDefaultLCID : LCID');
+ //openfilehandle
+  //getusernameA
+    //SetComputerName
+    //LOGON32_LOGON_INTERACTIVE
+    //LogonUser
+    //ImpersonateLoggedOnUser
+     // CreateProcessAsUser
+       writeln(getcomputername)
+       writeln(getmemInf)
+       //GetCurrentHwProfile
+    //GetCurrentUserName  
+    //TSynEditFileFormat
+    //StrReplaceRegEx
+    
+    //TInt64Array
+    
+    //InitializeLocaleSupport');
+    //TerminateLocaleSupport
+    //TJclAnsiRegExOption
+          //GetLastInputInfo
+    
+    
+    with tprimes.create do begin
+      //isprime
+      factors
+      prime
+      free
+    end;  
+    
+    
+    //TPoint64
+    {TSynEditStringList
+    TSynEditStringRec 
+       TSynEditStringFlag
+       TSynChangeReason
+     }  
+       
+   fhand:= OpenFileHandle(exepath+'maxbox4.exe')
+     writeln('modified time: '+datetimetoStr(FileTimeGMT(exepath+'maxbox4.exe')))
+     writeln(itoa(fhand))
+     if GetFileInformationByHandle(fhand, lpFileInformation) then begin
+          writeln('links: '+itoa(lpFileInformation.nnumberoflinks));
+       writeln('time: '+datetimetoStr(FileTimeToDateTime(lpFileInformation.ftcreationtime)));
+       writeln('time: '+FileTimeToStr(lpFileInformation.ftcreationtime));
+       writeln('time: '+datetimetoStr(FileTimeToLocalDateTime(lpFileInformation.ftcreationtime)));
+     end;
+    closefilehandle(fhand)     
+       
+     //getlastinput
+     //S.RegisterDelphiFunction(@getLastInput, 'getLastInput', CdStdCall);
+       //getkeylist
+       //getkeyboardlist2
+      // ActivateKeyboardLayout(Hkl,Items.Objects[ItemIndex]), 0)
+      //EnableCTRLALTDEL
+       
+       
+  AsciiString := 'äöü';
+  OEMtoChar(PChar(AsciiString), PChar(AnsiString));   
+       
+  writeln(asciistring)     
+  
+  ShowMessage(GetCookieDirectory);
+  
+  //LocalIP
+  //IPAddrToName
+  //GetIPFromHost
+  //PostKeyEx32
+  //GetWin32TypeLibList
+  //RecurseWin32
+       
+  
+End.
+
+//C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\maxbox36beta\maxbox3\source\fundamentals_lib\synopse             
+{   The Decimals parameter specifies the requested maximum number of digits to the left of the decimal point in the result. Precision and Decimals together control how the result is rounded. To produce a result that always has a given number of significant digits regardless of the magnitude of the number, specify 9999 for the Decimals parameter. 
+ }
+{
+
+{many same simulation prob: 0.0284575981787137
+ mX3 executed: 12/14/2015 10:12:04 AM  Runtime: 0:1:23.945  Memload: 62% use
+
+The standard TTimer component uses the SetTimer API function, so the interval is limited to 2147483647 milliseconds (about 25 days). ZylTimer is a thread based timer and the interval could be set even to hundred years if necessary.
+
+}
+
+{many same simulation prob: 0.0273772586238365
+ mX3 executed: 12/15/2015 5:33:03 PM  Runtime: 0:1:17.173  Memload: 63% use
+     mX3 executed: 12/15/2015 6:57:54 PM  Runtime: 0:1:12.307  Memload: 55% use}
+{Doc: Problem Description
+
+Brute Force solves a class of problems that can be represented as equations with integer solutions.  The solution must be from a predefined set of integers.  As restrictive as that sounds, there a many problems that qualify.  Examples:
+bullet	
+
+The  word arithmetic problems called Alphametics,  where each variable is a digit 0..9.   The Alphametics program previously posted only solved addition problems.  BruteForce should be able to solve problems with other operations, although I haven't tried any yet.  
+bullet
+
+ SIRegister_HTTPProd(X);
+  SIRegister_IndySockTransport(X);
+  SIRegister_synacrypt(X);
+
+ RIRegister_HTTPProd(X);
+  RIRegister_HTTPProd_Routines(Exec);
+  RIRegister_IndySockTransport(X);
+  RIRegister_synacrypt(X);
+  RIRegister_synacrypt_Routines(Exec);
+	
+
+ NxN Magic squares have a solution set consisting of the integers 1..N2.    
+bullet	
+
+What 3 digit number together with it's square contains all 10 digits?.   
+bullet	
+
+The Bookshelf problem: "Kristen noticed that if she arranged her 9 volume set of Horse books with volumes 6729 on the top shelf of her bookcase and 13458 on the bottom, the result was a fraction with value 1/2.  She started rearranging the books trying to make other fractions (1/3, 1/4, 1/5, 1/6, 1/7, 1/8 and 1/9).  Can you help her?"  
+bullet	
+
+The 5 Olympic rings overlap to form 9 distinct areas.  Write the digits 1..9 in the areas so that the sum of the digits in any ring is 11.   
+
+Brute Force tries to solve such problems.    
+
+Bäume stehen zusammen und schützen sich gegenseitig vor dem Wind.
+Sie sind einander Stütze von einer schweren Last.
+Ein Baum sorgt dafür, dass der andere wachsen kann.
+  
+Wir brauchen Menschen, die für uns das sind
+und für die wir da sein können.
+Menschen die Freud und Leid mit uns teilen,
+die uns in den Stürmen des Lebens Halt geben.
+Menschen, die unser Herz mit Wärme erfüllen. }
+
+
+{reconfig:
+
+C:\maXbox\TestApp2
+E:\kleiner2005\TestApp
+
+C:\Program Files (x86)\CodeGear\RAD Studio
+
+C:\maXbox\TestApp2
+E:\kleiner2005\entwickler
+
+C:\maXbox\TestApp2\sonysavefeb2014\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker\JvTypes.pas
+
+ }
