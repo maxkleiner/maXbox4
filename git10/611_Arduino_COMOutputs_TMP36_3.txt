@@ -1,0 +1,1421 @@
+program ArduinoCOMOutputTester;
+
+//interface
+//purpose: analog input of temperatur sensor tmp36
+//http://www.analog.com/en/products/analog-to-digital-converters/integrated-special-purpose-converters/integrated-temperature-sensors/tmp36.html#product-overview
+
+{uses #locs:603
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, CPortCtl, CPort, StdCtrls, ComCtrls, ExtCtrls, IniFiles;
+  #sign:Max: MAXBOX10: 17/11/2016 20:33:10 
+}
+
+//type
+  //TForm1 = class(TForm)
+
+Const
+  BACKMAP = '\examples\images\bmp47.bmp';  //bmp33.bmp
+ // BACKMAP = '\examples\bmp47.bmp';  //bmp33.bmp
+
+  SIG ='<--------->';
+  ACOMPORT = 6;
+
+    
+   var 
+    ComPort: TComPort;
+    ComDataPacket1: TComDataPacket;
+    Edit1: TEdit;
+    Button3: TBitBtn;
+    StatusBar1: TStatusBar;
+    acb5: TCheckBox;
+    acb4: TCheckBox;
+    acb3: TCheckBox;
+    acb2: TCheckBox;
+    acb1: TCheckBox;
+    acb0: TCheckBox;
+    Label1: TLabel;
+    Label3: TLabel;
+    Label2: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    cbAuto: TCheckBox;
+    Label16: TLabel;
+    Label17: TLabel;
+    Label18: TLabel;
+    Label19: TLabel;
+    Label20: TLabel;
+    Label21: TLabel;
+    Label22: TLabel;
+    Panel1: TPanel;
+    Button2: TBitBtn;
+    ComLed1, comLed2: TComLed;
+    Button1: TBitBtn;
+    acbClear: TCheckBox;
+   
+var
+  comFrm1: TForm;
+  BinVal: Byte;
+  iniPath: string;
+
+//implementation
+
+//uses Unit2;
+
+//{$R *.dfm}
+
+procedure Button2Click(Sender: TObject);
+var
+  Str: String;
+begin
+   ComPort.ShowSetupDialog;
+   ComPort.StoreSettings(stIniFile, inipath);
+   writeln('StoreSettings at: '+inipath)
+   if not ComPort.Connected then begin 
+    try
+      ComPort.Open;
+    except
+      ShowMessage('Unable to open COM port.');
+    end;
+  end;
+  if ComPort.Connected then
+    ComLed1.Kind:= lkGreenLight
+  else
+   ComLed1.Kind:= lkRedLight;
+   Str:= ComPort.Port;
+  Statusbar1.SimpleText:= Str;
+end;
+
+procedure Button3Click(Sender: TObject);
+var
+  Str: String;
+begin
+  Str := Edit1.Text;
+  if Str = '' then Exit;
+  Edit1.SetFocus();
+  if StrToInt(Str) > 63 then begin
+  // CL.AddDelphiFunction('Function SystemParametersInfoA( uiAction, uiParam : UINT; pvParam : UINT; fWinIni : UINT) : BOOL');
+   SystemParametersInfoA(SPI_SETBEEP, 1, 0, SPIF_SENDWININICHANGE);
+    Beep();
+    Exit;
+  end;
+  ComPort.WriteStr(Str);
+  Edit1.Text:= '';
+end;
+
+procedure PIN_Checker(ab: boolean; checker: boolean);
+begin
+  if checker then begin
+    acb0.Checked:= ab; acb1.Checked:= ab;
+    acb2.Checked:= ab; acb3.Checked:= ab;
+    acb4.Checked:= ab; acb5.Checked:= ab;
+  end else begin  
+    acb0.Enabled:= ab; acb1.Enabled:= ab;
+    acb2.Enabled:= ab; acb3.Enabled:= ab;
+    acb4.Enabled:= ab; acb5.Enabled:= ab;
+  end;
+end;  
+
+
+procedure Edit1KeyPress(Sender: TObject; var Key: Char);
+begin
+  if Edit1.Focused and (Key = #13) then begin
+    Key := #0; // Cancels the keypress
+    SystemParametersInfoA(SPI_SETBEEP, 0, 0, SPIF_SENDWININICHANGE);
+    Button3Click(Self);
+    Exit;
+  end;
+  SystemParametersInfoA(SPI_SETBEEP, 1, 0, SPIF_SENDWININICHANGE);
+  // #8 is Backspace
+  //if not (Key in [#8, '0'..'9']) then begin
+  if not ((Key >= '0') And (Key <= '9')) then begin
+   Beep();
+    // Discard the key
+    Key := #0;
+  end;
+end;
+
+
+procedure COMPortCreate(Sender: TObject);
+var
+  Ini: TIniFile;
+    //inipath: string;
+begin
+  comPort:= TComPort.Create(self);
+  with comPort do begin
+    BaudRate:= br9600;
+    Port:= 'COM'+InttoStr(ACOMPORT);
+    Parity.Bits:= prNone;
+    StopBits:= sbOneStopBit;
+    DataBits:= dbEight;
+    Events:= [evRxChar, evTxEmpty, evRxFlag, evRing, evBreak, 
+                              evCTS, evDSR, evError, evRLSD, evRx80Full]
+    {FlowControl.OutCTSFlow:= False
+    FlowControl.OutDSRFlow:= False
+    FlowControl.ControlDTR:= dtrDisable
+    FlowControl.ControlRTS:= rtsDisable
+    FlowControl.XonXoffOut:= False
+    FlowControl.XonXoffIn:= False }   
+    StoredProps:= [spBasic]
+    name:= 'comport2ini';     //section name for ini file!
+    TriggersOnRxChar:= True
+  end;
+  
+  ComDataPacket1:= TComDataPacket.create(self);
+  ComDataPacket1.ComPort:= ComPort;
+  ComLed1:= TCOMLed.create(self)
+  with comLed1 do begin
+    parent:= comfrm1
+    setbounds(300,30,30,30)
+     ComPort:= ComPort
+      LedSignal:= lsConn
+      Kind:= lkRedLight
+   end;   
+  ComLed2:= TCOMLed.create(self)
+  with comLed2 do begin
+    parent:= comfrm1
+    setbounds(350,30,30,30)
+     ComPort:= ComPort
+      LedSignal:= lsConn
+      Kind:= lkYellowlight
+   end;   
+    
+ BinVal:= 0;
+ //Ini:= TIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
+ Ini:= TIniFile.Create(iniPath);
+ if FileExists(iniPath) then begin
+   writeln('COM Inifile: '+iniPath)
+   cbAuto.Checked:= Ini.ReadBool('ComPort', 'Auto',  True);
+   acbClear.Checked:= Ini.ReadBool('ComPort', 'Clear', False);
+    ini.Free;
+   try
+   ComPort.LoadSettings(stIniFile, iniPath);
+    //ComPort.LoadSettings(stIniFile, inipath);
+    //Comport.Port:= 'COM4';
+    ComPort.Open;
+   except
+     Showmessage('Unable to open COM port' +#10+#13 + 'Check the Port settings');
+   end;
+  if ComPort.Connected then begin
+    PIN_Checker(true, false);
+    ComLed1.Kind:= lkGreenLight
+    writeln('connected')
+  end else
+   ComLed1.Kind:= lkRedLight;
+  Statusbar1.SimpleText:= ComPort.Port;
+ end;
+ Comport.ReadStr(sr,14)
+ writeln('temp C: '+sr);
+end;
+
+
+
+procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  Ini: TIniFile;
+  ainif: TStoreType;
+begin
+ if acbClear.Checked then begin
+   ComPort.WriteStr('0');
+ end;
+ Ini:= TIniFile.Create(iniPath);
+  if FileExists(iniPath) then begin
+   Ini.WriteBool('ComPort', 'Auto', cbAuto.Checked);
+   Ini.WriteBool('ComPort', 'Clear', acbClear.Checked);
+   ini.WriteTime('DateSection','timemax2',time);
+   ini.Free;
+   //writeln(inttostr(ord(TStoreType(stIniFile))))
+   try
+     //comport.storeinifile internal;
+     ComPort.StoreSettings(stIniFile,inipath);
+     writeln('StoreSettings at: '+inipath)
+   except
+     showmessage(SysErrorMessage(GetLastError))
+   end
+   //ComPort.StoreSettings(stIniFile, ChangeFileExt(ParamStr(0), '.ini'));
+  end else begin
+    Ini.WriteBool('ComPort', 'Auto', cbAuto.Checked);
+    Ini.WriteBool('ComPort', 'Clear', acbClear.Checked);
+    ComPort.StoreSettings(stIniFile, ChangeFileExt(maxform1.scriptname, '.ini'));
+    ini.WriteTime('DateSection','timemax2',time);
+    ini.Free;
+  end;
+  ComDataPacket1.Free;
+  if comport.connected then 
+   comport.close;
+  comport.Free;
+  writeln('comform &port closed');
+end;
+
+
+
+Procedure BtnFactory(a,b,c,d: smallint; title,apic: string;
+                        var abtn: TBitBtn; anEvent: TNotifyEvent);
+begin
+  abtn:= TBitBtn.create(comfrm1);
+  with abtn do begin
+    parent:= comfrm1;
+    setBounds(a,b,c,d)
+    font.size:= 12;
+    glyph.LoadFromResourceName(HINSTANCE, apic); 
+    mXButton(5,5,width, height,12,12,handle);
+    caption:= title;
+    onClick:= anEvent As TNotifyEvent; 
+  end;
+end; 
+
+Procedure CheckBoxFactory(a,b,c,d: byte; title: shortstring;
+                          var abox: TCheckbox; anevent: TNotifyEvent);
+begin
+  abox:= TCheckBox.create(comfrm1)
+  with abox do begin
+    parent:= comfrm1;
+    SetBounds(a,b,c,d)
+    Caption:= title;
+    Enabled:= False;
+    OnClick:= anevent as TNotifyEvent;
+  end;
+end;
+
+
+Procedure LabelFactory(a,b,c,d: integer; title: shortstring);
+begin
+  with TLabel.create(self) do begin
+    parent:= comfrm1;
+    SetBounds(a,b,c,d);
+    Caption:= title
+  end;
+end;
+
+
+procedure cb0Click(Sender: TObject);
+begin
+  if acb0.Checked then
+     BinVal:= BinVal + 1
+  else
+    BinVal:= BinVal - 1;
+  Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure cb1Click(Sender: TObject);
+begin
+   if acb1.Checked then
+     BinVal:= BinVal + 2
+  else
+    BinVal:= BinVal - 2;
+   Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure cb2Click(Sender: TObject);
+begin
+   if acb2.Checked then
+     BinVal:= BinVal + 4
+  else
+    BinVal:= BinVal - 4;
+  Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure cb3Click(Sender: TObject);
+begin
+   if acb3.Checked then
+     BinVal:= BinVal + 8
+  else
+    BinVal:= BinVal - 8;
+  Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure cb4Click(Sender: TObject);
+begin
+    if acb4.Checked then
+     BinVal:= BinVal + 16
+  else
+    BinVal:= BinVal - 16;
+   Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure cb5Click(Sender: TObject);
+begin
+    if acb5.Checked then
+     BinVal:= BinVal + 32
+  else
+    BinVal:= BinVal - 32;
+   Edit1.Text:= IntToStr(BinVal);
+  if cbAuto.Checked then
+   Button3Click(Self);
+end;
+
+procedure Button1Click(Sender: TObject);
+begin
+  //Form2.left:= Form1.Left-25;
+  //Form2.Top:= Form1.Top+40;
+  //Form2.ShowModal;
+end;
+
+procedure InitComPortForm;
+var lbls: byte;
+begin
+ comFrm1:= TForm.create(self);
+ with comFrm1 do begin
+   //FormStyle := fsStayOnTop;
+   Position:= poScreenCenter;
+   caption:='COM Port meets Arduino Pin PortB';
+   width:= 700; height:= 560;
+   //onCreate:= @TFrm_FormCreate;        
+   onCloseQuery:= @FormCloseQuery;
+   Show;
+   canvas.brush.bitmap:= getBitmapObject(Exepath+BACKMAP);
+   Canvas.FillRect(Rect(600,400,410,100));
+ end;
+  //Constructors & settings
+  
+  iniPath:= ChangeFileExt(maxform1.scriptname, '.ini');
+  BtnFactory(500,440,150,55,'&COM About','LEDbulbon',button1,@Button1click);
+  BtnFactory(180,440,150,55,'&COM Setup','CL_MPNEXT',button2,@Button2click);
+  BtnFactory(340,440,150,55,'&COM Send','CL_MPPLAY',button3,@Button3click);
+  CheckBoxFactory(16,42,57,17, 'Led 1',acb0,@cb0click);
+  CheckBoxFactory(16,66,57,17, 'Led 2',acb1,@cb1click);
+  CheckBoxFactory(16,90,57,17, 'Led 3',acb2,@cb2click);
+  CheckBoxFactory(16,114,57,17, 'Led 4',acb3,@cb3click);
+  CheckBoxFactory(16,138,57,17, 'Led 5',acb4,@cb4click);
+  CheckBoxFactory(16,160,57,17, 'Led 6',acb5,@cb5click);
+
+  CheckBoxFactory(460,90,77,17, 'Send Now',cbauto,nil);
+  CheckBoxFactory(460,114,77,17, 'Clear Ini',acbclear,nil);
+  LabelFactory(302,70,39,13, 'Decimal:');
+  
+
+  with TLabel.create(self) do begin
+    parent:= comfrm1;
+     setBounds(16,12,69,13)
+     Caption:= 'PIN Control';
+     Font.Color:= clMaroon;
+     Font.Size:= 13;
+     Font.Style:= [fsBold];
+  end;
+  with TLabel.create(self) do begin
+    parent:= comfrm1;
+     setBounds(155,12,69,13)
+     Caption:= 'Arduino PIN';
+     Font.Color:= clNavy;
+     Font.Size:= 13;
+     Font.Style:= [fsBold];
+  end;
+  Edit1:= TEdit.create(comfrm1)
+  with edit1 do begin
+    parent:= comfrm1;
+    setBounds(300,90,45,22)
+    MaxLength:= 2
+    TabOrder:= 0
+    Text:= '0'
+    OnKeyPress:= @Edit1KeyPress;
+  end;
+ 
+  lbls:= 42;
+  for it:= 1 to 5 do begin
+    LabelFactory(80,lbls,39,13, SIG);
+    lbls:= lbls+24
+  end;
+  lbls:= 42;
+  for it:= 1 to 6 do begin
+    LabelFactory(156,lbls,38,13,'Digit '+inttoStr(it+7));
+    lbls:= lbls+24
+  end;
+ 
+  with TDateTimePicker.Create(self) do begin
+    parent:= comfrm1;
+    Date;
+    top:= 220; left:= 15;
+    calAlignment:= albottom;
+  end;
+  statusBar1:= TStatusBar.create(self);
+  with statusBar1 do begin
+    parent:= comFrm1;
+    //simplepanel:= true;
+    showhint:= true;
+    hint:= 'this is LED BOX State';
+     Panels.add;
+     panels.items[0].width:= 200;
+     Panels.add;
+     panels.items[1].width:= 150;
+  end;
+  COMPortCreate(self); 
+end;   //*********************End Form Build************************
+
+    var sruni: unicodestring;
+      srcom, strb: string;
+      SimpleComPort: TSimpleComPort;
+      cPort: TApdComPort;
+      Boolblink: boolean;
+
+begin
+
+(*  InitComPortForm
+  //Comport.BeginUpdate
+  
+  repeat 
+  //Comport.Readstr(sr,80)
+  it:= 10;
+  //writeln(itoa(comport.inputcount))
+  //ComDataPacket1.onpacket
+  //Comport.Read(it,it)
+  //writeln(itoa(comport.ReadunicodeString(sruni, 16)))
+   writeln(itoa(comport.ReadStr(srcom, 12)))
+ 
+  if srcom <> '' then
+   writeln('temp C: '+srcom);
+  delay(1000)
+   until isKeypressed;
+   *)
+   
+  (* if IsCOMPort then begin
+    SimpleComPort:= TSimpleComPort.Create;
+  //SimpleComPort.Open(1, 'baud=115200 parity=N data=8 stop=1');
+    SimpleComPort.Open(3, 'baud=9600 parity=N data=8 stop=1');
+    sleep(1000)
+    //SimpleComPort.WriteString('111111111111111111111111A');
+    //SimpleComPort.WriteString('1');
+    //sleep(1500)
+    //SimpleComPort.WriteString('A');
+    SimpleComPort.ReadString(strb)
+    writeln('back '+strb)
+    //SimpleComPort.Free;
+   end;
+   
+   repeat 
+   sleep(2000)
+     SimpleComPort.ReadString(strb);
+     //if strb <> '' then
+    //writeln('back '+strb);
+    
+    until isKeypressed;
+    SimpleComPort.Free;
+    Writeln('comport free');
+    *)
+    
+(*  cPort:= TApdComPort.Create(self);
+  if isCOMPort then begin
+    with cport do begin
+    Baud:= 9600;
+    ComNumber:= 3;//COMPORT; //'COM5';
+    Parity:= prNone;
+    end;
+   end; 
+     repeat 
+   sleep(50)
+   try
+     //writeln(cPort.getchar);
+     sr:= sr + cPort.getchar;
+     //if length(sr) = 19 then begin
+     {if pos('23.66',sr) > 0 then cport.putchar('8');
+     if pos('23.17',sr) > 0 then cport.putchar('H');
+      }
+     //if pos('0',sr) > 0 then cport.putchar('8');
+     //if pos('5',sr) > 0 then cport.putchar('H');
+      
+     //else cport.putchar('H');
+     if pos(#10,sr) > 0 then begin
+      if pos('5',sr) > 0 then cport.putchar('8'); //LED On
+      if pos('0',sr) > 0 then cport.putchar('H'); //LED Off
+      writeln(sr);
+      sr:= '';
+     end;
+     //if cport.getchar = 'C' then writeln(sr);
+   except
+     writeln('com excetp of getChar()');
+   end;
+     //if strb <> '' then
+    //writeln('back '+strb);
+    
+    until isKeypressed;   //press on console then it stops
+    cPort.doneport;
+    cport.Free;
+    Writeln('comport done & free');
+    //*)
+    //StopBits:= sbOneStopBit;
+    //DataBits:= dbEight;
+   {FlowControl.OutCTSFlow:= False;
+    FlowControl.OutDSRFlow:= False;
+    FlowControl.ControlDTR:= dtrDisable;
+    FlowControl.ControlRTS:= rtsDisable;
+    FlowControl.XonXoffOut:= False;
+    FlowControl.XonXoffIn:= False;}
+    
+  memo2.setFocus;
+  boolBlink:= false;
+    
+  if IsCOMPort then begin
+    showmessageBig('stop measure with keypress on output console!')
+    with TBlockSerial.Create do begin
+      Config(9600,8,'N',1,true,false);
+      Connect('COM4');
+      sleep(1000)
+      //cpomReleaseComport;
+      //cpomComportAccessible
+      SetCommState;
+      writeln('Version '+getVersion)
+      //writeln(RecvBlock(1000))
+      //sendbyte(56);
+      //SendString('H')
+      Flush;
+      if CanWrite(3000) then       
+          SendString('h');
+      repeat
+        {if CanWrite(1000) then begin
+          sendbyte(8);
+        end;}  
+        writeln(RecvString(1200))
+        //flush;
+        boolblink:= Not Boolblink;
+        //sleep(500)
+        if boolblink then       
+          SendString('h') else SendString('l');
+      until isKeypressed;
+      sleep(1000)
+      SendString('l');
+      CloseSocket;
+      Free;
+      writeln('socket close & blockserial free')
+    end;
+    writeln(GetSerialPortNames)
+  end;
+  
+  //writeln(inttostr64(filesize('C:\maXbox\maxbox3\maxbox3\maXbox3\examples\weatherapp3.txt')))
+   
+End.
+
+
+Doc: 
+
+Comtest.exe is a simple Delphi-to-Arduino application to select Arduino
+digital pins from the PC via the USB 'virtual' COM port.
+
+http://www.entwickler-ecke.de/topic_Seriell+Empfangene+Daten+auswerten_107856,0.html
+
+It assumes the use of Arduino digital pins: 8, 9, 10, 11, 12 and 13.
+These are 'PORT B' on the ATMega168 and 328 chips and provide a
+6-bit wide output. Bits 6 and 7 are unusable because the chip's
+16MHz crystal makes use of them.
+
+Comtest simply sends a 6-bit 'word' via the USB port. Different Arduino
+digital pins may be used but 'Comtest' will always write to the lowest
+6 bits which would seriously upset the Arduino's Tx and Rx pins
+(digital pins 0 and 1) if Port D is used.
+
+http://www.arduino.cc/en/Reference/PortManipulation
+
+
+A basic Arduino sketch is:
+
+----------------------------------------------------------------------
+/* This sketch receives a text string via the serial port as a numerical
+   value and sets the lower 6 bits of Port B accordingly (digital pins
+   13, 12, 11, 10, 9 and 8)
+ */
+ 
+String inputString;
+int val;
+
+void setup() {
+  DDRB = B00111111;               // Set pins 8 to 13 as outputs
+  PORTB = 0;                      // All outputs OFF
+  Serial.begin(9600);
+}
+
+void loop() {
+  inputString = "";               // Clear inputString
+  while (Serial.available()) {
+    char digit = Serial.read();   // Read one byte from serial buffer
+    inputString += digit;         // Add new character to the string
+    delay(2);                     //
+
+    val = inputString.toInt();    // Convert inputString into a number
+  }
+  PORTB = val;                    // Set PortB register bits.
+}
+
+
+-----------------------------------------------------------------------
+
+(c) Jan 2012 vwlowen.co.uk
+
+
+    {procedure Button2Click(Sender: TObject);
+       procedure Button3Click(Sender: TObject);
+       procedure Edit1KeyPress(Sender: TObject; var Key: Char);
+       procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+       procedure COMPortCreate(Sender: TObject);
+       procedure cb0Click(Sender: TObject);
+       procedure cb1Click(Sender: TObject);
+       procedure cb2Click(Sender: TObject);
+       procedure cb3Click(Sender: TObject);
+       procedure cb4Click(Sender: TObject);
+       procedure cb5Click(Sender: TObject);
+       procedure Button1Click(Sender: TObject); }
+     //private
+    { Private declarations }
+  //public
+    { Public declarations }
+  //end;
+
+// store settings to ini file
+procedure TCustomComPort.StoreIniFile(IniFile: TIniFile);
+begin
+  if spBasic in FStoredProps then
+  begin
+    IniFile.WriteString(Name, 'Port', Port);
+    IniFile.WriteString(Name, 'BaudRate', BaudRateToStr(BaudRate));
+    if BaudRate = brCustom then
+      IniFile.WriteInteger(Name, 'CustomBaudRate', CustomBaudRate);
+    IniFile.WriteString(Name, 'StopBits', StopBitsToStr(StopBits));
+    IniFile.WriteString(Name, 'DataBits', DataBitsToStr(DataBits));
+    IniFile.WriteString(Name, 'Parity', ParityToStr(Parity.Bits));
+   IniFile.WriteString(Name,'FlowControl',FlowControlToStr(FlowControl.FlowControl));
+  end;
+
+
+TMP36
+
+/*
+  Analog Input
+ Demonstrates analog input by reading an analog sensor on analog pin 0 and
+ turning on and off a light emitting diode(LED)  connected to digital pin 13. 
+ The amount of time the LED will be on and off depends on
+ the value obtained by analogRead(). 
+ 
+ The circuit:
+ * Potentiometer attached to analog input 0
+ * center pin of the potentiometer to the analog pin
+ * one side pin (either one) to ground
+ * the other side pin to +5V
+ * LED anode (long leg) attached to digital output 13
+ * LED cathode (short leg) attached to ground
+ 
+ * Note: because most Arduinos have a built-in LED attached 
+ to pin 13 on the board, the LED is optional.
+ 
+ 
+ Created by David Cuartielles
+ Modified 4 Sep 2010
+ By Tom Igoe & Max
+ 
+ This example code is in the public domain.
+ 
+ http://arduino.cc/en/Tutorial/AnalogInput
+ 
+ */
+
+int gndPin = A1;    // select the input pin for the potentiometer
+int sensePin = 2;
+int ledPin = 13;      // select the pin for the LED
+int plusPin = A3;  // variable to store the value coming from the sensor
+
+void setup() {
+  // declare the ledPin as an OUTPUT:
+  pinMode(gndPin, OUTPUT);  
+  digitalWrite(gndPin, LOW);
+  pinMode(plusPin, OUTPUT);  
+  digitalWrite(plusPin, HIGH);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // read the value from the sensor:
+  int raw = analogRead(sensePin);   
+  float volts = raw / 205.0;
+  float tempC = 100.0 * volts - 50;
+  float tempF = tempC * 9.0/5.0+32.0;
+  // turn the ledPin on
+  Serial.println(tempC); 
+  Serial.print(" C max "); 
+  // stop the program for <sensorValue> milliseconds:
+  //delay(sensorValue);          
+  // turn the ledPin off:        
+  //digitalWrite(ledPin, LOW);   
+  // stop the program for for <sensorValue> milliseconds:
+  delay(1000);                  
+}
+
+public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure StoreSettings(StoreType: TStoreType; StoreTo: string);
+    procedure LoadSettings(StoreType: TStoreType; LoadFrom: string);
+    procedure Open;
+    procedure Close;
+    {$IFNDEF No_Dialogs}procedure ShowSetupDialog;{$ENDIF}
+    function InputCount: Integer;
+    function OutputCount: Integer;
+    function Signals: TComSignals;
+    function StateFlags: TComStateFlags;
+    procedure SetDTR(OnOff: Boolean);
+    procedure SetRTS(OnOff: Boolean);
+    procedure SetXonXoff(OnOff: Boolean);
+    procedure SetBreak(OnOff: Boolean);
+    procedure ClearBuffer(Input, Output: Boolean);
+    function LastErrors: TComErrors;
+
+    function Write(const Buffer; Count: Integer): Integer;
+    function WriteStr( Str: string): Integer;
+    function Read(var Buffer; Count: Integer): Integer;
+    function ReadStr(var Str: string; Count: Integer): Integer;
+    function WriteAsync(const Buffer; Count: Integer; var AsyncPtr: PAsync): Integer;
+    function WriteStrAsync(var Str: string; var AsyncPtr: PAsync): Integer;
+    function ReadAsync(var Buffer; Count: Integer;   var AsyncPtr: PAsync): Integer;
+    function ReadStrAsync(var Str: Ansistring; Count: Integer;  var AsyncPtr: PAsync): Integer;
+    function WriteUnicodeString(const Str: Unicodestring): Integer;
+    function ReadUnicodeString(var Str: UnicodeString; Count: Integer): Integer;
+
+    function WaitForAsync(var AsyncPtr: PAsync): Integer;
+    function IsAsyncCompleted(AsyncPtr: PAsync): Boolean;
+    procedure WaitForEvent(var Events: TComEvents; StopEvent: THandle;      Timeout: Integer);
+    procedure AbortAllAsync;
+    procedure TransmitChar(Ch: Char);
+    procedure RegisterLink(AComLink: TComLink);
+    procedure UnRegisterLink(AComLink: TComLink);
+    property Handle: THandle read FHandle;
+    property TriggersOnRxChar: Boolean read GetTriggersOnRxChar write SetTriggersOnRxChar;
+    property EventThreadPriority: TThreadPriority  read FEventThreadPriority write SetEventThreadPriority;
+    property StoredProps: TStoredProps read FStoredProps write FStoredProps;
+    property Connected: Boolean read FConnected write SetConnected default False;
+    property BaudRate: TBaudRate read FBaudRate write SetBaudRate;
+    property CustomBaudRate: Integer    read FCustomBaudRate write SetCustomBaudRate;
+    property Port: TPort read FPort write SetPort;
+    property Parity: TComParity read FParity write SetParity;
+    property StopBits: TStopBits read FStopBits write SetStopBits;
+    property DataBits: TDataBits read FDataBits write SetDataBits;
+    property DiscardNull: Boolean read FDiscardNull write SetDiscardNull default False;
+    property EventChar: Char read FEventChar write SetEventChar default #0;
+    property Events: TComEvents read FEvents write FEvents;
+    property Buffer: TComBuffer read FBuffer write SetBuffer;
+    property FlowControl: TComFlowControl  read FFlowControl write SetFlowControl;
+    property Timeouts: TComTimeouts read FTimeouts write SetTimeouts;
+    property SyncMethod: TSyncMethod read FSyncMethod write SetSyncMethod default smThreadSync;
+    property OnAfterOpen: TNotifyEvent read FOnAfterOpen write FOnAfterOpen;
+    property OnAfterClose: TNotifyEvent read FOnAfterClose write FOnAfterClose;
+    property OnBeforeOpen: TNotifyEvent read FOnBeforeOpen write FOnBeforeOpen;
+    property OnBeforeClose: TNotifyEvent   read FOnBeforeClose write FOnBeforeClose;
+    property OnRxChar: TRxCharEvent read FOnRxChar write FOnRxChar;
+    property OnRxBuf: TRxBufEvent read FOnRxBuf write FOnRxBuf;
+    property OnTxEmpty: TNotifyEvent read FOnTxEmpty write FOnTxEmpty;
+    property OnBreak: TNotifyEvent read FOnBreak write FOnBreak;
+    property OnRing: TNotifyEvent read FOnRing write FOnRing;
+    property OnCTSChange: TComSignalEvent read FOnCTSChange write FOnCTSChange;
+    property OnDSRChange: TComSignalEvent read FOnDSRChange write FOnDSRChange;
+    property OnRLSDChange: TComSignalEvent  read FOnRLSDChange write FOnRLSDChange;
+    property OnRxFlag: TNotifyEvent read FOnRxFlag write FOnRxFlag;
+    property OnError: TComErrorEvent read FOnError write FOnError;
+    property OnRx80Full: TNotifyEvent read FOnRx80Full write FOnRx80Full;
+    property OnException: TComExceptionEvent read FOnException write FOnException;
+    // Translate strings between ANSI charsets
+    property CodePage: Cardinal read FCodePage write FCodePage default 0;
+  end;
+  
+  
+  /*
+  Analog Input
+ Demonstrates analog input by reading an analog sensor on analog pin 0 and
+ turning on and off a light emitting diode(LED)  connected to digital pin 13. 
+ The amount of time the LED will be on and off depends on
+ the value obtained by analogRead(). 
+ 
+ The circuit:
+ * Potentiometer attached to analog input 0
+ * center pin of the potentiometer to the analog pin
+ * one side pin (either one) to ground
+ * the other side pin to +5V
+ * LED anode (long leg) attached to digital output 13
+ * LED cathode (short leg) attached to ground
+ 
+ * Note: because most Arduinos have a built-in LED attached 
+ to pin 13 on the board, the LED is optional.
+ 
+ 
+ Created by David Cuartielles
+ Modified 4 Sep 2010
+ By Tom Igoe & Max
+ 
+ This example code is in the public domain.
+ 
+ http://arduino.cc/en/Tutorial/AnalogInput
+ 
+ */
+
+int gndPin = A1;    // select the input pin for the potentiometer
+int sensePin = 2;
+int ledPin = 13;      // select the pin for the LED
+int plusPin = A3;  // variable to store the value coming from the sensor
+int cnt = 0;
+
+void setup() {
+  // declare the ledPin as an OUTPUT:
+  pinMode(gndPin, OUTPUT);  
+  digitalWrite(gndPin, LOW);
+  pinMode(plusPin, OUTPUT);  
+  digitalWrite(plusPin, HIGH);
+  Serial.begin(9600);
+  
+}
+
+void loop() {
+  // read the value from the sensor:
+  cnt++;
+  int raw = analogRead(sensePin);   
+  float volts = raw / 205.0;
+  float tempC = 100.0 * volts - 50;
+  float tempF = tempC * 9.0/5.0+32.0;
+  // turn the ledPin on
+  
+  Serial.print(cnt); 
+  Serial.print(" C.temp: ");
+  Serial.println(tempC); 
+  
+  // stop the program for <sensorValue> milliseconds:
+  //delay(sensorValue);          
+  // turn the ledPin off:        
+  //digitalWrite(ledPin, LOW);   
+  // stop the program for for <sensorValue> milliseconds:
+  delay(1000);                  
+}
+
+Sketch uses 4,492 bytes (13%) of program storage space. Maximum is 32,256 bytes.
+Global variables use 218 bytes (10%) of dynamic memory, leaving 1,830 bytes for local variables. Maximum is 2,048 bytes.
+
+/*
+  Analog Input
+ Demonstrates analog input by reading an analog sensor on analog pin 0 and
+ turning on and off a light emitting diode(LED)  connected to digital pin 13. 
+ The amount of time the LED will be on and off depends on
+ the value obtained by analogRead(). 
+ 
+ The circuit:
+ * Potentiometer attached to analog input 0
+ * center pin of the potentiometer to the analog pin
+ * one side pin (either one) to ground
+ * the other side pin to +5V
+ * LED anode (long leg) attached to digital output 13
+ * LED cathode (short leg) attached to ground
+ 
+ * Note: because most Arduinos have a built-in LED attached 
+ to pin 13 on the board, the LED is optional.
+ 
+ 
+ Created by David Cuartielles
+ Modified 4 Sep 2010
+ By Tom Igoe & Max
+ 
+ This example code is in the public domain.
+ 
+ http://arduino.cc/en/Tutorial/AnalogInput
+ 
+ */
+
+int gndPin = A1;    // select the input pin for the potentiometer
+int sensePin = 2;   //analog in
+int ledPin = 13;      // select the pin for the LED
+int plusPin = A3;  // variable to store the value coming from the sensor
+int cnt = 0;
+int ledPin8 = 8; 
+int val = 0;   
+
+void setup() {
+  // declare the ledPin as an OUTPUT:
+   pinMode(ledPin8,OUTPUT);    // declare the LED's pin as output 
+  pinMode(gndPin, OUTPUT);  
+  digitalWrite(gndPin, LOW);
+  pinMode(plusPin, OUTPUT);  
+  digitalWrite(plusPin, HIGH);
+  Serial.begin(9600);
+  
+}
+
+void loop() {
+  // read the value from the sensor:
+  cnt++;
+  int raw = analogRead(sensePin);   
+  float volts = raw / 205.0;
+  float tempC = 100.0 * volts - 50;
+  float tempF = tempC * 9.0/5.0+32.0;
+  // turn the ledPin on
+  val = Serial.read();      // read the serial port 
+    if (val=='8'){
+      digitalWrite(ledPin8,HIGH); 
+    }
+    if (val=='H'){
+      digitalWrite(ledPin8,LOW); 
+    }
+  
+  Serial.print(cnt); 
+  Serial.print(" C.temp: ");
+  Serial.println(tempC); 
+  
+  // stop the program for <sensorValue> milliseconds:
+  //delay(sensorValue);          
+  // turn the ledPin off:        
+  //digitalWrite(ledPin, LOW);   
+  // stop the program for for <sensorValue> milliseconds:
+  delay(1000);                  
+}
+
+Sketch uses 4,568 bytes (14%) of program storage space. Maximum is 32,256 bytes.
+Global variables use 222 bytes (10%) of dynamic memory, leaving 1,826 bytes for local variables. Maximum is 2,048 bytes.
+
+procedure SIRegister_TBlockSerial(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TObject', 'TBlockSerial') do
+  with CL.AddClassN(CL.FindClass('TObject'),'TBlockSerial') do begin
+    RegisterProperty('DCB', 'Tdcb', iptrw);
+    RegisterProperty('TermiosStruc', 'termios', iptrw);
+    RegisterMethod('Constructor Create');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Function GetVersion : string');
+    RegisterMethod('Procedure CloseSocket');
+    RegisterMethod('Procedure Config( baud, bits : integer; parity : char; stop : integer; softflow, hardflow : boolean)');
+    RegisterMethod('Procedure Connect( comport : string)');
+    RegisterMethod('Procedure SetCommState');
+    RegisterMethod('Procedure GetCommState');
+    RegisterMethod('Function SendBuffer( buffer : pointer; length : integer) : integer');
+    RegisterMethod('Procedure SendByte( data : byte)');
+    RegisterMethod('Procedure SendString( data : AnsiString)');
+    RegisterMethod('Procedure SendInteger( Data : integer)');
+    RegisterMethod('Procedure SendBlock( const Data : AnsiString)');
+    RegisterMethod('Procedure SendStreamRaw( const Stream : TStream)');
+    RegisterMethod('Procedure SendStream( const Stream : TStream)');
+    RegisterMethod('Procedure SendStreamIndy( const Stream : TStream)');
+    RegisterMethod('Function RecvBuffer( buffer : pointer; length : integer) : integer');
+    RegisterMethod('Function RecvBufferEx( buffer : pointer; length : integer; timeout : integer) : integer');
+    RegisterMethod('Function RecvBufferStr( Length : Integer; Timeout : Integer) : AnsiString');
+    RegisterMethod('Function RecvPacket( Timeout : Integer) : AnsiString');
+    RegisterMethod('Function RecvByte( timeout : integer) : byte');
+    RegisterMethod('Function RecvTerminated( Timeout : Integer; const Terminator : AnsiString) : AnsiString');
+    RegisterMethod('Function Recvstring( timeout : integer) : AnsiString');
+    RegisterMethod('Function RecvInteger( Timeout : Integer) : Integer');
+    RegisterMethod('Function RecvBlock( Timeout : Integer) : AnsiString');
+    RegisterMethod('Procedure RecvStreamRaw( const Stream : TStream; Timeout : Integer)');
+    RegisterMethod('Procedure RecvStreamSize( const Stream : TStream; Timeout : Integer; Size : Integer)');
+    RegisterMethod('Procedure RecvStream(const Stream: TStream; Timeout: Integer)');
+    RegisterMethod('Procedure RecvStreamIndy( const Stream : TStream; Timeout : Integer)');
+    RegisterMethod('Function WaitingData : integer');
+    RegisterMethod('Function WaitingDataEx : integer');
+    RegisterMethod('Function SendingData : integer');
+    RegisterMethod('Procedure EnableRTSToggle( value : boolean)');
+    RegisterMethod('Procedure Flush');
+    RegisterMethod('Procedure Purge');
+    RegisterMethod('Function CanRead( Timeout : integer) : boolean');
+    RegisterMethod('Function CanWrite( Timeout : integer) : boolean');
+    RegisterMethod('Function CanReadEx( Timeout : integer) : boolean');
+    RegisterMethod('Function ModemStatus : integer');
+    RegisterMethod('Procedure SetBreak( Duration : integer)');
+    RegisterMethod('Function ATCommand( value : AnsiString) : AnsiString');
+    RegisterMethod('Function ATConnect( value : AnsiString) : AnsiString');
+    RegisterMethod('Function SerialCheck( SerialResult : integer) : integer');
+    RegisterMethod('Procedure ExceptCheck');
+    RegisterMethod('Procedure SetSynaError( ErrNumber : integer)');
+    RegisterMethod('Procedure RaiseSynaError( ErrNumber : integer)');
+    RegisterMethod('Function cpomComportAccessible : boolean');
+    RegisterMethod('Procedure cpomReleaseComport');
+    RegisterProperty('Device', 'string', iptr);
+    RegisterProperty('LastError', 'integer', iptr);
+    RegisterProperty('LastErrorDesc', 'string', iptr);
+    RegisterProperty('ATResult', 'Boolean', iptr);
+    RegisterProperty('RTS', 'Boolean', iptw);
+    RegisterProperty('CTS', 'boolean', iptr);
+    RegisterProperty('DTR', 'Boolean', iptw);
+    RegisterProperty('DSR', 'boolean', iptr);
+    RegisterProperty('Carrier', 'boolean', iptr);
+    RegisterProperty('Ring', 'boolean', iptr);
+    RegisterProperty('InstanceActive', 'boolean', iptr);
+    RegisterProperty('MaxSendBandwidth', 'Integer', iptrw);
+    RegisterProperty('MaxRecvBandwidth', 'Integer', iptrw);
+    RegisterProperty('MaxBandwidth', 'Integer', iptw);
+    RegisterProperty('SizeRecvBuffer', 'integer', iptrw);
+    RegisterMethod('Function GetErrorDesc( ErrorCode : integer) : string');
+    RegisterProperty('Tag', 'integer', iptrw);
+    RegisterProperty('Handle', 'THandle', iptrw);
+    RegisterProperty('LineBuffer', 'AnsiString', iptrw);
+    RegisterProperty('RaiseExcept', 'boolean', iptrw);
+    RegisterProperty('OnStatus', 'THookSerialStatus', iptrw);
+    RegisterProperty('TestDSR', 'boolean', iptrw);
+    RegisterProperty('TestCTS', 'boolean', iptrw);
+    RegisterProperty('MaxLineLength', 'Integer', iptrw);
+    RegisterProperty('DeadlockTimeout', 'Integer', iptrw);
+    RegisterProperty('LinuxLock', 'Boolean', iptrw);
+    RegisterProperty('ConvertLineEnd', 'Boolean', iptrw);
+    RegisterProperty('AtTimeout', 'integer', iptrw);
+    RegisterProperty('InterPacketTimeout', 'Boolean', iptrw);
+  end;
+end;
+
+
+#include <Time.h>
+#include <TimeLib.h>
+
+#define TIME_HEADER  "T"   // Header tag for serial time sync message
+#define TIME_REQUEST  7    // ASCII bell character requests a time sync message 
+
+/*
+  Analog Input
+ Demonstrates analog input by reading an analog sensor on analog pin 0 and
+ turning on and off a light emitting diode(LED)  connected to digital pin 13. 
+ The amount of time the LED will be on and off depends on
+ the value obtained by analogRead(). 
+ 
+ The circuit:
+ * Potentiometer attached to analog input 0
+ * center pin of the potentiometer to the analog pin
+ * one side pin (either one) to ground
+ * the other side pin to +5V
+ * LED anode (long leg) attached to digital output 13
+ * LED cathode (short leg) attached to ground
+ 
+ * Note: because most Arduinos have a built-in LED attached 
+ to pin 13 on the board, the LED is optional.
+ 
+ 
+ Created by David Cuartielles
+ Modified 4 Sep 2010
+ By Tom Igoe & Max
+ 
+ This example code is in the public domain.
+ 
+ http://arduino.cc/en/Tutorial/AnalogInput
+ 
+ */
+
+ //#include <DateTime.h>
+//#include <DateTimeStrings.h>
+
+
+
+int gndPin = A1;    // select the input pin for the potentiometer
+int sensePin = 2;   //analog in
+int ledPin = 13;      // select the pin for the LED
+int plusPin = A3;  // variable to store the value coming from the sensor
+int cnt = 0;
+int ledPin8 = 8; 
+int val = 0;   
+
+void setup() {
+  // declare the ledPin as an OUTPUT:
+   pinMode(ledPin8,OUTPUT);    // declare the LED's pin as output 
+  pinMode(gndPin, OUTPUT);  
+  digitalWrite(gndPin, LOW);
+  pinMode(plusPin, OUTPUT);  
+  digitalWrite(plusPin, HIGH);
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+  setSyncProvider( requestSync);  //set function to call when sync required
+  Serial.println("Waiting for sync message");
+  
+}
+
+void printDigits(int digits){
+  // utility function for digital clock display: prints preceding colon and leading 0
+  Serial.print(":");
+  if(digits < 10)
+    Serial.print('0');
+  Serial.print(digits);
+}
+
+void digitalClockDisplay(){
+  // digital clock display of the time
+  Serial.print(hour());
+  printDigits(minute());
+  printDigits(second());
+  Serial.print(" ");
+  Serial.print(day());
+  Serial.print(" ");
+  Serial.print(month());
+  Serial.print(" ");
+  Serial.print(year()); 
+  Serial.println(); 
+}
+
+void processSyncMessage() {
+  unsigned long pctime;
+  const unsigned long DEFAULT_TIME = 1357041600; // Jan 1 2013
+
+  if(Serial.find(TIME_HEADER)) {
+     pctime = Serial.parseInt();
+     if( pctime >= DEFAULT_TIME) { // check the integer is a valid time (greater than Jan 1 2013)
+       setTime(pctime); // Sync Arduino clock to the time received on the serial port
+     }
+  }
+}
+
+void loop() {
+  // read the value from the sensor:
+  cnt++;
+  if (Serial.available()) {
+    processSyncMessage();
+  }
+  //getPCtime();   // try to get time sync from pc  
+  int raw = analogRead(sensePin);   
+  float volts = raw / 205.0;
+  float tempC = 100.0 * volts - 50;
+  float tempF = tempC * 9.0/5.0+32.0;
+  // turn the ledPin on
+  val = Serial.read();      // read the serial port 
+    if (val=='8'){
+      digitalWrite(ledPin8,HIGH); 
+    }
+    if (val=='H'){
+      digitalWrite(ledPin8,LOW); 
+    }
+  if (timeStatus()!= timeNotSet) {
+    digitalClockDisplay();  
+  }
+  if (timeStatus() == timeSet) {
+    digitalWrite(13, HIGH); // LED on if synced
+  } else {
+    digitalWrite(13, LOW);  // LED off if needs refresh
+  }
+  //delay(1000);
+  digitalClockDisplay(); 
+  
+  Serial.print(cnt); 
+  //Serial.print(DateTimeStrings());      
+  Serial.print(" C.temp: ");
+  Serial.println(tempC); 
+  
+  // stop the program for <sensorValue> milliseconds:
+  //delay(sensorValue);          
+  // turn the ledPin off:        
+  //digitalWrite(ledPin, LOW);   
+  // stop the program for for <sensorValue> milliseconds:
+  delay(1000);                  
+}
+
+time_t requestSync()
+{
+  Serial.write(TIME_REQUEST);  
+  return 0; // the time will be sent later in response to serial mesg
+}
+
+
+symptoms:
+
+    if you make any changes to bios, when you save and exit it just boots right back in
+    started without any playing around, just booted into this one day.
+    can still see both hds in the sata configuration panel
+    no records in the boot options (I think I accidently deleted it, but don't know how to get it back)
+    wont boot from flash drive, even though it shows up in boot options
+
+tried:
+
+    unplugging battery
+    unplugging hd
+    holding down power button with battery out
+    taking out cmos
+    putting hdd into my desktop, scanned for errors, seems fine
+    inserting another hd into
+    restoring defaults on bios options
+    bootable flash drive (easy bcd)
+    unplugging keyboard
+
+I can not find the RAM or SSD, otherwise I would have tested them too.
+
+Sketch uses 7,086 bytes (21%) of program storage space. Maximum is 32,256 bytes.
+Global variables use 301 bytes (14%) of dynamic memory, leaving 1,747 bytes for local variables. Maximum is 2,048 bytes.
+
+
+/**************************************** V3********************************* 17/11/2016
+#include <Time.h>
+#include <TimeLib.h>
+
+#define TIME_HEADER  "T"   // Header tag for serial time sync message
+#define TIME_REQUEST  7    // ASCII bell character requests a time sync message 
+
+/*
+  Analog Input
+ Demonstrates analog input by reading an analog sensor on analog pin 0 and
+ turning on and off a light emitting diode(LED)  connected to digital pin 13. 
+ The amount of time the LED will be on and off depends on
+ the value obtained by analogRead(). 
+ 
+ The circuit:
+ * Potentiometer attached to analog input 0
+ * center pin of the potentiometer to the analog pin
+ * one side pin (either one) to ground
+ * the other side pin to +5V
+ * LED anode (long leg) attached to digital output 13
+ * LED cathode (short leg) attached to ground
+ 
+ * Note: because most Arduinos have a built-in LED attached 
+ to pin 13 on the board, the LED is optional.
+ 
+ 
+ Created by David Cuartielles
+ Modified 4 Sep 2010 & 17/11/2016
+ By Tom Igoe & Max Kleiner
+ 
+ This example code is in the public domain.
+ 
+ http://arduino.cc/en/Tutorial/AnalogInput
+ 
+ */
+
+ //#include <DateTime.h>
+//#include <DateTimeStrings.h>
+
+
+int gndPin = A1;    // select the input pin for the potentiometer
+int sensePin = 2;   //analog in
+int ledPin = 13;      // select the pin for the LED
+int plusPin = A3;  // variable to store the value coming from the sensor
+int cnt = 0;
+int ledPin8 = 8; 
+int val = 0;  
+int val1 = 0; 
+
+void setup() {
+  // declare the ledPin as an OUTPUT:
+   pinMode(ledPin8,OUTPUT);    // declare the LED's pin as output 
+  pinMode(gndPin, OUTPUT);  
+  digitalWrite(gndPin, LOW);
+  pinMode(plusPin, OUTPUT);  
+  digitalWrite(plusPin, HIGH);
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+  setSyncProvider( requestSync);  //set function to call when sync required
+  Serial.println("Waiting for sync message");
+  setDateTime();
+}
+
+void printDigits(int digits){
+  // utility function for digital clock display: prints preceding colon and leading 0
+  Serial.print(":");
+  if(digits < 10)
+    Serial.print('0');
+  Serial.print(digits);
+}
+
+void setDateTime(){
+
+  byte second =      00; //0-59
+  byte minute =      19; //0-59
+  byte hour =        21; //0-23
+  byte weekDay =     4; //1-7
+  byte monthDay =    27; //1-31
+  byte month =       10; //1-12
+  byte year  =       12; //0-99
+}
+
+byte decToBcd(byte val){
+// Convert normal decimal numbers to binary coded decimal
+  return ( (val/10*16) + (val%10) );
+}
+
+byte bcdToDec(byte val)  {
+// Convert binary coded decimal to normal decimal numbers
+  return ( (val/16*10) + (val%16) );
+}
+
+void digitalClockDisplay(){
+  // digital clock display of the time
+  Serial.print(hour());
+  printDigits(minute());
+  printDigits(second());
+  Serial.print(" ");
+  Serial.print(day());
+  Serial.print(" ");
+  Serial.print(month());
+  Serial.print(" ");
+  Serial.print(year()); 
+  Serial.println(); 
+}
+
+void processSyncMessage() {
+  unsigned long pctime;
+  const unsigned long DEFAULT_TIME = 1357041600; // Jan 1 2013
+ //Serial.println("process for sync message");
+  if(Serial.find(TIME_HEADER)) {
+     pctime = Serial.parseInt();
+     if( pctime >= DEFAULT_TIME) { // check the integer is a valid time (greater than Jan 1 2013)
+       setTime(pctime); // Sync Arduino clock to the time received on the serial port
+     }
+  }
+}
+
+void loop() {
+  // read the value from the sensor:
+  cnt++;
+  //delay(1500);
+  if (Serial.available()) {
+    val = Serial.read();
+    val1 = val;
+    //Serial.println(val); 
+    Serial.println("serial message: " +String(val1));
+   
+    processSyncMessage();
+  }
+//  getPCtime();   // try to get time sync from pc  
+  //  processSyncMessage();
+ 
+  int raw = analogRead(sensePin);   
+  float volts = raw / 205.0;
+  float tempC = 100.0 * volts - 50;
+  float tempF = tempC * 9.0/5.0+32.0;
+  // turn the ledPin on
+  //val = Serial.read();      // read the serial port 
+    if (val=='h'){
+      digitalWrite(ledPin8,HIGH); 
+    }
+    if (val=='l'){
+      digitalWrite(ledPin8,LOW); 
+    }
+  if (timeStatus()!= timeNotSet) {
+    digitalClockDisplay();  
+  }
+  if (timeStatus() == timeSet) {
+    digitalWrite(13, HIGH); // LED on if synced
+  } else {
+    digitalWrite(13, LOW);  // LED off if needs refresh
+  }
+  //delay(1000);
+  //year = 2016;
+  digitalClockDisplay(); 
+  
+  Serial.print(cnt); 
+  //Serial.print(DateTimeStrings());      
+  Serial.print(" C.temp: ");
+  Serial.println(tempC); 
+  //Serial.print(year);
+  // stop the program for <sensorValue> milliseconds:
+  //delay(sensorValue);          
+  // turn the ledPin off:        
+  //digitalWrite(ledPin, LOW);   
+  // stop the program for for <sensorValue> milliseconds:
+  delay(1000);                  
+}
+
+time_t requestSync()
+{
+  Serial.write(TIME_REQUEST);  
+  return 0; // the time will be sent later in response to serial mesg
+}
+
+//**********************************************************************333
+
+Sketch uses 9,076 bytes (28%) of program storage space. Maximum is 32,256 bytes.
+Global variables use 323 bytes (15%) of dynamic memory, leaving 1,725 bytes for local variables. Maximum is 2,048 bytes.

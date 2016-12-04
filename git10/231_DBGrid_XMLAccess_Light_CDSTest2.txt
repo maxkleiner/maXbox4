@@ -1,0 +1,484 @@
+{****************************************************************
+ *
+ * Project  : maXbase Series System_Information_Service SIS
+ * App Name : 231_DBGrid_XMLaccess2.txt, loc's = 88 #locs:311
+ * Purpose  : DB Access via ClientDataSet - minimal Size form
+ * History  : system for mX3.6, need: country.xml file db in /examples
+            : getForm2 & rowheights  - streamsave() - performance
+   Ref:     http://www.informit.com/articles/article.aspx?p=24094&seqNum=5
+ ****************************************************************}
+program DB_XML_ACCESS_GRID4;
+
+function  MyMessageBeep(para: integer): byte;
+     external 'MessageBeep@user32.dll stdcall';  
+     
+Const
+ MAX_RECS = 10000;     
+  
+var
+  dbGrid: TDBGrid;
+  dbForm: TForm;
+  AVarType : TVarType;
+  srt: TStrings;
+  t1, Records: DWord;  //for tickcount
+  FCDS: TClientDataSet;
+  DataSource1: TDataSource;
+  
+procedure TfrmMain_FormCreateCDS(Sender: TObject);
+var
+ FieldDef1: TFieldDef;
+ field: TField;
+begin
+ FCDS:= TClientDataSet.Create(Self);
+ DataSource1:= TDatasource.Create(Self);
+ FCDS.FieldDefs.Add('ID', ftInteger, 0, True);
+ FCDS.FieldDefs.Add('Name', ftString, 20, True);
+ FCDS.FieldDefs.Add('Birthday', ftDateTime, 0, True);
+ FCDS.FieldDefs.Add('Salary', ftCurrency, 0, false);
+ //FCDS.CreateDataSet;
+ DataSource1.DataSet:= TDataSet(FCDS);
+ FieldDef1 := FCDS.FieldDefs.AddFieldDef;
+ FieldDef1.Name := 'ID2';
+ FieldDef1.DataType := ftString;
+ FieldDef1.Size := 15;
+ FieldDef1.Required := True;
+ 
+  // add calculated field
+  {Field := TStringField.Create(nil);
+  Field.FieldName := 'city';
+  Field.Calculated := True;  }
+  //Field.DataSet := fcds;
+  
+ FCDS.CreateDataSet();
+ FCDS.FieldDefs.Update;
+ //for it := 0 to fcds.FieldDefs.Count - 1 do 
+  //  fcds.FieldDefs[it].CreateField;
+
+end;  
+
+var
+ FNames: array[0 .. 19] of string;
+ { = ('John', 'Sarah', 'Fred', 'Beth',
+ 'Eric', 'Tina', 'Thomas', 'Judy', 'Robert', 'Angela', 'Tim', 'Traci',
+ 'David', 'Paula', 'Bruce', 'Jessica', 'Richard', 'Carla', 'James',
+ 'Mary'); }
+ LNames: array[0 .. 11] of string;
+ { = ('Parker', 'Johnson', 'Jones',
+ 'Thompson', 'Smith', 'Baker', 'Wallace', 'Harper', 'Parson', 'Edwards',
+ 'Mandel', 'Stone'); }
+
+
+procedure TfrmMain_Populate1Execute(Sender: TObject);
+var
+ Index: Integer;
+ t1, t2: DWord;
+begin
+ FNames[0]:= 'John'; FNames[1]:= 'Sarah'; FNames[2]:= 'Fred'; FNames[3]:= 'Beth'; 
+ FNames[4]:= 'Eric'; FNames[5]:= 'Tina'; FNames[6]:= 'Thomas'; FNames[7]:= 'Judy'; 
+ FNames[8]:= 'Robert'; FNames[9]:= 'Angela'; FNames[10]:= 'Tim'; FNames[11]:= 'Traci'; 
+ FNames[12]:= 'David'; FNames[13]:= 'Paula'; FNames[14]:= 'Bruce'; FNames[15]:= 'Jessica'; 
+ FNames[16]:= 'Richard'; FNames[17]:= 'Carla'; FNames[18]:= 'James'; FNames[19]:= 'Mary'; 
+ 
+ LNames[0]:= 'Parker'; LNames[1]:= 'Johnson'; LNames[2]:= 'Jones'; LNames[3]:= 'Thompson'; 
+ LNames[4]:= 'Smith'; LNames[5]:= 'Baker'; LNames[6]:= 'Wallace'; LNames[7]:= 'Harper'; 
+ LNames[8]:= 'Parson'; LNames[9]:= 'Edwards'; LNames[10]:= 'Mandel'; LNames[11]:= 'Stone'; 
+ 
+ randomize; //RandSeed := 0;
+ t1 := GetTickCount;
+ //FCDS.DisableControls;
+ try
+ //FCDS.open;
+ FCDS.EmptyDataSet;
+ //fcds.FieldDefs.Update;
+ for Index := 0 to FCDS.Fields.Count - 1 do
+    writeln(FCDS.fields.Fields[Index].AsString);
+    //showmessage(Clientdataset1.fields.fields[i].fieldname);
+ for Index := 1 to MAX_RECS do begin
+  FCDS.Append;
+  if FCDS.FindField('ID2') <> nil then
+    ShowMessage('Dataset contains a ID2 field');
+  if FCDS.Fields[1].asstring <> '' then
+    ShowMessage('Dataset contains a Name field');
+   FCDS.Fields[0].AsInteger:= Index;
+   FCDS.Fields[1].AsString:= FNames[Random(20)] + ' ' +  LNames[Random(12)];;
+   FCDS.Fields[2].AsDateTime:= StrToDate('1/1/1950') + Random(10000);
+   FCDS.Fields[3].AsFloat:= 20000.0 + Random(600) * 100;;
+   FCDS.Fields[4].AsInteger:= random(index);
+  
+  //FCDS.FieldByName('ID').AsInteger := Index;
+  {FCDS.FieldByName('Name').AsString := FNames[Random(20)] + ' ' +
+  LNames[Random(12)];
+  FCDS.FieldByName('Birthday').AsDateTime := StrToDate('1/1/1950') +
+  Random(10000);
+  FCDS.FieldByName('Salary').AsFloat := 20000.0 + Random(600) * 100; }
+  
+  FCDS.Post;
+  //for Index := 0 to FCDS.Fields.Count - 1 do
+    //writeln(FCDS.fields.Fields[Index].AsString);
+ 
+ end;
+ FCDS.First;
+ finally
+ //FCDS.EnableControls;
+ end;
+ t2 := GetTickCount;
+ writeln(Format('%d ms to load %.0n records', [t2 - t1, MAX_RECS * 1.0]));
+end;
+
+procedure TfrmMain_Statistics1Execute(Sender: TObject);
+var
+ t1, t2: DWord;
+ msLocateID: DWord;
+ msLocateName: DWord;
+begin
+ FCDS.First;
+ t1 := GetTickCount;
+ FCDS.Locate('ID', 9763, []);
+ t2 := GetTickCount;
+ msLocateID := t2 - t1;
+ FCDS.First;
+ t1 := GetTickCount;
+ FCDS.Locate('Name', 'Eric Wallace', []);
+ t2 := GetTickCount;
+ msLocateName := t2 - t1;
+
+ ShowMessageBig3(Format('%d ms to locate ID 9763' +
+ #13'%d ms to locate Eric Wallace' +
+ #13'%.0n bytes required to store %.0n records!',
+ [msLocateID, msLocateName, FCDS.DataSize * 1.0, MAX_RECS * 1.0]),10,false);
+end;
+
+procedure TfrmMain_Save1Execute(Sender: TObject);
+var t1, t2: DWord;
+begin
+ t1 := GetTickCount;
+ FCDS.SaveToFile('C:\Employeetest.cds',dfXML);
+ t2 := GetTickCount;
+ writeln(Format('%d ms to save data', [t2 - t1]));
+end;
+
+procedure TfrmMain_Load1Execute(Sender: TObject);
+var t1, t2: DWord;
+begin
+ try
+ t1 := GetTickCount;
+ FCDS.LoadFromFile('C:\Employeetest.cds');
+ t2 := GetTickCount;
+ writeln(Format('%d ms to load data', [t2 - t1]));
+ except
+ FCDS.Open;
+ raise;
+ end;
+end;
+
+
+procedure CreateDBGridForm(aSet: TClientDataSet);
+//diaform:= CreateMessageDialog('my fast form perform',mtconfirmation, []);
+var tmpDataSource: TDataSource;
+    myset: TDataSet;
+
+begin
+  dbform:= CreateMessageDialog('FastForm DB Perform',mtwarning,[mball,mbhelp,mbok]);
+  dbform.caption:= 'FFP XML DBGrid Demo';
+  dbform.setBounds(50,50,800,500)
+  dbform.formstyle:= fsstayontop;
+  dbform.color:= 123;
+  dbform.show; 
+  dbgrid:= TDBGrid.Create(self)
+  with dbGrid do begin
+    Parent:= dbform;
+    SetBounds(65,100,700,350);
+    ReadOnly:= True;
+    //rowheights[3]:= 40;     //Exception: Grid index out of range.
+     //Options:=DBGrid.Options + [dgEditing];  
+    tmpDataSource:= TDatasource.Create(Self);
+    with tmpDataSource do begin
+      dataset:= TDataSet(aSet);
+      IsLinkedto(TDataSet(aSet))
+      Enabled;
+    end;
+    //DataSource is now linked to a DataSet (a XMLMemory table).
+     dataSource:= tmpDataSource;
+     //BeginLayout; //!!
+     writeln('fcount of datasource '+intToStr(fieldcount))
+     writeln('fname of datasource '+(aSet.filename));
+     //VarArrayCreate([0,10],AVarType);
+     //RecordsetToXML2(aSet);
+   end;
+   //tmpDataSource.Free; 
+   //dbGrid.Free;
+   //dbform.Free;
+end;
+
+procedure CreateDBGridForm2(aSet: TClientDataSet);
+var tmpdSource: TDataSource;
+     afrm: TForm;
+begin
+  afrm:= getform2(800,500,123,'FastForm 2 DB Perform');
+  afrm.formstyle:= fsstayontop;
+  with TDBGrid.Create(self) do begin
+    Parent:= afrm;
+    Setbounds(25,50,700,390);
+    ReadOnly:= True;
+    //Options:=DBGrid.Options +[dgEditing];  
+    tmpdSource:= TDatasource.Create(Self);
+    tmpdSource.dataset:= TDataSet(aSet);
+    //DataSource now linked to DataSet(XMLMemory table)
+    dataSource:= tmpdSource;
+    //columns[2].width:= 120; columns[4].width:= 80;
+    font.size:= 11;
+    writeln('Fcount of Grid: '+intToStr(fieldcount))
+    Records:= DataSource.DataSet.RecordCount;
+    //iaArr
+  end;
+  //for It := 0 to aset.Fields.Count - 1 do
+    //writeln(aset.Fields[3].AsString);
+   //tmpDataSource.Free; 
+   //dbGrid.Free;
+   //afrm.Free;
+end;
+
+Procedure NewDataSet;
+var 
+  cDataSet1: TClientDataset; 
+  astream: TStream;
+begin
+  cDataSet1:= TClientDataSet.Create(Nil);
+ //with ads1.Create(self) do begin
+  with cdataset1 do begin
+    //GETCreateDataSet;
+    LoadFromFile(ExePath+'examples\country.xml');
+    Open;
+    //savetofile //writeln(XMLData); 
+    {srt:= TStringlist.create;
+    BoldVariantToStrings(data, srt) 
+    writeln(srt.text)
+    srt.Free;}
+    astream:= TMemoryStream.create;
+    savetoStream(astream, dfXML)
+    writeln(itoa(astream.size))
+    astream.position:= 0;
+    writeln(streamToString(astream))
+    astream.Free;
+    Writeln('Size of DataSet '+inttostr(datasize))
+    //CreateDBGridForm2(cdataset1);
+    TfrmMain_FormCreateCDS(self)
+    TfrmMain_Populate1Execute(self)
+    CreateDBGridForm2(FCDS);
+    //FCDS.Free;
+    
+    //RecordsetToXML2(data);
+    //dbgrid.rowheights[7]:= 40;
+    //dbgrid.colwidths[7]:= 40;
+     //Close;
+    //Free;
+  end;
+end;  
+
+procedure CopyRecordTest;
+var varCopyData: Variant;
+    i: Integer;
+    tmpDSource: TDataSource;
+begin
+  with tmpdSource.DataSet do begin
+    varCopyData := VarArrayCreate([0, FieldCount-1], varVariant);
+    for i := 0 to FieldCount-1 do
+     // varCopyData[i]:= Fields[i].Value;
+    Insert;
+     for i := 0 to FieldCount-1 do
+      Fields[i].Value := varCopyData[i];
+  end;
+end;
+
+
+begin
+  //maxform1.ShellStyle1Click(self);
+  ProcessMessagesON;
+  t1:= GetTickCount;
+  NewDataSet;
+  PrintF('%d ms to load %.dn records after', [gettickcount - t1, Records]);
+  TfrmMain_Statistics1Execute(self)
+  Writeln('Data Link Dir is: '+ DataLinkDir);
+  writeln('machine name is: '+getHostName)
+  writeln('user name is: '+getUserName)
+  //DLL Test
+  MyMessageBeep(60);
+  {ws:= TWideStringList.create;
+  getProviderNames(ws)
+  for i:= 1 to ws.count -1 do 
+    writeln(inttostr(i) +' '+ws.strings[i])
+  ws.free;}  
+End.   
+
+
+*******************************************************
+There is no place like 127.0.0.1 
+
+Exception: Access violation at address 4DE2F83C in module 'msado15.dll'. Read of address 78742E67 at 0.1057
+
+
+[Microsoft][ODBC Driver Manager] Data source name not found and no default driver specified at 35.440
+
+[Microsoft][ODBC Microsoft Access Driver] Query is too complex at 35.607
+
+
+[Microsoft][ODBC Microsoft Access Driver] The Microsoft Jet database engine cannot find the input table or query 'Table1d'.  Make sure it exists and that its name is spelled correctly at 35.556
+
+[Microsoft][ODBC Microsoft Access Driver] Syntax error (missing operator) in query expression '031-333 77 88' at 41.356
+
+[Microsoft][ODBC Microsoft Access Driver] Too few parameters. Expected 2 at 41.354
+
+
+The syntax for the INSERT statement is:
+
+    INSERT INTO table
+    (column-1, column-2, ... column-n)
+    VALUES
+    (value-1, value-2, ... value-n);
+    
+dbs.Execute " INSERT INTO Employees " _
+        & "(FirstName,LastName, Title) VALUES " _
+        & "('Harry', 'Washington', 'Trainee');"
+        
+        
+ADOConnection1.Open;
+ADOQuery1.Close;
+ADOQuery1.SQL.Text := 'SELECT * FROM database1 WHERE
+value1=1 AND value2= ' + inttostr(array[3]);
+        
+QuotedStr rather than ''''    
+
+CommandText does not return a result set at 41.360
+
+ADOQuery1.SQL.Clear;
+ADOQuery1.SQL.Add('Insert into Score ([Score],[Round],[FighterID],[FightID])
+Values('+quotedstr(cbrf1.text)+','+QuotedStr(inttostr(countround))+', )');
+ADOQuery1. ExecSQL;
+ADOQuery1.SQL.Clear;
+
+
+mdbviewer
+dns-entry
+
+n my program, I instansiate a TDataModule at RunTime and put it in a
+variable named FData.
+I then want to assign one of the TDataSources found in FData to a DBGrid's
+DataSource property. So I do this :
+MyGrid.DataSource := FData.DataSource1;
+Of cource, the DataSource is linked to a DataSet (actualy, a Memory table).
+Each time I call FData.DataSet1.Append() I receive a List out of bound
+(0).
+I traced the program and found out that the error is raised in
+TDataSet.DataEvent(Event: TDataEvent; Info: Longint);
+the code is
+for I := 0 to FDataSources.Count - 1 do
+TDataSource(FDataSources[I]).DataEvent(Event, Info);
+I don't know why it raises this error.
+Anyone have any idea ?
+Thanks in advance.
+
+
+The following code won't work (naming part)
+:
+: for i := 0 to (Listbox1.Items.Count-1) do
+: with PageControl1 do
+: begin
+: //addind tabsheet for table
+: with TTabSheet.Create(Self) do
+: begin
+: PageControl := PageControl1;
+: Pages[Page].TabVisible := true;
+: Caption := Listbox1.Items[i];
+: end;
+: //adding table
+: with TADOTable.Create(Self) do
+: begin
+: Active:= False;
+: ConnectionString:= ADOConnection1.ConnectionString;
+: Name:= 'ADOTbl'+IntToStr(i);
+: TableName:= Listbox1.Items[i];
+: end;
+: with TDatasource.Create(Self) do
+: begin
+: Name:= 'DS'+ IntToStr(i);
+: // DataSet:= 'ADOTbl'+IntToStr(i);
+: end;
+: with TDBGrid.Create(Self) do
+: begin
+: // Name:= 'DBGrid'+IntToStr(i);
+: Align:= AlTop;
+: // DataSource:= 'DS'+ IntToStr(i);
+: end;
+:
+: end;//with PageControl1.Pages do
+
+
+procedure TForm1.DBGrid1TitleClick(Column: TColumn);
+//{$J+}
+ const PreviousColumnIndex : integer = -0;
+//{$J-}
+begin
+  if DBGrid1.DataSource.DataSet is TCustomADODataSet then
+  with TCustomADODataSet(DBGrid1.DataSource.DataSet) do
+  begin
+    try
+      DBGrid1.Columns[PreviousColumnIndex].title.Font.Style :=
+      DBGrid1.Columns[PreviousColumnIndex].title.Font.Style - [fsBold];
+    except
+    end;
+
+    Column.title.Font.Style :=
+    Column.title.Font.Style + [fsBold];
+    PreviousColumnIndex := Column.Index;
+
+    if (Pos(Column.Field.FieldName, Sort) = 1) and (Pos(' DESC', Sort)= 0) then
+      Sort := Column.Field.FieldName + ' DESC'
+    else
+      Sort := Column.Field.FieldName + ' ASC';
+  end;
+end; 
+
+
+You don't need to create the file, CDS will do this.
+
+1.    Drop a tclientdataset on a fresh apps form.
+2.    Set fielddefs (eg Name and Value, type string, SIZE 250)
+3.    Put this for the "write" button:
+
+  with ClientDataSet1 do begin
+    CreateDataSet;
+    Open;
+    Append;
+    FieldByName('Name').AsString := 'MyName';
+    FieldByName('Value').AsString := 'Paul Rigby';
+    Append;
+    FieldByName('Name').AsString := 'MyAddress';
+    FieldByName('Value').AsString := '5 Woodman Villas'#13#10'Oxford';
+    Post;
+  end;
+
+4.    Do this to save: ClientDataSet1.SaveToFile('c:\test.xml', dfXML);
+5.    To load: ClientDataSet1.LoadFromFile('c:\test.xml');
+6.    To get a value:
+  ClientDataSet1.Locate('Name', 'MyAddress', [loCaseInsensitive]);
+ ShowMessage(ClientDataSet1.fieldbyname('Value').asstring);
+
+That's it. you can drop a dbgrid and datasource and link up dbgrid.datasource and datasrc.dataset and edit it live if you like.
+
+It's now easier for people to find your Page in search. People can also visit your Page
+ at fb.me/maxbox4 and send your Page messages at m.me/maxbox4.
+ www.facebook.com/maxbox4
+ 
+ Zahlung bitte an:
+Empfänger:
+QUATRINI ANDREA E LAURIA LUISA
+Kontonummer des Empfängers:
+
+Verwenden Sie bei internationalen Überweisungen bitte die folgenden Codes:
+IBAN:
+IT82J0301503200000003354769
+BIC (SWIFT):
+UNCRITMM
+
+Der Verkäufer teilt mit:
+Hello and thanks for your buy. You can pay by bank transfer to the following account: IBAN - IT82J0301503200000003354769 and BIC SWIFT: UNCRITMM. Kind regards. Andrea 

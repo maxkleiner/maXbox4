@@ -1,0 +1,1082 @@
+{***************************************************************
+ *
+ * Project  : System Information Series OpenSSL PKI X509 Chain
+ * App Name: OpenSSL Scripts 191_componentcount.txt, #locs=622
+ * Purpose  : Demonstrates the functions of openssl.exe, TApplication and components
+ * Date  : 16/02/2011  -  14:56
+         : 28/11/2016 #sign:max: MAXBOX8: 11/28/2016 5:51:34 PM 
+ * History  : add classname to TComponent
+ *          : show index# in case of no-name
+            : scripts to a OpenSSL Certificate Chain Demo
+   Important : change path of the Const = OpenSSLPath         
+ ****************************************************************}
+Program ComponentCount;
+{BOOL WINAPI MessageBeep(
+  __in  UINT uType
+);}
+
+function  MessageBeep(para: integer): byte;
+  external 'MessageBeep@user32.dll stdcall';  
+  
+  function  SSLGetVersion: Longint;
+     external 'SSL_get_version@ssleay32.dll stdcall';
+  
+  function  SSLGetVersion2: PChar;
+     external 'SSL_get_version@ssleay32.dll stdcall';
+ 
+  function  SSLGetError: longint;
+     external 'SSL_get_error@ssleay32.dll stdcall';
+ 
+ 
+  Const OpenSSLPath= 'C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\';
+
+ 
+var
+  count: integer;
+
+procedure signal_Sounds;
+var sound: integer;
+begin
+for sound:= 1 to 100 do
+  if sound mod 10 = 0 then begin
+    MessageBeep(sound)
+    sleep(1500)
+  end  
+end;
+
+
+procedure Apploop_Tester;
+var i,j: integer;
+    c: TComponent;
+begin
+  for i:= 0 to Application.ComponentCount - 1 do begin
+    // all components of a Form
+    for j:= 0 to Application.Components[i].ComponentCount - 1 do begin
+      c:= Application.Components[i].Components[j];
+      if c is TComponent then
+        writeln(inttostr64(j)+ ' '+c.name +' '+ c.classname)
+    end;
+  end; 
+end;  
+
+
+function ComponentFullName(comp: TComponent): string;
+var
+  mycomp: TComponent;
+begin
+  result:= comp.Name;
+   //if no component name then at least an index
+  if result = '' then
+    result:= '#'+IntToStr64(comp.ComponentIndex);
+  mycomp:= comp;
+  //to the top of the owner
+  while mycomp.Owner <> NIL do begin
+    mycomp:= mycomp.Owner;
+    if Length(mycomp.Name) > 0 then
+      result:= mycomp.Name+'.'+result;
+  end;
+end;
+
+function ComponentFullNameAndClass(comp: TComponent): string;
+begin
+  Result:= ComponentFullName(comp)+': '+comp.Classname;
+end;
+
+procedure DumpComponents(comp: TComponent; list: TStrings);
+var
+  i: Integer;
+begin
+  if Assigned(comp) then begin
+    list.Add('id: '+ inttostr64(count)+ ' '+ComponentFullNameAndClass(comp));
+    inc(count)
+    for i:= 0 to comp.ComponentCount-1 do begin
+      //recursion!
+      DumpComponents(comp.Components[i], list);
+    end;
+  end;
+end;    
+
+
+procedure FindComponents(comp: TComponent; list: TStrings);
+var
+  i: Integer;
+begin
+  if Assigned(comp) then begin
+    list.Add('id: '+ inttostr64(count)+ ' '+ComponentFullNameAndClass(comp));
+    inc(count)
+    for i:= 0 to comp.ComponentCount-1 do begin
+      //recursion!
+         comp.FindComponent(list[i]);
+    end;
+  end;
+end;    
+
+function FileExistsXX(const FName : utf8string): Boolean;
+var
+ utf: putf8char;
+ searchinfo: TSearchRecExt;
+ status: integer;
+begin
+  result:=false;
+  //utf:=utf8strnewstr(fname);
+  status:=FindFirstEx(utf,[attr_any],SearchInfo);
+  if status = 0 then
+    begin
+      if not
+         (
+         (attr_directory in SearchInfo.stats.Attributes) or
+         (attr_device in SearchInfo.stats.Attributes) or
+         (attr_offline in SearchInfo.stats.Attributes)
+         )
+         then
+         result:=true;
+    end;
+  FindCloseEx(SearchInfo);  
+  //utf8strdispose(utf);
+end;
+
+function IsPrimX(Input: int64): boolean;
+var
+  c : int64;
+begin
+  Result := true;
+  if Input > 3 then begin
+    c := 2;
+    while c < round(Sqrt(Input)) + 2 do begin
+      if (Input mod c) = 0 then begin
+         Result := false;
+         break;
+      end;
+      c := c + 1;
+    end;
+  end;
+end;
+
+
+//http://projecteuler.net/problem=10
+function Task10(Limit: int64): int64;
+var
+  a, Sum : int64;
+begin
+  a   := Limit;
+  Sum := 0;
+  while a > 1 do begin
+    //if IsPrimX(a) then sum := sum + a;
+    if IsPrimX(a) then sum := sum + a;
+
+    //dec(a);
+    a:= a-1;
+  end;
+  Result := sum;
+end;
+
+{Sample code (problem 10):
+
+# Sieve of Eratosthenes
+ans = 0
+isprime = [True] * 2000001
+for i in range(2, len(isprime)):
+	if isprime[i]:
+		ans += i
+		for j in range(i * i, len(isprime), i):
+			isprime[j] = False
+print(ans)
+
+Resources:  }
+
+function Product(Input : string): int64;
+  var
+    b : integer;
+  begin
+    Result := 1;
+    for b := 1 to 5 do Result:= Result * StrToInt64(Input[b]);
+    //writeln(itoa(result))
+  end;
+
+  function Task8(InputDigitStream: String): int64;
+var
+  ALength, a  : integer;
+  AProdukt    : int64;
+{  function Product(Input : string): int64;
+  var
+    b : integer;
+  begin
+    Result := 1;
+    for b := 1 to 5 do Result := Result * StrToInt(Input[b]);
+  end;
+  }
+begin
+  AProdukt := 0;
+  ALength  := length(InputDigitStream);
+  writeln(itoa(alength))
+
+  for a := 1 to ALength - 5 do begin
+    AProdukt := diMaxInt64(AProdukt, Product(copy(InputDigitStream,a,5)));
+   // AProdukt := IntMax(AProdukt, Product(copy(InputDigitStream,a,5)));
+    //         writeln(inttostr64(aprodukt))
+  end;
+
+  Result := AProdukt;
+end;
+
+  const
+  Task8DigitStream =  '73167176531330624919225119674426574742355349194934'
+                    + '96983520312774506326239578318016984801869478851843'
+                    + '85861560789112949495459501737958331952853208805511'
+                    + '12540698747158523863050715693290963295227443043557'
+                    + '66896648950445244523161731856403098711121722383113'
+                    + '62229893423380308135336276614282806444486645238749'
+                    + '30358907296290491560440772390713810515859307960866'
+                    + '70172427121883998797908792274921901699720888093776'
+                    + '65727333001053367881220235421809751254540594752243'
+                    + '52584907711670556013604839586446706324415722155397'
+                    + '53697817977846174064955149290862569321978468622482'
+                    + '83972241375657056057490261407972968652414535100474'
+                    + '82166370484403199890008895243450658541227588666881'
+                    + '16427171479924442928230863465674813919123162824586'
+                    + '17866458359124566529476545682848912883142607690042'
+                    + '24219022671055626321111109370544217506941658960408'
+                    + '07198403850962455444362981230987879927244284909188'
+                    + '84580156166097919133875499200524063689912560717606'
+                    + '05886116467109405077541002256983155200055935729725'
+                    + '71636269561882670428252483600823257530420752963450';
+ 
+
+ procedure problem_p117;
+ //https://projecteuler.net/problem=117
+ var aLENGTH, n, k: integer;
+    ways: array of integer;
+
+    // Dynamic programming
+  begin
+    aLENGTH:= 50;
+    setlength(ways,aLENGTH + 1) 
+    //long[] ways = new long[LENGTH + 1];
+    ways[0]:= 1;
+    //for (int n = 1; n <= LENGTH; n++) {
+    k:= 1;
+    //ways[1]:= ways[0];
+    for n:= 1 to aLENGTH do begin
+   
+    //  for (int k = 1; k <= 4 && k <= n; k++)
+    //inc(k);
+    k:= 1;
+      while (k <= 4) and (k<= n) do begin 
+      if (k <= 4) and (k <= n) then //do 
+      for k:= 1 to k-4 do begin 
+      //and k <= n) do 
+       //ways[n]:= ways[n] + ways[n-k]; //ways[n - k];
+      //  ways[n] += ways[n - k];
+        ways[n]:= ways[n] + ways[n-k];
+        writeln(itoa(k)+' '+itoa(n));
+        inc(k)
+    end;
+    end;
+    writeln('outz '+itoa(k))
+   end;  
+     //end; // }
+    //System.out.println(ways[LENGTH]);
+    writeln(inttoStr64(ways[aLENGTH]))
+   
+  //}
+  end;
+
+  procedure Euler_problem_p117;
+  //https://projecteuler.net/problem=117
+   var aLENG, n, k: integer;
+    ways: array of int64;
+   // Dynamic programming
+  begin
+    aLENG:= 50;
+    setLength(ways,aLENG + 1) 
+    ways[0]:= 1;
+    for n:= 1 to aLENG do begin
+      //for (int k = 1; k <= 4 && k <= n; k++)
+      k:=1; while (k<= 4) and (k<= n) do begin  
+        ways[n]:= ways[n]+ ways[n-k]; 
+        inc(k)
+      end;
+    end;  
+    writeln('Euler_P117 solve: '+inttoStr64(ways[aLENG]))
+  end;
+  
+var lbLog: TListBox;
+var UILock: TCriticalSection;
+    EnableLog: boolean;
+    MIMEMap: TIdMIMETable;
+    lbSessionList: TListBox;
+  
+  procedure TfmHTTPServerM_DisplaySessionChange(const Session: string);
+var
+  Index: integer;
+begin
+  if EnableLog then begin
+    UILock.Acquire;
+    try
+      Index:= lbSessionList.Items.IndexOf(Session);
+      if Index > -1 then
+        lbSessionList.Items.Delete(Index)
+      else
+        lbSessionList.Items.Append(Session);
+    finally
+      UILock.Release;
+    end;
+  end;
+end;
+
+procedure TfmHTTPServerM_DisplayMessage(const Msg: string);
+begin
+  if EnableLog then begin
+    UILock.Acquire;
+    try
+      lbLog.ItemIndex:= lbLog.Items.Add(Msg);
+    finally
+      UILock.Release;
+    end;
+  end;
+end;
+
+
+type
+  fingerprint_bel_cert = array[0..31] of char; (* =
+           ('7','1','6','2','A','C','3','1','A','D','3','4',
+            '6','B','B','3','9','8','7','B','0','3','3',
+            'B','7','F','B','8','6','2','6','0'); *)
+
+function TfmHTTPServerMain_IdServerIOHandlerSSL1VerifyPeer(
+                                        Certificate: TIdX509; certok: boolean): Boolean;
+begin
+  //doVerifyPeer; section is experimental for cross certificate security!
+  if (Pos('SDTEST-CA1', UpperCase(Certificate.Issuer.OneLine)) > 0)
+   and (Pos('WWW.BELPLAN02.CH', UpperCase(certificate.Subject.OneLine)) > 0) then
+    begin
+      TfmHTTPServerM_displaymessage(Format('%-20s %s', [DateTimeToStr(Now),
+                           certificate.FingerprintAsString+' fingerprint of cert']));
+      TfmHTTPServerM_displayMessage(Format('%-20s %s', [DateTimeToStr(Now),
+                        Certificate.subject.HashAsString+' hash of subject_cert']));
+      //certificate.notAfter
+      if certOk then
+      TfmHTTPServerM_displayMessage(Format('%-20s %s', [DateTimeToStr(Now),
+                        Certificate.subject.HashAsString+' Cert OK!']));
+   end;
+end;
+
+
+  
+ procedure generateCertChain6_OpenSSL;
+ begin
+ 
+     // we generate the private key of the CA:  
+//--1. openssl genrsa -des3 -out ./MyDemo/certs/CA_pvk.pem 2048
+
+ {  ExecuteShell(OpenSSLPath+'openssl.exe',
+                   'genrsa -des3 -out '+OpenSSLPath+'./certs2/CA_pvkmX42.pem 2048')
+  }
+  
+  // we sign with the private key to make a certificate of CA  
+//--2. openssl req -new -x509 -days 365 -key ./MyDemo/certs/CA_pvk.pem -out ./MyDemo/certs/CA_crt.pem -config ./openssl.cnf
+
+ { ExecuteShell(OpenSSLPath+'openssl.exe',
+           'req -new -x509 -days 365 -key '+OpenSSLPath+'./certs2/CA_pvkmX42.pem -out '+OpenSSLPath+'./certs2/CA_crt.pem -config '+OpenSSLPath+'./openssl.cnf')
+  }
+  
+  // we need the host private key
+//--3. openssl genrsa -des3 -out ./MyDemo/crl/host_pvk.pem 2048
+
+ { ExecuteShell(OpenSSLPath+'openssl.exe',
+                 'genrsa -des3 -out '+OpenSSLPath+'./certs2/host_pvkmX42.pem 2048')
+  }
+  
+ // we sign the host private from the CA (machine certificate)  
+//--4. openssl req -new -key ./MyDemo/crl/host_pvk.pem -out ./MyDemo/crl/host_csr.pem -config ./openssl.cnf
+
+   { ExecuteShell(OpenSSLPath+'openssl.exe',
+      'req -new -key '+OpenSSLPath+'./certs2/host_pvkmX42.pem -out '+OpenSSLPath+'./certs2/host_csr.pem -config '+OpenSSLPath+'./openssl.cnf')
+    }
+    
+  // we sign the host private request (machine certificate) - out host_crt.pem  
+ //--5. openssl ca -out ./MyDemo/crl/host_crt.pem -in ./MyDemo/crl/host_csr.pem -cert ./MyDemo/certs/CA_crt.pem -keyfile ./MyDemo/certs/CA_pvk.pem -config ./openssl.cnf
+
+  {  ExecuteShell(OpenSSLPath+'openssl.exe',
+      'ca -out '+OpenSSLPath+'./certs2/host_crt.pem -in '+OpenSSLPath+'./certs2/host_csr.pem -cert '+OpenSSLPath+'./certs2/CA_crt.pem -keyfile '+OpenSSLPath+'./certs2/CA_pvkmX42.pem -config '+OpenSSLPath+'./openssl.cnf')
+      }
+                                                    
+// we verify the cert's chain
+//--6. openssl verify -verbose -CAfile ./MyDemo/certs/CA_crt.pem -CApath ./MyDemo ./MyDemo/crl/host_crt.pem //   the result is:	./MyDemo/crl/host_crt.pem: OK
+
+  //  ExecuteShell(OpenSSL_Path+'openssl.exe',
+    // 'verify -verbose -CAfile certs/CA_crt.pem -CApath certs certs/host_pvkmX42.pem')
+
+  writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs2/CA_crt.pem -CApath certs certs2/host_crt.pem',OpenSSLPath));
+  
+   writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs/maXboxCertAuth3.pem -CApath certs certs/maxbox4signer2.pem',OpenSSLPath));
+
+ end;
+ 
+ procedure generateCertChain_WebServer_OpenSSL;
+ begin
+ 
+     // we generate the private key of the CA:  
+//--1. openssl genrsa -des3 -out ./MyDemo/certs/CA_pvk.pem 2048
+
+ {  ExecuteShell(OpenSSLPath+'openssl.exe',
+                   'genrsa -des3 -out '+OpenSSLPath+'./certs2/CA_pvkmX42.pem 2048')
+  }
+  
+  // we sign with the private key to make a certificate of CA  
+//--2. openssl req -new -x509 -days 365 -key ./MyDemo/certs/CA_pvk.pem -out ./MyDemo/certs/CA_crt.pem -config ./openssl.cnf
+
+ { ExecuteShell(OpenSSLPath+'openssl.exe',
+           'req -new -x509 -days 365 -key '+OpenSSLPath+'./certs2/CA_pvkmX42.pem -out '+OpenSSLPath+'./certs2/CA_crt.pem -config '+OpenSSLPath+'./openssl.cnf')
+  }
+  
+  // we need the host private key
+//--3. openssl genrsa -des3 -out ./MyDemo/crl/host_pvk.pem 2048
+
+ // ExecuteShell(OpenSSLPath+'openssl.exe',
+   //          'genrsa -des3 -out '+OpenSSLPath+'./certs2/host_softwareschule.pem 2048')
+  
+  
+ // we sign the host private from the CA (machine certificate)  
+//--4. openssl req -new -key ./MyDemo/crl/host_pvk.pem -out ./MyDemo/crl/host_csr.pem -config ./openssl.cnf
+
+   { ExecuteShell(OpenSSLPath+'openssl.exe',
+      'req -new -key '+OpenSSLPath+'./certs2/host_softwareschule.pem -out '+OpenSSLPath+'./certs2/host_softwareschule_csr.pem -config '+OpenSSLPath+'./openssl.cnf')
+    //}
+    
+  // we sign the host private request (machine certificate) - out host_crt.pem  
+ //--5. openssl ca -out ./MyDemo/crl/host_crt.pem -in ./MyDemo/crl/host_csr.pem -cert ./MyDemo/certs/CA_crt.pem -keyfile ./MyDemo/certs/CA_pvk.pem -config ./openssl.cnf
+
+   { ExecuteShell(OpenSSLPath+'openssl.exe',
+      'ca -out '+OpenSSLPath+'./certs2/host_softwareschule_crt.pem -in '+OpenSSLPath+'./certs2/host_softwareschule_csr.pem -cert '+OpenSSLPath+'./certs2/CA_crt.pem -keyfile '+OpenSSLPath+'./certs2/CA_pvkmX42.pem -config '+OpenSSLPath+'./openssl.cnf')
+     // }
+                                                    
+// we verify the cert's chain
+//--6. openssl verify -verbose -CAfile ./MyDemo/certs/CA_crt.pem -CApath ./MyDemo ./MyDemo/crl/host_crt.pem //   the result is:	./MyDemo/crl/host_crt.pem: OK
+
+  //  ExecuteShell(OpenSSL_Path+'openssl.exe',
+    // 'verify -verbose -CAfile certs/CA_crt.pem -CApath certs certs/host_pvkmX42.pem')
+
+    writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs2/CA_crt.pem -CApath certs certs2/host_softwareschule_crt.pem',OpenSSLPath));
+
+
+  writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs2/CA_crt.pem -CApath certs certs2/host_crt.pem',OpenSSLPath));
+  
+   writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs/maXboxCertAuth3.pem -CApath certs certs/maxbox4signer2.pem',OpenSSLPath));
+
+ end;
+ 
+
+var
+  complist: TStringList;
+ // ways: array of integer;
+
+begin
+  count:= 0;
+//  Apploop_tester;
+ { complist:= TStringList.create;
+  dumpComponents(application, complist) 
+  for count:= 0 to complist.count -1 do
+     writeln(complist.strings[count]);
+  complist.Free;
+  }
+  //writeln('machine name is: '+getHostName)
+  writeln('user name is: '+getUserName)
+  //writeln('proc id is: '+inttostr(currentprocessid))
+  //signal_Sounds;
+  //memo2.font.name:= 'Terminal';
+  
+  writeln(botostr(FileExistsext(exepath+'maxbox4.exe')))
+  
+  //https://github.com/nayuki/Project-Euler-solutions/blob/master/Answers.txt
+  //https://www.nayuki.io/page/project-euler-solutions
+  
+ // Problem 010: 142913828922
+  //Add('Task 10');
+      //writeln('|-> Solution: ' + IntToStr64(Task10(200000)));
+      
+       //Add('Task 8'); //23514624000
+      writeln('|-> Solution: ' + IntToStr64(Task8(Task8DigitStream)));
+      //Function FtpPutFile( const IP, Port, FileName, LocalFile, User, Pass : string) : Boolean');
+   //   writeln(botoStr(FtpPutFile('www.softwareschule.ch','21','httpdocs/examples/weatherapp.txt','C:\maXbook\maxbox3\maxbox4\maxbox42480\weatherapp3.txt','softwar','p')));
+
+    //  writeln(botoStr(FtpPutFile('www.softwareschule.ch','21','httpdocs/examples/tee-licht.jpg','C:\maXbook\maxbox3\maxbox4\maxbox42480\tee-licht_3.jpg','softwar','p')));
+    
+    Euler_problem_p117;
+    
+    maxcalcF('(5!) / ((2!)*(3!))')
+    maxcalcF('5!/(2!*(2!)*(3!))')
+ 
+   { maxcalcF('(2^2)*15-(2^2)')   //56
+    maxcalcF('(2^3)*15-(2^4)')  //-8
+    maxcalcF('(2^4)*15-(2^5)')  //-16
+    maxcalcF('(2^5)*15-(2^6)')  //-16
+    maxcalcF('(2^6)*15-(2^8)')  //-16    }
+    
+    writeln('SSLGetVersion: '+itoa(SSLGetVersion))
+    writeln('SSLGetVersion2: '+(SSLGetVersion2))
+    writeln('SSLGetError: '+itoa(SSLGetError))
+ 
+  // verify signature  
+   writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs/sd_pki_ca.pem -CApath certs certs/belplan_cert.pem',OpenSSLPath));
+ 
+   //check rsa key  with execute shell cause passphrase needed!
+   //writeln(getDosOutput('openssl.exe rsa -in certs2/CA_pvkmX42.pem',OpenSSLPath));
+ 
+   // writeln(getDosOutput('openssl.exe genrsa -des3 -out ./certs/CA_pvkmX4.pem 2048',OpenSSL_BasePath));
+ 
+ 
+ // we generate the private key of the CA:  
+//1. openssl genrsa -des3 -out ./MyDemo/certs/CA_pvk.pem 2048
+
+  // ExecuteShell(OpenSSL_BasePath+'openssl.exe',
+    //               'genrsa -des3 -out '+OpenSSL_BasePath+'./certs/CA_pvkmX42.pem 2048')
+ 
+  // we sign the private to make a certificate of CA  
+//2. openssl req -new -x509 -days 365 -key ./MyDemo/certs/CA_pvk.pem -out ./MyDemo/certs/CA_crt.pem -config ./openssl.cnf
+
+ // ExecuteShell(OpenSSL_Path+'openssl.exe',
+   //         'req -new -x509 -days 365 -key '+OpenSSL_Path+'./certs/CA_pvkmX42.pem -out '+OpenSSL_Path+'./certs/CA_crt.pem -config '+OpenSSL_Path+'./openssl.cnf')
+  
+  // we need the host private key
+//3. openssl genrsa -des3 -out ./MyDemo/crl/host_pvk.pem 2048
+
+//  ExecuteShell(OpenSSL_Path+'openssl.exe',
+  //               'genrsa -des3 -out '+OpenSSL_Path+'./certs/host_pvkmX42.pem 2048')
+ 
+ // we sign the host private from the CA (machine certificate)  
+//4. openssl req -new -key ./MyDemo/crl/host_pvk.pem -out ./MyDemo/crl/host_csr.pem -config ./openssl.cnf
+
+   // ExecuteShell(OpenSSL_Path+'openssl.exe',
+     // 'req -new -key '+OpenSSL_Path+'./certs/host_pvkmX42.pem -out '+OpenSSL_Path+'./certs/host_csr.pem -config '+OpenSSL_Path+'./openssl.cnf')
+       
+   //    5. openssl ca -out ./MyDemo/crl/host_crt.pem -in ./MyDemo/crl/host_csr.pem -cert ./MyDemo/certs/CA_crt.pem -keyfile ./MyDemo/certs/CA_pvk.pem -config ./openssl.cnf
+
+   //  ExecuteShell(OpenSSL_Path+'openssl.exe',
+     //  'ca -out '+OpenSSL_Path+'./certs/host_pvkmX42.pem -in '+OpenSSL_Path+'./certs/host_csr.pem -cert '+OpenSSL_Path+'CA_ctr.pem -keyfile '+OpenSSL_Path+'./certs/CA_pvkmX42.pem -config '+OpenSSL_Path+'./openssl.cnf')
+  
+// we verify the cert's
+//6. openssl verify -verbose -CAfile ./MyDemo/certs/CA_crt.pem -CApath ./MyDemo ./MyDemo/crl/host_crt.pem
+//   the result is:	./MyDemo/crl/host_crt.pem: OK
+
+  //  ExecuteShell(OpenSSL_Path+'openssl.exe',
+    // 'verify -verbose -CAfile certs/CA_crt.pem -CApath certs certs/host_pvkmX42.pem')
+
+  // writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs/CA_crt.pem -CApath certs certs/host_pvkmX42.pem',OpenSSL_Path));
+  
+   writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs/maXboxCertAuth3.pem -CApath certs certs/maxbox4signer2.pem',OpenSSLPath));
+    
+   writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs/maXboxCertAuth3.pem  certs/maxbox4signer.pem certs/maxbox4exe.pem',OpenSSLPath));
+    
+  writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs/maXboxCertAuth3.pem  -untrusted certs/maxbox4signer.pem certs/maxbox4exe.pem',OpenSSLPath));
+     
+    
+  //  writeln(getDosOutput('openssl.exe verify -verbose -CAfile certs/sd_pki_ca.pem -CApath certs certs/belplan_cert.pem',OpenSSL_Path));
+  
+  //3. openssl genrsa -des3 -out ./MyDemo/crl/host_pvk.pem 2048
+
+ //ExecuteShell(OpenSSL_Path+'openssl.exe',
+   //   'genrsa -des3 -out '+OpenSSL_Path+'./certs/host_softwareschule.pem 2048')
+
+  // 2 steps: we sign the host private from the CA (machine certificate)  
+//4. openssl req -new -key ./MyDemo/crl/host_pvk.pem -out ./MyDemo/crl/host_csr.pem -config ./openssl.cnf
+
+  // ExecuteShell(OpenSSL_Path+'openssl.exe',
+    // 'req -new -key '+OpenSSL_Path+'./certs/host_softwareschule.pem -out '+OpenSSL_Path+'./certs/host_softwareschule_csr.pem -config '+OpenSSL_Path+'./openssl.cnf')
+ 
+     //need private Key CA!
+ 
+     //ExecuteShell(OpenSSL_Path+'openssl.exe',
+      //'ca -out '+OpenSSL_Path+'./certs/host_softwareschule.pem -in '+OpenSSL_Path+'./certs/host_softwareschule_csr.pem -cert '+OpenSSL_Path+'./certs/maXboxCertAuth3.pem -keyfile '+OpenSSL_Path+'./certs/maXboxCertAuth3pvk2.pem -config '+OpenSSL_Path+'./openssl.cnf')
+        //*)
+        
+     {   OpenSSL> ca -out ./certs/host_softwareschule.pem -in ./certs/host_softwareschule
+_csr.pem -cert ./certs/maXboxCertAuth3.pem -keyfile ./certs/maXboxCertAuth3pvk2.
+pem -config openssl.cnf }
+         
+     //convert Convert DER to PEM
+      //-inform der -in certificate.cer -out certificate.pem
+  // ExecuteShell(OpenSSL_Path+'openssl.exe',
+    //        '-inform der -in '+OpenSSL_Path+'./certs/maxbox4exe2.cer -out '+OpenSSL_Path+'./certs/maxbox4exe2pem.pem')
+      
+   // writeln(getDosOutput('openssl.exe -inform der -in ./certs/maxbox4exe2.cer -out ./certs/maxbox4exe2pem.pem',OpenSSL_Path));
+    
+    //OpenSSL Convert PFX  - Convert PFX to PEM
+    //openssl pkcs12 -in certificate.pfx -out certificate.cer -nodes   
+
+//writeln(getDosOutput('openssl.exe pkcs12 -in ./certs/maxbox4exe.pfx -out ./certs/maxbox4exepem.pem -nodes',OpenSSL_Path));
+
+ // ExecuteShell(OpenSSL_Path+'openssl.exe',
+   //        'pkcs12 -in '+OpenSSL_Path+'./certs/maxbox4exe.pfx -out '+OpenSSL_Path+'./certs/maxbox4exepem2.pem -nodes')
+ 
+ // ExecuteShell(OpenSSL_Path+'openssl.exe',
+   //        'pkcs12 -in '+OpenSSL_Path+'./certs/maXboxCertAuth3.pfx -out '+OpenSSL_Path+'./certs/maXboxCertAuth3.pfx.pem -nodes')
+      
+    //generateCertChain6_OpenSSL;  
+    
+    generateCertChain_WebServer_OpenSSL;
+    
+    writeln(SHA1(OpenSSLPath+'certs2\host_softwareschule_crt.pem'));   
+    writeln(SHA1(OpenSSLPath+'certs2\www.softwareschule.ch.der'));   
+ 
+End.  
+
+ref to fingerprint: host_softwareschule_crt.pem
+A1:27:C2:12:01:1C:05:B5:02:6B:F2:89:83:D3:64:75:19:53:ED:D6
+
+ref: to convert
+
+http://stackoverflow.com/questions/12790572/openssl-unable-to-get-local-issuer-certificate
+
+https://www.sslshopper.com/ssl-converter.html
+
+ref:
+certs/belplan_cert.pem: /C=CH/O=Admin/OU=VBS/CN=www.belplan02.ch
+error 10 at 0 depth lookup:certificate has expired
+OK 
+
+ref:
+http://www.slideshare.net/maxkleiner1/refactoringrosenheim2008workshop
+
+
+|-> Solution: 1709600813  - Task10(200000
+ mX4 executed: 11/24/2016 3:24:52 PM  Runtime: 0:3:18.544  Memload: 63% use
+|-> Solution: 1709600813
+ mX4 executed: 11/24/2016 3:56:57 PM  Runtime: 0:3:21.100  Memload: 63% use
+
+There is no place like 127.0.0.1
+
+Sample code (problem 117) (most other solutions are many times longer):
+
+public class p117 {
+  private static final int LENGTH = 50;
+  public static void main(String[] args) {
+    // Dynamic programming
+    long[] ways = new long[LENGTH + 1];
+    ways[0] = 1;
+    for (int n = 1; n <= LENGTH; n++) {
+      for (int k = 1; k <= 4 && k <= n; k++)
+        ways[n] += ways[n - k];
+      }
+    System.out.println(ways[LENGTH]);
+  }
+}
+
+//Answer; 100808458960497
+ 
+
+//----------------------------------------------
+ DiskSize returns -1 if the drive number is invalid. Drive parameter can be set to: 0 = Current drive, 1 = A, 2 = B, 3 = C and so on. 
+
+
+user name is: max
+ mX4 executed: 10/18/2016 1:49:19 PM  Runtime: 0:0:19.750  Memload: 51% use
+PascalScript maXbox4 - RemObjects & SynEdit
+
+ What Is a Certification Path?
+
+Certification Path: Also called Certificate Chain. An ordered list of certificates where the subject entity of one certificate is identical to the issuing entity of the next certificate.
+
+A certification path can also be defined as an ordered list of certificates where the issuing entity of one certificate can be identified as the subject entity of the previous certificate. But the first certificate has to be a special one, because there is no previous certificate to identify the issuing entity. The first certificate must be a self-signed certificate, where the issuing entity is the same as the subject entity.
+
+For example, the following diagram shows you a certification path:
+
+Certificate 1
+   Issuer: Herong Yang
+   Subject: Herong Yang
+
+Certificate 2
+   Issuer: Herong Yang
+   Subject: John Smith
+
+Certificate 3
+   Issuer: John Smith
+   Subject: Bill White
+
+Certificate 4
+   Issuer: Bill White
+   Subject: Tom Bush
+
+Certification Path Validation
+
+A certification path needs to be validated. Here are the validation rules:
+
+    The first certificate must be self-signed. Its issuer must be recognized as a certificate authority (CA).
+    The issuer of any certificate, except the first one, must be "identical" to the subject of the previous certificate.
+    "identical" means that issuer's digital signature can verified by the subject's public key in the previous certificate.
+
+OpenSSL offers a nice tool, the "verify" command, to validate a certification path. Here is the syntax of the "verify" command:
+
+verify -CAfile first.crt -untrusted all_middle.crt last.crt
+
+    "first.crt" is the first certificate of the path. It should be self-signed certificate.
+    "last.crt" is the last certificate of the path.
+    "all_middle.crt" is a collection of all middle certificates. If certificates are store in PEM format, you can join them into a collection in any text editor.
+
+Certification Path Testing with OpenSSL
+
+Here is a testing scenario I followed to generate some certificates with different issuers and subjects. See previous notes if you have trouble generating keys and signing certificates.
+
+1. Generating a self-signed certificate for Herong, herong.crt: 
+
+PEM Format
+
+The PEM format is the most common format that Certificate Authorities issue certificates in. PEM certificates usually have extentions such as .pem, .crt, .cer, and .key. They are Base64 encoded ASCII files and contain "-----BEGIN CERTIFICATE-----" and "-----END CERTIFICATE-----" statements. Server certificates, intermediate certificates, and private keys can all be put into the PEM format.
+
+Apache and other similar servers use PEM format certificates. Several PEM certificates, and even the private key, can be included in one file, one below the other, but most platforms, such as Apache, expect the certificates and private key to be in separate files.
+DER Format
+
+The DER format is simply a binary form of a certificate instead of the ASCII PEM format. It sometimes has a file extension of .der but it often has a file extension of .cer so the only way to tell the difference between a DER .cer file and a PEM .cer file is to open it in a text editor and look for the BEGIN/END statements. All types of certificates and private keys can be encoded in DER format. DER is typically used with Java platforms. The SSL Converter can only convert certificates to DER format. If you need to convert a private key to DER, please use the OpenSSL commands on this page.
+
+Testcases SSL Console with Shell, maXbox and PKI V2
+*******************************************************************
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((()
+
+testvars:
+//password for authentication on httpserver: Indy : rocks
+//password for testRSA Key: belplan02
+
+OpenSSL includes a command line utility that can be used to perform a variety of cryptographic functions like generating 
+
+your machine certificate in [CERT].  
+
+First you need a RootCA (selfsigned) which we produce with 1. and 2. 
+                   
+To begin, copy all files on CD to our HD on your System
+open commandpromt
+Change to the directory to you have copy the files and type:
+cd D:\m1_openssl_libraries
+
+if not extists, type:
+md MyDemo
+cd MyDemo
+md certs
+md crl
+md newcerts
+(you stay now in "D:\m1_openssl_libraries\MyDemo")
+
+create first one empty text-file with the name "index.txt"
+create second text-file. Write inside the file "012B"
+rename the second text-file to "serial"
+
+type
+cd..
+
+// we generate the private key of the CA:  
+1. openssl genrsa -des3 -out ./MyDemo/certs/CA_pvk.pem 2048
+
+// we generate CA_Cert sign the private to make a certificate of CA  
+2. openssl req -new -x509 -days 365 -key ./MyDemo/certs/CA_pvk.pem -out ./MyDemo/certs/CA_crt.pem -config ./openssl.cnf
+
+// we need the host private key
+3. openssl genrsa -des3 -out ./MyDemo/crl/host_pvk.pem 2048
+
+// we sign the host private from the CA (machine certificate)  
+4. openssl req -new -key ./MyDemo/crl/host_pvk.pem -out ./MyDemo/crl/host_csr.pem -config ./openssl.cnf
+
+5. openssl ca -out ./MyDemo/crl/host_crt.pem -in ./MyDemo/crl/host_csr.pem -cert ./MyDemo/certs/CA_crt.pem -keyfile 
+
+./MyDemo/certs/CA_pvk.pem -config ./openssl.cnf
+
+// we verify the cert's
+6. openssl verify -verbose -CAfile ./MyDemo/certs/CA_crt.pem -CApath ./MyDemo ./MyDemo/crl/host_crt.pem
+   the result is:	./MyDemo/crl/host_crt.pem: OK
+
+in this way we get  
+
+
+// Ini-File example
+[CERT]  
+ROOTCERT=cert\CA_crt.pem  
+SCERT=cert\host_crt.pem  
+RSAKEY=cert\host_pvk.pem  
+
+
+//then we can verify the cert's on the CD
+
+7. openssl verify -verbose -CAfile demoCA\sd_pki_ca.pem -CApath demoCA demoCA\sd_pki_rootca.pem 
+   sd_pki_rootca.pem: OK
+
+8. openssl verify -verbose -CAfile demoCA\sd_pki_ca.pem -CApath demoCA demoCA\belplan_cert.pem
+   demoCA/belplan_cert.pem: OK
+
+23.05.2008 Max Kleiner
+28.11.2016 Max Kleiner
+
+The Subject's Distinguished Name is as follows
+countryName           :PRINTABLE:'CH'
+stateOrProvinceName   :PRINTABLE:'Bern'
+localityName          :PRINTABLE:'Bern'
+organizationName      :PRINTABLE:'softwareschule.ch'
+organizationalUnitName:PRINTABLE:'softwareschule'
+commonName            :PRINTABLE:'maXbox'
+emailAddress          :IA5STRING:'max@kleiner.ch'
+The countryName field does not exist in the CA certificate,
+the 'policy' is misconfigured
+error in ca
+OpenSSL> ca -out ./certs/host_softwareschule.pem -in ./certs/host_softwareschule
+_csr.pem -cert ./certs/maXboxCertAuth3.pem -keyfile ./certs/maXboxCertAuth3pvk2.
+pem -config ./openssl.cnf
+
+OpenSSL> ca -out ./certs/host_softwareschule.pem -in ./certs/host_softwareschule
+_csr.pem -cert ./certs/maXboxCertAuth3.pem -keyfile ./certs/maXboxCertAuth3pvk2.
+pem -config ./openssl.cnf
+Using configuration from ./openssl.cnf
+Loading 'screen' into random state - done
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+countryName           :PRINTABLE:'CH'
+stateOrProvinceName   :PRINTABLE:'Bern'
+localityName          :PRINTABLE:'Bern'
+organizationName      :PRINTABLE:'softwareschule.ch'
+organizationalUnitName:PRINTABLE:'softwareschule'
+commonName            :PRINTABLE:'maXbox'
+emailAddress          :IA5STRING:'max@kleiner.ch'
+The countryName field does not exist in the CA certificate,
+the 'policy' is misconfigured
+error in ca
+OpenSSL>
+
+
+********** File 1: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\735_Euler_p117_openSSL_scripts.txt
+ 
+365:      // we generate the private key of the CA:  
+//--1. openssl genrsa -des3 -out ./MyDemo/certs/CA_pvk.pem 2048
+  
+372:   // we sign with the private key to make a certificate of CA  
+//--2. openssl req -new -x509 -days 365 -key ./MyDemo/certs/CA_pvk.pem -out ./MyDemo/certs/CA_crt.pem -config ./openssl.cnf
+  
+379:   // we need the host private key
+//--3. openssl genrsa -des3 -out ./MyDemo/crl/host_pvk.pem 2048
+ 
+476:  // we generate the private key of the CA:  
+//1. openssl genrsa -des3 -out ./MyDemo/certs/CA_pvk.pem 2048
+  
+488:   // we need the host private key
+//3. openssl genrsa -des3 -out ./MyDemo/crl/host_pvk.pem 2048
+ 
+534:      //need private Key CA!
+ 
+
+664: The PEM format is the most common format that Certificate Authorities issue certificates in. PEM certificates usually have extentions such as .pem, .crt, .cer, and .key. They are Base64 encoded ASCII files and contain "-----BEGIN CERTIFICATE-----" and "-----END CERTIFICATE-----" statements. Server certificates, intermediate certificates, and private keys can all be put into the PEM format.
+
+
+666: Apache and other similar servers use PEM format certificates. Several PEM certificates, and even the private key, can be included in one file, one below the other, but most platforms, such as Apache, expect the certificates and private key to be in separate files.
+DER Format
+
+669: The DER format is simply a binary form of a certificate instead of the ASCII PEM format. It sometimes has a file extension of .der but it often has a file extension of .cer so the only way to tell the difference between a DER .cer file and a PEM .cer file is to open it in a text editor and look for the BEGIN/END statements. All types of certificates and private keys can be encoded in DER format. DER is typically used with Java platforms. The SSL Converter can only convert certificates to DER format. If you need to convert a private key to DER, please use the OpenSSL commands on this page.
+
+
+703: // we generate the private key of the CA:  
+1. openssl genrsa -des3 -out ./MyDemo/certs/CA_pvk.pem 2048
+
+709: // we need the host private key
+3. openssl genrsa -des3 -out ./MyDemo/crl/host_pvk.pem 2048
+
+
+********** File 2: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\openssl - Copy.cnf
+#crl		= $dir/crl.pem 		# The current CRL
+49: private_key	= $certs/CA_pvk.pem	# The private key
+RANDFILE	= $dir/.rand		# private random number file
+
+106: # Passwords for private keys if not present they will be prompted for
+# input_password = secret
+
+
+********** File 3: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\openssl.cnf
+#crl		= $dir/crl.pem 		# The current CRL
+56: private_key	= $certs/CA_pvk.pem	# The private key
+RANDFILE	= $dir/.rand		# private random number file
+
+113: # Passwords for private keys if not present they will be prompted for
+# input_password = secret
+
+
+********** File 4: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\openssl_shell_examples.txt
+
+32: // we generate the private key of the CA:  
+1. openssl genrsa -des3 -out ./MyDemo/certs/CA_pvk.pem 2048
+
+38: // we need the host private key
+3. openssl genrsa -des3 -out ./MyDemo/crl/host_pvk.pem 2048
+
+
+********** File 5: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\readme_first.txt
+
+32: // we generate the private key of the CA:  
+1. openssl genrsa -des3 -out ./MyDemo/certs/CA_pvk.pem 2048
+
+38: // we need the host private key
+3. openssl genrsa -des3 -out ./MyDemo/crl/host_pvk.pem 2048
+
+
+********** File 6: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\certs\belplan_rsa_key_new.pem
+0: -----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+sCrwXnaLk60PLUARXZEnJ59fmpw+i3f8uJ0NgrIT5LuCJdP1dnMtGA==
+29: -----END RSA PRIVATE KEY-----
+
+
+********** File 7: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\certs\CA_pvkmX42.pem
+0: -----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+NXVV0/Kk2v2HWnmmpZkFSWrc4alc4alVt5dxrmtaKMvcuiWYFkgOXg==
+29: -----END RSA PRIVATE KEY-----
+
+
+********** File 8: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\certs\CA_pvktest.pem
+0: -----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+lK+XLlqgM/atth1EtvkKoazo+EJJqQ5zt1uxoX0sJls0Mr4pjJ++zyonhPR+AnUw
+29: -----END RSA PRIVATE KEY-----
+
+
+********** File 9: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\certs\host_pvkmX42.pem
+0: -----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+a+PAMD3lK5FXTDuy12MvF3iNnVDtGqIDi5gscMq1DYBQQRqOMpGbDw==
+29: -----END RSA PRIVATE KEY-----
+
+
+********** File 10: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\certs\maxbox4exepem2.pem
+    X509v3 Key Usage: 10 
+6: -----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAtdDOvJUoLjcnrjjX/mcV6xd3AbNTV9+7eoyqB6mLQ6u1HE+y
+Pmvq6DdAv8yuKcebb73z5j1doReNy5cP6YEXMFddvaOU1T504zNX9A==
+32: -----END RSA PRIVATE KEY-----
+Bag Attributes
+
+
+********** File 11: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\certs2\CA_pvkmX42.pem
+0: -----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+Hhev/MJUMeg2C5rRkR4nRluIdXRHGwWe+UpV8W7Y1Z8MmUi4NrgzKrpA/qsV7vbm
+29: -----END RSA PRIVATE KEY-----
+
+
+********** File 12: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\certs2\host_pvkmX42.pem
+0: -----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+7/DGueet3s84QjutLvQiLcidTYHA7HySPs+8h+V2pkBQYgo4OQyGrw==
+29: -----END RSA PRIVATE KEY-----
+
+
+********** File 13: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\certs2\host_pvkmX42beforesign.pem
+0: -----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+7/DGueet3s84QjutLvQiLcidTYHA7HySPs+8h+V2pkBQYgo4OQyGrw==
+29: -----END RSA PRIVATE KEY-----
+
+
+********** File 14: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\certs2\openssl.cnf
+#crl		= $dir/crl.pem 		# The current CRL
+56: private_key	= $certs/CA_pvk.pem	# The private key
+RANDFILE	= $dir/.rand		# private random number file
+
+113: # Passwords for private keys if not present they will be prompted for
+# input_password = secret
+
+
+********** File 15: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\certs2\openssl_2.cnf
+#crl		= $dir/crl.pem 		# The current CRL
+50: private_key	= $certs/CA_pvk.pem	# The private key
+RANDFILE	= $dir/.rand		# private random number file
+
+107: # Passwords for private keys if not present they will be prompted for
+# input_password = secret
+
+
+********** File 16: C:\maXbook\maxbox3\maxbox4\maxbox42480\httpserver_only\MyDemo\newcerts\belplan_rsa_key_new_2009.pem
+Key Attributes: <No Attributes>
+3: -----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+tSSb8Gxz3lAq9EGpvdp0IfFJlief6RVDaTBUcTizh7ECgfcdRnIE+w==
+32: -----END RSA PRIVATE KEY-----
+
+Found 16 files of: 28:11:2016
+"Search and Found for PRIVATE KEY
+"Search Total Count of Files/Words: 90
+"Found of Words: 41
+"Found of Files: 16
+0 h run time is: 00:00:925
+
+ What Is a Certification Path?
+
+Certification Path: Also called Certificate Chain. An ordered list of certificates where the subject entity of one certificate is identical to the issuing entity of the next certificate.
+
+A certification path can also be defined as an ordered list of certificates where the issuing entity of one certificate can be identified as the subject entity of the previous certificate. But the first certificate has to be a special one, because there is no previous certificate to identify the issuing entity. The first certificate must be a self-signed certificate, where the issuing entity is the same as the subject entity. 
+
+OpenSSL> ca -out ./certs2/host_softwareschule_crt.pem -in ./certs2/host_software
+schule_csr.pem -cert ./certs2/CA_crt.pem -keyfile ./certs2/CA_pvkmX42.pem -confi
+g ./openssl.cnf
+Using configuration from ./openssl.cnf
+Loading 'screen' into random state - done
+Enter pass phrase for ./certs2/CA_pvkmX42.pem:
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+countryName           :PRINTABLE:'CH'
+stateOrProvinceName   :PRINTABLE:'Bern'
+localityName          :PRINTABLE:'Bern'
+organizationName      :PRINTABLE:'softwareschule'
+organizationalUnitName:PRINTABLE:'softwareschule.ch'
+commonName            :PRINTABLE:'www.softwareschule.ch'
+emailAddress          :IA5STRING:'info@softwareschule.ch'
+The organizationName field needed to be the same in the
+CA certificate (maXbox_armasuisse) and the request (softwareschule)
+error in ca
+OpenSSL>
+
+windows  "C:\Windows\System32\drivers\etc\hosts"
+
+# Copyright (c) 1993-2009 Microsoft Corp.
+#
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+#
+# This file contains the mappings of IP addresses to host names. Each
+# entry should be kept on an individual line. The IP address should
+# be placed in the first column followed by the corresponding host name.
+# The IP address and the host name should be separated by at least one
+# space.
+#
+# Additionally, comments (such as these) may be inserted on individual
+# lines or following the machine name denoted by a '#' symbol.
+#
+# For example:
+#
+#      102.54.94.97     rhino.acme.com          # source server
+#       38.25.63.10     x.acme.com              # x client host
+
+# localhost name resolution is handled within DNS itself.
+#	127.0.0.1       localhost
+#	::1             localhost
+
+0.0.0.1	mssplus.mcafee.com
+#127.0.0.1 www.belplan02.ch       
+##127.0.0.1 maXbox_armasuisse.ch
+#127.0.0.1 www.softwareschule.ch     
+#127.0.0.1 www.softwareschule.ch     
+169.254.198.46 www.softwareschule.ch
+
+SHA1: A1:27:C2:12:01:1C:05:B5:02:6B:F2:89:83:D3:64:75:19:53:ED:D6
+Certificate Signature Value:
+
+Size: 256 Bytes / 2048 Bits
+55 23 a1 4b e4 68 14 92 52 95 6d fb 60 ad b9 40 
+7d 92 80 2c e7 ab 91 55 27 7c b0 65 f6 07 94 2a 
+8a 38 3d 9e 77 13 af 7c 5a 75 a0 58 5e 2b 72 0f 
+67 c1 aa 02 f0 60 c6 f3 7b 43 73 27 d2 b4 4d fb 
+99 70 74 94 bc 68 15 b3 b6 ca e5 38 60 d0 6b 26 
+3c 28 64 16 4f 21 b0 f3 cd a7 92 6c b0 74 fb db 
+4e de 81 0b 70 df 60 87 22 8b 3d 01 bd fa 8b 24 
+e7 93 c6 62 dd e9 08 d4 51 4c 89 94 3c ce 15 5b 
+ff 7b da 75 df 4a 02 3f 07 be 25 8c 6b 35 30 06 
+56 69 91 81 d0 25 e6 76 ce 24 e7 ca f4 84 ca e3 
+c0 90 6a a8 48 69 60 99 c9 3f 8f 06 92 98 f7 2e 
+4e 28 3a 60 da 52 e8 81 03 df f6 f8 23 e7 57 92 
+22 d3 e4 60 c6 a1 5a ef b6 ca b1 e0 ff 42 bd 9d 
+5f b7 46 06 f3 bf 99 e6 25 6c 2a 78 d2 ad 1d 82 
+ec 4c fd f2 69 95 b4 bf 87 da e3 97 33 4e 17 45 
+19 5d 60 6e f3 60 0e ec 63 cb 62 26 c5 a2 19 dd 
+

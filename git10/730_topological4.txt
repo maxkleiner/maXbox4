@@ -1,0 +1,751 @@
+program topologicalsortrosetta;
+
+//http://rosettacode.org/wiki/Topological_sort#Object_Pascal
+//http://rosettacode.org/wiki/Munchausen_numbers#Pascal
+//http://rosettacode.org/wiki/Catamorphism#Pascal
+//http://rosettacode.org/wiki/Prime_decomposition
+//http://rosettacode.org/wiki/Percolation/Mean_run_density
+//http://rosettacode.org/wiki/Cumulative_standard_deviation#Pascal
+ 
+{*
+Topological sorter to parse e.g. dependencies.
+Written for FreePascal 2.4.x/2.5.1. Probably works in Delphi, but you'd have to
+change some units.
+*}
+
+(*{$IFDEF FPC}
+// FreePascal-specific setup
+{$mode objfpc}
+uses {$IFDEF UNIX}
+  cwstring, {* widestring support for unix *} {$IFDEF UseCThreads}
+  cthreads, {$ENDIF UseCThreads} {$ENDIF UNIX}
+  Classes,
+  SysUtils;
+{$ENDIF}
+ *)
+type
+  RNodeIndex = record
+    NodeName: WideString; //Name of the node
+    //Index: integer; //Index number used in DepGraph. For now, we can distill the index from the array index. If we want to use a TList or similar, we'd need an index property
+    Order: integer;  //Order when sorted
+  end;
+ 
+  RDepGraph = record
+    Node: integer;  //Refers to Index in NodeIndex
+    DependsOn: integer; //The Node depends on this other Node.
+  end;
+ 
+ type
+  tdigit  = byte;
+const
+  abase = 10;
+  amaxDigits = abase-1;// set for 32-compilation otherwise overflow.
+  { TTopologicalSort }
+  
+  var 
+  DgtPotDgt : array[0..abase-1] of NativeUint;
+  cnt: NativeUint;
+ 
+ // TTopologicalSort = class(TObject)
+  //private
+  var  
+    Nodes: array of RNodeIndex;
+    DependencyGraph: array of RDepGraph;
+    FCanBeSorted: boolean;
+    
+    function TTopologicalSortSearchNode(NodeName: WideString): integer; forward;
+    function TTopologicalSortSearchIndex(NodeID: integer): WideString; forward;
+    function DepFromNodeID(NodeID: integer): integer; forward;
+    function DepFromDepID(DepID: integer): integer; forward;
+    function DepFromNodeIDDepID(NodeID, DepID: integer): integer; forward;
+    procedure DelDependency(const Index: integer); forward;
+  //public
+    procedure {constructor} TTopologicalSortCreate; forward;
+    procedure {destructor} TTopologicalSortDestroy; forward;
+    procedure SortOrder(var Output: TStringList); forward;
+    procedure AddNode(NodeName: WideString); forward;
+    procedure AddDependency(NodeName, DependsOn: WideString); forward;      
+    procedure AddNodeDependencies(NodeAndDependencies: TStringList); forward;
+    //Each string has node, and the nodes it depends on. This allows insertion of an entire dependency graph at once
+    //procedure DelNode(NodeName: Widestring);
+    procedure DelDependency2(NodeName, DependsOn: WideString); forward;
+    
+    var
+    {property} CanBeSorted: boolean; // read FCanBeSorted; forward;
+ 
+  //end;
+ 
+const
+  INVALID = -1;
+  // index not found for index search functions, no sort order defined, or record invalid/deleted
+  
+  function CheckSameDigits(n1,n2:NativeUInt):boolean;
+var
+  dgtCnt : array[0..aBase-1] of NativeInt; 
+  i : NativeUInt;  
+Begin
+  //fillchar(dgtCnt,SizeOf(dgtCnt),#0);
+  for it:= 0 to 9 do dgtcnt[it]:= 0;
+  repeat   
+    //increment digit of n1 
+    i := n1;n1 := n1 div base;i := i-n1*base;inc(dgtCnt[i]); 
+    //decrement digit of n2     
+    i := n2;n2 := n2 div base;i := i-n2*base;dec(dgtCnt[i]);     
+  until (n1=0) AND (n2= 0 );
+  result := true;
+  For i := 0 to Base-1 do
+    result := result AND (dgtCnt[i]=0);   
+end;
+ 
+procedure Munch(number,DgtPowSum,minDigit:NativeUInt;digits:NativeInt);
+var
+  i: NativeUint;
+begin
+  inc(cnt);
+  number := number*base;
+  IF digits > 1 then
+  Begin
+    For i := minDigit to base-1 do
+      Munch(number+i,DgtPowSum+DgtPotDgt[i],i,digits-1);
+  end
+  else
+    For i := minDigit to base-1 do    
+      //number is always the arrangement of the digits leading to smallest number 
+      IF (number+i)<= (DgtPowSum+DgtPotDgt[i]) then 
+        IF CheckSameDigits(number+i,DgtPowSum+DgtPotDgt[i]) then
+          iF number+i>0 then
+            writeln(Format('%*d  %.*d',
+             [maxDigits,DgtPowSum+DgtPotDgt[i],maxDigits,number+i]));
+end;      
+ 
+procedure InitDgtPotDgt;
+var
+  i,k,dgtpow: NativeUint;
+Begin
+  // digit ^ digit ,special case 0^0 here 0  
+  DgtPotDgt[0]:= 0;
+  For i := 1 to Base-1 do
+  Begin
+    dgtpow := i;
+    For k := 2 to i do 
+      dgtpow := dgtpow*i;
+    DgtPotDgt[i] := dgtpow;  
+  end;  
+end;  
+ 
+  function TTopologicalSortSearchNode(NodeName: WideString): integer;
+  var
+    Counter: integer;
+  begin
+    // Return -1 if node not found. If node found, return index in array
+    Result := INVALID;
+    for Counter := 0 to High(Nodes) do
+    begin
+      if Nodes[Counter].NodeName = NodeName then
+      begin
+        Result := Counter;
+        break;
+      end;
+    end;
+  end;
+ 
+  function TTopologicalSortSearchIndex(NodeID: integer): WideString;
+    //Look up name for the index
+  begin
+    if (NodeID > 0) and (NodeID <= High(Nodes)) then
+    begin
+      Result := Nodes[NodeID].NodeName;
+    end
+    else
+    begin
+      Result := 'ERROR'; //something's fishy, this shouldn't happen
+    end;
+  end;
+ 
+  function DepFromNodeID(NodeID: integer): integer;
+    // Look for Node index number in the dependency graph
+    // and return the first node found. If nothing found, return -1
+  var
+    Counter: integer;
+  begin
+    Result := INVALID;
+    for Counter := 0 to High(DependencyGraph) do
+    begin
+      if DependencyGraph[Counter].Node = NodeID then
+      begin
+        Result := Counter;
+        break;
+      end;
+    end;
+  end;
+ 
+  function DepFromDepID(DepID: integer): integer;
+    // Look for dependency index number in the dependency graph
+    // and return the index for the first one found. If nothing found, return -1
+  var
+    Counter: integer;
+  begin
+    Result := INVALID;
+    for Counter := 0 to High(DependencyGraph) do
+    begin
+      if DependencyGraph[Counter].DependsOn = DepID then
+      begin
+        Result := Counter;
+        break;
+      end;
+    end;
+  end;
+ 
+  function DepFromNodeIDDepID(NodeID, DepID: integer): integer;
+    // Shows index for the dependency from NodeID on DepID, or INVALID if not found
+  var
+    Counter: integer;
+  begin
+    Result := INVALID;
+    for Counter := 0 to High(DependencyGraph) do
+    begin
+      if DependencyGraph[Counter].Node = NodeID then
+        if DependencyGraph[Counter].DependsOn = DepID then
+        begin
+          Result := Counter;
+          break;
+        end;
+    end;
+  end;
+ 
+  procedure DelDependency(const Index: integer);
+  // Removes dependency from array.
+  // Is fastest when the dependency is near the top of the array
+  // as we're copying the remaining elements.
+  var
+    Counter: integer;
+    OriginalLength: integer;
+  begin
+    OriginalLength := Length(DependencyGraph);
+    if Index = OriginalLength - 1 then
+    begin
+      SetLength(DependencyGraph, OriginalLength - 1);
+    end;
+    if Index < OriginalLength - 1 then
+    begin
+      for Counter := Index to OriginalLength - 2 do
+      begin
+        DependencyGraph[Counter] := DependencyGraph[Counter + 1];
+      end;
+      SetLength(DependencyGraph, OriginalLength - 1);
+    end;
+    if Index > OriginalLength - 1 then
+    begin
+      // This could happen when deleting on an empty array:
+      raise Exception.Create('Tried to delete index ' + IntToStr(Index) +
+        ' while the maximum index was ' + IntToStr(OriginalLength - 1));
+    end;
+  end;
+ 
+  procedure {constructor} TTopologicalSortCreate;
+  begin
+    //inherited Create;
+  end;
+ 
+  procedure {destructor} TTopologicalSortDestroy;
+  begin
+    // Clear up data just to make sure:
+    //Finalize(DependencyGraph2);
+    //Finalize(Nodes);
+    //inherited;
+  end;
+ 
+  procedure SortOrder(var Output: TStringList);
+  var
+    Counter: integer;
+    NodeCounter: integer;
+    OutputSortOrder: integer;
+    DidSomething: boolean; //used to detect cycles (circular references)
+    Node: integer;
+  begin
+    OutputSortOrder := 0;
+    DidSomething := True; // prime the loop below
+    FCanBeSorted := True; //hope for the best.
+    while (DidSomething = True) do begin
+      // 1. Find all nodes (now) without dependencies, output them first and remove the dependencies:
+      // 1.1 Nodes that are not present in the dependency graph at all:
+      for Counter := 0 to High(Nodes) do
+      begin
+        if DepFromNodeID(Counter) = INVALID then
+        begin
+          if DepFromDepID(Counter) = INVALID then
+          begin
+            // Node doesn't occur in either side of the dependency graph, so it has sort order 0:
+            DidSomething := True;
+            if (Nodes[Counter].Order = INVALID) or
+              (Nodes[Counter].Order > OutputSortOrder) then
+            begin
+              // Enter sort order if the node doesn't have a lower valid order already.
+              Nodes[Counter].Order := OutputSortOrder;
+            end;
+          end; //Invalid Dep
+        end; //Invalid Node
+      end; //Count
+      // Done with the first batch, so we can increase the sort order:
+      OutputSortOrder := OutputSortOrder + 1;
+      // 1.2 Nodes that are only present on the right hand side of the dep graph:
+      DidSomething := False;
+      // reverse order so we can delete dependencies without passing upper array
+      for Counter := High(DependencyGraph) downto 0 do begin
+        Node := DependencyGraph[Counter].DependsOn; //the depended node
+        if (DepFromNodeID(Node) = INVALID) then begin
+          DidSomething := True;
+          //Delete dependency so we don't hit it again:
+          DelDependency(Counter);
+          if (Nodes[Node].Order = INVALID) or 
+          (Nodes[Node].Order > OutputSortOrder) then
+          begin
+            // Enter sort order if the node doesn't have a lower valid order already.
+            Nodes[Node].Order := OutputSortOrder;
+          end;
+        end;
+        OutputSortOrder := OutputSortOrder + 1; //next iteration
+      end;
+      // 2. Go back to 1 until we can't do more work, and do some bookkeeping:
+      OutputSortOrder := OutputSortOrder + 1;
+    end; //outer loop for 1 to 2
+    OutputSortOrder := OutputSortOrder - 1; //fix unused last loop.
+ 
+    // 2. If we have dependencies left, we have a cycle; exit.
+    if (High(DependencyGraph) > 0) then
+    begin
+      FCanBeSorted := False; //indicate we have a cycle
+      Output.Add('Cycle (circular dependency) detected, cannot sort further. Dependencies left:');
+      for Counter := 0 to High(DependencyGraph) do begin
+        Output.Add(TTopologicalSortSearchIndex(DependencyGraph[Counter].Node) +
+          ' depends on: ' + TTopologicalSortSearchIndex(DependencyGraph[Counter].DependsOn));
+      end;
+    end
+    else
+    begin
+      // No cycle:
+      // Now parse results, if we have them
+      for Counter := 0 to OutputSortOrder do
+      begin
+        for NodeCounter := 0 to High(Nodes) do begin
+          if Nodes[NodeCounter].Order = Counter then
+          begin
+            Output.Add(Nodes[NodeCounter].NodeName);
+          end;
+        end; //output each result
+      end; //order iteration
+    end; //cycle detection
+  end;
+ 
+  procedure AddNode(NodeName: WideString);
+  var
+    NodesNewLength: integer;
+  begin
+    // Adds node; make sure we don't add duplicate entries
+    if TTopologicalSortSearchNode(NodeName) = INVALID then
+    begin
+      NodesNewLength := Length(Nodes) + 1;
+      SetLength(Nodes, NodesNewLength);
+      Nodes[NodesNewLength - 1].NodeName := NodeName; //Arrays are 0 based
+      //Nodes[NodesNewLength -1].Index :=  //If we change the object to a tlist or something, we already have an index property
+      Nodes[NodesNewLength - 1].Order := INVALID; //default value
+    end;
+  end;
+ 
+  procedure AddDependency(NodeName, DependsOn: WideString);
+  begin
+    // Make sure both nodes in the dependency exist as a node
+    if TTopologicalSortSearchNode(NodeName) = INVALID then begin
+      {Self.}AddNode(NodeName);
+    end;
+    if TTopologicalSortSearchNode(DependsOn) = INVALID then begin
+      {Self.}AddNode(DependsOn);
+    end;
+    // Add the dependency, only if we don't depend on ourselves:
+    if NodeName <> DependsOn then begin
+      SetLength(DependencyGraph, Length(DependencyGraph) + 1);
+      DependencyGraph[High(DependencyGraph)].Node := TTopologicalSortSearchNode(NodeName);
+      DependencyGraph[High(DependencyGraph)].DependsOn := TTopologicalSortSearchNode(DependsOn);
+    end;
+  end;
+ 
+  procedure AddNodeDependencies(NodeAndDependencies: TStringList);
+  // Takes a stringlist containing a list of strings. Each string contains node names
+  // separated by spaces. The first node depends on the others. It is permissible to have
+  // only one node name, which doesn't depend on anything.
+  // This procedure will add the dependencies and the nodes in one go.
+  var
+    Deplist: TStringList;
+    StringCounter: integer;
+    NodeCounter: integer;
+  begin
+    if Assigned(NodeAndDependencies) then begin
+      DepList := TStringList.Create;
+      try
+        for StringCounter := 0 to NodeAndDependencies.Count - 1 do begin
+          // For each string in the argument: split into names, and process:
+          DepList.Delimiter := ' '; //use space to separate the entries
+          DepList.StrictDelimiter := False; 
+          //allows us to ignore double spaces in input.
+          DepList.DelimitedText := NodeAndDependencies[StringCounter];
+          for NodeCounter := 0 to DepList.Count - 1 do begin
+            if NodeCounter = 0 then begin
+              // Add the first node, which might be the only one.
+              {Self.}AddNode(Deplist[0]);
+            end;
+ 
+            if NodeCounter > 0 then begin
+              // Only add dependency from the second item onwards
+              // The AddDependency code will automatically add Deplist[0] to the Nodes, if required
+              {Self.}AddDependency(DepList[0], DepList[NodeCounter]);
+            end;
+          end;
+        end;
+      finally
+        DepList.Free;
+      end;
+    end;
+  end;
+ 
+  procedure DelDependency2(NodeName, DependsOn: WideString);
+  // Delete the record.
+  var
+    NodeID: integer;
+    DependsID: integer;
+    Dependency: integer;
+  begin
+    NodeID := {Self.}TTopologicalSortSearchNode(NodeName);
+    DependsID := {Self.}TTopologicalSortSearchNode(DependsOn);
+    if (NodeID <> INVALID) and (DependsID <> INVALID) then
+    begin
+      // Look up dependency and delete it.
+      Dependency := {Self.}DepFromNodeIDDepID(NodeID, DependsID);
+      if (Dependency <> INVALID) then
+      begin
+        {Self.}DelDependency(Dependency);
+      end;
+    end;
+  end;
+  
+  type
+    DynArray = array of integer;
+  
+  procedure findFactors(n: Int64; var d: DynArray);
+  var
+    divisor, next, rest: Int64;
+    i: integer;
+ begin
+    i := 0;
+    divisor := 2;
+    next := 3;
+    rest := n;
+    while (rest <> 1) do begin
+      while (rest mod divisor = 0) do begin
+        setlength(d, i+1);
+        d[i] := divisor;
+        inc(i);
+        rest := rest div divisor;
+      end;
+      divisor := next;
+      next := next + 2;
+    end;
+  end;
+  
+//http://rosettacode.org/wiki/Catamorphism#Pascal  
+  type
+//  tmyArray = array of LongInt;
+  tmyArray = array[-5..5] of LongInt;
+ //tmyArray = array[1..5] of LongInt;
+ 
+  tmyFunc = function (a,b:LongInt):LongInt;
+ 
+function add(x,y:LongInt):LongInt;
+begin
+  result := x+y;
+end;
+ 
+function sub(k,l:LongInt):LongInt;
+begin
+  result := k-l;
+end;
+ 
+function mul(r,t:LongInt):LongInt;
+begin
+  result := r*t;
+end;
+ 
+function reduce(myFunc:tmyFunc;a:tmyArray):LongInt;
+var
+  i,res : LongInt;
+begin
+  res := a[low(a)];
+  For i := low(a)+1 to high(a) do
+    res := myFunc(res,a[i]);
+  result := res;
+end;
+ 
+procedure InitMyArray(var a:tmyArray);
+var
+  i: LongInt;
+begin
+  For i := low(a) to high(a) do begin
+    //no a[i] = 0
+    a[i] := i  + ord(i=0);
+    write(itoa(a[i])+',');
+  end;
+  writeln(#8#32);
+end;
+
+const
+  //MaxN = 100*1000;
+  MaxN = 10*1000;
+ 
+function run_test(p:double;len,runs: NativeInt):double;
+var
+   x, y, i,cnta : NativeInt;
+Begin
+  result := 1 / (runs * len);
+  cnta := 0;
+  for  runs := runs-1 downto 0 do Begin
+    x := 0;
+    y := 0;
+    for i := len-1 downto 0 do begin
+      x := y;
+      y := Ord(RandomE < p);
+      //writeln(itoa(y))
+      cnta := cnta+ord(x < y);
+    end;
+  end;
+  result := result *cnta;
+end;
+
+const
+  ndev=8;
+var
+  arr: array[1..ndev] of real; // =(2,4,4,4,5,5,7,9);
+  
+  
+function stddevX(n: integer): real;
+var
+   i: integer;
+   s1,s2,variance,x: real;
+begin
+    for i:=1 to n do begin
+      x:=arr[i];
+      s1:=s1+power(x,2);
+      s2:=s2+x
+    end;
+    variance:=((n*s1)-(power(s2,2)))/(power(n,2));
+    result:=sqrt(variance)
+end;
+ 
+ 
+  // Main program:
+var
+  InputList: TStringList; //Lines of dependencies
+  //TopSort: TTopologicalSort; //Topological sort object
+  OutputList: TStringList; //Sorted dependencies
+  Counter: integer;
+  E: Exception;
+  afloat: TFloatint;
+  abigf: TBigFloat;
+  factors: DynArray;
+  j: integer;
+  ma : tmyArray;
+  ap, p1p, K : double;
+  ip, n : nativeInt;
+
+  
+begin
+ 
+  //Actual sort
+  InputList := TStringList.Create;
+  // Add rosetta code sample input separated by at least one space in the lines
+  InputList.Add(
+    'des_system_lib   std synopsys std_cell_lib des_system_lib dw02 dw01 ramlib ieee');
+  InputList.Add('dw01             ieee dw01 dware gtech');
+  InputList.Add('dw02             ieee dw02 dware');
+  InputList.Add('dw03             std synopsys dware dw03 dw02 dw01 ieee gtech');
+  InputList.Add('dw04             dw04 ieee dw01 dware gtech');
+  InputList.Add('dw05             dw05 ieee dware');
+  InputList.Add('dw06             dw06 ieee dware');
+  InputList.Add('dw07             ieee dware');
+  InputList.Add('dware            ieee dware');
+  InputList.Add('gtech            ieee gtech');
+  InputList.Add('ramlib           std ieee');
+  InputList.Add('std_cell_lib     ieee std_cell_lib');
+  InputList.Add('synopsys');
+  //TopSort := TTopologicalSort.Create;
+  OutputList := TStringList.Create;
+  try
+    {TopSort.}AddNodeDependencies(InputList); //read in nodes
+    {TopSort.}SortOrder(OutputList); //perform the sort
+    for Counter := 0 to OutputList.Count - 1 do begin
+      writeln(OutputList[Counter]);
+    end;
+  except
+    //on E: Exception do
+    begin
+      Writeln(itoa(stderr)+ 'Error: '+ DateTimeToStr(Now)+
+        ': Error sorting. Technical details: '+
+        'E.ClassName'+ '/'+ 'E.Message');
+    end;
+  end; //try
+  OutputList.Free;
+  //TopSort.Free;
+  InputList.Free;
+  
+   { for it:= 0 to 79 do
+        printF(' numb %d is prime: %s',
+        [round(sqr(it))-79*it+1601,botoStr(isprime(round(sqr(it))-79*it+1601))]);
+      }  
+    writeln(itoa(length(bigpow(2,265))))
+    maxcalcF('(265 * ln(2)) /ln(10)') 
+    maxcalcF('10^79.772948850955') 
+    
+    writeln(bigpow(2,64))
+    writeln(bigpow(2,265))
+    
+    with TInteger.create(2) do begin
+      pow(265)
+      writeln(tostring(false))
+      //writeln(afloat.shownumber)
+      free
+    end;
+    
+    writeln(BigExp('2','265'))
+    
+    abigf:= TBigFloat.create;
+    
+     with abigf do begin
+      //pow(2,265);
+      //assign2(265.90,10)
+      //Setsigdigits(10);
+      assign7(79.772948850955);
+      //intpower(265,100)
+      log10(80);
+      //decpart.tostring;
+      writeln(tostring(normal))
+      free
+    end;
+    
+    maxcalcF('(6 * ln(2)) /ln(10)') 
+   
+    
+     {  gt:=TInteger.create(a1);
+   et:=TInteger.create(b1);
+   mt:=TInteger.create(1);
+   //gt.assign2(a1);
+   //et.assign2(b1);
+   mt.assign2(bigpow(10,40));
+   gt.modpow(et,mt);
+   writeln(gt.ConvertToDecimalString(true));
+   gt.free;
+   et.free;
+   mt.free; }   
+   
+     {  with afloat do begin
+      pow(265,100)
+      //writeln(tostring(normal))
+      //free
+    end;    }
+
+    WriteLn(Format('%g',[pi]));
+    
+  //http://rosettacode.org/wiki/Munchausen_numbers#Pascal  
+  { cnt := 0;
+  InitDgtPotDgt;
+  Munch(0,0,0,maxDigits);    
+  writeln('Check Count '+itoa(cnt));    //}
+  
+  maxcalcF('4^4+3^3+8^8+5^5+7^7+9^9+0+8^8+8^8')
+  //stddev 
+  
+  writeln(botoStr(isprime(1023*1024)))
+  setlength(factors, 1);
+  findFactors(1023*1024, factors);
+  for j := low(factors) to high(factors) do
+    write(itoa(factors[j])+' ');
+   
+   writeln(bigpow(2,128))
+   //2^128-1[3, 5, 17, 257, 641, 65537, 274177, 6700417, 67280421310721]
+   writeln('')
+    InitMyArray(ma);
+  writeln(itoa(reduce(@add,ma)));
+  writeln(itoa(reduce(@sub,ma)));
+  writeln(itoa(reduce(@mul,ma)));
+  
+  {randomize;
+  writeln( 'running 1000 tests each:'+#13#10+
+    ' p      n      K     p(1-p)   diff'+#13#10+
+    '-----------------------------------------------');
+  ip:= 1;
+  while ip < 10 do Begin
+     ap := ip / 10;
+     p1p := ap * (1 - ap);
+     n := 100;
+     While n <= MaxN do Begin
+       K := run_test(ap, n, 1000);
+       writeln(Format('%4.1f %6d  %6.4f  %6.4f %7.4f (%5.2f %%)',
+         [ap, n, K, p1p, K - p1p, (K - p1p) / p1p * 100]));
+       n := n*10;
+     end;
+     writeln(' ');
+     ip := ip+2;
+   end; }
+ 
+    arr[1]:= 2; arr[2]:= 4; arr[3]:= 4; arr[4]:= 4;
+    arr[5]:= 5; arr[6]:= 5; arr[7]:= 7; arr[8]:= 9;
+    for it:= 1 to ndev do
+      PrintF(' %d item= %2.0f stddev= %18.15f',[it, arr[it],stddevX(it)])
+      
+End.
+//END. 
+
+ref:
+              1  0000000000000001
+            3435  0000000000003345
+       438579088  0000000034578889
+       408321926  0000000262810493
+      1972353746  0000001432697375
+        67299408  0000000002897496
+       421071372  0000000042172137
+      1954020147  0000000442519071
+      1937164985  0000001154368799
+      1162364704  0000001134660247
+      1179088593  0000000195178983
+      1956350842  0000001380425695
+       438629211  0000000236894121
+       390811723  0000000237893011
+       438719142  0000000347894121
+       774861043  0000000604713487
+
+
+Check Count 3268760
+ mX4 executed: 26/10/2016 14:49:17  Runtime: 0:1:55.187  Memload: 50% use
+ 
+ 
+ Check Count 3268760
+IFPS
+ mX4 byte code executed: 26/10/2016 15:02:15  Runtime: 0:1:31.442  Memoryload: 50% use
+This function58 delivers prime numbers for all values from n = 0 to n = 79. Unfortunately f(80) = 1,681 = 11·151 is not a prime number. To this date, no function has been found that delivers more prime numbers in a row. On the other hand, each prime occurs twice (?rst in the decreasing then in the increasing sequence), which means that the algorithm delivers a total of 40 di?erent prime values (these are the same ones as delivered by the function in chapter 3.6.12)59. 
+
+
+A possible topological ordering: 
+synopsys
+std
+ieee
+std_cell_lib
+ramlib
+gtech
+dware
+dw07
+dw06
+dw05
+dw02
+dw01
+dw04
+dw03
+des_system_lib
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----

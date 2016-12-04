@@ -1,0 +1,263 @@
+Program Modular_exponentiation_Demo; //in progress
+
+//////////////////////////////////////////////////////////////////////
+//  Get several functions of ZEOS utilities to test                 //
+//  #sign:max: MAXBOX8: 25/10/2016 14:31:52 
+//  Purpose: checks convert and modpower() Tbigint                  //
+//  #path>ples\C:\maXbox\mX399100\maxbox42480\maxbox4\examples\_save\/
+//  2 func, 0 proc: Lines of Code #locs:180
+//http://rosettacode.org/wiki/Modular_exponentiation#Java
+//////////////////////////////////////////////////////////////////////
+
+{unit UBigIntsV3.pas; }
+
+(*Task:*{Find the last 40 decimal digits of   a b {\displaystyle a^{b}} ,   where
+
+      a = 2988348162058574136915891421498819466320163312926952423791023078876139 {\displaystyle a=2988348162058574136915891421498819466320163312926952423791023078876139}
+      b = 2351399303373464486466122544523690094744975233415544072992656881240319 {\displaystyle b=2351399303373464486466122544523690094744975233415544072992656881240319} 
+
+A computer is too slow to find the entire value of   a b {\displaystyle a^{b}} .
+
+Instead, the program must use a fast algorithm for   modular exponentiation:   a b mod m {\displaystyle a^{b}\mod m} .*) 
+
+//uPSI_uLkJSON.pas, uPSI_HotLog; IndyPac3}
+//TODO: find an example for all functions
+//TODO: Save image to webserver_file, turn procedure [DownloadJPEGTo..] to function
+
+Const
+   UrlGoogleQrCode= 'http://chart.apis.google.com/chart?chs=%dx%d&cht=qr&chld=%s&chl=%s';
+   AFILENAME= 'mX3QRCode3.png';
+   QDATA= 'this is maXland on a maXbox stream dream firebox';
+  
+type
+  TQrImage_ErrCorrLevel=(L,M,Q,H);
+
+var
+  js:TlkJSONobject;
+  xs:TlkJSONbase;
+  
+// i improve test for version 0.94 - add random part to names of fields;
+// it smaller decrease speed of generation, but much better for testing
+// Leon, 27/03/2007
+{.$define usefastmm}
+
+ 
+function DownloadJPGToBitmap(const URL : string; ABitmap: TBitmap): Boolean;
+var
+  idHttp: TIdHTTP;
+  ImgStream: TMemoryStream;
+  JpgImage: TJPEGImage;
+begin
+  Result:= False;
+  ImgStream:= TMemoryStream.Create;
+  try
+    idHttp:= TIdHTTP.Create(nil);
+    try
+      idHttp.Get1(URL, ImgStream);
+    finally
+      idHttp.Free;
+    end;
+    ImgStream.Position:= 0;
+    JpgImage:= TJPEGImage.Create;
+    try
+      JpgImage.LoadFromStream(ImgStream);
+      ABitmap.Assign(JpgImage);
+    finally
+      Result:= True;
+      JpgImage.Free;
+    end;
+  finally
+    ImgStream.Free;
+  end;
+end;
+
+
+//TODO:#1 Returns the QR Code direct of the last modification of the given File
+
+ const a1 = '2988348162058574136915891421498819466320163312926952423791023078876139';
+       b1 = '2351399303373464486466122544523690094744975233415544072992656881240319';
+
+ var image2: TImage;
+    z,x,y: smallint;
+    var gt,et,mt :Tinteger;
+
+
+begin    //main
+  Writeln(datetimetostr(FileTimeGMT(exepath+'maxbox4.exe')));
+  //call of the script
+  //GetQrCodeIndy(150,150,'Q',ExePath+AFILENAME, QData);
+  //call of the Lib
+  //GetQrCode2(150,150,'Q',QDATA, ExePath+AFILENAME);
+  //http://entwickler-konferenz.de/
+  //http://www.softwareschule.ch/images/Ekon17_2013.jpg
+  
+  //SIRegister_ZSysUtils_Demo;
+
+  image2:= TImage.create(self); 
+  if isInternet then
+    DownloadJPGToBitmap('http://www.softwareschule.ch/images/Ekon17_2013.jpg',
+                              Image2.Picture.Bitmap);
+    
+   { with TCustomDrawForm.create(self) do begin
+       image1.height:= 600; //add properties
+       image1.picture.bitmap:= image2.picture.bitmap;
+       //SelectionBackground1Click(self)
+       //CustomDraw1Click(self);  
+       //Selection1Click(self);
+       Background1.click;
+       bitmap1.click;
+       Tile1.click;
+       Showmodal;           //add methods
+       Free;                
+     end;
+    }
+    
+   //if IsTCPPortOpen(80,'192.168.1.53') then
+     if IsTCPPortOpen(8080,getIP(getHostName)) then
+       writeln('Port 8080 Open Started') else 
+       writeln('Port not open');
+    maxCalcF('SQRT(PI)');
+    PrintF('gcd %d * lcm %d = %d ',[gcd(4,6), lcm(4,6), 4*6]);
+     //SetAlias(Alias, aAliasDir);
+     //SetBde('\DRIVERS\PARADOX\INIT','NET DIR',aNetDir);
+     //SetBde('\SYSTEM\INIT','LOCAL SHARE','TRUE');
+    //JSONTest;
+    //hexofsha1 
+    writeln(sha1tohex('this is fake'))
+    writeln(sha1tohex('this is fake2'))
+    writeln(sha1tohex('fake'))
+    writeln(floattostrF(1200.576878,fffixed,8,2))
+    fmtstr(sr,'%8s',[floattostr(1290456.586867584743)])
+    writeln(sr)
+    x:=1; y:=2; z:=3;
+    writeln(botostr(not((x>=y)and(x>=z))and not((y>=x)and(y>=z))));
+    //de morgan
+    writeln(botostr(((x<y)or(x<z))and((y<x)or(y<z))));
+    
+   // writeln(bigpower(2,2048))
+   // writeln(bigpower(2,1024))
+   // writeln(itoa(length(bigpower(2,2048))))
+    //writeln(itoa(length(bigpower(2,1398269-1))))  //420921 numbs 0:0:40.129
+    //232,582,657    - 2 1,398,269
+    //writeln((bigpower(2,1398269-1)))     //Runtime: 0:1:4.44  Memload: 44% use
+    //GetNextPandigital
+    //2-3,021,377 
+    //23,021,377 -1 909,526 January 27, 1998 Roland Clarkson 
+    //0:3:11.264  Memload: 48% use  - 909526 decimal digits
+    // writeln(itoa(length(bigpower(2,3021377-1))))
+    //writeln(itoa(GetBasePower))
+    //SetBaseVal
+    
+  { with TInteger.create(1) do 
+   try
+     assign2('8');
+     pow(1024);
+     writeln(toString(true));
+   finally
+     free;
+   end; //}
+   
+   //% ./ModularExponentiation
+//1527229998585248450016808958343740453059
+   
+   gt:= TInteger.create(1);
+   et:= TInteger.create(1);
+   mt:= TInteger.create(1);
+   try
+     gt.assign2(a1);
+     et.assign2(b1);
+     mt.assign2(bigpow(10,40));
+     gt.modpow(et,mt);
+     writeln(gt.ToString(true));
+   finally
+     gt.free;
+     et.free;
+     mt.free;
+   end;
+   
+   //lift(Mod(a,10^40)^b)
+    
+End.  
+
+
+Find the last 40 decimal digits of   a b {\displaystyle a^{b}} ,   where
+
+      a = 2988348162058574136915891421498819466320163312926952423791023078876139 {\displaystyle a=2988348162058574136915891421498819466320163312926952423791023078876139}
+      b = 2351399303373464486466122544523690094744975233415544072992656881240319 {\displaystyle b=2351399303373464486466122544523690094744975233415544072992656881240319} 
+
+
+A computer is too slow to find the entire value of   a b {\displaystyle a^{b}} .
+
+Instead, the program must use a fast algorithm for   modular exponentiation:   a b mod m {\displaystyle a^{b}\mod m} . 
+
+Result: % ./ModularExponentiation
+1527229998585248450016808958343740453059 
+
+
+import java.math.BigInteger;
+ 
+public class PowMod {
+    public static void main(String[] args){
+        BigInteger a = new BigInteger(
+      "2988348162058574136915891421498819466320163312926952423791023078876139");
+        BigInteger b = new BigInteger(
+      "2351399303373464486466122544523690094744975233415544072992656881240319");
+        BigInteger m = new BigInteger("10000000000000000000000000000000000000000");
+ 
+        System.out.println(a.modPow(b, m));
+    }
+}
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TlkJSONobject(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TlkJSONcustomlist', 'TlkJSONobject') do
+  with CL.AddClassN(CL.FindClass('TlkJSONcustomlist'),'TlkJSONobject') do begin
+    RegisterProperty('UseHash', 'Boolean', iptr);
+    RegisterProperty('HashTable', 'TlkHashTable', iptr);
+    RegisterProperty('HashTable', 'TlkBalTree', iptr);
+    RegisterMethod('Function Add6(const aname:WideString; aobj: TlkJSONbase) : Integer;');
+    RegisterMethod('Function OldGetField( nm : WideString) : TlkJSONbase');
+    RegisterMethod('Procedure OldSetField(nm: WideString; const AValue : TlkJSONbase)');
+    RegisterMethod('Function Add7(const aname:WideString; aboolean: Boolean) : Integer;');
+    RegisterMethod('Function Add8( const aname : WideString; nmb : double) : Integer;');
+    RegisterMethod('Function Add9( const aname : WideString; s : string) : Integer;');
+    RegisterMethod('Function Add10(const aname:WideString;const ws:WideString):Integer;');
+    RegisterMethod('Function Add11(const aname: WideString; inmb : Integer) : Integer;');
+    RegisterMethod('Procedure Delete( idx : Integer)');
+    RegisterMethod('Function IndexOfName( const aname : WideString) : Integer');
+    RegisterMethod('Function IndexOfObject( aobj : TlkJSONbase) : Integer');
+    RegisterProperty('Field', 'TlkJSONbase WideString', iptrw);
+    SetDefaultPropery('Field');
+    RegisterMethod('Constructor Create( bUseHash : Boolean)');
+    RegisterMethod('Function Generate( AUseHash : Boolean) : TlkJSONobject');
+    RegisterMethod('Function SelfType : TlkJSONtypes');
+    RegisterMethod('Function SelfTypeName : string');
+    RegisterProperty('FieldByIndex', 'TlkJSONbase Integer', iptrw);
+    RegisterProperty('NameOf', 'WideString Integer', iptr);
+    RegisterMethod('Function getDouble( idx : Integer) : Double;');
+    RegisterMethod('Function getInt( idx : Integer) : Integer;');
+    RegisterMethod('Function getString( idx : Integer) : string;');
+    RegisterMethod('Function getWideString( idx : Integer) : WideString;');
+    RegisterMethod('Function getBoolean( idx : Integer) : Boolean;');
+    RegisterMethod('Function getDouble1( nm : string) : Double;');
+    RegisterMethod('Function getInt1( nm : string) : Integer;');
+    RegisterMethod('Function getString1( nm : string) : string;');
+    RegisterMethod('Function getWideString1( nm : string) : WideString;');
+    RegisterMethod('Function getBoolean1( nm : string) : Boolean;');
+  end;
+end;
+
+ 
+----app_template_loaded_code----
+
+This product was last tested in the Softpedia Labs on
+21st of October 2016 by Vlad Constantinescu
+
+Softpedia guarantees that maXbox is 100% Free, which means it does not contain any form of malware, including but not limited to: spyware, viruses, trojans and backdoors.
+
+This software product was tested thoroughly and was found absolutely clean; therefore, it can be installed with no concern by any computer user. However, it should be noted that this product will be retested periodically and the award may be withdrawn, so you should check back occasionally and pay attention to the date of testing shown above.
+
+Note: this award is offered by Softpedia and can be used only by the developer of the software product that received the award.
+
+Read more: http://www.softpedia.com/get/Programming/Other-Programming-Files/maXbox.shtml#ixzz4O4wta0Hh

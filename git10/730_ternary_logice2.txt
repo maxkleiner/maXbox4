@@ -1,0 +1,169 @@
+Program TernaryLogic2;
+
+//http://www.rosettacode.org/wiki/Ternary_logic#Pascal
+//#sign:Max: MAXBOX10: 13/11/2016 16:23:46 
+//with printout function #locs:132
+ 
+type
+  trit = (terTrue, terMayBe, terFalse);
+ 
+function terNot (a: trit): trit;
+  begin
+    case a of
+      terTrue:  result := terFalse;
+      terMayBe: result := terMayBe;
+      terFalse: result := terTrue;
+    end;
+  end;
+ 
+function terAnd (a, b: trit): trit;
+  begin
+    result := terMayBe;
+    if (a = terFalse) or (b = terFalse) then
+      result := terFalse
+    else
+      if (a = terTrue) and (b = terTrue) then
+        result := terTrue;
+  end;
+ 
+function terOr (a, b: trit): trit;
+  begin
+    result := terMayBe;
+    if (a = terTrue) or (b = terTrue) then
+      result := terTrue
+    else
+      if (a = terFalse) and (b = terFalse) then
+        result := terFalse;
+  end;
+ 
+function terEquals (a, b: trit): trit;
+  begin
+    if a = b then
+      result := terTrue
+    else
+      if a <> b then
+        result := terFalse;
+    if (a = terMayBe) or (b = terMayBe) then
+      result := terMayBe;
+  end;
+ 
+function terIfThen (a, b: trit): trit;
+  begin
+    result := terMayBe;
+    if (a = terTrue) or (b = terFalse)  then
+      result := terTrue
+    else
+      if (a = terFalse) and (b = terTrue) then
+        result := terFalse;
+  end;
+ 
+function terToStr(a: trit): string;
+  begin
+    case a of
+      terTrue:  result := 'True ';
+      terMayBe: result := 'Maybe';
+      terFalse: result := 'False';
+    end;
+  end;
+  
+  Function PrintOut2(one,two,three: trit; tab: byte):string;
+  var i,j: integer; 
+  begin
+    //for i:= 1 to row do
+     //for j:= 1 to col do begin
+     //result:= result+ Format('%-*.3d',[tab,i*j])
+     result:= Format('%*.5s%11.5s%11.5s',[tab,terToStr(one),
+                      terToStr(two),terToStr(three)]);
+    //if j=col then result:= result+#13#10;
+  end; 
+
+ 
+begin
+  writeln('Ternary all logic test:');
+  writeln('');
+  writeln('NOT'+#9'True'+#9'Maybe'+#9'False');
+    writeln(StrRepeat('-',45))
+ 
+  // result:= result+ Format('%-*.3d',[tab,i*j])
+  //printF('%14.5s%9.5s%9.5s',[terToStr(terNot(terTrue)),
+    //           terToStr(terNot(terMayBe)),terToStr(terNot(terFalse))]);
+ 
+  writeln(PrintOut2(terNot(terTrue),terNot(terMayBe),terNot(terFalse),19));
+  writeln('');
+  writeln('AND'+#9'True'+#9'Maybe'+#9'False');
+  writeln(StrRepeat('-',45))
+  writeln('True'+PrintOut2(terAnd(terTrue,terTrue),
+                  terAnd(terMayBe,terTrue),terAnd(terFalse,terTrue),12));
+  writeln('Maybe'+PrintOut2(terAnd(terTrue,terMayBe),
+                  terAnd(terMayBe,terMayBe),terAnd(terFalse,terMaybe),9));
+  writeln('False'+PrintOut2(terAnd(terTrue,terFalse),
+                  terAnd(terMayBe,terFalse),terAnd(terFalse,terFalse),12));
+ 
+  writeln('');
+   writeln('OR'+#9'True'+#9'Maybe'+#9'False');
+    writeln(StrRepeat('-',45))
+   writeln('True'+PrintOut2(terOr(terTrue,terTrue),
+                  terOr(terMayBe,terTrue),terOr(terFalse,terTrue),13));
+  writeln('Maybe'+PrintOut2(terOr(terTrue,terMayBe),
+                  terOr(terMayBe,terMayBe),terOr(terFalse,terMaybe),10));
+  writeln('False'+PrintOut2(terAnd(terTrue,terFalse),
+                  terOr(terMayBe,terFalse),terOr(terFalse,terFalse),12));
+  writeln('');
+   writeln('IFTHEN'+#9'True'+#9'Maybe'+#9'False');
+    writeln(StrRepeat('-',45))
+  writeln('True'+PrintOut2(terIfThen(terTrue,terTrue),
+                  terIfThen(terMayBe,terTrue),terIfThen(terFalse,terTrue),13));
+  writeln('Maybe'+PrintOut2(terIfThen(terTrue,terMayBe),
+                  terIfThen(terMayBe,terMayBe),terIfThen(terFalse,terMaybe),10));
+  writeln('False'+PrintOut2(terIfThen(terTrue,terFalse),
+                  terIfThen(terMayBe,terFalse),terIfThen(terFalse,terFalse),12));
+  writeln('');
+   writeln('EQUAL'+#9'True'+#9'Maybe'+#9'False');
+    writeln(StrRepeat('-',45))
+ 
+   writeln('True'+PrintOut2(terEquals(terTrue,terTrue),
+                  terEquals(terMayBe,terTrue),terEquals(terFalse,terTrue),12));
+  writeln('Maybe'+PrintOut2(terEquals(terTrue,terMayBe),
+                  terEquals(terMayBe,terMayBe),terEquals(terFalse,terMaybe),9));
+  writeln('False'+PrintOut2(terEquals(terTrue,terFalse),
+                  terEquals(terMayBe,terFalse),terEquals(terFalse,terFalse),11));
+  writeln('');
+  
+End.
+
+Doc: http://www.rosettacode.org/wiki/Ternary_logic#Pascal
+
+ref: Result
+
+:> ./TernaryLogic
+Ternary logic test:
+
+NOT  True  Maybe False
+     False Maybe True 
+
+AND    True  Maybe False
+True   True  Maybe False
+Maybe  Maybe Maybe False
+False  False False False
+
+OR     True  Maybe False
+True   True  True  True 
+Maybe  True  Maybe Maybe
+False  True  Maybe False
+
+IFTHEN True  Maybe False
+True   True  Maybe False
+Maybe  True  Maybe Maybe
+False  True  True  True 
+
+EQUAL  True  Maybe False
+True   True  Maybe False
+Maybe  Maybe Maybe Maybe
+False  False Maybe True 
+
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----
+SUMMARY;LANGUAGE=de-DE:Kick-Off für die Master Thesis "Entwicklung eines S
+ oftwareprodukts als 'Solopreneur'"
+DTSTART;TZID=W. Europe Standard Time:20161031T160000
+DTEND;TZID=W. Europe Standard Time:20161031T173000

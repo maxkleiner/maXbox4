@@ -1,0 +1,74 @@
+{****************************************************************
+ *
+ * Project  : System Information Series
+ * Unit Name: 131_sysinformation_shell*, #locs=42
+ * Purpose  : Demonstrates functions of external shell program
+ * History  : system demo for mX4 - mX3?  #host:MAXBOX10
+ ****************************************************************}
+
+program System_Information_IBZ2016;
+
+function  MessageBeepX(para: integer): byte;
+     external 'MessageBeep@user32.dll stdcall';  
+             
+var
+  mytimestamp: TDateTime;
+  osType: TIdWin32Type;
+  int1, int2, int3: float;
+
+begin
+  writeln('machine name is: '+getHostName)
+  writeln('user name is: '+getUserName)
+  osType:= Win32Type;
+  writeln(IntToStr(ord(osType))+' is a type of Operating System');
+  mytimestamp:= GetFileCreationTime(exepath+'maxbox4.exe')
+  writeln(DateTimeToStr(mytimestamp)+' Creation Date of maXbox4')
+  //ExecuteShell('cmd','/k systeminfo > systeminfo_dell.txt')
+  //1 Synchron - Serial  (Waiting Sequence)
+  ExecuteShell('cmd','/c systeminfo > systeminfo_machine.txt')
+  //3 Asynchron - Parallel (no waiting - 2 tasks)
+  ShellExecute3('cmd','/k systeminfo > systeminfo_machine1.txt',secmdopen)
+  ShellExecute3('cmd','/k systeminfo > systeminfo_machine2.txt',secmdopen)
+  // BigInt Test
+  int1:= fact(10)
+  int2:= fact(15)
+  int3:= int1 * int2
+  writeln('BigIntTest after: '+floatToStr(int3))
+  //2 Synchron Parallel (waiting for 2 tasks to open files) 
+  delay(6000)   
+    SearchAndOpenFile('systeminfo_machine1.txt')
+    SearchAndOpenFile('systeminfo_machine2.txt')
+  MessageBeepX(20);
+End.   
+
+*******************************************************
+There is no place like 127.0.0.1 
+
+ Doc:
+      sync     async
+      --------------
+ ser |  1   |   X   |
+ par |  2   |   3   |
+      ---------------
+      
+ Antworten:
+  @Reto
+     writeln(GetDOSOutput('systeminfo | findstr "OS Version"','C:\'))
+ 
+     writeln(GetDOSOutput('Systeminfo | findstr /B /C:"OS Name" /C:"OS Version"','C:\'))
+     writeln(GetDOSOutput('Systeminfo | findstr /C:"System Type"','C:\'))
+ 
+ @Yvonne
+ Arduino Coding
+ https://www.academia.edu/12715517/Tutor_18.5_Arduino_Coding 
+ 
+ @Basil
+ http://stackoverflow.com/questions/663958/how-to-control-which-core-a-process-runs-on
+ 
+ Ich hab kurz meinen Schachalgo auf zwei Cores gelegt (als einen maskiert) und das Erstaunliche, er hatte die gleichen MHz ~ 2.3MHz wie vorausgesagt aber er konnte tiefer pro Zeit rechnen, will heissen mehr MIPS pro Takt!
+ Ob das nun f?r jede Problemstellung gilt, ich weiss nicht?
+ Ich denke nicht, denn der Schachalgo ist auf Threads ausgelegt und je mehr Cores desto tiefer die Baumberechnung der Z?ge, jedenfalls mal vorl?ufig eine Erkl?rung.
+ Viel Algos lassen sich aber kaum verteilen, sind also nicht multithreading f?hig. Das Problem mit den Cores ist vor allem, dass kein Code oder Task analysiert wird sondern nur die compilierte Exe als Executable verteilt wird.
+END. 
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----

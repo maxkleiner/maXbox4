@@ -1,0 +1,666 @@
+//**********************************************
+program Public_Private_Crypto_Simulation5_IBZ_Herdt_Demo;
+
+//calculates simple public private with strong string and hash back SHA1 ;)
+//http://en.wikipedia.org/wiki/Hash_function,#sign:Max: MAXBOX10: 04/12/2016 17:56:58 
+//public-private crypto system for education (ppcse), #locs>266
+
+ //Crypto Systems Ref Herdt Verlag Netzwerke Sicherheit S.111:
+ {1. Prime1: 23  &  Prime2: 47
+2. RSA Modul Public [p*q] as N: 1081
+3. Phi(N) Private: 1012 = 22*46
+4. Public RSA Exponent: 3
+5. Private Key d: 675
+6. Public (3,1081) - Private (675,1081)
+}
+
+Const
+   AFILE = 'maxbox4.exe';
+   //AMESSAGE = 'ab HI! HELLO WORLD OF CRYPTOBOX 3!';  //only to ASCII!
+   OFFSET = 32; //64;  // space depends on N mod range
+   AMESSAGE =' Test_String_ 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_.,;!?-*:%^$€~'; 
+
+var   
+   hexd: THexArray;
+   prime1, prime2, rsa_exponent: integer;
+   cryptolist: TStrings;
+   sha1data: string;
+   
+function setPublic: integer;
+begin
+  result:= prime1 * prime2;
+end;   
+
+function getPHI_N: integer;
+begin
+  result:= (prime1-1) * (prime2-1);
+end;   
+
+function getEPublic: integer;
+begin
+  result:= RSA_exponent; //round(Power(2,4)+1);  
+end;   
+
+//Find d such that: e*d mod phi(n) = 1. (as inverse modulo)
+function getPrivate: integer;
+begin
+  for it:= 1 to 680 do //or n depends on bigint
+    if (getEPublic * it mod getPHI_N = 1) then begin
+      //writeln(itoa(it))
+      result:= it;
+    end  
+end; 
+
+function modbig(aval: string; amod: integer): integer;
+var atbig: TInteger;
+begin
+  atbig:= TInteger.create(1)
+  atbig.assign2(aval);
+  //writeln(aval)
+  //atbig.pow(234);
+  atbig.modulo1(amod)
+  //atbig.getnextprime;
+  //atbig.ModPow(atbig,atbig);
+  //atbig.invmod(10);
+  //writeln('ret ^'+atbig.tostring(false))
+  result:= strtoint(atbig.tostring(false)) 
+  atbig.free;
+end; 
+
+//---------------------------------------------------------------
+//private d= e^-1 mod phi(N)
+//cipher c[i]   = m[i]^e (mod N)
+//decipher m[i] = c[i]^d (mod N)
+//HELLO  WORLD will be 07 04 11 11 14 26 22 14 17 11 03.
+//07^17 mod 77 = 28  , 04^17 mod 77 = 16
+
+procedure encryptMessage(amess: string; acipher: TStrings);
+var k,l,i: integer; //integer; //int64;
+    pst: string;
+begin
+  for i:= 1 to length(amess) do begin
+    l:= ord(amess[i])-OFFSET;
+    //write(inttostr(l)+ 'd ') //debug
+    pst:= Powerbig(l,getEPublic);
+    k:= modbig(pst,setPublic);
+    //write(inttostr(k)+ 'k ') //debug
+    acipher.add(intToStr(k))
+  end;
+end;    
+
+function decryptMessage(alist: TStrings): string;
+var k,i: int64;
+    pst: string;
+begin
+  for i:= 0 to alist.count -1 do begin
+    pst:= Powerbig(strtoint(alist[i]),getPrivate);
+    k:= modbig(pst,setPublic);
+    //k:= f mod setPublic;
+    result:= result+ Chr(k+OFFSET);
+  end;
+end;   
+//-----------------------------------------------------------
+  
+  procedure GetHexArray(var ahexdig: THexArray);
+  begin
+   for it:= 0 to 9 do
+     ahexdig[it]:= chr(it+48);  //of 48
+   for it:= 10 to 15 do
+     ahexdig[it]:= chr(it+55);  //of 65
+   //= '0123456789ABCDEF';  
+  end;
+  
+  function RemoveURIFragment(const URI: string): string;
+  var
+    FragmentStart: Integer;
+  begin
+    FragmentStart:= {SysUtils.}AnsiPos('#', URI);
+      if FragmentStart > 0 then
+         Result:= Copy(URI, 1, FragmentStart - 1)
+    else
+      Result:= URI;
+  end;
+
+// demonstrator to cipher hash - digital signature 
+function SHA1A(const fileName: string): string;
+var  idsha: TIdHashSHA1;
+     fs: TFileStream;
+ begin
+   idsha:= TIdHashSHA1.Create;
+   fs:= TFileStream.Create(fileName, fmOpenRead OR fmShareDenyWrite);
+   try
+     //result:= idmd5.AsHex(hash) ;
+     result:= idsha.AsHex(idsha.HashValue(fs));
+   finally
+     fs.Free;
+     idsha.Free;
+   end;
+ end;
+ 
+ procedure ROT13(AStrLst: TStringList);
+ var
+  i, j: integer;
+  c: char;
+  AStr: string;
+  s: string;
+begin
+  for i := 0 to AStrLst.Count - 1 do begin
+    AStr := AStrLst[i];
+    s := '';
+    for j := 1 to Length(AStr) do begin
+      c := AStr[j];
+      if (((c >= 'A') AND (c <= 'M')) OR ((c >= 'a') AND (c <= 'm'))) then
+        c := chr(ord(c) + 13)
+      else if (((c >= 'N') AND (c <= 'Z')) OR ((c >= 'n') AND (c <= 'z'))) then
+        c := chr(ord(c) - 13);
+      s := s + c;
+    end;
+    AStrLst[i] := s;
+  end;
+end;
+
+procedure TestRemoteShellHell;
+var oShell, ishell: oleVariant; 
+     commandtoRun, commandParms: string;
+
+begin
+  oshell:= createOleObject('Shell.Application');
+  //= new ActiveXObject("Shell.Application");
+  ishell:= CreateOleObject('WScript.Shell');
+  ishell.run('cmd /c dir & pause');
+
+ //commandtoRun:= 'C:\\Winnt\\Notepad.exe';
+  commandtoRun:= 'C:\WINDOWS\System32\Calc.exe';
+   //if (inputparms != "") {
+  //var commandParms = document.Form1.filename.value;
+  //https://twitter.com/maxkleiner
+  //}
+// Invoke the execute method.  
+  oShell.ShellExecute(commandtoRun,commandParms,'','open','1');
+end; 
+
+Begin  //main frame 
+  //1. Init - Choose two prime numbers p and q and e.
+  Prime1:= 23         //13;  //7;  //11; 
+  Prime2:= 47        //23;  //11; //7;
+  RSA_exponent:= 3;  //5;   //17; //5;
+  
+  PrintF('1. Prime1: %d  &  Prime2: %d',[prime1, prime2])
+  //2. Let n = p*q.
+  Writeln('2. RSA Modul Public [p*q] as N: '+inttostr(setPublic))
+  
+  //3. less than n with no factors in common to n. phi(n)=(p-1)(q-1)
+  PrintF('3. Phi(N) Private: %d = %d*%d',[getPHI_N,prime1-1,prime2-1])
+  
+  //4. Choose e <n; e is relative prime to phi(n). 
+  Writeln('4. Public RSA Exponent: '+inttostr(getEPublic))
+  
+  //5. Find d such that e*d mod phi(n)=1. 
+  Writeln('5. Private D: '+inttostr(getPrivate))    
+    
+  //6. Public key is (e,n), private key is (d, n).
+  PrintF('6. Public (%d,%d) - Private (%d,%d)',[getEPublic,setPublic,                                                                  getPrivate,setPublic])
+  Writeln('');
+  sha1data:= sha1tohex(sha1ofstr(AMESSAGE))
+  writeln('7. Hashvalue of message: '+Uppercase(sha1data))
+  Writeln('8. Encrypt a message: '+AMESSAGE);
+  cryptolist:= TStringlist.create;
+  encryptMessage(AMESSAGE, cryptolist);
+  writeln('8. length of AMESSAGE: '+itoa(length(AMESSAGE)));
+  for it:= 0 to cryptolist.count -1 do
+    write(' '+Format('%.3s',[cryptolist[it]]));
+  Writeln(' ');
+  Writeln('9. Decrypt a message: '+deCryptMessage(cryptolist));
+  writeln('');
+  //maxform1.CipherFile1Click(self)
+  writeln('10. hashvalue (CRC32) test: '+sha1data);
+  if sha1tohex(sha1ofstr(deCryptMessage(cryptolist))) = sha1data then 
+    writeln('  Signature Hash check success!');  
+  cryptolist.Free;
+  writeln('')
+  //PrintF('From CRC32 of file %s is %d',[AFILE,(ComputeFileCRC32(ExePath+AFILE))]);
+  //F0AB7D054111F5CE46BA122D6280397A841C6FAB
+  //function B64Encode(const S: AnsiString): AnsiString;
+  //writeln(B64Encode(AMESSAGE));
+  //writeln(B64Decode(B64Encode(AMESSAGE)));
+  {writeln(mimeBase64Encode(AMESSAGE)); 
+  writeln(ALmimeBase64EncodeString(AMESSAGE)); 
+  writeln(synEncodeBase64(AMESSAGE)); }
+  
+  //ALMimeBase64EncodeString
+  //writeln(B64Encode(sha1data));
+  {
+  Writeln('From SHA1 of maXbox4:  '+SHA1A(ExePath+AFILE))
+  maXcalcF('7^17%77')
+  
+  maXcalcF('ln(2500)/ln(2)');
+  maXcalcF('-ln(1/2500)/(ln(2))')
+  }
+  
+  {srlist:= TStringlist.create;
+  srlist.text:= 'HI! HELLO WORLD OF CRYPTOBOX 3!';
+  ROT13(srlist)
+  writeln(srlist.text)
+  srlist.Free;
+  
+  srlist:= TStringlist.create;
+  srlist.text:= 'HI! HELLO WORLD OF CRYPTOBOX 3!';
+  ROT13(srlist)
+  ROT13(srlist)
+  writeln(srlist.text)
+  srlist.Free; }
+    //base64encode
+  {writeln(B64Decode('TUFY'));
+  writeln(B64Encode('TUFY'));
+  writeln(B64Encode('TUFYXC'));   }
+  
+  //writeln(B64Decode(B64Encode(AMESSAGE)));
+  
+  WinExec('rundll32 shell32,ShellAboutA Info-Box',sw_Show);
+  
+  //executeShell('rundll32','shell32,ShellAboutA Info-Box')
+  //WinExec('rundll32 shell32,OpenAs_RunDLL',sw_Show);
+  //WinExec('rundll32 keyboard,disable',sw_Show);
+   // TestRemoteShellHell;
+  
+End.
+
+----------------------------------------------------
+
+Ref:
+1. Prime1: 13  &  Prime2: 17
+2. RSA Modul Public [p*q] as N: 221
+3. Phi(N) Private: 192 = 12*16
+4. Public RSA Exponent: 7
+5. Private D: 55
+6. Public (7,221) - Private (55,221)
+
+
+https://en.wikipedia.org/wiki/Entropy_%28information_theory%29
+
+My short list and attached the long one:
+
+• WINDEX as Bankingsoftware in Delphi 2 - Modan
+• CalWin as  Real Estate Infrastructur - Delphi 2 - dynasoft AG
+• Secure Center Security Solution - Delphi 2007 - armasuisse
+• GIS and Oracle Database Migration - Delphi XE2 and Delphi 2009 64bit - armasuisse
+• MARS and SAS Enterprise Resource Planing - Delphi XE5 - Scholz Software
+
+http://scholz2000.com/
+
+• CryptoBox3 Cipher Solution - Delphi 2007 and Delphi XE10 (Delphi X) - armasuisse
+• maXbox Delphi Script Environment - Delphi 2007 and XE5 - BFH and IBZ
+
+• SONAR Code Analysis Tool - Delphi 2007 and XE5 - SonarSource Geneva
+
+ http://www.softwareschule.ch/maxbox.htm
+ 
+ http://www.eco-hermes.ch/
+ 
+ https://sigmaexchange.sigmaplan.ch/sites/sigmaexchange
+ 401 UNAUTHORIZED         
+ 
+ http://r.virscan.org/report/78d9fcd6f784683a13cb14707bf4f936   
+ 
+ rot13 test:
+ 
+ UV! URYYB JBEYQ BS PELCGBOBK 3!   
+ 
+ HI! HELLO WORLD OF CRYPTOBOX 3!                       
+
+Name: lwenzel_gast
+
+Ref:
+1. Prime1: 5  &  Prime2: 17
+2. RSA Modul Public [p*q] as N: 85
+3. Phi(N) Private: 64 = 4*16
+4. Public RSA Exponent: 3
+5. Private D: 43
+6. Public (3,85) - Private (43,85)
+
+7. Hashvalue of message: AFD6E7DFF530EE9212F17157CF0C37D936650D07
+8. Encrypt a message: HI! HELLO WORLD OF CRYPTOBOX 3!
+   80 71 1 0 80 78 14 14 38 0 30 38 50 14 76 0 38 47 0 35 50 63 7 18 38 34 38 6 0 59 1
+ 
+9. Decrypt a message: HI! HELLO WORLD OF CRYPTOBOX 3!
+10. hashvalue (CRC32) test: afd6e7dff530ee9212f17157cf0c37d936650d07
+   Signature Hash check success!
+
+ hex: afd6e7dff530ee9212f17157cf0c37d936650d07
+ HEX: AFD6E7DFF530EE9212F17157CF0C37D936650D07
+ h:e:x: af:d6:e7:df:f5:30:ee:92:12:f1:71:57:cf:0c:37:d9:36:65:0d:07 
+ base64: r9bn3/Uw7pIS8XFXzww32TZlDQc= 
+
+Ref:
+1. Prime1: 11 and Prime2: 7
+2. RSA Modul Public [p*q] as N: 77
+3. phi(N) Private: 60
+4. Public RSA Exponent: 17
+5. Private D: 53
+6. Public (17,77) - Private (53,77)
+
+Doc:
+Let p=7 and q = 11. n=77 and ?(n) =60.
+Alice choose e=17, a relative prime to 60 ? private key is d=53 where e*d mod ?(n) =1; 17*53 mod 60 = 1
+If we represent 07 as  and 25 as Z, 26 as blank, then
+HELLO  WORLD will be 07 04 11 11 14 26 22 14 17 11 03.
+ Using Alice public key the cipher text is:
+07^17 mod 77 = 28
+04^17 mod 77 = 16
+11^17 mod 77 = 44
+…
+03^17 mod 77 = 75.
+Only Alice can decipher with private key 53.
+75^53 mod 77 = 3.
+
+------------------------------------
+prim1:= 23;
+prim2:= 97;
+RSA Modul Public [p*q] as N: 2231
+RSA Exponent: 65537
+phi(N) Private: 2112
+Private D: 65
+
+1. Prime1: 3 and Prime2: 7
+2. RSA Modul Public [p*q] as N: 21
+3. phi(N) Private: 12
+4. RSA Exponent: 5
+5. Private D: 5
+6. Public (5,21) - Private (5,21)
+
+Explanation:
+Alice lets her public key be known to everyone, but keeps the private key secret. Bob may send a confidential message to Alice like this:
+
+   1. B gets A's public key (you can get it from web, or just send it to him).
+   2. B encrypts the message with A's public key, and sends it.
+   3. A decrypts the message with her private key.
+
+For this to work, the system must guarantee that it is (effectively) impossible to decrypt the message without knowledge of the private key. In particular, it must be impossible to decrypt using the public key, or to derive the private key from the public key.
+
+-1753041190
+-346756791
+SHA1 of mx3
+DA DE 32 22 55 6A EC 69 BC D9 F9 AB 6F 1F C2 1F B6 72 2A 56
+
+from idpop3
+
+if Length(S) > 0 then begin
+          with TIdHashMessageDigest5.Create do
+          try
+            S:= LowerCase(TIdHash128.AsHex(HashValue(S+Password)));
+          finally
+            Free;       
+          end;//try
+          
+Some cryptographic hash functions, such as SHA-1, have even stronger uniformity guarantees than checksums or fingerprints, and thus can provide very good general-purpose hashing functions.
+
+In ordinary applications, this advantage may be too small to offset their much higher cost.[5] However, this method can provide uniformly distributed hashes even when the keys are chosen by a malicious agent. This feature may help protect services against denial of service attacks.          
+
+
+How RSA works
+------------------------------------
+Generating the public and private keys. Pick two large prime numbers, p and q. Let n=pq. Typically, n is a number which in binary is written with 1024 bits (in decimal, that's about 308 digits). Pick e relatively prime to (p-1)(q-1). Now find d such that ed=1 mod (p-1)(q-1). You can use Euclid's algorithm to find this d. The pair of numbers (e, n) is the public key. The pair of numbers (d, n) is the private key. The two primes p,q are no longer needed, and can be discarded, but should never be revealed.
+
+Exercise. Which of the following key pairs are valid?
+
+   1. K=(7,187), K-1=(23,187)
+   2. K=(23,187), K-1=(7,187)
+   3. K=(7,143), K-1=(23,143)
+
+Can you invert the key (7,299)?
+Message format. Divide the message into blocks, each block corresponding to a number less than n. For example, for binary data, the blocks will be (log2 n) bits.
+Encryption. The encryption of message m is  c = me mod n.
+Decryption. To decrypt c,  put m' = cd mod n.
+
+Generating the public and private keys. Pick two large prime numbers, p and q. Let n=pq. Typically, n is a 1024 bit number. Pick e relatively prime to (p-1)(q-1). Now find d such that ed=1 mod (p-1)(q-1). There is an algorithm which will find this d for you. The pair of numbers (e, n) is the public key. The pair of numbers (d, n) is the private key. The two primes p,q are no longer needed, and can be discarded, but should never be revealed.
+
+
+A response to Diffie Helleman challenge by Ron Rivest, Adi Sharmir, and Len Adleman at MIT.
+An exponentiation cipher utilizing Euler’s Theorem.
+Choose two prime numbers p and q.
+Let n = p*q.  The totient ?(n) of n is the number of numbers less than n with no factors in common with n.
+?(n)=(p-1)(q-1)
+E.g., ?(10) =4; since 1,3, 7, 9 are relative prime of 10.
+Choose e <n; e be relative prime to ?(n). 
+Find d such that e*d mod ?(n) = 1.
+The public key is (e,n), private key is (d, n).
+Med mod n = M (this holds if e*d mod ?(n) = 1)
+C=Me mod n
+M=cd mod n
+
+
+
+28:   TInteger  = class(TObject)
+  //{$IfEnd}
+    Base:  integer;
+34:     procedure AbsAdd(const I2: TInteger);
+    function  AbsCompare(I2: TInteger): integer; overload;
+    procedure AbsAdd(const I2: TInteger);
+35:     function  AbsCompare(I2: TInteger): integer; overload;
+    function  AbsCompare(I2: int64): integer; overload;
+    function  AbsCompare(I2: int64): integer; overload;
+37:     procedure AbsSubtract(const I2: TInteger);
+    function  GetBasePower: integer;
+    property Digits: TDigits Read fDigits;
+52:     procedure Assign(const I2: TInteger); overload;
+    procedure Assign(const I2: int64); overload;
+    procedure AbsoluteValue;
+56:     procedure Add(const I2: TInteger); overload;
+    procedure Add(const I2: int64); overload;
+    procedure AssignOne;
+60:     procedure Subtract(const I2: TInteger); overload;
+    procedure Subtract(const I2: int64); overload;
+    procedure Subtract(const I2: int64); overload;
+62:     procedure Mult(const I2: TInteger); overload;
+    procedure Mult(const I2: int64); overload;
+    procedure Mult(const I2: int64); overload;
+64:     procedure FastMult(const I2: TInteger);
+    procedure Divide(const I2: TInteger); overload;
+    procedure FastMult(const I2: TInteger);
+65:     procedure Divide(const I2: TInteger); overload;
+    procedure Divide(const I2: int64); overload;
+    procedure Divide(const I2: int64); overload;
+67:     procedure  Modulo(Const I2: TInteger); overload;
+    procedure  Modulo(Const N: int64); overload;
+    procedure  Modulo(Const N: int64); overload;
+69:     procedure ModPow(const I2, m: TInteger);
+    procedure InvMod(I2: TInteger);
+    procedure ModPow(const I2, m: TInteger);
+70:     procedure InvMod(I2: TInteger);
+    procedure DivideRem(const I2: TInteger; var remain: TInteger);
+    procedure InvMod(I2: TInteger);
+71:     procedure DivideRem(const I2: TInteger; var remain: TInteger);
+    procedure DivideRemTrunc(const I2: TInteger; var remain: TInteger);
+    procedure DivideRem(const I2: TInteger; var remain: TInteger);
+72:     procedure DivideRemTrunc(const I2: TInteger; var remain: TInteger);
+    Procedure DivideRemFloor(const I2: TInteger; var remain: TInteger);
+    procedure DivideRemTrunc(const I2: TInteger; var remain: TInteger);
+73:     Procedure DivideRemFloor(const I2: TInteger; var remain: TInteger);
+    Procedure DivideRemEuclidean(const I2: TInteger; var remain: TInteger);
+    Procedure DivideRemFloor(const I2: TInteger; var remain: TInteger);
+74:     Procedure DivideRemEuclidean(const I2: TInteger; var remain: TInteger);
+    function Compare(I2: TInteger): integer; overload;
+    Procedure DivideRemEuclidean(const I2: TInteger; var remain: TInteger);
+75:     function Compare(I2: TInteger): integer; overload;
+    function Compare(I2: int64): integer; overload;
+
+97:     procedure Gcd(const I2: TInteger); overload;
+    procedure Gcd(const I2: int64); overload;
+    procedure NRoot(const Root: int64); overload;
+100:     //procedure NRoot(const Root :Tinteger); overload;
+    function GetBase: integer;
+    procedure  RandomOfSize(size: integer);
+108:     procedure  Random(maxint: TInteger);
+    procedure  Getnextprime;
+    //{$IF compilerversion > 15}
+114:     class operator Implicit(a: Int64): TInteger;
+    class operator Implicit(a: TInteger): Int64;
+    class operator Implicit(a: Int64): TInteger;
+115:     class operator Implicit(a: TInteger): Int64;
+    //class operator Implicit(s: string): TInteger;
+    class operator Implicit(a: TInteger): Int64;
+116:     //class operator Implicit(s: string): TInteger;
+    //class operator Implicit(a: TInteger): TInteger;
+    //class operator Implicit(s: string): TInteger;
+117:     //class operator Implicit(a: TInteger): TInteger;
+    class operator Implicit(a: TInteger): string; // write to a string;
+    //class operator Implicit(a: TInteger): TInteger;
+118:     class operator Implicit(a: TInteger): string; // write to a string;
+    class operator Negative(a: TInteger): TInteger;
+    class operator Implicit(a: TInteger): string; // write to a string;
+119:     class operator Negative(a: TInteger): TInteger;
+
+
+3387: 71: procedure SIRegister_TInteger(CL: TPSPascalCompiler);
+begin
+begin
+3390: 73:   //with RegClassS(CL,'TObject', 'TInteger') do
+  with CL.AddClassN(CL.FindClass('TObject'),'TInteger') do begin
+73:   //with RegClassS(CL,'TObject', 'TInteger') do
+3391:   with CL.AddClassN(CL.FindClass('TObject'),'TInteger') do begin
+  //with RegClassS(CL,'TObject', 'TInteger') do
+  with CL.AddClassN(CL.FindClass('TObject'),'TInteger') do begin
+3392:   //with RegClassS(CL,'TObject', 'TInteger') do
+74:   with CL.AddClassN(CL.FindClass('TObject'),'TInteger') do begin
+  //with RegClassS(CL,'TObject', 'TInteger') do
+3393: 74:   with CL.AddClassN(CL.FindClass('TObject'),'TInteger') do begin
+    RegisterMethod('Constructor Create( const initialValue : int64)');
+    RegisterProperty('Digits', 'TDigits', iptr);
+3396: 79:     RegisterMethod('Procedure Assign( const I2 : TInteger);');
+    RegisterMethod('Procedure Assign1( const I2 : int64);');
+    RegisterMethod('Procedure AbsoluteValue');
+3399: 83:     RegisterMethod('Procedure Add( const I2 : TInteger);');
+    RegisterMethod('Procedure Add1( const I2 : int64);');
+    RegisterMethod('Procedure AssignOne');
+3402: 87:     RegisterMethod('Procedure Subtract( const I2 : TInteger);');
+    RegisterMethod('Procedure Subtract1( const I2 : int64);');
+    RegisterMethod('Procedure Subtract1( const I2 : int64);');
+3405: 89:     RegisterMethod('Procedure Mult( const I2 : TInteger);');
+    RegisterMethod('Procedure Mult1( const I2 : int64);');
+    RegisterMethod('Procedure Mult1( const I2 : int64);');
+3408: 91:     RegisterMethod('Procedure FastMult( const I2 : TInteger)');
+    RegisterMethod('Procedure Divide( const I2 : TInteger);');
+91:     RegisterMethod('Procedure FastMult( const I2 : TInteger)');
+3409:     RegisterMethod('Procedure Divide( const I2 : TInteger);');
+    RegisterMethod('Procedure FastMult( const I2 : TInteger)');
+    RegisterMethod('Procedure Divide( const I2 : TInteger);');
+3410:     RegisterMethod('Procedure FastMult( const I2 : TInteger)');
+92:     RegisterMethod('Procedure Divide( const I2 : TInteger);');
+    RegisterMethod('Procedure FastMult( const I2 : TInteger)');
+3411: 92:     RegisterMethod('Procedure Divide( const I2 : TInteger);');
+    RegisterMethod('Procedure Divide1( const I2 : int64);');
+    RegisterMethod('Procedure Divide1( const I2 : int64);');
+3414: 94:     RegisterMethod('Procedure Modulo( const I2 : TInteger);');
+    RegisterMethod('Procedure Modulo1( const N : int64);');
+    RegisterMethod('Procedure Modulo1( const N : int64);');
+3417: 96:     RegisterMethod('Procedure ModPow( const I2, m : TInteger)');
+    RegisterMethod('Procedure InvMod( I2 : TInteger)');
+96:     RegisterMethod('Procedure ModPow( const I2, m : TInteger)');
+3418:     RegisterMethod('Procedure InvMod( I2 : TInteger)');
+    RegisterMethod('Procedure ModPow( const I2, m : TInteger)');
+    RegisterMethod('Procedure InvMod( I2 : TInteger)');
+3419:     RegisterMethod('Procedure ModPow( const I2, m : TInteger)');
+97:     RegisterMethod('Procedure InvMod( I2 : TInteger)');
+    RegisterMethod('Procedure ModPow( const I2, m : TInteger)');
+3420: 97:     RegisterMethod('Procedure InvMod( I2 : TInteger)');
+    RegisterMethod('Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+97:     RegisterMethod('Procedure InvMod( I2 : TInteger)');
+3421:     RegisterMethod('Procedure DivideRem(const I2: TInteger; var remain: TInteger)');
+    RegisterMethod('Procedure InvMod( I2 : TInteger)');
+    RegisterMethod('Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+3422:     RegisterMethod('Procedure InvMod( I2 : TInteger)');
+98: RegisterMethod('Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure InvMod( I2 : TInteger)');
+3423: 98:     RegisterMethod('Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemTrunc(const I2 : TInteger; var remain : TInteger)');
+98: RegisterMethod('Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+3424:     RegisterMethod('Procedure DivideRemTrunc( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemTrunc(const I2 : TInteger; var remain : TInteger)');
+3425:     RegisterMethod('Procedure DivideRem(const I2: TInteger; var remain : TInteger)');
+99:     RegisterMethod('Procedure DivideRemTrunc( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+3426: 99:     RegisterMethod('Procedure DivideRemTrunc( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemFloor( const I2: TInteger; var remain: TInteger)');
+99:     RegisterMethod('Procedure DivideRemTrunc( const I2 : TInteger; var remain : TInteger)');
+3427:     RegisterMethod('Procedure DivideRemFloor( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemTrunc(const I2: TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemFloor(const I2 : TInteger; var remain : TInteger)');
+3428:     RegisterMethod('Procedure DivideRemTrunc( const I2 : TInteger; var remain : TInteger)');
+100:     RegisterMethod('Procedure DivideRemFloor( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemTrunc(const I2: TInteger; var remain : TInteger)');
+3429: 100:     RegisterMethod('Procedure DivideRemFloor( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+100:     RegisterMethod('Procedure DivideRemFloor( const I2 : TInteger; var remain : TInteger)');
+3430:     RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemFloor(const I2: TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+3431:     RegisterMethod('Procedure DivideRemFloor( const I2 : TInteger; var remain : TInteger)');
+101:     RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Procedure DivideRemFloor(const I2: TInteger; var remain : TInteger)');
+3432: 101:     RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Function Compare( I2 : TInteger) : integer;');
+101:     RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+3433:     RegisterMethod('Function Compare( I2 : TInteger) : integer;');
+    RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+    RegisterMethod('Function Compare( I2 : TInteger) : integer;');
+3434:     RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+102:     RegisterMethod('Function Compare( I2 : TInteger) : integer;');
+    RegisterMethod('Procedure DivideRemEuclidean( const I2 : TInteger; var remain : TInteger)');
+3435: 102:     RegisterMethod('Function Compare( I2 : TInteger) : integer;');
+    RegisterMethod('Function Compare1( I2 : int64) : integer;');
+    RegisterMethod('Procedure FastSquare');
+3438: 121:     RegisterMethod('Procedure Gcd( const I2 : TInteger);');
+    RegisterMethod('Procedure Gcd1( const I2 : int64);');
+    RegisterMethod('Procedure RandomOfSize( size : integer)');
+3441: 130:     RegisterMethod('Procedure Random( maxint : TInteger)');
+    RegisterMethod('Procedure Getnextprime');
+  CL.AddTypeS('TDigits', 'array of int64');
+3444: 139:   SIRegister_TInteger(CL);
+ CL.AddDelphiFunction('Procedure SetBaseVal( const newbase : integer)');
+
+   
+  atbig:= TInteger.create(123)
+  atbig.assign2('43858699494985567908');
+  //atbig.pow(234);
+  atbig.mult1(10)
+  atbig.modulo1(1600)
+  atbig.getnextprime;
+  //atbig.ModPow(atbig,atbig);
+  //atbig.invmod(10);
+  writeln(atbig.tostring(false))
+  atbig.free;
+
+
+ ;::@@##~~~öööééé$$$èèè
+ 
+ the tech truth behind locky
+ 
+ https://www.bleepingcomputer.com/news/security/locky-ransomware-putting-us-to-sleep-with-the-zzzzz-extension/
+ 
+ 
+ http://r.virscan.org/report/78d9fcd6f784683a13cb14707bf4f936
+ 
+ http://www.softwareschule.ch/teelicht.jpg
+ 
+ http://www.softwareschule.ch/teelicht.jpg
+ 
+ Lieber Adi
+
+Nun haben wir auch die Freigabe des Vereinspräsi Salem Blum, nun muss Philippe das nur noch in den Webshop stellen, es grüsst dich, Max
+
+http://www.softwareschule.ch/teelicht.jpg
+
+http://stackoverflow.com/questions/1880198/how-to-execute-shell-command-in-javascript
+
+var exec = require('child_process').exec, child;
+
+child = exec('cat *.js bad_file | wc -l',
+    function (error, stdout, stderr) {
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if (error !== null) {
+             console.log('exec error: ' + error);
+        }
+    });
+ child();

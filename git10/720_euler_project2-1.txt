@@ -1,0 +1,1137 @@
+Unit Demo_App_mX_Euler_Project;
+
+//https://bitbucket.org/Neptuntriton/projecteuler.git
+//#sign:5 Max: MAXBOX10: 01/12/2016 19:07:00 
+//#tech:.2.4.perf: 0:0:7.339 threads: 5 192.168.56.1 19:07:00 4.2.4.8080
+// add myreftomemo #locs:1037
+
+interface
+
+{uses
+  Math,
+  StdCtrls,
+  SysUtils,
+  UProjectEulerConstants;
+  }
+
+CONST 
+//<Constant declarations> 
+  TEXTOUT = 'hi world of euler code rage';
+  
+  const
+  Task8DigitStream =  '73167176531330624919225119674426574742355349194934'
+                    + '96983520312774506326239578318016984801869478851843'
+                    + '85861560789112949495459501737958331952853208805511'
+                    + '12540698747158523863050715693290963295227443043557'
+                    + '66896648950445244523161731856403098711121722383113'
+                    + '62229893423380308135336276614282806444486645238749'
+                    + '30358907296290491560440772390713810515859307960866'
+                    + '70172427121883998797908792274921901699720888093776'
+                    + '65727333001053367881220235421809751254540594752243'
+                    + '52584907711670556013604839586446706324415722155397'
+                    + '53697817977846174064955149290862569321978468622482'
+                    + '83972241375657056057490261407972968652414535100474'
+                    + '82166370484403199890008895243450658541227588666881'
+                    + '16427171479924442928230863465674813919123162824586'
+                    + '17866458359124566529476545682848912883142607690042'
+                    + '24219022671055626321111109370544217506941658960408'
+                    + '07198403850962455444362981230987879927244284909188'
+                    + '84580156166097919133875499200524063689912560717606'
+                    + '05886116467109405077541002256983155200055935729725'
+                    + '71636269561882670428252483600823257530420752963450';
+  type
+  TTask11NumberFiled = array[0..399] of byte;
+  TTask13NumberField = array[0..99] of String;
+
+{TYPE 
+<Type declarations>} 
+
+Var 
+//<Variable declarations>
+  i: integer;
+
+//<FUNCTION>
+//<PROCEDURE> 
+
+
+//type
+  //cProjectEuler = class
+  //private
+    MyRefToMemo : TMemo;
+    aMemo1: TMemo;
+    Button1: TButton;
+
+       function Task1(Limit             : int64)              : int64;
+       function Task2(Limit             : int64)              : int64;
+       function Task3(Number            : int64)              : int64;
+       function Task4(Digits            : integer)            : int64;
+       function Task5(UpperBorder       : integer)            : int64;
+       function Task6(Limit             : int64)              : int64;
+       function Task7(Index             : integer)            : int64;
+       function Task8(InputDigitStream  : String)             : int64;
+       function Task9(SumOfTriplet      : integer)            : int64;
+       function Task10(Limit            : int64)              : int64;
+       function Task11(InputNumberField : TTask11NumberFiled) : int64;
+       function Task12(Limit            : int64)              : int64;
+       function Task13(InputNumberField : TTask13NumberField; Digits : integer): int64;
+   
+       function Task16(Exponent         : integer)            : int64;
+       function Task34                                        : int64;
+       function Task40                                        : int64;
+
+       function IsPrimX(Input : int64):boolean;
+  //public
+       procedure ReportResults(AMemo : TMemo);
+ // end;
+
+implementation
+
+{ cProjectEuler }
+
+var Form1: TForm;
+    Task13NumberField : TTask13NumberField;
+
+procedure InitFillFields;
+begin
+{Task11NumberField : TTask11NumberFiled = (
+    08, 02, 22, 97, 38, 15, 00, 40, 00, 75, 04, 05, 07, 78, 52, 12, 50, 77, 91, 08,
+    49, 49, 99, 40, 17, 81, 18, 57, 60, 87, 17, 40, 98, 43, 69, 48, 04, 56, 62, 00,
+    81, 49, 31, 73, 55, 79, 14, 29, 93, 71, 40, 67, 53, 88, 30, 03, 49, 13, 36, 65,
+    52, 70, 95, 23, 04, 60, 11, 42, 69, 24, 68, 56, 01, 32, 56, 71, 37, 02, 36, 91,
+    22, 31, 16, 71, 51, 67, 63, 89, 41, 92, 36, 54, 22, 40, 40, 28, 66, 33, 13, 80,
+    24, 47, 32, 60, 99, 03, 45, 02, 44, 75, 33, 53, 78, 36, 84, 20, 35, 17, 12, 50,
+    32, 98, 81, 28, 64, 23, 67, 10, 26, 38, 40, 67, 59, 54, 70, 66, 18, 38, 64, 70,
+    67, 26, 20, 68, 02, 62, 12, 20, 95, 63, 94, 39, 63, 08, 40, 91, 66, 49, 94, 21,
+    24, 55, 58, 05, 66, 73, 99, 26, 97, 17, 78, 78, 96, 83, 14, 88, 34, 89, 63, 72,
+    21, 36, 23, 09, 75, 00, 76, 44, 20, 45, 35, 14, 00, 61, 33, 97, 34, 31, 33, 95,
+    78, 17, 53, 28, 22, 75, 31, 67, 15, 94, 03, 80, 04, 62, 16, 14, 09, 53, 56, 92,
+    16, 39, 05, 42, 96, 35, 31, 47, 55, 58, 88, 24, 00, 17, 54, 24, 36, 29, 85, 57,
+    86, 56, 00, 48, 35, 71, 89, 07, 05, 44, 44, 37, 44, 60, 21, 58, 51, 54, 17, 58,
+    19, 80, 81, 68, 05, 94, 47, 69, 28, 73, 92, 13, 86, 52, 17, 77, 04, 89, 55, 40,
+    04, 52, 08, 83, 97, 35, 99, 16, 07, 97, 57, 32, 16, 26, 26, 79, 33, 27, 98, 66,
+    88, 36, 68, 87, 57, 62, 20, 72, 03, 46, 33, 67, 46, 55, 12, 32, 63, 93, 53, 69,
+    04, 42, 16, 73, 38, 25, 39, 11, 24, 94, 72, 18, 08, 46, 29, 32, 40, 62, 76, 36,
+    20, 69, 36, 41, 72, 30, 23, 88, 34, 62, 99, 69, 82, 67, 59, 85, 74, 04, 36, 16,
+    20, 73, 35, 29, 78, 31, 90, 01, 74, 31, 49, 71, 48, 86, 81, 16, 23, 57, 05, 54,
+    01, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 01, 89, 19, 67, 48
+  );  }
+
+  //Task13NumberField : TTask13NumberField =(
+    Task13NumberField[0]:='37107287533902102798797998220837590246510135740250'
+    Task13NumberField[1]:='46376937677490009712648124896970078050417018260538'
+    Task13NumberField[2]:='74324986199524741059474233309513058123726617309629'
+    Task13NumberField[3]:='91942213363574161572522430563301811072406154908250'
+    Task13NumberField[4]:='23067588207539346171171980310421047513778063246676'
+    Task13NumberField[5]:='89261670696623633820136378418383684178734361726757'
+    Task13NumberField[6]:='28112879812849979408065481931592621691275889832738'
+    Task13NumberField[7]:='44274228917432520321923589422876796487670272189318'
+    Task13NumberField[8]:='47451445736001306439091167216856844588711603153276'
+    Task13NumberField[9]:='70386486105843025439939619828917593665686757934951'
+    Task13NumberField[10]:='62176457141856560629502157223196586755079324193331'
+    Task13NumberField[11]:='64906352462741904929101432445813822663347944758178'
+    Task13NumberField[12]:='92575867718337217661963751590579239728245598838407'
+    Task13NumberField[13]:='58203565325359399008402633568948830189458628227828'
+    Task13NumberField[14]:='80181199384826282014278194139940567587151170094390'
+    Task13NumberField[15]:='35398664372827112653829987240784473053190104293586'
+    Task13NumberField[16]:='86515506006295864861532075273371959191420517255829'
+    Task13NumberField[17]:='71693888707715466499115593487603532921714970056938'
+    Task13NumberField[18]:='54370070576826684624621495650076471787294438377604'
+    Task13NumberField[19]:='53282654108756828443191190634694037855217779295145'
+    Task13NumberField[20]:='36123272525000296071075082563815656710885258350721'
+    Task13NumberField[21]:='45876576172410976447339110607218265236877223636045'
+    Task13NumberField[22]:='17423706905851860660448207621209813287860733969412'
+    Task13NumberField[23]:='81142660418086830619328460811191061556940512689692'
+    Task13NumberField[24]:='51934325451728388641918047049293215058642563049483'
+    Task13NumberField[25]:='62467221648435076201727918039944693004732956340691'
+    Task13NumberField[26]:='15732444386908125794514089057706229429197107928209'
+    Task13NumberField[27]:='55037687525678773091862540744969844508330393682126'
+    Task13NumberField[28]:='18336384825330154686196124348767681297534375946515'
+    Task13NumberField[29]:='80386287592878490201521685554828717201219257766954'
+    Task13NumberField[30]:='78182833757993103614740356856449095527097864797581'
+    Task13NumberField[31]:='16726320100436897842553539920931837441497806860984'
+    Task13NumberField[32]:='48403098129077791799088218795327364475675590848030'
+    Task13NumberField[33]:='87086987551392711854517078544161852424320693150332'
+    Task13NumberField[34]:='59959406895756536782107074926966537676326235447210'
+    Task13NumberField[35]:='69793950679652694742597709739166693763042633987085'
+    Task13NumberField[36]:='41052684708299085211399427365734116182760315001271'
+    Task13NumberField[37]:='65378607361501080857009149939512557028198746004375'
+    Task13NumberField[38]:='35829035317434717326932123578154982629742552737307'
+    Task13NumberField[39]:='94953759765105305946966067683156574377167401875275'
+    Task13NumberField[40]:='88902802571733229619176668713819931811048770190271'
+    Task13NumberField[41]:='25267680276078003013678680992525463401061632866526'
+    Task13NumberField[42]:='36270218540497705585629946580636237993140746255962'
+    Task13NumberField[43]:='24074486908231174977792365466257246923322810917141'
+    Task13NumberField[44]:='91430288197103288597806669760892938638285025333403'
+    Task13NumberField[45]:='34413065578016127815921815005561868836468420090470'
+    Task13NumberField[46]:='23053081172816430487623791969842487255036638784583'
+    Task13NumberField[47]:='11487696932154902810424020138335124462181441773470'
+    Task13NumberField[48]:='63783299490636259666498587618221225225512486764533'
+    Task13NumberField[49]:='67720186971698544312419572409913959008952310058822'
+    Task13NumberField[50]:='95548255300263520781532296796249481641953868218774'
+    Task13NumberField[51]:='76085327132285723110424803456124867697064507995236'
+    Task13NumberField[52]:='37774242535411291684276865538926205024910326572967'
+    Task13NumberField[53]:='23701913275725675285653248258265463092207058596522'
+    Task13NumberField[54]:='29798860272258331913126375147341994889534765745501'
+    Task13NumberField[55]:='18495701454879288984856827726077713721403798879715'
+    Task13NumberField[56]:='38298203783031473527721580348144513491373226651381'
+    Task13NumberField[57]:='34829543829199918180278916522431027392251122869539'
+    Task13NumberField[58]:='40957953066405232632538044100059654939159879593635'
+    Task13NumberField[59]:='29746152185502371307642255121183693803580388584903'
+    Task13NumberField[60]:='41698116222072977186158236678424689157993532961922'
+    Task13NumberField[61]:='62467957194401269043877107275048102390895523597457'
+    Task13NumberField[62]:='23189706772547915061505504953922979530901129967519'
+    Task13NumberField[63]:='86188088225875314529584099251203829009407770775672'
+    Task13NumberField[64]:='11306739708304724483816533873502340845647058077308'
+    Task13NumberField[65]:='82959174767140363198008187129011875491310547126581'
+    Task13NumberField[66]:='97623331044818386269515456334926366572897563400500'
+    Task13NumberField[67]:='42846280183517070527831839425882145521227251250327'
+    Task13NumberField[68]:='55121603546981200581762165212827652751691296897789'
+    Task13NumberField[69]:='32238195734329339946437501907836945765883352399886'
+    Task13NumberField[70]:='75506164965184775180738168837861091527357929701337'
+    Task13NumberField[71]:='62177842752192623401942399639168044983993173312731'
+    Task13NumberField[72]:='32924185707147349566916674687634660915035914677504'
+    Task13NumberField[73]:='99518671430235219628894890102423325116913619626622'
+    Task13NumberField[74]:='73267460800591547471830798392868535206946944540724'
+    Task13NumberField[75]:='76841822524674417161514036427982273348055556214818'
+    Task13NumberField[76]:='97142617910342598647204516893989422179826088076852'
+    Task13NumberField[77]:='87783646182799346313767754307809363333018982642090'
+    Task13NumberField[78]:='10848802521674670883215120185883543223812876952786'
+    Task13NumberField[79]:='71329612474782464538636993009049310363619763878039'
+    Task13NumberField[80]:='62184073572399794223406235393808339651327408011116'
+    Task13NumberField[81]:='66627891981488087797941876876144230030984490851411'
+    Task13NumberField[82]:='60661826293682836764744779239180335110989069790714'
+    Task13NumberField[83]:='85786944089552990653640447425576083659976645795096'
+    Task13NumberField[84]:='66024396409905389607120198219976047599490197230297'
+    Task13NumberField[85]:='64913982680032973156037120041377903785566085089252'
+    Task13NumberField[86]:='16730939319872750275468906903707539413042652315011'
+    Task13NumberField[87]:='94809377245048795150954100921645863754710598436791'
+    Task13NumberField[88]:='78639167021187492431995700641917969777599028300699'
+    Task13NumberField[89]:='15368713711936614952811305876380278410754449733078'
+    Task13NumberField[90]:='40789923115535562561142322423255033685442488917353'
+    Task13NumberField[91]:='44889911501440648020369068063960672322193204149535'
+    Task13NumberField[92]:='41503128880339536053299340368006977710650566631954'
+    Task13NumberField[93]:='81234880673210146739058568557934581403627822703280'
+    Task13NumberField[94]:='82616570773948327592232845941706525094512325230608'
+    Task13NumberField[95]:='22918802058777319719839450180888072429661980811197'
+    Task13NumberField[96]:='77158542502016545090413245809786882778948721859617'
+    Task13NumberField[97]:='72107838435069186155435662884062257473692284509516'
+    Task13NumberField[98]:='20849603980134001723930671666823555245252804609722'
+    Task13NumberField[99]:='53503534226472524250874054075591789781264330331690'
+  end;
+
+
+function IsPrimX(Input: int64): boolean;
+var
+  c : int64;
+begin
+  Result := true;
+  if Input > 3 then begin
+    c := 2;
+    while c < round(Sqrt(Input)) + 2 do begin
+      if (Input mod c) = 0 then begin
+         Result := false;
+         break;
+      end;
+      c := c + 1;
+    end;
+  end;
+end;
+
+procedure ReportResults(AMemo: TMemo);
+var
+  a : integer;
+  watch: TStopWatch;
+begin
+  if AMemo <> nil then begin
+    MyRefToMemo := AMemo;
+    watch:= TStopWatch.create;
+    watch.start;
+    with AMemo.Lines do begin
+      
+      Add('Tasks all Start at: '+ datetimetostr(now));
+      Add('Task 1');
+      Add('|-> Solution: ' + IntToStr(Task1(1000)));
+      Add('Task 2');
+      Add('|-> Solution: ' + IntToStr(Task2(4000000)));
+     
+      Add('Task 3');
+      Add('|-> Solution: ' + IntToStr(Task3(600851475143)));
+      Add('Task 4');
+      Add('|-> Solution: ' + IntToStr(Task4(3)));
+      
+      Add('Task 5');
+      Add('|-> Solution for 10: ' + IntToStr(Task5(10)));
+      Add('|-> Solution for 20: ' + IntToStr(Task5(20)));
+      Add('|-> Solution for 30: ' + IntToStr(Task5(30)));   
+
+      
+      Add('Task 6');
+      Add('|-> Solution: ' + IntToStr(Task6(100)));
+      Add('Task 7');
+      Add('|-> Solution: ' + IntToStr(Task7(10001)));
+      Add('Task 8');
+      Add('|-> Solution: ' + IntToStr(Task8(Task8DigitStream)));
+      Add('Task 9');
+      Add('|-> Solution: ' + IntToStr(Task9(1000)));
+      //Add('Task 10');
+      //Add('|-> Solution: ' + IntToStr(Task10(2000000)));
+
+     // Add('Task 11');
+     // Add('|-> Solution: ' + IntToStr(Task11(Task11NumberField)));
+     // }
+      Add('Task 12');
+      Add('|-> Solution for 5: ' + IntToStr(Task12(5)));
+      Add('|-> Solution for 30: ' + IntToStr(Task12(30)));
+      Add('|-> Solution for 500: ' + IntToStr(Task12(500)));
+      
+      Add('Task 13');
+      Add('|-> Solution: ' + IntToStr(Task13(Task13NumberField, 10)));
+
+      Add('Task 16');
+      Add('|-> Solution for 15: ' + IntToStr(Task16(15)));
+      
+      Add('|-> Solution for 30x30: ' + IntToStr(Task16(30*30)));
+      Add('|-> Solution for 1000: ' + IntToStr(Task16(1000)));
+
+      Add('Task 34');
+      Add('|-> Solution is: ' + IntToStr(Task34));
+
+      Add('Task 40');
+      Add('|-> Solution is: ' + IntToStr(Task40));
+
+      //}
+      watch.stop;
+      writeln('Stop and Overall Time consuming: '+watch.getValueStr)
+      Add('Stop and Overall Time consuming: '+watch.getValueStr)
+      watch.Free;
+      Add('Tasks all End art: '+ datetimetostr(now));
+      //Stop and Overall Time consuming: 0:59:34.771
+    end;
+  end;
+end;
+
+// http://projecteuler.net/problem=1
+function Task1(Limit: int64): int64;
+var
+  MultipleOfThree : int64;
+  MultipleOfFive  : int64;
+  Last, New       : Int64;
+begin
+  Result := 0;
+  Last            := 1;
+  MultipleOfThree := 0;
+  MultipleOfFive  := 0;
+  while (MultipleOfThree < Limit) or (MultipleOfFive < Limit) do begin
+    if MultipleOfThree <= MultipleOfFive then begin
+      MultipleOfThree := MultipleOfThree + 3;
+      New             := MultipleOfThree;
+    end else begin
+      MultipleOfFive  := MultipleOfFive + 5;
+      New             := MultipleOfFive;
+    end;
+
+    if (New <> Last) and (New < Limit) then begin
+      Result := Result + New;
+      Last   := New;
+    end;
+  end;
+end;
+
+
+// http://projecteuler.net/problem=2
+function Task2(Limit: int64): int64;
+var
+  Minus2, Minus1, Fibo : int64;
+begin
+  Result := 2;
+  Minus2 := 1;
+  Minus1 := 2;
+  Fibo   := 3;
+  while Fibo < Limit do begin
+    if (Fibo and $01 = 0) then begin
+      Result := Result + Fibo;
+    end;
+    Fibo   := Minus2 + Minus1;
+    Minus2 := Minus1;
+    Minus1 := Fibo;
+  end;
+end;
+
+
+// http://projecteuler.net/problem=3
+// http://de.wikipedia.org/wiki/Faktorisierungsverfahren#Probedivision
+function Task3(Number: int64): int64;
+var
+  a : int64;
+  b : integer;
+
+begin
+  // Wie geht die Zerlegung ?berhaupt
+  Result := Number;
+  a      := Round(Sqrt(Number)) + 1;
+  while a > 1 do begin
+    b := Number mod a;
+    if (b = 0) and IsPrimX(a) then begin
+      Result := a;
+      break;
+    end;
+    a := a - 1;
+  end;
+end;
+
+
+function IsPalindrome(Number : int64): boolean;
+  var
+    ALength, c : integer;
+    AString    : string;
+  begin
+    Result  := true;
+    AString := IntToStr(Number);
+    ALength := length(AString);
+    for c := 0 to ALength - 1 do if AString[c + 1] <> AString[ALength - c] then begin
+      Result := false;
+      break;
+    end;
+  end;
+
+
+// http://projecteuler.net/problem=4
+function Task4(Digits: integer): int64;
+var
+  LastPalinDrome                       : int64;
+  UpperBorderString, LowerBorderString : String;
+  UpperBorder, LowerBorder, a, b       : integer;
+
+ { function IsPalindrome(Number : int64): boolean;
+  var
+    ALength, c : integer;
+    AString    : string;
+  begin
+    Result  := true;
+    AString := IntToStr(Number);
+    ALength := length(AString);
+    for c := 0 to ALength - 1 do if AString[c + 1] <> AString[ALength - c] then begin
+      Result := false;
+      break;
+    end;
+  end; }
+  
+begin
+  // Some Setup Stuff
+  UpperBorderString := '';
+  LowerBorderString := '1';
+  for a := 1 to Digits do begin
+    UpperBorderString := UpperBorderString + '9';
+    if a > 1 then
+      LowerBorderString := LowerBorderString + '0';
+  end;
+  LowerBorder := StrToInt(LowerBorderString);
+  UpperBorder := StrToInt(UpperBorderString);
+
+  // The Check beginning at the top of the mountain
+  // |-> It's Bruteforce not so clever
+  LastPalinDrome := 0;
+  a := UpperBorder;
+  while a >= LowerBorder do begin
+    b := UpperBorder;
+    while b >= LowerBorder do begin
+      if IsPalindrome(a * b) and ((a * b) > LastPalinDrome) then begin
+        LastPalinDrome := a * b;
+      end;
+      dec(b);
+    end;
+    dec(a);
+  end;
+  Result := LastPalinDrome;
+end;
+
+
+ procedure AddPrim(Number, upperborder : integer; Prims, Counts, SubCounts : array of integer);
+  var
+    d     : integer;
+    found : boolean;
+  begin
+    found := false;
+    for d := 0 to UpperBorder -1 do begin
+      if Prims[d] = Number then begin
+        found        := true;
+        SubCounts[d] := SubCounts[d] + 1;
+        break;
+      end;
+    end;
+    if not found then begin
+      d := 0;
+      while Prims[d] <> 0 do inc(d); 
+      Prims[d]     := Number;
+      SubCounts[d] := 1;
+    end;
+  end;
+
+  function pow(Base, Exponent : integer):integer;
+  var
+    i : integer;
+  begin
+    Result := 1;
+    for i := 1 to Exponent do Result := Result * Base;
+  end;
+
+
+
+//http://projecteuler.net/problem=5
+function Task5(UpperBorder: integer): int64;
+var
+  Prims, Counts, SubCounts : array of integer;
+  a, b, ToCheck            : integer;
+
+
+  {procedure AddPrim(Number : integer);
+  var
+    d     : integer;
+    found : boolean;
+  begin
+    found := false;
+    for d := 0 to UpperBorder -1 do begin
+      if Prims[d] = Number then begin
+        found        := true;
+        SubCounts[d] := SubCounts[d] + 1;
+        break;
+      end;
+    end;
+    if not found then begin
+      d := 0;
+      while Prims[d] <> 0 do inc(d); 
+      Prims[d]     := Number;
+      SubCounts[d] := 1;
+    end;
+  end;
+
+  function pow(Base, Exponent : integer):integer;
+  var
+    i : integer;
+  begin
+    Result := 1;
+    for i := 1 to Exponent do Result := Result * Base;
+  end; }
+  
+begin
+  setlength(Prims,     UpperBorder);
+  setlength(Counts,    UpperBorder);
+  setlength(SubCounts, UpperBorder);
+
+  for a := 0 to UpperBorder -1 do begin
+    Prims[a]     := 0;
+    Counts[a]    := 0;
+    SubCounts[a] := 0;
+  end;
+
+  for a := UpperBorder downto 2 do begin
+    for b := 0 to UpperBorder -1 do SubCounts[b] := 0;
+
+    ToCheck := a;
+    while ToCheck > 1 do begin
+      b := ToCheck;
+      while b > 1 do begin
+        if (ToCheck mod b = 0) and IsPrimX(b) then begin
+          AddPrim(b, upperborder, Prims, Counts, SubCounts);
+          ToCheck := ToCheck div b;
+          b := 1;
+        end;
+        dec(b);
+      end;
+    end;
+
+    for b := 0 to UpperBorder -1 do Counts[b] := max(Counts[b], SubCounts[b]);
+  end;
+
+  Result := 1;
+  for a := 0 to UpperBorder -1 do begin
+    if Counts[a] > 0 then begin
+      Result := Result * Pow(Prims[a], Counts[a]);
+    end;
+  end;
+end;
+
+// http://projecteuler.net/problem=6
+function Task6(Limit: int64): int64;
+var
+  a            : integer;
+  SumOfSquares : int64;
+  SquareOfSums : Int64;
+begin
+  SumOfSquares := 0;
+  SquareOfSums := 0;
+  for a := 1 to Limit do begin
+    SumOfSquares := SumOfSquares + a * a;
+    SquareOfSums := SquareOfSums + a;
+  end;
+  SquareOfSums := SquareOfSums * SquareOfSums;
+  Result       := SquareOfSums - SumOfSquares;
+end;
+
+//http://projecteuler.net/problem=7
+function Task7(Index: integer): int64;
+var
+  a, ToCheck : integer;
+begin
+  a       := 1;
+  ToCheck := 2;
+  while a < Index do begin
+    Inc(ToCheck);
+    if IsPrimX(ToCheck) then inc(a);
+  end;
+  Result := ToCheck;
+end;
+
+
+function Product(Input : string): int64;
+  var
+    b : integer;
+  begin
+    Result := 1;
+    for b := 1 to 5 do Result := Result * StrToInt(Input[b]);
+  end;
+
+
+// http://projecteuler.net/problem=8
+function Task8(InputDigitStream: String): int64;
+var
+  ALength, a  : integer;
+  AProdukt    : int64;
+{  function Product(Input : string): int64;
+  var
+    b : integer;
+  begin
+    Result := 1;
+    for b := 1 to 5 do Result := Result * StrToInt(Input[b]);
+  end;
+  }
+begin
+  AProdukt := 0;
+  ALength  := length(InputDigitStream);
+
+  for a := 1 to ALength - 5 do begin
+    AProdukt := max(AProdukt, Product(copy(InputDigitStream,a,5)));
+  end;
+
+  Result := AProdukt;
+end;
+
+// http://projecteuler.net/problem=9
+function Task9(SumOfTriplet: integer): int64;
+var
+  a, b, c : integer;
+  Found   : boolean;
+begin
+  Result := 0;
+  Found  := false;
+  for a := 1 to SumOfTriplet do begin
+    for b := a + 1 To SumOfTriplet - a do begin
+      for c := b + 1 to SumOfTriplet - a - b do begin
+        if (a * a + b * b = c * c) and (a + b + c = SumOfTriplet) then begin
+          Result := a * b * c;
+          Found  := true;
+          break;
+        end;
+      end;
+      if Found then Break;
+    end;
+    if Found then Break;
+  end;
+end;
+
+
+//http://projecteuler.net/problem=10
+function Task10(Limit: int64): int64;
+var
+  a, Sum : int64;
+begin
+  a   := Limit;
+  Sum := 0;
+  while a > 1 do begin
+    if IsPrimX(a) then sum := sum + a;
+    dec(a);
+  end;
+  Result := sum;
+end;
+
+ function ColProduct(XStart, YStart, NCols : integer;
+    InputNumberField: TTask11NumberFiled) : int64;
+  begin
+    Result :=   InputNumberField[NCols * (YStart + 0) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 1) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 2) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 3) + XStart + 0];
+  end;
+
+  function RowProduct(XStart, YStart, NCols, NRows  : integer; 
+  InputNumberField: TTask11NumberFiled) : int64;
+  begin
+    Result :=   InputNumberField[NCols * (YStart + 0) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 0) + XStart + 1]
+              * InputNumberField[NCols * (YStart + 0) + XStart + 2]
+              * InputNumberField[NCols * (YStart + 0) + XStart + 3];
+  end;
+  function DiagonalProduct(XStart, YStart, NCols, NRows : integer; 
+       InputNumberField: TTask11NumberFiled) : int64;
+  begin
+    Result :=   InputNumberField[NCols * (YStart + 0) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 1) + XStart + 1]
+              * InputNumberField[NCols * (YStart + 2) + XStart + 2]
+              * InputNumberField[NCols * (YStart + 3) + XStart + 3];
+  end;
+  
+  function AntiDiagonalProduct(XStart, YStart, NCols, NRows : integer; 
+         InputNumberField: TTask11NumberFiled) : int64;
+  begin
+    Result :=   InputNumberField[NCols * (YStart + 0) + XStart - 0]
+              * InputNumberField[NCols * (YStart + 1) + XStart - 1]
+              * InputNumberField[NCols * (YStart + 2) + XStart - 2]
+              * InputNumberField[NCols * (YStart + 3) + XStart - 3];
+  end;
+  //   }
+
+function Task11(InputNumberField: TTask11NumberFiled): int64;
+var
+  x, y, NCols, NRows : integer;
+  XStart, YStart : integer;
+  
+  {function ColProduct(XStart, YStart : integer) : int64;
+  begin
+    Result :=   InputNumberField[NCols * (YStart + 0) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 1) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 2) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 3) + XStart + 0];
+  end;
+  function RowProduct(XStart, YStart : integer) : int64;
+  begin
+    Result :=   InputNumberField[NCols * (YStart + 0) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 0) + XStart + 1]
+              * InputNumberField[NCols * (YStart + 0) + XStart + 2]
+              * InputNumberField[NCols * (YStart + 0) + XStart + 3];
+  end;
+  function DiagonalProduct(XStart, YStart : integer) : int64;
+  begin
+    Result :=   InputNumberField[NCols * (YStart + 0) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 1) + XStart + 1]
+              * InputNumberField[NCols * (YStart + 2) + XStart + 2]
+              * InputNumberField[NCols * (YStart + 3) + XStart + 3];
+  end;
+  function AntiDiagonalProduct(XStart, YStart : integer) : int64;
+  begin
+    Result :=   InputNumberField[NCols * (YStart + 0) + XStart - 0]
+              * InputNumberField[NCols * (YStart + 1) + XStart - 1]
+              * InputNumberField[NCols * (YStart + 2) + XStart - 2]
+              * InputNumberField[NCols * (YStart + 3) + XStart - 3];
+  end;  }
+begin
+  NCols := 20; NRows := 20; Result := 0;
+  // Searching 4 in All Cols
+  for x := 0 to NCols -1 do begin
+    for y := 0 to NRows - 1 - 3 do begin
+    ystart:= y; xstart:= x;
+      Result := max(Result, InputNumberField[NCols * (YStart + 0) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 1) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 2) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 3) + XStart + 0]);
+    end;
+  end;
+  // Searching 4 in All Rows
+  for x := 0 to NCols - 1 - 3 do begin
+    for y := 0 to NRows - 1 do begin
+    ystart:= y; xstart:= x;
+      Result := max(Result, InputNumberField[NCols * (YStart + 0) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 0) + XStart + 1]
+              * InputNumberField[NCols * (YStart + 0) + XStart + 2]
+              * InputNumberField[NCols * (YStart + 0) + XStart + 3]);
+    end;
+  end;
+  // Searching 4 in All Diagonals
+  for x := 0 to NCols - 1 - 3 do begin
+    for y := 0 to NRows - 1 - 3 do begin
+    ystart:= y; xstart:= x;
+    
+      Result := max(Result, InputNumberField[NCols * (YStart + 0) + XStart + 0]
+              * InputNumberField[NCols * (YStart + 1) + XStart + 1]
+              * InputNumberField[NCols * (YStart + 2) + XStart + 2]
+              * InputNumberField[NCols * (YStart + 3) + XStart + 3]);
+    end;
+  end;
+  // Searching 4 in All Anti-Diagonals
+  for x := 3 to NCols - 1 do begin
+    for y := 0 to NRows - 1 - 3 do begin
+    ystart:= y; xstart:= x;
+  
+      Result := max(Result, InputNumberField[NCols * (YStart + 0) + XStart - 0]
+              * InputNumberField[NCols * (YStart + 1) + XStart - 1]
+              * InputNumberField[NCols * (YStart + 2) + XStart - 2]
+              * InputNumberField[NCols * (YStart + 3) + XStart - 3]);
+    end;
+  end;
+end;
+
+// http://www.matheboard.de/archive/9214/thread.html
+function Task12(Limit: int64): int64;
+var
+  NumberCounter, a         : integer;
+  DivisorCount, LineIndex  : integer;
+  MaxDivisorCount          : integer;
+  TriangleNumber           : int64;
+  ToCheck                  : int64;
+  Len                      : integer;
+  MaxPrim                  : integer;
+  Processed                : boolean;
+  Prims                    : array of integer;
+  Counts                   : array of integer;
+  StartTime                : TDateTime;
+begin
+  StartTime       := Now;
+  NumberCounter   := 0;
+  TriangleNumber  := 0;
+  DivisorCount    := 0;
+  MaxDivisorCount := 0;
+  MaxPrim         := 2;
+  Len             := 1;
+  setlength(Prims,  Len);
+  setlength(Counts, Len);
+  Prims[0] := 2;
+
+  MyRefToMemo.Lines.add('|-> MaxDivisorCount ' + IntToStr(MaxDivisorCount));
+  MyRefToMemo.Lines.add('|-> TriangleNumber ' + IntToStr(TriangleNumber));
+  LineIndex       := MyRefToMemo.Lines.Count - 2;
+
+  while DivisorCount <= Limit do begin
+    inc(NumberCounter);
+    TriangleNumber := TriangleNumber + NumberCounter;
+
+    // Do the factorisation
+    for a := 0 to len -1 do Counts[a] := 0;
+    ToCheck := TriangleNumber;
+    while ToCheck > 1 do begin
+      Processed := false;
+      for a := 0 to Len -1 do begin
+        if ToCheck mod Prims[a] = 0 then begin
+          ToCheck := ToCheck div Prims[a];
+          inc(Counts[a]);
+          processed := true;
+          break;
+        end;
+      end;
+      if not Processed then begin
+        // adding further prime numbers on the fly
+        for a := MaxPrim + 1 to ToCheck do begin
+          if IsPrimX(a) then begin
+            inc(len);
+            setlength(Prims, Len);
+            setlength(Counts, Len);
+            Prims[Len - 1]  := a;
+            Counts[Len - 1] := 0;
+            MaxPrim         := a;
+          end;
+        end;
+      end;
+    end;
+
+    // calculating the factorcount
+    DivisorCount := 1;  // any number is diviable by 1
+    for a := 0 to len - 1 do begin
+      if Counts[a] > 0 then DivisorCount := DivisorCount * (Counts[a] + 1);
+    end;
+
+
+    MaxDivisorCount := max(DivisorCount, MaxDivisorCount);
+    MyRefToMemo.Lines.Strings[LineIndex]:= 
+               '|-> MaxDivisorCount ' + IntToStr(MaxDivisorCount);
+    MyRefToMemo.Lines.Strings[LineIndex + 1]:= 
+               '|-> TriangleNumber ' + IntToStr(TriangleNumber);
+  end;
+
+  MyRefToMemo.Lines.add('|-> MaxDivisorCount; ' + IntToStr(MaxDivisorCount));
+  MyRefToMemo.Lines.add('|-> Time: '
+            + FloatToStr(24 * 60 * 60 * 1000 * (now - StartTime)) + 'ms');
+
+  Result := TriangleNumber;
+end;
+
+function Task13(InputNumberField: TTask13NumberField; Digits: integer): int64;
+var
+  a, b, ALength     : integer;
+  Sum, RestAsString : String;
+  rest              : integer;
+begin
+  ALength := length(InputNumberField[0]);
+  Rest    := 0;
+  sum     := '';
+  for a := ALength downto 1 do begin
+    for b := 0 to 99 do begin
+      Rest := Rest + strtoint(InputNumberField[b][a]);
+    end;
+    RestAsString := IntToStr(rest);
+    sum          := RestAsString[length(RestAsString)] + sum;
+    Rest         := StrToInt(copy(RestAsString,1,length(RestAsString) - 1));
+  end;
+
+  RestAsString := IntToStr(rest);
+  sum          := RestAsString + sum;
+
+  MyRefToMemo.Lines.Add('|-> Sum: ' + sum);
+  MyRefToMemo.Lines.Add('|-> Digits: ' + inttostr(length(sum)));
+  Result := StrToInt64(Copy(sum,1,Digits));
+
+end;
+
+
+//http://projecteuler.net/problem=16
+function Task16(Exponent: integer): int64;
+var
+  a, b     : integer;
+  Number   : string;
+  Ubertrag : Byte;
+  Digit    : Byte;
+begin
+  Number := '2';
+  for a := 2 to Exponent do begin
+    Ubertrag := 0;
+    for b := length(Number) downto 1 do begin
+       Digit     := strtoint(Number[b]);
+       Number[b] := inttostr((2 * Digit + Ubertrag) mod 10)[1];
+       Ubertrag  := (2 * Digit + ubertrag) div 10
+    end;
+    if ubertrag > 0 then Number := IntToStr(ubertrag) + Number;
+  end;
+  result := 0;
+  for a := 1 to length(Number) do begin
+    result := result + strtoint(Number[a]);
+  end;
+end;
+
+
+// http://projecteuler.net/problem=34
+// 9! = 362880
+// 7 x 9! ist 2540160 = z
+// Eine 7 stellige Zahl aus 9en kann also nicht gr??er als z in der summer der fakult?ten der ziffern werden
+// es reicht also wenn wir die zahlen bis 2540160 testen
+
+function Task34: int64;
+var
+  a, z, b    : integer;
+  Faks       : array[0..9] of integer;
+  Sum, Summi : int64;
+  Number     : string;
+begin
+  Faks[0] := 1;
+  Faks[1] := 1;
+  Faks[2] := 2;
+  Faks[3] := 6;
+  Faks[4] := 24;
+  Faks[5] := 120;
+  Faks[6] := 720;
+  Faks[7] := 5040;
+  Faks[8] := 40320;
+  Faks[9] := 362880;
+
+  Sum := 0;
+  for a := 3 to 2540160 do begin
+    Number := IntToStr(a);
+    Summi  := 0;
+    for b := 1 to length(Number) do begin
+      Summi := Summi + Faks[StrToInt(Number[b])];
+    end;
+    if Summi = a then begin
+      Sum := Sum + a;
+      MyRefToMemo.Lines.Add(IntToStr(a));
+    end;
+  end;
+  Result := Sum;
+end;
+
+//http://projecteuler.net/problem=40
+function Task40: int64;
+var
+  a       : integer;
+  Number  : string;
+  aProduct : int64;
+begin
+  aProduct := 1;
+  for a := 1 to 1000000 do begin
+    Number := Number + IntToStr(a);
+    if length(Number) > 1000000 then break;
+  end;
+
+  for a := 0 to 6 do begin
+     aProduct := aProduct * strtoint(Number[round(Power(10,a))]);
+  end;
+
+  Result := aProduct;
+end;
+
+
+procedure TForm1_Button1Click(Sender: TObject);
+begin
+  {MyProjectEuler.}ReportResults(aMemo1);
+end;
+
+procedure TForm1_FormCreate(Sender: TObject);
+begin
+  //MyProjectEuler := cProjectEuler.Create;
+end;
+
+
+procedure setEulerform;
+begin
+ Form1:= TForm.create(self)
+ with form1 do begin
+  Left := 0
+  Top := 0
+  Caption := 'Form1 mX4 EULER Project'
+  ClientHeight := 490
+  ClientWidth := 852
+  Color := clBtnFace
+  Font.Charset := DEFAULT_CHARSET
+  Font.Color := clWindowText
+  Font.Height := -11
+  Font.Name := 'Tahoma'
+  Font.Style := []
+  OldCreateOrder := False
+  //OnCreate := FormCreate
+  // MyProjectEuler := cProjectEuler.Create;
+  PixelsPerInch := 96
+  //TextHeight := 13
+  Show;
+  end;
+  Button1:= TButton.create(form1)
+  with button1 do begin
+    button1.parent:= form1;
+    Left := 40
+    Top := 48
+    Width := 175
+    Height := 25
+    Caption := 'Start Euler Tasks'
+    TabOrder := 0
+    OnClick := @TForm1_Button1Click;
+    //ReportResults(Memo1);
+  end;
+  aMemo1:= TMemo.create(form1)
+  with amemo1 do begin
+    amemo1.parent:= form1;
+    Left := 40
+    Top := 90
+    Width := 473
+    Height := 370
+    Lines.add('Memo1 Euler first: ')
+    TabOrder := 1
+  end;
+end;
+
+
+
+BEGIN  //Main Pain
+//<Executable statements>
+  for i:= 1 to 3 do 
+    Writeln(TEXTOUT+CRLF);
+  maXcalcF('2^64 /(60*60*24*365)') 
+  
+  InitFillFields;
+  setEulerform;
+   
+//<Definitions>  
+END. 
+
+{ref:
+Memo1 Euler first
+Task 1
+|-> Solution: 233168
+Task 2
+|-> Solution: 4613732
+Task 3
+|-> Solution: 6857
+Task 4
+|-> Solution: 906609
+Task 5
+|-> Solution for 10: 2520
+|-> Solution for 20: 232792560
+|-> Solution for 30: 1217288368
+Task 12
+|-> MaxDivisorCount; 6
+|-> Time: 15.0000443682075ms
+|-> Solution for 5: 28
+|-> MaxDivisorCount; 36
+|-> Time: 63.0000606179237ms
+|-> Solution for 30: 2016
+|-> MaxDivisorCount; 576
+|-> Time: 333512.999396771ms
+|-> Solution for 500: 76576500
+
+584942417355.072
+ mX4 executed: 11/23/2016 10:58:52 AM  Runtime: 0:0:14.399  Memload: 57% use
+ 
+ Memo1 Euler first: 
+Task 1
+|-> Solution: 233168
+Task 2
+|-> Solution: 4613732
+Task 3
+|-> Solution: 6857
+Task 4
+|-> Solution: 906609
+Task 5
+|-> Solution for 10: 2520
+|-> Solution for 20: 232792560
+|-> Solution for 30: 1217288368
+Task 6
+|-> Solution: 25164150
+Task 7
+|-> Solution: 104743
+Task 8
+|-> Solution: 40824
+Task 9
+|-> Solution: 31875000
+Task 12
+|-> MaxDivisorCount 6
+|-> TriangleNumber 28
+|-> MaxDivisorCount; 6
+|-> Time: 124.999950639904ms
+|-> Solution for 5: 28
+|-> MaxDivisorCount 36
+|-> TriangleNumber 2016
+|-> MaxDivisorCount; 36
+|-> Time: 1092.00021252036ms
+|-> Solution for 30: 2016
+|-> MaxDivisorCount 576
+|-> TriangleNumber 76576500
+|-> MaxDivisorCount; 576
+|-> Time: 602714.000386186ms
+|-> Solution for 500: 76576500
+Task 13
+|-> Sum: 5537376230390876637302048746832985971773659831892672
+|-> Digits: 52
+|-> Solution: 1242408934
+Task 16
+|-> Solution for 15: 26
+|-> Solution for 30x30: 1198
+|-> Solution for 1000: 1366
+Task 34
+145
+40585
+|-> Solution is: 40730
+Task 40
+|-> Solution is: 210
+Tasks all End art: 11/23/2016 4:28:35 PM
+
+40585
+|-> Solution is: 40730
+Task 40
+|-> Solution is: 210
+Stop and Overall Time consuming: 0:17:53.102
+Tasks all End art: 01/12/2016 11:39:06
+
+ |-> Solution is: 210
+Stop and Overall Time consuming: 0:10:56.953
+Tasks all End art: 01/12/2016 19:18:00
+ 
+  }
+
+//584942417355.072
+/// mX4 executed: 9/21/2016 9:58:27 AM  Runtime: 0:0:14.929  Memload: 58% use
+
+//----app_template_loaded_code----
+//----File newtemplate.txt not exists - now saved!----

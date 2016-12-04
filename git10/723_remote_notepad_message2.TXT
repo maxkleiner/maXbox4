@@ -1,0 +1,377 @@
+{***************************************************************
+ * Project  : Console Expressions and Strips Routines with OS REGEX
+ * App Name : 723_remote_notepad_message.TXT 530_3DLab.TXT, #locs=197
+ * Purpose  : Demonstrates Console out to box, netstat adding func() at runtime!
+ * Date     : #sign>4:21 Max: MAXBOX10: 11/11/2016 14:30:34  PM 
+ ****************************************************************}
+
+ //TODO: transfer the strip to a REGEX func
+ //ref: maXbox3/source/REST/uPSI_StExpr.pas
+   
+ Program DOSConsoleCapture5;
+                        
+ {Formats a StripTag Position of HTML in function or REGEX match selection}
+
+  function ReadUntil(const ReadFrom,len: Integer; const C: Char; s: string):Integer;
+  var
+    j: Integer;
+  begin
+    for j := ReadFrom to Len do
+      if (s[j] = C) then begin
+        Result := j;
+        Exit;
+      end;
+    Result := Len+1;
+  end;
+ 
+function StripTags2(const S: string): string;
+var
+  Len: Integer;
+  i, APos: Integer;
+begin
+  Len := Length(S);
+  i := 0;
+  Result := '';
+  while (i <= Len) do begin
+    Inc(i);
+    APos := ReadUntil(i, len, '<', s);
+    Result := Result + Copy(S, i, APos-i);
+    i := ReadUntil(APos+1,len, '>',s);
+  end;
+end;
+
+FUNCTION Strip(const SubString: String; MainString: String): String;
+{ =================================================================== }
+VAR i,j: Integer;
+
+BEGIN{Strip}
+    j := length(SubString);
+    If j <> 0 Then Begin
+       i := Pos(SubString,MainString);
+       While i <> 0 Do Begin
+           Delete(MainString, i, j);
+           i := Pos(SubString,MainString);
+       End;
+   End;
+   result:= MainString;
+END{Strip};
+
+
+FUNCTION StripAny(const SubString: String; MainString: String): String;
+{ =================================================================== }
+VAR i,j: Integer;
+      s: char;
+BEGIN{Strip}
+    //j := Ord(SubString[0]);
+     j := length(SubString);
+    While j > 0 Do Begin
+       s := SubString[j];
+       i := Pos(s,MainString);
+       While i <> 0 Do Begin
+           Delete(MainString,i,1);
+           i := Pos(s,MainString);
+       End;
+       Dec(j);
+   End;
+   result:= MainString;
+END{Strip};
+
+  
+
+procedure TForm1Findwindow_Notepad;
+var
+  wnd: HWND;
+  i: Integer;
+  s: string;
+begin
+  wnd := FindWindow('notepad', '');
+  if wnd <> 0 then begin
+    wnd := FindWindowEx(wnd, 0, 'Edit', '');
+    // Write Text in Notepad.
+    s := 'Hello maXPad 3 ecotronics'+#13#10+'second line:';
+     for i := 1 to Length(s) do
+      SendMessage(wnd, WM_CHAR, Ord(s[i]), 0);
+     //  PostMessage(wnd, WM_KEYDOWN, VK_RETURN, 0);
+  
+    s := s+'Hello maXPad 4'+#13#10+'third line:';
+   
+    for i := 1 to Length(s) do
+      SendMessage(wnd, WM_CHAR, Ord(s[i]), 0);
+    // Simulate Return Key.
+    PostMessage(wnd, WM_KEYDOWN, VK_RETURN, 0);
+    // Simulate Space.
+    PostMessage(wnd, WM_KEYDOWN, VK_SPACE, 0);
+    SendMessage(wnd, WM_CHAR, 5, 0);
+    //send time of F5 command in notepad!
+    PostMessage(wnd, WM_KEYDOWN, VK_F5, 0);
+ 
+  end;
+end; 
+
+
+Const FName = 'maxboxlog24.log'; //'firstdemo3.txt';
+      Testtext = 'this is coolcode CODEsign to mine!..?';
+var   FormLab3D: TFormLab3D;
+      myfunc: TStMethod1Param;
+
+Begin   //main
+
+//OpenDoc(exepath+FName)
+ {Memo1.Lines.LoadFromFile(YourFileNameHere);
+ AppendValueToStrings(Memo1.Lines, 10);
+ Memo1.Lines.SaveToFile(YourFileNameHere);}
+  //maxform1.N3dlab1click(self);
+
+  writeln(Strip('<br/>','<p>This is text.<br/>This is line 2</p>'))
+  writeln(StripString('<p>This is text.<br/>This is line 2</p>','<br/>'))
+  writeln(StripAny('<br/>','<p>This is text.<br/>This is line 2</p>'))
+  writeln(Strip('!',testtext));
+  writeln(StripAny('!,.?',testtext));
+ 
+  sr:= StripTags2('<p>This is text.<br/> This is line 2</p>');
+  //ShowMessage(s);   // will display 'This is text.This is line 2'
+  writeln(sr);   // will display 'This is text.This is line 2'
+  writeln(StripTags('<p>This is text.<br/> This is line 2</p>'));
+  
+  Writeln(ReplaceRegExpr ('([</pbr>])*',
+                          '<p>This is text.<br/> This is line 2</p>','', True))
+  Writeln(ReplaceRegExpr ('<[^>]*>',
+                          '<p>This is text.<br/> This is line 2</p>','', True))
+ //CL.AddDelphiFunction('Function AnalyzeExpr( const Expr : AnsiString) : Double');
+   writeln(floattostr(AnalyzeExpr('2^10 * ln(8)')))
+     
+      {srlist:= TStringlist.create;
+      //ConsoleCapture('C:\', 'cmd.exe', '/c dir *.* /s',srlist);
+      ConsoleCapture('C:\', 'cmd.exe', '/c dir *.*',srlist);
+      writeln(srlist.text)
+      srlist.Free;
+      }
+      writeln('DOS Out Param example of: '+exepath)
+      writeln(GETDOSOutput('cmd.exe /c dir '+'"'+exepath+'*.*"','C:\'));
+      
+     //ExecuteShell('cmd','/c rundll32.exe url.dll,TelnetProtocolHandler 172.134.77.119')
+     //rundll32.exe url.dll,NewsProtocolHandler borland.public.delphi.objectpascal
+    SendCopyMessage('this is from outer box','TMaxForm1');
+    //SendCopyMessage('this is from outer box','MainForm');
+         writeln('comSpec '+getenvironmentvariable('ComSpec'))
+  //    function ExecuteProcess(FileName: string;Visibility:Integer; BitMask:Integer; Synch:Boolean):Longword;
+    //bitmask ---> 2 means on second CPU, sync or async possible!
+      
+      writeln('NUMBER_OF_PROCESSORS: '
+             +getEnvironmentVariable('NUMBER_OF_PROCESSORS'))
+      
+      writeln(DecimalSeparator+' '+getDecimalSeparator);        
+      //shellexecute(1, 'open', 'notepad', 'rec_files.txt', '', 2)
+      //Exception: Privileged instruction.
+      //shellexecute(0, 'open', 'notepad', '', '', 2)
+     
+     //if ExecuteProcess('notepad.exe', SW_SHOW, 1, true) = 0 then begin 
+    if ShellExecute3('notepad.exe','',seCmdopen) = '' then begin
+    //writeln(ShellExecute3('notepad.exe','',seCmdopen)) 
+  
+      writeln('Multiprocessing Notepad Runs on CPU 1');
+      sleep(1100)
+      TForm1Findwindow_Notepad;
+    end; 
+    writeln(SysErrorMessage(GetLastError))
+   
+    writeln(GETDOSOutput('cmd.exe /c wmic cpu get architecture','C:\'));
+    writeln(GETDOSOutput('cmd.exe /c wmic cpu get name','C:\'));
+    //to monitor tcp spyware over PID - process ID
+   { memo2.setFocus;
+    repeat
+      writeln(GETDOSOutput('cmd.exe /c netstat -o','C:\'));
+      memo2.color:= clsilver;
+      sleep(2000)
+      memo2.color:= clyellow;    
+    until isKeyPressed;  
+    memo2.color:= clwhite;    
+    writeln(SysErrorMessage(GetLastError))
+    } 
+     // ShowMessage(SysErrorMessage(GetLastError)) 
+     writeln('FindWindow of maXbox: '+itoa(FindWindow('TMaxForm1', ''))); 
+     
+     //Digest512Equal  
+     //KnuthHashA
+    
+End.  // remote notepad
+
+Ref:
+
+http://www.swissdelphicenter.ch/en/showcode.php?id=770
+
+function TForm1.RunCaptured(const _dirName, _exeName, _cmdLine: string): Boolean;
+var
+  start: TStartupInfo;
+  procInfo: TProcessInformation;
+  tmpName: string;
+  tmp: Windows.THandle;
+  tmpSec: TSecurityAttributes;
+  res: TStringList;
+  return: Cardinal;
+begin
+  Result := False;
+  try
+    { Setze ein Temporäres File }
+    { Set a temporary file }
+    tmpName := 'Test.tmp';
+    FillChar(tmpSec, SizeOf(tmpSec), #0);
+    tmpSec.nLength := SizeOf(tmpSec);
+    tmpSec.bInheritHandle := True;
+    tmp := Windows.CreateFile(PChar(tmpName),
+           Generic_Write, File_Share_Write,
+           @tmpSec, Create_Always, File_Attribute_Normal, 0);
+    try
+      FillChar(start, SizeOf(start), #0);
+      start.cb          := SizeOf(start);
+      start.hStdOutput  := tmp;
+      start.dwFlags     := StartF_UseStdHandles or StartF_UseShowWindow;
+      start.wShowWindow := SW_Minimize;
+      { Starte das Programm }
+      { Start the program }
+      if CreateProcess(nil, PChar(_exeName + ' ' + _cmdLine), nil, nil, True,
+                       0, nil, PChar(_dirName), start, procInfo) then
+      begin
+        SetPriorityClass(procInfo.hProcess, Idle_Priority_Class);
+        WaitForSingleObject(procInfo.hProcess, Infinite);
+        GetExitCodeProcess(procInfo.hProcess, return);
+        Result := (return = 0);
+        CloseHandle(procInfo.hThread);
+        CloseHandle(procInfo.hProcess);
+        Windows.CloseHandle(tmp);
+        { Die Ausgaben hinzufügen }
+        { Add the output }
+        res := TStringList.Create;
+        try
+          res.LoadFromFile(tmpName);
+          Memo1.Lines.AddStrings(res);
+        finally
+          res.Free;
+        end;
+        Windows.DeleteFile(PChar(tmpName));
+      end
+      else
+      begin
+        Application.MessageBox(PChar(SysErrorMessage(GetLastError())),
+          'RunCaptured Error', MB_OK);
+      end;
+    except
+      Windows.CloseHandle(tmp);
+      Windows.DeleteFile(PChar(tmpName));
+      raise;
+    end;
+  finally
+  end;
+end;
+
+
+
+function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
+var
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+  SecAtrrs: TSecurityAttributes;
+  hInputFile, hOutputFile: THandle;
+begin
+  Result := False;
+  hInputFile := CreateFile(PChar(InputFile), GENERIC_READ, FILE_SHARE_READ,
+    CreateInheritable(SecAtrrs), OPEN_EXISTING, FILE_ATTRIBUTE_TEMPORARY, 0);
+  if hInputFile <> INVALID_HANDLE_VALUE then
+  begin
+    hOutputFile := CreateFile(PChar(OutPutFile), GENERIC_READ or GENERIC_WRITE,
+      FILE_SHARE_READ, CreateInheritable(SecAtrrs), CREATE_ALWAYS,
+      FILE_ATTRIBUTE_TEMPORARY, 0);
+    if hOutputFile <> INVALID_HANDLE_VALUE then
+    begin
+      FillChar(StartupInfo, SizeOf(StartupInfo), #0);
+      StartupInfo.cb := SizeOf(StartupInfo);
+      StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+      StartupInfo.wShowWindow := SW_HIDE;
+      StartupInfo.hStdOutput := hOutputFile;
+      StartupInfo.hStdInput := hInputFile;
+      Result := CreateProcess(nil, PChar(CommandLine), nil, nil, True,
+        CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo,
+        ProcessInfo);
+      if Result then
+      begin
+        WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+        CloseHandle(ProcessInfo.hProcess);
+        CloseHandle(ProcessInfo.hThread);
+      end;
+      CloseHandle(hOutputFile);
+    end;
+    CloseHandle(hInputFile);
+  end;
+end;
+
+
+procedure SIRegister_TStExpression(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TStComponent', 'TStExpression') do
+  with CL.AddClassN(CL.FindClass('TStComponent'),'TStExpression') do
+  begin
+    RegisterMethod('Constructor Create( AOwner : TComponent)');
+    RegisterMethod('Function AnalyzeExpression : TStFloat');
+    RegisterMethod('Procedure AddConstant(const Name: AnsiString; Value: TStFloat)');
+    RegisterMethod('Procedure AddFunction0Param( const Name : AnsiString; FunctionAddr : TStFunction0Param)');
+    RegisterMethod('Procedure AddFunction1Param( const Name : AnsiString; FunctionAddr : TStFunction1Param)');
+    RegisterMethod('Procedure AddFunction2Param( const Name : AnsiString; FunctionAddr : TStFunction2Param)');
+    RegisterMethod('Procedure AddFunction3Param( const Name : AnsiString; FunctionAddr : TStFunction3Param)');
+    RegisterMethod('Procedure AddInternalFunctions');
+    RegisterMethod('Procedure AddMethod0Param( const Name : AnsiString; MethodAddr : TStMethod0Param)');
+    RegisterMethod('Procedure AddMethod1Param( const Name : AnsiString; MethodAddr : TStMethod1Param)');
+    RegisterMethod('Procedure AddMethod2Param( const Name : AnsiString; MethodAddr : TStMethod2Param)');
+    RegisterMethod('Procedure AddMethod3Param( const Name : AnsiString; MethodAddr : TStMethod3Param)');
+    RegisterMethod('Procedure AddVariable(const Name: AnsiString;VariableAddr: PStFloat)');
+    RegisterMethod('Procedure ClearIdentifiers');
+    RegisterMethod('Procedure GetIdentList( S : TStrings)');
+    RegisterMethod('Procedure RemoveIdentifier( const Name : AnsiString)');
+    RegisterProperty('AsInteger', 'Integer', iptr);
+    RegisterProperty('AsFloat', 'TStFloat', iptr);
+    RegisterProperty('AsString', 'AnsiString', iptr);
+    RegisterProperty('ErrorPosition', 'Integer', iptr);
+    RegisterProperty('Expression', 'AnsiString', iptrw);
+    RegisterProperty('LastError', 'Integer', iptr);
+    RegisterProperty('AllowEqual', 'Boolean', iptrw);
+    RegisterProperty('OnAddIdentifier', 'TNotifyEvent', iptrw);
+    RegisterProperty('OnGetIdentValue', 'TStGetIdentValueEvent', iptrw);
+  end;
+end;
+
+
+//#sign:4:21 Max: MAXBOX10: 11/11/2016 14:30:34  PM 
+//#tech:.4.80perf: 0:0:5.197 threads: 8 192.168.56.1 14:30:34 4.2.4.80055
+
+
+ref:
+
+http://stackoverflow.com/questions/11229831/regular-expression-to-remove-html-tags-from-a-string
+
+http://www.delphipages.com/forum/showthread.php?t=201629
+http://useruploadedfiles.programmersheaven.com/48584/NMEA.pas
+
+
+    Program SpammersAreParasites;
+    var l1,l2: Srting;
+    begin
+      l1:='70';
+      l2:='0';
+      Bxo:=l1 + l2;
+      Bxo:=(Bxo)
+    (*
+      l1:=97;
+      l2:=9
+     Bxo:=(l1 + l2);
+    *)
+    //end.
+
+(*? Value of Bxo:    *)
+
+{"There is a theory which states that if ever anybody discovers
+exactly what the Universe is for and why it is here, it will
+instantly disappear and be replaced by something even more
+bizarre and inexplicable. There is another theory which states
+that this has already happened."
+-- Douglas Adams }
+
+
