@@ -2,6 +2,23 @@
 code compiler script studio
 
 ****************************************************************
+Release Notes maXbox 4.7.6.10 November 2021 mX476
+****************************************************************
+Add 5 Units + 2 Tutorials
+
+1441 unit uPSI_neuralgeneric.pas; CAI
+1442 unit uPSI_neuralthread.pas; CAI
+1443 unit uPSI_uSysTools; TuO
+1444 unit Upsi_neuralsets; mX4
+1445 unit uPSI_uWinNT.pas; mX4
+
+Total of Function Calls: 34880
+SHA1: of 4.7.6.10  CF939E3A8D4723DB1DEF383C5FC961E06728C58F
+CRC32: 38F88218 30.5 MB (32,022,344 bytes)
+
+Source is based on:
+
+****************************************************************
 Release Notes maXbox 4.2.4.80 October 2016 Ocean7 mX4
 ****************************************************************
 add 20 units + 442 functions- WMI Script Type Library - webbox
