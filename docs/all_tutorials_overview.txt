@@ -1,0 +1,491 @@
+///////////////////////////////////////////////////////////////////////////////
+
+All maXbox Tutorials Table 2016/2017/2018/2019/2020/2021/2022
+
+///////////////////////////////////////////////////////////////////////////////
+
+    Tutorial 00 Function-Coding  (Blix the Programmer)
+    Tutorial 01 Procedural-Coding
+    Tutorial 02 OO-Programming
+    Tutorial 03 Modular Coding
+    Tutorial 04 UML Use Case Coding
+    Tutorial 05 Internet Coding
+    Tutorial 06 Network Coding
+    Tutorial 07 Game Graphics Coding
+    Tutorial 08 Operating System Coding
+    Tutorial 09 Database Coding
+    Tutorial 10 Statistic Coding
+    Tutorial 10 Probability Coding
+    Tutorial 11 Forms Coding
+    Tutorial 12 SQL DB Coding
+    Tutorial 13 Crypto Coding
+    Tutorial 14 Parallel Coding
+    Tutorial 15 Serial RS232 Coding
+    Tutorial 16 Event Driven Coding
+    Tutorial 17 Web Server Coding
+    Tutorial 18 Arduino System Coding
+    Tutorial 18_3 Arduino RGB LED Coding
+    Tutorial 18_5 Arduino RGB LED WebSocket
+    Tutorial 19 WinCOM /Arduino Coding
+    Tutorial 20 Regular Expressions RegEx 
+    Tutorial 21 Android Coding (coming 2015)
+    Tutorial 20_2 BASTA 2015 RegEx Slides
+    Tutorial 21 Android SONAR: End of 2015 
+    Tutorial 22 Services Coding
+    Tutorial 23 Real Time Systems 
+    Tutorial 24 Clean Code 
+    Tutorial 25 maXbox Configuration
+    Tutorial 26 Socket Programming with TCP
+    Tutorial 27 XML & Tree 
+    Tutorial 28 DLL Coding (available)
+    Tutorial 29 UML Scripting (available)
+    Tutorial 30 Web of Things (available)
+    Tutorial 31 Closures (2014)
+    Tutorial 32 SQL Firebird (2014)
+    Tutorial 33 Oscilloscope (2014)
+    Tutorial 34 GPS Navigation (2014)
+    Tutorial 35 WebBox (2014)
+    Tutorial 36 Unit Testing (2015)
+    Tutorial 37 API Coding (2015)
+    Tutorial 38 3D Coding (2015)
+    Tutorial 39 GEO Map Coding (available)
+    Tutorial 39_1 GEO Map OpenLayers (available)
+    Tutorial 39_2 Maps2 Coding
+    Tutorial 40 REST Coding (2015)
+    Tutorial 40_1 OpenWeatherMap Coding German
+    Tutorial 41 Big Numbers Coding (2015)
+    Tutorial 41 Big Numbers Short
+    Tutorial 42 Multi Parallel Processing (2015)
+    Tutorial 43 Code Metrics: June2016
+    Tutorial 44 IDE Extensions
+    Tutorial 45 Robotics: July2016
+    Tutorial 46 WineHQ: Dez2016
+    Tutor    47 RSA Crypto Jan2017
+    Tutor    48 Microservice Jan2017
+    Tutorial 49 Refactoring: March 2017
+    Tutorial 50 Big Numbers II: April 2017
+    Tutorial 51 5 Use Cases April 2017
+    Tutorial 52 Work with WMI Mai 2017
+    Tutorial 52_2 Work with WMI II June 2017
+    Tutorial 53 Real Time UML August 2017
+    Tutorial 54 MicroserviceII MS Crypto API Sept 2017
+    Tutorial 55 ASCII Talk Dez 2017
+    Tutorial 56 Artificial Neural Network 2018
+    Tutorial 57 Neural Network II
+    Tutorial 58 Data Science
+    Tutorial 59 Big Data Feb 2018
+    Tutorial 60 Machine Learning March 2018
+    Tutorial 60_1 Sentiment Analysis
+    Tutorial 60_2 Neural Network III
+    Tutorial 63 Machine Games
+    Tutorial 64 Install Routines
+    Tutorial 65 Machine Learning III
+    Tutorial 66 Machine Learning IV
+    Tutorial 67 Machine Learning V
+    Tutorial 68 Machine Learning VI
+    Tutorial 69 Machine Learning VII
+    Tutorial 70 NoGUI Shell Code
+    Tutorial 71 CGI and Web Sockets
+    Tutorial 72 Multilanguage Coding
+    Tutorial 73 EKON 24 Community Edition
+    Tutorial 74 BASTA 2020 VS Code Vision
+    Tutorial 75 Machine Learning VIII Object Detection
+    Tutorial 76 Machine Learning IX with CAI
+    Tutorial 77 Machine Learning X Confusion Matrix
+    Tutorial 78 Portable pixmap format (PPM)
+    Tutorial 79 Unit Testing with Asserts
+    Tutorial 80 My Tips & Tricks
+    Tutorial 81 RSS Feeds of BBC March 2021
+    Tutorial 82 JSON Code April 2021	
+    Tutorial 82_2 JSON Sentiment Analysis API April 2021
+    Tutorial 83 Machine Learning XI Classification April 2021	
+    Tutorial 84 Machine Learning XII Baseline Mai 2021	
+    Tutorial 85 JSON Automation Mai 2021	
+    Tutorial 86 Python4Delphi June 2021
+    Tutorial 86_1 Python4Delphi July 2021
+    Tutorial 86_2 Python4Delphi July 2021
+    Tutorial 86_3 Python4maXbox July 2021
+    Tutorial 87 Image Detection in Lazarus September 2021
+    Tutorial 88 Performance Tuning Oct. 2021
+    Tutorial 89 Build a CNN Oct. 2021
+    Tutorial 89_1 Build a CNN Validation Nov. 2021
+    Tutorial 89_2 Build a CNN Prediction Nov. 2021
+    Tutorial 90 Python Pascal CheatSheet Nov. 2021
+    Tutorial 91 CAI CheatSheet Dez. 2021
+    Tutorial 92 Demystify Pi, Python_CAI CheatSheet Jan. 2022	
+    Tutorial 92_1 DelphiVCL4Python Feb. 2022
+    Tutorial 92_2 Geocoding March 2022
+    Tutorial 93 Geocoding II April 2022
+    Tutorial 94 Post API  April 2022
+    Tutorial 95 Translator API  April 2022
+    Tutorial 96 CNN Pipeline July 2022	
+
+Actual Version: 4.7.6.10 VII March 2022
+
+maXbox 4.7.4.64 on Linux:
+https://maxbox4.wordpress.com/2019/01/06/maxbox-on-linux/
+https://replit.com/@maxbox/machinelearning4-1
+https://linuxschweizag.wordpress.com/
+
+https://maxbox4.wordpress.com/
+
+http://www.softwareschule.ch/download/maxbox_starter48.pdf
+https://bitbucket.org/max_kleiner/maxbox3/wiki/maXbox%20Tutorials
+https://sourceforge.net/projects/maxbox/files/Tutorials/
+
+helpfile online:
+http://www.softwareschule.ch/download/maxbox_functions.txt
+http://max.kleiner.com/maxbox_functions_all.htm
+
+http://sourceforge.net/projects/maxbox
+http://sourceforge.net/apps/mediawiki/maxbox
+https://github.com/maxkleiner/maXbox3.git
+https://github.com/maxkleiner/maXbox3/releases
+http://www.softwareschule.ch/download/Arduino_C_2014_6_basta_box.pdf
+
+maXbox Introduction:
+http://sourceforge.net/projects/maxbox/files/Docu/maXbox_Introduction_2014.pdf/download
+
+Description:
+
+Tutorial 00 Function-Coding (Blix the Programmer)
+– You’ve always wanted to learn how to build software
+
+Tutorial 01 Procedural-Coding
+– All you need to know is that in this program, we have a procedure and a function
+
+Tutorial 02 OO-Programming
+– This lesson will introduce you to objects, classes and events.
+
+Tutorial 03 Modular Coding
+– Modular programming is subdividing your program into separate subprograms
+
+Tutorial 04 UML Use Case Coding
+– UML is said to address the modelling of manual, as well as parts of systems.
+
+Tutorial 05 Internet Coding
+– This lesson will introduce you to Indy Sockets and the library.
+
+Tutorial 06 Network Coding
+– This lesson will introduce you to FTP and HTTP.
+
+Tutorial 07 Game Graphics Coding
+– This lesson will introduce a simple game called Arcade like Pong.
+
+Tutorial 08 Operating System Coding
+– Lesson will introduce various short functions interacting with the OS API.
+
+Tutorial 09 Database Coding
+– Introduction to SQL (Structured Query Language) and database connection.
+
+Tutorial 10 Statistic Coding
+– We spend time in programming Statistics and in our case with probability.
+
+Tutorial 10 Probability Coding
+– Probability theory is required to describe nature and life.
+
+Tutorial 11 Forms Coding
+– TApplication, TScreen, and TForm are the classes that form.
+
+Tutorial 12 SQL DB Coding
+– SQL Programming V2
+
+Tutorial 13 Crypto Coding
+– CryptoBox is based on LockBox 3 which is a library for cryptography.
+
+Tutorial 14 Parallel Coding
+– I’ll explain you what “blocking” and “non-blocking” calls are.
+
+Tutorial 15 Serial RS232 Coding
+– Serial communication is based on a protocol and the standard RS 232.
+
+Tutorial 16 Event Driven Coding
+– Event driven programming are usually message based languages
+
+Tutorial 17 Web Server Coding
+– This lesson will introduce you to Indy Sockets with the TCP-Server.
+
+Tutorial 18 Arduino System Coding
+– Arduino hardware is programmed using a Wiring-based language.
+
+Tutorial 18_3 Arduino RGB LED Coding
+– We code a RGB LED light on the Arduino board and breadboard.
+
+Tutorial 18_5 Arduino RGB LED WebSocket
+– Web server and their COM protocols too.
+
+Tutorial 19 WinCOM /Arduino Coding
+– Illustrates what the WinCOM (Component Object Model) interface.
+
+Tutorial 20 Regular Expressions RegEx
+– A regular expression (RegEx): describes a search pattern of text.
+
+Tutorial 21 Android SONAR: End of 2015
+– SonarQube Technical Architecture
+
+Tutorial 22 Services Coding
+– COM clients are applications that make use of a COM object or service
+
+Tutorial 23 Real Time Systems
+– A real-time system is a type of hardware that operates with a time constraint.
+
+Tutorial 24 Clean Code
+– Today we dive into Clean Code and Refactoring.
+
+Tutorial 25 maXbox Configuration
+– As you will see the configuration of maXbox is possible.
+
+Tutorial 26 Socket Programming with TCP
+– This Tutorial is based on an article by Chad Z.
+
+Tutorial 27 XML & Tree
+– XML (Extensible Markup Language) is a flexible way to create common formats
+
+Tutorial 28 DLL Coding (available)
+– A DLL is a library, short for Dynamic Link Library of executable functions.
+
+Tutorial 29 UML Scripting (available)
+– A first step in UML is to find the requirements.
+
+Tutorial 30 Web of Things (available)
+– There are three main topics in here.
+
+Tutorial 31 Closures (2014)
+– They are a block of code plus the bindings to the environment.
+
+Tutorial 32 SQL Firebird (2014)
+– Firebird is a relational database offering many ANSI SQL standard features.
+
+Tutorial 33 Oscilloscope (2014)
+– Oscilloscopes are one of the must of an electronic lab.
+
+Tutorial 34 GPS Navigation (2014)
+– The Global Positioning System (GPS) is a space-based satellite navigation system.
+
+Tutorial 35 WebBox (2014)
+– We go through the steps running a small web server called web box.
+
+Tutorial 36 Unit Testing (2015)
+– the realm of testing and bug-finding.
+
+Tutorial 37 API Coding (2015)
+– Learn how to make API calls with a black screen and other GUI objects.
+
+Tutorial 38 3D Coding (2015)
+– 3D printing or additive physical manufacturing is a process.
+
+Tutorial 39 GEO Map Coding (available)
+– To find a street nowadays is easy; open a browser and search for.
+
+Tutorial 39_1 GEO Map OpenLayers (available)
+– We run through GEO Maps coding second volume.
+
+Tutorial 39_2 Maps2 Coding
+– The Mapbox Static API
+
+Tutorial 40 REST Coding (2015)
+– REST style emphasizes that interactions between clients and services
+
+Tutorial 40_1 OpenWeatherMap Coding German
+– ”OpenWeatherMap” ist ein Online-service.
+
+Tutorial 41 Big Numbers Coding (2015)
+– Today we step through numbers and infinity.
+
+Tutorial 41 Big Numbers Short
+– numbers and infinity short version
+
+Tutorial 42 Multi Parallel Processing (2015)
+– Multi-processing has the opposite benefits to multi-threading.
+
+Tutorial 43 Code Metrics: June2016
+– Software quality consists of both external and internal quality.
+
+Tutorial 44 IDE Extensions
+– provides a mechanism for extending your functions.
+
+Tutorial 45 Robotics: July2016
+– The Robots industry is promising major operational benefits.
+
+Tutorial 46 WineHQ: Dez2016
+– is a compatibility layer capable of running Windows applications.
+
+Tutor 47 RSA Crypto Jan2017
+– Work with real big RSA Cryptography
+
+Tutor 48 Microservice Jan2017
+– Essentially, micro-service architecture is a method of developing software.
+
+Tutorial 49 Refactoring: March 2017
+– Learning how to refactor code, has another big advantage.
+
+Tutorial 50 Big Numbers II: April 2017
+– We focus on a real world example from a PKI topic RSA.
+
+Tutorial 51 5 Use Cases April 2017
+– In the technology world, your use cases are only as effective as
+
+Tutorial 52 Work with WMI Mai 2017
+– Windows Management Instrumentation
+
+Tutorial 52_2 Work with WMI II June 2017
+– Work with WMI System Management V2.
+
+Tutorial 53 Real Time UML August 2017
+– In complex RT systems, the logical design is strongly influenced.
+
+Tutorial 54 Microservice II MS Crypto API Sept 2017
+– MS Cryptographic Service Provider
+
+Tutorial 55 ASCII Talk Dez 2017
+– Algorithms for Collaborative Filtering
+
+Tutorial 56 Artificial Neural Network 2018
+– The Fast Artificial Neural Network (FANN) library.
+
+Tutorial 57 Neural Network II
+– This tutor will go a bit further to the topic of pattern recognition.
+
+Tutorial 58 Data Science
+– Principal component analysis (PCA) is often the first thing to try out.
+
+Tutorial 59 Big Data Feb 2018
+– Big data comes from sensors,devices, video/audio,networks,blogs.
+
+Tutorial 60 Machine Learning March 2018
+– This tutor introduces the basic idea of machine learning.
+
+Tutorial 60_1 Sentiment Analysis
+– SA is a way to evaluate and elaborate written or spoken language.
+
+Tutorial 60_2 Neural Network III
+– Data Science with ML
+
+Tutorial 63 Machine Games
+– game against machine evolution (game)
+
+Tutorial 64 Install Routines
+– If you write a simple script program and distribute it.
+
+Tutorial 65 Machine Learning III
+– the basic idea of back-propagation and optimization.
+
+Tutorial 66 Machine Learning IV
+– This tutor makes a comparison of a several classifiers in scikit-learn
+
+Tutorial 67 Machine Learning V
+– This tutor shows train test set split and histograms
+
+Tutorial 68 Machine Learning VI
+– This tutor shows clustering and 3D plots
+
+Tutorial 69 Machine Learning VII
+– This tutor shows clustering and 3D plots
+
+Tutorial 70 No GUI 
+– This tutor shows shell code
+
+Tutorial 71 CGI Scripts
+– This tutor shows CGI
+
+Tutorial 72 Multilanguage Coding
+– This tutor shows severals languages in one 
+
+Tutorial 73 EKON 24
+– This presentation shows machine learning in the community edition 
+
+Tutorial 74 BASTA 2020
+– This presentation shows visualization framworks in Visual Studion Code
+
+Tutorial 75 Machine Learning VIII
+– This tutor shows object dection with computer vision
+
+Tutorial 76 Machine Learning IX
+– This tutor shows working with CAI 
+
+Tutorial 77 Machine Learning X
+– This tutor explains some confusion matrix topics 
+
+Tutorial 78 Portable pixmap format (PPM)
+- explains portable pixmap format(PPM), the portable graymap format(PGM)
+and portable bitmap format(PBM) are image file formats designed to
+be easily exchanged between platforms. 
+http://www.softwareschule.ch/download/maxbox_starter78.pdf
+
+Tutor 79 Assertions
+
+Use the Assert procedure to document and enforce the assumptions you must make when writing code. Assert is not a real procedure. The compiler handles Assert specially and compiles the filename and line number of the assertion to help you locate the problem should the assertion fail.
+
+Tutor 80 Tips and Tricks
+
+A whole bunch of 25 Years impressions
+
+Tutor 81 RSS Feeds of BBC
+
+At its core, RSS refers to simple text files (XML/RDF) with more or less important, updated information — news pieces, articles, weather info, opinion mining that sort of thing.
+In the following I want to show this topic thing with the BBC-News feeder. News feeds allow you to see when websites have added new content.
+
+Tutor 82 JSON http://www.softwareschule.ch/download/maxbox_starter82.pdf
+
+JSON (JavaScript Object Notation) is a lightweight data-interchange format. Json data can be read from a file or it could be a Json web link.
+We show a covid time serie web link with TJSON and TEEChart in Pascal and Python.
+
+Tutor 83 maXbox_starter83_Classification
+
+For this tutor we’ll explore one of the classic machine learning datasets – hand written digits classification. We have set up a simple SVC and RandomForest to classify the MNIST digits
+
+Tutor 84 maXbox_starter84_Baseline
+
+A baseline is a method that uses heuristics, simple summary statistics, randomness, or machine learning to create predictions for a dataset. You can use these predictions to measure the baseline’s performance (e.g., accuracy)– this metric will then become what you compare any other machine learning algorithm against.
+
+Tutor 85 maXbox_starter85_JSON
+
+Reading JSON data  could be easy. Json data can be read from a file, folder  or it could be a json web link. Let us first try to read the json from a web link and chart it.
+JSON (JavaScript Object Notation) is a lightweight data-interchange format.
+
+Tutor 86 maXbox_starter86_Introduction2P4D.pdf
+
+Python for Delphi (P4D) is a set of free components that wrap up the Python DLL into Delphi and Lazarus (FPC). They let you easily execute Python scripts, create new Python modules and new Python types. You can create Python extensions as DLLs and much more like scripting. 
+
+Tutorial 86_3 Python4maXbox July 2021
+https://maxbox4.wordpress.com/2021/07/28/python4maxbox-code/
+
+Tutorial 87 Image Detection in Lazarus September 2021
+Lazarus is also being built in colab and the deep learning network is compiled and trained.
+
+Actual Version: 4.7.6.10
+
+Tutorial 88 Performance Tuning September 2021
+Bytecode and Interpreter comparison with internal and external functions.
+
+Tutorial 89
+
+maXbox Starter 89 – Build a CNN (Convolutional Neural Network) – Max Kleiner
+
+Tutorial 90
+
+maXbox Starter 90 – Python4Delphi CheatSheet. – Max Kleiner
+
+Tutorial 91
+
+Faker is a Python library that generates fake data. Fake data is often used for
+testing or filling databases with some dummy data. Faker is heavily inspired by
+PHP’s Faker, Perl’s Data::Faker, and by Ruby’s Faker.$
+
+Tutor 91 Faker SynDat II
+
+Tutorial 92
+
+This tutor explains why PI could be a normal irrational number. So DRINK stands
+for Decimal Representation of a Irrational Number Kind.
+
+Tutor 92_1 VCL4Python
+
+Delphi's VCL library as a Python module for building Windows GUI 
+
+http://www.softwareschule.ch/download/maxbox_starter92_1.pdf
+
+Tutorial 93 Geocoding II April 2022
+Geocoding is the processing of single addresses into geographic coordinates and can be performed by a number of free online web sites. 
+
+----code_cleared_checked4----
