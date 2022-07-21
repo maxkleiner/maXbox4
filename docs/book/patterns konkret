@@ -1,1 +1,71 @@
 
+Patterns konkret: Patterns in modellgetriebenen Projekten durchgängig anwenden. Mit Delphi-, CLX- und C#-Beispielen Paperback – 19 Nov. 2003
+by Max Kleiner (Autor)
+3.0 out of 5 stars 6 ratings 
+
+Product details
+
+    Publisher ‏ : ‎ Software & Support/PRO; 1., Aufl. edition (19 Nov. 2003)
+    Language ‏ : ‎ German
+    Paperback ‏ : ‎ 440 pages
+    ISBN-10 ‏ : ‎ 3935042469
+    ISBN-13 ‏ : ‎ 978-3935042468
+
+    Best Sellers Rank: 3,341,722 in Books (See Top 100 in Books)
+        1,197 in C# Programming
+        15,279 in Computer Science (Books)
+        174,018 in Engineering Science & Technology
+
+
+Patterns konkret
+Patterns in Modell-getriebenen Projekten durchgängig anwenden
+Mit Delphi, CLX und C# Beispielen
+Die Themen:
+Design Patterns, Architektur Patterns: Struktur, Schnittstellen, Formate und Protokolle,
+Lösungsmuster (Code Patterns): Sofortlösungen und OO-Techniken
+MDA-Vorbereitung (Technologie-Patterns)
+Unit Testing, Refactoring
+
+Bsp. Code Patterns
+- reference count
+- callback
+- library template
+- garbage collection
+- exception handling
+- linked list
+- matrix list
+- object list register
+- window message
+- loaded persistence
+- random mapping
+- assembling
+
+Ivar Jacobson soll einmal gesagt haben, die Zukunft im Softwarebau gehört den sprachunabhängigen Mu-
+stern und der Architektur, will meinen, „Executable UML“ ist in grossen Schritten unterwegs, die Grundla-
+gen und Werkzeuge für modellgetriebene Anwendungen bereitzustellen.
+Vieles spricht für ein modellbasiertes Vorgehen: Über ein Diagramm kann man besser debattieren als über
+tausend Zeilen Code, Lösungen werden klarer und Entwurfsfehler lassen sich früher erkennen.
+Das Buch richtet sich an alle Entwickler und Architekten, die einen konkreten Einstieg in die Pattern Welt
+finden möchten. Als Ideenlieferant dient das Buch auch zur Vertiefung bestehender OO-Techniken. Pat-
+terns gehören zweifellos zu den nützlichsten und erfolgreichsten Konzepten des Softwarebaus. Aus einer
+Bibliothek von Modellen und Mustern lässt sich die Zielsprache wählen, die dann auf die entsprechende
+Plattform portiert und anschliessend generiert wird.
+Im ersten Teil des Buches werden die Prozesse und Techniken vorgestellt, die sich für Patterns eignen und
+zur Verwendung kommen. Es sind dies unter anderem OCL, MDA, Refactoring, Interfaces, Listen, Delega-
+tion oder Komposition, einfach das Rüstzeug um erfolgreich Patterns in Schulung oder Projekten einzuset-
+zen.
+Es folgen im zweiten Teil die 24 Design Patterns in reich bebilderter Delphi- und C# Notation. Die häufig-
+sten Code Patterns, unter dem Stichwort CODESIGN, zielen auf den Schnelleinsatz ab.
+Im dritten Teil runden die 15 Architekturmuster das Buch als Kompendium ab. Die meisten der konkreten
+Verwendungen beleuchten die Crossplattform CLX, so dass die Beispiele auch für C++Builder oder Kylix
+Entwickler von Interesse sind. Ein letzter Schwerpunkt bilden die Komponenten einer verteilten Architektur,
+wie z.B. WebServices oder Provider dies bieten.
+Patterns konkret zeigt im Detail, wie Modelle bei ähnlichen Anforderungen immer wieder einsetzbar sind. In
+der dunklen Nacht angetrieben mit Modellmacht ist es wie die Ruhe vor dem Sturm. So wird man wohl
+künftig weniger programmieren und vermehrt einen Modellkatalog wie „Patterns konkret“ konsultieren dür-
+fen. Genau sowenig allerdings wie ein Synthesizer das Komponieren guter Musik garantiert, werden Pat-
+terns und Tools den Entwurf guter Software garantieren. Doch wie in der Musik wird sich auch im Softwa-
+rebau die Erkenntnis durchsetzen, auf die Notation kommt es an.
+Max Kleiner
+Dr. Silvia Rothen, C#
+Dr. Bernhard Angerer, Beirat, Englisch Ausgabe
