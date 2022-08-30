@@ -1,6 +1,69 @@
 # maXbox4
 code compiler script studio
 
+
+![maxbox4delphidirectories2022](https://user-images.githubusercontent.com/3393121/187371546-027a262a-8ad7-4abf-8d49-536410a912fb.png)
+
+*****************************************************************
+Release Notes maXbox 4.7.6.10 IX August 2022 mX476
+****************************************************************
+Add 53 Units + 17 Tutorials
+
+1441 unit uPSI_neuralgeneric.pas; CAI
+1442 unit uPSI_neuralthread.pas; CAI
+1443 unit uPSI_uSysTools; TuO
+1444 unit upsi_neuralsets; mX4
+1445 unit uPSI_uWinNT.pas mX4
+1446 unit uPSI_URungeKutta4.pas ICS
+1447 unit uPSI_UrlConIcs.pas ICS
+1448 unit uPSI_OverbyteIcsUtils.pas ICS
+1449 unit uPSI_Numedit2 mX4
+1450 unit uPSI_PsAPI_3.pas mX4
+1451 unit uPSI_SeSHA256.pas
+1452 unit IdHashMessageDigest_max2;
+1453 unit uPSI_BlocksUnit.pas
+1454 unit uPSI_DelticsCommandLine.pas
+1455 unit uPSI_DelticsStrUtils;
+1456 unit uPSI_DelticsBitField;
+1457 unit uPSI_DelticsSysUtils;
+1458 unit uPSI_ALIniFiles2.pas
+1459 unit uPSI_StarCalc2.pas
+1460 unit uPSI_IdHashMessageDigest2.pas
+1461 unit uPSI_U_Splines;
+1462 unit uPSI_U_CoasterB.pas;
+1463 U_SpringMass2.pas
+1464 uPSI_MARSCoreUtils;
+1465 unit uPSI_clJsonParser.pas
+1466 unit uPSI_SynHighlighterPython.pas
+1467 unit uPSI_DudsCommonDelphi;
+1468 unit uPSI_AINNNeuron;
+1469 unit uPSI_PJConsoleApp2;
+1470 unit uPSI_PJPipeFilters2;
+1471 unit uPSI_uHTMLBuilder;
+1472 unit uPSI_PJPipe2;
+1473 uPSI_WinApiDownload,
+1474 uPSI_pxQRcode,    //beta
+1475 unit uPSI_neuralplanbuilder2
+1476 unit uPSI_DelphiZXingQRCode;
+1477 unit uPSI_RestJsonUtils;
+1478 unit UtilsTimeCode;
+1479 unit uPSC_classes2.pas; //TList
+1480 unit uPSC_std2.pas      
+1481 unit uPSI_maxIniFiles.pas
+1482 unit uROPSImports.pas
+1483 unit uROPSServerLink.pas 
+1484 unit uPSI_KLibUtils;
+1485 unit uPSI_PathFunc2;  //inno setup
+1486 unit KLibVC_Redist.pas; 
+1487 unit HTTPApp2.pas; 
+1488 unit uPSI_XCollection2; 
+1489 unit uPSI_KLibWindows;
+1490 unit KlibConstants;
+1491 unit uPSI_AzuliaUtils.pas
+1492 unit uPSI_ALHttpClient2;
+1493 unit uPSI_ALWininetHttpClient2;
+
+
 Release Notes maXbox 4.7.6.10 VII March 2022 mX476
 
 Add 45 Units + 12 Tutorials
