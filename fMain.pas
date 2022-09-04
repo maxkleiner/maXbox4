@@ -186,8 +186,9 @@
           12150   4.7.6.10 II plus ovc units overbyte  and metronom  _ics overbyteutils experimental
           12170   4.7.6.10 III several fixes, SeSHA256.pas  , blockchain, deltics base lib
           12180   4.7.6.10 IV richedit.plaintext ,clJSON, rollercoaster, ARRsoundstr, deltics baselib 2, mars utils
-          12184   4.7.6.10 V synpy, pagecontrol fixes , CAI bugs
-          12255   4.7.6.10 VIII neuronclass, QRCode, CAI bugs, commondelphi, AVXcheck, CAR console application runner, upsutils, klibutils
+          12184   4.7.6.10 V synpy, pagecontrol fixes , CAI bugs , Azulia
+          12262   4.7.6.10 VIII neuronclass, QRCode, CAI bugs, commondelphi, AVXcheck, CAR console application runner, upsutils, klibutils
+          12275   4.7.6.10 IX unit ALHttpClient2 ils    OpenAPI Extensions for EKON26  ALWininetHttpClient2
 
  ************************************************************************************* }
 
@@ -1574,7 +1575,7 @@ uses
   uPSI_IdTCPConnection, //3.1
   IFSI_IdTCPClient,
   uPSI_IdHeaderList,     //3.9.6
-  uPSI_IdHTTPHeaderInfo,
+  uPSI_IdHTTPHeaderInfo,     //user agent compatible
   IFSI_IdHTTP,
   uPSI_HTTPParse, //3.2
   uPSI_HTTPUtil, //3.2
@@ -1690,6 +1691,7 @@ uses
   uPSI_ALFTPClient,
   uPSI_ALInternetMessageCommon,
   uPSI_ALWininetHttpClient,
+  uPSI_ALWininetHttpClient2,
   uPSI_ALWinInetFTPClient,
   uPSI_ALWinHttpWrapper,
   uPSI_ALWinHttpClient,
@@ -1697,6 +1699,7 @@ uses
   //uPSI_ALFcnSQL,
   uPSI_ALFcnCGI,
   uPSI_ALFcnExecute,
+  //uPSI_ALHttpClient2,
 
   uPSI_ALFcnFile,
   uPSI_ALFcnMime,
@@ -1706,6 +1709,7 @@ uses
   uPSI_ALMemCachedClient,  //3.9.9.84
   uPSI_ALMultiPartMixedParser,
   uPSI_ALSMTPClient,
+  uPSI_ALHttpClient2,
   //uPSI_ALfcnString,
   uPSI_ALNNTPClient,
   uPSI_ALHintBalloon,
@@ -2380,6 +2384,8 @@ uses
   uPSI_DelphiZXingQRCode,
   uPSI_RestJsonUtils,
   uPSI_KLibUtils,           // 4.7.6.10 VIII
+  uPSI_KLibWindows,
+  uPSI_AzuliaUtils,
 
   uPSI_IdNNTPServer,        //4.2.4.25
   uPSI_UWANTUtils,
@@ -3254,6 +3260,8 @@ begin
   SIRegister_ALMultiPartMixedParser(X);
   SIRegister_ALSMTPClient(X);
   SIRegister_ALNNTPClient(X);
+  SIRegister_ALHttpClient2(X);           //V47610 IX
+  SIRegister_ALWininetHttpClient2(X);
   SIRegister_ALHintBalloon(X);
   SIRegister_ALXmlDoc(X);
   SIRegister_IPCThrd(X);
@@ -3872,6 +3880,8 @@ begin
   SIRegister_DelphiZXingQRCode(X);
   SIRegister_RestJsonUtils(X);
   SIRegister_KLibUtils(X);
+  SIRegister_KLibWindows(X);
+  SIRegister_AzuliaUtils(X);
 
   SIRegister_XMLIntf(X);
   SIRegister_XMLDoc(X);
@@ -5075,6 +5085,10 @@ begin
   RIRegister_ALMultiPartMixedParser(X);
   RIRegister_ALSMTPClient(X);
   RIRegister_ALNNTPClient(X);
+  RIRegister_ALHttpClient2(X);
+  RIRegister_ALHttpClient2_Routines(Exec);        //V47610 IX
+  RIRegister_ALWininetHttpClient2(X);
+
   RIRegister_ALHintBalloon(X);
   RIRegister_ALXmlDoc(X);
   RIRegister_ALXmlDoc_Routines(Exec);
@@ -5491,7 +5505,10 @@ begin
   RIRegister_RestJsonUtils_Routines(Exec);
   RIRegister_RestJsonUtils(X);
   RIRegister_KLibUtils_Routines(Exec);   //VIII
-
+  RIRegister_KLibWindows_Routines(Exec);
+  RIRegister_AzuliaUtils_Routines(Exec);
+  RIRegister_AzuliaUtils(X);
+  
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
   RIRegister_GR32_Geometry_Routines(Exec);
@@ -5884,7 +5901,7 @@ end;
 procedure TMaxForm1.FormCreate(Sender: TObject);
 //var //Plugin: TPSPlugin;
 //var    amark: TSynEditMark;
-  var lm: integer;  m: string;
+  var lm: integer;  m: string;   T0: int64;
 begin
   self.Height:= 830;
   self.Width:= 950;
@@ -6074,6 +6091,7 @@ begin
          AttachConsole(-1);
          //PSScript.Script.Assign(act_Filestring);
          //f//unction LoadTextFromFile(const FileName: string): string;
+         T0:= GetTickCOunt;
          PSScript.Script.text:=  LoadTextFromFile(act_Filestring) ;
       //showmessage(psscript.script.Text);
          // showmessage(act_Filestring) ;
@@ -6116,8 +6134,9 @@ begin
          end;
        end;
        //NativeWriteln('mXShell: '+PSScript.CompilerErrorToStr(1)+#13#10);
-       NativeWriteln('Script '+act_Filestring+' finished: '+DateTimeToStr(Now)+' >>>');
-       NativeWriteln('>>>');
+       NativeWriteln('Script '+act_Filestring+' finished: '+DateTimeToStr(Now)+' >');
+       NativeWriteln('Script '+act_Filestring+' performs: '+floattostr((GetTickCount-t0)/1000)+' s. >>');
+       NativeWriteln(' >>>');
        FreeConsole();
       maxform1.free;
      halt(10);
@@ -12251,5 +12270,6 @@ end;
    //{ CL.AddClassN(CL.FindClass('Class of TIdAuthentication'),'TIdAuthenticationClass');   //3.8
   //CL.AddTypeS('TIdAuthenticationClass', 'class of TIdAuthentication');
   //TVC_RedistVersion = (VC_Redist2013X86, VC_Redist2013X64, VC_Redist2019X64);
+  //RIRegister_ALHttpClient2_Routines(S: TPSExec);
 
 End.
