@@ -102,7 +102,7 @@
   </const>
   <const name="MBVERSION" type="string">
     <value>
-      4.7.6.10
+      4.7.6.20
     </value>
   </const>
   <const name="MBVER" type="string">
@@ -112,7 +112,7 @@
   </const>
   <const name="MBVER2" type="string">
     <value>
-      47610
+      47620
     </value>
   </const>
   <const name="EXENAME" type="string">
@@ -4396,6 +4396,11 @@
       </procedure>
       <procedure name="SaveByteCode" visibility="public">
       </procedure>
+      <function name="GetPSScript" visibility="public">
+        <parameters>
+          <retval type="TPSScript" />
+        </parameters>
+      </function>
     </members>
   </class>
   <variable name="maxForm1" type="TMaxForm1" />

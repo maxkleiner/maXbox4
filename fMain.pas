@@ -189,6 +189,8 @@
           12184   4.7.6.10 V synpy, pagecontrol fixes , CAI bugs , Azulia
           12262   4.7.6.10 VIII neuronclass, QRCode, CAI bugs, commondelphi, AVXcheck, CAR console application runner, upsutils, klibutils
           12275   4.7.6.10 IX unit ALHttpClient2 ils    OpenAPI Extensions for EKON26  ALWininetHttpClient2
+          12280   4.7.6.10 X unit unit uPSI_RestUtils;   TEEChart extensions , WGet3()
+          12298   4.7.6.20 bugfixing teEngine, tecanvas , PSResources TFEditorBuildRegFuncList(Sender: TPSScript);
 
  ************************************************************************************* }
 
@@ -239,9 +241,9 @@ const
    ALLUNITLIST = 'docs\maxbox4_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '4.7.6.10';
+   MBVERSION = '4.7.6.20';
    MBVER = '476';              //for checking!
-   MBVER2 = '47610';              //for checking!
+   MBVER2 = '47620';              //for checking!
    EXENAME ='maXbox4.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile.txt';
@@ -1027,6 +1029,7 @@ type
     procedure ResetKeyPressed;
     procedure SetKeyPressed;
     procedure SaveByteCode;
+    function GetPSScript: TPSScript;
  end;
 
 
@@ -2386,6 +2389,8 @@ uses
   uPSI_KLibUtils,           // 4.7.6.10 VIII
   uPSI_KLibWindows,
   uPSI_AzuliaUtils,
+  uPSI_RestUtils,
+  uPSI_PSResources,         //4.7.6.20
 
   uPSI_IdNNTPServer,        //4.2.4.25
   uPSI_UWANTUtils,
@@ -2451,7 +2456,7 @@ uses
   uPSI_DBXMetaDataUtil,
   uPSI_TeEngine,
   uPSI_TeeProcs,
-  uPSI_TeCanvas,        // check fonts
+  uPSI_TeCanvas,        // check fonts   fixed fonts
 
   uPSI_Chart,
   //uPSI_MDIEdit,
@@ -2600,7 +2605,7 @@ uses
   uPSI_IdSNTP,
   JclSysInfo,  //loadedmoduleslist
   IFSI_SysUtils_max,
-  uPSI_cFundamentUtils;
+  uPSI_cFundamentUtils; //, PSResources;
 
 
 resourcestring
@@ -3882,6 +3887,9 @@ begin
   SIRegister_KLibUtils(X);
   SIRegister_KLibWindows(X);
   SIRegister_AzuliaUtils(X);
+  SIRegister_RestUtils(X);
+  SIRegister_PSResources(X);           //4.7.6.20
+  //PSResources;
 
   SIRegister_XMLIntf(X);
   SIRegister_XMLDoc(X);
@@ -4014,6 +4022,7 @@ begin
   SIRegister_DBXMetaDataUtil(X);
   SIRegister_TeeProcs(X);
   SIRegister_TeCanvas(X);    //TEcanvas
+  //SIRegister_TeeProcs(X);
   SIRegister_TeEngine(X);
   SIRegister_Chart(X);     //3.9.9.20!
   SIRegister_Series(X);  //4.2.6.10
@@ -5508,7 +5517,10 @@ begin
   RIRegister_KLibWindows_Routines(Exec);
   RIRegister_AzuliaUtils_Routines(Exec);
   RIRegister_AzuliaUtils(X);
-  
+  RIRegister_RestUtils(X);
+  RIRegister_PSResources(X);
+  RIRegister_PSResources_Routines(Exec);
+
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
   RIRegister_GR32_Geometry_Routines(Exec);
@@ -6736,6 +6748,11 @@ begin
   result:= maxform1.getperftime;
 end;
 
+function myGetPSScript: string; //TPSScript;
+begin
+  result:= maxform1.PSScript.Script.text;
+end;
+
 procedure mysaveByteCode;
 begin
   maxform1.SaveByteCode;
@@ -6982,6 +6999,7 @@ begin
   Sender.AddFunction(@IsInternet,'Function IsInternet: boolean;');
   Sender.AddFunction(@IsInternet,'Function WebExists: boolean;');   //alias
   Sender.AddFunction(@VersionCheck,'function VersionCheck: boolean;');
+  Sender.AddFunction(@VersionCheck,'function CheckVersion: boolean;'); //alias
   Sender.AddFunction(@TimeToFloat,'function TimeToFloat(value:Extended):Extended;');
   Sender.AddFunction(@FloatToTime,'function FloatToTime(value:Extended):Extended;');
   Sender.AddFunction(@FloatToTime2Dec,'function FloatToTime2Dec(value:Extended):Extended;');
@@ -7009,6 +7027,8 @@ begin
   Sender.AddFunction(@AspectRatio,'Function AspectRatio(aWidth, aHeight: Integer): String;');
   Sender.AddFunction(@wget,'function wget(aURL, afile: string): boolean;');
   Sender.AddFunction(@wget2,'function wget2(aURL, afile: string): boolean;');
+  Sender.AddFunction(@wget3,'function wget3(aURL, afile: string; opendoc: boolean): boolean;');
+
   Sender.AddFunction(@DownloadFileOpen,'function wgetX(aURL, afile: string): boolean;');
   Sender.AddFunction(@DownloadFile,'function wgetX2(aURL, afile: string): boolean;');
   Sender.AddFunction(@PrintList,'procedure PrintList(Value: TStringList);');
@@ -7154,6 +7174,8 @@ begin
   Sender.AddFunction(@mySaveByteCode, 'procedure SaveByteCode;');
   Sender.AddFunction(@myResetKeyPressed, 'procedure ResetKeyPressed;');
   Sender.AddFunction(@mysetKeyPressed, 'procedure SetKeyPressed;');
+  Sender.AddFunction(@myGetPSScript, 'function GetPSScript: string;');
+  //Sender.AddFunction(@list_functions, 'function list_functions: TStringlist');
 
   Sender.AddFunction(@CheckMemory, 'procedure CheckMemory;');
   Sender.AddFunction(@GetMemoryInfo, 'function getMemoryInfo: string;');
@@ -7164,9 +7186,7 @@ begin
   Sender.AddFunction(@GetScriptPath2, 'function ScriptPath: string;');
   Sender.AddFunction(@GetScriptName2, 'function ScriptName: string;');
 
-
-
-       //Sender.AddFunction(@mmsystem32.timegettime
+  //Sender.AddFunction(@mmsystem32.timegettime
   //Sender.AddFunction(@AssignFile,'Procedure AssignFile(var F: Text; FileName: string)');
   //Sender.AddFunction(@CloseFile,'Procedure CloseFile(var F: Text);');
   Sender.AddRegisteredVariable('Application', 'TApplication');
@@ -7714,6 +7734,12 @@ procedure TMaxForm1.SaveByteCode;
 begin
   SBytecode1Click(self);
 end;
+
+function TMaxForm1.GetPSScript: TPSScript;
+begin
+  result:= maxForm1.PSScript;
+end;
+
 
 procedure TMaxForm1.WebCam1Click(Sender: TObject);
 begin
@@ -11196,8 +11222,7 @@ begin
    //if Mark.IsBookmark then
      //memo1.Marks.Remove(mark);
       //memo1.Marks.ClearLine(aline);
-
-   //memo1.marks.GetMarksForLine(aline, marks);
+     //memo1.marks.GetMarksForLine(aline, marks);
    //foundbm:= false;
    //for i:= 0 to memo1.Marks.Count-1 do
    //  if memo1.Marks[mark.Line].Line = aline then begin
@@ -11209,8 +11234,7 @@ begin
      memo1.Marks[i].Line:= 0;
      memo2.lines.Add('found bookmark at '+inttoStr(aline));
     foundbm:= true;
-
-     //memo1.Marks[i].Free;
+    //memo1.Marks[i].Free;
      //memo1.Marks.Remove(memo1.Marks[i]);
      //memo1.Marks[i]:= NIL;
     end;}
@@ -12264,8 +12288,7 @@ end;
      RegisterMethod('Procedure Free');
     RegisterMethod(@TJvMail.Destroy, 'Free');
      RegisterMethod(@TKCustomColors.Assign, 'Assign');
-         RegisterPublishedProperties;}
-    //RIRegister_KMessageBox_Routines
+         RegisterPublishedProperties;}  //RIRegister_KMessageBox_Routines
    //  with CL.AddClassN(CL.FindClass('TObjectList'),'TKObjectList') do
    //{ CL.AddClassN(CL.FindClass('Class of TIdAuthentication'),'TIdAuthenticationClass');   //3.8
   //CL.AddTypeS('TIdAuthenticationClass', 'class of TIdAuthentication');
