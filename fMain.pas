@@ -191,6 +191,7 @@
           12275   4.7.6.10 IX unit ALHttpClient2 ils    OpenAPI Extensions for EKON26  ALWininetHttpClient2
           12280   4.7.6.10 X unit unit uPSI_RestUtils;   TEEChart extensions , WGet3()
           12298   4.7.6.20 bugfixing teEngine, tecanvas , PSResources TFEditorBuildRegFuncList(Sender: TPSScript);
+          12312   4.7.6.20 V bugfixing teEngine, TChart , neuralfit, INet, elevated support, webpostdata2, synCrtSock;
 
  ************************************************************************************* }
 
@@ -2388,9 +2389,13 @@ uses
   uPSI_RestJsonUtils,
   uPSI_KLibUtils,           // 4.7.6.10 VIII
   uPSI_KLibWindows,
-  uPSI_AzuliaUtils,
+  uPSI_AzuliaUtils,           //httpget
   uPSI_RestUtils,
   uPSI_PSResources,         //4.7.6.20
+  uPSI_RunElevatedSupport,
+  uPSI_SynCrtSock,
+  uPSI_VelthuisFloatUtils,
+  uPSI_HttpConnectionWinInet,
 
   uPSI_IdNNTPServer,        //4.2.4.25
   uPSI_UWANTUtils,
@@ -2458,7 +2463,7 @@ uses
   uPSI_TeeProcs,
   uPSI_TeCanvas,        // check fonts   fixed fonts
 
-  uPSI_Chart,
+  uPSI_Chart,            //TEE Chart
   //uPSI_MDIEdit,
   uPSI_CopyPrsr,
   uPSI_SockApp,
@@ -3890,6 +3895,10 @@ begin
   SIRegister_RestUtils(X);
   SIRegister_PSResources(X);           //4.7.6.20
   //PSResources;
+  SIRegister_RunElevatedSupport(X);
+  SIRegister_SynCrtSock(X);
+  SIRegister_VelthuisFloatUtils(X);
+  SIRegister_HttpConnectionWinInet(X);  //4.7.6.20 V
 
   SIRegister_XMLIntf(X);
   SIRegister_XMLDoc(X);
@@ -5520,6 +5529,11 @@ begin
   RIRegister_RestUtils(X);
   RIRegister_PSResources(X);
   RIRegister_PSResources_Routines(Exec);
+  RIRegister_RunElevatedSupport_Routines(Exec);
+  RIRegister_SynCrtSock(X);
+  RIRegister_SynCrtSock_Routines(Exec);
+  RIRegister_VelthuisFloatUtils_Routines(Exec);
+  RIRegister_HttpConnectionWinInet(X);
 
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);

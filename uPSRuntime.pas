@@ -4,12 +4,14 @@ unit uPSRuntime;
 //Reengine for mX38 for mX4   4.2.2.90   - 2016
 RemObjects Pascal Script III  mX4
 Copyleft (C) 2000-2009 by Carlo Kok (ck@carlo-kok.com)  extended by Max Kleiner
+now 4.2.5.10  - dec 4.7.1.80   - - mX4.7.2.82  - 4.7.4.60 - mX4.7.6.10   - mX4.7.6.20
 
 }
 interface
 uses
   SysUtils, uPSUtils{$IFDEF DELPHI6UP}, variants{$ENDIF}{$IFNDEF PS_NOIDISPATCH}{$IFDEF DELPHI3UP}, ActiveX, Windows{$ELSE}, Ole2{$ENDIF}{$ENDIF};
 
+  const mx4vers = 'mX47620'; //'mX47460';
 
 type
   TPSExec = class;
