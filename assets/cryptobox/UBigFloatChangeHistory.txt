@@ -1,0 +1,60 @@
+    {GDD Feb 2007
+  *Change to use UBigIntsV3 version
+  *Move support procedures
+     AssignHalf, AssignTwo, AssignThree, AssignFour, Squareraw, GetNumber,
+     and ShowNumber to Protected Section
+  *Change "sigdigits" format in parameters from cardinal to integer
+     to avoid Delphi widening both parameters when comparing to integer type
+  * Moved zlog... variables from Interface to Implementation section
+  * Changed old Round to RoundToPrec and defined new Round to agree with
+    Trunc, Ceiling and Floor "round to" digits definition
+  * Moved procedures  ShiftLeftBase10, ShiftRightBase10, ShiftLeftNum,
+    and ShiftRightNum from UBigInts unit to TFloatInt integer class used
+    by TBigFloat.
+ }
+ {
+ Additions by Charles Doumar November 2006
+
+    procedure Floor(const x: integer = 0);
+    procedure Ceiling(const x: integer = 0);
+    procedure Power(power: TBigfloat; const MaxSig: TMaxSig);
+    procedure Log(const MaxSig: TMaxSig);
+    procedure Log10(const MaxSig: TMaxSig);
+    procedure Exp(const MaxSig: TMaxSig);
+    procedure PiConst(const MaxSig: TMaxSig);
+    several other small functions...
+
+
+ Additions by Charles Doumar October 2005
+   AbsoluteValue; - returns the abs of a number
+   Add(B: Int64); overload - divides a number by a int64 number
+   Assign(d: extended); overload; - converts an extended number into a tbigfloat
+   Assign(S: string); overload; - converts a string into a number
+   Compare(B: TBigFloat): integer;
+   ConvertToExtended : extended; - convert a BigFloat to an extended
+   Create(MaxSig: TMaxSig); overload; - allows specification of sigdigits at create
+   Divide(b: int64; MaxSig: TMaxSig); overload; - divides a number by a int64 number
+   GetBasePower : integer;
+   Mult(B: TInteger); overload; - multiplies a number by a Tinteger
+   Mult(B: int64); overload; - multiplies a number by a int64 number
+   Multraw(B: TBigFloat) - multiplies a number without limiting sig digits
+   MaxBigFloat(B: TBigFloat);
+   MinBigFloat (B: TBigFloat);
+   MoveBaseRight(const n: integer); - divides a number by a base
+   Negate; - negates a number
+   NRoot(N: integer; MaxSig: TMaxSig); - returns the nth root of a number
+   Power(intpower: integer; MaxSig: TMaxSig);  - raises a number to a power
+   Reciprocal(MaxSig: TMaxSig);  - takes 1/ number
+   Square(MaxSig: TMaxSig);  - squares a number
+   SquareRaw; - squares a number to full digits...
+   Sqrt(MaxSig: TMaxSig); - returns sqroot of a number
+   Trunc;  - returns truncated number
+
+
+ Replaced existing procedures with new and faster procedures:
+    RoundToPrec()
+    Divide(B: TBigFloat; MaxSig: TMaxSig); - renamed current to OldDivide
+    Sqrt(MaxSig: TMaxSig); - renamed current to OldSqrt;
+ Optimized procedures
+    Add(B: TBigFloat); - to call pow rather than multiplying by 10
+ }
