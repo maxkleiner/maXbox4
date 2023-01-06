@@ -1,6 +1,97 @@
 # maXbox4
 code compiler script studio
 
+![wine_ubuntu_cdplayer4](https://user-images.githubusercontent.com/3393121/211058690-8eaf9c4b-8320-45ca-a9c2-ad7797af228b.jpg)
+
+*****************************************************************
+Release Notes maXbox 4.7.6.20 Dez 2022 mX476
+****************************************************************
+Add 75 Units + 21 Tutorials
+
+1441 unit uPSI_neuralgeneric.pas; CAI
+1442 unit uPSI_neuralthread.pas; CAI
+1443 unit uPSI_uSysTools; TuO
+1444 unit upsi_neuralsets; mX4
+1445 unit uPSI_uWinNT.pas mX4
+1446 unit uPSI_URungeKutta4.pas ICS
+1447 unit uPSI_UrlConIcs.pas ICS
+1448 unit uPSI_OverbyteIcsUtils.pas ICS
+1449 unit uPSI_Numedit2 mX4
+1450 unit uPSI_PsAPI_3.pas mX4
+1451 unit uPSI_SeSHA256.pas
+1452 unit IdHashMessageDigest_max2;
+1453 unit uPSI_BlocksUnit.pas
+1454 unit uPSI_DelticsCommandLine.pas
+1455 unit uPSI_DelticsStrUtils;
+1456 unit uPSI_DelticsBitField;
+1457 unit uPSI_DelticsSysUtils;
+1458 unit uPSI_ALIniFiles2.pas
+1459 unit uPSI_StarCalc2.pas
+1460 unit uPSI_IdHashMessageDigest2.pas
+1461 unit uPSI_U_Splines;
+1462 unit uPSI_U_CoasterB.pas;
+1463 U_SpringMass2.pas
+1464 uPSI_MARSCoreUtils;
+1465 unit uPSI_clJsonParser.pas
+1466 unit uPSI_SynHighlighterPython.pas
+1467 unit uPSI_DudsCommonDelphi;
+1468 unit uPSI_AINNNeuron;
+1469 unit uPSI_PJConsoleApp2;
+1470 unit uPSI_PJPipeFilters2;
+1471 unit uPSI_uHTMLBuilder;
+1472 unit uPSI_PJPipe2;
+1473 uPSI_WinApiDownload,
+1474 uPSI_pxQRcode,    //beta
+1475 unit uPSI_neuralplanbuilder2
+1476 unit uPSI_DelphiZXingQRCode;
+1477 unit uPSI_RestJsonUtils;
+1478 unit UtilsTimeCode;
+1479 unit uPSC_classes2.pas; //TList
+1480 unit uPSC_std2.pas      
+1481 unit uPSI_maxIniFiles.pas
+1482 unit uROPSImports.pas
+1483 unit uROPSServerLink.pas 
+1484 unit uPSI_KLibUtils;
+1485 unit uPSI_PathFunc2;  //inno setup
+1486 unit KLibVC_Redist.pas; 
+1487 unit HTTPApp2.pas; 
+1488 unit uPSI_XCollection2; 
+1489 unit uPSI_KLibWindows;
+1490 unit KlibConstants;
+1491 unit uPSI_AzuliaUtils.pas
+1492 unit uPSI_ALHttpClient2;
+1493 unit uPSI_ALWininetHttpClient2;
+1494 unit uPSI_UtilsMax41.pas
+1495 unit uPSI_JclSysUtils1;
+1496 unit uPSI_RestUtils;
+1497 unit uPSI_TeEngine2.pas
+1498 unit uPSI_Chart2.pas; (uPSI_TeCanvas2.pas)
+1499 unit uPSI_PSResources.pas
+1500 unit uPSI_TeCanvas2_1.pas
+1501 unit uPSI_DataSetConverter4DUtil;
+1502 unit uPSI_neuralfit2.pas;
+1503 unit uPSI_SynCrtSock.pas
+1504 uPSI_RunElevatedSupport.pas
+1505 unit synTHttpRequest.pas;
+1506 unit uPSI_VelthuisFloatUtils.pas
+1507 unit HttpConnection.pas
+1508 unit uPSI_HttpConnectionWinInet.pas
+1509 unit UHexUtils.pas
+1510 unit UExeFileType.pas
+1511 unit uPSI_UConsoleApp.pas 
+1512 unit uPSI_CompilersURunner.pas
+1513 unit uPSI_HttpConnection.pas
+1514 unit uPSI_DataSetUtils.pas
+1515 unit uPSI_HTTPSender.pas
+1516 unit AES_Cryptobox4.pas
+
+Total of Function Calls: 36205
+SHA1: 4.7.6.20 BF042A1DC1C479C706100BB83F8DEE351554F74B
+CRC32: 4A7231F8 32.4 MB (34,057,496 bytes)
+Compilation Timestamp 2022-12-15 14:45:59 UTC Signing time 15 Dec 2022 15:50:51
+Entry Point 24930856 - Contained Sections 10 
+ZIP maxbox4.zip SHA1: 8DDCC4AF2E821F998A8A96612F2D4629FA88D38A
+
 ![VirtualBox_kalilinux64_13_10_2022_12_09_45_AGSI](https://user-images.githubusercontent.com/3393121/195860449-3dff078b-b06b-4e83-a800-8a84a521f08a.png)
 
 *****************************************************************
