@@ -4,9 +4,9 @@ code compiler script studio
 ![wine_ubuntu_cdplayer4](https://user-images.githubusercontent.com/3393121/211058690-8eaf9c4b-8320-45ca-a9c2-ad7797af228b.jpg)
 
 *****************************************************************
-Release Notes maXbox 4.7.6.20 Dez 2022 mX476
+Release Notes maXbox 4.7.6.20 January 2023 mX476
 ****************************************************************
-Add 75 Units + 21 Tutorials
+Add 82 Units + 25 Tutorials
 
 1441 unit uPSI_neuralgeneric.pas; CAI
 1442 unit uPSI_neuralthread.pas; CAI
@@ -84,13 +84,19 @@ Add 75 Units + 21 Tutorials
 1514 unit uPSI_DataSetUtils.pas
 1515 unit uPSI_HTTPSender.pas
 1516 unit AES_Cryptobox4.pas
+1517 unit uPSI_JsonConverter.pas
+1518 unit uPSI_RestClient.pas
+1519 unit JsonToDataSetConverter;
+1520 unit JsonListAdapter; (superobject)
+1521 unit uPSI_OpenApiUtils.pas;
+1522 unit uPSI_WinHttp_TLB.pas;
 
-Total of Function Calls: 36205
-SHA1: 4.7.6.20 BF042A1DC1C479C706100BB83F8DEE351554F74B
-CRC32: 4A7231F8 32.4 MB (34,057,496 bytes)
-Compilation Timestamp 2022-12-15 14:45:59 UTC Signing time 15 Dec 2022 15:50:51
-Entry Point 24930856 - Contained Sections 10 
-ZIP maxbox4.zip SHA1: 8DDCC4AF2E821F998A8A96612F2D4629FA88D38A
+Total of Function Calls: 36317
+SHA1: 4.7.6.20 D90222BDC9D9648E75A3A749D4C8EE1DF4655C30
+CRC32: 4A7231F8 32.7 MB (34,309,912 bytes)
+Compilation Timestamp 2023-01-24 21:15:08 UTC Signing time 24 Jan 2023 22:18:14
+Entry Point 25025064 - Contained Sections 10   
+ZIP maxbox4.zip SHA1: 7E6C1A422CCE02B90CC96A8AB994BDD235A4D02A
 
 ![VirtualBox_kalilinux64_13_10_2022_12_09_45_AGSI](https://user-images.githubusercontent.com/3393121/195860449-3dff078b-b06b-4e83-a800-8a84a521f08a.png)
 
