@@ -193,6 +193,7 @@
           12298   4.7.6.20 bugfixing teEngine, tecanvas , PSResources TFEditorBuildRegFuncList(Sender: TPSScript);
           12312   4.7.6.20 V bugfixing teEngine, TChart , neuralfit, INet, elevated support, webpostdata2, synCrtSock;
           12316   4.7.6.20 VIII httpsender - uPSI_HttpConnection;, interface support RESt client
+          12320   4.7.6.20 IX restclient, jsonconverter, jazzsound, superobject
 
  ************************************************************************************* }
 
@@ -2398,6 +2399,7 @@ uses
   uPSI_VelthuisFloatUtils,
   uPSI_HttpConnectionWinInet,
   uPSI_HTTPSender,            //4.7.6.20 VIII
+  uPSI_RestClient,
 
   uPSI_IdNNTPServer,        //4.2.4.25
   uPSI_UWANTUtils,
@@ -3902,6 +3904,7 @@ begin
   SIRegister_VelthuisFloatUtils(X);
   SIRegister_HttpConnectionWinInet(X);  //4.7.6.20 V
   SIRegister_HTTPSender(X);
+  SIRegister_RestClient(X);     //4.7.6.20 IX
 
   SIRegister_XMLIntf(X);
   SIRegister_XMLDoc(X);
@@ -5538,6 +5541,7 @@ begin
   RIRegister_VelthuisFloatUtils_Routines(Exec);
   RIRegister_HttpConnectionWinInet(X);
   RIRegister_HTTPSender(X);
+  RIRegister_RestClient(X);
 
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
