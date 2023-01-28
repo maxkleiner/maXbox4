@@ -6,7 +6,7 @@ code compiler script studio
 *****************************************************************
 Release Notes maXbox 4.7.6.20 January 2023 mX476
 ****************************************************************
-Add 82 Units + 25 Tutorials
+Add 86 Units + 25 Tutorials
 
 1441 unit uPSI_neuralgeneric.pas; CAI
 1442 unit uPSI_neuralthread.pas; CAI
@@ -90,13 +90,18 @@ Add 82 Units + 25 Tutorials
 1520 unit JsonListAdapter; (superobject)
 1521 unit uPSI_OpenApiUtils.pas;
 1522 unit uPSI_WinHttp_TLB.pas;
+1523 unit uPSI_NovusConsole;
+1524 unit NovusShell.pas;
+1525 unit NovusWebUtils.pas;
+1526 unit NovusStreamUtils.pas;
 
-Total of Function Calls: 36317
-SHA1: 4.7.6.20 D90222BDC9D9648E75A3A749D4C8EE1DF4655C30
-CRC32: 4A7231F8 32.7 MB (34,309,912 bytes)
-Compilation Timestamp 2023-01-24 21:15:08 UTC Signing time 24 Jan 2023 22:18:14
-Entry Point 25025064 - Contained Sections 10   
-ZIP maxbox4.zip SHA1: 7E6C1A422CCE02B90CC96A8AB994BDD235A4D02A
+Total of Function Calls: 36354
+SHA1: 4.7.6.20 F60338A77B77F2032061BF72A545AFB727F6395F
+CRC32: 48455EF8 32.8 MB (34,419,992 bytes)
+Compilation Timestamp 2023-01-26 15:36:15 UTC Signtime 26 Jan. 2023 16:41:42
+Entry Point 25033256 - Contained Sections 10    
+Docu: http://www.softwareschule.ch/maxbox_functions.txt
+ZIP maxbox4.zip SHA1: CCFC28FE69E5F62590335C406171500ADDE08A9A
 
 ![VirtualBox_kalilinux64_13_10_2022_12_09_45_AGSI](https://user-images.githubusercontent.com/3393121/195860449-3dff078b-b06b-4e83-a800-8a84a521f08a.png)
 
