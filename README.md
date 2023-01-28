@@ -102,6 +102,7 @@ Compilation Timestamp 2023-01-26 15:36:15 UTC Signtime 26 Jan. 2023 16:41:42
 Entry Point 25033256 - Contained Sections 10    
 Docu: http://www.softwareschule.ch/maxbox_functions.txt
 ZIP maxbox4.zip SHA1: CCFC28FE69E5F62590335C406171500ADDE08A9A
+https://blogs.embarcadero.com/why-a-data-scientist-chooses-delphi-for-powerful-real-world-visualizations/
 
 ![VirtualBox_kalilinux64_13_10_2022_12_09_45_AGSI](https://user-images.githubusercontent.com/3393121/195860449-3dff078b-b06b-4e83-a800-8a84a521f08a.png)
 
