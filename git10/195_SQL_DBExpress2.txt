@@ -1,0 +1,135 @@
+{****************************************************************
+ * Project  : DBX Demo - DataBaseSeries maXbase
+ * App Name : 195_SQL_DBExpress2.txt, loc's = 100
+ * Purpose  : Demonstrates 2 ways Queries in Datasets
+ * History  : TSQLConnection, TSQLDataSet, TSQLQuery
+ ****************************************************************}
+
+program SQL_DataBaseDemo;
+
+var E: Exception;
+
+const  
+   ADBNAME = 'D:\Program Files\Common Files\Borland Shared\Data\MASTSQL.GDB';
+   SQLQUERY = 'SELECT * FROM Customer WHERE Company like "%SCUBA%"''';       
+
+{For this demo you need some provider libraries, DemoDB MASTSQL and InterBase
+ which is part of an installation, here's some example code:
+ }
+
+function DataSetQuery(aconnect: TSQLConnection): TSQLDataSet;
+var dataset: TSQLDataSet;
+    i: integer;
+begin
+  DataSet:= TSQLDataSet.Create(self);
+  with DataSet do begin
+    SQLConnection:= aconnect;
+    //find all names with SCUBA in it!
+    CommandText:= SQLQUERY;
+    Open; 
+    Writeln(intToStr(Recordcount)+' records found')
+    for i:= 0 to Recordcount - 1 do begin
+      Writeln('Record: '+intToStr(i)+' '+Fields[1].asString)
+      Next;
+    end;
+  end;
+  result:= DataSet;     
+end;      
+  
+
+function SQLReturn(aconnect: TSQLConnection): TSQLQuery;
+var
+  qry: TSQLQuery;
+  i, z: integer;
+begin
+  qry:= TSQLQuery.Create(self);
+  qry.SQLConnection:= aconnect; //maybe before qry.active:= false;
+  qry.SQL.Add(SQLQuery)
+  qry.Open;
+  Writeln(intToStr(qry.Recordcount)+' records found')
+  for i:= 0 to qry.Recordcount - 1 do begin
+    for z:= 0 to qry.Fieldcount - 1 do 
+      Write((qry.Fields[z].asString)+' ');
+    Writeln(#13#10)
+    qry.Next;
+  end;
+ result:= qry;
+end;
+
+
+procedure ConnectInterBase(const aDBname: string);
+var
+  connection : TSQLConnection;
+  DataSet    : TSQLDataSet;
+  dataQuery  : TSQLQuery;
+begin
+  Connection:= TSQLConnection.Create(NIL);
+  try
+    with Connection do begin
+      ConnectionName:= 'VCLScanner';
+      DriverName:= 'INTERBASE';
+      LibraryName:= 'dbxint30.dll';
+      VendorLib:= 'GDS32.DLL';
+      GetDriverFunc:= 'getSQLDriverINTERBASE';
+      Params.Add('User_Name=SYSDBA');
+      Params.Add('Password=masterkey');
+      Params.Add('Database='+ADBNAME);
+      LoginPrompt:= True;
+      Open;
+    end;
+    dataQuery:= SQLReturn(Connection)
+    dataSet:= DataSetQuery(Connection) 
+  except
+    E:= Exception.Create('SQL Exception: ');
+    Showmessage(E.message+'SQL or connect missing')
+  end;
+  //finalize objects 
+  DataSet.Close;
+  DataSet.Free;
+  dataQuery.Close;
+  dataQuery.Free;
+  connection.Close;
+  connection.Free;
+end;
+
+begin
+  Writeln('ShowTime for SQL '+datetostr(Today))
+  //DBX3 InterBaseConnect with Queries and Resultset
+  ConnectInterbase(ADBNAME);
+  //maxform1.DelphiSite1Click(self)
+  maxform1.ShellStyle1Click(self)
+end.
+
+
+
+//--------------------------------------------------------------------
+ Function dStringPad(InputStr, FillChar: String; StrLen: Integer;
+   StrJustify: Boolean): String;
+Var
+   TempFill: String;
+   Counter : Integer;
+Begin
+   If Not (Length(InputStr) = StrLen) Then Begin
+     If Length(InputStr) > StrLen Then Begin
+       InputStr := Copy(InputStr,1,StrLen) ;
+     End
+     Else Begin
+       TempFill := '';
+       For Counter := 1 To StrLen-Length(InputStr) Do Begin
+         TempFill := TempFill + FillChar;
+       End;
+       If StrJustify Then Begin
+         {Left Justified}
+         InputStr := InputStr + TempFill;
+       End
+       Else Begin
+         {Right Justified}
+         InputStr := TempFill + InputStr ;
+       End;
+     End;
+   End;
+   Result:= InputStr;
+End;
+
+
+ttimer

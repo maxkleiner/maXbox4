@@ -1,0 +1,524 @@
+program Sentiment_API2_2;
+ 
+(* #sign:breitsch: BREITSCH-BOX: 03/04/2023 10:03:54 
+ * API http://text-processing.com/docs/sentiment.html,
+ * 1_21: test calls with assert, stringstream with HttpPostURL, Tutor 60_1 
+ *)
+ 
+Const 
+  URLSentimentAPI2='http://text-processing.com/api/sentiment/';  
+
+ 
+type TAofReal= array[0..2] of real;
+//function feedForward(ins: array of integer; ws: array of real): integer; forward;
+
+
+function RepeatedDigits2(N: Int64): Boolean;
+begin
+  N := AbsInt(N);
+  if N > 0 then
+    Result :=
+      N = {SysUtils.}StrToInt64(
+        StringOfChar(
+          Chr(48 + N mod 10),
+          Succ({Math.}Floor({Math.}Log10(N)))
+        )
+      )
+  else
+    Result:= True;
+end;
+
+function IsLockKeyOn2(const KeyCode: Integer): Boolean;
+begin
+  if not (
+    KeyCode in [{Windows.}VK_CAPITAL, VK_NUMLOCK, {Windows.}VK_SCROLL]
+  ) then
+    {raise} {SysUtils.}Exception.Create('Invalid lock key specified.');
+  Result:= ({Windows.}GetKeyState(KeyCode));
+end;
+
+
+function WesternEaster(const Year: Word): TDateTime;
+var
+  A, B, C, D, E, F, G, H, I, K, L, M, P : Integer;
+  Day, Month: Word;
+begin
+  Assert(Year >= 1583, 'Year >= 1583');
+  A := Year mod 19;
+  B := Year div 100;
+  C := Year mod 100;
+  D := B div 4;
+  E := B mod 4;
+  F := (B + 8) div 25;
+  G := (B - F + 1) div 3;
+  H := (19 * A + B - D - G + 15) mod 30;
+  I := C div 4;
+  K := C mod 4;
+  L := (32 + 2 * E + 2 * I - H - K) mod 7;
+  M := (A + 11 * H + 22 * L) div 451;
+  P := (H + L - 7 * M + 114);
+  Month := P div 31;
+  Day := (P mod 31) + 1;
+  Result := {SysUtils.}EncodeDate(Year, Month, Day);
+end;
+
+function NowGMT: TDateTime;
+var ST: {Windows.}TSystemTime;  // current system time
+begin
+  // This Windows API function gets system time in UTC/GMT
+  {Windows.}GetSystemTime(ST);
+  Result:= {SysUtils.}SystemTimeToDateTime(ST);
+end;
+
+function letHASH(afile, mode: string): string;
+var cryplib: TCryptographicLibrary;
+begin
+  with THash.create(self) do begin
+     //Features
+     crypLib:= TCryptographicLibrary.Create(nil);
+     CryptoLibrary:= crypLib;
+     HashId:= mode; //'native.hash.SHA-1';
+     Begin_Hash();
+     writeln(hash)
+     HashFile(afile)
+     result:= strtoHex1(StreamtoAnsiString(HashOutputValue));
+     Burn;
+     crypLib.free;
+     End_Hash;
+     Free
+  end; 
+end; 
+
+//https://just-soft.developpez.com/tutoriels/delphi/pilotage-mapinfo-par-delphi/ 
+
+procedure TfmVisionneuseFormCreate(Sender: TObject);
+var
+   MsgString: String;
+   vue: integer;
+   OleMapInfo: OLEVariant;
+begin
+  Vue := 0;
+  // Instanciation de l'objet MapInfo.
+  try
+    OleMapInfo:= CreateOLEObject('MapInfo.Application');
+  except
+    begin
+      ShowMessage('Impossible de démarrer l''application' + #13
+      + 'MapInfo ou runtime MapInfo est requis pour faire démarrer l''application');
+      //Application.Terminate;
+    end
+  end;
+//...
+end;  
+
+const SVSFDefault = 0;
+      SVSFlagsAsync = 1;
+      //SVSFlagsAsync = 1;
+      SVSFPurgeBeforeSpeak= 2;
+    
+//https://msdn.microsoft.com/en-us/library/ms720892%28v=vs.85%29
+
+var voix: variant;
+
+procedure TForm1Speech(Sender: TObject);
+//var voix: variant;
+begin
+  //Crée un objet unique non initialisé de la classe spécifiée par le paramètre 'SAPI.SpVoice';
+  voix:=CreateOLEObject('SAPI.SpVoice');
+  //voix.volume := tbVolume.position;
+  //voix.rate := tbRate.position;
+  //L'ordinateur dit "Bonjour"
+  //voix.SetVoiceByName('MSSam')
+  voix.Speak('Bonjour Sentiment Madame',1 and 2);
+  //repeat  Sleep(100); until  voix.WaitUntilDone(10);
+  writeln('Bonjour Sentiment Madame')
+  //Assigne une valeur vierge à la variable de type variant
+  voix:=UnAssigned;
+end;
+
+
+procedure GetSentimentStream(C_form,apath: string; const Data: string);
+var encodURL: string;
+    mapStrm: TStringStream;
+begin
+  encodURL:= Format(UrlSentimentAPI2,[c_form,HTTPEncode(Data)]);
+  mapStrm:= TStringStream.create('');
+  try
+    HttpGet(EncodURL, mapStrm);  //WinInet
+    mapStrm.Position:= 0;
+    //SaveStringtoFile(apath, mapStrm.datastring)
+    //OpenDoc(apath);
+    //result:= mapStrm.datastring;
+    writeln(mapStrm.datastring)
+  finally
+    mapStrm.Free;
+    encodURL:= '';
+  end;
+end;
+
+procedure GetSentimentStream2(C_form: string; const pData: string);
+var
+  PostData: TStringList;
+  IdHTTP1: TIdHTTP;
+  res, tmps: string;
+begin
+  PostData:=TStringList.Create;
+  try
+    //PostData.Add('data='+pdata);
+    PostData.Add('text='+pdata);
+    HTTPEncode(pdata)
+    PostData.Add(HTTPEncode(quotedStr(pData)));
+    IdHTTP1:= TIdHTTP.create(self)
+    writeln(HTTPEncode(postdata.text))
+    res:=IdHTTP1.Post1(URLSentimentAPI2,postdata);
+    writeln(postdata.text)
+    //IdHTTP1.Request.Referer;
+    writeln(res);
+  finally
+    PostData.Free;
+    IdHTTP1.Free;
+  end;
+end;
+
+function GetSentimentStream3(const S_API, pData: string): string;
+var postData: TStringList;
+    IdHTTP1: TIdHTTP;
+begin
+   postData:= TStringList.Create;
+   try
+     postData.Add('text='+HTTPEncode(pData));
+     IdHTTP1:= TIdHTTP.create(self)
+     result:= IdHTTP1.Post1(S_API,postdata);
+   finally
+     postData.Free;
+     IdHTTP1.Free;
+   end;
+end;
+
+function GetSentimentStream4(const S_API, pData: string): string;
+var ts: TStrings;
+begin
+   with TIdHTTP.create(self) do begin
+      try
+        ts:= TStringList.Create
+        ts.Add('text='+HTTPEncode(pData));
+        result:= Post(S_API,ts);
+      finally
+        ts.Free;
+        Free;
+      end;
+   end
+end;
+
+function GetSentimentStream5Rest(const S_API, pData: string): string;
+var RestReq: TRestRequest;
+    RestResp: THttpResponse;
+    LHttpClient: TALHttpClient;
+    putParams: TALStrings;
+begin
+  try
+    try
+      putParams:= TALStringlist.Create();
+      LHttpClient:= TALHttpClient.Create;
+      LHttpClient.requestmethod:= HTTPmt_Post;
+      putParams.Add('text='+pData);
+     //putParams.Add('due-date=01/01/2013 00:00:00');
+     //TRestRequest.Create1().Domain('localhost').Path('todo').WithCredentials('test', 'test');
+      //RestResp:= RestReq.put(putParams);
+      result:= LHttpClient.postURLEncoded(S_API, putParams,true);
+      writeln(LHttpClient.url)
+      //writeln('ResponseCode: '+inttoStr(RestResp.ResponseCode))
+      //if RestResp.ResponseCode = 201 then WriteLn('Your todo was added!');
+      //restreq.jsonToObj()
+    finally
+      LHttpClient.Free;
+      putParams.free;
+    end;
+  except
+    //on E: Exception do
+      //Writeln('Exception E.Message');
+      //raiseLastWin32error;
+      RaiseLastException;
+  end;
+  //millis
+end;
+
+function GetSentimentStream6(const S_API, pData: string): string;
+var strm: TStringStream;
+begin
+ //Function HttpPostURL(const URL,URLData: string; const Data:TStream):Boolean;
+  strm:= TStringStream.create('');
+  sr:='text='+HTTPEncode(pData);
+  if HttpPostURL(S_API, sr, strm) then
+     result:= strm.dataString;
+  strm.free;
+end; 
+
+function GetSentimentStream7(const S_API, pData: string): string;
+var strm: TStringStream;
+begin
+ //Function HttpPostURL(const URL,URLData: string; const Data:TStream):Boolean;
+  strm:= TStringStream.create('');
+  sr:='text='+HTTPEncode(pData)+CRLF;
+  sr:= sr+'language=french';
+  if HttpPostURL(S_API, sr, strm) then
+     result:= strm.dataString;
+  strm.free;
+end; 
+
+
+//TrimAppMemorySize
+ (*
+ const texttosent = 
+''['http://gkmen.com/2018/03/24/airline-worker-caught-with-9-pounds-of-cocaine-taped-to-legs/Airline', 'worker', 'caught', '9', 'pounds', 'cocaine', 'taped', 'legsThe', 'Jamaican', 'citizen', 'presented', 'U.S.', 'Customs', 'Border', 'Protection', '(CBP)', 'officers', 'inspection.', 'Well', 'exactly', 'happened', 'recently', 'custom', 'officials', 'JFK', 'Airport', 'NY', 'busted', 'airline', 'crew', 'member', 'trying', 'sneak', 'drugs', 'America.', 'plane', 'Montego', 'Bay,', 'Jamaica', 'landed,', 'Hall', 'attempted', 'go', 'customs', 'taken', 'private', 'room', 'screening.,', 'Hall', 'ordered', 'held', 'without', 'bail', 'appeared', 'Brooklyn', 'Federal', 'Court', 'federal', 'drug', 'smuggling', 'charges', 'Monday.,', 'Hall', 'admitted', 'federal', 'agents', 'substance', 'cocaine.,', 'Nearly', 'year', 'ago', 'day,', 'CBP', 'officers', 'stopped', 'would-be', 'smuggler', 'JFK', 'Airport', 'taped', 'cocaine', 'legs.,', 'Incidentassault', 'airlineRelevant1']'';
+*)
+
+const SenttextFile = 'C:\maXbox\softwareschule\MT-HS12-05\mentor_xml\casra2018\pytor\senttext.log';
+const SenttextFile2 = 'C:\maXbox\softwareschule\MT-HS12-05\mentor_xml\casra2018\pytor\senttext2.log';
+
+//var weights : array[0..2] of real;
+var weights: TAofReal;
+    ashaFM: TSHA2FamilyMember ;
+    cryplib: TCryptographicLibrary;
+    statement: string;
+    frm: TForm;
+ 
+begin   //@main
+    
+    //  voix:=CreateOLEObject('SAPI.SpVoice');
+    writeln(botostr(RepeatedDigits2(1233433)))
+    writeln(botostr(IsLockKeyOn(VK_NUMLOCK)))
+    //writeln(botostr(IsLockKeyOn2(VK_NUMLOCK)))
+    //TrimAppMemorySize;
+   { writeln(datetimetostr(NowGMT))
+     writeln(datetimetostr(NowAsGMTTime))
+     writeln(datetimetostr(GMTToLocalTime(NowGMT)))
+     writeln(datetimetostr(GMTTimeToLocalTime(NowGMT)))
+     writeln(datetimetostr(GMTToLocalTime(NowAsGMTtime)))
+     }
+    writeln(datetostr(WesternEaster(2018)));
+    
+    (* println(ComputeSHA256('this is IBZ','S'))
+     println(SHA512('this is IBZ','S'))
+     writeln('doubleSHA256: '+deblank(SHA256(hextoStr(strdelete('$',
+                  deblank(SHA256('hello','S')))),'S')))
+     writeln('doubleSHA256: '+deblank(SHA256(hextoAscii(strdelete('$',
+                  deblank(SHA256('hello','S')))),'S')))
+     writeln('doubleSHA256: '+SHA256ToStr(calcDoubleSHA256('hello')))
+     //getDoubleSHA256    *)
+     
+     writeln('FreePhysicalMemory1: '+itoa(GetFreePhysicalMemory))
+     writeln(letHash(exepath+'maXbox4.exe','native.hash.SHA-1'))
+     writeln(letHash(exepath+'maXbox4.exe','native.hash.SHA-256'))
+      writeln('FreePhysicalMemory2: '+itoa(GetFreePhysicalMemory))
+      writeln(sha256('this is Plaintext to hash!','S'))
+      //writeln(sha512('const Plaintext: string','S'))
+      
+      //TfmVisionneuseFormCreate(self)
+      //TForm1Speech(self)
+     // ExecuteShell('cmd','/c runas "/user:Administrator" '+
+      //                        ExePath+'maXbox4.exe')
+    
+   if IsInternet then begin  
+     GetSentimentStream2('','this is good and well');
+     GetSentimentStream2('','this is not good and well');
+     
+     statement:= 'Today I went to Barbeque Nation and the Food was not so good'
+     println(GetSentimentStream3(URLSentimentAPI2,statement));
+     statement:= 'Today I went to Barbeque Nation and the Food was not so bad'
+     println(GetSentimentStream4(URLSentimentAPI2,statement));
+     println(GetSentimentStream4(URLSentimentAPI2,
+                                     'this is so sadly heartbroken pernicious'));
+     println(GetSentimentStream6(URLSentimentAPI2,statement));
+     
+     //"C:\maXbox\softwareschule\MT-HS12-05\mentor_xml\casra2018\pytor\senttext.log"
+  
+     {
+        println(GetSentimentStream6(URLSentimentAPI2,
+                          FiletoString(senttextfile2)));
+     }
+                          
+     println(GetSentimentStream7(URLSentimentAPI2,'c''est si bon et bien'));
+     
+  
+   end;
+   
+   {frm:= TForm.create(self);
+   frm.canvas.image.picture.bitmap.loadfromfile(exepath+'examples\citymax.bmp')
+   frm.show;
+   }
+End.
+
+
+Doc:  http://www.softwareschule.ch/download/maxbox_starter60_1.pdf
+
+ Function HttpPostFile(const URL,FieldName,FileName:string;const Data:TStream;const ResultData:TStrings):Bool;
+
+http://www.dictionary.com/e/s/sad-words/?param=DcomSERP-mid2#back-to-school
+
+To analyze the sentiment of some text, do an HTTP POST to 
+http://text-processing.com/api/sentiment/ with form encoded data containg the text you want to analyze. You'll get back a JSON object response with 2 attributes:
+label:	
+will be either pos if the text is determined to be positive, neg if the text is negative, or neutral if the text is neither pos nor neg.
+probability:	
+an object that contains the probability for each label. neg and pos will add up to 1, while neutral is standalone. If neutral is greater than 0.5 then the label will be neutral. Otherwise, the label will be pos or neg, whichever has the greater probability.
+ref:
+
+
+https://maxbox4.wordpress.com/code/
+https://www.academia.edu/36608990/TensorFlow_AI_Demo
+https://www.scribd.com/document/378905755/tensorflow-machinelearning-task9
+http://peterroelants.github.io/posts/neural_network_implementation_part04/
+http://peterroelants.github.io/posts/neural_network_implementation_part05/
+
+Random forest
+Random forests or random decision forests are an ensemble learning method for classification, regression and other tasks, that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes or mean prediction of the individual trees. Random decision forests correct for decision trees' habit of overfitting to their training set.
+
+A random forest is a meta estimator that fits a number of decision tree classifiers on various sub-samples of the dataset and use averaging to improve the predictive accuracy and control over-fitting. The sub-sample size is always the same as the original input sample size but the samples are drawn ...
+
+The random Forest is an ensemble classifier. It has gained a significant interest in the recent past, due to its quality performance in several areas. A lot of new research work/survey reports related to different areas also reflects this.
+[Search domain www.quora.com] https://www.quora.com/What-is-a-random-forest
+Random forests or random decision forests are an ensemble learning method for classification, regression and other tasks, that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes or mean prediction of the individual trees. Random decision forests correct for decision trees' habit of overfitting to their training set.
+
+---app_template_loaded_code----
+------------------------------------------------------------------
+EKON 22 2018 Duesseldorf Germany
+
+Machine Learning II
+
+Das neue Zauberwort heißt Machine Learning, ich zeige konkret drei Anwendungen mit TensorFlow oder dewresearch.com in VS-Code, C++ und Delphi API. Anhand eines neuronalen Netzes als Handschrifterkennung lassen sich die Anwendungen auch grafisch darstellen. TensorFlow ist eine plattformunabhängige Open-Source-Programmbibliothek für künstliche Intelligenz bzw. maschinelles Lernen im Umfeld von Sprache, Big Data, Data Science und Bildverarbeitungsaufgaben.
+
+Delphi API's fannfloat.dll
+Scikit-learn
+
+Einführung in Machine Learning
+In diesem Talk zeige ich die 4 Gruppen des ML auf:
+Regression, Dimension Reduction, Clustering und Classification. Die meisten 
+ML-Projekte scheitern angeblich an fehlender Datenkonsolidierung und infolge  nicht vorhandener Hypothese. Anhand des bekannten IRIS Dataset gehen wir die 4 Gruppen mit je 4 Algorithmen durch und vermeiden diesen Mangel.
+
+Titel: Patterns Konkret
+Autor: Max Kleiner (Hrsg.), Silvia Rothen, Bernhard Angerer
+ ISBN: 3-935042-46-9 
+ 
+per le botteghe non e la fine: le salveranno i nostri anziani
+Für die Geschäfte ist es nicht das Ende: Unsere Senioren werden sie retten
+«Wie werden wir uns von Zürich nach Ostermundigen bewegen?», «Werden wir von Robotern gepflegt?», «Ist es noch notwendig, Sprachen zu lernen?», «Wer macht meinen Job?», «Was wäre, wenn es selbstfahrende Autos gäbe?».
+
+maXbox is an intuitive scripting tool designed to help you create scripts. It bundles a Delphi engine that can be used to test, teach and analyze algorithms in a practical manner.
+You can run the application from a portable drive and quickly deploy it using byte or text code. maXbox provides a comprehensive collection of exercises and examples, as well as a handy debug and decompile function.
+On top of that, the program provides numerous tutorials from all over the world.
+
+class -----------------------------------------------------------------
+THash = class( TTPLb_BaseNonVisualComponent, ICryptographicLibraryWatcher, IHash_TestAccess)
+  private
+    FHashObj: TSimpleHash;
+    FHash   : IHash;
+    FLib: TCryptographicLibrary;
+    FHashId: string;
+    FIntfCached: boolean;
+
+    function  GetIsHashing: boolean;
+    function  GetHashOutput: TStream;
+    function  GetonProgress: TOnHashProgress;
+    procedure SetOnProgress( Value: TOnHashProgress);
+    procedure ProgIdsChanged;
+    procedure SetLib( Value: TCryptographicLibrary);
+    procedure Dummy( const Value: string);
+    procedure SetHashId( const Value: string);
+    procedure SetIntfCached( Value: boolean);
+    function  GetFeatures: TAlgorithmicFeatureSet;
+    procedure ReadData( Reader: TReader);
+    procedure WriteData( Writer: TWriter);
+    // IHash_TestAccess. Just for testing
+    function GetHasher: IHasher;
+
+  protected
+    procedure Notification(
+      AComponent: TComponent; Operation: TOperation); override;
+    procedure DefineProperties( Filer: TFiler); override;
+    function  GetHashDisplayName: string; virtual;
+    procedure Loaded; override;
+    property  InterfacesAreCached: boolean     read FIntfCached write SetIntfCached;
+
+  public
+    constructor Create( AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Begin_Hash;
+    procedure UpdateMemory( const Plaintext{in}; PlaintextLen: integer);
+    procedure End_Hash;
+    procedure Burn;
+    procedure HashStream( Plaintext: TStream);
+    procedure HashFile  ( const PlaintextFileName: string);
+    procedure HashString( const Plaintext: string);
+    procedure HashAnsiString( const Plaintext: ansistring);
+    function  isUserAborted: boolean;
+
+    property  isHashing: boolean               read GetIsHashing;
+    property  HashId: string                   read FHashId      write SetHashId;
+    property  HashOutputValue: TStream         read GetHashOutput;
+
+  published
+    property  Hash: string                       read GetHashDisplayName write Dummy stored False;
+    property  Features: TAlgorithmicFeatureSet   read GetFeatures stored False;
+    property  CryptoLibrary: TCryptographicLibrary    read FLib write SetLib;
+    property  OnProgress  : TOnHashProgress    read GetonProgress   write SetOnProgress;
+
+ end;
+
+2. Ablauf
+
+Die Semesterarbeit beinhaltet folgende Meilensteine:
+
+– In der Firma ein Thema suchen, und mit Vorteil einen Ansprechpartner/Betreuer in der Firma definieren.
+– Erstellen einer Projektskizze (siehe unten), Eingabe an die Schule
+– Individuelle Kurzpräsentation (10') und Diskussion (10') des Themas an der Schule vor einer Dozierendengruppe.
+– Eventuell Überarbeitung der Projektskizze gemäss Feedback an der Präsentation.
+– Zuordnung eines Experten durch die Schule für die Begleitung.
+– Durchführung der Arbeit in eigener Terminplanung, 1-3 Zwischenreviews mit dem Experten.
+
+– Schlusspräsentation der Arbeit (Plenum mit allen Kursteilnehmenden). Dauer ca. 15 Min. Präsentation + 10 Min. Diskussion pro Arbeit.
+
+– Abgabe des Berichtes an den Experten bis 2.10.2018
+
+– Beurteilung durch den Experten bis 15.10.2018
+
+Die Projektskizze umfasst eine ein- bis zweiseitige Aufgabenstellung und eine 10-minütige Power-Point Präsentation mit folgenden Teilen:
+
+– Titel
+
+– Umfeld
+
+– Problemstellung
+
+– Lösungsansatz (Vorgehen, Methoden)
+
+– Name und Kontaktadressen der Gruppenmitglieder, und des Ansprechpartners/Betreuers in der Firma
+
+Gruppenarbeiten sind, wo möglich, erwünscht und je nach Rahmenbedingungen sogar von Vorteil. Der nominelle Aufwand liegt bei 90h, kann je nach Vorbereitungsphase und Komplexität aber auch höher sein.
+Semesterprojekte können vertraulich behandelt werden. Massgebend für die Rahmenbedingungen ist das Studienreglement
+
+Berner Fachhochschule
+Technik und Informatik
+Administration Weiterbildung
+
+Neue TEE Modelle im 2018
+
+ Modell und Vorbild lassen sich gut kombinieren, zumal die Realität dann nicht hinterherhinkt. Werfen wir einen Blick auf die Neuheiten.
+ Beginnen wir mit Märklin und dem Flagschiff Parsifal. 
+ Genau 5 TEE-Schnellzugwagen (Art. 43856) unterschiedlicher Bauarten des TEE 32/33 "Parsifal", im Einsatz zwischen Hamburg-Altona und Paris Nord über Bremen, Münster, Dortmund, Köln, Aachen, Liège, Namur und St. Quentin sind nun in H0 verfügbar. 
+ Ab September 1968 bis Mai 1979 verkehrte die Bauart Helvetia der DB im Laufweg Paris - Hamburg des Parsifal. Parzival war ja einer der legendären Ritter der Tafelrunde. Unter der Schreibweise "Parsifal" erlangte die gleichnamige Oper von Richard Wagner (1813 - 1883) aus dem Jahr 1882 grosse Berühmtheit. 
+ 
+ Weiter von Märklin gibt es eine DB Zugpackung Rheingold-Flügelzug 83 mit Sound in einer 112er Lok, 5-tlg. (MHI) Art. Nr: 26983. Das MHI steht für die Märklin Händlerinitiative, die Packung ist also schwer zu bekommen, weil meist ausverkauft. Nun von Minitrix N und H0 (Digital) gibt es ein ähnliches Zugset TEE 7, 4-tlg als den Flügelzug. Auch in Spur Z gibt's den Rheingold wobei auch hier MHI für ausverkauft steht.
+ Die Rheingold / TEE Aussichtswagen waren fester Bestandteil der hochwertigen Züge der Deutschen Bundesbanh in den 60er/70er Jahren des letzten Jahrhunderts, Märklin hat von den Fahrzeugen im 2017/2018 verschiedene Modelle aufgelegt. Die mechanische Konstruktion der Fahrzeuge ist aber im Wesentlichen immer die Gleiche, so dass sich auch TRIX-Wagen im Märklin-System eingesetzen lassen - ggf. ist ein Achsentausch vorzunehmen.
+Von Roco gibts im 2018 den TEE-Dieseltriebzug Serie Aln 442/448 der FS in Neuauflage, mit 646 cm auch kein Winzling. Freistehende Griffstangen Aufwendig detaillierter Innenraum sowie Führerstände Erstmals mit Televisor-Logo an der Stirn und mit Sound und PluX-Schnittstelle. 
+ Die italienischen Staatsbahnen (FS) schafften für den hochwertigen Reisezugverkehr auf Dieselstrecken insgesamt 9 dieser Dieseltriebzüge der Serie ALn 442/448 vom  Hersteller Breda an. Sie waren bis 1972 überwiegend als Ersatz für lokbespannte TEE Züge im Einsatz. In einer dafür eingebauten Bordküche liessen sich Speisen und Getränke aufbereiten, welche man den Gästen aufgrund des fehlenden Restaurants direkt an den Sitzplatz servierte.
+
+Tillig TEE Bavaria 
+Eine interessantes Set in Bezug auf die Schweiz gibt es von Tillig in einer limitierten Edition von Donnerbüchse in Köln. Es ist das Tillig 501667 Zugset "Bavaria" DB/SBB Ep.IV in Spur TT. Dabei ist der SBB Speisewagen mit Pantograph WRm in der  Betriebsnummer 61 85 88-70 008-7 und als Inneneinrichtung weiss ein Highlight. Vorhanden sind durchsichtige Küchenfenster in der Freelance Basis WR 135. Zusätzliche Dachlüfter, Türbedruckung und gelbe Handgriffe als Revision 1974 runden das gekonnte Modell ab. 
+[bild]: tillig_bavaria_s-l1600.jpg
+Die DB untersagte ja kurz nach dem Unfall von Aitrang die Beförderung des TEE "Bavaria" mit dem RAm, so dass man den Zug auf provisorisches Wagenmaterial umstellen musste. Zum Einsatz kam ein DB-Wagen sowie ein DB-Halbspeisewagen, ab September 1971 dann der rote SBB Speisewagen. Dieser erhielt sodann im August 1972 neben einer neuen Inneneinrichtung als einziger SBB-Wagen die TEE-Lackierung in rot-beige. 
+
+http://www.kleiner.ch/kleiner/TEE_files/tee_models.htm
+
+Max Kleiner

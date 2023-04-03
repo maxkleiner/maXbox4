@@ -1,0 +1,528 @@
+program Sentiment_API3_BBC_Newsfeed4;
+ 
+(* #sign:breitsch: BREITSCH-BOX: 03/04/2023 15:58:36 
+ * API http://text-processing.com/docs/sentiment.html,
+ * 1_21: test calls with assert, stringstream with HttpPostURL, Tutor 60_1 
+ * https://github.com/maxkleiner/maXbox4/blob/master/newstoday_sentiment.ipynb*
+ * imputes a sum of bbc news sentiment analysis - base for tutorial 94*)
+ 
+Const 
+  URLSentimentAPI2= 'http://text-processing.com/api/sentiment/';  
+  RSS_NewsFeed = 'http://feeds.bbci.co.uk/news/world/rss.xml';
+  RSS_SentFile = 'examples\bbcsentimentlist.txt';
+
+
+function NowGMT: TDateTime;
+var ST: {Windows.}TSystemTime;  // current system time
+begin
+  // This Windows API function gets system time in UTC/GMT
+  {Windows.}GetSystemTime(ST);
+  Result:= {SysUtils.}SystemTimeToDateTime(ST);
+end;
+
+
+procedure GetSentimentStream(C_form,apath: string; const Data: string);
+var encodURL: string;
+    mapStrm: TStringStream;
+begin
+  encodURL:= Format(UrlSentimentAPI2,[c_form,HTTPEncode(Data)]);
+  mapStrm:= TStringStream.create('');
+  try
+    HttpGet(EncodURL, mapStrm);  //WinInet
+    mapStrm.Position:= 0;
+    //SaveStringtoFile(apath, mapStrm.datastring)
+    //OpenDoc(apath);
+    //result:= mapStrm.datastring;
+    writeln(mapStrm.datastring)
+  finally
+    mapStrm.Free;
+    encodURL:= '';
+  end;
+end;
+
+
+function GetSentimentStream6(const S_API, pData: string): string;
+var strm: TStringStream;
+begin
+ //Function HttpPostURL(const URL,URLData: string; const Data:TStream):Boolean;
+  strm:= TStringStream.create('');
+  sr:='text='+HTTPEncode(pData);
+  if HttpPostURL(S_API, sr, strm) then
+     result:= strm.dataString;
+  strm.free;
+end; 
+
+function GetSentimentStream7(const S_API, pData: string): string;
+var strm: TStringStream;
+begin
+ //Function HttpPostURL(const URL,URLData: string; const Data:TStream):Boolean;
+  strm:= TStringStream.create('');
+  sr:='text='+HTTPEncode(pData)+CRLF;
+  sr:= sr+'language=english';
+  if HttpPostURL(S_API, sr, strm) then
+     result:= strm.dataString;
+  strm.free;
+end; 
+
+
+//TrimAppMemorySize
+ 
+function FetchNextToken(var s: string; aspace: string {= ' '}):string;
+var SpacePos: Integer;
+begin
+  aspace:= ' ';
+  SpacePos:= Pos(aspace, s);
+  if SpacePos = 0 then begin
+    Result:= s;
+    s:= '';
+  end else begin
+    Result:= Copy(s, 1, SpacePos - 1);
+    Delete(s, 1, SpacePos);
+  end;
+end;
+
+function StrMaxLen(const S: string; MaxLen: integer): string;
+var
+  i: Integer;
+begin
+  result := S;
+  if Length(result) <= MaxLen then Exit;
+  SetLength(result, MaxLen);
+  for i := MaxLen downto MaxLen - 2 do
+    result[i] := '.';
+end;
+
+function ParseRSSDate(DateStr: string): TDateTime;
+var
+  df: TFormatSettings;
+  Day, Month,Year,Hour,Minute,Second:Integer;
+begin
+  // Parsing date in this format: Mon, 06 Sep 2009 16:45:00 +0000
+  FetchNextToken(DateStr,' ');                     // Ignore "Mon, "
+  Day:= StrToInt(FetchNextToken(DateStr,' '));     // "06"
+  //Month := MonthToInt(FetchNextToken(DateStr));  // "Sep"
+  Year:= StrToInt(FetchNextToken(DateStr,' '));    // "2009"
+  Hour:= StrToInt(FetchNextToken(DateStr, ':'));   // "16"
+  Minute:= StrToInt(FetchNextToken(DateStr, ':')); // "45"
+  Second:= StrToInt(FetchNextToken(DateStr,' '));  // "00"
+  Result:= EncodeDate(Year, Month, Day)+ EncodeTime(Hour, Minute, Second, 0);
+end;
+
+procedure TestPostMethod;
+var S: TStringList;  aMemo1:  TMemo;
+   M: TStream; IdHTTP1: TIdHTTP;
+begin
+ S := TStringList.Create;
+ M := TMemoryStream.Create;
+ try
+   S.Values['Email'] := 'your google account';
+   S.Values['Passwd'] := 'your password';
+   S.Values['source'] := 'estream-sqloffice-1.1.1.1';
+   S.Values['service'] := 'cl';
+   //IdHTTP1.IOHandler := IdSSLIOHandlerSocketOpenSSL1;
+   IdHTTP1.Request.ContentType := 'application/x-www-form-urlencoded';
+   IdHTTP1.Post4('https://www.google.com/accounts/ClientLogin', S, M);
+   aMemo1.Lines.Add(Format('Response Code: %d', [IdHTTP1.ResponseCode]));
+   aMemo1.Lines.Add(Format('Response Text: %s', [IdHTTP1.ResponseText]));
+   M.Position := 0;
+   S.LoadFromStream(M);
+   aMemo1.Lines.AddStrings(S);
+ finally
+   S.Free;
+   M.Free;
+ end;
+end; 
+
+ type TSentSumrecord = record
+        ftext, flabel, fdetails: string;
+        negct,neutct,posct: byte;
+        fprob, fprob2, fprobtot: double;
+      end;
+
+function getOverallSentiment(feedstream: string; srec: TSentSumrecord;
+                                             details: boolean): TSentSumrecord;
+var
+  Url,API_KEY, sr, flabel: string; fprob: double;
+  jo, locate: TJSONObject;
+  urlid: TIdURI; 
+  strm: TStringStream;
+begin
+  urlid:= TIdURI.create('');
+  Url:= urlid.URLEncode('http://text-processing.com/api/sentiment/');   
+  strm:= TStringStream.create('');
+  sr:='text='+HTTPEncode(feedstream)+CRLF;
+  sr:= sr+'language=english'; 
+  if HttpPostURL(Url, sr, strm) then                        
+     jo:= TJSONObject.Create4(strm.dataString);
+  try
+    jo.getString('label')
+    locate:= jo.getJSONObject('probability');
+    //source:= jo.getJSONArray('results').getJSONObject(0).getString('source');
+    case jo.getString('label') of 
+      'neg':     begin fprob:= locate.getDouble('neg'); 
+                       inc(srec.negct); end;
+      'neutral': begin fprob:= locate.getDouble('neutral'); 
+                       inc(srec.neutct); end;
+      'pos':     begin fprob:= locate.getDouble('pos');
+                       inc(srec.posct); end; 
+    end;   
+    fLabel:= jo.getString('label');
+    srec.ftext:= feedstream;
+    srec.flabel:= flabel;
+    srec.fprob:= fprob;
+    if (locate.getDouble('neg') > locate.getDouble('pos')) then 
+       srec.fprob2:= -locate.getDouble('neg') 
+          else srec.fprob2:= +locate.getDouble('pos'); 
+    //writeln('negpos '+ 
+      //         flots(maxFloat(locate.getDouble('neg'),locate.getDouble('pos')))); 
+    if details then 
+       srec.fdetails:=format('%2.3f %2.3f %2.3f',[locate.getDouble('neg'),
+                                                  locate.getDouble('neutral'),
+                                                  locate.getDouble('pos')]); 
+    srec.fprobtot:= srec.fprobtot + fprob;
+    result:= srec;
+  except
+    //Xraise(Exception.Create(jo.getString('error')));
+    writeln('E: '+ExceptiontoString(exceptiontype, exceptionparam));  
+  finally                                      
+    jo.Free;       
+    urlid.free;
+    strm.Free;
+  end; 
+end;   
+
+function getOverallSentimentPost(feedstream: string): string;
+var
+  Url,API_KEY, sr, source: string;
+  jo, locate: TJSONObject;
+  httpReq,hr: Olevariant;
+  fprob: double;flabel: string;
+  strm: TStringStream;
+begin
+  httpReq:= CreateOleObject('WinHttp.WinHttpRequest.5.1');
+  // Open an HTTP connection.  
+  try              
+    hr:= httpReq.Open('POST','http://text-processing.com/api/sentiment/', false);
+    httpReq.setRequestheader('user-agent','maXbox4Sentiment testbox');          
+    if hr= S_OK then //begin httpReq.setRequestheader('Content-Type','multipart/form-data'); 
+      HttpReq.Send('text='+HTTPEncode(feedstream)+CRLF+
+                         +'language=english');  
+     /// Send HTTP Post Request & get Responses. 
+    
+    If HttpReq.Status = 200 Then
+       result:= ReplaceRegExpr('\d\d{4,12}[},]',HttpReq.responseText,'',false)
+    Else result:= 'Failed at getting response:'+itoa(HttpReq.Status);
+    
+    //writeln(httpReq.responseText)  
+  finally
+    httpreq:= unassigned;  
+  end;                  
+   
+ { jo:= TJSONObject.Create4(source);
+  try
+    jo.getString('label')
+    locate:= jo.getJSONObject('probability');
+    //source:= jo.getJSONArray('results').getJSONObject(0).getString('source');
+    case jo.getString('label') of 
+      'neg': fprob:= locate.getDouble('neg'); 
+      'neutral': fprob:= locate.getDouble('neutral'); 
+      'pos': fprob:= locate.getDouble('pos');
+    end;   
+    fLabel:= jo.getString('label');
+    //result:=Format('Label: lat %2.3f lng %2.3f :%s',[flat,flong,source]);
+    result:= flabel+' prob: '+flots(fprob);
+  except
+    //Xraise(Exception.Create(jo.getString('error')));
+    writeln('E: '+ExceptiontoString(exceptiontype, exceptionparam));  
+  finally                                      
+    jo.Free;       
+    //urlid.free;
+    strm.Free;
+  end; }
+end;   
+
+
+//var weights: array[0..2] of real;
+const refsent = 'The Democrats say they sheltered in a safe room alongside others who refused to wear masks.';
+
+const refsent2 = 'Three US lawmakers have tested positive for the coronavirus after sheltering for hours with colleagues during last weeks deadly assault on the Capitol.' ;
+var 
+    ashaFM: TSHA2FamilyMember ;
+    cryplib: TCryptographicLibrary;
+    statement: string; savelist: TStringlist; Response : TStrings;
+    IIndyHTTP: TIdHTTP;
+    httpReq: OleVariant; hr: HRESULT;
+    srec: TSentSumrecord;
+
+ 
+begin //@main
+  maxform1.orangestyle1click(self)
+  writeln('FreePhysicalMemory1: '+itoa(GetFreePhysicalMemory))
+  writeln(Sha256(RSS_NewsFeed,'S'))
+  //writeln(sha512('const Plaintext: string','S'))
+  //ExecuteShell('cmd','/c runas "/user:Administrator" ExePath+'maXbox4.exe')
+    
+  if IsInternet then begin  
+     {
+       println(GetSentimentStream6(URLSentimentAPI2,
+                          FiletoString(senttextfile2)));
+     }
+                          
+    println(GetSentimentStream7(URLSentimentAPI2,'this is such a great test'));
+   {CL.AddTypeS('TXMLTypeRSS', '(xtRDFrss,xtRSSrss,xtAtomrss,xtiTunesrss )');
+    CL.AddTypeS('TContentTypeRSS', '(ctTextrss, ctHTMLrss, ctXHTMLrss )');
+    CL.AddTypeS('TEncodingTypeRSS','(etBase64rss, etEscapedrss, etXMLrss )');}
+  
+    iIndyHTTP:=TIdHTTP.create(self);
+    savelist:= TStringlist.create;
+    with TSimpleRSS.create(self) do begin
+      XMLType:= xtRDFrss;
+      IndyHTTP:= iIndyhttp;
+      LoadFromHTTP(RSS_NewsFeed)
+      for it:= 0 to items.count-1 do begin
+         //Items[it].description - items[it].link
+         //writeln(items[it].description);
+         srec:= getOverallSentiment(Items[it].title, srec, false);
+         writeln(itoa(it)+': '+srec.ftext)  
+         writeln(srec.flabel+' prob: '+format('%2.3f',[srec.fprob])+
+                               ' pol: '+format('%2.3f',[srec.fprob2])); 
+         //writeln('details: '+srec.fdetails); 
+         savelist.add(itoa(it)+': '+srec.ftext+CRLF+srec.flabel+
+                                  ' prob: '+format('%2.3f',[srec.fprob]));
+         savelist.add('details: '+srec.fdetails); 
+      end;
+      writeln('Overall: '+format('[%d / %d / %d]',[srec.negct, srec.neutct, srec.posct]));
+      writeln('Overall Prob: '+format('[%2.3f]',[srec.fprobtot/items.count])); 
+      savelist.savetofile(exepath+'examples\bbcsentimentlist.txt');  //*)
+      //println(GetSentimentStream7(URLSentimentAPI2,Items[19].title));
+      //writeln(FiletoString(exepath+RSS_SentFile));
+      free;  //TSimpleRSS
+      IIndyHTTP.Free;
+      savelist.Free;
+    end; //}
+  end;
+  
+  //writeln(getOverallSentiment('this is good test'));
+  
+ { Response:= TStringlist.create;
+  //if HttpGetText('http://text-processing.com/docs/sentiment.html', response) then
+  if HttpGetText('https://md5hashing.net/', response) then
+     //https://md5hashing.net
+    writeln(response.text);
+  response.Free;   }
+  
+  //writeln('back from post: '+getOverallSentimentPost('this is good test')); 
+  {with TRSSCloud.create do begin
+    writeln(domain)
+    free;
+  end; } 
+  
+  //println(GetSentimentStream7(URLSentimentAPI2,refsent2));
+  //println(ReplaceRegExpr('\d\d{4,12}[},]',
+  //           GetSentimentStream7(URLSentimentAPI2,refsent2),' ',false))
+  //println(items[9].link)
+     
+   //Instantiate a WinHttpRequest object as a second solution.
+  (* httpReq:= CreateOleObject('WinHttp.WinHttpRequest.5.1');
+   // Open an HTTP connection.                
+   hr:= httpReq.Open('GET', URLNewsFeed, false);
+   if hr= S_OK then httpReq.setRequestheader('items','title'); 
+    HttpReq.Send();  /// Send HTTP Request & get Responses.
+   //writeln(httpReq.responseText)
+   //writeln(datetimetostr(ParseRSSDate(httpReq.responseText)));  
+   //writeln(httpReq.GetAllResponseHeaders());  
+   httpreq:= unassigned;    *)
+     
+   {frm:= TForm.create(self);
+   frm.canvas.image.picture.bitmap.loadfromfile(exepath+'examples\citymax.bmp')
+   frm.show;
+   }
+End.
+
+
+Ref: https://github.com/frantic/delphi-tdd-example/blob/master/src/RssModel.pas
+     http://text-processing.com/docs/sentiment.html
+     https://stackoverflow.com/questions/3885703/post-method-winhttprequest-multipart-form-data
+
+type
+  TRSSItem = class
+  private
+    FPubDate: TDate;
+    FLink: string;
+    FTitle: string;
+    FDescription: string;
+  public
+    property Title: string read FTitle write FTitle;
+    property Link: string read FLink write FLink;
+    property Description: string read FDescription write FDescription;
+    property PubDate: TDate read FPubDate write FPubDate;
+  end;
+
+  TRSSFeed = class
+  private
+    FDescription: string;
+    FTitle: string;
+    FLink: string;
+    FItems: TObjectList<TRSSItem>;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    function AddItem: TRSSItem;
+    property Title: string read FTitle write FTitle;
+    property Description: string read FDescription write FDescription;
+    property Link: string read FLink write FLink;
+    property Items: TObjectList<TRSSItem> read FItems;
+  end;
+  
+TWinApiDownload = class(TObject)
+  private
+    fEventWorkStart : TEventWorkStart;
+    fEventWork : TEventWork;
+    fEventWorkEnd : TEventWorkEnd;
+    fEventError : TEventError;
+    fURL : string;
+    fUserAgent : string;
+    fStop : Boolean;
+    fActive : Boolean;
+    fCachingEnabled : Boolean;
+    fProgressUpdateInterval : Cardinal;
+    function GetIsActive : Boolean;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function CheckURL(aURL: string) : Integer;
+    function Download(Stream : TStream) : Integer; overload;
+    function Download(var res : string) : Integer; overload;
+    function ErrorCodeToMessageString(aErrorCode : Integer) : string;
+    procedure Stop;
+    procedure Clear;
+    property UserAgent : string read fUserAgent write fUserAgent;
+    property URL : string read fURL write fURL;
+    property DownloadActive : Boolean read GetIsActive;
+    property CachingEnabled : Boolean read fCachingEnabled write fCachingEnabled;
+    property UpdateInterval:Cardinal read fProgressUpdateInterval write fProgressUpdateInterval;
+    property OnWorkStart : TEventWorkStart read fEventWorkStart write fEventWorkStart;
+    property OnWork : TEventWork read fEventWork write fEventWork;
+    property OnWorkEnd : TEventWorkEnd read fEventWorkEnd write fEventWorkEnd;
+    property OnError : TEventError read fEventError write fEventError;
+  end;  
+
+implementation
+
+Title:
+9: Covid: Three Democratic lawmakers test positive after Capitol riot  :
+{"probability": {"neg": 0.4945  "neutral": 0.7380  "pos": 0.5054 , "label": "neutral"}
+
+Description:
+9: 'The Democrats say they sheltered in a safe room alongside others who refused to wear masks.';
+{"probability": {"neg": 0.3661  "neutral": 0.7792  "pos": 0.6338 , "label": "neutral"}
+
+Link:
+9: https://www.bbc.co.uk/news/world-us-canada-55631079
+Three US lawmakers have tested positive for the coronavirus after sheltering for hours with colleagues during last week's deadly assault on the Capitol.
+{"probability": {"neg": 0.5306  "neutral": 0.7466  "pos": 0.4693 , "label": "neutral"}
+
+Three US lawmakers have tested for the coronavirus after sheltering for hours with colleagues during last week's deadly assault on the Capitol.
+{"probability": {"neg": 0.5574  "neutral": 0.7592  "pos": 0.4425 , "label": "neutral"}
+
+vader: neg    neu    pos    compound              human
+  9    0.18   0.619   0.201   0.1779              slightly positive
+
+Doc:  http://www.softwareschule.ch/download/maxbox_starter60_1.pdf
+
+ Function HttpPostFile(const URL,FieldName,FileName:string;const Data:TStream;const ResultData:TStrings):Bool;
+ 
+ As an input argument to the Create function, the code passes the target URL of the RSS feed. The function returns an HttpWebRequest object, which is a special type of WebRequest object that supports additional properties and methods for interacting with servers using HTTP. In this case, my needs are very simple for HttpWebRequest; the code first gets the response from the server (GetResponse) and then, because the response is in XML format, the response stream (GetResponseStream) can be loaded directly into a DataSet using the ReadXml method overload that accepts a Stream as an input argument. 
+
+http://www.dictionary.com/e/s/sad-words/?param=DcomSERP-mid2#back-to-school
+https://github.com/frantic/delphi-tdd-example/blob/master/src/RssModel.pas
+
+To analyze the sentiment of some text, do an HTTP POST to 
+http://text-processing.com/api/sentiment/ with form encoded data containg the text you want to analyze. You'll get back a JSON object response with 2 attributes:
+label:	
+will be either pos if the text is determined to be positive, neg if the text is negative, or neutral if the text is neither pos nor neg.
+probability: an object that contains the probability for each label. neg and pos will add up to 1, while neutral is standalone. If neutral is greater than 0.5 then the label will be neutral. Otherwise, the label will be pos or neg, whichever has the greater probability.
+ref:
+
+https://maxbox4.wordpress.com/code/
+https://www.academia.edu/36608990/TensorFlow_AI_Demo
+https://www.scribd.com/document/378905755/tensorflow-machinelearning-task9
+http://peterroelants.github.io/posts/neural_network_implementation_part04/
+http://peterroelants.github.io/posts/neural_network_implementation_part05/
+
+Random forest
+Random forests or random decision forests are an ensemble learning method for classification, regression and other tasks, that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes or mean prediction of the individual trees. Random decision forests correct for decision trees' habit of overfitting to their training set.
+
+A random forest is a meta estimator that fits a number of decision tree classifiers on various sub-samples of the dataset and use averaging to improve the predictive accuracy and control over-fitting. The sub-sample size is always the same as the original input sample size but the samples are drawn ...
+
+The random Forest is an ensemble classifier. It has gained a significant interest in the recent past, due to its quality performance in several areas. A lot of new research work/survey reports related to different areas also reflects this.
+[Search domain www.quora.com] https://www.quora.com/What-is-a-random-forest
+Random forests or random decision forests are an ensemble learning method for classification, regression and other tasks, that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes or mean prediction of the individual trees. Random decision forests correct for decision trees' habit of overfitting to their training set.
+
+---app_template_loaded_code----
+------------------------------------------------------------------
+EKON 22 2018 Duesseldorf Germany
+
+Machine Learning II
+
+Das neue Zauberwort heißt Machine Learning, ich zeige konkret drei Anwendungen mit TensorFlow oder dewresearch.com in VS-Code, C++ und Delphi API. Anhand eines neuronalen Netzes als Handschrifterkennung lassen sich die Anwendungen auch grafisch darstellen. TensorFlow ist eine plattformunabhängige Open-Source-Programmbibliothek für künstliche Intelligenz bzw. maschinelles Lernen im Umfeld von Sprache, Big Data, Data Science und Bildverarbeitungsaufgaben.
+
+Delphi Python API's fannfloat.dll
+Scikit-learn - Einführung in Machine Learning
+In diesem Talk zeige ich die 4 Gruppen des ML auf:
+Regression, Dimension Reduction, Clustering und Classification. Die meisten 
+ML-Projekte scheitern angeblich an fehlender Datenkonsolidierung und infolge  nicht vorhandener Hypothese. Anhand des bekannten IRIS Dataset gehen wir die 4 Gruppen mit je 4 Algorithmen durch und vermeiden diesen Mangel.
+
+Titel: Patterns Konkret
+Autor: Max Kleiner (Hrsg.), Silvia Rothen, Bernhard Angerer
+ ISBN: 3-935042-46-9 
+ 
+per le botteghe non e la fine: le salveranno i nostri anziani
+Für die Geschäfte ist es nicht das Ende: Unsere Senioren werden sie retten
+«Wie werden wir uns von Zürich nach Ostermundigen bewegen?», «Werden wir von Robotern gepflegt?», «Ist es noch notwendig, Sprachen zu lernen?», «Wer macht meinen Job?», «Was wäre, wenn es selbstfahrende Autos gäbe?».
+
+maXbox is an intuitive scripting tool designed to help you create scripts. It bundles a Delphi engine that can be used to test, teach and analyze algorithms in a practical manner.
+You can run the application from a portable drive and quickly deploy it using byte or text code. maXbox provides a comprehensive collection of exercises and examples, as well as a handy debug and decompile function.
+On top of that, the program provides numerous tutorials from all over the world.
+
+class -----------------------------------------------------------------
+2. Ablauf
+
+Die Semesterarbeit beinhaltet folgende Meilensteine:
+
+– In der Firma ein Thema suchen, und mit Vorteil einen Ansprechpartner/Betreuer in der Firma definieren.
+– Erstellen einer Projektskizze (siehe unten), Eingabe an die Schule
+– Individuelle Kurzpräsentation (10') und Diskussion (10') des Themas an der Schule vor einer Dozierendengruppe.
+– Eventuell Überarbeitung der Projektskizze gemäss Feedback an der Präsentation.
+– Zuordnung eines Experten durch die Schule für die Begleitung.
+– Durchführung der Arbeit in eigener Terminplanung, 1-3 Zwischenreviews mit dem Experten.
+– Schlusspräsentation der Arbeit (Plenum mit allen Kursteilnehmenden). Dauer ca. 15 Min. Präsentation + 10 Min. Diskussion pro Arbeit.
+– Abgabe des Berichtes an den Experten bis 2.10.2018
+– Beurteilung durch den Experten bis 15.10.2018
+Die Projektskizze umfasst eine ein- bis zweiseitige Aufgabenstellung und eine 10-minütige Power-Point Präsentation mit folgenden Teilen:
+
+– Titel
+– Umfeld
+– Problemstellung
+– Lösungsansatz (Vorgehen, Methoden)
+– Name und Kontaktadressen der Gruppenmitglieder, und des Ansprechpartners/Betreuers in der Firma
+
+Gruppenarbeiten sind, wo möglich, erwünscht und je nach Rahmenbedingungen sogar von Vorteil. Der nominelle Aufwand liegt bei 90h, kann je nach Vorbereitungsphase und Komplexität aber auch höher sein. Semesterprojekte können vertraulich behandelt werden. Massgebend für die Rahmenbedingungen ist das Studienreglement
+
+Berner Fachhochschule
+Technik und Informatik
+Administration Weiterbildung
+
+[bild]: tillig_bavaria_s-l1600.jpg
+Die DB untersagte ja kurz nach dem Unfall von Aitrang die Beförderung des TEE "Bavaria" mit dem RAm, so dass man den Zug auf provisorisches Wagenmaterial umstellen musste. Zum Einsatz kam ein DB-Wagen sowie ein DB-Halbspeisewagen, ab September 1971 dann der rote SBB Speisewagen. Dieser erhielt sodann im August 1972 neben einer neuen Inneneinrichtung als einziger SBB-Wagen die TEE-Lackierung in rot-beige. 
+
+http://www.kleiner.ch/kleiner/TEE_files/tee_models.htm
+
+Max Kleiner
+Sentiment Analysis: Sometimes also known as "opinion mining", sentiment analysis can let you know if there has been a change in public opinion toward any aspect of your business or politics till citizen score or street credibility.
+You see code of an API in a script!
+
+https://www.academia.edu/37015210/Machine_Learning_maXbox_starter60_1
+https://venturebeat.com/2020/12/04/researchers-find-that-even-fair-hiring-algorithms-can-be-biased/
+

@@ -1,0 +1,402 @@
+{***************************************************************
+ *
+ * Project  : Operating System Series with Object Pascal
+ * App Name: 192_operatingsystem.txt, loc's = 310 
+ * Purpose  : Demonstrates functions of operating systems
+ * Date  : 21/09/2010  -  14:56
+ * History  : getHostbyName, HINSTANCE, TPrinter, TMediaPlayer
+ *          : TClipboard, TStatusBar, Ressources, Registry Read 
+ *          : System demo for mX3.1 
+ ****************************************************************}
+
+Program OperatingSystem_Tutorial_Delphi;
+{BOOL WINAPI MessageBeep(
+  __in  UINT uType
+);}
+
+// for DLL Load Demo
+function  MessageBeep(para: integer): byte;
+  external 'MessageBeep@user32.dll stdcall';  
+  
+const REGPATH= '\SYSTEM\CurrentControlSet\services\SCCSService';  
+      REGROOT= HKEY_LOCAL_MACHINE;
+
+      REGPATH3= '\Software\Microsoft\Internet Explorer\TypedURLs';  
+      REGROOT3= HKEY_CURRENT_USER;
+
+      MAINFORM = 'TMaxForm1';  
+      BITMAPPATH = '..\maxbox3\examples\citymax.bmp'; 
+var
+  rStr: String;
+  StringGrid1: TStringGrid;
+  mytimestamp, dt: TDateTime;
+  osType: TIdWin32Type;
+
+procedure Signal_Sounds;
+var sound: integer;
+begin
+for sound:= 1 to 100 do
+  if sound mod 10 = 0 then begin
+    MessageBeep(sound)
+    Sleep(1500)
+  end  
+end;
+
+//Recursion
+Function Fakultaet(Zahl: integer): Integer;
+begin
+  If Zahl = 0 then
+    result:= 1
+  else
+    result:= Zahl * Fakultaet(Zahl - 1);
+end;
+
+Function getFileCount: integer;
+var
+  DOSerr: integer;
+  //fsrch: TsearchRec;
+begin
+  result:= 0;
+  doserr:= FindFirst('*.*',faAnyFile);
+  if (DOSerr = 0) then begin
+    while (DOSerr = 0) do begin
+      if (searchRecAttr and faDirectory) = 0 then inc(result);
+      //writeln(searchRecName)
+      DOSerr:= findNext;
+    end;
+  findClose;
+  end;
+end;
+
+function GetFolderDate(Folder: String): TDateTime;
+var
+  Found: integer;
+  Date: TDateTime;
+begin
+  if Folder[length(folder)]= '\' then
+    Delete(Folder, length(folder), 1);
+  Result:= 0;
+  Found:= FindFirst(Folder, faDirectory);
+  try
+  if Found = 0 then begin
+    Date:= FileDateToDateTime(searchRecTime);
+    result:= Date;
+  end;
+  finally
+    FindClose;
+  end;
+end;
+
+function GetTextFromFile(AFile: String; var ReturnString: string): boolean;
+var
+  FileStream: TFileStream;
+begin
+  result:= false;
+  if not fileExists(AFile) then Exit;
+  FileStream:= TFileStream.Create(AFile, fmOpenRead);
+  try
+    if FileStream.Size > 0 then begin
+      SetLength(ReturnString, FileStream.Size);
+      FileStream.Read(ReturnString, FileStream.Size);
+      result:= true;
+    end;
+  finally
+    FileStream.Free;
+  end; //try
+end;
+
+function ExeFileIsRunning(ExeFile: string): boolean;
+begin
+  result:= ExeFileIsRunning(ExeFile);
+end;
+
+procedure getDriveTypesF;
+var
+  Drive: byte;
+  DriveLetter: String;
+begin   
+  for Drive:= ord('A') to ord('Z') do begin
+    DriveLetter:= chr(Drive) + ':\';
+    case GetDriveType(PChar(chr(Drive) + ':\')) of
+      0: //DRIVE_UNKNOWN
+      Memo2.Lines.Add(DriveLetter + ' Unknown Drive');
+      {1: //DRIVE_NO_ROOT_DIR
+      Memo2.Lines.Add(DriveLetter + ' No Root Dir or mount Point');}
+      2: //DRIVE_REMOVABLE:
+      Memo2.Lines.Add(DriveLetter + ' Removable or Floppy Drive');
+      3: //DRIVE_FIXED:
+      Memo2.Lines.Add(DriveLetter + ' Fixed Drive');
+      4: //DRIVE_REMOTE:
+      Memo2.Lines.Add(DriveLetter + ' Network Drive');
+      5: //DRIVE_CDROM:
+      Memo2.Lines.Add(DriveLetter + ' CD-ROM Drive');
+      6: //DRIVE_RAMDISK:
+      Memo2.Lines.Add(DriveLetter + ' RAM Disk');
+    end;
+  end;
+end;
+
+Procedure TimeCounter;
+var
+  time: longint;
+begin
+  time:= GetTickCount;
+  //Put the commands to measure...
+  Sleep(500)
+  maxform1.StatusBar1.SimpleText:= ('Time Diff: '+IntToStr(GetTickCount-time));
+end;
+
+function getBitMap: TBitmap;
+begin
+  result:= TBitmap.Create; 
+  //result.LoadFromFile(BITMAPPATH);
+  result.LoadFromresourcename(0, 'CITYMAX');
+  //result.Free;
+end;  
+
+
+procedure StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
+                                      Rect: TRect; State: TGridDrawState);
+begin
+if ARow = 1 then
+  StringGrid1.Canvas.Draw(Rect.Left,Rect.Top, getBitmap);
+end;
+
+procedure BuildFormMenu;
+var frmMon: TForm;
+    myButton: TSpeedButton;
+begin  
+  frmMon:= TForm.Create(self);
+  with frmMon do begin
+    //FormStyle := fsStayOnTop;
+    Position := poScreenCenter;
+    caption:='Operating Systems for Admins';
+    color:= clred;
+    width:= 650;
+    height:= 600;
+    Show
+  end;
+  
+  stringGrid1:= TStringGrid.Create(frmMon);
+  with stringGrid1 do begin
+    Parent:= frmMon;
+    defaultcolwidth:= 154;
+    defaultrowheight:= 154;
+    height:= 360;
+    width:= 360;   
+    colcount:= 2;  //buggg solved!!!
+    rowcount:= 2;
+    top:= 20;
+    GridLineWidth:= 8;
+    Scrollbars:= false;
+    onDrawCell:= @StringGrid1DrawCell;
+  end;
+ 
+  myButton:= TSpeedButton.Create(frmMon)
+  with myButton do begin
+    Parent:= frmMon;
+    setbounds(10,440,380,80);
+    caption:= 'Big Bit Button';
+    font.size:= 12;
+    //font.Style:= [fsbold];
+    //glyph.loadfromfile(BITMAPPATH); 
+    //glyph.loadfromresourcename(getHINSTANCE,'HARD'); 
+    glyph.loadfromresourcename(getHINSTANCE,'OPENFOLDER'); 
+    //event handler
+    //onclick:= @btnClick;
+  end;
+end; 
+
+procedure Apploop_Tester;
+var i,j: integer;
+    c: TComponent;
+begin
+  for i:= 0 to Application.ComponentCount - 1 do begin
+    // all components of a Form
+    for j:= 0 to Application.Components[i].ComponentCount - 1 do begin
+      c:= Application.Components[i].Components[j];
+      if c is TComponent then
+        writeln(inttostr(j)+ ' '+c.name +' '+ c.classname)
+    end;
+  end; 
+end;  
+
+FUNCTION GetIpAddressByName(const AHostName: String): String;
+begin
+  result:= GetHostByName(AHostName)
+end;  
+
+function GetURLByIndy(const AURL: String): String;
+var
+IdHTTP: TIdHTTP;
+begin
+  IdHTTP:= TIdHTTP.Create(NIL);
+try
+  Result:= IdHTTP.Get(AURL);
+finally
+  IdHTTP.Free;
+end;
+end;
+
+FUNCTION HINSTANCE: longword;
+begin
+  result:= GetHINSTANCE;
+end;  
+
+Function RegRead(keyRoot: Longint; keyPath, myField: String): string;
+begin
+  result:= RegistryRead(keyroot, keyPath, myField)
+end;  
+
+procedure IsAppAlive;
+var Handle: THandle;
+begin
+  Handle:= FindWindow(MAINFORM,''); //FindReplDialog does not
+  if Handle <> 0 then 
+    Showmessage('maXbox is alive')
+  else
+    Showmessage('maXbox still sleeps');
+end;
+
+procedure PrintMap(aGraphic: TGraphic; title: string);
+begin
+  Printer.Title:= Title;
+  Printer.BeginDoc;
+  // in to the center                          
+  Printer.Canvas.Draw((Printer.PageWidth  - aGraphic.Width ) div 2,
+                (Printer.PageHeight - aGraphic.Height) div 2,aGraphic);
+  //Printer.Canvas.Draw(40,40,aGraphic);
+  Printer.Canvas.TextOut(480,480,'Place any text here');
+  Printer.EndDoc;
+end;
+
+begin   //main app
+   //Signal_Sounds;
+   Writeln('All files in Exe Path: ' +intToStr(GetFileCount));
+   Writeln('folder date of: '+datetimetostr(getFolderDate('examples')))
+   dt:= getFolderDate('examples')
+   //if GetTextFromFile(ExePath+'firstdemo3.txt',rStr) then ShowMessage(rStr);
+   //0 = Current drive
+   getDriveTypesF;   
+   TimeCounter;
+ 
+   BuildFormMenu; //calls StringGrid1DrawCell and getBitMap
+   //Apploop_Tester;
+   Writeln('IP Address of: '+GetIpAddressByName('www.softwareschule.ch'));
+   Writeln('IP Address of own Host: '+GetIpAddressByName(getHostName));
+   //Memo2.Lines.Text:= GetURLByIndy('http://www.delphi-treff.de'); 
+   Writeln('instance of module is: '+intToStr(HINSTANCE))
+   Writeln('Registry read of url2: '+RegRead(REGROOT3, REGPATH3, 'url2'))
+   
+   //IsAppAlive;
+   //PrintMap(getBitMap,'print of mX3.1')
+   //SearchAndOpenDoc(ExePath+'examples\boxprint2.xps');
+
+   Writeln('machine name is: '+getHostName)
+   Writeln('user name is: '+getUserName)
+   Writeln('proc id is: '+inttostr(currentProcessId))
+   Writeln('path of maXbox exe is: '+ExePath)
+   Writeln('Processor Numbers: '+intToStr(GetNumberOfProcessors))
+   Writeln('Page Size: '+intToStr(GetPageSize))
+   osType:= Win32Type;
+   writeln('OS type is: '+intToStr(ord(osType)));
+   mytimestamp:= GetFileCreationTime(exepath+'maxbox4.exe')
+   writeln(DateTimeToStr(mytimestamp)+' for maXbox4 file')
+   //ExecuteCommand('cmd','/k dir *.*')
+   //ShowMessage('Examples Date: '+FormatDateTime('dddd, d. mmmm yyyy, hh:mm:ss', dt));
+   //memo2.font.name:= 'Courier New';
+   Writeln(floatToStr(Fibo(100)))
+   //Say('This is maXbox 3.1')
+end.   
+
+
+There is no place like 127.0.0.1 
+
+//-------------------------------------------------------------------
+ DiskSize returns -1 if the drive number is invalid. Drive parameter can be set to: 0 = Current drive, 1 = A, 2 = B, 3 = C and so on. 
+
+
+DRIVE_UNKNOWN
+0 The drive type cannot be determined.
+ 
+DRIVE_NO_ROOT_DIR
+1 The root path is invalid; for example, there is no volume mounted at the specified path.
+ 
+DRIVE_REMOVABLE
+2 The drive has removable media; for example, a floppy drive, thumb drive, or flash card reader.
+ 
+DRIVE_FIXED
+3 The drive has fixed media; for example, a hard drive or flash drive.
+ 
+DRIVE_REMOTE
+4 The drive is a remote (network) drive.
+ 
+DRIVE_CDROM
+5 The drive is a CD-ROM drive.
+ 
+DRIVE_RAMDISK
+6 The drive is a RAM disk.
+
+------------------------------------------------------
+//USES WinSock;
+FUNCTION GetIpAddressByName(const AComputerName: STRING): STRING;
+VAR
+TMPResult: STRING;
+WSA: TWSAData;
+H: PHostEnt;
+P: PChar;
+BEGIN
+IF WSAStartUp($101, WSA) = 0 THEN BEGIN
+GetMem(P,255 + 1);
+StrPCopy(P, ComputerName);
+H:= GetHostByName(P);
+FreeMem(P);
+IF H <> NIL THEN BEGIN
+P:= inet_ntoa(PInAddr(H^.h_addr_list^)^);
+TMPResult:= StrPas(P)
+END;
+WSACleanUp;
+IF TMPResult <> '' THEN
+Result:=TMPResult
+ELSE
+Result:= '0';
+END;
+END;
+
+----------------------------------
+Function TForm1.RegRead (keyPath, myField: String): string;
+begin
+//Create the Object
+with (TRegistry.Create) do begin //als Instanz
+RootKey:=HKEY_LOCAL_MACHINE;
+//Check if whe can open key, if the key dosn't exist, we create it
+if OpenKey(keyPath,true) then begin
+if ValueExists(myField) then
+result:= ReadString(myField) else
+ShowMessage(myField+' does not exists under '+keyPath);
+end else
+ShowMessage('Error opening/creating key : '+keyPath);
+closeKey;
+Free;
+end; //with
+end;
+
+------------------------------------------------
+function GetNumberOfProcessors: longint;
+var
+SystemInfo: TSystemInfo;
+begin
+GetSystemInfo(SystemInfo);
+Result:= SystemInfo.dwNumberOfProcessors;
+end;
+
+In Delphi, you print via the TPrinter object.
+
+    * Add printers to your uses clause
+    * Use the Printer function to access the global instance of TPrinter
+    * Printer.BeginDoc starts the print job
+    * Printer.EndDoc stops the print job and sends it to the printer
+    * Printer.NewPage forces a new page
+    * Printer.Canvas is used to generate the output page 
+ 
+

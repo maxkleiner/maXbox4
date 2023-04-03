@@ -1,0 +1,515 @@
+program HelloWorldWebServerX4_Arduino_Sensor_Adafruit;
+ 
+//{$APPTYPE CONSOLE minimal -extend autotimer IP Hoster to Arduino event}
+// get a temp value from arduino to serve with socks on a browser #locs:134
+//#sign:breitsch: BREITSCH-BOX: 02/04/2023 23:05:50 
+//uses SysUtils, IdContext, IdCustomHTTPServer, IdHTTPServer; BMP280 Sensor
+                      
+Const
+  COMPORT = 'COM3';
+  IPPORT = 8080;
+  LOGFILE = 'arduino_tempBMP280_log8.txt';
+  JSCRIPT = 'C:\maXbox\softwareschule\IBZ_2016\IBZ_Prozesstechnik_2016\Uebungen\date_time.js';
+
+  var hlog1: THotlog;
+      artimer: TTimer;
+      jsload, tmpval,tmp2,aremoteip, HStarttime: string;
+      blockSer: TBlockSerial;
+      
+function connectAndGetValue: string; forward;    
+
+procedure HTTPServerCommandGet(thread: TIdPeerThread;
+            ReqInfo: TIdHTTPRequestInfo; RespInfo: TIdHTTPResponseInfo);
+begin
+   RespInfo.ResponseNo:= 200;
+   //RespInfo.ContentText:= 'IBZ TimeTempServe: '//charset=UTF-8'
+   //                   +DateTimeToInternetStr(Now,true)+': '+tmpval;
+   reqinfo.document := exepath+'/';
+   aremoteip:= ReqInfo.remoteIP;
+   RespInfo.ContentType:= 'text/HTML';
+   RespInfo.ContentText := '<!DOCTYPE html><html><head>'+
+   '<META HTTP-EQUIV="Refresh" CONTENT=5>'+
+   '<title>My Arduino mXResponse</title>'+
+   //'<script type="text/javascript" src="date_time.js"></script>'+
+  '<script type="text/javascript">'+jsload+'</script>'+
+    CRLF+'</head>'+CRLF+'<body>'+CRLF+
+  '<h1>Welcome OpenC° & maXbox4 temptime </h1>'+
+  '<h1>************************************</h1>'+
+  'Command: ' +ReqInfo.Command+' of Temperature/Pressure C°/hPa: <b>'+tmpval+'</b>'+
+  '<p><br>Host: ' + ReqInfo.Host + ' C°: '+tmp2+
+  '<br>RemoteIP: '+ ReqInfo.remoteIP +
+  '<br>Version: ' + ReqInfo.Version +
+  '<br>Docpath: ' + ReqInfo.Document +
+  '<br>Client: <span id="date_time"></span>'+
+  '<script type="text/javascript">window.onload=date_time(''date_time'');</script>'+
+  '<br>Host Starttime: '+ HStarttime+
+  '<br>URI: ' + ReqInfo.URI +
+  '<br>ServerContent SW: '+RespInfo.ServerSoftware+
+  '<br>UserAgent: ' + ReqInfo.UserAgent+'</p>'+
+  '<IMG SRC="http://www.softwareschule.ch/images/atom_ani.gif"'+
+  ' ALIGN="BOTTOM" BORDER="0" COLOR="#fffed3">'+
+  '</body></html>';  //*)
+   tmp2:= tmpval; 
+   hlog1.AddStr(DateTimeToStr(Now)+': '+tmpval+'>'+ReqInfo.remoteIP);
+end;
+
+procedure eventActTimer(sender: TObject);
+begin
+  tmpval:= connectAndGetValue;
+  writeln(datetimetostr(now)+' C°: '+tmpval+'° >'+aremoteIP)
+  aremoteIP:= '';
+  //hlog1.AddStr(DateTimeToStr(Now)+': '+tmpval+'>'+'local');
+end;  
+  
+procedure StartLogger;
+begin
+   if not FileExists(ExePath+LOGFILE) then begin
+     CloseFileHandle(FileCreate(ExePath+LOGFILE));
+     sleep(500);
+   end; 
+   hlog1:= THotlog.create;
+   hlog1.hlWriter.hlFileDef.filename:= LOGFILE;
+   hlog1.hlWriter.hlFileDef.path:= exepath;
+   hlog1.hlWriter.hlFileDef.append:= true; 
+   writeln('Logfile: '+hlog1.hlWriter.hlFileDef.filename)
+   //SetHotLogHeader(hlog1); 
+   hlog1.StartLogging; 
+   sleep(200)
+   hlog1.Add('>>>> Start {App_name} v {App_ver}{40@}{now}');
+   hlog1.Add('{@12}From : '+'maxform1.appname');
+ end; 
+ 
+function connectAndGetValue: string;
+ begin
+   with blockser do begin
+     result:= RecvString(2400)   //com port timeout
+   end;  
+end; 
+ 
+begin   //@main
+  if Fileexists(JSCRIPT) then
+    jsload:= filetostring(JSCRIPT);    
+  tmp2:= '0';
+  HStarttime:= DateTimeToInternetStr(Now,true)
+  //TWebServerCreate;
+  with TIdHTTPServer.Create(Nil) do begin
+    sr:= GetIPfromHost(getHostName)  //'172.16.10.80';
+    try
+      Bindings.Add.IP:= sr; //'127.0.0.1' //sr; 
+      Bindings.Add.Port:= IPPORT;
+      OnCommandGet:= @HTTPServerCommandGet;
+      Active:= True;
+    except
+      writeln(ExceptionToString(ExceptionType, ExceptionParam)); 
+      Active:= False; Free;
+    end;   
+    try
+      StartLogger;
+      If IsCOMPort then  
+        writeln('SerialPortNames Init: '+GetSerialPortNames);
+      arTimer:= TTimer.Create(Self);
+      arTimer.Enabled:= true;
+      arTimer.Interval:= 2000;
+      blockser:= TBlockserial.create;
+      blockser.SetCommState; 
+      blockser.Config(9600,8,'N',1,true,false);
+      blockser.Connect(COMPORT);
+      arTimer.OnTimer:= @eventActTimer; 
+      //ConnectArduinoSense;
+      Writeln('Hello Temp/Web server start at: '+sr);
+      ShowMessageBig('maXbox HellTempWeb server at: '+sr+':'+itoa(IPPORT)+#1310+
+                          '  Press OK to quit webserver!'+#13);
+    finally
+      writeln('SocketServer stop: '+timetoStr(now)); //Destroy;
+      Active:= False; Free;
+      hlog1.Add('<<<< Stop socktimer {App_name}{40@}{now}');
+      hlog1.Free;
+      arTimer.enabled:= false;
+      arTimer.Free;
+      blockSer.CloseSocket;
+      blockSer.Free;
+      writeln('Serial stop: '+timetoStr(now)); //Destroy;
+    end;
+  end;
+End.
+
+
+Doc: https://learn.adafruit.com/adafruit-bmp280-barometric-pressure-plus-temperature-sensor-breakout/wiring-and-test
+
+http://www.instructables.com/id/How-to-Use-the-Adafruit-BMP280-Sensor-Arduino-Tuto/
+
+http://arduinoprojects.uk/iot-esp8266-barometer-using-bmp280/
+
+Ref:
+https://create.arduino.cc/projecthub/everth-villamil-ruiz/temperature-sensor-ds18b20-3decfc
+  https://rosettacode.org/wiki/Hello_world/Web_server#Delphi
+  add bindings & contenttype for more convention
+  SetCommState;
+   //'<br />URI: ' + ARequestInfo.params[1] +
+   
+  https://www.tweaking4all.com/hardware/arduino/arduino-ds18b20-temperature-sensor/ 
+   
+  To Do Task: 
+  - log the exceptions
+  - reduce latency with open comport
+  - fix the host start time
+  - check Error code: ERR_EMPTY_RESPONSE
+  
+  Exception: Could not bind socket. Address and port are already in use.
+   PrintF('Command %s received: %s of temperature C°: %s',
+       [RequestInfo.Command,thread.connection.Socket.binding.PeerIP,tmp2]);
+ 
+Doc:
+   Function DateTimeToInternetStr( const Value : TDateTime; const AIsGMT : Boolean) : String
+   Function GetIPAddress( const HostName : string) : string
+   Function GetIP( const HostName : string) : string
+   Function GetIPHostByName(const AComputerName: String): String;
+   function GetIPFromHost(const HostName: string): string;
+
+   HTTPServer1.Bindings.Add.IP := '127.0.0.1';
+   HTTPServer1.Bindings.Add.Port := 50001;
+   
+  writeln(GetIPAddress(getHostName));
+  writeln(GetIP(getHostName));
+  writeln(GetIPHostByName(gethostname));
+  writeln(GetIPfromhost(gethostname));
+  
+   //writeln(RecvBlock(1000))
+      //SendString('8')
+     
+This is a common newbie mistake. You are creating two bindings, one bound to 127.0.0.1:DefaultPort, and one bound to 0.0.0.0:50001. You need one binding instead, that is bound to 127.0.0.1:50001 instead.
+
+with HTTPServer1.Bindings.Add do begin
+  IP := '127.0.0.1';
+  Port := 50001;
+end;
+
+client call example:
+
+procedure TDataFormbtnHTTPSendGetClick(Sender: TObject);
+var
+  HTTPClient : TIdHTTP;
+  responseStream : TMemoryStream;
+begin
+  HTTPClient := TIdHTTP.Create(Nil);
+  responseStream := TMemoryStream.Create;
+  try
+    try
+      HTTPClient.Get1('http://127.0.0.1:8080', responseStream);
+      responseStream.Seek(0, soFromBeginning);
+      SetLength(Sr, responseStream.Size);
+      responseStream.Read(Sr, responseStream.Size);
+      writeln('response: '+sr)
+      //writeln(': '+streamtoString3(responseStream))
+    except 
+      //on e : Exception do begin
+      showmessage('Could not send get request to localhost, port 8080');
+    end;
+    //end;
+  finally
+    //FreeAndNil(HTTPClient);
+    HTTPClient.Free;
+    HTTPClient:= Nil;
+    responseStream.Free;
+  end;
+end;
+
+//******************************Arduino Uno************************
+int incomingByte = 0;
+int gndPin = A1;    // select the input pin for the potentiometer
+int sensePin = 2;   //analog in
+int ledPin = 13;      // select the pin for the LED
+int plusPin = A3;  // variable to store the value coming from the sensor
+int cnt = 0;
+int ledPin8 = 8; 
+int val = 0;   
+
+ void setup(){
+   Serial.begin(9600);
+     pinMode(ledPin8,OUTPUT);    // declare the LED's pin as output 
+  pinMode(gndPin, OUTPUT);  
+  digitalWrite(gndPin, LOW);
+  pinMode(plusPin, OUTPUT);  
+  digitalWrite(plusPin, HIGH);
+  //Serial.begin(9600);
+  pinMode(13, OUTPUT);
+ }
+
+ void loop(){
+   //data=analogRead(rfReceivePin);    //listen for data on Analog pin 0
+   /*if (Serial.available() > 0) {
+     incomingByte = Serial.read();
+     Serial.println(incomingByte, DEC);
+   }*/
+   incomingByte = 0;
+ int raw = analogRead(sensePin);   
+  float volts = raw / 205.0;
+  float tempC = 100.0 * volts - 50;
+  float tempF = tempC * 9.0/5.0+32.0;
+  Serial.print(cnt); 
+  //Serial.print(DateTimeStrings());      
+  Serial.print(" C.temp: ");
+  Serial.println(tempC); 
+  // turn the ledPin on
+  val = Serial.read();      // read the serial port 
+    if (val=='8'){
+      digitalWrite(ledPin8,HIGH); 
+    }
+    if (val=='H'){
+      digitalWrite(ledPin8,LOW); 
+    }
+  //if (timeStatus()!= timeNotSet) {
+    //digitalClockDisplay();  
+  //delay(1000);
+  //digitalClockDisplay(); 
+  
+  
+ 
+  delay(1000);  
+ }
+
+
+ https://www.academia.edu/31112544/Work_with_microservice_maXbox_starter48.pdf
+ 
+ 
+                       .,,uod8B8bou,,.
+              ..,uod8BBBBBBBBBBBBBBBBRPFT?l!i:.
+         ,=m8BBBBBBBBBBBBBBBRPFT?!||||||||||||||
+         !...:!TVBBBRPFT||||||||||!!^^""'   ||||
+         !.......:!?|||||!!^^""'            ||||
+         !.........||||                     ||||
+         !.........||||  ##                 ||||
+         !.........||||                     ||||
+         !.........||||                     ||||
+         !.........||||                     ||||
+         !.........||||                     ||||
+         `.........||||                    ,||||
+          .;.......||||               _.-!!|||||
+   .,uodWBBBBb.....||||       _.-!!|||||||||!:'
+!YBBBBBBBBBBBBBBb..!|||:..-!!|||||||!iof68BBBBBb.... 
+!..YBBBBBBBBBBBBBBb!!||||||||!iof68BBBBBBRPFT?!::   `.
+!....YBBBBBBBBBBBBBBbaaitf68BBBBBBRPFT?!:::::::::     `.
+!......YBBBBBBBBBBBBBBBBBBBRPFT?!::::::;:!^"`;:::       `.  
+!........YBBBBBBBBBBRPFT?!::::::::::^''...::::::;         iBBbo.
+`..........YBRPFT?!::::::::::::::::::::::::;iof68bo.      WBBBBbo.
+  `..........:::::::::::::::::::::::;iof688888888888b.     `YBBBP^'
+    `........::::::::::::::::;iof688888888888888888888b.     `
+      `......:::::::::;iof688888888888888888888888888888b.
+        `....:::;iof688888888888888888888888888888888899fT!  
+          `..::!8888888888888888888888888888888899fT|!^"'   
+            `' !!988888888888888888888888899fT|!^"' 
+                `!!8888888888888888899fT|!^"'
+                  `!988888888899fT|!^"'
+                    `!9899fT|!^"'
+                      `!^"'
+
+
+
+                      |------|------|     __   __   __     |     ___________     |           () |
+| 64X4 | 64X4 | || |  | |  | |  |    |    |           |    |           ___|
+|------|------| || |  | |  | |  |    |____|           |____|         || D |
+| 64X4 | 64X4 | || |__| |__| |__|                 ________________  ||| I |
+|------|------|  |  ________   ______   ______   | ADV476KN50     | ||| P |
+| 64X4 | 64X4 |    |TRIDENT | |______| |______|  | 1-54BV  8940   | ||| S |
+|------|------| || |TVGA    | |______| |______|  |________________| |||___|
+| 64X4 | 64X4 | || |8800CS  |          ________________                ___|
+|------|------| || |11380029|    LOW->|  /\ SUPER VGA  | _________    |   |
+| 64X4 | 64X4 |     --------    BIOS  | \/         (1) ||_________|   | 1 |
+|------|------| ||  ______  J  ______ |________________| _________    | 5 |
+| 64X4 | 64X4 | || |______| 2 |______| ________________ |_________|   |___|
+|------|------| ||  ________   ______ |  /\ SUPER VGA  |               ___|
+| 64X4 | 64X4 |    |________| |______|| \/         (2) |   _________  |   |
+|------|------| ()              HIGH->|________________|  |_________| | 9 |
+| 64X4 | 64X4 |     ________   _________   _____________   _________  |   |
+|______|______|__  |________| |_________| |_____________| |_________| |___|
+                 |               __    TVGA-1623D                    _ () |
+                 |LLLLLLLLLLLLLL|  |LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL| |___|
+                                                                          |
+                                  
+                                  
+                                  
+ __________________________________________________                                  
+|          _____________________________           |
+| [1] [2]  _____________________________ [_][_][_] |
+| [3] [4]  [_][_][_] [_][_][_][_] [_][_] [_][_][_] |
+| [5] [6]  [][][][][][][][][][][][][][_] [1][2][3] |
+| [7] [8]  [_][][][][][][][][][][][][][] [4][5][6] |
+| [9][10]  [__][][][][][][][][][][][][_] [7][8][9] |
+| [11][12] [___][][][][][][][][][][][__] [__][0][] |
+|          [_][______________][_]                  |
+|__________________________________________________|                                                                          |
+
+----code_cleared_checked_clean----
+
+https://computing.llnl.gov/tutorials/pthreads/#MutexOverview
+
+ https://wiki.selfhtml.org/wiki/HTML/Kopfdaten/meta
+ 
+ https://msdn.microsoft.com/en-us/library/windows/desktop/ms682411(v=vs.85).aspx
+ 
+ 
+ //*****************Arduino Code Uno 2temp sensors********************
+int incomingByte = 0;
+int gndPin = A0;    // A1select the input pin for the potentiometer
+int sensePin = A1;   //A2 analog in
+int ledPin = 13;      // select the pin for the LED
+int plusPin = A2;  // A3variable to store the value coming from the sensor
+int cnt = 0;
+int ledPin8 = 8; 
+int val = 0;   
+
+int gndPin2 = A3;    // A1select the input pin for the potentiometer
+int sensePin2 = A5;   //A2 analog in
+int plusPin2 = A4;  // A3variable to store the value coming from the sensor
+
+ void setup(){
+   Serial.begin(9600);
+     pinMode(ledPin8,OUTPUT);    // declare the LED's pin as output 
+  pinMode(gndPin, OUTPUT);  
+  digitalWrite(gndPin, LOW);
+  pinMode(plusPin, OUTPUT);  
+  digitalWrite(plusPin, HIGH);
+  //Serial.begin(9600);
+  pinMode(13, OUTPUT);
+  pinMode(gndPin2, OUTPUT);  
+  digitalWrite(gndPin2, LOW);
+  pinMode(plusPin2, OUTPUT);  
+  digitalWrite(plusPin2, HIGH);
+ }
+
+ void loop(){
+   //data=analogRead(rfReceivePin);    //listen for data on Analog pin 0
+   /*if (Serial.available() > 0) {
+     incomingByte = Serial.read();
+     Serial.println(incomingByte, DEC);
+   }*/
+   incomingByte = 0;
+   //ser = 0;
+ int raw = analogRead(sensePin); 
+ int raw2 = analogRead(sensePin2);  
+  float volts = raw / 205.0;
+  float tempC = 100.0 * volts - 50;
+  float tempF = tempC * 9.0/5.0+32.0;
+  float volts2 = raw2 / 16.0;
+  float tempC2 = volts2 - 19.5;
+  float tempF2 = tempC2 * 1.8+32.0;
+  cnt++;
+  Serial.print(cnt); 
+  //Serial.print(DateTimeStrings());      
+  Serial.print(" C.temp: ");
+  Serial.println(tempC); 
+  Serial.print(" c.maxim: ");
+  Serial.println(tempC2); 
+  // turn the ledPin on
+  val = Serial.read();      // read the serial port 
+    if (val=='8'){
+      digitalWrite(ledPin8,HIGH); 
+    }
+    if (val=='H'){
+      digitalWrite(ledPin8,LOW); 
+    }
+  //if (timeStatus()!= timeNotSet) {
+    //digitalClockDisplay();  
+  //delay(1000);
+  //digitalClockDisplay(); 
+  
+  digitalWrite(ledPin,HIGH);
+  delay(500); 
+  digitalWrite(ledPin,LOW); 
+  delay(500);
+ }
+  //*****************Arduino Code Uno 2temp sensors********************
+
+Arduino Sketch of maXbox Script
+  
+ /***************************************************************************
+  Funktionierte am 3.4.2017 unter Arduino 1.8.1 mit Anpassung der Adresse von Adafruit_BMP280.h
+  #define BMP280_ADDRESS                (0x76)
+  Quelle: http://domoticx.com/arduino-barometrische-druk-sensor-bmp280/
+  Change to hPa /100 by maXbox
+  Change to ° char
+
+  Angepasstes Beispiel von Adafruit
+  C:\dateienmitback\programming\arduino\scripts_libraries\libraries\Adafruit_BMP280_Library_master\examples\bmp280test
+  
+  This is a library for the BMP280 humidity, temperature & pressure sensor
+
+  Designed specifically to work with the Adafruit BMEP280 Breakout 
+  ----> http://www.adafruit.com/products/2651
+
+  These sensors use I2C or SPI to communicate, 2 or 4 pins are required 
+  to interface.
+
+  Adafruit invests time and resources providing this open source code,
+  please support Adafruit andopen-source hardware by purchasing products
+  from Adafruit!
+
+  Written by Limor Fried & Kevin Townsend for Adafruit Industries.  
+  BSD license, all text above must be included in any redistribution
+ ***************************************************************************/
+
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BMP280.h>
+
+Adafruit_BMP280 bmp; // I2C
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println(F("BMP280 mX4 Setup Starttest"));
+  
+  if (!bmp.begin()) {  
+    Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
+    while (1);
+  }
+}
+
+void loop() {
+    Serial.print(F("Temperature = "));
+    Serial.print(bmp.readTemperature());
+    Serial.println(" *C");
+    
+    Serial.print(F("Pressure = "));
+    Serial.print(bmp.readPressure()/100.0);  //+65?
+    Serial.println(" hPa");
+
+    Serial.print(F("Approx. altitude = "));
+    //Bern {"lon":7.45,"lat":46.95},
+    //450m= 1476ft
+    Serial.print(bmp.readAltitude(1022.35)); // this should be adjusted to your local forecast pressure
+    Serial.println(" m");
+    
+    Serial.println();
+    delay(2000);
+}
+ /***************************************************************************
+
+Sketch uses 11,134 bytes (34%) of program storage space. Maximum is 32,256 bytes.
+Global variables use 470 bytes (22%) of dynamic memory, leaving 1,578 bytes for local variables. Maximum is 2,048 bytes.
+Sketch uses 11,118 bytes (34%) of program storage space. Maximum is 32,256 bytes.
+Global variables use 470 bytes (22%) of dynamic memory, leaving 1,578 bytes for local variables. Maximum is 2,048 bytes.
+WARNING: Spurious .github folder in 'Adafruit BMP280 Library' library
+
+
+Temperature is calculated in degrees C, you can convert this to F by using the classic F = C * 9/5 + 32 equation.
+
+Pressure is returned in the SI units of Pascals. 100 Pascals = 1 hPa = 1 millibar. Often times barometric pressure is reported in millibar or inches-mercury. For future reference 1 pascal =0.000295333727 inches of mercury, or 1 inch Hg = 3386.39 Pascal. So if you take the pascal value of say 100734 and divide by 3389.39 you'll get 29.72 inches-Hg.
+
+You can also calculate Altitude. However, you can only really do a good accurate job of calculating altitude if you know the hPa pressure at sea level for your location and day! The sensor is quite precise but if you do not have the data updated for the current day then it can be difficult to get more accurate than 10 meters.
+
+
+//***********************************************************************33
+
+7 LANguages_:
+  
+  1. Object Pascal
+  2. Arduino C
+  3. Java Script
+  4. HTML
+  5. C#
+  6. Windows C API
+  7. UML
+  
+  Arduino Sketch of maXbox Script
+  

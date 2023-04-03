@@ -1,0 +1,372 @@
+PROGRAM One_Function_AssertTester;
+
+//////////////////////////////////////////////////////////////////////
+//  #sign:breitsch: BREITSCH-BOX: 02/04/2023 20:21:20 
+//  Purpose: shows a function test bed of Tutor36                   //
+//  #path>r110\C:\Program Files\Streaming\maxbox4\Import\tutor110\  //
+//  Lines of Code #locs:180
+//////////////////////////////////////////////////////////////////////
+
+Const TEXTOUT = 'Hi world of code coverage with cover age';
+      TESTTEXT = 'this is max of maXbox a max numbermax'; 
+
+//############################################################################
+// Archimedes Spiral Test Function codeSIGN
+//############################################################################
+//TODO: Combine this two test functions in one unit-test
+//http://www.softwareschule.ch/download/maxbox_starter36.pdf
+
+
+Function IntToBase32(Numb: Longint): String;
+var numlett: string;
+begin
+  numlett:= NUMBERS+LETTERS;
+  Result:= '';
+  for It:= 0 to 4 do begin
+    Insert(numlett[(Numb And 31)+1], Result, 1);
+    Numb:= Numb Shr 5;
+  end;
+end;
+
+Function IntToBase32X(Numb: Longint): String;
+begin
+  Result:= '';
+  for It:= 0 to 4 do begin
+    Insert(NUMBLETTS[(Numb And 31)+1], Result, 1);
+    Numb:= Numb Shr 5;
+  end;
+end;
+
+function CountPos(const subtxt: string; Text: string): Integer;
+begin
+  if (Length(subtxt)= 0) Or (Length(Text)= 0) Or (Pos(subtxt,Text)= 0) then
+    result:= 0
+  else
+    result:= (Length(Text)- Length(StringReplace(Text,subtxt,'',
+      [rfReplaceAll]))) div Length(subtxt);
+end;
+
+function CountPosTest: boolean;
+begin
+  result:= false;
+  if CountPos(Uppercase('max'),Uppercase(TESTTEXT))=4 then
+    result:= true;
+end;
+
+function CountPos2(const subtxt: string; Text: string): Integer;
+begin
+  if (Length(subtxt)= 0) Or (Pos(subtxt,Text)= 0) then
+    result:= 0
+  else
+    result:= length(StringReplace(Text,subtxt,'',[rfReplaceAll]));
+end;
+
+function CountStrX(const ASearchFor, ASearchIn : string) : Integer;
+var
+  Start: Integer;
+begin
+  Result:= 0;
+  Start:= Pos(ASearchFor, ASearchIn);
+  while Start > 0 do begin
+    Inc(Result);
+    Start:= PosEx(ASearchFor, ASearchIn, Start+ 1);
+  end;
+end;
+
+procedure GetOutputDebugstring;
+var
+  X : Integer;
+  S : string;
+begin
+  { Some code here...}
+  x:= CountPos('max',TESTTEXT);
+  S:= Format('X := %d', [X]);
+  OutputDebugString(PChar(S));
+  writeln(S)
+ //OutputDebugString(PChar(Format('[%s][%s] %s',[aCaption, GetFormatDT(StartDT), aText])));
+end;
+
+procedure TestAssert;
+var i: integer;
+begin
+   i:=5;
+   assert(i<2,'Assert Message');
+end;
+
+procedure MessageCracker(wParam, lParam : Integer);
+var
+  Shift, X, Y : Integer;
+begin
+  Shift := wParam;
+  X:= LOWORD(lParam);
+  Y:= HIWORD(lParam);
+  { Code that does something with Shift, X, and Y. }
+end;
+
+
+Procedure TestUnitAssert;
+var 
+  S: AnsiString;
+  A: TDateTime;
+
+begin
+   SelftestPEM;
+  //SelfTestCFundamentUtils;
+  SelfTestCFileUtils;
+  //SelfTestCDateTime;
+  SelfTestCTimer;
+  SelfTestCRandom;
+  
+  Writeln(' 5 Units Tested with success ')
+  ShowMessageBig(' 5 Units Tested with success!');
+           
+  Assert2(FilePath('C', '..\X\Y', 'A\B', '\') = 'A\X\Y\C', 'FilePath');
+  Assert2(PathCanonical('\A\B\..\C\D\..\..\..\..\', '\') = '\', 'PathCanonical');
+  Assert2(UnixPathToWinPath('/c/d.f') = '\c\d.f', 'UnixPathToWinPath');
+  Assert2(WinPathToUnixPath('\c\d.f') = '/c/d.f', 'WinPathToUnixPath');
+  A:= EncodeDateTime(2001, 09, 02, 12, 11, 10, 0);
+  Assert2(Month(A) = 9, 'EncodeDateTime');
+  S:= GMTTimeToRFC1123TimeA(A, True);
+  Assert2(S = '12:11:10 GMT','GMT');
+  S:= GMTDateTimeToRFC1123DateTimeA(A, True);
+  Assert2(S = 'Sun, 02 Sep 2001 12:11:10 GMT', 'GMTDateTimeToRFC1123DateTime');
+  Assert2(TickDeltaW($FFFFFFF6, 0) = 10,'TrickDelta');
+  Assert2(CPUClockFrequency > 0,'RTC Prepare');
+  Assert2(Length(RandomPassword(0, 0, True, True, True)) = 0,'random passwd');
+  Assert2(Length(RandomPassword(1, 1, True, True, True)) = 1,'random passwd');
+  CompareDateTime(DateOf(Now),DateOf(Now)+1)
+end; 
+
+
+Begin  //main
+ writeln('IntToBase32 of 1000: '+IntToBase32(1000))
+ writeln('IntToBase32 of 1000: '+IntToBase32X(1000))
+ writeln('CountPos: '+itoa(CountPos('max','this is max of maXbox a max numbermax')))
+ PrintF('CountPos: %d',[CountPos('max','this is max of maXbox a max numbermax')])
+ PrintF('CountPos: %d',[CountPos('max',TESTTEXT)])
+ PrintF('Count String: %d',[CountStrX('max',TESTTEXT)])
+ try
+   Abort;
+ except
+   writeln('abort maxfired...')
+ end;  
+ PrintF('CountPos Text: %d',[CountPos('max',memo1.text)])
+ PrintF('CountPos Text Negative: %d',[CountPos2('max',memo1.text)])
+
+ Assert(CountPos('max','this is max of maXbox a max numbermax')=3,'count pos assert')
+ 
+ OutputDebugString(inttoStr(CountPos('max',TESTTEXT))+'CountPos runs..');
+ //Proc WriteToOSEventLog(const logName,logCaption,logDetails:String;const logRawData:Str);
+  WriteToOSEventLog('mX3','maXbox','detail3',TESTTEXT);
+  Assert(CountPos('max',TESTTEXT)=3,'count pos assert')
+  GetOutputDebugstring;
+  
+  writeln('test function: '+botoStr(CountPosTest))
+  //function IsWordPresent(const W, S: string; const WordDelims: TCharSet): Boolean;
+  if IsWordPresent('max',memo1.text, [',']) then writeln('max found');
+  PrintF('Word Count Text: %d',[WordCountL(memo1.text,'''')]);
+  PrintF('Word Count Text: %d',[WordCountL(memo1.text,'mx')]);
+  PrintF('Word Count Text: %d',[WordCount(memo1.text,['m','x'])]);
+  PrintF('Count String: %d',[CountStr('max',TESTTEXT,'')])
+  PrintF('CountStr Text: %d',[CountStr('max',memo1.text,'')])
+  //max search
+  PrintF('CountPos Text: %d',[CountPos('max',memo1.text)])
+  //Test Assert CountStr 
+  // TestAssert;
+  //ExecuteCommand('cmd','/c %windir%\system32\eventvwr.msc /s ')
+  //Application.HelpContext(IDH_FILEOPEN);
+  TestUnitAssert;
+
+End. 
+
+Doc:
+  https://bitbucket.org/max_kleiner/maxbox3/wiki/maXbox%20Tutorials
+  Most of time you test then an exception raises then you debug and fix the bug.
+  
+   
+
+    It exists.
+    It takes time.
+    It requires culture and discipline.
+    Unit and function testing is what takes the least time.
+    Hours writing an automated test is time invested, not time wasted!
+
+Ref:  #tech:.20perf: 0:0:2.561 threads: 14 192.168.56.1 20:21:20 4.7.6.20
+
+If an exception passes through the tryblocks in the application code, the application automatically calls the HandleException method. Unless the exception object is EAbort, HandleException calls the OnException handler, if one exists. Otherwise, it calls ShowException to display a message box indicating an error occurred. 
+
+function WordCount(const S: string; const WordDelims: TSysCharSet): Integer;
+
+PROCEDURE Assert(Cond: boolean; const Msg: string);
+var
+  progSeg,
+  progOfs: word;
+begin
+  asm
+      mov ax, [bp+04]            
+      mov es, ax
+      mov ax, word ptr es:0      
+      mov progSeg, ax            
+      mov ax, [bp+02]
+      mov progOfs, ax            
+  end;
+
+  if (Cond = FALSE) then begin
+    mmDebug.Lines.Add(Msg + ' at location ' +
+                              IntToHex(progSeg, 4) +':' +IntToHex(progOfs, 4) );
+    ShowModal;
+  end;
+end;
+
+
+From your digest email
+If programming languages were countries, which country would each language represent?
+
+Pascal: Germany -- real and tough but a bit old fashioned
+
+Java: USA -- optimistic, powerful, likes to gloss over inconveniences.
+
+C++: UK -- strong and exacting, but not so good at actually finishing things and tends to get overtaken by Java.
+
+Python: The Netherlands. "Hey no problem, let'sh do it guysh!"
+
+Ruby: France. Powerful, stylish and convinced of its own correctness, but somewhat ignored by everyone else.
+
+Assembly language: India. Massive, deep, vitally important but full of problems.
+
+Cobol: Russia. Once very powerful and written with managers in mind; but has ended up losing out.
+
+SQL and PL/SQL: Germany. A solid, reliable workhorse of a language.
+
+Javascript: Italy. Massively influential and loved by everyone, but breaks down easily.
+
+Scala: Hungary. Technically pure and correct, but suffers from an unworkable obsession with grammar that will limit its future success.
+
+C: Norway. Tough and dynamic, but not very exciting.
+
+PHP: Brazil. A lot of beauty springs from it and it flaunts itself a lot, but it's secretly very conservative.
+
+LISP: Iceland. Incredibly clever and well-organised, but icy and remote.
+
+Perl: China. Able to do apparently almost anything, but rather inscrutable.
+
+Swift: Japan. One minute it's nowhere, the next it's everywhere and your mobile phone relies on it.
+
+C#: Switzerland. Beautiful and well thought-out, but expect to pay a lot if you want to get seriously involved.
+
+R: Liechtenstein. Probably really amazing, especially if you're into big numbers, but no-one knows what it actually does.
+
+Awk: North Korea. Stubbornly resists change, and its users appear to be unnaturally fond of it for reasons we can only speculate on.
+
+//############################################################################
+// Archimedes Spiral App
+//############################################################################
+
+unit ArchSpiralMain;
+
+interface
+
+uses
+  w3system, w3components, w3ctrls, w3application, w3game, w3gameapp,
+  w3polygons, w3inet, w3graphics;
+
+type
+  TApplication = class(TW3CustomGameApplication)
+  private
+    FValueA: Float;
+    FValueB: Float;
+    FWait: Boolean;
+    procedure HandleClick(Sender:TObject);
+  protected
+    procedure ApplicationStarting; override;
+    procedure ApplicationClosing; override;
+    procedure PaintView(Canvas: TW3Canvas); override;
+  end;
+
+implementation
+
+//############################################################################
+// TApplication
+//############################################################################
+
+procedure TApplication.ApplicationStarting;
+begin
+  inherited;
+
+  FValueA := 3.0;
+  FValueB := 1.4;
+
+  GameView.OnClick := Self.HandleClick;
+
+  // Initialize refresh interval, set this to 1 for optimal speed
+  GameView.Delay := 10;
+ 
+  // Start the redraw-cycle with framecounter active
+  // Note: the framecounter impacts rendering speed. Disable
+  // the framerate for maximum speed (false)
+  GameView.StartSession(true);
+end;
+
+procedure TApplication.ApplicationClosing;
+begin
+  GameView.EndSession;
+  inherited;
+end;
+
+procedure TApplication.HandleClick(Sender: TObject);
+begin
+  FWait := not FWait;
+end;
+
+// Note: In a real live game you would try to cache as much
+// info as you can. Typical tricks are: 
+//   1: Only get the width/height when resized
+//   2: Pre-calculate strings, especially RGB/RGBA values
+//   3: Only redraw what has changed, avoid a full repaint
+// The code below is just to get you started
+
+procedure TApplication.PaintView(Canvas: TW3Canvas);
+var
+  cx, cy: Integer;
+  i: Integer;
+  angle: Float;
+  x, y: Float;
+begin
+  if FWait then
+    exit;
+
+  FValueB := FValueB + 0.001;
+
+  // Clear background
+  Canvas.FillStyle := 'rgba(0,0,99,0.08)';
+  Canvas.FillRectF(0, 0, GameView.Width, GameView.Height);
+
+  // Draw our framerate on the screen
+//  Canvas.font := '10pt verdana';
+//  Canvas.FillStyle := 'rgb(255,255,255)';
+//  Canvas.FillTextF('FPS:' + IntToStr(GameView.FrameRate) + ' / ' + floatToStr(FbValue) ,10,20,MAX_INT);
+
+  cx := GameView.width div 2;
+  cy := GameView.Height div 2;
+  Canvas.BeginPath;
+
+  for i := 42 downto 0 do
+  begin
+    angle := FValueB * i;
+    x := cx + (FValueA + FValueB * angle) * cos(angle);
+    y := cy + (FValueA + FValueB * angle) * sin(angle);
+    if i = 42 then Canvas.MoveToF(x, y) else Canvas.LineToF(x,y);
+  end;
+
+  Canvas.StrokeStyle := '#FFF';
+  Canvas.Stroke;
+end;
+
+end.
+
+  RegisterMethod('Constructor Create(AOwner: TComponent)');
+  RegisterConstructor(@TJvMail.Create, 'Create');
+  RegisterMethod('Procedure Free');
+  RegisterMethod(@TJvMail.Destroy, 'Free');
+   
+----app_template_loaded_code----

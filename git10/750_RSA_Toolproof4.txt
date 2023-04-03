@@ -1,0 +1,555 @@
+PROGRAM RSA_HASH_Demo_Tool4;
+CONST 
+//<Constant declarations> 
+  TEXTOUT = 'hi world of cipher code rage';
+  
+  //https://wikimedia.org/api/rest_v1/media/math/render/svg/cee2abda1654a8beb3ff8baa9c3ab83c92933eef
+
+{TYPE 
+<Type declarations>} //#locs:325
+//#sign:breitsch: BREITSCH-BOX: 02/04/2023 23:14:09 
+
+//public key of cn digital signature key
+
+BIGHEXMX = '30 82 01 0a 02 82 01 01 00 b5 d0 ce bc 95 28 2e 37 27 ae 38 d7 fe 67 15 eb 17 77 01 b3 53 57 df bb 7a 8c aa 07 a9 8b 43 ab b5 1c 4f b2 3e c2 4f 8f ba 9b 91 48 35 9b 87 46 26 b0 7d 63 c3 fd 31 0d 41 24 c3 92 fe 90 d4 23 79 0d de 60 82 79 54 b7 a8 a4 d3 1c f0 e6 a3 80 9f a9 2d a9 06 05 10 80 5a 6f 00 9f ce 92 14 b5 5e ca 9e e6 5a 6f b8 55 95 2f 50 2b 3c 21 d4 d4 78 87 d3 21 a7 e4 0e 26 de 01 e2 fa cb 2f b6 72 b7 8b 98 bb 4c 67 7a 2e 64 05 3c eb 87 3e 26 c1 7f 6f fb 7e d0 d3 74 f9 26 b7 24 c5 3d 17 89 13 68 cf f2 14 e2 61 4c 8c 2a 3b 34 db 0e 44 d0 8a a4 04 d5 75 ed b5 87 7b ec e4 0b 89 1b f5 04 c7 19 3f 7f d4 ce 5b 8f 6f f3 e3 76 f3 4b a0 72 24 78 7d e4 25 61 86 2f 00 ad 53 05 9c 2c b6 d8 9f 5b bc 9f 57 bb 6b 1a f6 b8 60 e5 1c e9 85 7c 5d 92 55 8e bd 7b c3 a6 d2 6c 47 0a c5 d6 b5 e0 a9 02 03 01 00 01';
+
+Const  addpkey = // - the private key - 
+'89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713';
+
+ 
+Const
+  ap = 
+'1213107243921127189732367153161244042847242763370141092563454931230196437304208'+
+'5619324197365322416866541017057361365214171711713797974299334871062829803541';
+  aq =
+'1202752425547874888595622079373451212873338780368207543365389998395517985098879'+
+'7899869146900809131611153346817050832096022160146366346391812470987105415233';
+
+  Nmod = '145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053';
+ 
+
+Var 
+//<Variable declarations>
+  i: integer;
+  
+  { Private declarations }
+fclearingnumber :string;
+fclearingaccountprefix :string;
+fiban :string;
+//fm11 :ModElevenTest;
+fresulttext :string;
+fbankcode :string;
+ftestresult :boolean;
+
+//<FUNCTION>
+//<PROCEDURE> 
+
+function convertcountrychar(input:string):string;
+var i:integer;
+begin
+if length(input)<>1 then begin
+  result:='00';
+end;
+i:=ord(char(input[1]));
+i:=i-55;
+result:=inttostr(i);
+end;
+
+procedure tiban_validateIban;
+var s:string;
+f:string;
+bigint:TInteger;
+begin
+f:= fiban;
+if length(fiban)<>24 then begin
+fresulttext:='iban account is not 24 bytes in length';
+ftestresult:=false;
+exit;
+end;
+
+s:=copy(fiban,5,20)+convertcountrychar(copy(fiban, 1,1))+convertcountrychar(copy(fiban,2,1))+copy(fiban,3,2);
+
+  bigint:=TInteger.create(1);
+  bigint.Assign2(s);
+  bigint.modulo(97);
+  s:=bigint.ConvertToDecimalString(false);
+
+if strtoint(s)=1 then begin
+fresulttext :='CZECH IBAN TEST OK!';
+ftestresult :=true;
+end
+else begin
+  fresulttext :='CZECH IBAN TEST BAD!';
+  ftestresult :=false;
+ end;
+end;
+
+var fm11 :    TObject; //ModElevenTest;
+   clearingnumber :string; 
+
+procedure tiban_generateIban;
+var
+bigint:TInteger;
+s:string;
+i:integer;
+m11failure:boolean;
+begin
+if not assigned(fm11) then begin
+ fresulttext:='No modulo 11 checking assigned';
+ exit;
+end;
+
+m11failure:=false;
+//-------------------------
+// fclearingaccountprefix
+//-------------------------
+
+if length(fclearingaccountprefix)>0 then begin
+//m11.Accountnumber:=fclearingaccountprefix;
+//if fm11.TestResult =false then
+begin
+ fresulttext :='M11 failure in given account prefix';
+ ftestresult :=false;
+ fiban:='';
+ exit;
+end;
+end;
+
+if 6-length(fclearingaccountprefix)<6 then begin
+for i:=1 to 6-length(fclearingaccountprefix) do begin
+ fclearingaccountprefix:='0'+fclearingaccountprefix ;
+end;
+end;
+
+//-------------------------
+// fclearingnumber
+//-------------------------
+//fm11.Accountnumber:=fclearingnumber;
+//if fm11.TestResult =false then
+begin
+ fresulttext :='M11 failure in given account prefix';
+ ftestresult :=false;
+ fiban:='';
+ exit;
+end;
+
+for i:=1 to 10-length(clearingnumber) do begin
+ clearingnumber:='0'+clearingnumber;
+end;
+
+s:=fbankcode+fclearingaccountprefix+fclearingnumber+'123500';
+
+bigint:=TInteger.create(1);
+bigint.Assign2(s);
+bigint.modulo(97);
+s:=bigint.ConvertToDecimalString(false);
+i:=strtoint(s);
+i:=98-i;
+if i<10 then s:='0'+inttostr(i) else s:=inttostr(i);
+
+fiban:='CZ'+s+fbankcode+fclearingaccountprefix+fclearingnumber;
+bigint.Free;
+tiban_validateIban;
+end;
+
+function BigExp2(aone, atwo: string): string;
+var bigint, bigint1, bigintres: TXRTLInteger;
+begin
+  XRTLFromString(aone, bigint, 10);
+  XRTLFromString(atwo, bigint1, 10);
+  XRTLExp(bigint,bigint1,bigintres);
+  result:= XRTLToString(bigintres,10,10);
+end;
+
+function modPowBig3(aval, apow, amod: string): string;
+var atbig, atbig2, atbig3: TInteger;
+begin
+  atbig:= TInteger.create(1)
+  atbig.assign2(aval);
+  atbig2:= TInteger.create(1)
+  atbig2.assign2(apow);
+  atbig3:= TInteger.create(1)
+  atbig3.assign2(amod);
+  atbig.ModPow(atbig2,atbig3);
+  //atbig.invmod(10);
+  result:= atbig.tostring(false) 
+  atbig.free;
+  atbig2.free;
+  atbig3.free;
+end;
+
+const KeySize = 512; 
+
+procedure ProfileRSA;
+
+var T : LongWord;
+    Pri : TRSAPrivateKey;
+    Pub : TRSAPublicKey;
+    Pln, Enc, Dec : AnsiString;
+begin
+  RSAPrivateKeyInit(Pri);
+  RSAPublicKeyInit(Pub);
+
+  T := GetTickCount;
+  RSAGenerateKeys(KeySize, Pri, Pub);
+  T := GetTickCount - T;
+  Writeln('GenerateKeys: '+ floattoStr(T / 1000.0)+' s');
+  Writeln('Pri.Mod:');
+  Writeln(HugeWordToHex(Pri.Modulus));
+  Writeln('Pri.Exp:');
+  Writeln(HugeWordToHex(Pri.Exponent));
+  Writeln('Pub.Mod:');
+  Writeln(HugeWordToHex(Pub.Modulus));
+  Writeln('Pub.Exp:');
+  Writeln(HugeWordToHex(Pub.Exponent));
+
+  T := GetTickCount;
+  Pln := '0123456789ABCDEF';
+  Enc := RSAEncryptStr(rsaetPKCS1, Pub, Pln);
+  Assert(Enc <> Pln, 'not pln');
+  T := GetTickCount - T;
+  Writeln('EncryptStr: '+floattostr(T / 1000.0)+ ' ms');
+
+  T := GetTickCount;
+  Dec := RSADecryptStr(rsaetPKCS1, Pri, Enc);
+  Assert(Dec = Pln, 'not pln');
+  T := GetTickCount - T;
+//  Writeln('DecryptStr: ', T / 1000.0:0:3, 'ms');
+  Writeln('DecryptStr: '+floattostr(T / 1000.0)+ ' ms');
+
+  RSAPublicKeyFinalise(Pub);
+  RSAPrivateKeyFinalise(Pri);
+end;
+
+
+
+   var cres: double;
+   s_encrypt, s_decrypt, newHEX: string;
+   bigINT: TXRTLInteger;
+
+BEGIN  //Main
+//<Executable statements>
+ 
+ //  writeln(SHA1('C:\maXbox\softwareschule\IBZ_2016\IBZ_IT_Security_2016\DVD Inhalt\Uebungen\www.postfinance2.ch.der'));
+   //writeln(SHA1('C:\maXbox\softwareschule\IBZ_2016\IBZ_IT_Security_2016\maxbox4\maxbox4\maxbox4pubkey.cer'));
+
+   //writeln(UpperCASE(cStrtoHex(synSHA1(filetostring('C:\maXbox\softwareschule\IBZ_2016\IBZ_IT_Security_2016\maxbox4\maxbox4\maxbox4pubkey.cer')))));
+ 
+//<Definitions>  
+   maxcalcF('128*ln(2) /ln(10)')
+   maxcalcF('2^4%11')
+   maxcalcF('2^256')
+   maxcalcF('40^48.2')
+   
+    maxcalcF('256 *ln(2) /ln(40)')
+    maxcalcF('40^48.1028671255315')
+    maxcalcF('9.5/12*6+1')
+    maxcalcF('ln(10^155) /ln(2)')
+    maxcalcF('ln(2^512)/ln(10)')
+    maxcalcF('ln(2^1024)/ln(10)')
+     
+     writeln(itoa(length('12131072439211271897323671531612440428472427633701410925634549312301964373042085619324197365322416866541017057361365214171711713797974299334871062829803541')))
+     
+     writeln(itoa(length('145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053')));
+     
+     writeln(itoa(length('89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713')))
+     
+     writeln(itoa(length('89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713')));
+     
+     writeln(cStrtoHex(synsha1('89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713')))
+     
+     writeln(cStrtoHex(synsha1('89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713')))
+     
+      maxcalcF('9^7%143')
+     //maxcalcF('48^103 % 143')
+     
+     cres:= intpower(48,103);
+     writeln(floattostr((cres)))
+     //writeln(floattointeger((cres)))
+     
+     with Tinteger.create(48) do begin
+       //assign1(48);
+       pow(103);
+       modulo1(143)
+       writeln(tostring(false))
+       free
+     end;  
+     
+   //  writeln(BigExp2('1976620216402300889624482718775150', '65537'));
+     //writeln(floattostr(cres moddiv  143))
+    {with Tinteger.create(1) do begin
+       assign2('1976620216402300889624482718775150');
+       pow(65537);
+       //modulo1(143)
+       writeln(tostring(false))
+       free
+     end; } 
+     
+    { newHex:= DelSpace(bigHEXMX);
+     XRTLFromHex(newHEX, bigint);
+    writeln(XRTLToString(bigint,10,10));
+     writeln(itoa(length(XRTLToString(bigint,2,10)))); //2048 + 128 bit ?
+   //}
+   
+   {n is >>>} writeln(bigMulu(ap,aq)) 
+   writeln('');
+     
+  writeln(modpowbig3('1976620216402300889624482718775150','65537',Nmod))
+  s_encrypt:= modpowbig3('1976620216402300889624482718775150','65537',Nmod);
+  s_decrypt:= modpowbig3(s_encrypt,addpkey,NMod)
+  writeln('decrypt: '+s_decrypt) 
+  
+  //writeln(modpowbig3('1976620216402300889624482718775150','65537',Nmod))
+  s_decrypt:= modpowbig3(modpowbig3('1976620216402300889624482718775150',
+                                       '65537',Nmod),addpkey,NMod)
+  writeln('decrypt: '+s_decrypt) 
+  
+  s_decrypt:= (modpowbig3('19766','65537','143'))
+  writeln('decrypt MOD: '+s_decrypt) 
+  s_decrypt:= RSADecrypt('19766','65537','143')
+  writeln('decrypt RSA: '+s_decrypt) 
+  
+  writeln(modpowbig3('1976620216402300889624482718775150','65537',Nmod))
+  s_encrypt:= RSAencrypt('1976620216402300889624482718775150','65537',Nmod);
+  s_decrypt:= RSAdecrypt(s_encrypt,addpkey,NMod)
+  writeln('decrypt RSA: '+s_decrypt) 
+  
+  writeln(RSAEncrypt('1115','17','2773'))
+  writeln(RSADecrypt('1379','157','2773'))
+  writeln(RSADecrypt(RSAEncrypt('1115','17','2773'),'157','2773'))
+ 
+  SelfTestRSA;
+  
+  ProfileRSA;
+     
+END. 
+
+Doc:
+
+ https://www.academia.edu/31097592/Work_with_RSA_maxbox_starter47.pdf
+ http://www.softwareschule.ch/download/maxbox_starter47.pdf
+ https://www.academia.edu/31112544/Work_with_microservice_maXbox_starter48.pdf
+
+ref:
+
+ RSA Crypto Systems Real Big Ref 3:
+ 1. Prime1: ap (11)  &  Prime2: aq (13)
+ 
+   ap = 
+'1213107243921127189732367153161244042847242763370141092563454931230196437304208'+
+'5619324197365322416866541017057361365214171711713797974299334871062829803541';
+  aq =
+'1202752425547874888595622079373451212873338780368207543365389998395517985098879'+
+'7899869146900809131611153346817050832096022160146366346391812470987105415233';
+
+ 2. RSA Modul Public [p*q] as N: {143}
+ 
+ 145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053
+ 
+ 3. Phi(N) [p-1*q-1] Private: {120 = 10*12}  ---> Euler 
+ 
+ 145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889648313811232279966317301397777852365301547848273478871297222058587457152891606459269718119268971163555070802643999529549644116811947516513938184296683521280
+ 
+ 4. Public RSA Exponent: {7}  65537
+ 
+ 5. Private D: {103}  Inverse Modulo ---> Euclid
+ 
+ Const  addpkey = // - the private key - 
+'89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713';
+ 
+ 6. Public (7,143) - Private (103,143)
+
+ 6. Public (65537,const Nmod) - Private (Const addpkey, const Nmod)
+
+ writeln(modpowbig2('1976620216402300889624482718775150','65537',bigmulu(ap,aq)))
+ 
+ ref
+ 
+ XRTLFromString('65537',AInt2,10)
+      XRTLFromString('143',APublic,10)
+        XRTLExpMod(AInt1, AInt2, APublic, ARes);
+       writeln(XRTLToString(aRes,10,10))   //0000000054    }
+
+  Zwei Worte werden Dir im Leben viele Türen öffnen - "ziehen" und "drücken".
+ 
+  Zwei Worte werden Dir im Leben viele Türen öffnen - "ziehen" und "stossen".
+  
+  What if one of the internal services is down?
+
+Answering this is very much dependent on your specific context. Some questions to ask:
+
+    Can the functionality be gracefully removed or does the endpoint need to throw an error?
+    Is the availability of the service critical enough that the whole aggregation service needs to be taken down?
+    If gracefully removed from the endpoint, how would the client show the failure to the user?
+
+The nature of an aggregation service is that it's dependent on (and deeply coupled to) one or more other services. Accordingly, it's impacted by failures in any of the services... and things will fail. You need to understand the failure scenarios and have a plan of action in place.
+
+
+Consider the security needs of a service based on the data it's housing or it's role in the grand scheme of things. You may need data security in transit or at rest. You may need network security at the service perimeter or at the perimeter of your private network. Good security is hard. Here are some principles worth thinking about:
+
+    Layer your security: Also known as defence in depth. Rather than assuming a network perimeter firewall is good enough, continue to add multiple layers of security where it matters most. This adds redundancy to your security and also helps slow down an attacker when one layer of security fails or a vulnerability is identified.
+    Use automatic security updates: In many cases, the benefit of automatic security updates outweighs the possibility of a service failure as a result of it. Combine automatic updates with automated testing, and you'll be able to roll out security updates with much higher confidence.
+    Harden your base operating system: Services typically need minimal access to the base operating system. Accordingly, the operating system can place strong limits on what a service can and cannot do. This helps contain a vulnerability if found in a service.
+    Do not write your own crypto code: It's very hard to get it right and very tempting to think you have something that works. Always use well known & widely used implementations.
+
+  
+  There are only 10 types of people: those who understand binary and those who don't.  
+  
+  B4:4C:8C:61:80:6A:94:1F:B5:19:A1:F6:F4:15:D1:6E:5D:6F:20:F2
+  
+  Als Beispiel diene die Primzahl p = 11 {\textstyle p=11} {\textstyle p=11} und die zugehörige prime Restklassengruppe G = ( Z / 11 Z ) × = { 1 , 2 , … , 10 } {\textstyle G=(\mathbb {Z} /11\mathbb {Z} )^{\times }=\{1,2,\dotsc ,10\}} {\textstyle G=(\mathbb {Z} /11\mathbb {Z} )^{\times }=\{1,2,\dotsc ,10\}}. Zur Primitivwurzel g = 2 {\textstyle g=2} {\textstyle g=2} wird nun die Wertetabelle der diskreten Exponentiation bestimmt.
+
+    2 0 = 1 = 1 mod 11 2 1 = 2 = 2 mod 11 2 2 = 4 = 4 mod 11 2 3 = 8 = 8 mod 11 2 4 = 16 = 5 mod 11 2 5 = 32 = 10 mod 11 2 6 = 64 = 9 mod 11 2 7 = 128 = 7 mod 11 2 8 = 256 = 3 mod 11 2 9 = 512 = 6 mod 11 {\textstyle {\begin{array}{lcrlrl}2^{0}&=&1&\equiv &1&\mod {11}\\2^{1}&=&2&\equiv &2&\mod {11}\\2^{2}&=&4&\equiv &4&\mod {11}\\2^{3}&=&8&\equiv &8&\mod {11}\\2^{4}&=&16&\equiv &5&\mod {11}\\2^{5}&=&32&\equiv &10&\mod {11}\\2^{6}&=&64&\equiv &9&\mod {11}\\2^{7}&=&128&\equiv &7&\mod {11}\\2^{8}&=&256&\equiv &3&\mod {11}\\2^{9}&=&512&\equiv &6&\mod {11}\end{array}}} {\textstyle {\begin{array}{lcrlrl}2^{0}&=&1&\equiv &1&\mod {11}\\2^{1}&=&2&\equiv &2&\mod {11}\\2^{2}&=&4&\equiv &4&\mod {11}\\2^{3}&=&8&\equiv &8&\mod {11}\\2^{4}&=&16&\equiv &5&\mod {11}\\2^{5}&=&32&\equiv &10&\mod {11}\\2^{6}&=&64&\equiv &9&\mod {11}\\2^{7}&=&128&\equiv &7&\mod {11}\\2^{8}&=&256&\equiv &3&\mod {11}\\2^{9}&=&512&\equiv &6&\mod {11}\end{array}}}
+
+    a {\textstyle a} {\textstyle a} 	0 	1 	2 	3 	4 	5 	6 	7 	8 	9
+    2 a = x mod 11 {\textstyle 2^{a}\equiv x\mod 11} {\textstyle 2^{a}\equiv x\mod 11} 	1 	2 	4 	8 	5 	10 	9 	7 	3 	6
+
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----
+
+
+pattern konkret ist noch auf amazon:
+
+https://www.amazon.de/Patterns-konkret-modellgetriebenen-durchg%C3%A4ngig-Beispielen/dp/3935042469
+
+
+das buch softwareengineering hat nur in einer seite code - aspect j
+es gibt kein offizielles skript
+es fehlen die grundlagen der programmiertechnik
+die klasse hat keinen klassenchef
+
+https://www.dotnetperls.com/static
+
+First example. Static denotes things that are singular. They are part of no instance. Static often improves performance, but makes programs less flexible.
+
+Intro:
+This program shows a static class, field and method. It shows the syntax. Main() is a special case of a static method.
+
+Field:
+In this program, we see that the static field (an int) is increment and displayed.
+
+Class:
+In a static class, all fields and methods must also be static. This is a useful restriction.
+
+Based on: .NET 4.6
+
+A static field identifies exactly one storage location to be shared by all instances of a given closed class type.
+
+
+1976620216402300889624482718775150^65537
+
+-  Titel: Die Cryptographic Service Providers in .NET
+
+https://msdn.microsoft.com/en-us/library/windows/desktop/aa380245(v=vs.85).aspx
+
+https://msdn.microsoft.com/en-us/library/windows/desktop/aa386983(v=vs.85).aspx
+
+
+Mit dem Namespace System.Security.Cryptography und den Klassen AesCryptoServiceProvider und RSACryptoServiceProvider bietet .Net praktisch alles zur Kryptographie. Und dann sind da noch die rund 10 Service Provider (CSP) die das CryptoAPI implementieren.
+Wir werfen einen Blick hinter die CryptoAPI und gezeigt wird Code aus den Bereichen: 
+    
+    Cryptographic Primitives
+    Secret-Key Encryption
+    Public-Key Encryption
+    Digital Signatures
+    Hash Values
+    Random Number Generation
+    PKI Certificates 
+
+    Auch das Aufdecken von klassischen Fehlern, die beim Einsatz der Kryptographie passieren können, kommt nicht zu kurz.
+    
+
+·        Speichern von kurzen Werten (Geschlecht) ohne Zufallskomponente
+
+·        Falscher Einsatz von AES-CTR (Fehler im Counter)
+
+·        Falsche Wahl des Block-Cipher-Modus (ECB für Bilder)
+
+·        Grundlage Kryptographie
+
+·        Symmetrische Verschlüsselung
+
+·        Hash-Funktionen
+
+·        Asymmetrische Verschlüsselung
+
+·        Wahl des richtigen Block-Cipher-Modus
+
+·        Electronic Codebook (ECB)
+
+·        Cipher-Block Chaining (CBC)
+
+·        Counter (CTR)
+
+·        Anwendungsbeispiele
+
+https://stephenhaunts.com/2013/03/04/cryptography-in-net-advanced-encryption-standard-aes/
+
+System.Object
+  System.Security.Cryptography.SymmetricAlgorithm
+    System.Security.Cryptography.Aes
+      System.Security.Cryptography.AesCryptoServiceProvider
+
+This overview provides a synopsis of the encryption methods and practices supported by the .NET Framework, including the ClickOnce manifests, Suite B, and Cryptography Next Generation (CNG) support introduced in the .NET Framework 3.5.
+
+This overview contains the following sections:
+
+    Cryptographic Primitives
+
+    Secret-Key Encryption
+
+    Public-Key Encryption
+
+    Digital Signatures
+
+    Hash Values
+
+    Random Number Generation
+
+    ClickOnce Manifests
+
+    Suite B Support
+
+    Related Topics
+
+GIS Daten und Maps statisch nutzen und intergrieren (45 Min.)
+
+- Abstract mit anvisiertem Zielpublikum, benötigten Vorkenntnissen und der Programmiersprache bei Codebeispielen
+
+Mit der mapbox Open Source Platform hat man ein Toolset und diverse REST APIs zugleich, die man schlicht zur Next Generation zählen darf.
+Immer mehr Apps der Geoinformationstechnologie basieren auf Basis von HTML5, CSS3 und JavaScript im Umfeld von sog. Responsive Design.
+Mit den modularen APIs, vor allem Static, Geocoding, Distance,Satellite und Map Matching ist man breit aufgestellt, was auch die plattformunabhängige Entwicklung fördert.
+Gezeigt wird mit 5 Use Cases und 5 Script Beispielen (neudeutsch Anwendungsfälle) wie sich die 5 REST GET Calls OHNE JavaScript in einer Web- oder Winform einbinden lassen.
+
+  
+- Kurzbiographie der Referentin/des Referenten
+
+ 
+Das berufliche Umfeld von Max Kleiner (geb. 20.6.1959) liegt in den Bereichen CBT, e-Learning, OOP, UML und Systemarchitektur, unter anderem als Trainer, Entwickler, Berater und Publizist.
+Die Schulung von Systemen begleiten die Entwicklung der Software zunehmends. Seine Schwerpunkte sind die Ausbildung, IT-Security, Datenbanken und Frameworks, die serviceorientiert arbeiten. Als Dozent und Berater in einer FH und im Werkauftrag einer Firma sind auch Microcontroller und das Web of Things dazugekommen. Das im Jahr 2003 publizierte Buch „Patterns konkret" ist auch mit der Clean Code Initiative noch aktuell.
+
+- Foto der Referentin/des Referenten
+
+http://www.kleiner.ch/kleiner/images/max_kleiner_immenstaad.jpg
+
+Kenntnisse
+
+-           Grundkenntnisse vorhanden (advanced)
+
+The following cryptographic service providers (CSP) are currently available from Microsoft.
+Provider	Description
+Microsoft Base Cryptographic Provider 	A broad set of basic cryptographic functionality that can be exported to other countries or regions.
+Microsoft Strong Cryptographic Provider 	An extension of the Microsoft Base Cryptographic Provider available with Windows XP and later.
+Microsoft Enhanced Cryptographic Provider 	Microsoft Base Cryptographic Provider with through longer keys and additional algorithms.
+Microsoft AES Cryptographic Provider 	Microsoft Enhanced Cryptographic Provider with support for AES encryption algorithms.
+Microsoft DSS Cryptographic Provider 	Provides hashing, data signing, and signature verification capability using the Secure Hash Algorithm (SHA) and Digital Signature Standard (DSS) algorithms.
+Microsoft Base DSS and Diffie-Hellman Cryptographic Provider 	A superset of the DSS Cryptographic Provider that also supports Diffie-Hellman key exchange, hashing, data signing, and signature verification using the Secure Hash Algorithm (SHA) and Digital Signature Standard (DSS) algorithms.
+Microsoft Enhanced DSS and Diffie-Hellman Cryptographic Provider 	Supports Diffie-Hellman key exchange (a 40-bit DES derivative), SHA hashing, DSS data signing, and DSS signature verification.
+Microsoft DSS and Diffie-Hellman/Schannel Cryptographic Provider 	Supports hashing, data signing with DSS, generating Diffie-Hellman (D-H) keys, exchanging D-H keys, and exporting a D-H key. This CSP supports key derivation for the SSL3 and TLS1 protocols.
+Microsoft RSA/Schannel Cryptographic Provider 	Supports hashing, data signing, and signature verification. The algorithm identifier CALG_SSL3_SHAMD5 is used for SSL 3.0 and TLS 1.0 client authentication. This CSP supports key derivation for the SSL2, PCT1, SSL3 and TLS1 protocols.
+Microsoft RSA Signature Cryptographic Provider 	Provides data signing and signature verification.
+
+ 
+
+
+ 

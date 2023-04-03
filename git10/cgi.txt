@@ -1,0 +1,709 @@
+ unit MainCGI_4;
+ 
+ //http://www.delphipages.com/comp/idrunner-987.html
+
+interface
+{uses
+  Graphics, Controls, Forms, Dialogs, ActnList, StdCtrls, Buttons, ComCtrls, ExtCtrls,
+  windows, messages, SysUtils, Classes, IdComponent, IdTCPServer, IdHTTPServer, IdGlobal, IdBaseComponent, IdThreadMgr, IdThreadMgrDefault, SyncObjs, IdThreadMgrPool, IdIntercept,
+  idCGIRunner, IdCustomHTTPServer; }
+  
+  // adapt for maXbox4 , #locs=680
+//#sign:breitsch: BREITSCH-BOX: 03/04/2023 10:40:38 
+//#TODO: read() dfm form and test envstring, CGIRunner now running!
+//http://www.vclcomponents.com/Delphi/Math__Statistics__Algorithms/
+
+Const //Imagepath2 = '\examples\images\';  
+      Imagepath = '\examples\';  
+      IP_Socket = '192.168.1.66';
+      PORT_Socket =  80;
+      WEBDIR = 'Web';   //must exist with index file
+      
+type
+  TfmHTTPServerMain = TForm;
+ var 
+  HTTPServer: TIdHTTPServer;
+  alGeneral: TActionList;
+  acActivate: TAction;
+  edPort: TEdit;
+  cbActive: TCheckBox;
+  StatusBar1: TStatusBar;
+  edRoot: TEdit;
+  LabelRoot, Label1: TLabel;
+  cbAuthentication: TCheckBox;
+  cbEnableLog: TCheckBox;
+  Panel1: TPanel;
+  lbLog: TListBox;
+  lbSessionList: TListBox;
+  Splitter1: TSplitter;
+  CGIRunner: TidCGIRunner;
+      procedure MainacActivateExecute(Sender: TObject);
+      procedure TfmHTTPServerMainedPortChange(Sender: TObject);
+      procedure TfmHTTPServerMainedPortKeyPress(Sender: TObject; var Key: Char);
+      procedure TfmHTTPServerMainedPortExit(Sender: TObject);
+      procedure TfmHTTPServerMainHTTPServerCommandGet(AThread: TIdPeerThread;
+         RequestInfo: TIdHTTPRequestInfo; ResponseInfo: TIdHTTPResponseInfo);
+      procedure TfmHTTPServerMainFormCreate(Sender: TObject);
+      procedure TfmHTTPServerMainFormDestroy(Sender: TObject);
+      procedure TfmHTTPServerMainHTTPServerSessionEnd(Sender: TIdHTTPSession);
+      procedure TfmHTTPServerMainHTTPServerSessionStart(Sender: TIdHTTPSession);
+      procedure TfmHTTPServerMainFormCloseQuery(Sender: TObject; 
+                                                        var CanClose: Boolean);
+      procedure TfmHTTPServerMainlbSessionListDblClick(Sender: TObject);
+      procedure TfmHTTPServerMainHTTPServerConnect(AThread: TIdPeerThread);
+      procedure TfmHTTPServerMainHTTPServerDisconnect(AThread: TIdPeerThread);
+      procedure TfmHTTPServerMainHTTPServerExecute(AThread: TIdPeerThread);
+      procedure TfmHTTPServerMainHTTPServerCommandOther(Thread: TIdPeerThread;
+                         const asCommand, asData, asVersion: String);
+      procedure TfmHTTPServerMainHTTPServerStatus(ASender: TObject; 
+                 const AStatus: TIdStatus; const AStatusText: String);
+  //private
+  var
+     UILock: TCriticalSection;
+      procedure TfmHTTPServerMainServeVirtualFolder(AThread: TIdPeerThread;
+               RequestInfo: TIdHTTPRequestInfo; ResponseInfo: TIdHTTPResponseInfo);
+      procedure DisplayMessage(const Msg: String);
+      procedure DisplaySessionChange(const session: string);
+      function GetMIMEType(sFile: TFileName): String;
+  { Private declarations }
+  { Public declarations }
+  var EnableLog: boolean;
+      MIMEMap: TIdMIMETable;
+      procedure TfmHTTPServerMainMyInfoCallback(Msg: String);
+  //end;
+
+var
+  fmHTTPServerMain: TfmHTTPServerMain;
+
+implementation
+//{$WARNINGS OFF}  //uses  filectrl, IdStack;
+//{$R *.DFM}
+
+procedure MainacActivateExecute(Sender: TObject);
+var e : exception;
+begin
+  acActivate.Checked := not acActivate.Checked;
+  if acActivate.Checked then
+   fmHTTPServerMain.Caption := 'webBox Active' else
+    fmHTTPServerMain.caption := 'weBox inactive';
+  lbSessionList.Items.Clear;
+  if not HTTPServer.Active then begin
+    HTTPServer.Bindings.Clear;
+    HTTPServer.DefaultPort := StrToIntDef(edPort.text, 80);
+    HTTPServer.Bindings.add.IP := IP_Socket
+    //HTTPServer.Bindings.Add;
+    writeln('not active bindings - start to activate')
+  end;
+  
+  if not DirectoryExists(edRoot.text) then  begin
+    DisplayMessage(Format('Web root folder (%s) not found.',[edRoot.text]));
+    acActivate.Checked := False;
+  end else begin
+    if acActivate.Checked then begin
+    try
+    EnableLog := {not} cbEnableLog.Checked;
+
+    HTTPServer.Active := true;
+    DisplayMessage(format('Listening for HTTP connections on %s:%d.',
+                    [HTTPServer.Bindings[0].IP, HTTPServer.Bindings[0].Port]));
+    writeln(format('Listening for HTTP connections on %s:%d.',
+                    [HTTPServer.Bindings[0].IP, HTTPServer.Bindings[0].Port]));
+  except
+    //on e: exception do
+    e:= Exception.create('self HTTPServer.Active error');
+     with e do  begin
+     acActivate.Checked := False;
+     writeln('excepziton')
+     DisplayMessage(format('Exception %s in Activate. Error is:"%s".',
+                ['e.ClassName', e.Message]));
+               // [e.Message]));
+     end;
+    end;
+  end else begin
+      HTTPServer.Active := false;
+     // SSL stuff
+      HTTPServer.Intercept := nil;
+     // End SSL stuff
+      DisplayMessage('Stop listening.');
+     end;
+  end;
+  edPort.Enabled := not acActivate.Checked;
+  edRoot.Enabled := not acActivate.Checked;
+  cbAuthentication.Enabled := not acActivate.Checked;
+  cbEnableLog.Enabled := not acActivate.Checked;
+  writeln('activate execute start')
+end;
+
+procedure TfmHTTPServerMainedPortChange(Sender: TObject);
+var
+  FinalLength, i: Integer;
+  FinalText: String;
+begin
+  // Filter routine. Remove every char that is not a numeric (must do that for cut'n paste)
+  Setlength(FinalText, length(edPort.Text));
+  FinalLength := 0;
+  for i := 1 to length(edPort.Text) do begin
+  //if edPort.text[i] in [ '0'..'9' ] then
+     if (edPort.text[i] > '0') and  (edPort.text[i] <'9')  then begin
+      inc(FinalLength);
+      FinalText[FinalLength] := edPort.text[i];
+     end;
+  end;
+  SetLength(FinalText, FinalLength);
+  edPort.text := FinalText;
+end;
+
+procedure TfmHTTPServerMainedPortKeyPress(Sender: TObject; var Key: Char);
+begin
+    if not (key > '0') and (key <'9') or (key =#8 ) then Key:= #0;
+end;
+
+procedure TfmHTTPServerMainedPortExit(Sender: TObject);
+begin
+  if length(trim(edPort.text)) = 0 then
+  edPort.text := '80';
+end;
+
+procedure TfmHTTPServerMainServeVirtualFolder(AThread: TIdPeerThread;
+                  RequestInfo: TIdHTTPRequestInfo; ResponseInfo: TIdHTTPResponseInfo);
+begin
+  ResponseInfo.ContentType := 'text/HTML';
+  ResponseInfo.ContentText := 
+                 '<html><head><title>Virtual folder</title></head><body>';
+  if AnsiSameText(RequestInfo.Params.Values['action'], 'close') then begin
+  // Closing user session
+  RequestInfo.Session.Free;
+  ResponseInfo.ContentText := ResponseInfo.ContentText + 
+              '<h1>Session cleared</h1><p><a href="/sessions">Back</a></p>';
+  end else begin
+   if assigned(RequestInfo.Session) then begin
+    if Length(RequestInfo.Params.Values['ParamName'])>0 then begin
+    // Add a new parameter to the session
+   ResponseInfo.Session.Content.Values[RequestInfo.Params.Values['ParamName']]:=
+                         RequestInfo.Params.Values['Param'];
+  end;
+  ResponseInfo.ContentText := ResponseInfo.ContentText + 
+                                            '<h1>Session informations</h1>';
+  RequestInfo.Session.Lock;
+  try
+  ResponseInfo.ContentText := ResponseInfo.ContentText + '<table border=1>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText 
+     + '<tr><td>SessionID</td><td>' + RequestInfo.Session.SessionID + '</td></tr>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText 
+                  + '<tr><td>Number of page requested during this session</td><td>'
+                   +RequestInfo.Session.Content.Values['NumViews']+'</td></tr>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText 
+                 + '<tr><td>Session data (raw)</td><td><pre>' +
+                    RequestInfo.Session.Content.Text + '</pre></td></tr>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText + '</table>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText + '<h1>Tools:</h1>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText + '<h2>Add new parameter</h2>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText + '<form method="POST">';
+  ResponseInfo.ContentText := ResponseInfo.ContentText + 
+                          '<p>Name: <input type="text" Name="ParamName"></p>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText + 
+                          '<p>value: <input type="text" Name="Param"></p>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText + 
+                          '<p><input type="Submit"><input type="reset"></p>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText + '</form>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText + '<h2>Other:</h2>';
+  ResponseInfo.ContentText := ResponseInfo.ContentText + 
+       '<p><a href="' + RequestInfo.Document + 
+                                  '?action=close">Close current session</a></p>';
+  finally
+   RequestInfo.Session.Unlock;
+  end;
+    end else begin
+      ResponseInfo.ContentText:= ResponseInfo.ContentText + 
+                                       '<p color=#FF000>Sorry, No session</p>';
+    end;
+  end;
+    ResponseInfo.ContentText := ResponseInfo.ContentText + '</body></html>';
+end;
+
+procedure DisplaySessionChange(const Session: string);
+var Index: integer;
+begin
+  if EnableLog then begin
+   UILock.Acquire;
+   try
+     Index:= lbSessionList.Items.IndexOf(Session);
+     if Index > -1 then
+       lbSessionList.Items.Delete(Index)
+     else
+       lbSessionList.Items.Append(Session);
+    finally
+       UILock.Release;
+    end;
+  end;
+end;
+
+procedure DisplayMessage(const Msg: String);
+begin
+  if EnableLog then begin
+    UILock.Acquire;
+     try
+       lbLog.ItemIndex := lbLog.Items.Add(Msg);
+     finally
+       UILock.Release;
+     end;
+  end;
+end;
+
+Const
+  SAUTHenticationrealm = 'Indy http cgi server demo';
+
+  procedure AuthFailed(ResponseInfo: TIdHTTPResponseInfo);
+  begin
+  ResponseInfo.ContentText := 
+   '<html><head><title>Error</title></head><body><h1>Authentication failed</h1>'#13 +
+  'Check demo source code to discover password:<br><ul><li>Search for <b>AuthUsername</b> in <b>Main.pas</b>!</ul></body></html>';
+  ResponseInfo.AuthRealm := SAUthenticationrealm;
+  end;
+
+  procedure AccessDenied(ResponseInfo: TIdHTTPResponseInfo);
+  begin
+  ResponseInfo.ContentText := 
+      '<html><head><title>Error</title></head><body><h1>Access denied</h1>'#13 +
+  'You do not have sufficient priviligies to access this document.</body></html>';
+  ResponseInfo.ResponseNo := 403;
+  end;
+
+
+procedure TfmHTTPServerMainHTTPServerCommandGet(AThread: TIdPeerThread;
+          RequestInfo: TIdHTTPRequestInfo; ResponseInfo: TIdHTTPResponseInfo);
+var
+  LocalDoc, Action: string;
+  ByteSent: Cardinal;
+  ResultFile: TFileStream;
+begin
+   //RequestInfo.AuthUsername := 'Indy';
+   //RequestInfo.AuthPassword := 'rocks'
+  // Log request
+  DisplayMessage(Format( 'Command %s %s received from %s:%d',
+    [RequestInfo.Command, RequestInfo.Document, 
+                   AThread.Connection.Socket.Binding.PeerIP,
+                          AThread.Connection.Socket.Binding.PeerPort]));
+  if cbAuthentication.Checked and
+      ((RequestInfo.AuthUsername <> 'Indy') or 
+                  (RequestInfo.AuthPassword <> 'rocks')) then begin
+       AuthFailed(ResponseInfo);
+    exit;
+  end;  //}
+  if Pos('.exe',LowerCase(RequestInfo.Document)) <> 0 then  begin
+       LocalDoc := LowerCase(RequestInfo.Document);
+       Action := Copy(LocalDoc,Pos('.exe',LocalDoc)+4,Length(LocalDoc));
+       LocalDoc := Copy(LocalDoc,1,Pos('.exe',LocalDoc)+3);
+    end;
+   if LocalDoc <> '' then begin
+      LocalDoc := ExpandFilename(IncludeTrailingBackSlash(edRoot.text) + LocalDoc);
+      if FileExists(LocalDoc) then begin
+          CGIRunner.Execute(LocalDoc, 
+                     AThread,RequestInfo,ResponseInfo, edRoot.Text, Action);
+        end else begin
+            ResponseInfo.ContentText:= '<H1><center>Script not found </center></H1>';
+            ResponseInfo.ResponseNo := 404; // Not found
+        end;
+    end
+   else
+  if (Pos('/session', LowerCase(RequestInfo.Document)) = 1) then begin
+    TfmHTTPServerMainServeVirtualFolder(AThread, RequestInfo, ResponseInfo);
+  end else begin
+  // Interprete the command to it's final path (avoid sending files in parent folders)
+    LocalDoc := ExpandFilename(edRoot.text + RequestInfo.Document);
+    //*)
+   // Default document (index.html) for folder
+    if not FileExists(LocalDoc) and DirectoryExists(LocalDoc)
+           and FileExists(ExpandFileName(LocalDoc + '/index.html')) then begin
+    LocalDoc := ExpandFileName(LocalDoc + '/index.html');
+  end;
+  if FileExists(LocalDoc) then begin// File exists
+    if AnsiSameText(Copy(LocalDoc, 1, Length(edRoot.text)), 
+               edRoot.Text) then begin// File down in dir structure
+  if AnsiSameText(RequestInfo.Command, 'HEAD') then begin
+    // HEAD request, don't send the document but still send back it's size
+    ResultFile := TFileStream.create(LocalDoc, fmOpenRead  or fmShareDenyWrite);
+  try
+    ResponseInfo.ResponseNo := 200;
+    ResponseInfo.ContentType := GetMIMEType(LocalDoc);
+    ResponseInfo.ContentLength := ResultFile.Size;
+  finally
+    ResultFile.Free; 
+    // We must free this file since it won't be done by web server component
+  end;
+  end else begin
+     // Normal document request
+     // Send the document back
+     ByteSent := HTTPServer.ServeFile(AThread, ResponseInfo, LocalDoc);
+     DisplayMessage(Format('Serving file %s (%d bytes / %d bytes sent) to %s:%d',
+     [LocalDoc, ByteSent, FileSizeByName(LocalDoc),
+     AThread.Connection.Socket.Binding.PeerIP,
+     AThread.Connection.Socket.Binding.PeerPort]));
+      writeln(Format('Serving file %s (%d bytes / %d bytes sent) to %s:%d',
+     [LocalDoc, ByteSent, FileSizeByName(LocalDoc),
+     AThread.Connection.Socket.Binding.PeerIP,
+     AThread.Connection.Socket.Binding.PeerPort]));
+  end;
+  end else
+    AccessDenied(ResponseInfo);
+    end else begin
+      ResponseInfo.ResponseNo := 404; // Not found
+      ResponseInfo.ContentText := '<html><head><title>Error</title></head><body><h1>'
+                         + ResponseInfo.ResponseText + '</h1></body></html>';
+    end;
+  end;
+end;
+
+procedure TfmHTTPServerMainFormCreate(Sender: TObject);
+begin
+  UILock:= TCriticalSection.Create;
+  MIMEMap:= TIdMIMETable.Create(true);
+  edRoot.text:= ExtractFilePath(Application.exename) + WEBDIR;
+  if HTTPServer.active then  fmHTTPServerMain.caption := 'active' 
+           else fmHTTPServerMain.caption := 'inactive';
+end;
+
+procedure TfmHTTPServerMainFormDestroy(Sender: TObject);
+begin
+  MIMEMap.Free;
+  UILock.Free;
+  HTTPServer.Free;
+  HTTPServer:= Nil;
+  writeln('http form destroy...')
+end;
+
+function GetMIMEType(sFile: TFileName): String;
+begin
+  result:= MIMEMap.GetFileMIMEType(sFile);
+end;
+
+procedure TfmHTTPServerMainHTTPServerSessionEnd(Sender: TIdHTTPSession);
+var
+  dt: TDateTime;
+  i: Integer;
+  hour, min, s, ms: word;
+begin
+  DisplayMessage(Format('Ending session %s at %s',
+           [Sender.SessionID, FormatDateTime(LongTimeFormat, now)]));
+  dt := (StrToDateTime(sender.Content.Values['StartTime'])-now);
+  DecodeTime(dt, hour, min, s, ms);
+  i := ((Trunc(dt)*24 + hour)*60 + min)*60 + s;
+  DisplayMessage(Format('Session duration was: %d seconds', [i]));
+  DisplaySessionChange(Sender.SessionID);
+end;
+
+procedure TfmHTTPServerMainHTTPServerSessionStart(Sender: TIdHTTPSession);
+begin
+  sender.Content.Values['StartTime'] := DateTimeToStr(Now);
+  DisplayMessage(Format('Starting session %s at %s',
+             [Sender.SessionID, FormatDateTime(LongTimeFormat, now)]));
+  DisplaySessionChange(Sender.SessionID);
+end;
+
+procedure TfmHTTPServerMainFormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  // desactivate the server
+  if cbActive.Checked then acActivate.execute;
+  fmHTTPServerMain.Free;  
+  TfmHTTPServerMainFormDestroy(self)               
+  writeln('close query, HTTPServer free and destroy')
+end;
+
+procedure TfmHTTPServerMainlbSessionListDblClick(Sender: TObject);
+begin
+  if lbSessionList.ItemIndex > -1 then begin
+  HTTPServer.EndSession(lbSessionList.Items[lbSessionList.ItemIndex]);
+  end;
+end;
+
+// SSL stuff
+procedure TfmHTTPServerMainMyInfoCallback(Msg: String);
+begin
+  DisplayMessage(Msg);
+end;
+
+procedure TfmHTTPServerMainHTTPServerConnect(AThread: TIdPeerThread);
+begin
+  DisplayMessage('User logged in');
+end;
+
+procedure TfmHTTPServerMainHTTPServerDisconnect(AThread: TIdPeerThread);
+begin
+  DisplayMessage('User logged out');
+end;
+
+procedure TfmHTTPServerMainHTTPServerExecute(AThread: TIdPeerThread);
+begin
+  DisplayMessage('Execute');
+end;
+
+procedure TfmHTTPServerMainHTTPServerCommandOther(Thread: TIdPeerThread;
+          const asCommand, asData, asVersion: String);
+begin
+  DisplayMessage('Command other: ' + asCommand);
+end;
+
+procedure TfmHTTPServerMainHTTPServerStatus(ASender: TObject;
+  const AStatus: TIdStatus; const AStatusText: String);
+begin
+  DisplayMessage('Status: ' + aStatusText);
+end;
+
+
+procedure loadCGIForm;
+var Binding1, binding2 : TIdSocketHandle;
+begin
+ fmHTTPServerMain:= TfmHTTPServerMain.create(self)
+ with fmHTTPServerMain do begin
+ setbounds(326,263,599,262)
+  BiDiMode := bdLeftToRight
+  BorderIcons := [biSystemMenu, biMinimize]
+  Caption := 'HTTP Server & CGI'
+  Color := clBtnFace
+  Font.Charset := DEFAULT_CHARSET
+  Font.Color := clWindowText
+  Font.Height := -11
+  Font.Name := 'MS Sans Serif'
+  Font.Style := []
+  OldCreateOrder := False
+  BiDiMode:= false
+  ParentBiDiMode := False
+  OnCloseQuery := @TfmHTTPServerMainFormCloseQuery
+  OnCreate := @TfmHTTPServerMainFormCreate
+  OnDestroy := @TfmHTTPServerMainFormDestroy
+  {DesignSize := (
+    391
+    228)   }
+  PixelsPerInch := 96
+  //TextHeight := 13
+  Show;
+  end;
+  LabelRoot:= TLabel.create(self)
+  with labelroot do begin
+    parent:= fmHTTPServerMain;
+    setbounds(3,80,23,13)
+    Caption := 'Root'
+  end;
+  //object Label1: TLabel
+   Label1:= TLabel.create(self)
+  with label1 do begin
+    parent:= fmHTTPServerMain;
+    setbounds(2 ,10,22,13)
+    Caption := 'Port:'
+  end;
+  edPort:= TEdit.create(self)
+  with edport do begin
+    parent:=  fmHTTPServerMain;
+    setbounds(32,8,41,21)
+    TabOrder := 0
+    Text := '80'
+    OnChange := @TfmHTTPServerMainedPortChange
+    OnExit := @TfmHTTPServerMainedPortExit
+    OnKeyPress := @TfmHTTPServerMainedPortKeyPress
+  end;
+   alGeneral:= TActionList.create(self)
+  with alGeneral do begin
+    //parent:= fmHTTPServerMain
+    //Left := 40
+    //Top := 128
+    //Name := 'ActionList2';
+    acActivate:= TAction.create(self)
+    with acactivate do begin
+      //parent:= fmHTTPServerMain
+      //Name := 'httpAction1';
+      ActionList := alGeneral;
+      Caption := '&Activate'
+      OnExecute := @MainacActivateExecute;
+    end;
+  end;
+  cbActive:= TCheckBox.create(self)
+  with cbactive do begin
+    parent:= fmHTTPServerMain
+    setbounds(32, 32,73,17)
+    Action := acActivate
+    TabOrder := 1
+  end;
+  StatusBar1:= TStatusBar.create(self)
+   with statusbar1 do begin
+    parent:=  fmHTTPServerMain
+    setbounds(0 , 209, 391,19)
+    align:= albottom;
+    panels.add
+    Panels[0].Text:=' Port in use: '+ itoa(PORT_Socket);     
+  end;
+  edRoot:= TEdit.create(self)
+  with edroot do begin
+  parent:= fmHTTPServerMain
+  setbounds( 37, 75, 352, 21)
+    Anchors := [akLeft, akTop, akRight]
+    TabOrder := 3
+  end;
+  cbAuthentication:= TCheckBox.create(self)
+  with cbauthentication do begin
+  parent:= fmHTTPServerMain
+    setbounds(136, 8 ,177, 17)
+    Caption := 'Require authentication'
+    TabOrder := 4
+  end;
+  cbEnableLog:= TCheckBox.create(self)
+  with cbenablelog do begin
+  parent:= fmHTTPServerMain
+    setbounds(136, 28, 177, 17)
+    Caption := 'Enable log'
+    Checked := True
+    State := cbChecked
+    TabOrder := 5
+  end;
+  Panel1:= TPanel.create(self)
+  with panel1 do begin
+  parent:= fmHTTPServerMain;
+    setbounds( 0, 102, 591, 107)
+    Align := alBottom
+    Anchors := [akLeft, akTop, akRight, akBottom]
+    BevelOuter := bvNone
+    Caption := 'Panel1'
+    TabOrder := 6
+    Splitter1:= TSplitter.create(self)
+    with splitter1 do begin
+     parent:= panel1;  
+     Align := altop
+    end;
+    lbLog:= TListBox.create(self)
+    with lblog do begin
+    parent:= panel1
+      setbounds(0, 0, 395, 107)
+      Align := alClient
+      ItemHeight := 13
+      TabOrder := 0
+    end;
+    lbSessionList:= TListBox.create(self)
+    with lbsessionlist do begin
+    parent:= panel1
+      setBounds(201, 0,190,107)
+      Align := alRight
+      ItemHeight := 13
+      TabOrder := 1
+      OnDblClick := @TfmHTTPServerMainlbSessionListDblClick;
+    end;
+  end;
+  //object HTTPServer: TIdHTTPServer
+    HTTPServer:= TIdHTTPServer.create(self)
+    with httpserver do begin
+     HTTPServer.bindings.Clear;
+     HTTPServer.OnStatus := @TfmHTTPServerMainHTTPServerStatus;
+     defaultport:= PORT_Socket; //8090;
+     //Bindings.Add;
+      bindings.add.port:= defaultport;
+      bindings.add.ip:= IP_Socket;
+     {Binding1 := HTTPServer.Bindings.Add;
+      Binding1.IP := '127.0.0.1'
+      Binding1.Port := 80
+      Binding2 := HTTPServer.Bindings.Add;
+      Binding2.IP := IP_Socket; //'192.168.0.186'
+      Binding2.Port := PORT_Socket; //80   }  //  end>
+    //CommandHandlers := <>
+    Greeting.NumericCode := 0
+    MaxConnectionReply.NumericCode := 0
+    OnConnect := @TfmHTTPServerMainHTTPServerConnect
+    OnExecute := @TfmHTTPServerMainHTTPServerExecute
+    OnDisconnect := @TfmHTTPServerMainHTTPServerDisconnect
+    ReplyExceptionCode := 0
+    //ReplyTexts := <>
+    ReplyUnknownCommand.NumericCode := 0
+    AutoStartSession := True
+    OnSessionStart := @TfmHTTPServerMainHTTPServerSessionStart;
+    OnSessionEnd := @TfmHTTPServerMainHTTPServerSessionEnd;
+    SessionTimeOut := 1200000
+    OnCommandOther := @TfmHTTPServerMainHTTPServerCommandOther;
+    OnCommandGet := @TfmHTTPServerMainHTTPServerCommandGet;
+    //Left := 176  //Top := 128
+  end;
+   For it := 0 to algeneral.ActionCount - 1 do begin
+     writeln(alGeneral.Actions[it].Name);
+   end;
+  //object CGIRunner: TidCGIRunner
+  CGIRunner:= TidCGIRunner.create(self)
+    with CGIRunner do begin
+      Server := HTTPServer
+      TimeOutMsg := '<html><body><h1><center>Process is terminated.</body></html>'#13#10
+      ErrorMsg := '<html><body><h1><center>Internal Server Error</body></html>'#13#10
+      ServerAdmin := 'admin@server'
+      PHPSupport:= true;
+      //RegisterProperty('PHPIniPath', 'String', iptrw);
+      //Left := 260  //Top := 125
+  end //}
+end;
+
+function GetLocalIpList2(localname: string): TStringList;
+begin
+  with TTCPblockSocket.Create do 
+  try 
+    Result:= TStringList.Create;
+    ResolveNameToIP(localname,Result);
+  finally  
+    Free; //Destroy;
+  end;  
+end;
+
+var abt: boolean;
+    aURL: string;
+    envlist: TStringlist;
+
+begin   //@main control
+
+  loadCGIForm;
+  TfmHTTPServerMainFormCreate(self)
+  MainacActivateExecute(self);
+  
+  aURL:= '"https://samples.openweathermap.org/data/2.5/weather?q=Bern,ch&appid=123456"';
+  writeln(ExtractURIQueryString(aurl));
+  
+   //If InSet(fsBold, Font.Style) then SetUnion(BSet, CSet);
+  // Raise(Format('Invalid value : %d', [340]));
+  {abt:= false;
+  srlist:= TStringlist.create;
+  if LoadDFMFile2Strings('C:\maXbox\PASCON14\ForenTage2019\cgidemo\Main.dfm',
+                    srlist, abt)= 0 then writeln(srlist.text);
+    srlist.Free;}
+    
+    writeln(itoa(length(GetEnvironmentString)))
+    envlist:= Tstringlist.create;
+    StrtoList(GetEnvironmentString, envlist, CR)
+     //writeln(envlist.Text);
+     writeln('envlist.count: '+itoa(envlist.count));
+    envlist.Free;
+    writeln(GetLocalIpList2(gethostname).text);
+    writeln(objtostr(GetLocalIpList2(gethostname)));
+    writeln(GETDOSOutput('cmd.exe /c wmic cpu get name','C:\'));  
+
+End.
+
+
+(*
+
+(* === compile-time registration functions === *)
+(*----------------------------------------------------------------------------*)
+(*procedure SIRegister_TidCGIRunner(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TidBaseComponent', 'TidCGIRunner') do
+  with CL.AddClassN(CL.FindClass('TidBaseComponent'),'TidCGIRunner') do
+  begin
+    RegisterMethod('Constructor Create( AOwner : TComponent)');
+    RegisterMethod('Function Execute( LocalDoc : string; AThread : TIdPeerThread; RequestInfo : TIdHTTPRequestInfo; ResponseInfo : TIdHTTPResponseInfo; DocumentRoot : string; Action : string) : integer');
+    RegisterProperty('Server', 'TidHTTPServer', iptrw);
+    RegisterProperty('TimeOut', 'integer', iptrw);
+    RegisterProperty('TimeOutMsg', 'string', iptrw);
+    RegisterProperty('ErrorMsg', 'string', iptrw);
+    RegisterProperty('ServerAdmin', 'string', iptrw);
+    RegisterProperty('BeforeExecute', 'TNotifyEvent', iptrw);
+    RegisterProperty('AfterExecute', 'TNotifyEvent', iptrw);
+    RegisterProperty('PHPSupport', 'boolean', iptrw);
+    RegisterProperty('PHPIniPath', 'String', iptrw);
+  end;
+end;  
+
+ HTTPServerSessionStartOnSessionEndHTTPServerSessionEndSessionTimeOut€O
+  bdLeftToRightBorderIconsbiSystemMenu
+biMinimize ÿ  *)
+

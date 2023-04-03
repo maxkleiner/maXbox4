@@ -1,0 +1,700 @@
+program EventHandler_Tutorial;
+
+//Word Counter App with a lot of events
+//Loads a bitmap with an aggregation from TPicture Class
+//A function stretches,draws also a bitmap with specified number of pixels
+// in horizontal, vertical dimension, locs=622
+
+Const MAXP = 100;
+      KB = 'abcdefghijklmnopqrstuvwxyz';
+      STATTEXT = 'The quick brown fox jumps over the lazy black dog';
+      //STATTEXT = KB; test bed
+
+type
+  TTMatrix = Array[1..MAXP] of TPoint;
+
+var
+    Exc2: Exception;
+    Image1, Image2: TImage;
+    frmMon, frmMon2: TForm;
+    udLinie: TUpDown;
+    tbR,tbG,tbB: TTrackBar;
+    // char word counter
+    edText: TMemo;
+    sgStat: TStringGrid;
+    panB: TPanel;
+    chk: TCheckbox;
+    SBtnLoad: boolean;  
+    stat: TStatusbar;
+
+
+function TDirUp(p: String): String;
+//returns the path one step up
+var
+  i,j: integer;
+begin
+  If RightStr(p,1)='\' Then p:= LeftStr(p, Length(p)- 1);
+  j:= Length(p);
+  for i:= 1 to Length(p) do
+    if MidStr(p,i,1)='\' then j:= i;
+  result:= LeftStr(p,j);
+end;
+
+
+procedure SaveImageJpeg(img: TImage; fname, fext: string);
+var
+  ajpeg, jpeg2: TJpegimage;
+  f: string;
+begin
+  if (fext='jpg') then begin
+    ajpeg:= TJpegImage.create();
+    ajpeg.Assign(img.picture.bitmap);
+    ajpeg.compressionQuality:= 85;
+    ajpeg.compress();
+    f:= changeFileExt(fname,'.jpg');
+    ajpeg.SaveToFile(ExePath+'examples\'+f);
+    //image2.picture.assign(jpeg2);
+    ajpeg.Free;
+  end else begin
+    writeln(Tdirup(ExePath+'examples\'))
+    writeln(Tdirup(ExePath))
+    f:= changeFileExt(fname,'.bmp');
+    img.Picture.SaveToFile(f);
+  end;  
+end; 
+
+procedure loadImage;
+var jpeg, jpeg2: TJpegimage;
+begin
+  jpeg:= TJpegImage.create();
+  jpeg2:= TJpegImage.create();
+  {@to save from bmp to jpg }
+  //Image1.Picture.BitMap.LoadFromFile(ExePath+'examples\citymax.bmp');
+  //Image1.Picture.LoadFromFile(ExePath+'examples\citymax.bmp');
+  jpeg.loadfromfile(ExePath+'examples\faszination_tee.jpg');
+  jpeg2.loadfromfile(ExePath+'examples\maxbox_logo2.jpg');
+  //SearchandopenDoc(ExePath+'examples\tee6358_3.jpg');
+  //image1.parent:= NIL; //image2.parent:= NIL;
+  image1.picture.assign(jpeg);
+  image2.picture.assign(jpeg2);
+  writeln(Tdirup(ExePath+'examples\'))  //test
+  jpeg.Free;
+  jpeg2.Free;
+end; 
+
+Function RGB2(R,G,B: Byte): TColor;
+Begin
+  Result:= B Shl 16 Or G Shl 8 Or R;
+End;
+
+procedure DrawRosette2;
+var
+  m,p: TPoint;
+  rho,phi: real;
+  i,br,r,n: integer;
+begin
+   n:= StrToInt('18');
+   br:= 1;
+   with frmmon.Canvas do begin
+     Pen.Width:= br;
+     Pen.Color:= clyellow;
+     Brush.Color:= clblue;
+     Brush.Style:= bsClear;
+     //compute middle point and draw circle
+     m.x:=225; m.y:=225; r:=175;
+     rho:=360/n;
+     for i:=1 to n do begin
+       phi:=i*rho*pi/180;
+       p.x:=m.x+round(r*cos(phi));
+       p.y:=m.y+round(r*sin(phi));
+       Ellipse(p.x-r,p.y-r,p.x+r,p.y+r);
+       Ellipse(p.x-3,p.y-3,p.x+3,p.y+3);
+     end;
+  end;
+end;
+
+procedure DrawRosette;
+//const pi=3.1415926;
+var m,p: TPoint;
+  rho,phi: real;
+  i,br,r,n: integer;
+begin
+   n:= StrToInt('18');
+   br:= 1;
+   with frmmon.Canvas do begin
+     Pen.Width:=br;
+     Pen.Color:= clred;
+     Brush.Color:=clblue;
+     Brush.Style:=bsClear;
+     m.x:=225; m.y:=225; r:=100;
+     rho:=360/n;
+     for i:=1 to n do begin
+       phi:=i*rho*PI/180;
+       p.x:=m.x+round(r*cos(phi));
+       p.y:=m.y+round(r*sin(phi));
+       Ellipse(p.x-r,p.y-r,p.x+r,p.y+r);
+       //if frmmon.chb1.checked=true then //middle point
+         Ellipse(p.x-3,p.y-3,p.x+3,p.y+3);
+     end;
+  end;
+end;
+
+procedure DrawPowerCircle(n: integer);
+var
+  p: TTMatrix; m: TPoint;
+  r,rho,phi: real;
+  i,j,x,y,br: integer;
+begin
+  //with Form1.img1.Canvas do begin
+    with frmMon.Canvas do begin
+      br:= 1;
+      Pen.Width:=br;
+      Pen.Color:= clblue;
+      Brush.Color:=  clred;
+      //circle definition
+      m.x:=225; m.y:=225; r:=175;
+      rho:=360/n;
+    //compute contact points
+    for i:=1 to n do begin
+      phi:=i*rho*PI/180;
+      p[i].x:=m.x+round(r*(cos(phi)));
+      p[i].y:=m.y+round(r*sin(phi));
+    end;
+    //if Form1.chb1.checked=true then
+      Ellipse(50,50,400,400);
+    for i:=1 to n-1 do
+      for j:=i to n do begin
+        MoveTo(p[i].x,p[i].y);
+        LineTo(p[j].x,p[j].y);
+      end;
+      for i:=1 to n do begin
+        x:=p[i].x; y:=p[i].y;
+        Ellipse(x-3,y-3,x+3,y+3);
+      end;
+  end;
+end;
+
+procedure AnimatePowerCircle;
+var i: smallint;
+begin 
+  for i:= 1 to 25 do begin
+    DrawPowerCircle(i);    // try 30 or 35
+    //sleep(100)
+  end;  
+end;    
+
+
+procedure HideGridCursor(g: TStringGrid);
+//ban Cursor from StringGrid
+var gr: TGridRect;
+begin
+  with gr do begin
+    Top:=-1; Left:=-1; Right:=-1; Bottom:=-1
+  end;
+  g.Selection:=gr;
+end;
+
+
+//***************************Event Handlers******************************//
+
+procedure btnCalcCharsClick(Sender: TObject);
+//report char counter distribution 
+var i,s,x,anzB: integer;
+  t: string;
+  b: array[0..25] of integer; //Array char counter
+begin
+  //preparation
+  anzB:= 0;
+  for i:= 0 to 25 do b[i]:= 0; 
+  //calculation
+  if chk.checked then
+    t:= edText.Text 
+  else
+    t:= edText.Text;
+  t:=LowerCase(t); 
+  for s:=1 to length(t) do begin
+    if pos(t[s],kb)> 0 then begin //sign of char
+      x:=ord(t[s])-97; //nr of letter
+      b[x]:= b[x]+1;   //update counter
+      inc(anzB);       
+    end;
+  end;
+  edText.Text:= t; 
+  //output
+  for i:=0 to 25 do sgStat.Cells[i,1]:= ''; //table delete
+  for i:=0 to 25 do
+    if b[i]>0 then 
+      sgStat.Cells[i,1]:= IntToStr(b[i]);
+  panB.Caption:=IntToStr(anzB);
+  sgStat.font.style:= [];
+  sgStat.font.color:= clpurple;
+  HideGridCursor(sgStat);
+end;
+
+procedure Image1MouseDown(Sender: TObject; Btn: TMouseButton;
+                            Shift: TShiftState; X,Y: Integer);
+var i: byte;
+begin
+//test
+  loadimage;
+  try
+    frmMon.Canvas.MoveTo(X,Y);
+    frmMon.canvas.Pen.color:= clyellow;
+  //image1.canvas.floodfill() 
+  for i:= 1 to 30 do
+    //Image1.Canvas.LineTo(X+random(140),Y+random(140));
+    frmMon.Canvas.LineTo(X+random(140),Y+random(140));
+  except
+     writeln('you cant write on an jpeg') 
+  end;  
+end;  
+
+procedure btnNewClick(Sender: TObject);
+//Reset of Calculation
+var i: integer;
+begin
+  edText.Text:= ''; panB.Caption:= '';
+  for i:=0 to 25 do sgStat.Cells[i,1]:= '';
+  edText.SetFocus;
+  HideGridCursor(sgStat);
+end;
+
+procedure btnLoadClick(Sender: TObject);
+//Set a new text file to count
+var i: integer;
+   selectedFile: string;
+begin
+  edText.Text:=''; panB.Caption:='';
+  SBtnLoad:= true;
+  chk.checked:= false;
+  for i:=0 to 25 do sgStat.Cells[i,1]:='';
+  if PromptForFileName(selectedFile,
+                      'Text files (*.txt)|*.txt','', 'Select your Text file',
+                       ExePath+'examples\', False)  // false: not Save dialog !
+   then begin
+     // Display this full file/path value
+     ShowMessage('Selected file = '+selectedFile);
+     Stat.simpletext:= selectedFile +' is loaded';
+     edText.lines.LoadFromFile(selectedFile);
+   end;
+  edText.SetFocus;
+  HideGridCursor(sgStat);
+end;
+
+
+procedure CCFormCreate(Sender: TObject);
+var i: integer;
+begin
+  for i:=0 to 25 do //config of stringgrid
+    sgStat.Cells[i,0]:= chr(97+i);
+    sgStat.font.style:= [fsbold];
+  HideGridCursor(sgStat);
+  SBtnLoad:= false;
+end;
+
+procedure ChkboxClick(Sender: TObject);
+//toogle between text or filetext
+begin
+  //chk.checked:= not chk.checked; 
+  SBtnLoad:= false;
+  if chk.checked then begin
+    chk.checked:= true;
+    edText.clear;
+    edText.Text:= STATTEXT;
+    Stat.simpletext:= 'default text is loaded';
+  end else begin
+    chk.checked:= false
+    edText.clear;
+  if not SBtnLoad then begin
+    edText.Text:= LoadfileasString(exepath+'firstdemo.txt')
+    Stat.simpletext:= 'firstdemo.txt default file is loaded';
+  end;
+ end;
+  //panB.Caption:='';
+  edText.SetFocus;
+  HideGridCursor(sgStat);
+end;
+
+procedure closeFormClick(Sender: TObject; var Action: TCloseAction);
+begin
+  Image1.Free;
+  Image2.Free;
+  frmMon2.Free;
+  frmMon.Free;
+  frmMon:= NIL;
+  writeln('char counter form has been closed at '+ TimeToStr(Time));
+end;    
+
+procedure CloseButtonClick(Sender: TObject);
+begin
+  frmMon.Close;  //calls the onClose eventhandler!
+end;
+
+//***************************Form Building******************************
+procedure InitFirstForm;
+begin
+ frmMon:= TForm.Create(self);
+ with frmMon do begin
+   //FormStyle := fsStayOnTop;
+   Position := poScreenCenter;
+   caption:='Pulsar Universe BitmaX';
+   color:= clblack;
+   width:= 850;
+   height:= 700;
+   Show;
+   onMousedown:= @Image1MouseDown;
+   onClose:= @CloseFormClick;
+ end;
+ Image1:= TImage.create(frmMon);
+ with Image1 do begin
+   parent:= frmMon;
+   setbounds(10,15, 200,180);
+   onMousedown:= @Image1MouseDown;
+   show;
+   //onMouseup:= @Image1MouseUp
+ end;
+ Image2:= TImage.create(frmMon);
+ with Image2 do begin
+   parent:= frmMon;
+   setbounds(265,465,560,250);
+   onMousedown:= @Image1MouseDown;
+   show;
+ end;
+end;
+
+
+procedure InitSecondForm;
+var i: integer;
+  //rc,gc,bc: TColor32;
+begin
+  frmMon2:= TForm.create(self);
+  with frmMon2 do begin
+    Left:= 1200
+    Top:= 303
+    BorderIcons:= [biSystemMenu, biMinimize]
+    BorderStyle:= bsSingle
+    Caption:= 'Word Counter'
+    ClientHeight:= 344
+    ClientWidth:= 720
+    //Color:= RGB(255,255,0);
+    Font.Charset:= DEFAULT_CHARSET
+    Font.Color:= clWindowText
+    Font.Height:= -11
+    Font.Name:= 'MS Sans Serif'
+    Font.Style:= [];
+    Position:= poDesktopCenter;
+    PixelsPerInch:= 96;
+    //TextHeight(13);
+    //Icon:= { }
+    //FormStyle:= fsStayOnTop;
+    Show;   //ShowWindow(application.handle, SW_HIDE);
+    onMousedown:= @Image1MouseDown;
+   //onCreate:= @CCFormCreate;
+ end;
+  with TLabel.Create(frmmon2) do begin
+    parent:= frmMon2;
+    setBounds(9,10,62,13)
+    Caption:= 'Textinput:'
+  end;
+  with TLabel.Create(frmMon2) do begin
+    parent:= frmMon2;
+    setBounds(9,166,95,13)
+    Caption:= 'Character Statistic:'
+  end;
+  with TLabel.Create(frmMon2) do begin
+    parent:= frmMon2;
+    setBounds(9,250,116,13)
+    Caption:= 'Character Count:';
+  end;
+  with TLabel.Create(frmMon2) do begin
+    parent:= frmMon2;
+    setBounds(180,250,116,13)
+    Caption:= 'Text or File:';
+  end;
+  sgStat:= TStringGrid.Create(frmMon2);
+  with sgStat do begin
+    parent:= frmMon2;
+    Left:= 8
+    Top:= 188
+    Width:= 680
+    Height:= 41
+    TabStop:= False
+    ColCount:= 26
+    DefaultColWidth:= 22
+    DefaultRowHeight:= 18
+    FixedCols:= 0
+    RowCount:= 2 
+    //Font.Name:= 'Wingdings';     //J is smile
+    //TabOrder:= 2
+    for i:= 0 to 26-1 do ColWidths[i]:= 25;
+  end;
+  CCFormCreate(self);
+    with TBitBtn.Create(frmMon2) do begin
+      parent:= frmMon2;
+      SetBounds(297,290,121,30)
+      Caption:= 'Calculation'
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPSTEP'); 
+      OnClick:= @btnCalcCharsClick
+    end;
+    with TBitBtn.Create(frmMon2) do begin
+      parent:= frmMon2;
+      SetBounds(431,290,121,30)
+      Caption:= 'Reset'
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPPAUSE'); 
+      OnClick:= @btnNewClick
+    end;
+    with TBitBtn.Create(frmMon2) do begin
+      parent:= frmMon2;
+      SetBounds(565,290,121,30)
+      Caption:= 'Load Text'
+      glyph.LoadFromResourceName(getHINSTANCE,'CL_MPRECORD'); 
+      //TabOrder = 0
+      OnClick:= @btnLoadClick
+    end;
+    panB:= TPanel.Create(frmMon2)
+    with panB do begin
+      parent:= frmMon2;
+      setBounds(110,244,49,18);
+      BevelOuter:= bvLowered;
+      font.color:= clblue;
+      Color:= clwhite;
+    end;
+  edText:= TMemo.Create(frmMon2);
+  with edText do begin
+    parent:= frmMon2;
+    Setbounds(8,32,680,122);
+    wordwrap:= true;
+    scrollbars:= ssvertical;
+    Text:= STATTEXT;
+  end;
+  chk:= TCheckbox.Create(frmMon2);
+  with chk do begin
+    parent:= frmMon2
+    setbounds(250,241,20,30);
+    checked:= true;
+    onclick:= @chkboxClick;
+  end; 
+   stat:= TStatusbar.Create(frmMon2);
+  with Stat do begin
+    parent:= frmMon2;
+    stat.SimplePanel:= true;
+  end;
+end;
+//***************************Form Building End******************************
+
+//Test Functions ------------------------------------
+function ExceptionTester: boolean;
+var S1, S2, S3: Single;
+  //Exc2: Exception;
+begin
+  result:= false;
+  Exc2:= Exception.Create('intern division zero');
+  try
+    S1:= 1.0;
+    S2:= 0.0;
+    S3:= S1/S2;
+    result:= true;
+  except
+    //on E: Exception do
+      //Writeln('Exc.ClassName '+ Exc2.message);
+      Exc2.message;    //raise
+      //exit;
+      RaiseLastException;
+  end;
+  //Exc2.Free;
+end;  
+ 
+procedure TestFloatingPoints_Unit;
+var
+  S, S1, S2, S3: Single;
+  E, E1, E2, E3: Extended;
+  exc: Exception;
+begin
+  exc:= Exception.Create('division zero fault');
+  E:= 0.1;
+  //Writeln(E:20:18);
+  //0.100000000000000000
+  //0.100000001490116120 converting
+  PrintF('this is a fpoint before %.18f ',[E]);
+  S:= E;
+  E:= S;
+  //Writeln(E:20:18);
+  PrintF('this is a fpoint after %.18f ',[E]);
+  //Readln;
+ //Rounding
+  {The output is
+  0.100000001490116120
+  0.010000000707805160
+  0.009999999776482580 }
+  S1 := 0.1;
+  //Writeln(S1:20:18);
+  PrintF('this is a fpoint before %.18f ',[S1]);
+  S1 := S1 * S1;
+  S2 := 0.01;
+  PrintF('this is a fpoint after %.18f ',[S1]);
+  PrintF('this is a fpoint after %.18f ',[S2]);
+  //Writeln(S1:20:18); //Compare Literals
+  S1 := 0.3;
+  S2 := 0.1;
+  S2 := S2 / 10.0;      // should be 0.01  
+  writeln(floattoStr((s2)))  
+  S2 := S2 * 10.0;      // should be 0.1 again
+  writeln(floattoStr(s2))  
+  S2 := S2 + S2 + S2;   // should be 0.3
+  writeln(floattoStr(s2))  
+  //floattodecimal
+  if S1 = S2 then
+    Writeln('True')
+  else
+    Writeln('False');
+  if SameValue2(S1, S2, 0) then  //single
+    Writeln('True')
+  else
+    Writeln('False');
+  //The output is  False True  
+  E1:= 16.000000000000000001;
+  E2:= 16.000000000000000000;
+  E3:= E1 - E2;
+  //Writeln(E1:22:18, E2:22:18, E3);
+   PrintF('this is FPoint subtract E1: %.18f E2: %.18f E3: %.18f',[E1,E2, E3]);
+  E1:= 1000000000000000000000000.0;
+  E2:= 0.1;
+  E3:= E1;
+  //Writeln(E1 + E2 - E3:10:10);
+  PrintF('this is a fpoint after %.10f ',[E1+E2-E3]);
+  //Writeln(S1 - S3 + S2:10:10);
+  PrintF('this is a fpoint after %.10f ',[E1-E3+E2]);
+  PrintF('Sin(Pi) returns %.18f ',[Sin(PI)]);
+  //Delphi returns -5.42101086242752 × 10-20 , instead of the expected 0.
+   writeln(floatToStr(maxCalc('-5.4*10^-2')))
+   writeln(floatToStr(maxCalc('5.4*(10^-4)')))
+   writeln('sin pi of maxcalc '+floatToStr(maxCalc('Sin(PI)')))
+   writeln('sin pi of convert '+floatToStr(Sin(PI)))
+  //SetExceptionMask(GetExceptionMask + [exZeroDivide]); //default is: unmasked
+  try
+    S1:= 1.0;
+    S2:= 0.0;
+    S3:= S1/S2;
+  except
+    //on E: Exception do
+      Writeln('Exc.ClassName '+ Exc.message);
+      Exc.message;
+  end;
+    //The number 0.1 is stored as $3DCCCCCD or (ordering the bits already)
+     writeln(hextobin2('3DCCCCCD'))
+     //0   0111 1011   100 1100 1100 1100 1100 1101
+     //0 – 0111 1011 (123)-127=-4 – 100 1100 1100 1100 1100 1101,
+     writeln(inttoStr(bintoint('110011001100110011001101')))  
+     writeln(floattoStr(maxCalc('(13421773*(2^-4))/(2^23)'))) //scale by 2^23
+     writeln(floattoStr(maxCalc('(13421773*(2^-4))*(2^-23)'))) //scale by 2^23
+     //0.10000000149011612,
+     writeln(floattoStr(maxCalc('2^-4')))
+     writeln('this is E '+floattoStr(E))
+end;  //fpointunit
+
+
+var md: TDynCardinalArray;
+    cc: comp;  //it is an Int64 which is supported and calculated by the FPU.
+    i: integer;
+    
+Begin   //Main App
+  ProcessMessagesON;
+  InitFirstForm;
+  InitSecondForm;
+  DrawRosette;
+  DrawRosette2;
+  AnimatePowerCircle;
+  loadImage;
+  //SaveImageJpeg(image1,'newtee3bmp','jpg');  //bmp to jpg
+  cc:= round(power(2,30))
+  writeln('cc comp type: '+inttostr64(cc))
+  //writeln(booltostrj(IsPrimeFactor(7,1)))
+  md:= PrimeFactors(5117) 
+  for i:= 0 to length(md)-1  do
+    write('Prime Factor: '+inttostr(md[i])+ ' ');
+  TestFloatingPoints_Unit;
+  try
+    if ExceptionTester then writeln('no exception');
+    //writeln(exc2.message);
+  except
+    writeln('got last exception '+Exception(exc2).message);
+  end  
+End.  
+
+
+
+
+Add jpeg in your uses section.
+
+Saving a jpeg to table :
+
+table1.append;
+table1Image.LoadFromFile('c:\bob.jpg');
+table1.post;
+// where table1image is a tblobfield linked to the image field of table1
+
+loading the image from the table :
+var
+jpeg: tjpegimage;
+buf: tmemorystream;
+begin
+jpeg := tjpegimage.create();
+buf := tmemorystream.create();
+table1Image.savetostream(buf);
+buf.seek(0, soFromBeginning);
+jpeg.loadfromstream(buf);
+image1.picture.assign(jpeg);
+buf.free;
+jpeg.free;
+end;
+
+Internals
+
+So how does this look internally? In the following example I use a Single, since Singles have an overviewable mantissa and exponent. Let me show you how a number like 0.1 is stored in a Single.
+
+The number 0.1 is stored as $3DCCCCCD or (ordering the bits already)
+0 – 0111 1011 – 100 1100 1100 1100 1100 1101,
+which means the sign bit is 0, the exponent is 123-127 = -4 and the mantissa is (after putting the hidden bit in front) 1100 1100 1100 1100 1100 1101 or $CCCCCD or 13421773.
+
+If we multiply 13421773 with 2-4 (0.0625), we get 838860,8125. Now we only have to scale that by 223 = 8388608, and we get 0.10000000149011612, which is indeed pretty close to 0.1.
+
+
+//event explanation of getter and setter
+procedure TControl.SetColor(Value: TColor);
+begin
+  if FColor <> Value then
+  begin
+    FColor := Value;
+    FParentColor := False;
+    if (csDesigning in ComponentState) and not (csReading in ComponentState) and (Self is TWinControl) then
+      TWinControl(Self).ParentBackground := False;
+    Perform(CM_COLORCHANGED, 0, 0);
+  end;
+end;
+
+
+//-----------------------------------------------------------------------
+//http://stackoverflow.com/questions/765421/how-is-win32-event-driven-programming-implemented-under-the-hood
+    Different kinds of OS interrupt handlers must be placing messages in the said 'message queue', but where within the process address space does this queue reside? How is it exposed to the interrupt handler code?
+
+Windows are associated with threads. Each thread with a window has a thread queue in the process's address space. The OS has an internal queue in its own address space for the hardware-generated events. Using details of the event and other state information (e.g., which window has the focus), the OS translates the hardware events into messages that are then placed in the appropriate thread queue.
+
+Messages that are posted are placed directly in the thread queue for the target window.
+
+Messages that are sent are usually processed directly (bypassing the queue).
+
+The details get hairy. For example, the thread queues are more than lists of messages--they also maintain some state information. Some messages (like WM_PAINT) aren't really queued, but synthesized from the additional state information when you query the queue and it's empty. Messages sent to windows owned by other threads are actually posted to the receiver's queue rather than being processed directly, but the system makes it appear like a regular blocking send from the caller's point of view. Hilarity ensues if this can cause deadlock (because of circular sends back to the original thread).
+
+The Jeffrey Richter books have a lot (all?) of the gory details. My edition is old (Advanced Windows). The current edition seems to be called Windows via C/C++.
+
+The OS does a LOT of work to make the message stream appear rational (and relatively simple) to the caller.
+
+    What does it mean to 'translate' the message? What does the call to TranslateMessage() really do?
+
+It watches for virtual key messages and, when it recognizes a key-down/key-up combination, it adds character messages. If you don't call TranslateMessage, you won't receive character messages like WM_CHAR.
+
+I suspect it sends the character message directly before returning (as opposed to posting them). I've never checked, but I seem to recall that the WM_CHAR messages arrive just before the WM_KEYUP.
+
+    Once dispatched by DispatchMessage(), what all places does the message swing by before reaching my WndProc (i.e. what does the OS do with it)?
+
+DispatchMessage passes the message to the WndProc for the target window. Along the way, it some hooks may get a chance to see the message (and possibly interfere with it).

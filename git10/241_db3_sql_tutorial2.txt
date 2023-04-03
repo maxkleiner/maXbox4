@@ -1,0 +1,477 @@
+{****************************************************************
+ *
+ * Project  : OLE DB maXbase SeriesSystem Information Series 
+ * App Name : 241_db3_SQL_tutorial2.txt, floc's = 196  for Tutorial 12.2
+ * Purpose  : DB Access via OLE DB with Access and SQL, #locs:339
+ * History  : system for mX3, need: Database3.mdb in /Examples and ODBC DNS
+            : extensions to Tutorial 12.2 with Sorted DBGrid and Navigator
+            : to do: free objects with onclose event
+            : #sign:breitsch: BREITSCH-BOX: 02/04/2023 16:35:30 
+ ****************************************************************}
+
+Program DB_ACCESS_SQL2;  
+
+function MyGetTickCount: Longint; external 'GetTickCount@kernel32.dll stdcall';
+procedure CreateDBGridForm(aSet: TAdoDataSet); forward;  
+ 
+var
+  dCom: TADOCommand;
+  sl: TStringList;
+
+      
+Procedure ConnectTest;
+var cnect: TADOConnection;
+begin
+  cnect:= TADOConnection.Create(self);
+  try
+    cnect.Provider:= 'Microsoft.Jet.OLEDB.4.0'
+    cnect.ConnectionString:= 'Provider=SQLOLEDB;DataSource=MyServer;Integrated Security'+
+       '=SSPI;Initial Catalog=pubs;'; //or for MS Jet (MS Access):
+    cnect.ConnectionString:= 'Provider=Microsoft.Jet.OLEDB.4.0;'+
+                                  'DataSource=c:\db.mdb;';
+    cnect.Connected:= true;
+    cnect.LoginPrompt:= False;
+    cnect.Open('Admin','');  //cnect.Active:= true;
+  finally
+    cnect.Free;
+  end;
+end;     
+
+
+Procedure SetADOAccessSQL_Query;
+var //adoquery: TAdoDataSet;
+  adoQry: TAdoQuery;
+  adoqryset: TAdoDataSet;
+  i,z: integer;
+begin  
+  adoQryset:= TAdoDataSet.Create(self);//TAdoQuery.Create(self);
+  with adoQryset do begin
+    cacheSize:= 500;
+    commandType:= cmdText; //or ctQuery;
+    connectionString:= 'Provider=MSDASQL;DSN=mx3base;Uid=sa;Pwd=admin';
+    {commandText:= 'INSERT INTO Table1 (FirstName, LastName, Phone)'+
+                        'VALUES (''Max99'', ''Box5459'', ''031-333 77 88'')';}
+    CommandText:= 'SELECT * FROM Table1';
+    CommandTimeout:= 5;  
+    //SQL.Text:= commandText;
+    Open;
+    Writeln(intToStr(Recordcount)+' records found: ')
+    for i:= 0 to Recordcount - 1 do begin
+      for z:= 0 to Fieldcount - 1 do 
+        Write((Fields[z].asString)+'  ');
+      Writeln(#13#10)
+      Next;
+    end;
+    CreateDBGridForm(adoQryset); 
+    //Close;  //to do
+    //Free;        
+  end;
+end;
+
+//*******************SQL StringList Solution**********************************
+procedure splitAttributes(ast: string; attrs: TStringList);
+var x: integer; 
+   s: string;
+begin
+  if not (Assigned(attrs)) then  
+       attrs:= TStringList.Create;
+  s:= '';
+  x:= 1;
+  while (x <= length(ast)) do begin
+    if ast[x] = ',' then begin
+      attrs.Add(Trim(s));
+      s:='';
+    end else 
+      s:= s + ast[x];
+    inc(x);
+  end;
+  attrs.Add(Trim(s+ast[x-1]));
+end;    
+    
+procedure deleteStr(var auxstr: string; len: byte);
+begin
+  Delete(auxstr, 1, len);
+end;
+
+procedure fillRecords(aDBName, T,A,C, fs: string; sl: TStringlist);
+var attrs: TStringlist;
+    f: shortint;
+    auxstr: shortstring;
+begin
+  attrs:= TStringlist.Create;
+  splitAttributes(A, attrs);
+  with TAdoQuery.Create(self) do begin
+    cachesize:= 500;
+    connectionString:= 'Provider=MSDASQL;DSN='+aDBName+';Uid=sa;Pwd=admin';
+    //commandText:= 'SELECT * FROM Table1';
+    SQL;
+    commandText:= 'SELECT '+A+' FROM '+T;
+    if length(C) > 0 then
+      commandText:= 'SELECT '+A+' FROM '+T+' WHERE '+C;
+    Open;
+    First;
+    try
+      while not(EOF) do begin
+        auxstr:='';
+        for f:= 0 to attrs.count-1 do
+          auxstr:= auxstr + FS + fields[f].AsString;
+        deleteStr(auxstr, length(fs));
+        sl.add(auxstr);
+        Next;
+      end;
+    finally
+      Close;
+      Free;
+    end;      
+  end; //with 
+  attrs.Free;
+end;  
+
+procedure ShowRecords;
+var i: integer;
+begin
+  for i:= 0 to sl.count-1 do 
+    Writeln(sl[i]);
+  Writeln('');
+end;
+//*******************SQL StringList Solution  End******************************
+
+
+procedure GetDBProviders;
+var  ws: TWideStrings;
+     i: integer;
+begin
+  ws:= TWideStringList.Create;
+  getProviderNames(ws)
+  for i:= 1 to ws.count -1 do 
+    writeln(intToStr(i) +' '+ws.strings[i]);
+  ws.free;
+end;
+
+procedure CloseDBGrid(sender: TObject);
+begin
+  writeln('dummy closed test...')
+end;
+
+procedure TForm_DBGridKeyPress(Sender: TObject; var Key: Char);
+begin if Key = #13 then 
+  if TDBGrid(Sender).DataSource.DataSet.State in [dsEdit, dsInsert] then
+     TDBGrid(Sender).DataSource.DataSet.Post;
+  end;
+  
+procedure TForm_DBGridKeyPress2(Sender: TObject; var Key: Char);
+ begin if Key = #13 then
+  if TDBGrid(Sender).DataSource.DataSet.State in [dsEdit, dsInsert]
+    then TDBGrid(Sender).DataSource.DataSet.Post;
+     if Key = #27 then 
+     TDBGrid(Sender).DataSource.DataSet.Cancel;
+  end;  
+  
+procedure TForm_DBGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+ begin
+  if Key = VK_DELETE then 
+  if (TDBGrid(Sender).DataSource.DataSet.State <> dsEdit) and
+   (TDBGrid(Sender).DataSource.DataSet.State <> dsInsert) then
+    if MessageDlg('Jeste li sigurni da želite brisanje podataka?',
+      mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+       TDBGrid(Sender).DataSource.DataSet.Delete;
+   end;
+   
+procedure TForm_DBGridTitleClick(Column: TColumn);
+ begin
+  with TCustomADODataSet(TColumn(Column).Grid.DataSource.DataSet) do begin
+   if (Pos(Column.FieldName, Sort) = 1) and (Pos(' DESC', Sort)= 0) then
+      Sort:= Column.FieldName + ' DESC' else Sort:= Column.FieldName + ' ASC';
+    end;
+    writeln(column.fieldname +'Sort has been clicked');
+ end;     
+
+{var tmpDataSource: TDataSource;
+     dbGrid: TDBGrid;
+     mynav: TDBNavigator;
+     dbFrm: TForm;}
+
+procedure CreateDBGridForm(aSet: TADODataSet{TADOQuery});
+var tmpDatSource: TDataSource;
+    dbGrid: TDBGrid;
+    mynav: TDBNavigator;
+    dbFrm: TForm;
+    btnOK: TComponent;
+    acustdata: TCustomADODataSet;
+
+begin
+  dbFrm:= CreateMessageDialog('FastForm SQL DBGrid',mtwarning,[mball,mbhelp,mbok]);
+  with dbFrm do begin
+    caption:= 'FFP SQL DBGrid Demo';
+    setBounds(50,50,900,500)
+    formstyle:= fsstayontop;
+    color:= clWebGold;
+    Show;
+    //onClose
+  end;   
+  btnOK:= dbFrm.FindComponent('OK'); 
+  TButton(btnOK).onClick:= @CloseDBGrid;
+  
+  tmpDatSource:= TDatasource.Create(self);
+    with tmpDatSource do begin
+      //DataSource is linked to a DataSet.
+      IsLinkedto(TDataSet(aSet))
+      dataSet:= TDataSet(aSet); 
+      Enabled:= true;
+      AutoEdit:= true;
+      //Edit;
+      writeln('fcount of tmpdatasource '+intToStr(dataset.fieldcount))
+    end;
+  
+  dbgrid:= TDBGrid.Create(self)
+  with dbGrid do begin
+    Parent:= dbFrm;
+    SetBounds(50,100,800,350);
+    ReadOnly:= False;
+    //ondblclick:= TForm_DBGridTitleClick(dbgrid.column);
+    Options:= DBGrid.Options + [dgEditing]; 
+     {Options:= [dgEditing, dgTitles, dgColumnResize, dgColLines,
+             dgRowLines, dgTabs, dgAlwaysShowSelection, dgCancelOnExit];}
+    dataSource:= tmpDatSource;
+     //datasource.dataset:= TDataSet(aSet); 
+    onTitleClick:= @TForm_DBGridTitleClick;
+      //OnDblClick = DBTabGrid1DblClick
+      //OnEnter = KeyPreviewOff
+      //OnExit = KeyPreviewOn
+      //OnKeyDown = DBTabGrid1KeyDown
+      //OnKeyPress = DBTabGrid1KeyPress
+     //Showing
+     //BeginLayout; //!!
+     //Invalidate;
+     //Hide;
+     Show;  //Update
+    writeln('fcount of dbgrid '+intToStr(fieldcount))
+    writeln('rcount of dataset '+intToStr(dataSource.Dataset.recordcount)+CR+LF)
+  end;
+   
+   mynav:= TDBNavigator.create(self);
+   with mynav do begin
+     parent:= dbFrm; 
+     SetBounds(350,50,250,35)
+     //datasource:= dbGrid.DataSource;
+     datasource:= tmpDatSource;
+     ConfirmDelete:= True;
+     ShowHint:= True;
+     //OnClick:= @NavInsertClick
+     Enabled:= True;
+     VisibleButtons:= [nbFirst,nbPrior,nbNext,nbLast,nbEdit,nbPost,nbRefresh];
+     Show
+   end;  
+   //tmpDatSource.Free; 
+   //dbGrid.Free;
+   //dbFrm.Free;
+   //myNav.Free;
+   //aSet.Close; aSet.Free;
+end;
+
+
+procedure StrtoList(s: string; const List: TStrings; const delimiter: char{=';'});
+var tmp : string;
+    i   : integer;
+begin
+  List.BeginUpdate;
+  try
+   List.Clear;
+   while pos(delimiter, s) > 0 do begin
+     i:= pos(delimiter, s);
+     tmp:= Copy(s, 1, i - 1);
+     Delete(s, 1, i);
+     List.Add(tmp);
+   end;
+   if s <> '' then
+     List.Add(s);
+  finally
+   List.EndUpdate;
+  end;
+end;
+
+ 
+ var slist: TStrings;
+    i: integer;
+
+Begin //main app block
+  //SetAdoQuery;
+  //maxform1.ShellStyle1Click(self);
+  sl:= TStringList.Create;
+  FillRecords('mx3base','table1','firstname','','; ',sl); 
+  FillRecords('mx3base','table1','firstname,lastname,phone','','; ',sl); 
+  //FillRecord('mx3base','table1','firstname,lastname,phone','firstname =''max''','; ',sl);
+  ShowRecords;
+  sl.Free;
+  
+  //Some Infos & Tests
+  SetADOAccessSQL_Query;
+  GetDBProviders;
+  Writeln('Data Link Dir is: '+ DataLinkDir);
+  Writeln('Machinename is: '+getHostName)
+  Writeln('Username is: '+getUserName)
+  Writeln('BDE/DB Parameters: ******************************');
+  Writeln('BDE Directory '+GetBdeDirectory);
+  //writeln('DB Alias Path '+GetAliasPath('DBDEMOS'));
+  writeln('Temp File Path'+getTempDir)
+  Writeln('*************************************************');
+
+  //DLL Test
+  Writeln('tick count from dll func ' +IntToStr(MyGetTickCount));
+  {Writeln((getASCII))  
+  Writeln(S_UTF_8ToString(getASCII))  
+  Writeln(S_StringToUTF_8(getASCII))} 
+   {case CreateMessageDialog('Text the maXbox', mtWarning,[mbYes,mbNo,mbCancel]).ShowModal 
+          of  mrYes: ShowMessage('Yes');
+              mrNo: ShowMessage('No');
+              mrCancel: ShowMessage('Cancel');
+          end;}  
+   {If MessageDlg('Delete this record?', 
+               mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+       Table1.Delete;}  
+       
+    //RunAndGetOutput  
+    slist:= TStringlist.create; 
+    StrToList('this.is.my.simple.list.string',slist,'.');
+    for i:= 0 to slist.count-1 do 
+       write(slist[i]+' '); 
+    slist.Free;       
+End.   
+
+
+// with BDE or ODBC Example
+{ with TQuery.Create(NIL) do begin
+    databasename:= dbname;
+    //filteroptions
+    SQL.Add('SELECT'+A+'FROM'+T);
+    if length(C)>0 then
+      SQL.Add('WHERE'+C);
+    prepare;  
+    while not(prepared) do 
+    open;
+    first;
+    try
+      while not(EOF) do begin
+        auxstr:='';
+        for f:= 0 to attrs.count-1 do
+          auxstr:= auxstr + FS + fields[F].asstring;
+        deleteSTR(auxstr, length(fs));
+        sl.add(auxstr);
+        next;
+      end;
+      close;
+    finally
+      Free;
+    end;      
+ end;}
+ 
+ 
+*******************************************************
+There is no place like 127.0.0.1 
+
+Exception: Access violation at address 4DE2F83C in module 'msado15.dll'. Read of address 78742E67 at 0.1057
+Access violation at address 1B041FC6 in module 'msjet40.dll'. Read of address 0003242E at 37.408
+[Microsoft][ODBC Driver Manager] Data source name not found and no default driver specified at 35.440
+[Microsoft][ODBC Microsoft Access Driver] Query is too complex at 35.607
+[Microsoft][ODBC Microsoft Access Driver] The Microsoft Jet database engine cannot find the input table or query 'Table1d'.  Make sure it exists and that its name is spelled correctly at 35.556
+[Microsoft][ODBC Microsoft Access Driver] Syntax error (missing operator) in query expression '031-333 77 88' at 41.356
+[Microsoft][ODBC Microsoft Access Driver] Too few parameters. Expected 2 at 41.354
+
+
+The syntax for the INSERT statement is:
+
+    INSERT INTO table
+    (column-1, column-2, ... column-n)
+    VALUES
+    (value-1, value-2, ... value-n);
+    
+dbs.Execute " INSERT INTO Employees " _
+        & "(FirstName,LastName, Title) VALUES " _
+        & "('Harry', 'Washington', 'Trainee');"
+        
+        
+ADOConnection1.Open;
+ADOQuery1.Close;
+ADOQuery1.SQL.Text:= 'SELECT * FROM database1 WHERE
+value1=1 AND value2= ' + inttostr(array[3]);
+        
+QuotedStr rather than ''''    
+
+CommandText does not return a result set at 41.360
+CommandText does not return a result set at 38.372
+
+ADOQuery1.SQL.Clear;
+ADOQuery1.SQL.Add('Insert into Score ([Score],[Round],[FighterID],[FightID])
+Values('+quotedstr(cbrf1.text)+','+QuotedStr(inttostr(countround))+', )');
+ADOQuery1.ExecSQL;
+ADOQuery1.SQL.Clear;
+
+tools and configuration:
+mdbviewer for Database3.mdb
+dns-entry in ODBC DataSources: Provider=MSDASQL;DSN=mx3base
+
+
+
+Meine Erfahrung in SOA und WebServices haben im Jahr 2005 mit dem Bau eines Frameworks begonnen, dass wir SOA Cells betitelten.
+SOA ist eigentlich eine Geschichte von RPC, Remote Procedure Call 1985, IPC (Inter Process
+Communication) zu DCOM und Web Service 2001 hin zur SOA, Service Oriented Architecture so um 2006 um.
+The term SOA (Service Oriented Architecture) expresses a software concept that defines the
+use of services to support the requirements (use cases) of users.
+wikipedia.org 20. March 06
+
+Da ich schon früh UML mit UseCase in der armasuisse einführte, kann ich mit dem Konzept gut umgehen, jedoch bei der Security und der Availability sind noch grosse Löcher vorhanden.
+
+Im 2007 hatte ich dann einen Vortrag auf der EKON und dot.net Konferenz zum Thema:
+
+http://www.softwareschule.ch/download/soa_delphi_ekon10_1.pdf 
+
+Im 2008 haben wir dann mit MIL Office den MILO Gateway gebaut, der ein WebService ist und via https-Zertifikaten funktioniert. Bei der Studie zum MIL Geo Service und JAP II Security habe ich weitere Erfahrungen aufgebaut.
+
+
+ TObject  = class
+    constructor Create;
+    procedure Free;
+    class function InitInstance(Instance: Pointer): TObject;
+    procedure CleanupInstance;
+    function ClassType: TClass;
+    class function ClassName: ShortString;
+    class function ClassNameIs(const Name: string): Boolean;
+    class function ClassParent: TClass;
+    class function ClassInfo: Pointer;
+    class function InstanceSize: Longint;
+    class function InheritsFrom(AClass: TClass): Boolean;
+    class function MethodAddress(const Name: ShortString): Pointer;
+    class function MethodName(Address: Pointer): ShortString;
+    function FieldAddress(const Name: ShortString): Pointer;
+    function GetInterface(const IID: TGUID; out Obj): Boolean;
+    class function GetInterfaceEntry(const IID: TGUID): PInterfaceEntry;
+    class function GetInterfaceTable: PInterfaceTable;
+    function SafeCallException(ExceptObject: TObject;
+      ExceptAddr: Pointer): HResult; virtual;
+    procedure AfterConstruction; virtual;
+    procedure BeforeDestruction; virtual;
+    procedure Dispatch(var Message); virtual;
+    procedure DefaultHandler(var Message); virtual;
+    class function NewInstance: TObject; virtual;
+    procedure FreeInstance; virtual;
+    destructor Destroy; virtual;
+  end;
+
+
+procedure TForm1.btn1Click(Sender: TObject);
+const
+  SSQL: string =
+    'DECLARE    @intLoop int '#13#10
+    + 'SET @intLoop = 10 '#13#10
+    + 'WHILE @intLoop > 1 '#13#10
+    + 'BEGIN '#13#10
+    + ' SELECT  @intLoop, GetDate() '#13#10
+    + ' WAITFOR DELAY ''00:00:01'' '#13#10
+    + ' SELECT  @intLoop = @intLoop -1 '#13#10
+    + 'END ';
+begin
+  qry1.SQL.Text := SSQL;
+  TADODataSet(qry1).CommandTimeout := 1;
+  qry1.ExecSQL;
+end;
+----code_cleared_checked_clean----

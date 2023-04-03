@@ -1,0 +1,443 @@
+{***************************************************************
+ * Project  : REST GEO Code of OpenStreetMap, OpenWeather and NEMA Routines
+ * App Name :  522_geocode.txt, #locs=350
+ * Purpose  : Demonstrates for Tutorial 40 REST Coding
+ * Date     : #sign>breitsch: BREITSCH-BOX: 02/04/2023 20:48:46 
+ * History  : convert GEOCode to internal Unit Aug 2014
+ *          : add weather time routines and tickcount to GEO
+ ****************************************************************}
+
+////////////////////////////////////////////////////////////////////////////////
+//     National Marine Electronics Association (NMEA)                         //
+//     Contains code to process GeoCode Coordinates in XML data fields        //
+//     max@kleiner.ch  August   2015                                          //
+////////////////////////////////////////////////////////////////////////////////
+
+Program GetGeoCode_API;
+
+CONST 
+  UrlMapQuestAPICode2='http://open.mapquestapi.com/nominatim/v1/search.php?format=%s&json_callback=renderBasicSearchNarrative&q=%s';  
+  
+  UrlMapQuestAPIReverse= 'http://open.mapquestapi.com/nominatim/v1/reverse.php?format=%s&json_callback=renderExampleThreeResults&lat=%s&lon=%s';
+
+
+{Delphi TDateTime from NMEA Date & Time fields}
+
+function DateTimeNMEA(const StrD, StrT: string): TDateTime;
+var
+  WinTimeRec: TSystemTime;
+  hh, mm, ss, dd, mn, yy: string;
+begin
+//   UTC  hhmmss                   UTC date ddmmyy
+  hh := Copy(StrT, 1, 2);       dd := Copy(StrD, 1, 2);
+  mm := Copy(StrT, 3, 2);       mn := Copy(StrD, 3, 2);
+  ss := Copy(StrT, 5, 2);       yy := Copy(StrD, 5, 2);
+
+  with WinTimeRec do
+    try
+      wYear:= 2000 + StrToInt(yy);    // yyyy
+      wMonth := StrToInt(mn);         // Jan = 1
+      wDayOfWeek := 0;                // Ignored
+      wDay := StrToInt(dd);
+      wHour:= StrToInt(hh);
+      wMinute := StrToInt(mm);
+      wSecond := StrToInt(ss);
+      wMilliseconds := 000;
+      Result := SystemTimeToDateTime(WinTimeRec);
+    except
+      Result := -1;
+    end;
+end;
+
+
+{Sets the computer system (UTC) clock, returns true if successful}
+
+function SysClockSet(const StrD, StrT: string): Boolean;
+var
+  WinTimeRec: TSystemTime;
+  DateTime: TDateTime;
+begin
+  DateTime := DateTimeNMEA(StrD, StrT);
+  DateTimeToSystemTime(DateTime, WinTimeRec);
+  Result := SetSystemTime(WinTimeRec);
+end;
+
+function GetMapXGeocodeReverseStream(C_form: string; const data: string): string;
+ var encodURL, alat, alon: string;
+    mapStream: TStringStream;
+    xmlDoc: TXmlVerySimple; //TALXMLDocument;
+    Nodes: TXmlNodeListsimple;
+    Node: TXmlNodesimple;
+ begin
+   encodURL:= Format(UrlMapQuestAPICode2,[c_form,HTTPEncode(Data)]);
+   mapStream:= TStringStream.create('');
+   xmldoc:= TXmlVerySimple.create;
+   try
+     HttpGet(EncodURL, mapStream);  {WinInet}
+     //local tester
+     //mapstream.writestring(loadstringfromfile(apath));
+     mapStream.Position:= 0;
+     writeln('string stream size: '+inttostr(mapstream.size));
+     writeln('string stream cont: '+mapstream.datastring);
+     {SaveStringtoFile(apath, mapStream.datastring) OpenDoc(apath); }
+   
+     xmlDoc.loadfromStream(mapstream);
+     writeln('#childcounts: '+inttostr(xmlDoc.root.childnodes.count))  
+     if xmlDoc.root.childnodes.count > 0 then begin  
+       Nodes:= XmlDoc.Root.FindNodes('place');    //or result
+       for it:= 0 to TXMLNodeList(nodes).count-1 do begin
+         //for Node in Nodes do
+         Node:= TXMLNodesimple(nodes.items[it]);
+         alon:= node.attribute['lon']
+         alat:= node.attribute['lat']
+       end;
+       //result:= 'GEO Topic found: '+(node.text)+CRLF
+       result:= result+('latitude: '+alat+'  longitude: '+alon)
+       Nodes.Free;
+     end;
+   finally
+     encodURL:= '';
+     mapStream.Free;
+     xmlDoc.Free;
+   end;
+ end;  
+
+function GetMapXGeocodeReverseStreamMSXML(C_form:string; const data: string):string;
+ var encodURL, alat, alon: string;
+    mapStream: TStringStream;
+    XMLDoc : OleVariant;
+    ANode  : OleVariant;
+ begin
+   EncodURL:= Format(UrlMapQuestAPICode2,[c_form,HTTPEncode(Data)]);
+   mapStream:= TStringStream.create('');
+   XmlDoc       := CreateOleObject('Msxml2.DOMDocument.6.0');
+   XmlDoc.Async := False;
+  try
+     HttpGet(EncodURL, mapStream);  {WinInet}
+     //local tester
+     //mapstream.writestring(loadstringfromfile(apath));
+     mapStream.Position:= 0;
+     writeln('string stream size: '+inttostr(mapstream.size));
+     writeln('string stream cont: '+mapstream.datastring);
+     SaveStringtoFile(exepath+'msxmltestgeocode.xml', mapStream.datastring);
+      //OpenDoc(apath); }
+     XMLDoc.setProperty('SelectionLanguage','XPath');
+     //use XPath to parse the xml
+     //xmlDoc.loadfromStreamdd(mapstream);
+     //xmldoc.ReadXMLFile(mapstream)
+     sleep(500)
+     xmldoc.Load(exepath+'msxmltestgeocode.xml')
+   
+     //writeln('#childcounts: '+inttostr(xmlDoc.root.childnodes.count))  
+      // alon:= xmldoc.selectsinglenode.getAttribute('lon');
+      //if not VarIsNull(ANode) then GeoInfo.ZipPostalCode:=ANode.Text;
+      //ANode:=XMLDoc.selectSingleNode('/Response/Latitude');
+      ANode:=XMLDoc.selectSingleNode('/lat');
+      //alat:= anode.getattribute('lat');
+      //alat:= anode.text;
+      ANode:=XMLDoc.selectSingleNode('/lon');
+   //alat:= xmldoc.childnodes['searchresults'].childnodes['place'].attributes['lat'];
+      //if not VarIsNull(ANode) then alat:=ANode.Text;
+     { ANode:=XMLDoc.selectSingleNode('/lon');
+      if not VarIsNull(ANode) then alon:=ANode.Text;
+     }
+      //FMainAssemblyIdentity.name    :=Node.getAttribute('name');
+        //result:= 'GEO Topic found: '+(node.text)+CRLF
+       result:= result+('latitude: '+alat+'  longitude: '+alon)
+   finally
+     encodURL:= '';
+     mapStream.Free;
+    XmlDoc:=Unassigned;
+    end;
+ end;  
+ 
+
+const
+  Msxml2_DOMDocument='Msxml2.DOMDocument.6.0';
+
+procedure ReadXMLFile(const FileName:TFileName);
+var
+  XmlDoc         : OleVariant;
+  Nodes          : OleVariant;
+  lNodes         : Integer;
+  i              : Integer;
+begin
+  //create an instance to the XML DOM 
+  XmlDoc       := CreateOleObject(Msxml2_DOMDocument);
+  try
+    XmlDoc.Async := False;
+    //load the file
+    XmlDoc.Load(FileName);
+    //set the xpath mode
+    XmlDoc.SetProperty('SelectionLanguage','XPath');
+    //check for errors in the xml file
+      if (XmlDoc.parseError.errorCode <> 0) then
+       writeln(format('Error in Xml Data %s',[XmlDoc.parseError]));
+       //raise Exception.CreateFmt('Error in Xml Data %s',[XmlDoc.parseError]);
+    //select the nodes with match with the expression
+    Nodes := XmlDoc.selectNodes('//catalog/subject/book/author');
+    //Exception: msxml6.dll: Expected token 'EOF' found 'NAME'.
+    //Nodes:= XmlDoc.selectNodes('//datapacket version/metadata/fields');
+    //Nodes:= XmlDoc.selectNodes('//datapacket version/rowdata/occupation');
+     //get the number of nodes selected
+    lNodes:= Nodes.Length;
+    Writeln(Format('%d Authors found',[lNodes]));
+    //traverse the nodes
+     for i:=0 to Nodes.Length - 1 do
+      Writeln(Format('Author Name %s',[Nodes.Item(i).Text]));
+  finally
+   XmlDoc :=Unassigned;
+  end;
+end;
+ 
+ var mygeoInfo: TGEOInfo;
+ const
+ UrlGeoLookupInfo2  ='http://ipinfodb.com/ip_query.php?timezone=true&ip=%s';
+
+ UrlGeoLookupInfo3 = 'http://api.hostip.info/get_html.php?ip=%s&position=true';
+
+ procedure GetGeoInfo2(const IpAddress : string;var GeoInfo :TGeoInfo;
+                            const UrlGeoLookupInfo: string);
+var
+  lHTTP  : TIdHTTP;
+  lStream: TStringStream;
+  XMLDoc : OleVariant;
+  ANode  : OleVariant;
+begin
+  lHTTP   := TIdHTTP.Create(nil);
+  lStream := TStringStream.Create('');
+  XmlDoc       := CreateOleObject('Msxml2.DOMDocument.6.0');
+  XmlDoc.Async := False;
+  try
+      try
+        lHTTP.Get1(Format(UrlGeoLookupInfo,[IpAddress]), lStream); //get the request
+      except
+        lHTTP.Get1(Format(UrlGeoLookupInfo2,[IpAddress]), lStream); 
+        //if something is wrong try using the backup server.
+      end;
+      lStream.Seek(0,0);
+      writeln('lstream: '+lStream.ReadString(lStream.Size));
+      XMLDoc.setProperty('SelectionLanguage','XPath');
+      //use XPath to parse the xml result
+      ANode:=XMLDoc.selectSingleNode('/Response/Status');
+      if not VarIsNull(ANode) then GeoInfo.Status:=ANode.Text;
+      ANode:=XMLDoc.selectSingleNode('/Response/CountryCode');
+      if not VarIsNull(ANode) then GeoInfo.CountryCode:=ANode.Text;
+      ANode:=XMLDoc.selectSingleNode('/Response/CountryName');
+      if not VarIsNull(ANode) then GeoInfo.CountryName:=ANode.Text;
+      ANode:=XMLDoc.selectSingleNode('/Response/RegionCode');
+      if not VarIsNull(ANode) then GeoInfo.RegionCode:=ANode.Text;
+      ANode:=XMLDoc.selectSingleNode('/Response/City');
+      if not VarIsNull(ANode) then GeoInfo.City:=ANode.Text;
+      ANode:=XMLDoc.selectSingleNode('/Response/ZipPostalCode');
+      if not VarIsNull(ANode) then GeoInfo.ZipPostalCode:=ANode.Text;
+      ANode:=XMLDoc.selectSingleNode('/Response/Latitude');
+      if not VarIsNull(ANode) then GeoInfo.Latitude:=ANode.Text;
+      ANode:=XMLDoc.selectSingleNode('/Response/Longitude');
+      if not VarIsNull(ANode) then GeoInfo.Longitude:=ANode.Text;
+      ANode:=XMLDoc.selectSingleNode('/Response/TimezoneName');
+      if not VarIsNull(ANode) then GeoInfo.TimezoneName:=ANode.Text;
+      ANode:=XMLDoc.selectSingleNode('/Response/Gmtoffset');
+      if not VarIsNull(ANode) then GeoInfo.Gmtoffset:=ANode.Text;
+      ANode:=XMLDoc.selectSingleNode('/Response/Isdst');
+      if not VarIsNull(ANode) then GeoInfo.Isdst:=ANode.Text;
+  finally
+    lHTTP.Free;
+    lStream.Free;
+     XmlDoc:=Unassigned;
+ 
+  end;
+end;
+
+
+function GetGeoInfo4(const IpAddress: string;
+                       const UrlGeoLookupInfo: string): string;
+var
+  lHTTP: TIdHTTP;
+  lStream: TStringStream;
+begin
+  lHTTP:= TIdHTTP.Create(NIL);
+  lStream:= TStringStream.Create('');
+  try
+     try
+       lHTTP.Get1(Format(UrlGeoLookupInfo,[IpAddress]), lStream);
+        //get the request
+     except
+       lHTTP.Get1(Format(UrlGeoLookupInfo2,[IpAddress]), lStream);
+        //if something wrong try using a backup server.
+     end;
+     lStream.Seek(0,0);
+     result:= 'GEO_IP Out: '+lStream.ReadString(lStream.Size);
+  finally
+    lHTTP.Free;
+    lStream.Free;
+  end;
+end;
+
+//http://api.openweathermap.org/data/2.5/weather?q={klagenfurt}
+//http://www.openweathermap.com/current
+ 
+Const
+ UrlWeatherReport25='http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric';
+
+function GetGeoWeather(const location: string;
+                             const UrlRestAPI: string): string;
+var lHTTP: TIdHTTP;
+    lStream: TStringStream;
+begin
+  lHTTP:= TIdHTTP.Create(NIL);
+  lStream:= TStringStream.Create('');
+  try
+     try
+       lHTTP.Get1(Format(UrlRestAPI,[location]),lStream);
+     except
+       lHTTP.Get1(Format(UrlGeoLookupInfo2,[location]),lStream);
+        //if something wrong try using a backup server.
+     end;
+     lStream.Seek(0,0);
+     result:= 'GEO_Weather_Report: '+lStream.ReadString(lStream.Size);
+  finally
+    lHTTP.Free;
+    lStream.Free;
+  end;
+end;
+
+ 
+ procedure TestMercatorConverters;
+ begin
+   {function GetLongToMercProjection(const long:extended):extended;
+   function GetLatToMercProjection(const Lat:Extended):Extended;
+   function GetMercProjectionToLong(const ProjLong:extended):extended;
+   function GetMercProjectionToLat(const ProjLat:extended):extended;}
+  writeln('GetLongToMercProjection: '+floattostr(GetLongToMercProjection(014.14388)));
+  writeln('GetLatToMercProjection: '+floattostr(GetLatToMercProjection(46.62832)));
+ end;                         
+
+
+begin {@main}
+
+   //writeln('Coord is: '+GetGeoCode('xml',ExePath+'outputmap2cologne.xml',                                                   'cathedral cologne', true));
+   // function CoordinateStr2(Idx: Integer; PosInSec: Double; PosLn: TPos): string;
+   writeln(CoordinateStr(2, 50.56, tlat));
+   
+   //writeln('Coord is: '+GetGeoCode('xml',ExePath+'outputmap2klagenfurt.xml',                                                   'church klagenfurt', true));
+   //writeln('Coord is: '+GetGeoCode('xml',ExePath+'outputmap2krumpendorf.xml',                                                   'krumpendorf strandweg', true));
+   
+   //writeln('Coord2 is: '+GetMapXGeocodeReverseStream('xml','cathedral cologne'))
+   writeln('Coord2 is: '+GetMapXGeocodeReverseStream('xml','krumpendorf'))
+   //writeln('Coord2 is: '+GetMapXGeocodeReverseStreamMSXML('xml','krumpendorf'))
+
+  //ShellExecute3('http://maps.google.com/maps?q=+50.94133705,+6.95812076100766','',seCMDOPen) 
+  
+  TestMercatorConverters;
+  
+  writeln(GetGeoInfo4('178.196.192.131', UrlGeoLookupInfo3));
+  // GetGeoInfo2('178.196.193.131',mygeoinfo, UrlGeoLookupInfo2);
+  
+  //writeln(GetGeoWeather('krumpendorf', UrlWeatherReport25));
+  writeln(GetGeoWeather('bern', UrlWeatherReport25));
+  
+   //CoInitialize(nil);
+    {try
+      //ReadXMLFile(ExtractFilePath(ParamStr(0))+'outputmap2klagenfurt.xml');
+      //ReadXMLFile(ExtractFilePath(ParamStr(0))+'examples/orders.xml');
+       //C:\maXbook\maxbox3\mX3999\maxbox3\maxbox3\examples
+      ReadXMLFile(ExtractFilePath(ParamStr(0))+'\maxbox3\examples\authors.xml');
+     finally
+      //CoUninitialize(nil);
+    end; }
+
+End.  // GeoCode
+
+doc:
+
+Garmin Ref: Krumpendorf 045: N 46.62832 - E 014.14388
+GeoCode Coord2 is: latitude: '46.622273'  longitude: '14.2222166'
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+-<searchresults more_url="http://mq-open-search-ext-la02.ihost.aol.com:8000/nominatim/v1/search?format=xml&exclude_place_ids=705429&q=krumpendorf+strandweg" exclude_place_ids="705429" polygon="false" querystring="krumpendorf strandweg" attribution="Data © OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright" timestamp="Sun, 16 Aug 15 12:56:58 +0000"> <place icon="http://mq-open-search-ext-la02.ihost.aol.com:8000/nominatim/v1/images/mapicons/transport_train_station2.p.20.png" importance="0.201" type="station" class="railway" display_name="Krumpendorf, Strandweg, Gemeinde Krumpendorf am Wörthersee, Klagenfurt-Land, Region Klagenfurt-Villach, Kärnten, 9201, Österreich" lon="14.2218479" lat="46.6264738" boundingbox="46.6264738,46.6264738,14.2218479,14.2218479" place_rank="30" osm_id="247629819" osm_type="node" place_id="705429"/></searchresults>
+
+cathedral cologne
+result Coord is: latitude: '50.94133705'  longitude: '6.95812076100766'
+
+>>>  50°56'28.8"N 6°57'29.2"E
+
+http://maps.google.com/maps?q=+50.94133705,+6.95812076100766
+>>>
+https://www.google.com/maps/place/50%C2%B056%2728.8%22N+6%C2%B057%2729.2%22E/@50.9413371,6.9581208,17z/data=!3m1!4b1!4m2!3m1!1s0x0:0x0
+
+church cologne:
+result Coord is: latitude: '50.9636172'  longitude: '7.0031056'
+
+Please help. I only need the coordinates from this string
+
+"Latitude: +51.703155 N, Longitude: +5.250327 E 
+http://maps.google.com/maps?q=+51.703155,+5.250327 Sent from my android"
+
+result +51.703155, +5.250327
+
+
+
+ref:
+
+http://useruploadedfiles.programmersheaven.com/48584/NMEA.pas
+
+doc:
+
+REST (REpresentational State Transfer) is a simple stateless architecture that generally runs over HTTPS/TLS. The REST style emphasizes that interactions between clients and services are enhanced by having a limited number of operations. Flexibility is provided by assigning resources their own unique universal resource indicators (URIs).
+
+A sample query string follows:
+
+http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?listLatLon=38.99,-77.02 39.70,-104.80 47.6,-122.30&product=time-series&begin=2004-01-01T00:00:00&end=2013-04-20T00:00:00&Unit=e&maxt=maxt&mint=mint
+
+As many of you know, MapQuest hosts a version of the Nominatim Search Service as a part of our Open Data API and SDK product line, so we wanted to share an important update about this service that will have an impact on users of this service.
+
+The Nominatim Search Service will be unavailable on Tuesday, August 18, 2015 due to system maintenance. While it is never our intention to cause service disruptions, the outage is necessary. We apologize for the inconvenience that this will cause to our users of Nominatim.
+
+The NDFD data available via the REST service is updated no more than hourly. As a result, we request developers using this REST service only make a request for a specific point no more than once an hour. The database is currently updated by 45 minutes after the hour.
+
+You can interact with the REST service by visiting the following URLs:
+
+RestFul Web Services Weather Forecast
+The RestFul Web Services Weather Forecast API provides the weather forecast for a given location, specified by name. This service can be accessed using either REST or SOAP calls in XML format. Both types of calls are aimed at WSDL endpoints. 
+
+ Access current weather data for any location on Earth including over 200,000 cities! Current weather is frequently updated based on global models and data from more than 40,000 weather stations. Data is available in JSON, XML, or HTML format.
+Call current weather data for one location
+By city name
+Description:
+You can call by city name or city name and country code. API responds with a list of results that match a searching word.
+API call:
+
+api.openweathermap.org/data/2.5/weather?q={city name}
+
+api.openweathermap.org/data/2.5/weather?q={city name},{country code}
+Parameters:
+
+q city name and country code divided by comma, use ISO 3166 country codes
+Examples of API calls:
+
+api.openweathermap.org/data/2.5/weather?q=London
+
+api.openweathermap.org/data/2.5/weather?q=London,uk
+
+    Program SpammersAreParasites;
+    var
+      l1,l2: Srting;
+    begin
+      l1:='70';
+      l2:='0';
+      Bxo:=l1 + l2;
+      Bxo:=(Bxo)
+    (*
+      l1:=97;
+      l2:=9
+     Bxo:=(l1 + l2);
+    *)
+    end.
+
+? Value of Bxo: 
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+-<searchresults more_url="http://mq-open-search-ext-lm05.ihost.aol.com:8000/nominatim/v1/search?format=xml&exclude_place_ids=705429&q=krumpendorf+strandweg" exclude_place_ids="705429" polygon="false" querystring="krumpendorf strandweg" attribution="Data © OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright" timestamp="Sun, 16 Aug 15 13:05:09 +0000"> <place icon="http://mq-open-search-ext-lm05.ihost.aol.com:8000/nominatim/v1/images/mapicons/transport_train_station2.p.20.png" importance="0.201" type="station" class="railway" display_name="Krumpendorf, Strandweg, Gemeinde Krumpendorf am Wörthersee, Klagenfurt-Land, Region Klagenfurt-Villach, Kärnten, 9201, Österreich" lon="14.2218479" lat="46.6264738" boundingbox="46.6264738,46.6264738,14.2218479,14.2218479" place_rank="30" osm_id="247629819" osm_type="node" place_id="705429"/></searchresults>

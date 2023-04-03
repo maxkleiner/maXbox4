@@ -1,0 +1,2963 @@
+Program SaintSourceSnippets3_UnitTestBox4;
+
+//uses parseutils.pas                                   
+
+//<head> #sign:breitsch: BREITSCH-BOX: 03/04/2023 11:34:42 
+//#tech:1:34:perf:  threads: 5 192.168.56.1 11:34:42 4.7.6.2031 4.7.6.200
+
+//https://github.com/pyscripter/python4delphi/blob/master/PythonForDelphi/Components/Sources/Core/PythonEngine.pas
+//Machine Learning Mastery With Python Mini-Course           
+
+
+(*Functionality:  Delphi Components that provide an interface to the    *)
+(*                  Python language (see python.txt for more infos on   *)
+(*                  Python itself).                                     *)
+ 
+ //uses parseutils.pas                                   
+
+ //{$I examples/parseutils.pas}                                   
+
+ Const TEXTOUT = 'Set and Clear a Bit in a Byte';
+ 
+//#####################################################################
+//##                                                                 ##
+//##  examples of https://my6.code.blog/2020/03/29/saint-source/     ##
+//##                                                                 ##
+//#####################################################################
+
+ {function OpenPythonDLL (lpMachineName : string;
+                       lpDatabaseName : string;
+                       dwDesiredAccess : DWORD): THANDLE;
+     // external 'OpenSCManager@ADVAPI32.DLL.dll stdcall';
+      external 'OpenSCManagerA@python37.dll stdcall';  }
+      
+   //function SafeLoadLibrary(const Filename: string; ErrorMode: UINT): HMODULE;
+    
+     function  LoadLibrary32(const Filename: string): Longint;
+        external 'LoadLibraryA@kernel32.dll stdcall';
+     
+ //uses parseutils.pas                                   
+  
+
+type
+  aTPythonVersionProp = record
+    DllName      : string;
+    RegVersion   : string;
+    APIVersion   : Integer;
+  end;
+  
+  var PythonVersionProp:  TPythonVersionProp;
+  
+  
+  procedure  TDynamicDllOpenDll(const aDllName : string); forward;
+  
+//const
+{$IFDEF MSWINDOWS}
+  PYTHON_KNOWN_VERSIONS: array[1..8] of TPythonVersionProp =
+    (
+    (DllName: 'python27.dll'; RegVersion: '2.7'; APIVersion: 1013),
+    (DllName: 'python32.dll'; RegVersion: '3.2'; APIVersion: 1013),
+    (DllName: 'python33.dll'; RegVersion: '3.3'; APIVersion: 1013),
+    (DllName: 'python34.dll'; RegVersion: '3.4'; APIVersion: 1013),
+    (DllName: 'python35.dll'; RegVersion: '3.5'; APIVersion: 1013),
+    (DllName: 'python36.dll'; RegVersion: '3.6'; APIVersion: 1013),
+    (DllName: 'python37.dll'; RegVersion: '3.7'; APIVersion: 1013),
+    (DllName: 'python38.dll'; RegVersion: '3.8'; APIVersion: 1013)
+    );
+{$ENDIF}
+{$IFDEF _so_files}
+  PYTHON_KNOWN_VERSIONS: array[1..8] of TPythonVersionProp =
+    (
+    (DllName: 'libpython2.7.so'; RegVersion: '2.7'; APIVersion: 1013),
+    (DllName: 'libpython3.2m.so'; RegVersion: '3.2'; APIVersion: 1013),
+    (DllName: 'libpython3.3m.so'; RegVersion: '3.3'; APIVersion: 1013),
+    (DllName: 'libpython3.4m.so'; RegVersion: '3.4'; APIVersion: 1013),
+    (DllName: 'libpython3.5m.so'; RegVersion: '3.5'; APIVersion: 1013),
+    (DllName: 'libpython3.6m.so'; RegVersion: '3.6'; APIVersion: 1013),
+    (DllName: 'libpython3.7m.so'; RegVersion: '3.7'; APIVersion: 1013),
+    (DllName: 'libpython3.8m.so'; RegVersion: '3.8'; APIVersion: 1013)
+    );
+{$ENDIF}
+{$IFDEF DARWIN}
+  PYTHON_KNOWN_VERSIONS: array[1..8] of TPythonVersionProp =
+    (
+    (DllName: 'libpython2.7.dylib'; RegVersion: '2.7'; APIVersion: 1013),
+    (DllName: 'libpython3.2.dylib'; RegVersion: '3.2'; APIVersion: 1013),
+    (DllName: 'libpython3.3.dylib'; RegVersion: '3.3'; APIVersion: 1013),
+    (DllName: 'libpython3.4.dylib'; RegVersion: '3.4'; APIVersion: 1013),
+    (DllName: 'libpython3.5.dylib'; RegVersion: '3.5'; APIVersion: 1013),
+    (DllName: 'libpython3.6.dylib'; RegVersion: '3.6'; APIVersion: 1013),
+    (DllName: 'libpython3.7.dylib'; RegVersion: '3.7'; APIVersion: 1013),
+    (DllName: 'libpython3.8.dylib'; RegVersion: '3.8'; APIVersion: 1013)
+    );
+{$endif}
+
+ Const 
+  aPYT_METHOD_BUFFER_INCREASE = 10;
+  aPYT_MEMBER_BUFFER_INCREASE = 10;
+  aPYT_GETSET_BUFFER_INCREASE = 10;
+  
+  KEY_ALL_ACCESS = $2003F;
+
+  aMETH_VARARGS  = $0001;
+  aMETH_KEYWORDS = $0002;
+
+  // Masks for the co_flags field of PyCodeObject
+  aCO_OPTIMIZED   = $0001;
+  aCO_NEWLOCALS   = $0002;
+  aCO_VARARGS     = $0004;
+  aCO_VARKEYWORDS = $0008;
+
+  // Rich comparison opcodes introduced in version 2.1
+  aPy_LT = 0;
+  aPy_LE = 1;
+  aPy_EQ = 2;
+  aPy_NE = 3;
+  aPy_GT = 4;
+  aPy_GE = 5;
+  
+  Py_TPFLAGS_HAVE_GETCHARBUFFER = (1 shl 0);
+  
+  // PySequenceMethods contains sq_contains
+  Py_TPFLAGS_HAVE_SEQUENCE_IN = (1 shl 1);
+
+// Objects which participate in garbage collection (see objimp.h)
+  Py_TPFLAGS_GC = (1 shl 2);
+
+// PySequenceMethods and PyNumberMethods contain in-place operators
+  Py_TPFLAGS_HAVE_INPLACEOPS = (1 shl 3);
+
+// PyNumberMethods do their own coercion */
+  Py_TPFLAGS_CHECKTYPES = (1 shl 4);
+
+  Py_TPFLAGS_HAVE_RICHCOMPARE = (1 shl 5);
+
+// Objects which are weakly referencable if their tp_weaklistoffset is >0
+// XXX Should this have the same value as Py_TPFLAGS_HAVE_RICHCOMPARE?
+// These both indicate a feature that appeared in the same alpha release.
+
+  Py_TPFLAGS_HAVE_WEAKREFS = (1 shl 6);
+
+// tp_iter is defined
+  Py_TPFLAGS_HAVE_ITER = (1 shl 7);
+
+  Py_TPFLAGS_DEFAULT  =      Py_TPFLAGS_HAVE_GETCHARBUFFER
+                             or Py_TPFLAGS_HAVE_SEQUENCE_IN
+                             or Py_TPFLAGS_HAVE_INPLACEOPS
+                             or Py_TPFLAGS_HAVE_RICHCOMPARE
+                             or Py_TPFLAGS_HAVE_WEAKREFS
+                             or Py_TPFLAGS_HAVE_ITER
+                             ;
+  
+type
+  // Delphi equivalent used by TPyObject
+  aTRichComparisonOpcode = (pyLT, pyLE, pyEQ, pyNE, pyGT, pyGE);
+  
+ var myst: TStringStream;
+      x, ib: byte;  condition: boolean;
+      //s : TUTF8Scanner.Create(Memo1.Text);
+      //asd: TSimpleIPCClient
+  
+  function OpenSCManagerX (lpMachineName : string;
+                       lpDatabaseName : string;
+                       dwDesiredAccess : DWORD): THANDLE;
+     // external 'OpenSCManager@ADVAPI32.DLL.dll stdcall';
+      external 'OpenSCManagerA@advapi32.dll stdcall';
+  
+  
+function ClearBit( const aValue, aBitNumber: integer ): integer;
+begin
+  result:= aValue And not(1 Shl aBitNumber);
+end;
+
+function SetBit(const aValue, aBitNumber : integer ): integer;
+begin
+  result:= aValue And (1 Shl aBitNumber);
+end;
+
+function CleanStringANSI(const s : AnsiString; AppendLF : Boolean) : AnsiString;
+var
+  i : Integer;
+begin
+  result := s;
+  if s = '' then
+    Exit;
+  i := Pos((CR),s);
+  while i > 0 do begin
+      Delete( result, i, 1 );
+      i := PosEx((CR),result, i);
+    end;
+  if AppendLF and (result[length(result)] <> LF) then
+    Result := Result + LF;
+end;
+
+function CleanString(const s : UnicodeString; AppendLF : Boolean) : UnicodeString;
+begin
+  {$IFDEF FPC}
+  Result := UnicodeString(AdjustLineBreaks(AnsiString(s), tlbsLF));
+  {$ELSE}
+  Result := AdjustLineBreaks(s, tlbsLF);
+  {$ENDIF}
+  if AppendLF and (result[length(result)] <> LF) then
+    Result := Result + LF;
+end;
+
+{$DEFINE MSWINDOWS}
+
+procedure TPythonEngineCheckRegistry;
+{$IFDEF MSWINDOWS}
+var
+  key : string;
+  Path : string;
+  NewPath : string;
+{$IFDEF CPUX86}
+  MajorVersion : integer;
+  MinorVersion : integer;
+{$ENDIF}
+  VersionSuffix: string;
+{$ENDIF}
+begin
+{$IFDEF MSWINDOWS}
+  //if Assigned( FOnPathInitialization ) then
+  try
+    with TRegistry.Create1(KEY_ALL_ACCESS and not KEY_NOTIFY) do
+      try
+        VersionSuffix := '';
+{$IFDEF CPUX86}
+        MajorVersion := StrToInt(RegVersion[1]);
+        MinorVersion := StrToInt(RegVersion[3]);
+        if (MajorVersion > 3) or ((MajorVersion = 3)  and (MinorVersion >= 5)) then
+          VersionSuffix := '-32';
+{$ENDIF}
+        key:= Format('\Software\Python\PythonCore\%s%s\PythonPath', 
+               [PythonVersionProp.RegVersion, PythonVersionProp.RegVersion, VersionSuffix]);
+
+        RootKey := HKEY_LOCAL_MACHINE;
+        if not KeyExists( key ) then
+        begin
+          // try a current user installation
+          RootKey := HKEY_CURRENT_USER;
+          if not KeyExists( key ) then  Exit;
+        end;
+        // Key found
+        OpenKey( key, True );
+        try
+          Path := ReadString('');
+          NewPath := Path;
+          //FOnPathInitialization( Self, NewPath );
+          if NewPath <> Path then begin
+            WriteString( '', NewPath );
+          end;
+        finally
+          CloseKey;
+        end;
+      finally
+        Free;
+      end;
+  except
+    // under WinNT, with a user without admin rights, the access to the
+    // LocalMachine keys would raise an exception.
+  end;
+{$ENDIF}
+end;
+
+//{$IFDEF MSWINDOWS}
+function IsPythonVersionRegistered(PythonVersion : string;
+  out InstallPath: string; out AllUserInstall: Boolean) : Boolean;
+  // Python provides for All user and Current user installations
+  // All User installations place the Python DLL in the Windows System directory
+  // and write registry info to HKEY_LOCAL_MACHINE
+  // Current User installations place the DLL in the install path and
+  // the registry info in HKEY_CURRENT_USER.
+  // Hence, for Current user installations we need to try and find the install path
+  // since it may not be on the system path.
+
+  // The above convension was changed in Python 3.5.  Now even for all user
+  // installations the dll is located at the InstallPath.
+  // Also from version 3.5 onwards 32 bit version have a suffix -32 e.g. "3.6-32"
+  // See also PEP 514
+
+var
+  key: string;
+  VersionSuffix: string;
+  MajorVersion : integer;
+  MinorVersion : integer;
+begin
+  Result := False;
+  InstallPath := '';
+  AllUserInstall := False;
+  MajorVersion := StrToInt(PythonVersion[1]);
+  MinorVersion := StrToInt(PythonVersion[3]);
+  VersionSuffix := '';
+{$IFDEF CPUX86}
+  if (MajorVersion > 3) or ((MajorVersion = 3)  and (MinorVersion >= 5)) then
+    VersionSuffix := '-32';
+{$ENDIF}
+  key := Format('\Software\Python\PythonCore\%s%s\InstallPath', 
+     [PythonVersion, VersionSuffix]);
+
+  // First try HKEY_CURRENT_USER as per PEP514
+  try
+    with TRegistry.Create1(KEY_READ and not KEY_NOTIFY) do
+      try
+        RootKey := HKEY_CURRENT_USER;
+        if OpenKey(Key, False) then begin
+          InstallPath := ReadString('');
+          Result := True;
+          Exit;
+        end;
+      finally
+        Free;
+      end;
+  except
+  end;
+
+  //Then try for an all user installation
+  try
+    with TRegistry.Create1(KEY_READ and not KEY_NOTIFY) do
+      try
+        RootKey := HKEY_LOCAL_MACHINE;
+        if OpenKey(Key, False) then begin
+          AllUserInstall := True;
+          if (MajorVersion > 3) or ((MajorVersion = 3)  and (MinorVersion >= 5)) then
+            InstallPath := ReadString('');
+          Result := True;
+        end;
+      finally
+        Free;
+      end;
+  except
+  end;
+end;
+//{$ENDIF}
+
+
+var FDLLHandle          : THandle;
+    FDllName            : String;
+    FFatalMsgDlg        : Boolean;
+    FFatalAbort         : Boolean;
+
+function  TDynamicDllGetDllPath : string;
+{$IFDEF MSWINDOWS}
+var
+  AllUserInstall: Boolean;
+  DllPath            : string;
+  RegVersion         : string;
+{$ENDIF}
+begin
+  Result := DllPath;
+  AllUserInstall:= True;
+
+  {$IFDEF MSWINDOWS}
+  if DLLPath = '' then begin
+    IsPythonVersionRegistered(PythonVersionProp.RegVersion, Result, 
+                                                {PythonVersionProp.}AllUserInstall);
+  end;
+  {$ENDIF}
+
+  if Result <> '' then begin
+    Result := IncludeTrailingPathDelimiter(Result);
+  end;
+end;
+
+function  TDynamicDllIsHandleValid : Boolean;
+begin
+{$IFDEF MSWINDOWS}
+  Result := (FDLLHandle >= 32);
+{$ENDIF}
+{$IFDEF LINUX}
+  Result := FDLLHandle <> 0;
+{$ENDIF}
+end;
+
+procedure TDynamicDllDoOpenDll(const aDllName : string);
+begin
+  if not TDynamicDllIsHandleValid then begin
+    FDllName := aDllName;
+    writeln('try open dll: '+TDynamicDllGetDllPath+FDllName);
+    {$IFDEF MSWINDOWS}
+    FDLLHandle := SafeLoadLibrary(
+      {$IFDEF FPC}
+      PAnsiChar(AnsiString(GetDllPath+DllName))
+      {$ELSE}
+        TDynamicDllGetDllPath+FDllName, SEM_NOOPENFILEERRORBOX
+      {$ENDIF});
+    {$ELSE}
+    //Linux: need here RTLD_GLOBAL, so Python can do "import ctypes"
+    FDLLHandle := THandle(dlopen(PAnsiChar(AnsiString(GetDllPath+DllName)),
+      RTLD_LAZY+RTLD_GLOBAL));
+    {$ENDIF}
+  end;
+end;
+
+procedure TDynamicDllLoadDll;
+begin
+  TDynamicDllOpenDll( FDllName );
+end;
+
+function  TDynamicDllGetQuitMessage : string;
+begin
+  Result:= Format( 'Dll %s could not be loaded. We must quit.', [FDllName]);
+end;
+
+procedure TDynamicDllUnloadDll;
+begin
+  if TDynamicDllIsHandleValid then begin
+    //BeforeUnload;
+    FreeLibrary(FDLLHandle);
+    FDLLHandle := 0;
+  end;
+end;
+
+
+procedure  TDynamicDllOpenDll(const aDllName : string);
+var s : string;
+begin
+  TDynamicDllUnloadDll;
+
+  //BeforeLoad;
+  FDLLHandle := 0;
+
+  TDynamicDllDoOpenDll(aDllName);
+
+  if not TDynamicDllIsHandleValid then begin
+{$IFDEF MSWINDOWS}
+    s := Format('Error %d: Could not open Dll "%s"',[GetLastError, FDllName]);
+{$ENDIF}
+{$IFDEF LINUX}
+    s := Format('Error: Could not open Dll "%s"',[DllName]);
+{$ENDIF}
+    if FFatalMsgDlg then
+{$IFDEF MSWINDOWS}
+      MessageBox( GetActiveWindow, PChar(s), 'Error', MB_TASKMODAL or MB_ICONSTOP );
+{$ENDIF}
+{$IFDEF LINUX}
+      WriteLn(ErrOutput, s);
+{$ENDIF}
+
+    if FFatalAbort then
+      Exit; //Quit;
+  end else
+    //AfterLoad;
+end;
+
+
+{function  GetPythonEngine : TPythonEngine;
+begin
+  if not Assigned( gPythonEngine ) then
+    raise Exception.Create( 'No Python engine was created' );
+  if not gPythonEngine.Finalizing then
+    if not gPythonEngine.Initialized then
+      raise Exception.Create( 'The Python engine is not properly initialized' );
+  Result := gPythonEngine;
+end;}
+
+//************************Saint Source Snippets***************************
+//************************************************************************
+
+//1. Showing a message box with a  default button
+
+const MB_DEFBUTTON2 = $1234;
+procedure ShowaMessageBox;
+begin
+   if MessageBox(Hinstance,'mytext','mycaption',
+       MB_OKCANCEL or MB_ICONQUESTION or MB_DEFBUTTON2 ) = IDCANCEL then begin 
+        exit; 
+    end else begin 
+        ShowMessage('oki dic'); 
+    end;
+end;  
+
+//procedure Set_ReportMemoryLeaksOnShutdown(abo: boolean)   
+//2. Checking for memory leaks
+
+procedure ReportMemoryLeaksOnShutdown;
+begin
+  Set_ReportMemoryLeaksOnShutdown(true)
+end;  
+
+{Since D2006, Delphi includes a way to check for memory leaks in the IDE once the application has terminated.  }
+
+//3. Playing with radio buttons
+procedure PlaywithRadioButton;
+var Radiogroup1: TRadiogroup;
+    index: integer;
+begin
+  //Here’s how to display the radio button currently selected, if any:
+  ShowMessage(Radiogroup1.Items.Strings[RadioGroup1.ItemIndex]); 
+  
+  //A more complicated way:
+      for index := 0 to RadioGroup1.Items.Count - 1 do begin 
+        if RadioGroup1.ItemIndex = index then begin 
+          ShowMessage(RadioGroup1.Items[index]); 
+        end; 
+      end; 
+
+//Here’s how to clear it:
+    RadioGroup1.ItemIndex:=-1; 
+end;
+
+//4. Playing with TStringList hashed arrays
+// In addition to indexes, a TStringList array can use names so as to build key name=value 
+
+procedure Stringlist_HashedArrays;
+  var   indexclassifications : TStringList; 
+        i : Integer; 
+    begin 
+        indexclassifications:= TStringList.Create; 
+        indexclassifications.Add('unix=good'); 
+        indexclassifications[0]:= 'windows=bad'; 
+      
+        for i := 0 to indexclassifications.Count-1 do begin 
+          ShowMessage(indexclassifications[i]); 
+          ShowMessage(indexclassifications.Names[i]); 
+      
+          ShowMessage(indexclassifications.ValueFromIndex[i]); 
+          ShowMessage(indexclassifications.Values[indexclassifications.Names[i]]); 
+        end; 
+      
+    indexclassifications.Free; 
+   end;
+   
+//5. Playing with a ListBox
+
+Procedure ListBoxTest;
+var
+    listBox : TListBox; 
+    index   : Integer; 
+  begin 
+    //Adding items
+    ListBox.Items.Add('Hello');
+    
+      listBox := TListBox(self); 
+      index   := listBox.ItemIndex; 
+      ShowMessage(listBox.Items[index]); 
+    
+    //Adding an item at a specific location in the list
+    ListBox.Items.Insert(3,'Hello'); 
+  end; 
+
+//6. Selecting a directory
+{Here’s how to display a dialog box so the user can choose a directory: }
+
+  procedure TForm1Button1ClickDir(Sender: TObject); 
+  var 
+      chosenDirectory : string; 
+      options : TSelectDirOpts; 
+      LabeledEdit1: TEdit;
+      
+    begin 
+      chosenDirectory := 'C:\'; 
+      if SelectDirectory(chosenDirectory, options, 0) then 
+        LabeledEdit1.Text :=chosenDirectory + '\'; 
+    end; 
+
+//7. Removing unwanted characters
+//Here’s how to strip unwanted characters from a string:
+
+    function CleanInput(input : String) : String; 
+    var 
+      output : string; 
+      index : Integer; 
+    begin 
+      output := StringReplace(input, #9, '',[rfReplaceAll, rfIgnoreCase]); 
+      output := StringReplace(output, #10, '',[rfReplaceAll, rfIgnoreCase]); 
+      output := StringReplace(output, #13, '',[rfReplaceAll, rfIgnoreCase]); 
+      output := StringReplace(output, '  ', '',[rfReplaceAll, rfIgnoreCase]); 
+      output := StringReplace(output, '&nbsp;', '',[rfReplaceAll, rfIgnoreCase]); 
+      output := StringReplace(output, '&nbsp', '',[rfReplaceAll, rfIgnoreCase]); 
+      output := StringReplace(output, '<br>', '',[rfReplaceAll, rfIgnoreCase]); 
+      Result := output; 
+    end; 
+
+//8. Associative array ("hash")
+
+{You can use Delphi’s TStringList object: }
+
+procedure Associative_Array;
+  var 
+    myhash : TStringList; 
+    Index : Integer; 
+    ListBox1 : TListBox;  
+    
+    begin 
+      myhash := TStringList.Create; 
+      myhash.Add('mykey=myvalue'); 
+      myhash.Add('mykey2=myvalue2'); 
+      
+      ShowMessage(myhash.Values['mykey']); 
+      
+      for Index := 0 to myhash.Count-1 do begin 
+        if assigned(listbox1) then
+        ListBox1.Items.Add(myhash.Names[Index]+ '=' +
+                                         myhash.ValueFromIndex[Index]) 
+        else
+          writeln(myhash.Names[Index]+ '=' +
+                                         myhash.ValueFromIndex[Index]); 
+
+      end;
+      myhash.Free;
+   end; 
+   
+//9. Indy Ping Example
+
+  procedure TForm1Timer1TimerPing(Sender: TObject); 
+    var IdIcmpClient1: TIdIcmpClient;
+         replystatustype: TReplyStatus;
+         ListBox1: TListBox;
+    begin 
+      IdIcmpClient1.Host:= 'www.cisco.com'; 
+      try 
+        IdIcmpClient1.Ping('aQuote', 0); 
+        replystatustype:= IdIcmpClient1.ReplyStatus;
+      except
+      //{case IdIcmpClient.ReplyStatus.ReplyStatusType of}
+        case replystatustype of 
+          rsEcho: 
+            begin 
+              ListBox1.Items.Append(format('response from host %s in %d millisec.', 
+              [replystatustype.FromIpAddress, 
+              replystatustype.MsRoundTripTime])); 
+            end; 
+          rsError: 
+            ListBox1.Items.Append('Unknown error.'); 
+          rsTimeOut: 
+            ListBox1.Items.Append('Timed out.'); 
+          rsErrorUnreachable: 
+            ListBox1.Items.Append(format('Host %s reports destination network unreachable.', 
+            [replystatustype.FromIpAddress])); 
+          rsErrorTTLExceeded: 
+            ListBox1.Items.Append(format('Hope %d %s: TTL expired.', 
+            [IdIcmpClient1.TTL, replystatustype.FromIpAddress])); 
+        end; // case 
+        //on E: EIdException do begin 
+          ListBox1.Items.Append('Error : ' + 'E.Message'); 
+        //end; 
+      end; //Except 
+    end;   
+    
+// 10. Here's how to download a bunch of files that have an increasing suffix:
+// http://www.fredshack.com/docs/indy.html
+// use the TDownloadUrl component (but data is saved into a file, not a variable)
+
+    //From Simple HTML page scraping with Delphi 
+  function Download_HTM(const sURL, sLocalFileName:string): boolean; 
+    begin 
+      Result:=True; 
+      with TDownLoadURL.Create(nil) do 
+      try 
+        URL:=sURL; 
+        Filename:=sLocalFileName; 
+        try 
+          ExecuteTarget(nil); 
+        except 
+          Result:=False 
+        end; 
+      finally 
+        Free; 
+      end; 
+    end;    
+    
+    
+ Const
+      //ADPNEWHOTURL='http://acme/picture_';   
+      ADPNEWHOTURL= 'https://picsum.photos/seed/';
+    // UrlPictureLookupInfo = 'https://picsum.photos/seed/%d/%d/%d';
+    
+ procedure TForm1Button1ClickACMEDownload(Sender: TObject); 
+   var 
+      sPathToF : String; 
+      iIndex : Integer; 
+      sPictureFileName, sPathToPictures : String; 
+    begin 
+      sPathToPictures:= ExtractFilePath(Application.ExeName) + 'pictures'; 
+      
+      if not DirectoryExists(sPathToPictures) then 
+        CreateDir(sPathToPictures); 
+      SetCurrentDir(sPathToPictures); 
+      
+      For iIndex := 1 to 25 do begin 
+        sPictureFileName:= 'picture_' + Format('%.4d', [iIndex]) + '.jpg'; 
+        writeln( 'Source = ' + ADPNEWHOTURL + IntToStr(iIndex) + 
+                          ' Target = ' + sPictureFileName); 
+        if Not Download_HTM(ADPNEWHOTURL+ IntToStr(iIndex)+'/200/200',sPictureFileName) then begin 
+          ShowMessage('Error in HTML file download ' + IntToStr(iIndex)); 
+          Exit; 
+        end; 
+        Application.ProcessMessages; 
+      end; 
+      
+    end; 
+    
+   // 11. Usage of it is really simple! Just add ‘hashes’ (filename of .pas file) to uses clause and then somewhere in code write:
+
+   procedure stringHashtest; 
+    var hash : TStringHash2; 
+    //Here’s unit with those TIntegerHash2 and TStringHash2, TObjectHash2 described @ 
+        basehash: THash2;
+    begin 
+      hash:= TStringHash2.Create; 
+      try 
+        hash['one']:= 'viens value'; 
+        hash['two']:= 'divi value';                          
+        //ShowMessage(hash['one']); 
+        //ShowMessage(hash['two']);
+        if hash.exists('one') then 
+          writeln(hash['one']); 
+        writeln(hash['two']); 
+        hash.Rename('one', 'onerename'); 
+        writeln(hash['onerename']); 
+      finally 
+        hash.Free; 
+      end; 
+    end;
+    
+    procedure integerHashtest;
+      var hash : TIntegerHash2;
+      //Here’s unit with those TIntegerHash2 and TStringHash2, TObjectHash2 described @
+      basehash: THash2;
+      begin
+      hash:= TIntegerHash2.Create;
+      try
+         hash['one']:= 1;
+         hash['two']:= 2;
+         //ShowMessage(hash['one']);
+         //ShowMessage(hash['two']);
+         if hash.exists('one') then
+         write(itoa(hash['one']));
+         write(itoa(hash['two']));
+         hash.Rename('one', 'onerename');
+         write(itoa(hash['onerename']));
+         writeln('')
+      finally
+        hash.Free;
+      end;
+end;
+
+ procedure integerHashtest2;
+   //Here’s unit with those TIntegerHash2 described @
+    begin
+      with TIntegerHash2.Create do begin
+      try
+        items['one']:= 1;
+        items['two']:= 2;
+        //ShowMessage(hash['one']);
+        if exists('one') then
+          write(itoa(items['one']));
+        write(itoa(items['two']));
+        Rename('one', 'onerename');
+        write(itoa(items['onerename']));
+      finally
+         Free;
+      end
+    end;
+ end;
+   
+    
+  { Purpose:             A collection of hash components for Delphi. These are 
+                         similar to arrays, but the index is a string. A hashing 
+                         algorithm is used to provide extremely fast searching. }  
+    
+  //12. Datasets offer navigation and search methods like First, Last, Next, Prior, MoveBy, Bof, Eof, Bookmark, Locate, Lookup, Filter.
+
+ //Here’s how to have a dataset run an SQL query programmatically:
+ procedure SQLQuerySet;
+ var  MyQuery, SQLQuery1, CustomerQuery: TQuery;
+      CustTable: TTable;
+     Edit1: TEdit;
+ begin
+
+    //The dataset must be closed when you specify or modify the SQL property. 
+    MyQuery.Close; 
+    MyQuery.SQL.Clear; 
+    MyQuery.SQL.Add('SELECT CustNo, OrderNO, SaleDate'); 
+    MyQuery.SQL.Add(' FROM Orders'); 
+    MyQuery.SQL.Add('ORDER BY SaleDate'); 
+    MyQuery.Open; 
+
+   //Since MyQuery is a TStrings, any item can be access and changed:
+    MyQuery.SQL[2] := 'ORDER BY OrderNo'; 
+
+ //You can also load an SQL query from file:
+    MyQuery.SQL.LoadFromFile('custquery.sql'); 
+
+ //Here’s how to build an SQL query by providing parameters at runtime:
+    SQLQuery1.ParamByName('Capital').AsString := Edit1.Text; 
+    //INSERT INTO Country (Capital) VALUES (:Capital) 
+
+ //Queries that don’t return a result set should be run by calling ExecSQL:
+    CustomerQuery.ExecSQL; 
+
+ //If you are executing query multiple times, it is a good idea to set the Prepared  property to True.
+  //Here’s to modify a record in a dataset:
+    with CustTable do begin 
+      Edit; 
+      FieldValues['CustNo'] := 1234; 
+      Post; 
+    end;  
+
+  end; 
+  
+//13. If you want both to handle an exception and perform some tasks even when things went ok, you’ll have to run the following structure with a second try embedded :
+
+    procedure AllocateSomeResources; 
+    begin
+    try
+        try 
+            //stuff that could trigger an exception 
+        finally 
+            //perform general actions, such as FreeAndNIL() 
+        end; 
+    except 
+        //handle exception 
+        //on E: Exception do begin 
+            MessageDlg('E.Message', mtWarning, [mbOK], 0); 
+        end; 
+    end;  
+    
+    //(Delphi and maXbox provides also a single try/except/finally structure)
+    procedure AllocateSomeResources2; 
+    begin
+        try 
+            //stuff that could trigger an exception 
+        finally 
+            //perform general actions, such as FreeAndNIL() 
+        except 
+        //handle exception 
+        //on E: Exception do begin 
+        if ExceptionType = erInvalidOpcode then
+         writeln(ExceptionToString(ExceptionType, ExceptionParam));
+            MessageDlg('E.Message', mtWarning, [mbOK], 0); 
+        end; 
+    end;
+    
+  {TIFException', '(ErNoError, erCannotImport, erInvalidType, ErInternalError, '+
+   'erInvalidHeader, erInvalidOpcode, erInvalidOpcodeParameter, erNoMainProc, erOutOfGlobalVarsRange, '+
+   'erOutOfProcRange, ErOutOfRange, erOutOfStackRange, ErTypeMismatch, erUnexpectedEof, '+
+   'erVersionError, ErDivideByZero, ErMathError,erCouldNotCallProc, erOutofRecordRange, '+
+   'erOutOfMemory,erException,erNullPointerException,erNullVariantErrorerInterfaceNotSupportederError);}  
+    
+  // If you only want to catch an exception but actually have it handled elsewhere (eg. centralizing it), use the Raise() function:
+  
+    function Raiseit: TStringlist;
+    begin
+      Result:= TStringList.Create; 
+      try 
+        //Result.TrySomething; 
+        Result.text; 
+      except 
+        Result.Free; 
+        raise; //Let error bubble up and be handled elsewhere up there 
+      end; 
+    end;  
+    
+ //14. Borland’s TValueListEditor
+
+//This is a two-column grid that you can use to display/change "key=value" tuples:
+    procedure columngridtest;
+    var ASQLite3Query1: TQuery;
+        ValueListEditor1: TValueListEditor;
+        i: integer;
+        FieldName, keyval: string;
+        //ad: TKStringGrid TAdvColumnGrid
+    begin
+      for i := 0 to ASQLite3Query1.FieldCount -1 do begin 
+        FieldName := ASQLite3Query1.Fields[i].FieldName; 
+        KeyVal := Format('%s=%s',[FieldName,ASQLite3Query1.FieldByName(FieldName).AsString]); 
+        ValueListEditor1.Strings.Add(KeyVal); 
+      end;
+    end; 
+    
+// 15. Creating objects at runtime
+
+ //If using "nil" as the owner, you must call the Free() method or you’ll get a memory leak.
+//You don’t have to use a variable to hold the pointer to the instance (source): 
+
+  procedure Objects_at_Runtime;
+  var FTimer : TTimer; 
+  begin
+    with TTimer.Create(Self) do begin
+       Interval := 1000;
+       Enabled := False;
+       //OnTimer := @MyTimerEventHandler;
+    end; 
+    //Do NOT call Free with try/finally! 
+    //or
+    with TTable.Create(nil) do
+    try
+       DataBaseName := 'MyAlias';
+       TableName := 'MyTable';
+       Open;
+       Edit;
+       FieldByName('Busy').AsBoolean := True;
+       Post;
+    finally
+       Free; //If using variables, you can call FreeAndNil() instead
+    end; 
+
+   //… but it’s recommended to use a variable, so you can refer to it later:
+
+    FTimer := TTimer.Create(Self) ;
+      
+    if not Assigned(FTimer) then begin 
+        ShowMessage('Not assigned'); 
+        Exit; 
+    end; 
+      
+    with FTimer do begin
+       Interval := 1000;
+       Enabled := False;
+       //OnTimer := @MyInternalTimerEventHandler;
+    end; 
+    //FreeAndNil(FTimer);
+    Ftimer.Free;
+    Ftimer:= Nil; 
+
+//Alternatively:
+
+    FTimer:= TTimer.Create(Self) ;
+    try 
+        with FTimer do begin
+           Interval := 1000;
+           Enabled := False;
+           //OnTimer := @MyInternalTimerEventHandler;
+        end; 
+    finally 
+        //Since Delphi 5 doesn’t provide try/expect/finally, here’s a way to check for errors 
+        if not Assigned(FTimer) then begin 
+            ShowMessage('Failed creating Timer’'); 
+        end else begin; 
+            //FreeAndNil(FTimer); 
+            Ftimer.Free;
+            Ftimer:= Nil;
+        end; 
+    end;    
+   end;
+   
+    {An array created in a routine (procedure or function), even if its size is statically defined, is considered an "open array", and thus, starts at 0:, in maXbox a type mismatch}
+    
+    //procedure Check4(var ReturnArray: Array of String); 
+    procedure Check4(var ReturnArray: TStringArray); 
+  
+    var 
+      Index : Integer; 
+    begin 
+      // Says 1! 
+      ShowMessage(IntToStr(High(ReturnArray))); 
+    end; 
+      
+    procedure check2(Sender: TObject); 
+    var 
+      ReturnArray : Array[1..2] of String; 
+    begin 
+      //Says 2, as expected 
+      ShowMessage(IntToStr(High(ReturnArray))); 
+      //Check4(ReturnArray); 
+    end;  
+           
+
+  // 16. King Regex TPerlRegex
+ {To install this RegEx engine for Delphi, open, compile and install PerlRegExD7.dpk, which creates PerlRegExD7.bpl, add its directory to the Library path, and add a TPerlRegEx control to the project’s form.
+
+  Here’s how to extract a single bit in a text:  }
+  
+  {TPerlRegEx (free wrapper around PCRE, with additional support for replace and split actions; "You can choose to link the OBJ files directly into your application, or to use the DLL"; Under active development; Made by author of www.regular-expressions.info)}
+  
+  
+  //https://stackoverflow.com/questions/15941001/how-to-create-a-regex-expression-on-delphi-to-remove-brackets-and-quotes
+
+  function TPerlRegexfirst: string;
+  var RegEx: TPerlRegEx;
+      SubjectString: string; 
+   begin
+     RegEx := TPerlRegEx.Create;
+     subjectstring:= '["some regex text"]'     //result: some text
+     try
+       Regex.RegEx := '\["(.+?)"\]';
+       Regex.Subject := SubjectString;  // ["any text between brackets and quotes"]
+       Regex.Replacement := '$1';
+       Regex.ReplaceAll;
+       Result := Regex.Subject;
+     finally
+       RegEx.Free;
+     end;
+   end;
+   
+   //http://www.regexguru.com/2010/09/new-tperlregex-compatible-with-delphi-xe/
+  
+  procedure TPerlRegexTest;
+  var  PerlRegEx1 : TPerlRegEx; 
+   begin
+    PerlRegEx1.RegEx := '<title>(.+?)</title>'; 
+    PerlRegEx1.Options := [preCaseLess]; 
+    PerlRegEx1.Subject := 'test <title>bla</title> test'; 
+
+    If PerlRegEx1.Match then begin 
+        ShowMessage(PerlRegEx1.Groups[1]) 
+    end else begin 
+        ShowMessage('Not found') 
+    end; 
+   end;
+   
+   //Next, here’s how to look for a pattern, and extract bits if found:
+  
+   procedure secondRegexTest;
+    var 
+        RegEx : TPerlRegEx; 
+        Stuff : TStringList; 
+        i: byte;
+    begin 
+        RegEx := TPerlRegEx.Create; 
+        Stuff := TStringList.Create; 
+        Try 
+            RegEx.RegEx := 'my pattern'; 
+            RegEx.Options := [preCaseLess]; 
+            RegEx.Subject := 'this is the text to search for my pattern'; 
+             
+            If RegEx.Match then begin 
+                repeat 
+                    for i := 1 to regex.GroupCount do begin 
+                        Stuff.Add(regex.Groups[i]); 
+                        Application.ProcessMessages; 
+                    end; 
+                until not RegEx.MatchAgain; 
+      
+                For I := 0 to Stuff.Count - 1 do begin 
+                    Memo2.Lines.Add(Stuff[I]); 
+                end; 
+      
+            end else begin 
+                ShowMessage('Not found'); 
+            end; 
+        Finally 
+            RegEx.Free; 
+            Stuff.Free; 
+        End; 
+    End; 
+
+//Here’s how to replace a pattern with something else:
+
+   procedure thirdRegexTest;
+    var RegEx : TPerlRegEx; 
+    begin    
+      RegEx := TPerlRegEx.Create; 
+       try 
+           RegEx.Subject := LoadFile('myfile.txt^'); 
+           RegEx.RegEx := 'HERE'; 
+           RegEx.Replacement := '‘THERE’'; 
+           If RegEx.Match then begin 
+               RegEx.Replace; 
+               ShowMessage(RegEx.Subject); 
+           end;
+       finally 
+           RegEx.Free;
+       end;
+    end;
+    
+  //TRegExpr
+
+{Although TRegExp is much slower than TPerlRegEx on more complex operations, it’s OK for light searches. Here’s how to extract tokens from a text file using TRegExpr: }
+
+  
+  procedure Tregexprtest;
+  var mystuff: string;
+  begin
+    MyStuff := '<body>My stuff</body>'; 
+      
+      with TRegExpr.Create do 
+        try 
+            //Make it case-insensitive 
+            ModifierI := True; 
+            Expression := '<body.*>(.*?)</body>'; 
+            if Exec (MyStuff) then 
+                ShowMessage(Match[1]); 
+      
+        finally 
+          Free; 
+      end; 
+   end;      
+   
+   //Here’s how to extract several tokens, and put them in an array:
+   
+   procedure Tregexprtest2;
+    var 
+        Tokens : TStringList; 
+        MyRegex : TRegExpr; 
+        I: integer;
+      begin 
+        MyRegex := TRegExpr.Create; 
+        Tokens := TStringList.Create; 
+         try 
+            MyRegex.ModifierI := True; 
+            MyRegex.Expression := 'some stuf (\d+) some other stuff';
+            //if MyRegex.Exec (Response) then begin  
+            if MyRegex.Exec (MyRegex.Expression) then begin 
+                REPEAT 
+                    Tokens.Add (MyRegex.Match[1]) 
+                UNTIL not MyRegex.ExecNext; 
+      
+                Memo2.Clear; 
+                for I := 0 to Tokens.Count-1 do begin 
+                    Memo2.Lines.Add(Tokens[I]); 
+                end; 
+      
+            end else begin 
+                Memo2.Text := 'Pattern Not Found'; 
+            end; 
+         finally 
+            MyRegex.Free; 
+            Tokens.Free; 
+         end; 
+      end; 
+   
+   procedure WriteToFileStream;
+     var
+     FileStream1: TFileStream;
+     Int1, Int2, Int3, Int4: Integer;
+   begin
+      Int1 := 100;
+      Int2 := 200;
+      Int3 := 1918986307;
+      Int4 := 1702521171;
+      FileStream1 := TFileStream.Create(exepath+'examples\streamTest2.txt', 
+                       fmCreate or fmOpenWrite or fmShareDenyWrite);
+      try
+        FileStream1.Writebuffer(itoa(Int1), SizeOf(Int1));
+        FileStream1.Writebuffer(itoa(Int2), SizeOf(Int2));
+        FileStream1.Writebuffer(itoa(Int3), SizeOf(Int3)+8);
+        FileStream1.Writebuffer(itoa(Int4), SizeOf(Int4)+8);
+      finally
+        FileStream1.Free;;
+      end;
+   end; 
+     
+ //http://www.angelfire.com/hi5/delphizeus/  
+ 
+ 
+ function Int2Str(Number : Int64) : String;
+   var Minus : Boolean;
+   begin
+   {SysUtils is not in the Uses Clause so I can not use IntToStr( )
+   and have to define an Int2Str( ) function here}
+      Result := '';
+      if Number = 0 then
+         Result := '0';
+      Minus := Number < 0;
+      if Minus then
+         Number := -Number;
+      while Number > 0 do begin
+         Result := Chr((Number mod 10) + ord('0')) + Result;
+         Number := Number div 10;
+      end;
+      if Minus then
+         Result := '-' + Result;
+   end;
+   
+   function Str2Int(const Value : String) : Int64;
+   var M, I : Integer;
+   begin
+      Result := 0;
+      if Value = '' then Exit;
+      M := 1;
+      I := 1;
+      if Value[ 1 ] = '-' then
+      begin
+         M := -1;
+         Inc( I );
+      end;
+      for I := I to Length( Value ) do begin
+         if (Value[ I ] < '0') or (Value[ I ] > '9') then
+            break;
+         Result := Result * 10 + atoi( Value[ I ] ) - atoi('0' );
+      end;
+      if M < 0 then
+         Result := -Result;
+   end;
+   
+   procedure PlayBeep(ActionType: TMsgDlgType);
+   var amb: dWord;
+   begin
+     case ActionType of
+       mtInformation: amb := MB_ICONASTERISK; //SystemAsterisk
+       mtWarning: amb := MB_ICONEXCLAMATION; //SystemExclamation
+       mtError: amb := MB_ICONHAND; //SystemHand
+       mtConfirmation: amb := MB_ICONQUESTION; //SystemQuestion
+       mtCustom: amb := MB_OK; //SystemDefault
+     else
+       amb:= $0FFFFFFFF; //Standard beep using the computer speaker
+     end;
+     MessageBeep(amb);
+end;
+
+procedure PrintOut3;
+var at: TTEEGradient;
+begin
+  Printer.BeginDoc;
+  //PrintText(#27'&l12D' + 'Hello, World!');
+  Printer.EndDoc;
+  //trydatetimetostring
+end;
+
+////Some guesswork here ;-)
+
+type TUArrDW2 = array of DWord;
+
+function SwapEndian(const Value: LongWord): LongWord;
+begin
+  Result := ((Value and $000000FF) shl 24)  or
+            ((Value and $0000FF00) shl 8)   or
+            ((Value and $00FF0000) shr 8)   or
+            ((Value and $FF000000) shr 24);
+end;
+
+procedure UASwapEndian(var UC: TUArrDW2);
+var i: integer;
+begin
+  for i := 0 to High(UC) do UC[i] := SwapEndian(DWord(UC[i]));
+end;
+
+procedure TForm1ClientDataSet1BeforeGetRecords(Sender: TObject; var OwnerData: OleVariant);
+var
+  LastValue: OleVariant;
+  CDSClone: TClientDataSet;
+  ClientDataSet1: TClientDataSet;
+  form1: TForm;
+begin
+  if ClientDataSet1.Active then
+  begin
+    CDSClone := TClientDataSet.Create(Form1);
+    try
+      //CDSClone.CloneCursor(ClientDataSet1, True);
+      { Turn off FetchOnDemand so that the clone only fetches
+        the last LOCAL record. }
+      CDSClone.FetchOnDemand := False;
+      CDSClone.Last;
+      LastValue := CDSClone.Fields[0].AsString;
+      CDSClone.Close;
+    finally
+      CDSClone.Free;
+    end;
+  end else
+    LastValue := NULL;
+  OwnerData := VarArrayOf([Memo2.Lines.Text, LastValue]);
+end;
+
+const
+  RFC1123Pattern = 'ddd, dd mmm yyyy HH'':''nn'':''ss ''GMT''';
+
+function RFC1123DateGMT(const DT: TDateTime): string;
+begin
+  Result := {SysUtils.}FormatDateTime(RFC1123Pattern, DT);
+end;
+
+function TreeNodeChildCount(ParentNode: {ComCtrls.}TTreeNode): Integer;
+var
+  ChildNode: {ComCtrls.}TTreeNode;  // references each child node
+begin
+  Result := 0;
+  if ParentNode = nil then
+    Exit;
+  ChildNode := ParentNode.GetFirstChild;
+  while (ChildNode <> nil) do begin
+    Inc(Result);
+    ChildNode := ChildNode.GetNextSibling;
+  end;
+end;
+
+function SliceByteArray2(const B: array of Byte; Start, Len: Integer):
+  TBytes;
+begin
+  if Start < 0 then
+    Start := 0;
+  if Len < 0 then
+    Len := 0
+  else if Start >= Length(B) then
+    Len := 0
+  else if Start + Len > Length(B) then
+    Len := Length(B) - Start;
+  SetLength(Result, Len);
+  if Len > 0 then
+    //Move(B[Start], Result[0], Len);
+end;
+
+procedure SaveHandleToBitmap(OutputFileName: string; hWnd: HWND);
+{$IFDEF FPC}
+var
+  MyBitmap: TBitmap;
+  MyDC: HDC;
+begin
+  MyDC := GetDC(hWnd);
+  MyBitmap := TBitmap.Create;
+  try
+    MyBitmap.LoadFromDevice(MyDC);
+    MyBitmap.SaveToFile(OutputFileName);
+  finally
+    ReleaseDC(hWnd, MyDC);
+    FreeAndNil(MyBitmap);
+  end;
+end;
+{$ELSE}
+var
+  MyBitmap: {Graphics.}TBitmap;
+  MyDC    : HDC;
+  pRect   : TRect;
+  w,h     : integer;
+begin
+  MyDC := GetDC(hWnd);
+  MyBitmap := {Graphics.}TBitmap.Create;
+  try
+    GetWindowRect(HWND,pRect);
+    w  := pRect.Right - pRect.Left;
+    h  := pRect.Bottom - pRect.Top;
+
+    MyBitmap.Width := w;
+    MyBitmap.Height:= h;
+
+    BitBlt(MyBitmap.Canvas.Handle,
+            0,
+            0,
+            MyBitmap.Width,
+            MyBitmap.Height,
+            MyDC,
+            0,
+            0,
+            SRCCOPY) ;
+    MyBitmap.SaveToFile(OutputFileName);
+  finally
+    ReleaseDC(hWnd, MyDC);
+    //FreeAndNil(MyBitmap);
+    MyBitmap.Free;
+    MyBitmap:= Nil;
+  end;
+end;
+{$ENDIF}
+
+procedure SIRegister_neuralbit;
+begin
+  //CL.AddTypeS('TArrOf2BytesPtr', '^TArrOf2Bytes // will not work');
+  //CL.AddTypeS('TArrOf3BytesPtr', '^TArrOf3Bytes // will not work');
+  //CL.AddTypeS('TArrOf4BytesPtr', '^TArrOf4Bytes // will not work');
+  //CL.AddTypeS('TArrBytePtr', '^TLongByteArray // will not work');
+  //POT( numero, elevado : extended) : extended');
+  //LongintBitTest( Data : longint; P : longint) : boolean');
+  //LongintBitFlip( Data : longint; P : longint) : longint');
+  //BAClear( var VARS : array of byte)');
+  //BAMake1( var VARS : array of byte)');
+  //BARead( var A : array of byte; P : longint) : byte');
+  //BAFlip( var A : array of byte; P : longint)');
+  //&&BAWrite( var A : array of byte; P : longint; Data : byte)');
+  //BATest( var A : array of byte; P : longint) : boolean');
+  //BASum( var x, y : array of byte)');    
+  //BASub( var x, y : array of byte)');
+  //BAIncPos( var x : array of byte; POS : longint)');
+  //BADecPos( var x : array of byte; POS : longint)');
+  //BAInc( var x : array of byte)');
+  //BADec( var x : array of byte)');
+  //BAToString( VARS : array of byte) : string');
+  //BAToFloat( var VARS : array of byte) : extended');
+  //PFloatToBA( var VARS : array of byte; Valor : extended)');
+  //BANot( var VARS : array of byte)');
+  //BAAnd( var r, x, y : array of byte)');
+  //BAOr( var r, x, y : array of byte)');
+  //BAXOr( var r, x, y : array of byte)');
+  //BAGrater( var x, y : array of byte) : boolean');
+  //BALower( var x, y : array of byte) : boolean');
+  //BAEqual( var x, y : array of byte) : boolean');
+  //BAPMul( var r, x, y : array of byte)');
+  //nnRAnd( A, B : extended) : extended');
+  //nnROr( A, B : extended) : extended');
+  //nnRNot( A : extended) : extended');
+  //nnRXor( A, B : extended) : extended');
+  //REqual( A, B : extended) : extended');
+  //RSum( x, y, z : extended; var R, C : extended)');
+  //RegSum( var x, y : array of extended)');
+  //RegEqual( var x, y : array of extended) : extended');
+  //RegOrdEqual( var x, y : array of extended) : extended');
+  //RegToString( var VARS : array of extended) : string');
+  //ROrer( var VARS : array of extended) : extended');
+  //RAnder( var VARS : array of extended) : extended');
+  //RCNot( X : extended; var VARS : array of extended) : extended');
+  //ROrMaxTerm( var VARS : array of extended; NumMaxTerm : longint) : extended');
+  //ROrMaxTermStr( NumVars : longint; NumMaxTerm : longint) : string');
+  //RSatFunc( var VARS : array of extended; NumFunc : longint) : extended');
+  //RSatFuncStr( NumVars : longint; NumFunc : longint) : string');
+  //RRegen( var VARS : array of extended)');
+  //RDegen( var VARS : array of extended)');
+  //RDegenP( var VARS : array of extended; P : extended)');
+  //nnClear( var VARS : array of extended)');
+  //BARAnd( var R, A, B : array of byte)');
+  //BAROr( var R, AUX, A, B : array of byte)');
+  //BARNot( var R, A : array of byte)');
+end;
+
+procedure SIRegister_neuralab;
+begin
+ // SIRegister_TABHash(CL);
+  //ABKey( S : array of byte; Divisor : longint) : longint');
+  //ABCmp( var X, Y : array of byte) : boolean');
+  //ABGetNext1( var AB : array of byte; ST : word) : word');
+  //ABCountDif( var X, Y : array of byte) : longint');
+  //ABCountDifZero( var X : array of byte) : longint');
+  //ABAnd( var A, B : array of byte)');
+  //ABGetEqual( var Equal, X, Y : array of byte) : longint');
+  //ABShiftLogicalLeft( var X : array of byte)');
+  //ABShiftLogicalRight( var X : array of byte)');
+  //ABGetDif( var Dif, X, Y : array of byte) : longint');
+  //ABToString( var AB : array of byte) : string');
+  //ABToStringR( var AB : array of byte) : string');
+  //ABClear( var AB : array of byte)');
+  //ABFull( var AB : array of byte)');
+  //ABBitOnPos( var AB : array of byte; POS : longint)');
+  //ABBitOnPosAtPos( var AB : array of byte; X, Start, Len : longint)');
+  //ABReadBitOnPosAtPos( var AB : array of single; Start, Len : longint) : longint');
+  //ABCopy( var A, B : array of byte)');
+  //ABTriPascal( var A, B : array of byte)');
+  //ABSet( var A : array of byte; B : array of byte)');
+end;
+
+type
+  { Note the creation of two arrays }  
+    TByteArr = array of byte;
+    TStringArr = array of String;
+ 
+
+
+function ByteToString(var Value: TBytes): String;
+var I: integer;
+    S : String;
+    Letra: char;
+begin
+    S := '';
+    for I := Length(Value)-1 Downto 0 do begin
+        letra := Chr(Value[I] + 48);
+        S := letra + S;
+    end;
+    Result := S;
+end;
+
+procedure TForm2btOpenClickMedia(Sender: TObject);
+var
+  OpenMediaDialog : TOpenDialog;
+  MediaPlayer1: TMediaPlayer;
+begin
+  OpenMediaDialog := TOpenDialog.Create(Self);
+  OpenMediaDialog.Filter := 'All Video Files (*.avi)|*.avi';
+  // Browse for .avi files on your computer
+  if OpenMediaDialog.Execute() then begin
+    { Assign a file to the media player. }
+    MediaPlayer1.FileName := OpenMediaDialog.FileName;
+
+    { Check if the file exists and is not a directory. }
+    if (FileExists(OpenMediaDialog.FileName)) and
+       (not DirectoryExists(OpenMediaDialog.FileName)) then begin
+      { Open the files. }
+      MediaPlayer1.Wait := true;
+      MediaPlayer1.Open;
+      MediaPlayer1.Play;
+
+      { Override automatic button controlling. }
+      MediaPlayer1.EnabledButtons :=
+             [{TMPBtnType.}btPause, {TMPBtnType.}btStop, btPlay];
+
+      { Enable the Stop button. }
+      //btStop.Enabled := true;
+      //btOpen.Enabled := false;
+    end;
+  end;
+   OpenMediaDialog.Free;
+end;
+
+procedure FGPlayASound_(const AResName: string);
+ var
+   HResource: TResourceHandle;
+   HResData: THandle;
+   PWav: ___Pointer;
+ begin
+  HResource := FindResource(HInstance, PChar(AResName), 'WAV');
+  if HResource <> 0 then begin
+    HResData:=LoadResource(HInstance, HResource);
+    if HResData <> 0 then begin
+      PWav:=LockResource(HResData);
+      if Assigned(PWav) then begin
+        // uses MMSystem
+        sndPlaySound('0', SND_NODEFAULT); // nil = stop currently playing
+        sndPlaySound(PWav, SND_ASYNC or SND_MEMORY);
+      end;
+//      UnlockResource(HResData); // unnecessary per MSDN
+//      FreeResource(HResData);   // unnecessary per MSDN
+    end;
+  end
+  else
+    RaiseLastOSError;
+end;
+
+function GetCokkiesDirectory: string;
+var
+  reg : TRegistry;
+begin
+  reg := TRegistry.Create1(KEY_READ);
+  try
+    reg.RootKey := HKEY_LOCAL_MACHINE;
+    reg.Access := KEY_READ;
+    reg.OpenKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Cache\Special Paths\Cookies',
+                            false);
+    Result := reg.ReadString('Directory');
+  finally
+    reg.Free;
+  end;
+end;
+
+function gcdE(a, b: Integer): Integer;
+var
+  rest: Integer;
+begin
+  //ggT Berechnung nach dem Algorithmus von Euklid
+  //Konvergiert sehr schnell!
+
+  //gcd using Euklid algorithm
+  //converge very fast
+
+  repeat
+    rest := a mod b;
+    a    := b;
+    b    := rest;
+  until (rest = 0);
+
+  Result := absint(a);
+  //ggT is immer positiv
+  //gcd is always positive
+end;
+
+function LastDayOfCurrentMonth: TDate;
+var
+  y, m, d: Word;
+begin
+  DecodeDate(now, y, m, d);
+  m := m + 1;
+  if m = 12 then begin
+    y := y + 1;
+    m := 1;
+  end;
+  //Result := EncodeDate(y, m, 1) - 1;
+end;
+
+procedure PageControl1Change(Sender: TObject);
+begin
+  //if pagecontrol1.activepage=tabsheet3 then setup;
+  writeln('pagecontrol change as exit call')
+end;
+
+function StrHash(const st:string):cardinal; 
+ var
+  i:integer;
+ begin
+  result:=0;
+  for i:=1 to length(st) do
+   result:=result*$20844 xor ord(st[i]);
+ end;
+ 
+ procedure complexDemo(input, output, stderr: string);
+//uses
+//	uComplex;
+var
+	x, y: complex;
+begin
+	// specifying real and imaginary part
+	//x := -5 + 2 * i;
+	
+	// specifying magnitude and phase angle
+	// y := sqrt(2) * (cos(pi/4) + i * sin(pi/4))
+	//y.re :=  1;
+	//y.im :=  1;
+	
+	//x := x + y;
+	// there is no toString functionality:
+	//writeLn('x = ', x.re, ' + ', x.im, 'i');
+end;
+
+function Int32toBytes2(const Cint: Integer): TBytes;
+begin
+  result[0]:= Cint and $FF;
+  result[1]:= (Cint shr 8) and $FF;
+  result[2]:= (Cint shr 16) and $FF;
+end;
+
+procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
+WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+// your code here 
+// WheelDelta returns you - or + values (in my computer -120 and + 120 ; 
+// It depends on control panel mouse wheel settings)
+
+//   If it is a font make the font size bigger or 
+// if it is a image 
+ // strech := true;
+//  increase width and height of the Timage
+//and put them inside a scrollbox
+  writeln(itoa(wheeldelta))
+// 
+end;
+
+procedure XORCharSet2(var DestSet: CharSet; const SourceSet: CharSet);       
+var Ch: Char;
+begin
+ { for Ch := ByteChar(0) to ByteChar(255) do
+    if Ch in DestSet then
+      begin
+        if Ch in SourceSet then
+          Exclude(DestSet, Ch);
+      end else
+      if Ch in SourceSet then
+        Include(DestSet, Ch);   }
+        //strtocharset(charsettostr(C)) 
+   for it:= 0 to 255-1 do begin
+     ch:= chr(it)
+     //if chr(it) in strtocharset(charsettostr(destset))  then
+      if ch in destset then begin
+        if ch in SourceSet then
+          //Exclude(DestSet, Ch);
+          DestSet:= Destset + strtochars(ch);
+      end else
+      if Ch in SourceSet then
+        //Include(DestSet, Ch);   } 
+        DestSet:= destset - strtochars(Ch) ;  
+   end;        
+end;
+
+procedure XORCharSet3(var DestSet: CharSet; const SourceSet: CharSet);       
+var Ch: Char;
+   chs, chs2: tsyscharset;
+begin
+   for it:= 0 to 255-1 do begin
+     ch:= chr(it)
+     //if chr(it) in strtocharset(charsettostr(destset))  then
+      if ch in destset then begin
+        if ch in SourceSet then
+          include(destset, ch);
+          //DestSet:= Destset + strtochars(ch)
+          //union(destset, sourceset)
+      end else                                         
+      if Ch in SourceSet then
+        exclude(destset, Ch);    
+      //DestSet:= destset - strtochars(Ch) ;        
+   end;        
+end;
+
+function abt(S: string): Integer;
+var
+  I, L: Integer;
+begin
+  Result := 0;
+  L := Length(S);
+  for I := 1 to L do
+    if S[I] = '1' then
+      Result := Result + Round(Power(2, L - I));
+end;
+
+function DateTimeToStrUs(dt: TDatetime): string;
+var
+    us: string;
+begin
+    //Spit out most of the result: '20160802 11:34:36.'
+    Result := FormatDateTime('yyyymmdd hh":"nn":"ss"."', dt);
+
+    //extract the number of microseconds    
+    dt := Frac(dt); //fractional part of day
+    dt := dt * 24*60*60; //number of seconds in that day
+    us := IntToStr(Round(Frac(dt)*1000000));
+
+    //Add the us integer to the end:
+    // '20160801 11:34:36.' + '00' + '123456'
+    Result := Result + StringOfChar('0', 6-Length(us)) + us;
+end;
+
+procedure Test_StringBuilder;
+var A : TStringBuilder;
+begin
+  A := TStringBuilder.Create('');
+  try
+    Assert(A.Length = 0,'');
+    A.Append('X');
+    Assert(A.Length = 1,'');
+    A.Append('ABC');
+    Assert(A.Length = 4,'');
+    Assert(A.AsString = 'XABC','');
+    A.AppendCRLF;
+    Assert(A.Length = 6,'');
+    A.AppendCh('D');
+    Assert(A.Length = 7,'');
+    A.AppendCh1('E', 3);
+    Assert(A.Length = 10,'');
+    Assert(A.AsString = 'XABC'#13#10'DEEE','');
+    A.Pack;
+    Assert(A.Length = 10,'');
+    A.Clear;
+    Assert(A.Length = 0,'');
+  finally
+    A.Free;
+  end;
+end;
+
+
+//var   aur: TUArrDW;
+
+   var asum: float;
+   aStream : {TABHash} TStream;
+   abcd: array of byte; //TBytearray; //array of byte;
+   abc: mTBytearray;
+   ab, bc, dd: TBytes;
+   var A, B: TBytes;
+   gh: byte;
+   BA: TByteArray; //TByteArr;
+   BAT: TBytes; //TByteArr;
+   affine: TAffineVector;  orbelem: TOrbitalElements ;
+   pubdic: Tdic;   publist: TStringlist;
+   test1: array of THashObject ;
+   getv: TVectorE;
+   complex: complexreal;
+   acomp: TFR;  ansi, ansi2: ansistring;      mycharset: tcharset;
+   obo2: TJsonObject2;
+   Json : TJson;
+   atc: TJclStringList; atci: IJclStringList; //soa: TSetOfAnsiChar;
+   var Protocol, Host, Path : String;   var DestSet: CharSet;
+   spl: TstringArray;  var lcount: Int64;
+   var OutPutList: TStringList;   agb: TBytes;   tp3: TPoint3DFloat; tp2s: TPoint3D2;
+   var myc2r, myc2i:  MFloatArray; //array of Mfloat; 
+   var RealOut, ImagOut: MFloat;
+   var
+  I : Integer;
+   sURL: String;
+  sWork: UTF8String;
+  C: Char;
+  bB: Byte;
+  wDecoded: WideString;
+  //I: Integer;
+
+Begin  //@main
+//<Executable statements>
+  for it:= 1 to 2 do 
+    Println(TEXTOUT);
+    maXcalcF('Sqrt(PI/e^2)') 
+    
+    //with TDownloadUrl.Create(Self) do 
+    //ReportMemoryLeaksOnShutdown
+    //SliceByteArray
+       
+    //enigma test
+    writeln(uppercase(AllTrimSpaces('this is ä    Strng : string')));
+    writeln(StripSpaces('this is    Strng : string'));
+     writeln(DelSpace('this is    Strng : string')); //}
+    
+   x:= 1; if condition then x:= 1 else x:= 0;
+    //x = 1 if condition else 0;
+    
+    //writeln(itoa(ClearBit(15,0)))
+      writeln(inttobin(ClearBit(15,1)))
+      writeln(inttobin(SetBit(255,7))+CRLF)
+      
+      PythonVersionProp.Regversion:= '3.7';
+      FFatalAbort:= false;
+      FFatalMsgDlg:= true;
+      //LoadLibrary Fails with error 193 on 64 bit Windows 
+      FDllName:= 'python37_32.dll'
+     // FDllName:= 'libssl32.dll'
+      
+      //FDllName:= 'dmath.dll'
+      
+      {writeln('TDynamicDllGetDllPath: '+TDynamicDllGetDllPath);
+      TDynamicDllOpenDll(FDllName);
+      writeln('Python DLL Handle: '+itoa(FDLLHandle)) }
+      
+      //FDLLHandle:= 
+        //LoadLibrary32('C:\Users\Max\AppData\Local\Programs\Python\Python37\dmath.dll')
+        //LoadLibrary32('C:\Users\Max\AppData\Local\Programs\Python\Python37\python37.dll')
+      
+      //writeln('Python DLL Handle: '+itoa(FDLLHandle))
+
+      {for ib:= 1 to 8 do
+         writeln(Cinttobin(SetBit(255,8-ib),8));
+      writeln('') 
+      for ib:= 1 to 8 do
+         writeln(Cinttobin(ClearBit(255,8-ib),8));  }
+         
+     // Associative_Array; 
+     //TForm1Button1ClickACMEDownload(self)  
+     stringhashtest;
+     writeln(TPerlRegexfirst)
+     //WriteToFileStream;
+     writeln(inttostr(Str2Int('234588944')) )
+     writeln(int2str(Str2Int('234588944')) )
+     
+     for it:= 0 to 30 do
+        asum:= asum + (1/pow(2,it));
+     writeln(floattostr(asum)) 
+     PrintF('%.16f',[asum])  
+     
+     with TLegendSymbol.create(nil) do begin
+       gradient
+       free
+      end; 
+      
+      writeln(botostr(isinternet)) 
+      //UTF8BOM
+      //UTF16BEBOM','string').SetString( #$FE#$FF);
+   //UTF16LEBOM','string').SetString( #$FF#$FE);
+    //UTF32BEBOM','string').SetString( #$00#$00#$FE#$FF);
+    //UTF32LEBOM','string').SetString( #$FF#$FE#$00#$00);   
+      
+    //test: for ib:= 1 to 16 do
+      //if pos('1',inttobin(ib div 4 and 1 shl ib)) > 1 then writeln(itoa(ib)) ;
+      
+      //writeln(botostr(HasUTF8BOM1(#$FF#$FE#$00#$00)))
+      writeln(botostr(HasUTF8BOM1(#$EF#$BB#$BF)))
+      
+      astream:= TMemoryStream.create;
+      //StringToStream( 'const Text : string;', astream);
+      StringToStream(#$EF#$BB#$BF, astream);
+      //writeln(botostr(HasUTF8BOM(astream)))
+      astream.Free;
+      
+       //pot nnclear
+       //SetDecimalSeparator
+       //GetWaveOutDevices
+       
+       //abcd[1]:= 2; abcd[2]:=3 ;
+       //abc[1]:= 2; abc[2]:=3 ;
+       setarraylength(ab,2);
+       //ab:= abc;
+       //Function MaxBArray( const B : array of Byte) : Byte
+       MaxBArray(ab);
+       //BATostring([3]);
+       //BAClear(ab);
+       //ABToString (abc[1]);
+       //BARNot(ab, bc)
+       
+       setarraylength(A,2);
+       A[0]:= 34; A[1]:= 134;
+       //gh:= PopByteArray(BAT);
+       SaveBytesToFile(A, exepath+'examples\FileName.txt');
+       B:= CloneByteArray(A);
+       setarraylength(BAT,3);                             
+       BAT[0] := 40
+       BAT[1] := 41
+       BAT[2] := 42
+       writeln(itoa(length(BAT)))
+       
+       writeln(ByteToString(BAT));
+       
+      //Good judgement is the result of experience … Experience is the result of bad judgement. 
+      //writeln(sha1('C:\Program Files (x86)\maxbox3\Import\maxbox4.zip')) 
+      
+    writeln(utf8toansi('Vous avez indiquÃ© votre adresse E-Mail pour acheter des pins pour le test mentionnÃ© en haut.'))
+    
+      writeln(utf8toansi(ALUTF8HTMLdecode('Kaufbest&auml;tigung')))
+      writeln(utf8toansi(ALUTF8HTMLdecode('hhhhhhhhhhhhh   ffffff  Hier sind Ihre PINs f&uuml;r Check: ')))
+    writeln((utf8tostring(('Besten Dank für Ihren Kauf. Hier sind Ihre PINs f&uuml;r Check: '))))
+      writeln('this: '+httpDecode('https://teams.microsoft.com/l/meetup-join/19%3ameeting_YTVlN2JmYWYtOGFjZS00ZDIyLTlhMzktMjNmYjcwYzczZjVk%40thread.v2/0?context=%7b%22Tid%22%3a%22d6a1cf8c-768e-4187-a738-b6e50c4deb4a%22%2c%22Oid%22%3a%22ac73bd7f-0a4e-4450-9e49-785a027100d3%22%7d'))
+    
+      
+      integerHashtest;
+      integerHashtest2;
+      
+      writeln('set'+GetCokkiesDirectory);
+      
+      writeln(datetostr(LastDayOfCurrentMonth ))
+      
+  with TTabcontrol.create(self) do begin
+  
+  // parent:= dcform;
+    //Align := alClient
+    TabOrder := 0
+    //BGColor backgroundcolor:= clnavy;
+    //TCustomTabControl(pagecontrol1).onchange;
+    //OnChange := @PageControl1Change    doesnt work!
+    //onchange
+    //end;  //*)
+    onchange:= @PageControl1Change;
+    ongetSiteInfo;
+    free;
+  end;  
+  
+  with TCheckListBox.create(self) do begin
+    itemheight:= 20;
+    columns
+    color
+    font
+    sorted
+    style:= lbStandard;
+    autocomplete
+    free
+    ondblclick
+    ondatafind
+    ondata
+  end;  
+  
+  with TListBox.create(self) do begin
+    itemheight:= 20;
+    columns
+    color
+    font
+    autocomplete
+    free
+    ondblclick
+    ondatafind
+    ondata
+  end;  
+  
+  writeln(floattostr(GMTDateTimeToJulianDay (now)))
+  affine:= ComputePlanetPosition(orbelem)
+  
+   strtochars('ths')
+   
+   with TSearchAnagrams.create(self) do begin
+     pubdic:= Tdic.create(true);
+     //pubdic.LoadDicFromFile('C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\maxbox36beta\Import\970_Small.dic');
+     publist:= TStringlist.create;
+     init('Hometown Run', 1 ,10 , true, false, false, pubdic)
+     FindAllWords('He', publist)
+     writeln('found: '+publist.text)
+     free ;
+     pubdic.free;
+     publist.Free;
+     end;
+     
+     with THashStr.create(12, 8) do begin
+       writeln(itoa(length(test)))
+       writeln(itoa(hash( 'hitbox1')))
+       writeln(itoa(hash( 'hitbox2')))
+       free;
+     end;  
+     
+     //FixedStrToFloat
+     
+     with TJson.Create do begin  
+       writeln(itoa(count));    
+       writeln(values['ghjh'].asstring);
+       JsonObject;
+       free;
+      end; 
+      
+      //object
+       Json := TJson.Create();
+  with Json['field7'].AsObject do
+  begin
+    Put13('subfield1', 2.7182818284);
+    Put14('subfield2', 'json4delphi');
+    Put10('subfield1',jsnull2);
+  end;
+      
+     with TP2.create do begin
+        input:=  23.3
+        G:= 1.2; amplitude:= 3.5; omega:= 1;
+        simulate;
+        //writeln(floattostr(fr.phi));
+        writeln('TP2 '+floattostr(output))
+        writeln(floattostr(SimOutput));
+       free ;
+     end;   
+     
+     acomp.m:= 12.5;
+     complex.re:= 23;
+     complex.im:= -0;
+     
+     acomp.F:= complex;
+        
+      
+      //BCE03C310FAEBA451DF2BDEE7B3A0DE2B5ECB8BD
+      
+      for it:= 0 to 9 do 
+        if itoa(it)[1] in strtochars('BCE03C310FAEBA451DF2BDEE7B3A0DE2B5ECB8BD') then
+          write('found: '+ itoa(it)+' ');
+        writeln(CRLF)
+      for it:= ord('A') to ord('F') do 
+        if chr(it) in strtochars('BCE03C310FAEBA451DF2BDEE7B3A0DE2B5ECB8BD') then
+          write('found: '+ chr(it)+'  ');
+          
+      // writeln(itoa(LocalExecute32 (exepath+'maxbox4.exe', false , SW_SHOW , INFINITE))) 
+      
+      //printusingshell(exepath+'"maxboxerrorlog - Copy.txt"')
+      //loadform2
+        //copyex 
+      try  
+        Selftestinternetutils
+      except
+        writeln(ExceptionToString(ExceptionType, ExceptionParam));
+      end;    
+      
+      //writeln(flcMIMEContentTypeFromExtention('ctavi'))
+      
+      flcDecodeURL('http://www.softwareschule.ch/download/maxbox_functions.txt', 
+          Protocol, Host, Path)
+          writeln('hist: '+protocol)
+      
+      //PlaySound('INDIGO_WAV', hInstance, SND_RESOURCE or SND_ASYNC); 
+      //PlaySound('MOON', hInstance, SND_RESOURCE or SND_ASYNC); 
+      
+      
+      with THeaderCls.create('') do begin
+        getfieldnames
+        free
+      end; //} 
+      
+      
+      
+      atci:= JclStringList;
+      atc:= TJclStringlist.create;
+      atc.free;
+      
+      with TJclStringList.create do begin
+        //atci:= loadfromfile(Exepath+'maxboxdef2.ini');
+        atci:= addstrings(['thisi is'])
+        //atci
+        //atci:= JclStringList;
+        addstrings(['thisi is','dhhhd'])
+        writeln('get '+getcommatext)
+        writeln('get '+text)
+        //keepregex
+        //files
+        //ExtractWords
+        free
+      end;    //}
+      
+      //RaiseLastOSError;
+      //flcRaiseLastOSError;
+      flcGetWinPortNames
+     writeln(flcGetLocalHostName)
+     //triminplace
+     
+     spl:= flcStrSplit('this -is -maxbox -rocks','-')
+     for it:= 0 to length(spl)-1 do 
+       write(spl[it]+' ');
+      
+      OutPutList := TStringList.Create;
+      try
+        strSplit(':', 'word:doc,txt,docx', OutPutList) ;
+        Writeln(OutPutList.Text);
+        //Readln;
+       finally
+     OutPutList.Free;
+     end;
+       //strsplit
+       
+     //OutPutList := TStringlist.Create;
+     outputlist:=  strSplitF(':', 'word:doc,txt,docx') ;
+     Writeln(OutPutList.Text);
+     OutPutList.Free;
+     
+     //setlength(agb,3)
+     
+     agb:= int32tobytes(123456)
+     writeln(itoa(agb[0]) );
+     
+     SelfTestCFundamentUtils;
+     
+    // maxform1.JumptoOutput1Click(self)
+        writeln(GetLastOSErrorMessage )
+        writeln(itoa(GetLastOSErrorcode))
+        
+        writeln(itoa(hton32(123456789))) //bytesequal
+        ansi:= 'this is';
+        ansi:= 'this is box';
+        ansi:= 'this';
+        ansi2:= 'this is';
+        writeln('StringRefCount: '+itoa(StringRefCount2 (ansi)) );
+        writeln('StringRefCount: '+itoa(StringRefCount (ansi)) );
+        
+       writeln(itoa( bytescompare(StrToBytes(ansi), StrToBytes(ansi2)) ));
+        writeln(botostr( bytesequal(StrToBytes(ansi), StrToBytes(ansi2)) ));
+        
+        //FGPlayASound2('moon','wav')
+        writeln('async')
+        //FGPlayASound2('promote','wave')
+        //FGPlayASound2('petra','mid')
+        PlayReswav('promote','wave')   
+        //PlayReswav('emptywave','rcdata')  
+        //PlayReswav('maxboxwav','wav')             
+        
+        with TForm.create(self) do begin
+          caption:= ''
+          onmousewheel:= @FormMouseWheel ;
+          //OnMouseWheelup
+          //showmodal;
+          free
+        end;  
+        
+        with TSCROLLBOX.create(self) do begin
+          //caption:= ''
+          onmousewheelup
+          free
+        end; 
+        
+        //SphereTPoint3D
+        lcount:= 20000;    
+        
+        writeln(botostr(QueryPerformanceCounter2(lcount))) ;
+        writeln(itoa(lcount)) 
+        
+        QueryPerformanceCounter1(lcount) ;
+        writeln(itoa(lcount))
+        
+        writeln(botostr(QueryPerformanceFrequency1(lcount))) ;
+        writeln(itoa(lcount))
+        writeln(botostr(QueryPerformanceCounter2(lcount)))
+        //writeln(itoa(QueryPerformanceCounter1(lcount)))
+        QueryPerformanceCounter(lcount)  ;
+        writeln(itoa(lcount))
+        
+        writeln(floattostr(gmlgetfuzz))
+        
+        with TFrame.create(self) do begin
+          //caption
+          align
+          free
+         end; 
+         
+         with TRotateImage.create(self) do begin
+            UniqueSize
+           //onexit
+           ondblclick
+           free
+          end;
+          
+          //CreateRotatedBitmap 
+          
+          TestStatisticClass;
+          writeln(floattostr(flcerf(0.0036567)))
+          writeln(floattostr(erf(36.567)))
+          
+          writeln(floattostr(flcBinomialCoeff(42,6)))
+          writeln(floattostr(BinomialCoeff(42,6)))
+          
+          //include excude test
+          
+          //XORCharSet2
+          destset:= strtochars('t9pOS');
+          //include((destset), 'i') ;
+  XORCharSet(destset, strtochars('t9pOA'));
+  writeln('XORCharSet1: '+charsettostr(destset))
+  XORCharSet2(destset, strtochars('t9pOA'));
+  writeln('XORCharSet2: '+charsettostr(destset));
+  Assert(charsettostr(destset)='AS','XORCharSet2 must AS');  // }
+  XORCharSet3(destset, strtochars('t9pOA'));
+  writeln('XORCharSet3: '+charsettostr(destset));
+  Assert(charsettostr(destset)='AS','XORCharSet2 must AS');  // }
+  
+   //StatisticFloatDelta   
+   
+   TestMathClass;
+   TestStatisticClass;
+   
+   writeln(floattostr(flcE))
+   
+   setlength(myc2r,2)
+    setlength(myc2i,2)
+    myc2r[0]:= 17.8   myc2i[0]:= 117.8
+    myc2r[1]:= 16.7   myc2i[1]:= 116.7
+    //flcFourierTransform( const AngleNumerator : MFloat; const RealIn, ImagIn : array of MFloat; var RealOut, ImagOut : MFloatArray)');
+    flcFourierTransform (2, myc2r, myc2i, myc2r, myc2i );
+    flcCalcFrequency(2, myc2r, myc2i, RealOut, ImagOut);
+    
+    //Procedure flcFFT( const RealIn, ImagIn : array of MFloat; var RealOut, ImagOut : MFloatArray)');
+    flcFFT( myc2r, myc2i, myc2r, myc2i);
+    
+    flcFourierTransform( 4.6, myc2r, myc2i, myc2r, myc2i);
+    
+    writeln(floattostr(RealOut))
+    writeln(floattostr(imagOut))
+    
+    writeln(floattostr( flcCummChiSquare(73.5, 90.5)));
+ 
+ Assert(not flcIsPrime(0),       'IsPrime(0)');
+  Assert(not flcIsPrime(1),       'IsPrime(1)');
+  Assert(flcIsPrime(2),           'IsPrime(2)');
+  Assert(flcIsPrime(3),           'IsPrime(3)');
+  //Assert2(IsPrime(-3),          'IsPrime(-3)');
+  Assert(not flcIsPrime(4),       'IsPrime(4)');
+  Assert(not flcIsPrime(-4),      'IsPrime(-4)');
+  Assert(flcIsPrime(257),         'IsPrime(257)');
+  Assert(not flcIsPrime($10002),  'IsPrime($10002)');
+  Assert(flcIsPrime($10003),      'IsPrime($10003)');
+  
+  //union
+  
+  writeln(itoa(flccharcount(['t','9','p','O'])));
+  writeln(itoa(flccharcount(strtochars('t9pO'))));
+  
+  destset:= strtochars('t9pOS');
+  flcXORCharSet(destset, strtochars('t9pOA'));
+  writeln('flcXORCharSet1: '+charsettostr(destset))
+  destset:= strtochars('t9pOS');
+  flcXORCharSet(destset, strtochars('t9pOA'));
+  writeln('flcXORCharSet2: '+charsettostr(destset));
+  Assert(charsettostr(destset)='AS','XORCharSet2 must AS'); // }
+  
+  //Function IsComplete( const C : CharSet) : Boolean
+   writeln(botostr(IsComplete(destset)));
+   writeln(botostr(IsComplete(strtochars(getASCIIline))));
+   writeln(botostr(IsComplete(strtochars(getASCIIline+chr(0)))));
+   writeln(botostr(flcIsComplete(destset)));
+   writeln(botostr(flcIsComplete(strtochars(getASCIIline))));
+   writeln(botostr(flcIsComplete(strtochars(getASCIIline+chr(0)))));
+   
+   // CL.AddDelphiFunction('function AddQuantumToDateTime(const dt: TDateTime): TDateTime;');
+     writeln(datetimetostr(AddQuantumToDateTime(now)));
+     
+    with TPrimes.create do begin
+    CanonicalFactors;
+    writeln(itoa(length(Divisors)));
+    free;
+  end;   
+  with TStatisticClass.create do begin
+    add(576.6)
+    add(176.6)
+    writeln(floattostr(mean));
+    //CustomSort;
+    //writeln(itoa(length(Divisors)));
+    free;
+  end;
+  
+  TestBitClass;   
+  testtimerclass;
+  
+  writeln(IntToHex(abt('1000100011111111'), 8));
+  
+  writeln('GetHighResolutionFrequency: '+inttostr64(GetHighResolutionFrequency))
+  //TestFull;
+  writeln('MicroDateTimeTest: '+
+              datetimetostr(MicroDateTimeToDateTime(GetMicroDateTimeNow)));
+  writeln(DateTimeToStrUs(now));
+  writeln(datetimetostr(getnowutc (false)))
+  //TLexCharProc
+  with TBlaiseLexer.create do begin
+    gettoken
+    free
+  end; 
+  //randomint 
+  
+  testRationalClass;
+  //ifthenint
+  
+  TestComplexClass;
+  TestMatrixClass;
+  
+  TestStringBuilderClass;
+  
+  //TPoints2
+  
+  //PlgBlt3
+  
+  //LinkerTimeStamp
+  
+  writeln('LinkerTimeStamp '+datetimetostr(LinkerTimeStamp(exepath+'maxbox4.exe')));
+  
+  Test_StringBuilder;
+  
+  mycharset:=  ['%','&'];
+  
+  writeln(StrRemoveCharSet(' this os % a box& of ',['%','&']))     
+   writeln(StrRemoveCharSet(' this os % a box& of ',mycharset))                   
+   TestASCIIRoutines;       
+   
+    //MakeComplexSound2
+    writeln(IntToByteCharDigit(8))
+    
+    TestPatternmatcher;
+    
+ {    Assert(StrPosPatternU('', '', I, 1, mpgGreedy) = 0);            Assert(I = 0);
+  Assert(StrPosPatternU('', 'a', I, 1, mpgGreedy) = 1);           Assert(I = 0);
+  Assert(StrPosPatternU('a', '', I, 1, mpgGreedy) = 0);           Assert(I = 0);
+  Assert(StrPosPatternU('a*b', 'xacb', I, 1, mpgGreedy) = 2);     Assert(I = 3);
+  Assert(StrPosPatternU('a*b', 'xaccbd', I, 1, mpgGreedy) = 2);   Assert(I = 4);
+  Assert(StrPosPatternU('a*b', 'xa', I, 1, mpgGreedy) = 0);       Assert(I = 0);    }
+  
+ Assert(MatchFileMaskB('*', 'A',true), 'MatchFileMask');
+  Assert(MatchFileMaskB('?', 'A',true), 'MatchFileMask');
+  Assert(MatchFileMaskB('', 'A',true), 'MatchFileMask');
+  
+  TestUnicodeChar;
+  
+  writeln(botostr(UnicodeIsDashOrHyphen('-')))
+  
+  sURL := 'ga:referralPath=/add/%D0%9F%D0%B8%D0%B6%D0%B0%D0%BC';
+  sWork := sURL;
+  I := 1;
+  while I <= Length(sWork) do begin
+    if sWork[I] = '%' then begin
+      if (I+2) > Length(sWork) then
+        Xraise (Exception.Create('Incomplete encoding detected'));
+      sWork[I] := Chr((HexToBits(sWork[I+1]) shl 4) or HexToBits(sWork[I+2]));
+      Delete(sWork, I+1, 2);
+    end;
+    Inc(I);
+  end;
+  wDecoded := UTF8Decode(sWork);
+  writeln(wdecoded)
+  
+//  15 CLF_Fundamentals Testroutines 47520
+//------------------------------------
+   TestMathClass;
+   TestStatisticClass;
+   TestBitClass; 
+   TestCharset;
+   TestTimerClass;
+   TestRationalClass;
+   TestComplexClass;
+   TestMatrixClass;
+   TestStringBuilderClass;
+   TestASCII;
+   TestASCIIRoutines;
+   TestPatternmatcher;
+   TestUnicodeChar;
+   
+   ///////////////////////// TestUnits //////////////////////////
+//@procedure  
+  
+  SelftestPEM;
+  SelfTestCFundamentUtils;                             
+  SelfTestCFileUtils;
+  try
+    SelfTestCDateTime;
+  except
+    writeln('I/O error: '+ExceptionToString(ExceptionType, ExceptionParam));  
+  end; 
+  try
+    SelfTestCTimer;
+  except
+    writeln('high Res Timer: '+ExceptionToString(ExceptionType, ExceptionParam));  
+  end;  
+  SelfTestCRandom;
+  //SelftestAES;
+  SelfTestASN1;
+  SelfTestX509;
+  writeln(botostr(TestDes));
+  writeln(botostr(Test3Des));
+  writeln(botostr(TestAes));
+  SelfTestcTLSUtils;
+  SelfTestCFundamentUtils;
+  //SelfTestcHTTPUtils
+  SelfTestcXMLFunctions
+  SelfTestHugeWord
+  SelfTestRSA
+  
+  writeln('All 30 Unit Tests passed!^?') ;
+  playreswav('maxboxwav','wav');
+  
+  writeln(botostr(QueryPerformanceCounter2(lcount)))
+  
+  voice('this is the voice of maXbox4')
+                                                         
+      
+End. 
+
+
+Ref:
+
+****************************************************************
+Release Notes maXbox 4.7.5.20 Jan 2021 mX47
+****************************************************************
+Add 25 Units + 4 Tutorials
+
+1277 unit uPSI_SystemsDiagram.pas  Dendron
+1278 unit uPSI_qsFoundation.pas    Dendron
+1279 uPSI_JclStringLists2          JCL 	
+1280 uPSI_cInternetUtils2          FLC
+1281 uPSI_cWindows.pas	           FLC
+1282 uPSI_flcSysUtils.pas  +TBytes utils
+1283 unit uPSI_RotImg.pas          DA 
+1284 uPSI_SimpleImageLoader.pas    LAZ
+1285 uPSI_HSLUtils.pas             LAZ
+1286 uPSI_GraphicsMathLibrary.pas  EF
+1287 unit uPSI_umodels.pas         DMath
+1288 uPSI_flcStatistics.pas        FLC5
+1289 uPSI_flcMaths.pas             FLC5
+1290 uPSI_flcCharSet.pas
+1291 uPSI_flcBits32.pas
+1292 uPSI_flcTimers.pas
+1293 uPSI_cBlaiseParserLexer.pas
+1294 uPSI_flcRational.pas
+1295 uPSI_flcComplex.pas
+1296 unit uPSI_flcMatrix (uPSI_flcVectors.pas)
+1297 unit uPSI_flcStringBuilder.pas
+1298 unit PJResFile_Routines;
+1299 uPSI_flcASCII.pas
+1300 uPSI_flcStringPatternMatcher;
+1301 unit uPSI_flcUnicodeChar.pas
+
+Totals of Function Calls: 33282
+SHA1: of 4.7.5.20 D82EAD01C58738887661428F94B207DB1D8FAEB5
+CRC32: 203C82F0  29.5 MB (31,012,768 bytes
+
+//0.0964047009787458  double
+//0.0964050595696765  extended
+
+
+// mX4 executed: 23/12/2020 20:22:27  Runtime: 0:0:1.694  Memload: 34% use
+
+Ref: https://my6.code.blog/2020/03/29/saint-source/
+     http://www.angelfire.com/hi5/delphizeus/
+     https://stackoverflow.com/questions/17101532/loading-pre-compiled-script-in-remobjects-pascal-script-delphi
+     
+     http://www.felix-colibri.com/papers/web/rss_reader/rss_reader.html
+     https://ddmf.eu/
+     
+    "Solid Ball Of Rock"
+
+One night in Louisiana down by highway eighty four
+You could hear a strange dog howling right outside his mamma's door
+The baby was a killer, the cousin was a priest
+The baby upped and said, "I play the music of the beast"
+
+     
+   Kopien von Mails lassen sich über die Siri-Datenbank ohne den zur S/MIME-Entschlüsselung erforderlichen privaten Schlüssel einsehen.
+     
+     https://sourceforge.net/projects/maxbox/files/Examples/IBZ/pki2020praktikum.zip/download
+     1633dace2c2b541e1fb9f48aa7575c0cfd4498cf
+     
+     https://sourceforge.net/projects/maxbox/files/Examples/IBZ/Tag1_4_IT_SEC.zip/download
+     
+     >>> result=0
+>>> for i in range(31):
+...   result += (1/pow(2,i))
+...
+>>> result
+1.9999999990686774
+     
+     >>> for i in range(30):
+...   result += 1/pow(2,i)
+...
+>>> result
+1.9999999981373549
+
+Source = https://picsum.photos/seed/1 Target = picture_0001.jpg
+Source = https://picsum.photos/seed/2 Target = picture_0002.jpg
+Source = https://picsum.photos/seed/3 Target = picture_0003.jpg
+Source = https://picsum.photos/seed/4 Target = picture_0004.jpg
+Source = https://picsum.photos/seed/5 Target = picture_0005.jpg
+Source = https://picsum.photos/seed/6 Target = picture_0006.jpg
+Source = https://picsum.photos/seed/7 Target = picture_0007.jpg
+Source = https://picsum.photos/seed/8 Target = picture_0008.jpg
+Source = https://picsum.photos/seed/9 Target = picture_0009.jpg
+Source = https://picsum.photos/seed/10 Target = picture_0010.jpg
+Source = https://picsum.photos/seed/11 Target = picture_0011.jpg
+Source = https://picsum.photos/seed/12 Target = picture_0012.jpg
+
+ mX4 executed: 30/03/2020 23:09:29  Runtime: 0:0:4.453  Memload: 46% use
+
+Doc: 
+
+The unit importer parses the interface section of a unit and generates an import unit for use by Pascal Script. It makes the Delphi code from the imported unit accessible to the Pascal Script interpreter. Include both units (the original and the generated one) in your project.
+
+Instead of manually typing all the AddDelphiFunction calls to add your functions to Pascal Script, the importer generates code to call those functions for you. If you have USEIMPORTER defined in your project, then the import unit will automatically register the imported types, functions, and constants with the interpreter. Otherwise, you'll have to call the SIRegister_X function yourself when you have your own interpreter class ready.
+
+   SafeLoadLibrary loads a Windows DLL or Linux shared object file, as specified by Filename. SafeLoadLibrary preserves the current FPU control word, preventing library initialization code from permanently overwriting precision and exception masks.
+Note: On Windows, SafeLoadLibrary temporarily sets the system error mode to ErrorMode. The default, SEM_NOOPENFILEERRORBOX, suppresses error dialogs. The previous error mode is restored before SafeLoadLibrary exits. For a list of error modes, refer to SetErrorMode in the Microsoft documentation.
+Note: On Linux, the Dummy argument is ignored.
+
+https://maxbox4.files.wordpress.com/2020/03/max_train.jpg?w=725&h=&zoom=2
+
+Ref:   // Standard exception classes of Python
+
+ Hierarchy of Python exceptions, Python 2.3, copied from <INSTALL>\Python\exceptions.c
+Exception\n\
+ |\n\
+ +-- SystemExit\n\
+ +-- StopIteration\n\
+ +-- StandardError\n\
+ |    |\n\
+ |    +-- KeyboardInterrupt\n\
+ |    +-- ImportError\n\
+ |    +-- EnvironmentError\n\
+ |    |    |\n\
+ |    |    +-- IOError\n\
+ |    |    +-- OSError\n\
+ |    |         |\n\
+ |    |         +-- WindowsError\n\
+ |    |         +-- VMSError\n\
+ |    |\n\
+ |    +-- EOFError\n\
+ |    +-- RuntimeError\n\
+ |    |    |\n\
+ |    |    +-- NotImplementedError\n\
+ |    |\n\
+ |    +-- NameError\n\
+ |    |    |\n\
+ |    |    +-- UnboundLocalError\n\
+ |    |\n\
+ |    +-- AttributeError\n\
+ |    +-- SyntaxError\n\
+ |    |    |\n\
+ |    |    +-- IndentationError\n\
+ |    |         |\n\
+ |    |         +-- TabError\n\
+ |    |\n\
+ |    +-- TypeError\n\
+ |    +-- AssertionError\n\
+ |    +-- LookupError\n\
+ |    |    |\n\
+ |    |    +-- IndexError\n\
+ |    |    +-- KeyError\n\
+ |    |\n\
+ |    +-- ArithmeticError\n\
+ |    |    |\n\
+ |    |    +-- OverflowError\n\
+ |    |    +-- ZeroDivisionError\n\
+ |    |    +-- FloatingPointError\n\
+ |    |\n\
+ |    +-- ValueError\n\
+ |    |    |\n\
+ |    |    +-- UnicodeError\n\
+ |    |        |\n\
+ |    |        +-- UnicodeEncodeError\n\
+ |    |        +-- UnicodeDecodeError\n\
+ |    |        +-- UnicodeTranslateError\n\
+ |    |\n\
+ |    +-- ReferenceError\n\
+ |    +-- SystemError\n\
+ |    +-- MemoryError\n\
+ |\n\
+ +---Warning\n\
+      |\n\
+      +-- UserWarning\n\
+      +-- DeprecationWarning\n\
+      +-- PendingDeprecationWarning\n\
+      +-- SyntaxWarning\n\
+      +-- RuntimeWarning\n\
+      +-- FutureWarning"
+//}
+
+ref: https://wiki.freepascal.org/Shl
+
+Ref:  
+https://kb.paessler.com/en/topic/1073-what-are-the-most-common-errors-when-monitoring-wmi
+https://msdn.microsoft.com/en-us/library/aa394217(v=vs.85).aspx
+
+ 16-03-2020 11:30
+Virus: les marchés chutent, les frontières se ferment
+
+EventType  -   //"BUILTIN\\Administrators"';
+'1 Error
+'2 Warning()
+'3 Information()
+'4 Security audit success
+'5 Security audit failure
+
+<QueryList>
+  <Query Id="0" Path="System">
+    <Select Path="System">*[System[(Level=2)]]</Select>
+  </Query>
+</QueryList>
+
+
+public class MainClassWMI
+{
+    public static void MainWMI()
+    {
+        ManagementObjectSearcher query = new ManagementObjectSearcher("SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = 'TRUE'");
+        ManagementObjectCollection queryCollection = query.Get();
+        foreach (ManagementObject mo in queryCollection)
+        {
+            string[] addresses = (string[])mo["IPAddress"];
+
+            foreach (string ipaddress in addresses)
+            {
+                Console.WriteLine("IP Address: {0}", ipaddress);
+            }
+        }
+    }
+}
+
+
+Lerninhalte ML:
+
+Regression:
+
+    Lineare Regression
+    Polynomiale Regression
+
+Klassifizierung:
+
+    Logistische Regression
+    Support Vector Machine (SVM)
+    SVM mit Kernel (rbf, poly)
+    Naive Bayes
+    Entscheidungsbäume
+    Random Forest
+
+Clustering
+
+Natural Language Processing
+
+    Tokenizing
+    Stemming
+    POS-Tagging (welchen Typ hat ein Wort?)
+
+
+Bonus: Deep Learning / Neuronale Netze (nur Python)
+    Aufbau eines Neuronalen Netzes
+    Was ist ein Neuron?
+    Tensorflow
+    Keras
+
+Anwendung:
+
+    Dimensionsreduktion mit der Principal Component Analysis (PCA)
+    Daten einlesen (mit vollständigem Praxisbeispiel, Schritt für Schritt erklärt
+
+Hyperparameter finden
+
+    „Parameter Tuning“
+    GridSearch (GridSearchCV in Python / tuneGrid in R)
+
+Modelle vergleichen:
+
+    K-Fold Cross-Validation
+    Bestimmtheitsmaß
+
+Besonders geeignet für: Entwickler, die sich für Machine Learning interessieren.
+
+PBIDesktop_x64.msi
+
+Die Weiterentwicklung der Automatisierungstechnik hat in den letzten Jahren  einige interessante und vielversprechende Innovationen hervorgebracht. Hierzu zählt insbesondere die durchgehende Integration einiger Spezialtechnologien des Machine Learning wie die Mustererkennung, Predictive Maintanance und das Condition Monitoring. Dies verdeutlicht, wie weit die Optimierung der Automation schon vorangeschritten ist oder sein kann. 
+
+Ein unmittelbarer Nutzen ist allerdings bereits heute klar: Bereiche wie die Robotik, mathematische Optimierung, Anomaliedetektion oder modellbasierte Regelung würden direkt durch eine entsprechende Integration profitieren. Dazu dienen die Grundlagen dieses CAS.
+
+https://unibe-ch.academia.edu/MaxKleiner/CurriculumVitae
+
+https://github.com/joaopauloschuler/neural-api
+https://sourceforge.net/projects/cai/
+
+https://www.bytesin.com/software/maXbox/
+
+zip: b433e3cc7ce4e21c20929fa050fbc9be219f1b31
+
+CAI NEURAL API - Pascal based neural network API optimized for AVX, AVX2 and AVX512 instruction sets plus OpenCL capable devices including AMD, Intel and NVIDIA. 
+
+unit uPSI_neuralbit.pas
+unit uPSI_neuralab.pas
+
+unit uPSI_neuralvolumev.pas
+unit uPSI_neuralabfun.pas
+
+procedure SetDecimalSeparator2(Ch: Char);
+procedure GetWaveOutDevices(DeviceNames: TStrings);
+var
+  DNum: Integer;
+  i: Integer;
+  Caps: TWaveOutCapsA;
+begin
+  DNum := waveOutGetNumDevs;  // Number of Devices
+  for i := 0 to DNum - 1 do     // Query Devicenames
+  begin
+    waveOutGetDevCaps(i, @Caps, SizeOf(TWaveOutCapsA));
+    DeviceNames.Add(string(Caps.szPname));
+  end;
+end;
+
+procedure GetWaveOutDevices(DeviceNames: TStrings);
+procedure GetMIDIOutDevices(Devices: TStrings);
+
+procedure TestKMeans();
+var
+  KMeans: TNNetKMeans;
+  Clusters, ClusterSize, Samples: integer;
+  SampleCnt, StepCnt, ClusterCnt: integer;
+  SampleVolume: TNNetVolume;
+  ClustersWithElements: integer;
+  ClusteredElements: integer;
+begin
+  Clusters := Random(128) + 1;
+  ClusterSize := Random(128) + 1;
+  Samples := Random(1280) + 1;
+  WriteLn('Testing KMeans - Clusters:', Clusters, ' Cluster Size:', ClusterSize,
+    ' Samples:', Samples);
+  KMeans := TNNetKMeans.Create(Clusters, 1, 1, ClusterSize);
+  // Creates the sample for clustering.
+  for SampleCnt := 0 to Samples - 1 do
+  begin
+    SampleVolume := TNNetVolume.Create(1, 1, ClusterSize);
+    SampleVolume.FillForDebug();
+    SampleVolume.Mul(Random(Clusters));
+    SampleVolume.Add(Random(100)/100);
+    KMeans.AddSample( SampleVolume );
+  end;
+  // Runs the clusteting.
+  KMeans.Randomize();
+  for StepCnt := 1 to 20 do
+  begin
+    KMeans.RunStep();
+    KMeans.RandomizeEmptyClusters();
+  end;
+  KMeans.RunStep(False);
+  // Counts how many clusters have elements.
+  ClustersWithElements := 0;
+  ClusteredElements := 0;
+  for ClusterCnt := 0 to KMeans.Clusters.Count - 1 do
+  begin
+    if KMeans.Clusters[ClusterCnt].Tag > 0 then Inc(ClustersWithElements);
+    Inc(ClusteredElements, KMeans.Clusters[ClusterCnt].Tag);
+  end;
+  WriteLn(ClustersWithElements, ' clusters have ', ClusteredElements,
+    ' elements. KMeans testing has finished.');
+  KMeans.Free;
+end;
+
+procedure SIRegister_neuralab(CL: TPSPascalCompiler);
+begin
+  SIRegister_TABHash(CL);
+ CL.AddDelphiFunction('Function ABKey( S : array of byte; Divisor : longint) : longint');
+ CL.AddDelphiFunction('Function ABCmp( var X, Y : array of byte) : boolean');
+ CL.AddDelphiFunction('Function ABGetNext1( var AB : array of byte; ST : word) : word');
+ CL.AddDelphiFunction('Function ABCountDif( var X, Y : array of byte) : longint');
+ CL.AddDelphiFunction('Function ABCountDifZero( var X : array of byte) : longint');
+ CL.AddDelphiFunction('Procedure ABAnd( var A, B : array of byte)');
+ CL.AddDelphiFunction('Function ABGetEqual( var Equal, X, Y : array of byte) : longint');
+ CL.AddDelphiFunction('Procedure ABShiftLogicalLeft( var X : array of byte)');
+ CL.AddDelphiFunction('Procedure ABShiftLogicalRight( var X : array of byte)');
+ CL.AddDelphiFunction('Function ABGetDif( var Dif, X, Y : array of byte) : longint');
+ CL.AddDelphiFunction('Function ABToString( var AB : array of byte) : string');
+ CL.AddDelphiFunction('Function ABToStringR( var AB : array of byte) : string');
+ CL.AddDelphiFunction('Procedure ABClear( var AB : array of byte)');
+ CL.AddDelphiFunction('Procedure ABFull( var AB : array of byte)');
+ CL.AddDelphiFunction('Procedure ABBitOnPos( var AB : array of byte; POS : longint)');
+ CL.AddDelphiFunction('Procedure ABBitOnPosAtPos(var AB: array of byte; X,Start,Len: longint)');
+ CL.AddDelphiFunction('Function ABReadBitOnPosAtPos(var AB:array of single;Start,Len:longint): longint');
+ CL.AddDelphiFunction('Procedure ABCopy( var A, B : array of byte)');
+ CL.AddDelphiFunction('Procedure ABTriPascal( var A, B : array of byte)');
+ CL.AddDelphiFunction('Procedure ABSet( var A : array of byte; B : array of byte)');
+end;
+
+procedure SIRegister_neuralbit(CL: TPSPascalCompiler);
+begin
+  //CL.AddTypeS('TArrOf2BytesPtr', '^TArrOf2Bytes // will not work');
+  //CL.AddTypeS('TArrOf3BytesPtr', '^TArrOf3Bytes // will not work');
+  //CL.AddTypeS('TArrOf4BytesPtr', '^TArrOf4Bytes // will not work');
+  //CL.AddTypeS('TArrBytePtr', '^TLongByteArray // will not work');
+ CL.AddDelphiFunction('Function POT( numero, elevado : extended) : extended');
+ CL.AddDelphiFunction('Function LongintBitTest( Data : longint; P : longint) : boolean');
+ CL.AddDelphiFunction('Function LongintBitFlip( Data : longint; P : longint) : longint');
+ CL.AddDelphiFunction('Procedure BAClear( var VARS : array of byte)');
+ CL.AddDelphiFunction('Procedure BAMake1( var VARS : array of byte)');
+ CL.AddDelphiFunction('Function BARead( var A : array of byte; P : longint) : byte');
+ CL.AddDelphiFunction('Procedure BAFlip( var A : array of byte; P : longint)');
+ CL.AddDelphiFunction('Procedure BAWrite( var A : array of byte; P : longint; Data : byte)');
+ CL.AddDelphiFunction('Function BATest( var A : array of byte; P : longint) : boolean');
+ CL.AddDelphiFunction('Procedure BASum( var x, y : array of byte)');
+ CL.AddDelphiFunction('Procedure BASub( var x, y : array of byte)');
+ CL.AddDelphiFunction('Procedure BAIncPos( var x : array of byte; POS : longint)');
+ CL.AddDelphiFunction('Procedure BADecPos( var x : array of byte; POS : longint)');
+ CL.AddDelphiFunction('Procedure BAInc( var x : array of byte)');
+ CL.AddDelphiFunction('Procedure BADec( var x : array of byte)');
+ CL.AddDelphiFunction('Function BAToString( VARS : array of byte) : string');
+ CL.AddDelphiFunction('Function BAToFloat( var VARS : array of byte) : extended');
+ CL.AddDelphiFunction('Procedure PFloatToBA( var VARS : array of byte; Valor : extended)');
+ CL.AddDelphiFunction('Procedure BANot( var VARS : array of byte)');
+ CL.AddDelphiFunction('Procedure BAAnd( var r, x, y : array of byte)');
+ CL.AddDelphiFunction('Procedure BAOr( var r, x, y : array of byte)');
+ CL.AddDelphiFunction('Procedure BAXOr( var r, x, y : array of byte)');
+ CL.AddDelphiFunction('Function BAGrater( var x, y : array of byte) : boolean');
+ CL.AddDelphiFunction('Function BALower( var x, y : array of byte) : boolean');
+ CL.AddDelphiFunction('Function BAEqual( var x, y : array of byte) : boolean');
+ CL.AddDelphiFunction('Procedure BAPMul( var r, x, y : array of byte)');
+ CL.AddDelphiFunction('Function nnRAnd( A, B : extended) : extended');
+ CL.AddDelphiFunction('Function nnROr( A, B : extended) : extended');
+ CL.AddDelphiFunction('Function nnRNot( A : extended) : extended');
+ CL.AddDelphiFunction('Function nnRXor( A, B : extended) : extended');
+ CL.AddDelphiFunction('Function REqual( A, B : extended) : extended');
+ CL.AddDelphiFunction('Procedure RSum( x, y, z : extended; var R, C : extended)');
+ CL.AddDelphiFunction('Procedure RegSum( var x, y : array of extended)');
+ CL.AddDelphiFunction('Function RegEqual( var x, y : array of extended) : extended');
+ CL.AddDelphiFunction('Function RegOrdEqual( var x, y : array of extended) : extended');
+ CL.AddDelphiFunction('Function RegToString( var VARS : array of extended) : string');
+ CL.AddDelphiFunction('Function ROrer( var VARS : array of extended) : extended');
+ CL.AddDelphiFunction('Function RAnder( var VARS : array of extended) : extended');
+ CL.AddDelphiFunction('Function RCNot( X : extended; var VARS : array of extended) : extended');
+ CL.AddDelphiFunction('Function ROrMaxTerm(var VARS:array of extended; NumMaxTerm : longint) : extended');
+ CL.AddDelphiFunction('Function ROrMaxTermStr( NumVars : longint; NumMaxTerm: longint): string');
+ CL.AddDelphiFunction('Function RSatFunc( var VARS : array of extended; NumFunc : longint) : extended');
+ CL.AddDelphiFunction('Function RSatFuncStr( NumVars : longint; NumFunc : longint) : string');
+ CL.AddDelphiFunction('Procedure RRegen( var VARS : array of extended)');
+ CL.AddDelphiFunction('Procedure RDegen( var VARS : array of extended)');
+ CL.AddDelphiFunction('Procedure RDegenP( var VARS : array of extended; P : extended)');
+ CL.AddDelphiFunction('Procedure nnClear( var VARS : array of extended)');
+ CL.AddDelphiFunction('Procedure BARAnd( var R, A, B : array of byte)');
+ CL.AddDelphiFunction('Procedure BAROr( var R, AUX, A, B : array of byte)');
+ CL.AddDelphiFunction('Procedure BARNot( var R, A : array of byte)');
+end;
+
+March 2020 (version 1.44.2)
+New Python tutorials - Tutorials for creating Python containers and building Data Science models.
+https://code.visualstudio.com/docs/python/data-science-tutorial
+
+4.7.4.60
+
+TDynExtendedArray = array of Extended;
+
+unit uPSI_winsvc2.pas
+unit uPSI_neuralcache.pas
+unit uPSI_neuralbyteprediction.pas
+//unit uPSI_neuralplanbuilder.pas
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_winsvc2(CL: TPSPascalCompiler);
+begin
+ CL.AddConstantN('SERVICE_AUTO_START','LongWord').SetUInt( $00000002);
+ CL.AddConstantN('SERVICE_CONFIG_DELAYED_AUTO_START_INFO','LongInt').SetInt( 3);
+ CL.AddConstantN('SERVICE_CONFIG_FAILURE_ACTIONS_FLAG','LongInt').SetInt( 4);
+ CL.AddConstantN('SERVICE_CONFIG_PREFERRED_NODE','LongInt').SetInt( 9);
+ CL.AddConstantN('SERVICE_CONFIG_PRESHUTDOWN_INFO','LongInt').SetInt( 7);
+ CL.AddConstantN('SERVICE_CONFIG_REQUIRED_PRIVILEGES_INFO','LongInt').SetInt( 6);
+ CL.AddConstantN('SERVICE_CONFIG_SERVICE_SID_INFO','LongInt').SetInt( 5);
+ CL.AddConstantN('SERVICE_CONFIG_TRIGGER_INFO','LongInt').SetInt( 8);
+ CL.AddConstantN('SC_MANAGER_ALL_ACCESS','LongWord').SetUInt($F003F);
+ CL.AddConstantN('SERVICE_ALL_ACCESS','LongWord').SetUInt($F01FF);
+ CL.AddDelphiFunction('Function ChangeServiceType(ServiceName: String; TypeID:DWord):Boolean');
+ CL.AddDelphiFunction('Function GetServiceStatus2( ServiceName:String;ErrorState:Bool): Bool');
+ CL.AddDelphiFunction('Function StartService2( ServiceName : string) : boolean');
+ CL.AddDelphiFunction('Function StopService2( ServiceName : string) : boolean');
+end;
+
+procedure SIRegister_neuralbyteprediction(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('TNeuralCountings', 'array of longint');
+  SIRegister_TNeuronGroupBase(CL);
+  SIRegister_TNeuronGroup(CL);
+  CL.AddTypeS('TNeuralNetwork', 'array of TNeuronGroup');
+  SIRegister_TStatePredictionClass(CL);
+  SIRegister_TLabeledState(CL);
+  SIRegister_TClassifier(CL);
+  SIRegister_TEasyLearnAndPredictClass(CL);
+end;
+
+procedure SIRegister_neuralcache(CL: TPSPascalCompiler);
+begin
+ CL.AddConstantN('NeuralMaxStates','LongInt').SetInt( 400000);
+  CL.AddTypeS('TNeuralState', 'TBytes');
+  CL.AddTypeS('TProcPred', 'Procedure ( var ST : TBytes; Acao : byte)');
+  SIRegister_TCacheMem(CL);
+end;
+
+ResizeBitmap
+
+procedure ResizeBitmap(Bitmap: TBitmap; Width, Height: Integer; Background: TColor);
+function WMIRegConnect(WBemLocator: ISWBemLocator; Server, account, password: string): ISWBemServices;
+procedure WMIGetMethodInfo(srv: ISWbemServices; objname, method: string;  var regobject, inparms: ISWBemObject);
+procedure WMISetValue(InParam: ISWBemObject; keyvalue: string; invalue: OleVariant);
+
+ function ProcessCount(const ExeName: String): Integer;
+ function MaxWidthOfStrings(const Strings:Classes.TStrings; const Font: Graphics.TFont): Integer;
+ procedure ScreenShotMonitor(var Bitmap: TBitmap; const MonitorNum: Integer; const DrawCursor: Boolean; const Quality: TPixelFormat);
+
+ function CloneByteArray(const B: array of Byte): TBytes;
+ function PopByteArray(var A: TBytes): Byte;
+ procedure PushByteArray(const B: Byte; var A: TBytes);
+ procedure AppendByteArray(var B1: TBytes; const B2: array of Byte);
+ function ShiftByteArray(var A: TBytes): Byte;
+ 
+ function ShiftByteArray(var A: TBytes): Byte;
+begin
+  Assert(Length(A) > 0, 'A must be a non-empty array');
+  Result := A[0];
+  Move(A[1], A[0], Length(A) - 1);
+  SetLength(A, Length(A) - 1);
+end;
+
+procedure PushByteArray(const B: Byte; var A: TBytes);
+begin
+  SetLength(A, Length(A) + 1);
+  A[Pred(Length(A))] := B;
+end;
+
+function PopByteArray(var A: TBytes): Byte;
+begin
+  Assert(Length(A) > 0, 'A must be a non-empty array');
+  Result := A[Pred(Length(A))];
+  SetLength(A, Length(A) - 1);
+end;
+
+procedure AppendByteArray(var B1: TBytes; const B2: array of Byte);
+var
+  OldB1Len: Integer;
+begin
+  if Length(B2) = 0 then
+    Exit;
+  OldB1Len := Length(B1);
+  SetLength(B1, OldB1Len + Length(B2));
+  Move(B2[0], B1[OldB1Len], Length(B2));
+end;
+
+function CloneByteArray(const B: array of Byte): TBytes;
+begin
+  SetLength(Result, Length(B));
+  if Length(B) > 0 then
+    Move(B[0], Result[0], Length(B));
+end;
+
+
+procedure PushByteArray(const B: Byte; var A: TBytes);
+begin
+  SetLength(A, Length(A) + 1);
+  A[Pred(Length(A))] := B;
+end;
+
+function PopByteArray(var A: TBytes): Byte;
+begin
+  Assert(Length(A) > 0, 'A must be a non-empty array');
+  Result := A[Pred(Length(A))];
+  SetLength(A, Length(A) - 1);
+end;
+
+procedure AppendByteArray(var B1: TBytes; const B2: array of Byte);
+var
+  OldB1Len: Integer;
+begin
+  if Length(B2) = 0 then
+    Exit;
+  OldB1Len := Length(B1);
+  SetLength(B1, OldB1Len + Length(B2));
+  Move(B2[0], B1[OldB1Len], Length(B2));
+end;
+
+function CloneByteArray(const B: array of Byte): TBytes;
+begin
+  SetLength(Result, Length(B));
+  if Length(B) > 0 then
+    Move(B[0], Result[0], Length(B));
+end;
+
+
+  mX4 executed: 19/04/2020 23:43:23  Runtime: 0:0:1.527  Memload: 33% use
+  mX4 executed: 27/04/2020 21:33:18  Runtime: 0:0:1.611  Memload: 44% use
+  mX4 executed: 07/06/2020 13:41:27  Runtime: 0:0:1.571  Memload: 33% use
+  
+  https://wiki.freepascal.org/complex_number
+
+
+Max Kleiner's professional environment lies in the areas of machine learning, e-learning, OOP, UML and system architecture - including as a trainer, developer, consultant and publicist. His focus is on training, IT security, databases and frameworks that work in an event-oriented manner. As a lecturer and consultant at a university of applied sciences and on behalf of a company, microcontrollers and IoT have also been added. His book "Patterns in C #", published in 2003, is still up to date with the Clean Code Initiative.
+
+"Every war when it comes, or before it comes, is represented
+ not as a war but as an act of self-defense against a homicidal
+ maniac."
+ -- George Orwell
+
+>>> from sklearn.feature_extraction.text import TfidfVectorizer
+>>> corpus = [
+...     'This is the first document.',
+...     'This document is the second document.',
+...     'And this is the third one.',
+...     'Is this the first document?',
+... ]
+>>> vectorizer = TfidfVectorizer()
+>>> X = vectorizer.fit_transform(corpus)
+>>> print(vectorizer.get_feature_names())
+['and', 'document', 'first', 'is', 'one', 'second', 'the', 'third', 'this']
+>>> print(X.shape)
+(4, 9)
+
+ print('shape',X.shape())
+TypeError: 'tuple' object is not callable
+The terminal process terminated with exit code: 1
+
+
+   mX4 executed: 07/06/2020 13:41:11  Runtime: 0:0:1.619  Memload: 33% use
+    mX4 executed: 07/06/2020 13:42:08  Runtime: 0:0:1.556  Memload: 33% use
+     mX4 executed: 27/12/2020 15:28:40  Runtime: 0:0:1.831  Memload: 46% use

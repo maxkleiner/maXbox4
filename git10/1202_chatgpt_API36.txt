@@ -1,0 +1,570 @@
+program ChatGPT_API35_mX4;
+
+//https://rosettacode.org/wiki/100_prisoners#Pascal
+//https://github.com/ssut/py-googletrans/issues/268
+//TODO: test with a forth api-client : THTTPSender
+
+const
+   
+  AURLS='https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=%s&tl=%s&q=%s';
+  AURL='https://translate.googleapis.com/translate_a/single';
+  UAGENT ='Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0';
+  
+  TESTRES_JSON = '{"id":"cmpl-6zpQsiothxZUox0WCKWNdJKj6VDa7","object":"text_completion","created":1680193734,"model":"text-davinci-003","choices":[{"text":"\n\nmaXbox4 is a free and open source scripting language and development environment for Windows. It is designed to be easy to use and provides a powerful scripting language for creating applications, games, and other software. maXbox4 is based on the popular PASCAL language and includes a wide range of features, including support for object-oriented programming, graphical user interfaces, and more.","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":6,"completion_tokens":77,"total_tokens":83}} ';
+
+
+function Text_to_translate_API2(AURL, aclient,langorig,langtarget,atext: string):string; forward;
+
+function Text_to_translate_API2(AURL, aclient,langorig,langtarget,atext: string):string;
+var httpq: THttpConnectionWinInet;
+    rets: TStringStream;  
+    heads: TStrings; iht:IHttpConnection2; 
+    jo: TJSON; jarr:TJsonArray2; jobj: TJsonObject2;
+    tmpstr: string; 
+begin
+  httpq:= THttpConnectionWinInet.Create(true); 
+  rets:= TStringStream.create('');
+  heads:= TStringlist.create;     
+   try
+     {heads.add('client='+aclient);
+     heads.add('sl=auto');
+     heads.add('tl='+ langTarget);
+     heads.add('t='+atext); }
+     heads.add('User-Agent='+UAGENT);
+     iht:= httpq.setHeaders(heads);
+     //iht:= httpq.setParameters(heads);
+     httpq.Get(Format(AURLS,[langorig,langtarget,atext]),rets);
+     writeln('server: '+Httpq.GetResponseHeader('server'));
+     //writeln(Httpq.GetResponseHeader('pragma'));  
+     //tmpstr:= StringReplace(rets.datastring, '[','{[',[rfReplaceAll, rfIgnoreCase]);  
+     //tmpstr:= StringReplace(tmpstr, ']',']}',[rfReplaceAll, rfIgnoreCase]);     
+      jo:= TJSON.Create(); 
+      jo.parse(rets.datastring)   
+      jarr:= jo.JsonArray;
+      //writeln(jarr.items[0].stringify);
+      if httpq.getresponsecode=200 Then result:=jarr[0].stringify
+       else result:='Failed:'+
+             itoa(Httpq.getresponsecode)+Httpq.GetResponseHeader('message');    
+   except 
+      writeln('EWI_HTTP: '+ExceptiontoString(exceptiontype,exceptionparam));
+   finally
+     //httpq.free;
+     httpq:= Nil;
+     heads.Free;
+     rets.Free;
+     jo.free;
+   end;                  
+end;
+
+
+Const CHATGPT_APIKEY1 = 'sk-Lx_________use your own key___________________';
+
+{$I .\OPENAIAPIKEY.INC}
+
+function AskChatGPT(askstream: string): string;
+var
+  httpReq,hr: Olevariant;
+  JPostdata: string;
+  LJsonValue: TJsonValue;
+  LJsonArray: TJsonArray;
+  jo: TJSON;
+begin
+  Result:= '';
+  JPostData:= '{' +
+    '"model": "text-davinci-003",'+
+    //'"prompt": "' + AQuestion + '",'+
+    '"prompt": "%s",'+
+    '"max_tokens": 2048,'+
+    '"temperature": 0.1'+
+    '}';
+
+  // Use JSON for the REST API calls and set API KEY via Authorization header
+  httpReq:= CreateOleObject('WinHttp.WinHttpRequest.5.1');
+  jo:= TJSON.Create();
+  try             
+    hr:= httpReq.Open('POST',
+               'https://api.openai.com/v1/completions', false);
+    //httpReq.setRequestheader('user-agent',UAGENT);
+    // Select HTTPS POST method, set POST data and specify endpoint URL
+    httpReq.setRequestheader('content-type','application/json'); 
+    httpReq.setRequestheader('Authorization','Bearer '+ CHATGPT_APIKEY2);
+    if hr= S_OK then HttpReq.Send(format(JPostData,[askstream]));
+    //writeln(format(JTESTDATA,[feedstream]));
+    If HttpReq.Status = 200 Then
+       result:= HttpReq.responseText
+    Else result:= 'Failed at getting response:'+itoa(HttpReq.Status)+HttpReq.responseText;
+    //writeln('debug response '+HttpReq.GetAllResponseHeaders); 
+    // Process returned JSON when request was successful 
+    jo.parse(result) 
+    result:='Answer2: '+jo.values['choices'].asarray[0].asobject['text'].asstring;
+  finally
+    jo.Free;
+    httpreq:= unassigned;  
+  end;                
+end;
+
+
+function TALHTTPClient_AskChatGPT(feedstream, apiKey: string;
+                       aResponseContentStream:TStream;
+                       aResponseContentHeader:TALHTTPResponseHeader):string;
+Var
+   FRequestHeader: TALHTTPRequestHeader;
+   aPoststream: TStream;
+   JPostdata: string;
+begin
+  JPostData:= '{' +
+    '"model": "text-davinci-003",'+
+    //'"prompt": "' + AQuestion + '",'+
+    '"prompt": "%s",'+
+    '"max_tokens": 2048,'+
+    '"temperature": 0.1'+
+    '}';
+    
+  with TALWininetHttpClient.create do begin
+    Url:= 'https://api.openai.com/v1/completions';
+    RequestMethod:= HTTPmt_Post; //HTTPrm_Post;
+    //RequestHeader.UserAgent:= UAGENT;
+    RequestHeader.ContentType:= 'application/json';
+    RequestHeader.Authorization:= 'Bearer '+ CHATGPT_APIKEY2;
+    //RequestHeader.RawHeaderText:='Authorization: Bearer '+ CHATGPT_APIKEY2;
+    try
+      aPoststream:= TStringStream.create(format(JPostData,[feedstream]));
+      result:= Post3(Url, aPoststream); //overload;
+    finally
+      Free;
+      aPostStream.Free;
+    end; 
+  end; //with   
+end; 
+
+function WininetCompiled_AskChatGPT(aurl, askstream: string):string;
+var httpq: THttpConnectionWinInet;
+    rets, postdata: TStringStream;  
+    heads: TStrings; iht:IHttpConnection2; 
+    jo: TJSON; JPostdata: string; 
+begin
+  JPostData:= '{' +
+    '"model": "text-davinci-003",'+
+    //'"prompt": "' + AQuestion + '",'+
+    '"prompt": "%s",'+
+    '"max_tokens": 2048,'+
+    '"temperature": 0.21'+
+    '}';
+    
+  httpq:= THttpConnectionWinInet.Create(true);  //true:ARaiseExceptionOnError
+  rets:= TStringStream.create('');
+  postdata:= TStringStream.create('');
+  heads:= TStringlist.create;     
+   try
+     heads.add('User-Agent='+UAGENT);
+     heads.add('Authorization=Bearer '+CHATGPT_APIKEY2);
+     iht:= httpq.setHeaders(heads);
+     //iht:= httpq.setParameters(heads);
+     iht:= httpq.SetContentTypes('application/json');
+     StringToStream(format(JPostData,[askstream]), postdata);
+     httpq.Post(AURL,postdata,rets);
+     writeln('chatserver: '+Httpq.GetResponseHeader('server'));
+     writeln('date: '+Httpq.GetResponseHeader('date'));  
+     jo:= TJSON.Create(); 
+     jo.parse(rets.datastring)  
+     if httpq.getresponsecode=200 Then result:=
+                  jo.values['choices'].asarray[0].asobject['text'].asstring
+        else result:='Failed:'+
+              itoa(Httpq.getresponsecode)+Httpq.GetResponseHeader('server');    
+   except 
+      writeln('EWI_HTTPS: '+ExceptiontoString(exceptiontype,exceptionparam));
+   finally
+     //httpq.free;
+     httpq:= Nil;
+     heads.Free;
+     rets.Free;
+     jo.free;
+   end;                  
+end; 
+
+//https://github.com/azlotnikov/THTTPSender/blob/master/HTTPSender.pas
+
+function HTTPSender_AskChatGPT(aurl, askstream: string):string;
+var httpq: THTTPSender;
+    rets, postdata: TStringStream;  
+    heads: TStrings; resp: THTTPResponse; 
+    jo: TJSON; JPostdata: string; 
+begin
+  JPostData:= '{' +
+    '"model": "text-davinci-003",'+
+    //'"prompt": "' + AQuestion + '",'+
+    '"prompt": "%s",'+
+    '"max_tokens": 2048,'+
+    '"temperature": 0.21'+
+    '}';
+    
+  httpq:= THTTPSender.Create(self);  //true:ARaiseExceptionOnError
+  rets:= TStringStream.create('');
+  postdata:= TStringStream.create('');
+  heads:= TStringlist.create;     
+   try
+     httpq.headers.useragent:=UAGENT;
+     httpq.headers.contenttype:='application/json';
+     httpq.headers.CustomHeaders.add('Authorization=Bearer '+CHATGPT_APIKEY2);
+     httpq.Post3(AURL,format(JPostData,[askstream]),rets);
+     //resp:= Httpq.Response;
+     //writeln('chatserver: '+resp.location);
+     writeln('text: '+Httpq.REsponseText);  
+     jo:= TJSON.Create(); 
+     jo.parse(rets.datastring)  
+     //if httpq.getresponsecode=200 Then result:=
+                  jo.values['choices'].asarray[0].asobject['text'].asstring
+        //else result:='Failed:'+
+          //    itoa(Httpq.getresponsecode)+Httpq.GetResponseHeader('server');    
+   except 
+      writeln('EWI_HTTPS: '+ExceptiontoString(exceptiontype,exceptionparam));
+   finally
+     //httpq.free;
+     httpq:= Nil;
+     heads.Free;
+     rets.Free;
+     jo.free;
+   end;                  
+end; 
+
+//https://github.com/GussCloud/alcinoe-sources/blob/main/ALWininetHttpClient.pas
+
+function TALHTTPClient2_AskChatGPT(feedstream: string; 
+                               aResponseHeader:TALHTTPResponseHeader2):string;
+Var
+  poststrm: TStream;
+  JPostdata, aturl: string;
+  jo: TJSON;
+begin
+  JPostData:= '{' +
+    '"model": "text-davinci-003",'+
+    '"prompt": "%s",'+
+    '"max_tokens": 2048,'+
+    '"temperature": 0.21'+
+    '}';
+    
+  with TALWininetHttpClient2.create do begin
+    atUrl:= 'https://api.openai.com/v1/completions';
+    //RequestHeader.UserAgent:= UAGENT;
+    RequestHeader.ContentType:= 'application/json';
+    RequestHeader.Authorization:= 'Bearer '+ CHATGPT_APIKEY2;
+    try
+      poststrm:= TStringStream.create(format(JPostData,[feedstream]));
+      jo:= TJSON.Create(); 
+      jo.parse(Post3(atUrl, poststrm, [])) 
+      result:= jo.values['choices'].asarray[0].asobject['text'].asstring;
+    finally
+      Free;
+      postStrm.Free;
+      jo.Free;
+    end; 
+  end; //with   
+end; 
+
+procedure TForm1Button1Click(Sender: TObject);
+var URL: string;
+    Params: string;
+    Response: TMemoryStream;
+
+begin
+  Response := TMemoryStream.Create;
+
+  try
+    URL := 'http://posttestserver.com/post.php?dump&html';
+
+    Params := 'parameter1=' + EncodeURLElement('data1') + '&' +
+              'parameter2=' + EncodeURLElement('data2');
+
+    if HttpPostURL(URL, Params, Response) then
+      Response.SaveToFile('c:\response.txt');
+
+  finally
+    Response.Free;
+  end;
+end;
+
+procedure postcheck;
+var
+  HTTP: TIdHTTP;
+  RequestBody: TStream;
+  ResponseBody: string;
+begin
+  HTTP := TIdHTTP.Create(self);
+  try
+    try
+      //RequestBody := TStringStream.Create('{"code":42}',
+        //TEncoding.UTF8);
+        RequestBody := TStringStream.Create('{"code":42}');
+      try
+        HTTP.Request.Accept := 'application/json';
+        HTTP.Request.ContentType := 'application/json';
+        ResponseBody := HTTP.Post2('https://httpbin.org/post',
+          RequestBody);
+        WriteLn(ResponseBody);
+        WriteLn(HTTP.ResponseText);
+      finally
+        RequestBody.Free;
+      end;
+    except
+      //on E: EIdHTTPProtocolException do
+      begin
+        WriteLn('E.Message');
+        WriteLn('E.ErrorMessage');
+      end;
+      //on E: Exception do
+      begin
+        WriteLn('E.Message');
+      end;
+    end;
+  finally
+    HTTP.Free;
+  end;
+  //ReadLn(;
+end;
+
+function POSTDirect_AskChatGPT(feedstream: string; 
+                               aResponseHeader:TALHTTPResponseHeader2):string;
+Var
+  poststrm: TStringStream;
+  JPostdata, aturl, resul: string;
+  jo: TJSON;   syns: sockstring;
+begin
+  JPostData:= '{' +
+    '"model": "text-davinci-003",'+
+    '"prompt": "%s",'+
+    '"max_tokens": 2048,'+
+    '"temperature": 0.21'+
+    '}';
+  
+  //HttpPostURL  
+  //with TALWininetHttpClient2.create do begin
+    atUrl:= 'https://api.openai.com/v1/completions';
+    //RequestHeader.UserAgent:= UAGENT;
+    //RequestHeader.ContentType:= 'application/json';
+    //RequestHeader.Authorization:= 'Bearer '+ CHATGPT_APIKEY2;
+      sr:= 'ContentType=application/json'+CRLF ;
+      sr:= sr+'Authorization=Bearer '+ CHATGPT_APIKEY2+CRLF ;
+      sr:= sr+((format(JPostData,[feedstream])));
+      //sr:= sr+'language=english'; 
+    poststrm:= TStringStream.create('');
+    writeln(sr);
+    //function WebPostData2(const UserAgent:string;const Server:string; const Resource:string; 
+      //                   const Data:AnsiString): String;
+    //https://stackoverflow.com/questions/2977720/how-to-send-a-http-post-request-in-delphi-2010-using-wininet  
+    result:= WebPostData2(UAGENT, atUrl, '',sr) 
+    //Function synHttpPost(const server, port : SockString; const url, Data, DataType : SockString) : boolean');
+    syns:= atUrl;
+    //if synHttpPost('https://api.openai.com','443',atUrl, sr,'json') then 
+    //if HttpPostURL(aturl, sr,poststrm) then 
+     //writeln('don'); 
+    try
+      
+      jo:= TJSON.Create(); 
+      jo.parse(poststrm.datastring); 
+      result:= jo.values['choices'].asarray[0].asobject['text'].asstring;
+    finally
+      //Free;
+      postStrm.Free;
+      jo.Free;
+    end; 
+end; 
+
+const PYHOME = 'C:\Users\breitsch\AppData\Local\Programs\Python\Python37-32\';
+
+const genfunc = 
+  'def generate_response(prompt):            '+LF+
+  '   response = openai.Completion.create(   '+LF+
+  '      engine="text-davinci-002",          '+LF+
+  '      prompt=prompt,                      '+LF+
+  '      max_tokens=60,                      '+LF+
+  '      n=1,                                '+LF+
+  '      stop=None,                          '+LF+
+  '      temperature=0.5,                    '+LF+
+  '     )                                    '+LF+
+  '   return response.choices[0].text.strip()';
+
+function Python32_AskChatGPT(feedstream: string): string;
+begin
+with TPythonEngine.Create(Nil) do begin                         
+    pythonhome:= PYHOME;
+    try                                                           
+      loadDLL;                                                    
+      execStr('import openai'); 
+      //https://github.com/sknetwork-team/scikit-network/issues/498   
+      execstr('openai.api_key = "sk-your-api-key"');             
+      execStr(genfunc);
+      //execStr('connection.request("GET","api.parse.com/echo")');
+      println(evalStr('openai.version'));     
+      println(evalStr('generate_response("What is the capital of France?")'));       
+    except                                                        
+      raiseError;                                                 
+    finally 
+      unloadDLL;                                                       
+      free;                                                       
+    end;                                                          
+  end;
+end;                     
+
+
+var atext: string; jo:TJSON;
+Begin //@main
+  //atext:= 'bonjour mes amis da la ville';
+  atext:= URLEncode('A research paper suggests improving GPT-4 performance by 30% by having it consider why it was wrong.');
+ // atext:= 'bonjour mes amis';
+  //writeln(utf8ToAnsi(Text_to_traslate_API2(AURL,'dict-chrome-ex','fr','es',atext)));
+  //writeln(utf8ToAnsi(Text_to_translate_API2(AURL,'dict-chrome-ex','auto','it',atext)));
+  //sleep(500);
+    
+    {jo:= TJSON.Create();
+    try
+    jo.parse(TESTRES_JSON) 
+    writeln('answer: '+stringreplace(jo.values['choices'].asarray[0].asobject['text'].asstring,'\n\n',
+                              CRLF,[rfReplaceAll]));
+    except
+      writeln(ExceptiontoString(exceptiontype,exceptionparam));
+    end;  
+    jo.clear;
+    jo.free;   //}
+    
+   //writeln(AskChatGPT('how large is the earth?'));
+   // writeln(AskChatGPT('What is maXbox4?'));
+   //writeln(AskChatGPT('What is similar to maXbox4?'));
+   
+   //writeln('answer3 '+TALHTTPClient_AskChatGPT('how large is the moon?','',Nil,Nil));
+   
+   //writeln('answer4: '+WininetCompiled_AskChatGPT('https://api.openai.com/v1/completions',
+     //    'what is arcturus?'));
+     
+   //writeln('answer5: '+HTTPSender_AskChatGPT('https://api.openai.com/v1/completions',
+     //    'what is arcturus?'));  
+     
+   //writeln('answer6: '+TALHTTPClient2_AskChatGPT('what is arcturus?', nil)); 
+    //writeln('answer6: '+TALHTTPClient2_AskChatGPT('how an sftp-server gets my public key?', nil));  
+    //writeln('answer6: '+TALHTTPClient2_AskChatGPT('What is the capital of Kazahkstan?', nil));  
+     //writeln('answer6: '+TALHTTPClient2_AskChatGPT('Was ist die Spurbreite der RBS-Bahn?', nil)); 
+     //writeln('answer6: '+TALHTTPClient2_AskChatGPT('Ist Die Spurbreite der RBS-Bahn 1000 mm?', nil));  
+      //writeln('answer6: '+TALHTTPClient2_AskChatGPT('Why is earth bigger than the sun?', nil));
+     
+     //writeln('answer6: '+TALHTTPClient2_AskChatGPT('Since when is Oslo the Capital of Denmark?', nil));
+     
+    //writeln('answer7: '+Python32_AskChatGPT('What is the capital of Kazahkstan?'));
+   
+  //writeln('answer6: '+TALHTTPClient2_AskChatGPT('why is the answer of all questions 42', nil));
+ 
+  writeln('answer6: '+TALHTTPClient2_AskChatGPT('why is maXbox4 better than maXbox3', nil));
+  
+  //writeln('answer8: '+POSTDirect_AskChatGPT('why is maXbox4 better than maXbox3', nil));
+     
+    writeln(flots(esbgamma(3.312097297+1)))     
+    writeln(flots(inversegamma(9.0)))      
+    
+    //writeln(getpython3)
+End.
+
+doc: https://github.com/breitsch2/DelphiChatGPT
+
+     https://github.com/GussCloud/alcinoe-sources/blob/main/ALWininetHttpClient.pas
+     
+     https://platform.openai.com/account/usage
+
+     Needs to be dict-chrome-ex or else you'll get a 403 error.
+     Exception: WinHttp.WinHttpRequest: The operation timed out
+     
+     https://help.openai.com/en/articles/6882433-incorrect-api-key-provided
+     <module 'openai.version' from 'C:\\Users\\breitsch\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\openai\\version.py'>
+Exception: <class 'openai.error.AuthenticationError'>: Incorrect API key provided: sk-your-***-key. You can find your API key at https://platform.openai.com/account/api-keys.
+     
+ 
+ how a sftp-server gets my public key?
+ answer6: 
+
+
+A SFTP server will get your public key when you connect to it using an SSH client. The SSH client will send your public key to the SFTP server, which will then use it to authenticate your connection.  
+answer6: 
+
+An SFTP server can get your public key by you sending it to the server. This can be done by using a secure file transfer protocol (SFTP) client to connect to the server and upload the public key file. Alternatively, you can also manually copy and paste the public key into server's authorized_keys file.  
+An SFTP server can get your public key in a few different ways. The most common way is for you to upload your public key to the server. This can be done using an SFTP client, such as FileZilla, or through a web-based interface. You can also provide your public key to the server administrator, who can then add it to the server's authorized_keys file.     
+  
+ is there a difference between earth and world?    
+ answer4: 
+ 
+ 
+
+Yes, there is a difference between Earth and World. Earth is the planet we live on, while World is a term used to refer to the entire planet, including all of its inhabitants and cultures.    
+
+{"id":"cmpl-6zp3hsVt6HzUdDiCVKVkPcE0umXGm","object":"text_completion","created":1680192297,"model":"text-davinci-003","choices":[{"text":"\n\nThe Earth has a mean radius of 3,959 miles (6,371 kilometers).","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":5,"completion_tokens":20,"total_tokens":25}}
+
+{"id":"cmpl-6zp8eDsADQT4Br6NKkFT3jJPYKJHU","object":"text_completion","created":1680192604,"model":"text-davinci-003","choices":[{"text":"\n\nmaXbox4 is a free and open source scripting language and development environment for Windows. It is designed to be easy to use and provides a powerful scripting language for creating applications, games, and other software. maXbox4 is based on the popular BASIC language and includes a wide range of features, including support for object-oriented programming, graphical user interfaces, and more.","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":6,"completion_tokens":77,"total_tokens":83}}
+
+Do you know maXbox4?
+Yes, maXbox4 is a free scripter tool and IDE for making applications in various programming languages, including Visual Basic, C#, and JavaScript. It is designed to be easy to use and provides a range of features to help users create applications quickly and easily.
+
+Answer2: 
+
+maXbox4 is a free scripting tool for creating and running scripts written in the PASCAL language. It is designed to be used for educational purposes and can be used to create programs for Windows, Linux, and Mac OS X. maXbox4 includes a debugger, an editor, and a compiler, and can be used to create programs for a variety of tasks, including game development, web development, and automation.
+ mX4 executed: 30/03/2023 21:17:56  Runtime: 0:0:3.489  Memload: 47% use
+
+answer2: 
+
+maXbox4 is a free scripting tool and open source object pascal ide for creating Windows, Linux, and macOS applications. It is designed to be easy to use and provides a wide range of features, including an integrated debugger, code completion, syntax highlighting, and more. maXbox4 is based on the Free Pascal compiler and Lazarus IDE.
+ mX4 executed: 30/03/2023 21:22:19  Runtime: 0:0:4.92  Memload: 47% use
+ 
+Answer2: 
+
+maXbox4 is a free and open source software development tool for creating and running programs written in the Object Pascal programming language. It is designed to be used with the Lazarus IDE, and is based on the Delphi compiler. maXbox4 is a powerful tool for creating applications for Windows, Linux, Mac OS X, iOS, and Android. It includes a wide range of features, such as a visual designer, debugging tools, and a code editor.
+ mX4 executed: 30/03/2023 22:27:07  Runtime: 0:0:3.824  Memload: 49% use
+
+ref: https://github.com/rilyu/json4delphi/issues/7
+
+ mX4 executed: 27/03/2023 17:52:23  Runtime: 0:4:58.888  Memload: 39% use
+
+Doc: The task
+    Simulate several thousand instances of the game where the prisoners randomly open drawers
+    Simulate several thousand instances of the game where the prisoners use the optimal strategy mentioned in the Wikipedia article, of:
+
+    First opening the drawer whose outside number is his prisoner number.
+    If the card within has his number then he succeeds otherwise he opens the drawer with the same number as that of the revealed card. (until he opens his maximum).
+    
+C:\Program Files\Streaming\IBZ2021\maxbox47610\maxbox4>pip3 install openai
+Collecting openai
+  Downloading openai-0.27.2-py3-none-any.whl (70 kB)
+     |¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦| 70 kB 1.1 MB/s
+Collecting aiohttp
+  Downloading aiohttp-3.8.4-cp37-cp37m-win32.whl (306 kB)
+     |¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦| 306 kB 3.3 MB/s
+Requirement already satisfied: requests>=2.20 in c:\users\breitsch\appdata\local\programs\python\python37-32\lib\site-packages (from openai) (2.25.1)
+Requirement already satisfied: typing-extensions; python_version < "3.8" in c:\users\breitsch\appdata\local\programs\python\python37-32\lib\site-packages (from openai) (3.10.0.2)
+Requirement already satisfied: tqdm in c:\users\breitsch\appdata\local\programs\python\python37-32\lib\site-packages (from openai) (4.62.3)
+Collecting attrs>=17.3.0
+  Downloading attrs-22.2.0-py3-none-any.whl (60 kB)
+     |¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦| 60 kB 3.3 MB/s
+Collecting asynctest==0.13.0; python_version < "3.8"
+  Downloading asynctest-0.13.0-py3-none-any.whl (26 kB)
+Collecting multidict<7.0,>=4.5
+  Downloading multidict-6.0.4-cp37-cp37m-win32.whl (25 kB)
+Collecting frozenlist>=1.1.1
+  Downloading frozenlist-1.3.3-cp37-cp37m-win32.whl (31 kB)
+Collecting aiosignal>=1.1.2
+  Downloading aiosignal-1.3.1-py3-none-any.whl (7.6 kB)
+Collecting yarl<2.0,>=1.0
+  Downloading yarl-1.8.2-cp37-cp37m-win32.whl (52 kB)
+     |¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦| 52 kB 488 kB/s
+Requirement already satisfied: charset-normalizer<4.0,>=2.0 in c:\users\breitsch\appdata\local\programs\python\python37-32\lib\site-packages (from aiohttp->openai) (2.0.4)
+Collecting async-timeout<5.0,>=4.0.0a3
+  Downloading async_timeout-4.0.2-py3-none-any.whl (5.8 kB)
+Requirement already satisfied: urllib3<1.27,>=1.21.1 in c:\users\breitsch\appdata\local\programs\python\python37-32\lib\site-packages (from requests>=2.20->openai) (1.26.6)
+Requirement already satisfied: certifi>=2017.4.17 in c:\users\breitsch\appdata\local\programs\python\python37-32\lib\site-packages (from requests>=2.20->openai) (2021.5.30)
+Requirement already satisfied: chardet<5,>=3.0.2 in c:\users\breitsch\appdata\local\programs\python\python37-32\lib\site-packages (from requests>=2.20->openai) (4.0.0)
+Requirement already satisfied: idna<3,>=2.5 in c:\users\breitsch\appdata\local\programs\python\python37-32\lib\site-packages (from requests>=2.20->openai) (2.10)
+Requirement already satisfied: colorama; platform_system == "Windows" in c:\users\breitsch\appdata\local\programs\python\python37-32\lib\site-packages (from tqdm->openai) (0.4.4)
+Installing collected packages: attrs, asynctest, multidict, frozenlist, aiosignal, yarl, async-timeout, aiohttp, openai
+Successfully installed aiohttp-3.8.4 aiosignal-1.3.1 async-timeout-4.0.2 asynctest-0.13.0 attrs-22.2.0 frozenlist-1.3.3 multidict-6.0.4 openai-0.27.2 yarl-1.8.2
+WARNING: You are using pip version 20.1.1; however, version 23.0.1 is available.
+You should consider upgrading via the 'c:\users\breitsch\appdata\local\programs\python\python37-32\python.exe -m pip install --upgrade pip' command.
+
+C:\Program Files\Streaming\IBZ2021\maxbox47610\maxbox4>
+
+>>> dir (openai)
+['APIError', 'Audio', 'ChatCompletion', 'Completion', 'ContextVar', 'Customer', 'Deployment', 'Edit', 'Embedding', 'Engine', 'ErrorObject', 'File', 'FineTune', 'Image', 'InvalidRequestError', 'Model', 'Moderation', 'OpenAIError', 'Optional', 'TYPE_CHECKING', '__all__', '__annotations__', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__path__', '__spec__', 'aiosession', 'api_base', 'api_key', 'api_key_path', 'api_requestor', 'api_resources', 'api_type', 'api_version', 'app_info', 'ca_bundle_path', 'datalib', 'debug', 'enable_telemetry', 'error', 'log', 'openai_object', 'openai_response', 'organization', 'os', 'proxy', 'util', 'verify_ssl_certs', 'version']
+     
+

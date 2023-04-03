@@ -1,0 +1,502 @@
+//****************Shell Tester**************************
+program RESTcountries_Composer1;
+
+//API Endpoints v3
+//https://restcountries.com/
+
+//http://www.softwareschule.ch/examples/alhttpclient2.txt
+//http://www.softwareschule.ch/examples/maxbox_functions.txt
+//http://www.softwareschule.ch/examples/maxbox_functions_sort.txt
+//https://github.com/apilayer/restcountries
+//http://www.softwareschule.ch/examples/json7.txt
+//https://gist.github.com/felipecaputo/535541dd7cfd06b5070844375fc16aa4
+//http://www.softwareschule.ch/examples/jsonlib.htm
+
+Const 
+  WeatherAPIKEY='55013bf3d09cfb0619989a00ed5bed09';      
+  URLWeatherAPI='https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&appid=%s';
+  RESTCountries = 'https://restcountries.com/v3.1/name/%s';
+  RESTCountriesC = 'https://restcountries.com/v2/capital/%s';
+     
+  
+function GetWeatherStreamJSON(const Data, APIKEY: string): string;
+var encodURL: string;
+    mapStrm: TStringStream; jo: TJSONObject; 
+begin
+  encodURL:= Format(URLWeatherAPI,[HTTPEncode(Data), APIKEY]);         
+  mapStrm:= TStringStream.create('');
+  try
+    HttpGet(EncodURL, mapStrm);  //WinInet
+    mapStrm.Position:= 0;
+    jo:= TJSONObject.Create4(mapStrm.datastring);
+    result:= jo.getjsonarray('weather').getjsonobject(0).getstring('description');
+    result:= result+' '+jo.getjsonobject('main').getstring('temp');
+  except  
+    writeln('Error: '+mapstrm.datastring);
+    writeln('E: '+ExceptiontoString(exceptiontype, exceptionparam));   
+  finally
+    mapStrm.Free;                                 
+    encodURL:= '';
+    jo.Free;
+  end;
+end;
+
+const HIDDENT='"flag": "https://flagcdn.com/ch.svg",'+
+    '"regionalBlocs": [                             '+
+    '  {                                            '+
+    '    "acronym": "EFTA",                         '+
+    '    "name": "European Free Trade Association"  '+
+    '  }                                            '+
+    '],                                             '+
+    '"cioc": "SUI",                                 '+
+    '"independent": true                            '+
+ '}                                                 ';
+
+const HIDDENT2=  ',"flag":"https://flagcdn.com/ch.svg","regionalBlocs":[{"acronym":"EFTA","name":"European Free Trade Association"}],"cioc":"SUI","independent":true';
+
+//private final static String JSON_TEST_DATA
+const HIDDENT3=
+         '{'
+        + '   \"tms_guid\": \"9LaHmoHpmTd811R\", '
+        + '   \"recharge_status\": \"100\", '
+        + '   \"message\": \"Transaction Successful\", '
+        + '   \"response_time\": { '
+        + '      \"verifyClient\": 0.0281, '
+        + '      \"verifyGuid\": 0.8695, '
+        + '      \"verifyOperator\": 0.8698,'
+        + '      \"verifyMsid\": 0.8698,'
+        + '      \"tms_guid\": 1.6971,'
+        + '      \"queryErr\": 7.4243,'
+        + '      \"StoringRecharge\": 7.4358,'
+        + '      \"UpdatingBalance\": 7.448'
+        + '   }'
+        + '}';
+        
+const HIDDENT4INVALID=        
+   '{'+
+   ' "tms_guid": "9LaHmoHpmTd811R",         '+
+   ' "recharge_status": "100",              '+
+   ' "message": "Transaction Successful",   '+
+   ' "response_time": {                     '+
+   '   "verifyClient": 0.0281,              '+
+   '   "verifyGuid": 0.8695,                '+
+   '   "verifyOperator": 0.8698,            '+
+   '   "verifyMsid": 0.8698,                '+
+   '   "tms_guid": 1.6971,                  '+
+   '   "queryErr": 7.4243,                  '+
+   '   "StoringRecharge": 7.4358,           '+
+   '   "UpdatingBalance": 7.448             '+
+   '  }                                     '+
+   '}                                       ';
+   
+const HIDDENT4VALID=
+   '{'+
+	'"tms_guid": "9LaHmoHpmTd811R",          '+
+	'"recharge_status": "100",               '+
+	'"message": "Transaction Successful",    '+
+	'"response_time": {                      '+
+	'	"verifyClient": 0.0281,               '+
+	'	"verifyGuid": 0.8695,                 '+
+	'	"verifyOperator": 0.86                '+
+	'	"verifyMsid": 0.8698,                 '+
+	'	"tms_guid": 1.6971,                   '+
+	'	"queryErr": 7.4243,                   '+
+	'	"StoringRecharge": 7.4358,            '+
+	'	"UpdatingBalance": 7.448              '+
+	' }                                      '+
+   '}';
+
+//https://stackoverflow.com/questions/22394748/json-conversion-error-expected-after-key
+//{{"x" : 100, "y" : 90},{"x" : 100, "y" : 85}}
+//Use [] not {} as the outer brackets, or :[{ --> :{{
+
+function GetRestCountriesJSON(const URLCountry, Data, APIKEY: string): string;
+var encodURL, s2, tmpstr: string;
+    mapStrm: TStringStream; jo, jo2: TJSONObject; ajar: TJSONArray; 
+    i1, i2: integer;
+begin
+  //data:= 'germany';
+  encodURL:= Format(URLCountry,[HTTPEncode(Data), APIKEY]); 
+  //encodURL:= Format(URLCountry,[HTTPEncode(Data)]);        
+  mapStrm:= TStringStream.create('');
+  try
+    HttpGet(EncodURL, mapStrm);  //WinInet
+    mapStrm.Position:= 0;
+   { i1 := pos(',"postalCode"', mapStrm.datastring); 
+     i2:= pos('$"', mapStrm.datastring); 
+     writeln('pos '+itoa(i2));        
+     tmpstr:= mapStrm.datastring;            
+     delete(tmpstr, i1, i2-i1+3);    
+     writeln(tmpstr)
+     writeln('  ');   }  
+     {tmpstr:= S_AllTrim(mapStrm.datastring)
+     tmpstr:= StringReplace(mapStrm.datastring, ',"independent":true',
+                           '',[rfReplaceAll, rfIgnoreCase]);  }
+     //tmpstr:= StringReplace(mapStrm.datastring, HIDDENT2,
+       //                     '',[rfReplaceAll, rfIgnoreCase]);                         
+    //tmpstr:= S_AllTrim(tmpstr)   
+    //writeln(tmpstr)
+     writeln('  ');                                       
+    //jo:= TJSONObject.Create4('{'+tmpstr+'}');  
+   // jo:= TJSONObject.Create4(HIDDENT4VALID);  
+    //try 
+    //imoortant hack: we have to replace json node from [{ to { ! 
+    tmpstr:= StringReplace(mapStrm.datastring, '[{"name',
+                           '{"name',[rfReplaceAll, rfIgnoreCase]);
+    writeln(tmpstr)
+     writeln('  ');                           
+     jo:= TJSONObject.Create4(''+tmpstr+'}');  
+    //except
+    //end;                   
+    //result:=jo.getjsonarray('borders').getjsonobject(0).getstring('description');
+    //Function remove( key : string) : TZAbstractObject');
+     jo.remove('flag');
+     writeln('capital: '+(jo.getstring('capital')));
+     writeln('len '+itoa(jo.getjsonobject('translations').length))
+     jo2:= jo.getjsonobject('translations');
+     //ajar:= jo.getjsonobject(it).getstring('translations')
+     ajar:= jo.names;
+     writeln('len names languages: '+itoa(ajar.length))
+     for it:= 0 to jo2.length-1 do 
+             writeln(jo2.getstring(jo2.keys[it]));
+     ajar:= jo.getjsonarray('borders'); 
+     writeln('len names borders: '+itoa(ajar.length))   
+     for it:= 0 to ajar.length-1 do 
+             writeln(ajar.getstring(it));    
+    //result:= jo.getjsonarray('borders').getjsonobject(0).getstring;        
+    //result:= result+' '+jo.getjsonobject('main').getstring('temp');
+  except  
+    //writeln('Error: '+mapstrm.datastring);
+    writeln('E: '+ExceptiontoString(exceptiontype, exceptionparam));   
+  finally
+    mapStrm.Free;                                 
+    encodURL:= '';
+    jo.Free;
+  end;
+end;
+
+function GetRestCountriesJSON2(const URLCountry, Datafeed, APIKEY: string): string;
+var encodURL, tmpstr: string;
+    mapStrm: TStringStream; jo,jo2: TJSONObject; ajar: TJSONArray; //jconv:TJSONConverter ;
+begin
+  //datafeed:= 'vienna';
+  encodURL:= Format(URLCountry,[HTTPEncode(Datafeed), APIKEY]); 
+  mapStrm:= TStringStream.create('');
+  try
+    HttpGet(EncodURL, mapStrm);  //WinInet
+    mapStrm.Position:= 0;
+     writeln('  ');                                       
+    // jo:= TJSONObject.Create4(HIDDENT4VALID);  
+    //imoortant hack: we have to replace json node from [{ to { ! 
+    tmpstr:= StringReplace(mapStrm.datastring, '[{"name',
+                           '{"name',[rfReplaceAll, rfIgnoreCase]);
+    writeln(tmpstr)
+     writeln('  ');                           
+     jo:= TJSONObject.Create4(''+tmpstr+'}');  
+    //Function remove( key : string) : TZAbstractObject');
+     jo.remove('flag');
+     writeln('capital: '+(jo.getstring('capital')));
+     writeln('nativename: '+
+       jo.getjsonobject('name').getjsonobject('nativename').getjsonobject('fra').getstring('common'));
+     writeln('len translations: '+itoa(jo.getjsonobject('translations').length))
+     jo2:= jo.getjsonobject('translations');
+     ajar:= jo.names;
+     writeln('opt: '+ajar.optstring(6))
+     //writeln('optarray: '+ajar.getjsonarray(6).getjsonarray(1).getstring(1))
+     writeln('len node names: '+itoa(ajar.length))
+     for it:= 0 to jo2.length-1 do 
+             writeln(jo2.getstring(jo2.keys[it]));
+     ajar:= jo.getjsonarray('borders'); 
+     writeln('len names borders: '+itoa(ajar.length))   
+     for it:= 0 to ajar.length-1 do 
+             writeln(ajar.getstring(it));    
+     jo2:= jo.getjsonobject('languages');  
+     writeln('len names languages: '+itoa(jo2.length))  
+     for it:= 0 to jo2.length-1 do begin
+        //writeln(jo2.getstring(it));  
+        writeln(jo2.getstring(jo2.keys[it])); 
+     end; 
+     writeln(jo.getjsonobject('flags').getstring('png'))   
+     openweb(jo.getjsonobject('maps').getstring('openStreetMaps'));    
+  except  
+    //writeln('Error: '+mapstrm.datastring);
+    writeln('E: '+ExceptiontoString(exceptiontype, exceptionparam));   
+  finally
+    mapStrm.Free;                                 
+    encodURL:= '';
+    jo.Free;
+    //ajar.Free; //jo2.Free;
+  end;
+end;
+
+function RemoveChars2(sourceString: string; sCharsToBeRemoved: string):string;
+var I: Integer;
+begin
+  //Prepare enpty string for our result str to which we will be copying our end characters
+  result := '';
+  //Loop through the whole string
+  for I := 1 to Length(sourceString) do begin
+    //If specific haracter can't be found in sCharsToBeRemoved copy that character to the 
+    //result string
+    if Pos(sourceString[I], sCharsToBeRemoved) = 0 then begin
+      result := result + sourceString[I];
+    end;
+  end;
+end;
+
+type
+  TReplacePair = record
+    TextValue: string;
+    ReplaceValue: string;
+  end;
+
+  TReplacePairs = array of TReplacePair;
+
+function GetReplacementPairs: TReplacePairs;
+var
+  ConfigInfo: TStringList;
+  i, Split: Integer;
+begin
+  ConfigInfo := TStringList.Create;
+  try
+    ConfigInfo.LoadFromFile('ReplacementPairs.txt');
+    SetLength(Result, ConfigInfo.Count);
+    for i := 0 to ConfigInfo.Count - 1 do begin
+      Split := Pos('|', ConfigInfo[i]);
+      Result[i].TextValue := Copy(ConfigInfo[i], 1, Split - 1);
+      Result[i].ReplaceValue := Copy(ConfigInfo[i], Split + 1, MaxInt);
+    end;
+  finally
+    ConfigInfo.Free;
+  end;
+end;
+
+
+//https://www.quora.com/What-factorial-has-precisely-23-zeros
+procedure PyCodeQuora(imgpath: string);
+begin
+  with TPythonEngine.Create(Nil) do begin
+  pythonhome:= 'C:\Users\max\AppData\Local\Programs\Python\Python36-32\';
+  try
+    loadDLL;
+    ExecString('from math import factorial');
+    Println(EvalStr('[n for n in range(5*24) if str(factorial(n)).count("0")==23]'));  
+  except
+    raiseError;        
+  finally 
+    unloadDLL;      
+    free;
+  end; 
+ end;
+end; 
+
+procedure PaCodeQuora(factpath: integer);
+begin
+  try
+    for it:= 1 to factpath do 
+      if jCountChar(bigfact(it),'0')=23 then write(itoa(it)+',');
+    //jCountChar( const s :Str; ch : char) : Int; 
+    writeln('');
+  except
+    //raiseError;  
+    writeln('EPa: '+ExceptiontoString(exceptiontype, exceptionparam));       
+  end; 
+end; 
+
+
+ //var   IDoc: IHTMLDocument2;
+var regEx: TRegExpr; //or OleVariant if HISUtils;
+    envlist: Tstringlist; bbb: TBytes;
+    DaysDiff: Double;
+
+begin  //@main
+  //maxform1.ShellStyle1click(self)
+  maxform1.Console1Click(self)
+  
+  writeln('Back of weatherjs capital Bern: '+GetWeatherStreamJSON('Bern,CH',WeatherAPIKEY));
+  
+   DaysDiff := now - strtodate('20/06/1959');
+    writeln(FloatToStr(DaysDiff));
+    writeln(FloatToStr(trunc(DaysDiff)));
+    DaysDiff := DaySpan(now, strtodate('20/06/1959'));
+    writeln(FloatToStr(trunc(DaysDiff)));
+    writeln(FloatToStr((DaysDiff)));
+   //https://www.wolframalpha.com/input?i=difference+now+-+20.06.1959
+    
+    //PyCodeQuora('');
+    PaCodeQuora(120);
+   
+   //test with https://restcountries.com/v3.1/name/switzerland
+    //GetRestCountriesJSON(RESTCountries,'switzerland','');
+    // GetRestCountriesJSON2(RESTCountriesC,'bern','');  
+    GetRestCountriesJSON2(RESTCountries,'switzerland','');        
+  
+  //writeln(itoa(JExecute('cmd /C dir *.*',@TTextHandlerQ, true, false))); 
+  //writeln(itoa(JExecute('cmd /c wmic cpu get name',@TTextHandlerQ, true, false))); 
+  //writeln(GETDOSOutput('cmd.exe /c wmic cpu get architecture','C:\'));
+  //writeln(itoa(JExecute('cmd /c netstat -o',@TTextHandlerQ, true, false))); 
+ //writeln(GETDOSOutput('powershell wget "http://www.softwareschule.ch/examples/1080_trend.pas"',
+  //                                                            'C:\'));
+   
+  { envlist:= Tstringlist.create;
+   InStr:= filetostring(Exepath+'\Examples\vararrayofFilename_savereport.txt');
+   StrtoList(InStr, envlist, CR)
+   writeln('envlist count: '+itoa(envlist.count));
+   cnt:= 0;
+   regEx:= TRegExpr.create; //HISUtils.RegExpr;
+   regEx.Expression:='var [\w+:\w:\w :,]+ array of byte';
+   // Execute search
+   for it:= 0 to envlist.count-1 do 
+     if regEx.Exec(envlist[it]) then begin
+       writeln(itoa(cnt)+':'+envlist[it]);
+       inc(cnt)
+     end;  
+   regex.Free;
+   envlist.Free;    }
+   //BAClear(bbb);
+   
+   //writeln(itoa(wdc_GetRemoteFileSize('https://assets.catawiki.com/image/pr:cw_large/plain/assets/catawiki/assets/2019/6/11/0/8/d/08d17332-cebf-4d83-a622-1a658ae7f056.jpg')));
+       
+End.
+
+Doc: https://gitlab.com/amatos/rest-countries/-/blob/master/README.md
+https://github.com/maxkleiner/restcountries
+
+This API works the following way: it offers the service of geocoding, cartography, and many other possibilities. In our example, we will use direct geocoding. We will send the address to receive latitude, longitude, and the information we get via the REST Debugger. To get the response we should configure the JSON root using the data element:
+ 
+It looks like they never renewed their SSL certificate. In the meantime, you can use https://restcountries.com/ is a cloned repo that I update frecuently
+
+      we download a script-file in powershell with wget Invoke-WebRequest open the file to check
+      the content, then execute the script and get the result back to maXbox-console as memo2.
+      Hint: needs a \examples dir otherwise 
+      
+      REPL : 
+      https://meet.google.com/pxu-nehx-qzp
+      
+      gryzzly - gräulich, grisly - grausig  (ghastly awful) - grässlich
+
+   https://rapidapi.com/collection/list-of-free-apis               
+   https://wiki.delphi-jedi.org/wiki/JCL_Help:Execute@string@string@Boolean@PBoolean
+   https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-
+
+    writeln(GETDOSOutput('cmd.exe /c wmic cpu get architecture','C:\'));
+    writeln(GETDOSOutput('cmd.exe /c wmic cpu get name','C:\'));
+    //to monitor tcp spyware over PID - process ID
+    memo2.setFocus;
+    repeat
+      writeln(GETDOSOutput('cmd.exe /c netstat -o','C:\'));
+      memo2.color:= clsilver;
+      sleep(2000)
+      memo2.color:= clyellow;    
+    until isKeyPressed;  
+    memo2.color:= clwhite;    
+    writeln(SysErrorMessage(GetLastError))
+
+Passwort checker? https://haveibeenpwned.com
+https://dnslytics.com/spf-lookup  
+
+procedure RunDosInMemo(DosApp: string; AMemo:TMemo);
+const
+    READ_BUFFER_SIZE = 2400;
+var
+    Security: TSecurityAttributes;
+    readableEndOfPipe, writeableEndOfPipe: THandle;
+    start: TStartUpInfo;
+    ProcessInfo: TProcessInformation;
+    Buffer: PAnsiChar;
+    BytesRead, AppRunning: DWORD;
+begin
+    Security.nLength := SizeOf(TSecurityAttributes);
+    Security.bInheritHandle := True;
+    Security.lpSecurityDescriptor := nil;
+
+    if CreatePipe({var}readableEndOfPipe, {var}writeableEndOfPipe, @Security, 0) then begin
+        Buffer := AllocMem(READ_BUFFER_SIZE+1);
+        FillChar(Start, Sizeof(Start), #0);
+        start.cb := SizeOf(start);
+
+        // Set up members of the STARTUPINFO structure.
+        // This structure specifies the STDIN and STDOUT handles for redirection.
+        // - Redirect the output and error to the writeable end of our pipe.
+        // - We must still supply a valid StdInput handle (because we used STARTF_USESTDHANDLES to swear that all three handles will be valid)
+        start.dwFlags := start.dwFlags or STARTF_USESTDHANDLES;
+        start.hStdInput := GetStdHandle(STD_INPUT_HANDLE); //we're not redirecting stdInput; but we still have to give it a valid handle
+        start.hStdOutput := writeableEndOfPipe; //we give the writeable end of the pipe to the child process; we read from the readable end
+        start.hStdError := writeableEndOfPipe;
+
+        //We can also choose to say that the wShowWindow member contains a value.
+        //In our case we want to force the console window to be hidden.
+        start.dwFlags := start.dwFlags + STARTF_USESHOWWINDOW;
+        start.wShowWindow := SW_HIDE;
+
+        // Don't forget to set up members of the PROCESS_INFORMATION structure.
+        ProcessInfo := Default(TProcessInformation);
+
+        //WARNING: The unicode version of CreateProcess (CreateProcessW) can modify the command-line "DosApp" string. 
+        //Therefore "DosApp" cannot be a pointer to read-only memory, or an ACCESS_VIOLATION will occur.
+        //We can ensure it's not read-only with the RTL function: UniqueString
+        UniqueString({var}DosApp);
+
+        if CreateProcess(nil, PChar(DosApp), nil, nil, True, NORMAL_PRIORITY_CLASS, nil, nil, start, {var}ProcessInfo) then begin
+            //Wait for the application to terminate, as it writes it's output to the pipe.
+            //WARNING: If the console app outputs more than 2400 bytes (ReadBuffer),
+            //it will block on writing to the pipe and *never* close.
+            repeat
+                Apprunning := WaitForSingleObject(ProcessInfo.hProcess, 100);
+                Application.ProcessMessages;
+            until (Apprunning <> WAIT_TIMEOUT);
+
+            //Read the contents of the pipe out of the readable end
+            //WARNING: if the console app never writes anything to the StdOutput, then ReadFile will block and never return
+            repeat
+                BytesRead := 0;
+                ReadFile(readableEndOfPipe, Buffer[0], READ_BUFFER_SIZE, {var}BytesRead, nil);
+                Buffer[BytesRead]:= #0;
+                OemToAnsi(Buffer,Buffer);
+                AMemo.Text := AMemo.text + String(Buffer);
+            until (BytesRead < READ_BUFFER_SIZE);
+        end;
+        FreeMem(Buffer);
+        CloseHandle(ProcessInfo.hProcess);
+        CloseHandle(ProcessInfo.hThread);
+        CloseHandle(readableEndOfPipe);
+        CloseHandle(writeableEndOfPipe);
+    end;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin {button 1 code}
+   RunDosInMemo('chkdsk.exe c:\',Memo1);
+end;
+
+CL.AddDelphiFunction('procedure RunDosInMemo(DosApp: string; AMemo:TMemo);');
+
+ShellExecute(0, 'open', Pchar('DocumentName.pdf'), '', '', SW_SHOWNORMAL);
+
+work under Windows 7 and 8, which would start the Acrobat Reader and open the file but under Windows 10 this no longer is the case. So the next step was to update the call to use ShellExecuteEX instead.
+ShellInfo := Default(TShellExecuteInfo);
+ShellInfo.cbSize := SizeOf(TShellExecuteInfo);
+ShellInfo.lpFile := PChar(Current_Client_Documents + FileName +'.pdf');
+ShellInfo.nShow := SW_SHOWNORMAL;
+
+try
+ShellExecuteEx(@ShellInfo);
+
+The actual code will prepare the Object ShellInfo to contain all of the necessary data to start up the Acrobat Reader and display the generated PDF.
+
+ mX4 executed: 30/08/2022 16:07:02  Runtime: 0:0:2.369  Memload: 45% use
+ mX4 executed: 07/09/2022 09:07:56  Runtime: 0:0:9.906  Memload: 45% use
+ mX4 executed: 07/09/2022 10:23:00  Runtime: 0:0:9.134  Memload: 45% use
+ 
+  
+ 
+https://my6.code.blog/2022/09/02/webpostdata/
+
+Locomotive électrique BB26023 livrée Corail logo Beffara (dit nouille). Immatriculation : BB26023. 324712109726 JOUEF BB26023 LOGO beffara ep v sncf oh 1/87 - £146.67.
+
+Interpreters usually take less amount of time to analyze the source code. However, the overall execution time is comparatively slower than compilers. A compiler scans the entire program and translates it from object code as a whole into machine code. 
+  
+     
+  
+  
+  

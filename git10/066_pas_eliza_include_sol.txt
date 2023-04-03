@@ -1,0 +1,466 @@
+program ElizaX_Conunit;
+
+//interface, implements the eliza by weizenbaum _66, locs=466
+
+{uses WinTypes, WinProcs, Classes, Graphics, Forms, Controls, Buttons,
+  StdCtrls, ExtCtrls, SysUtils;
+
+//implementation
+}
+//form file to include 
+
+{$I .\066_pas_eliza_form_sol.inc}
+
+
+procedure You2Me (var Answer : string);
+  var
+    J: integer;
+  begin
+    if Pos('YOU ARE', Answer) > 0 then begin
+        J:= Pos('YOU ARE', Answer);
+        Delete (Answer,J,7);
+        Insert ('I AM', Answer, J);
+    end;
+    if Pos('YOU', Answer) > 0 then begin
+        J:= Pos('YOU', Answer);
+        Delete (Answer,J,3);
+        Insert ('ME', Answer, J);
+        Exit;
+    end;
+    if Pos('ME', Answer) > 0 then begin
+        J:= Pos('ME', Answer);
+        Delete (Answer,J,2);
+        Insert ('YOU', Answer, J);
+    end;
+  end;  { You2Me }
+
+
+function GetReply (Question : string) : string;
+  var
+    I : integer;
+    TempReply : string;
+  begin
+    if (Pos('HOW', Question) > 0) or (Pos('WHO', Question) > 0) or
+       (Pos('WHAT', Question) > 0) or (Pos('WHEN', Question) > 0) or
+       (Pos('WHY', Question) > 0) or (Pos('WHERE', Question) > 0) then begin
+        I := Trunc(Random(9));
+        case I of
+          0 : result:= 'Why do you ask?';
+          1 : result:= 'Does that question interest you?';
+          2 : result:= 'What answer would please you the most?';
+          3 : result:= 'What do you think?';
+          4 : result:= 'Are such questions on your mind often?';
+          5 : result:= 'What is it that you really want to know?';
+          6 : result:= 'Have you asked anyone else?';
+          7 : result:= 'Have you asked such questions before?';
+          8 : result:= 'What else comes to mind when you ask that?';
+        end;
+      Exit;
+    end;
+    if Pos('KNOW', Question) > 0 then begin
+        I:= Trunc(Random(3));
+        case I of
+          0: result:= 'Maybe you know nothing.';
+          1: result:= 'You must know that wisdom is where knowledge ends.';
+          2: result:= 'We know nothing, take it for granted.';
+        end;
+        Exit;
+    end;
+    if Pos('NAME', Question) > 0 then begin
+        I := Trunc(Random(3));
+        case I of
+          0 : result := 'I don''t care about names...please go on.';
+          1 : result := 'Do names mean anything to you?';
+          2 : result := 'Why do you mention names at all?';
+        end;
+        Exit;
+    end;
+    if Pos('THANK', Question) > 0 then
+      begin
+        I := Trunc(Random(3));
+        case I of
+          0 : result := 'You''re welcome.';
+          1 : result := 'No problem.';
+          2 : result := 'Do you feel better now?';
+        end;
+        Exit;
+      end;
+    if (Pos('CAUSE', Question) > 0) or (Pos('BECAUSE', Question) > 0) then begin
+        I := Trunc(Random(4));
+        case I of
+          0 : result := 'Is that the real reason?';
+          1 : result := 'Don''t any other reasons come to mind?';
+          2 : result := 'Does that reason explain anything else?';
+          3 : result := 'What other reasons might there be?';
+        end;
+      Exit;
+    end;
+    if Pos('SORRY', Question) > 0 then begin
+        I := Trunc(Random(4));
+        case I of
+          0 : result := 'Please don''t apologize!';
+          1 : result := 'Apologies are not necessary.';
+          2 : result := 'What feelings do you have when you apologize?';
+          3 : result := 'Don''t be so defensive!';
+        end;
+      Exit;
+    end;
+    if Pos('DREAM', Question) > 0 then begin
+        I := Trunc(Random(4));
+        case I of
+          0 : result := 'What does that dream suggest to you?';
+          1 : result := 'Do you dream often?';
+          2 : result := 'What persons appear in your dreams?';
+          3 : result := 'Are you disturbed by your dreams?';
+        end;
+      Exit;
+    end;
+    if Pos('HELLO', Question) > 0 then begin
+        I := Trunc(Random(3));
+        case I of
+          0 : result := 'How do you do. How can I help you?';
+          1 : result := 'Hello, please state your problem.';
+          2 : result := 'Hello, what would you like to talk about?';
+        end;
+      Exit;
+    end;
+    if Pos('MAYBE', Question) > 0 then begin
+        I := Trunc(Random(5));
+        case I of
+          0 : result := 'You don''t seem quite certain.';
+          1 : result := 'Why the uncertain tone?';
+          2 : result := 'Can''t you be more positive?';
+          3 : result := 'You aren''t sure?';
+          4 : result := 'Don''t you know?';
+        end;
+      Exit;
+    end;
+    if Pos('ALWAYS', Question) > 0 then begin
+        I := Trunc(Random(4));
+        case I of
+          0 : result := 'Can you think of an example?';
+          1 : result := 'When?';
+          2 : result := 'What are you thinking of?';
+          3 : result := 'Really,...always?';
+        end;
+      Exit;
+    end;
+    if Pos('ALIKE', Question) > 0 then begin
+        I := Trunc(Random(7));
+        case I of
+          0 : result := 'In what way?';
+          1 : result := 'What similarity do you see?';
+          2 : result := 'What does the similarity suggest to you?';
+          3 : result := 'What other connections do you see?';
+          4 : result := 'Could there really be some connection?';
+          5 : result := 'How?';
+          6 : result := 'You seem quite positive.';
+        end;
+      Exit;
+    end;
+    if Pos('YES', Question) > 0 then begin
+        I := Trunc(Random(3));
+        case I of
+          0 : result := 'Are you sure?';
+          1 : result := 'Hmmm...I see.';
+          2 : result := 'I understand.';
+        end;
+      Exit;
+    end;
+    if Pos('FRIEND', Question) > 0 then begin
+        I := Trunc(Random(6));
+        case I of
+          0 : result := 'Do you have any friends?';
+          1 : result := 'Do your friends worry you?';
+          2 : result := 'Do they pick on you?';
+          3 : result := 'Are your friends a source of anxiety?';
+          4 : result := 'Do you impose your problems on your friends?';
+          5 : result := 'Perhaps your dependence on friends worries you.';
+        end;
+        Exit;
+      end;
+    if Pos('COMPUTER', Question) > 0 then begin
+        I := Trunc(Random(6));
+        case I of
+          0 : result := 'Do computers worry you?';
+          1 : result := 'Are you talking about me in particular?';
+          2 : result := 'Are you frightened by machines?';
+          3 : result := 'Why do you mention computers?';
+          4 : result := 'Don''t you think computers can help you?';
+          5 : result := 'What is it about machines that worries you?';
+        end;
+      Exit;
+    end;
+    if Pos('CAN YOU', Question) > 0 then begin
+        I := Trunc(Random(3));
+        case I of
+          0 : TempReply := 'Don''t you believe that I can';
+          1 : TempReply := 'Perhaps you would like me to be able to';
+          2 : TempReply := 'You want me to be able to';
+        end;
+        I := Pos ('CAN YOU', Question);
+        if I <> 1 then begin
+            Delete(Question,1,I-1); {Strip away front words}
+            I := Pos ('CAN YOU', Question);
+        end;
+        Delete(Question,I,7);
+        You2Me(Question);
+        Question := LowerCase (Question);
+        result := TempReply + Question;
+      Exit;
+    end;
+    if Pos('CAN I', Question) > 0 then begin
+        I := Trunc(Random(3));
+        case I of
+          0 : TempReply := 'Do you want to be able to';
+          1 : TempReply := 'Perhaps you don''t want to';
+          2 : TempReply := 'What would it mean if you could';
+        end;
+        I := Pos ('CAN I', Question);
+        if I <> 1 then begin
+            Delete(Question,1,I-1); {Strip away front words}
+            I := Pos ('CAN I', Question);
+          end;
+        Delete(Question,I,5);
+        You2Me(Question);
+        Question := LowerCase (Question);
+        result := TempReply + Question;
+      Exit;
+    end;
+    if Pos('I DON''T', Question) > 0 then begin
+        I := Trunc(Random(4));
+        case I of
+          0 : TempReply := 'Don''t you really';
+          1 : TempReply := 'Why don''t you';
+          2 : TempReply := 'Do you wish to be able to';
+          3 : TempReply := 'So you really don''t';
+        end;
+        I := Pos ('I DON''T', Question);
+        if I <> 1 then begin
+            Delete(Question,1,I-1); {Strip away front words}
+            I := Pos ('I DON''T', Question);
+        end;
+        Delete(Question,I,7);
+        You2Me(Question);
+        Question := LowerCase (Question);
+        result := TempReply + Question;
+      Exit;
+    end;
+    if Pos('I FEEL', Question) > 0 then begin
+        I := Trunc(Random(3));
+        case I of
+          0 : TempReply := 'Do you often feel';
+          1 : TempReply := 'Do you enjoy feeling';
+          2 : TempReply := 'How often do you feel';
+        end;
+        I := Pos ('I FEEL', Question);
+        if I <> 1 then begin
+            Delete(Question,1,I-1); {Strip away front words}
+            I := Pos ('I FEEL', Question);
+        end;
+        Delete(Question,I,6);
+        You2Me(Question);
+        Question := LowerCase (Question);
+        result := TempReply + Question;
+      Exit;
+    end;
+    if Pos('ARE YOU', Question) > 0 then begin
+        I := Trunc(Random(3));
+        case I of
+          0 : TempReply := 'Why are you interested in whether or not I am';
+          1 : TempReply := 'Would you prefer if I were not';
+          2 : TempReply := 'Perhaps in your fantasies I am';
+        end;
+        I := Pos ('ARE YOU', Question);
+        if I <> 1 then begin
+            Delete(Question,1,I-1); {Strip away front words}
+            I := Pos ('ARE YOU', Question);
+        end;
+        Delete(Question,I,7);
+        You2Me(Question);
+        Question := LowerCase (Question);
+        result := TempReply + Question;
+      Exit;
+    end;
+
+    if Pos('YOU ARE', Question) > 0 then
+      begin
+        I := Trunc(Random(6));
+        case I of
+          0 : TempReply := 'Does it please you to believe I am';
+          1 : TempReply := 'Perhaps you would like to be';
+          2 : TempReply := 'Do you sometimes wish you were';
+          3 : TempReply := 'What about your own';
+          4 : TempReply := 'Why are you concerned about my';
+          5 : TempReply := 'What makes you think I am';
+        end;
+        I := Pos ('YOU ARE', Question);
+        if I <> 1 then
+          begin
+            Delete(Question,1,I-1); {Strip away front words}
+            I := Pos ('YOU ARE', Question);
+          end;
+        Delete(Question,I,7);
+        You2Me(Question);
+        Question := LowerCase (Question);
+        result:=  TempReply + Question;
+        Exit;
+      end;
+    if Pos('DON''T YOU', Question) > 0 then begin
+        I := Trunc(Random(6));
+        case I of
+          0 : TempReply := 'Do you really believe I don''t';
+          1 : TempReply := 'Perhaps in good time I will';
+          2 : TempReply := 'Do you want me to';
+          3 : TempReply := 'Why can''t you';
+          4 : TempReply := 'Should you be able to';
+          5 : TempReply := 'What makes you think I am';
+        end;
+        I := Pos ('DON''T YOU', Question);
+        if I <> 1 then begin
+            Delete(Question,1,I-1); {Strip away front words}
+            I := Pos ('DON''T YOU', Question);
+        end;
+        Delete(Question,I,9);
+        You2Me(Question);
+        Question := LowerCase (Question);
+        result:= TempReply + Question;
+      Exit;
+    end;
+    if Pos('I CAN''T', Question) > 0 then begin
+        I := Trunc(Random(3));
+        case I of
+          0 : TempReply := 'How do you know you can''t';
+          1 : TempReply := 'Perhaps you can now';
+          2 : TempReply := 'Why don''t you try to';
+        end;
+        I := Pos ('I CAN''T', Question);
+        if I <> 1 then begin
+            Delete(Question,1,I-1); {Strip away front words}
+            I := Pos ('I CAN''T', Question);
+        end;
+        Delete(Question,I,7);
+        You2Me(Question);
+        Question := LowerCase (Question);
+        result:= TempReply + Question;
+      Exit;
+    end;
+    if (Pos('I AM', Question) > 0) or (Pos('I''M', Question) > 0) then begin
+        I := Trunc(Random(3));
+        case I of
+          0 : TempReply := 'Did you come to me because you are';
+          1 : TempReply := 'How long have you been';
+          2 : TempReply := 'Do you believe it is normal to be';
+        end;
+        I := Pos ('I AM', Question);
+        if I = 0 then begin
+            I := Pos ('I''M', Question);
+            if I <> 1 then begin
+                Delete(Question,1,I-1); {Strip away front words}
+                I := Pos ('I''M', Question);
+            end;
+            Delete (Question,I,3);
+        end
+        else begin
+            if I <> 1 then begin
+                Delete(Question,1,I-1); {Strip away front words}
+                I := Pos ('I AM', Question);
+            end;
+            Delete(Question,I,4);
+        end;
+        You2Me(Question);
+        Question := LowerCase (Question);
+        result:= TempReply + Question;
+      Exit;
+    end;
+    if Pos('I WANT', Question) > 0 then begin
+        I := Trunc(Random(5));
+        case I of
+          0 : TempReply := 'What would it mean if you got';
+          1 : TempReply := 'Why do you want';
+          2 : TempReply := 'Suppose you soon got';
+          3 : TempReply := 'What if you never got';
+          4 : TempReply := 'I sometimes also want';
+        end;
+        I := Pos ('I WANT', Question);
+        if I <> 1 then begin
+            Delete(Question,1,I-1); {Strip away front words}
+            I := Pos ('I WANT', Question);
+        end;
+        Delete(Question,I,6);
+        You2Me(Question);
+        Question := LowerCase (Question);
+        result:= TempReply + Question;
+      Exit;
+    end;
+    if (Pos('FUCK', Question) > 0) or (Pos('SHIT', Question) > 0) or
+       (Pos('DAMN', Question) > 0) or (Pos('HELL', Question) > 0) then begin
+        I := Trunc(Random(4));
+        case I of
+          0 : result := 'Please don''t use four-letter words.';
+          1 : result:= 'Profanity is not necessary.';
+          2 : result:= 'Do you use such foul language often?';
+          3 : result:= 'Do you like using obscene words?';
+        end;
+      Exit;
+    end;
+    { No keywords found }
+    I := Trunc(Random(11));
+    case I of
+      0 : result:= 'Do you feel intense psychological stress?';
+      1 : result:= 'What does that suggest to you?';
+      2 : result:= 'I see.';
+      3 : result:= 'I''m not sure I understand you fully.';
+      4 : result:= 'Now, please clarify yourself.';
+      5 : result:= 'Can you elaborate on that?';
+      6 : result:= 'That is quite interesting.';
+      7 : result:= 'Please be a little bit closer.';
+      8 : result:= 'Come on, think like an object.';
+      9 : result:= 'Die Antworten werden alt, doch Fragen sind ewig jung!';
+      10 : result:= 'What you mean by this!';
+    end;
+  end; { GetReply }
+
+
+
+  
+procedure ElizaEngine;  
+var
+  OldReply: string;
+begin
+  Randomize;
+  OldReply:= ElizaReply.Text;
+  YourMemo.Lines.Add(TypeHere.Text);
+  { This prevents YourMemo from getting
+    too full of strings }
+  if YourMemo.Lines.Count = 6 then
+    YourMemo.Lines.Delete(1);
+    { Search for an ELIZA reply }
+  repeat
+    ElizaReply.Text:= GetReply (AnsiUpperCase(TypeHere.Text));
+  until ElizaReply.Text <> OldReply;
+  ElizaMemo.Lines.Add(ElizaReply.Text);
+  { This prevents ElizaMemo from getting
+    too full of strings }
+  if ElizaMemo.Lines.Count = 8 then
+    ElizaMemo.Lines.Delete(1);
+    {TypeHere.Text := '';} { Clear the text box }
+  TypeHere.SetFocus;
+  TypeHere.SelectAll;
+end;
+
+
+procedure OkBtnClick(Sender: TObject);
+begin
+  ElizaEngine;
+end;
+
+var
+  consultForm: TForm;
+ 
+//main
+begin 
+  consultForm:= loadElizaForm;
+  okBtn.onClick:= @OkBtnClick;
+  consultForm.Show;
+end.

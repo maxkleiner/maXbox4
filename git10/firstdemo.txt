@@ -1,0 +1,333 @@
+//**************************************************************************
+program FastFTP_Up_Downloader_MAX;
+// file read & write and FTP PUT / GET function , #locs=279
+// shows subroutines of assign file direct from filesystem to a FTP Upload!
+// set the file direct with PATH AND HOST , #file:111_FTP_Up_Downloader_Spec_private2.txt
+// new with getfilelist FTP.List()     REE BB 9288 MB-082 SAC
+
+//http://60-70rock.blogspot.ch/2016/09/queen.html
+
+const 
+   E6= 1000000;
+   //FILE_PATH = 'E:\maxbox\maxbox3.zip';
+   //FILE_PATH = 'E:\maxbox\maxbox3\maxbox_functions.pdf';                  
+   //FILE_PATH = 'E:\maxbox\maxbox3\docs\maxblog.txt';
+   //FILE_PATH = 'E:\maxbox\maxbox3\docs\maxboxblog.htm';
+   //FILE_PATH = 'C:\maXbox\mX399100\maxbox4\maxbox424\space.txt';
+//FILE_PATH ='C:\maxbook\emachinetransfer\kleiner kommunikation_files\fleische10.jpg';
+   
+   
+   //http://www.kleiner.ch/kleiner/TEE_files/tee_models.htm  
+ //FILE_PATH = 'C:\maXbox\works2021\maxbox4\docs\tee_models.pdf';    //530562
+// FILE_PATH = 'C:\maXbox\works2021\tee_models.htm';    //815653
+ //FILE_PATH = 'C:\maxbox\works2021\maxbox4\examples\lima_e13_tee.jpg';
+ // FILE_PATH = 'C:\maXbox\works2021\index.html';    //softwareschule.ch  28671
+ //FILE_PATH = 'C:\maXbox\works2021\index.htm';    //new kleiner.ch    14758
+   //FILE_PATH = 'C:\maXbox\works2021\kknews.htm';    //37962
+  //FILE_PATH = 'C:\maXbox\works2021\maxbox4\docs\unitlist.htm';    //255140
+ // FILE_PATH = 'C:\maXbox\maXbox4onlyexe.zip';    //14158983 
+  //FILE_PATH = 'C:\maxbook\soundmax\soundnvision\G9\zeitraum.mp3';  
+ // FILE_PATH = 'C:\maxbook\maxboxpython\weatherimagelist1.dat';           
+  
+  
+  //FILE_PATH = 'C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\maxbox36beta\maxbox_functions_sort.txt';    //67281
+ // FILE_PATH = 'C:\Program Files\Streaming\IBZ2021\Module2_3\EKON26\pydemo51_1.htm';      //64910
+ //FILE_PATH = 'C:\maXbox\works2021\maxbox4\docs\maxbox.htm';   //25446
+  //FILE_PATH = 'C:\maXbox\works2021\maxbox4\docs\maxbox_starter100_1.pdf';
+  //FILE_PATH = 'C:\maXbox\maxbox4onlyexe.zip';         //67831559
+  
+ 
+ //FILE_PATH = 'C:\Program Files\Streaming\maxbox4\allexampleslist.htm'; //303451
+ //FILE_PATH = 'C:\Program Files\Streaming\maxbox4\docs\maxbox_starter109_1.pdf'; //854642
+ //FILE_PATH = 'C:\Program Files\Streaming\maxbox4\tee_models.htm'; //857834     
+ //FILE_PATH = 'C:\Program Files\Streaming\maxbox4\docs\tee_models.pdf'; //857834    
+ //FILE_PATH = 'C:\Program Files\Streaming\maxbox4\maxbox_functions.txt'; //303451
+  //FILE_PATH = 'C:\Program Files\Streaming\maxbox4\examples\chatgpt2.htm'; //303451
+ //FILE_PATH = 'C:\Program Files\Streaming\maxbox4\examples\demoradar.lpr'; //303451    
+ FILE_PATH = 'C:\Program Files\Streaming\maxbox4\maxboxnews.htm';     //136410
+   
+   
+ //FILE_PATH = 'C:\maXbox\works2021\maxbox_starter99_1.pdf';
+ //FILE_PATH = 'C:\maXbox\works2021\maxbox4\examples\json7.htm';
+ // FILE_PATH = 'C:\maXbox\works2021\maxbox4\web\m39402-1.jpg'; 
+ //FILE_PATH = 'C:\Program Files\Streaming\IBZ2021\Module4\pydemo47.htm';     
+    
+  // FILE_PATH = 'C:\maXbox\softwareschule\maxbox_functions.txt';    //1653767
+  // FILE_PATH = 'C:\maXbox\softwareschule\allexampleslist.txt';       //236834
+ //FILE_PATH = 'C:\maXbox\EKON_BASTA\EKON25\ekon26logo.png';
+ //FILE_PATH = 'C:\maXbox\works2021\maxbox4\docs\maxboxnews.htm';  //134068
+ //news
+ 
+ //FILE_PATH = 'C:\maXbox\softwareschule\tee\tee_models.htm';    //549790
+ //FILE_PATH = 'C:\maXbox\softwareschule\tee\adetee.jpg';
+ //&&FILE_PATH = 'C:\maXbox\TestApp2\sonysavefeb2014\maxboxfiles\delphi6graph.htm';  
+ 
+  //FILE_PATH = 'C:\maXbox\softwareschule\kkref.htm';           //5220
+  //FILE_PATH = 'C:\maXbox\softwareschule\maxplore2.htm';           //5220
+  
+ // FILE_PATH = 'C:\maXbox\mX46210\maxbox4\examples\tokenizer.htm';           models
+// FILE_PATH = 'C:\maXbox\softwareschule\MT-HS12-05\mentor_xml\casra2018\cassandra\jan2019\Corpus4Relevance.txt';   //33145
+ 
+// FILE_PATH = 'C:\maXbox\softwareschule\tee_magazine.pdf';    //403683
+ //FILE_PATH = 'C:\maXbox\softwareschule\tee\tee_europe.htm';    //7877
+// FILE_PATH = 'C:\maXbox\softwareschule\tee\781504.jpg';    //403683
+ 
+ //FILE_PATH = 'C:\maXbox\mX46210\maxbox4\examples\asteroid.txt'; //24257
+// FILE_PATH = 'C:\maXbox\maxbox3\maxbox4\maxbox4\weatherimagelist1.txt'; 
+ 
+ 
+ //FILE_PATH = 'C:\maXbox\mX399100\maxbox42610\weatherstation.txt';
+ //FILE_PATH = 'C:\maXbox\mX46210\maxbox_functions.txt';        // 1771371
+ 
+
+//  FILE_PATH = 'C:\maxbook\maxboxpython\mentor_xml\casra2018\cassandra\april2019\Zwischenbericht ASSUME_20190508_04_MaZoMaK.odt';
+
+//FILE_PATH = 'C:\maxbook\maxboxpython\mentor_xml\casra2018\cassandra\april2019\146_twitter_api_oauth21.py';
+//FILE_PATH = 'C:\maxbook\maxboxpython\mentor_xml\casra2018\cassandra\april2019\fbconfig.json';
+//FILE_PATH = 'C:\maxbook\maxboxpython\Mining the Social Web, 3rd Edition.pdf';
+ //FILE_PATH = 'C:\maXbox\softwareschule\tee\249_arnold_0236.jpg';
+
+ //FILE_PATH = 'C:\maXbox\mX46210\maxbox4\examples\datascience.txt';
+ //FILE_PATH = 'C:\maxbook\emachinetransfer\kleiner kommunikation_files\default.htm';     //14042
+ //FILE_PATH = 'C:\maxbook\emachinetransfer\kleiner kommunikation_files\index.html';     //29928
+
+ //FILE_PATH = 'C:\maxbook\maxboxpython\ML2020\2020_2\1063_tee_mertens.jpg';
+ //FILE_PATH = 'C:\maxbook\emachinetransfer\mX3999\mXRGB_LED3Box\54392.jpg';
+ //FILE_PATH = 'C:\maxbook\emachinetransfer\kleiner kommunikation_files\tee_files\hj4125.jpg';     
+//FILE_PATH = 'C:\maXbox\TestApp2\sonysavefeb2014\kleiner2005\tee\352_lima.jpg';
+ //FILE_PATH = 'C:\maxbook\emachinetransfer\kleiner kommunikation_files\uml2.htm';
+ //FILE_PATH='C:\maxbook\emachinetransfer\kleiner kommunikation_files\sprache.htm';     //20469
+ //FILE_PATH = 'C:\maxbook\maxboxpython\doc\singlesamplepredict.htm';
+ // FILE_PATH = 'C:\maXbox\EKON_BASTA\EKON23\ekon22logo.png';
+ 
+ //FILE_PATH = 'C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\upsi_neuralnetworkCAI.txt';   //1810715
+ //FILE_PATH = 'C:\maXbox\works2021\maxbox4\web\mX47520\uPSI_neuralvolume.txt';  
+ //FILE_PATH = 'C:\maxbook\soundmax\Uriah Heep (2018) Living The Dream\Uriah Heep - Discography (1970-1998)\Uriah Heep - Discography (1970-1998)\Uriah Heep 12 CD\rain.mp3';   //1843920
+ 
+  //FILE_PATH = 'C:\maXbox\maxbox3\maxbox3\maXbox3\examples\data_multivar2.txt';  
+
+  //FILE_PATH = 'C:\maxbook\maxboxpython\ML2019\218_lsmod_40101.jpg';
+ //FILE_PATH = 'C:\Program Files (x86)\maxbox3\Import\maxvfile2.txt';
+ //FILE_PATH = 'C:\Program Files (x86)\maxbox3\Import\bds_delphi.zip';
+ 
+  //FILE_PATH = 'C:\maxbook\maxboxpython\ML2019\max_sverige.jpg';
+// FILE_PATH = 'C:\maXbox\softwareschule\kknews.htm';    //33028
+  //FILE_PATH = 'C:\maXbox\softwareschule\max50.htm';    //6300
+  //FILE_PATH = 'C:\maxbook\emachinetransfer\box.htm';     //30072
+
+ // FILE_PATH = 'C:\maxbook\maxboxpython\mentor_xml\casra2018\cassandra\mai2019\w2vecx_embeddings.zip'; 
+  //FILE_PATH = 'C:\maxbook\maxboxpython\mentor_xml\casra2018\cassandra\june2019\Zwischenbericht ASSUME_20190612_01_MaZoMaKl.odt'; 
+  //FILE_PATH = 'C:\Program Files\Streaming\maxbox4\maxbox4\tee\tee\295jouef.jpg';
+  //FILE_PATH = 'C:\Program Files\Streaming\maxbox4\maxbox4\tee\tee\maerklin_kat_73.jpg';   
+  
+     //393520   2100952756
+
+const                                                           
+  CHOSTNAME = 'www.softwareschule.ch';
+   CUSERNAME = 'maexelchen2'; //softwareschule';
+   CPASSWORD = 'Aerosmith2soft'; //platForm';  //}
+   
+  {CHOSTNAME = 'www.kleiner.ch';
+   CUSERNAME = 'maexelchen';
+   CPASSWORD = 'Aerosmith2klein'; //}
+   
+   //'ftp://transfer.casra.ch'
+   
+   //Directory listing of "/Berichte/APIs/Twitter/Scripts" successful
+//Directory listing of "/Berichte/APIs/Twitter/Output" successful
+   
+   //CHOSTNAME = 'transfer.casra.ch';
+   //CUSERNAME = 'MaxK';
+   //CPASSWORD = 'QeV<}V';  //}
+   
+   //const CHATGPT_APIKEY2 = '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';
+   
+//function TestB(Param1 : OleVariant; Param2 : OleVariant = 100);   
+    
+procedure FTP_Upload(myFile: string);
+var 
+  ftpUpStream: TFileStream;
+  myftp: TIdFTP;
+begin
+  //TFileStream.Create(afilename, fmOpenRead or fmShareCompat)
+  //ftpUpStream:= TFileStream.create(ExePath+'examples/'+myFile, fmOpenRead)
+  ftpUpStream:= TFileStream.create(FILE_PATH, fmopenread)
+  myftp:= TIdFTP.create(self);
+  try
+    with myftp do begin
+      Host:= CHOSTNAME;
+      Username:= CUSERNAME;
+      Password:= CPASSWORD;
+    end;
+    //Connect FTP server and Use PASV mode
+    myftp.Connect(true, 1200)
+    myftp.Passive:= true;
+    //Change directory and Upload
+  //myftp.ChangeDir('httpdocs/download')
+  // myftp.ChangeDir('httpdocs/images/')
+  
+  //myftp.ChangeDir('httpdocs/')
+  //myftp.ChangeDir('Berichte/')
+  //myftp.ChangeDir('Berichte/Reports')
+  //myftp.ChangeDir('Berichte/Daten')
+  //myftp.ChangeDir('Berichte/Skripte')
+  //myftp.ChangeDir('Berichte/Archiv')
+//  myftp.ChangeDir('Berichte/APIs/Twitter/Scripts')
+//  myftp.ChangeDir('Berichte/APIs/Facebook/Scripts')
+
+ 
+   myftp.ChangeDir('httpdocs/')     
+  
+  //myftp.ChangeDir('httpdocs/kleiner/')                 
+  
+  //myftp.ChangeDir('httpdocs/images/')
+  
+  //myftp.ChangeDir('httpdocs/examples')
+  // myftp.ChangeDir('httpdocs/download')          
+  
+ //myftp.ChangeDir('httpdocs/kleiner/TEE_files');         
+  // myftp.ChangeDir('httpdocs/kleiner/images');
+  
+    myftp.Put1(ftpUpStream, myFile, false);
+    writeln(inttoStr64(myftp.size(myfile)))   
+  finally
+    ftpUpStream.Free;
+    //Disconnect to Quit();
+    myftp.Quit;
+    myftp.Free;
+    //test finally
+    maxForm1.color:= clBlue;
+  end;
+end;
+
+
+procedure FTP_Download(myFile: string);
+var
+  ftpDownStream: TFileStream;
+  myftp: TIdFTP;
+begin
+  ftpDownStream:= TFileStream.create(myFile, fmCreate)
+  myftp:= TIdFTP.create(self);
+  try
+    with myftp do begin
+      Host:= CHOSTNAME;
+      Username:= CUSERNAME;
+      Password:= CPASSWORD;
+    end;
+    myftp.Connect(true, 1200)
+    myftp.Passive:= true;
+    //myftp.filestructure
+    myftp.ChangeDir('httpdocs/images')
+    //download
+    myftp.Get1(myFile, ftpDownStream, false);
+    writeln(inttoStr(myftp.size(myfile)))
+  finally
+    ftpDownStream.Free;
+    myftp.Quit;
+    myftp.Free;
+    maxForm1.color:= clRed;
+  end;  
+end;
+
+
+procedure FTP_ListDirectoryFiles;
+var  mylist: TStringlist;
+     myFtp: TIdFTP;
+     i: integer;
+begin
+  myFtp:= TIdFTP.create(self);
+  try
+    with myFtp do begin
+      Host:= CHOSTNAME;
+      Username:= CUSERNAME;
+      Password:= CPASSWORD;
+    end;
+    //Connect FTP server and Use PASV mode
+    myFtp.Connect(true, 1200)
+    myFtp.Passive:= true;
+    myFtp.ChangeDir('httpdocs/kleiner/images')
+    mylist:= TStringlist.create;
+    myFtp.list(mylist,'',True) ;    //boolean = details of filelist
+    for i:= 1 to mylist.count-1 do 
+       writeln(mylist[i]); 
+    //myFtp.directorylisting
+   //myftp.Delete('max_tee_cockpit.jpg')
+  finally
+    //Disconnect to Quit();
+    myFtp.Quit;
+    myFtp.Free;
+    mylist.Free;
+    //visual test finally
+    maxForm1.color:= clYellow;
+  end;
+end;  
+
+
+var 
+  AStructure : TIdFTPDataStructure;
+
+//main: MY_FTP_FILE is const
+begin
+  Writeln(extractFilename(FILE_PATH))
+    //writeln(getfilename(ftp_file))
+  
+  FTP_UPload(extractFilename(FILE_PATH));
+  //FTP_ListDirectoryFiles;
+  
+  //FTP_DOWNload(extractfilename(FILE_PATH));
+  //myftp.Get2(MY_FTP_FILE, getFileStr, true, false);
+end.
+
+--------------------------------------------------------------------------
+{RegisterMethod('Procedure Put1( const ASource : TStream; const ADestFile:
+               string; const AAppend : boolean);');}
+
+ftp.Host = "www.yourftpserveraddress.ch"
+ftp.Username = "YourFtpUsername"
+ftp.Password = "YourFtpPassword"
+
+
+Example code : Using DelimitedText, Delimiter and QuoteChar
+var
+  cars : TStringList;            // Define our string list variable
+  i    : Integer;
+begin
+  // Define a string list object, and point our variable at it
+  cars := TStringList.Create;
+  // Now add some cars to our list - using the DelimitedText property
+  // with overriden control variables
+  cars.Delimiter := ' ';        // Each list item will be blank separated
+  cars.QuoteChar := '|';        // And each item will be quoted with |'s
+  cars.DelimitedText := '|Honda Jazz| |Ford Mondeo| |Jaguar "E-type"|';
+
+  // Now display these cars
+  for i := 0 to cars.Count-1 do
+    ShowMessage(cars[i]);       // cars[i] equates to cars.Strings[i]
+  // Free up the list object
+  cars.Free;
+end;
+
+   Honda Jazz
+   Ford Mondeo
+   Jaguar "E-type"
+   
+   This is Google's cache of http://www.ecotronics.ch/kleiner/default.htm. It is a snapshot of the page as it appeared on 21 Jan 2019 19:55:56 GMT. The current page could have changed in the meantime. Learn more.
+   
+   Märklin Elektrische Lokomotive BB 15 000
+Betriebsnr. 15065
+
+Artikelnummer: 3321
+Material: Guss, Metall
+
+Farbe: grau
+Länge: 200 mm
+Achsen: 2x2  Achsen angetrieben, Haftreifen
+Beleuchtung: Beidseitig Zweilicht-Spitzensignal
+Antrieb: Wechselstrom, mit elektronischem Umschalter
+Modell: Ein Export Modell, das nur 1989. in Frankreich vertrieben wurde.
+
+
+
+Epoche IV
+   
+   

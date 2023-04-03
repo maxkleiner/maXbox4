@@ -1,0 +1,108 @@
+{***************************************************************
+ * Project  : Blogger
+ * Unit Name: 129_pas_blogger
+ * Purpose  : Blog from anywhere in a stream without save a file
+ * Date     : 21/08/2010  -  14:38:56
+ * History  : translate/integrate to maXbox, locs=87
+ * shows subroutines of assign a stream/stringlist direct to a FTP Upload!
+  NEWSLINE='<LI><NB3>Just got a IdHTTP.Request.CacheControl ID:8<NB4></LI>';
+  ****************************************************************}
+
+program Blogger_MAX;
+
+const 
+   HTM_FILE = 'maxboxblog.htm';
+   CONTENT_URL = 'http://www.softwareschule.ch/'+HTM_FILE;
+   BLOGLINE = 
+       //'Just got the IdHTTP.Request.CacheControl test with success ID:9';
+         'Just home: The Secret in Their Eyes (El Secreto de Sus Ojos) is my film of the year 2010';
+
+
+var contentLst: TStringList;
+
+procedure LetHTTPConnect(vcontentURL: string; vcontList: TStringList);
+var idHTTP: TIdHTTP;
+begin
+  idHTTP:= TIdHTTP.Create(self)
+  try
+    {IdHTTP.ProxyParams.ProxyServer:='127.0.0.1';
+    IdHTTP.ProxyParams.ProxyPort:=4480;}
+    idHTTP.Request.Pragma:= 'no-cache';
+    idHTTP.Request.CacheControl:= 'no-cache';
+    vcontList.text:= idHTTP.Get2(vcontentURL);
+  finally
+    idHTTP.Free
+    maxform1.color:= clred;  //test
+  end;    
+end;
+
+procedure FTP_UploadStream(mysource, myFile: string);
+var 
+  ftpUpStream: TMemoryStream;
+  myftp: TIdFTP;
+begin
+  ftpUpStream:= TMemoryStream.create;
+  myftp:= TIdFTP.create(self);
+  try
+    with myftp do begin
+      Host:= 'www.softwareschule.ch'
+      Username:= '';
+      Password:= '';
+    end;
+    with ftpUpStream do begin
+      Seek(0,soFromBeginning);
+      Write(mysource, length(mysource))
+      SetLength(mysource, ftpupstream.Size);
+      //saveToFile(ExePath+'docs/'+myFile);
+    end; 
+    //Connect FTP server and Use PASV mode
+    myftp.Connect(true, 1200)
+    myftp.Passive:= true;
+    //Change directory and Upload
+    myftp.ChangeDir('httpdocs')
+    myftp.Put1(ftpUpStream, myFile, false);
+    writeln('Upload Size :'+inttoStr(myftp.size(myfile)))
+  finally
+    ftpUpStream.Free;
+    //Disconnect to Quit();
+    myftp.Quit;
+    myftp.Free;
+  end;
+end;
+
+//main: of blogger
+begin
+   //constructor and process
+  contentLst:= TStringList.create;
+  try
+    LetHTTPConnect(CONTENT_URL, contentLst);
+    contentLst.insert(35,'<LI>'+dateToStr(Date)+' '+BLOGLINE+'</LI>') 
+    //contentLst.delete(35);
+    Writeln(contentLst.text) //output control
+    FTP_UploadStream(contentLst.text, HTM_FILE)
+  finally  
+    contentLst.Free;
+    memo2.height:= 300;
+  end;  
+end.
+
+---------------------------------------------------------------------------
+{RegisterMethod('Procedure Put1( const ASource : TStream; const ADestFile:
+               string; const AAppend : boolean);');}
+ftp.Host = "www.yourftpserveraddress.ch"
+ftp.Username = "YourFtpUsername"
+ftp.Password = "YourFtpPassword"
+
+http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+
+IdHTTP.Request.UserAgent := 'Mozilla/3.0';
+IdHTTP.Request.Pragma := 'no-cache';
+IdHTTP.Request.CacheControl := 'no-cache';
+IdHTTP.ProxyParams.ProxyServer := FProxy;
+IdHTTP.ProxyParams.ProxyPort := FProxyPort;
+IdHTTP.ConnectTimeout := 10000;
+IdHTTP.ReadTimeout := 10000;
+WebContent := IdHTTP.Get('http://' + FHostname + FSite);
+
+
+  

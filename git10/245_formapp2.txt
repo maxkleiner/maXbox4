@@ -1,0 +1,269 @@
+//Example of Outline and Memocomponent load and save capabilities of the VCL
+//Task: Outsource the business logic procedure ShowEntry in a include file
+//Get the text struct and set a new outline!, locs=236 
+//Dedicated to tutorial 11: starter programming forms
+
+Program Outline_Form_App_Tutorial;
+
+Const LEFTBASE = 20;
+      TOPBASE = 30; 
+      TEXTPATH = 'examples\outline3.txt';
+      AVIPATH = 'examples\cool.avi';
+      BITMAP = 'examples\citymax.bmp';
+
+var 
+  myMemo: TMemo;
+  inFrm: TForm;  
+  stat: TStatusbar;
+  mOutln: TOutline;
+  selectFile: string;
+  
+Procedure UpdateOutline(self: TObject); forward;
+
+
+//*******************Event Handlers - Closure***********************************
+Procedure GetMediaData(self: TObject);
+begin
+  if PromptForFileName(selectFile, 'Text files (*.txt)|*.txt', '',
+                       'Select your outline file',
+                       ExePath, False) //False = not Save dialog !
+   then begin
+     ShowMessage('Selected file = '+selectFile);
+     Stat.simpletext:= selectFile;
+     myMemo.lines.LoadFromFile(selectFile);
+     UpdateOutline(self)
+     //Split full file/path value into its constituent parts
+   end;
+end;  
+  
+Procedure BtnSaveClick(self: TObject);
+begin
+  if selectFile <> '' then begin
+    mymemo.lines.SaveToFile(selectFile) 
+    UpdateOutline(self)
+    Stat.simpletext:= selectFile+ ' has been saved and updated' ;
+  end;
+end; 
+
+Procedure UpdateOutline(self: TObject);
+begin
+  with mOutln do begin
+    //Update Tree!
+    LoadFromFile(selectFile);
+    FullExpand;
+  end  
+end; 
+
+Procedure showEntry(self: TObject);
+var idx: integer;
+begin
+  idx:= mOutln.selecteditem  //itemindex
+  writeln(mOutln.items[idx].text+' is marked')
+  Stat.simpletext:= mOutln.items[idx].text+' is marked';
+end; 
+
+procedure FormCloseClick(Sender: TObject; var Action: TCloseAction);
+begin
+  //myImage.Free;
+  Writeln('Outline Form Closed at: '+ TimeToStr(Time));
+  //inFrm.Free;
+  Action:= caFree;
+end;
+
+procedure ButtonCloseClick(Sender: TObject);
+begin
+  inFrm.Close;
+end;
+
+//--------------------------------Form Build---------------------------------//
+//****************************************************************************
+Procedure SetForm;
+var
+  mt: TMainMenu;
+  mi, mi1, mi2: TMenuItem;
+  mPanel: TPanel;
+  bmp: TBitmap;
+
+begin
+  inFrm:= TForm.Create(self);
+  stat:= TStatusbar.Create(inFrm);
+  mPanel:= TPanel.Create(inFrm);
+  myMemo:= TMemo.Create(inFrm);
+  mOutln:= TOutline.Create(inFrm);
+
+  with inFrm do begin
+    caption:='*****OutlineMedia3*****';  
+    height:= 610;
+    width:= 980;
+    Position:= poScreenCenter;
+    onClose:= @FormCloseClick;  //uncomment for debug
+    Show;
+  end ;
+  with mPanel do begin
+    caption:= '***Outline***';  
+    Parent:= inFrm;  
+    SetBounds(LEFTBASE,TOPBASE+40,340,400)
+    color:= clsilver;
+    font.color:= clyellow;
+    font.size:= 30;
+  end ;
+  with myMemo do begin
+    Parent:= inFrm;
+    SetBounds(LEFTBASE+570,TOPBASE+40,340,400)
+    font.size:= 14;
+    color:= clYellow;
+    scrollbars:= ssVertical;
+    lines.LoadFromFile(selectFile);
+    Stat.simpletext:= selectFile;
+  end;
+  with mOutln do begin
+    //AddChild
+    Parent:= inFrm; 
+    LoadFromFile(selectFile);
+    FullExpand;
+    width:= 280; height:= 340;
+    top:= TOPBASE+60;
+    left:= LEFTBASE+30;
+    onclick:= @showEntry;
+  end; 
+  with Stat do begin
+    Parent:= inFrm;
+    stat.SimplePanel:= true;
+  end;
+
+//********************************Bit Buttons*********************************
+  with TBitBtn.Create(inFrm) do begin
+    Parent:= inFrm;
+    setBounds(LEFTBASE+760,TOPBASE+460,150,40);
+    caption:= 'Open Text';
+    font.size:= 12;
+    glyph.LoadFromResourceName(HINSTANCE,'OPENFOLDER'); 
+    //event handler
+    onclick:= @GetMediaData;
+  end;
+  with TBitBtn.Create(inFrm) do begin
+    Parent:= inFrm;
+    setBounds(LEFTBASE+600,TOPBASE+460,150,40);
+    caption:= 'Save Text';
+    font.size:= 12;
+    glyph.LoadFromResourceName(HINSTANCE,'CL_MPNEXT'); 
+    onclick:= @BtnSaveClick;
+  end;
+  with TBitBtn.Create(inFrm) do begin
+    Parent:= inFrm;
+    setBounds(LEFTBASE+440,TOPBASE+460,150,40);
+    caption:= 'Update';
+    font.size:= 12;
+    glyph.LoadFromResourceName(HINSTANCE,'CL_MPPLAY'); 
+    onclick:= @UpdateOutline;
+  end;
+  with TBitBtn.Create(inFrm) do begin
+    Parent:= inFrm;
+    setBounds(LEFTBASE+280,TOPBASE+460,150,40);
+    caption:= 'Close';
+    font.size:= 12;
+    glyph.LoadFromResourceName(HINSTANCE,'CL_MPSTOP'); 
+    onclick:= @ButtonCloseClick;
+  end;
+//--------------------------Animation, Picture, Labels-------------------------
+  with TAnimate.Create(inFrm) do begin
+    Parent:= inFrm;
+    //Transparent := True;
+    SetBounds(LEFTBASE+400,TOPBASE+55,0,0) //315,-5
+    FileName:= ExePath + AVIPATH;
+    Active:= True;
+    //Hide;
+  end;
+  bmp:= TBitmap.Create;
+  try
+    bmp.LoadFromFile(Exepath+BITMAP);
+    inFrm.Canvas.Draw(370,70,Bmp);
+  finally
+    bmp.Free;
+  end;
+  with TLabel.Create(inFrm) do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+10,TOPBASE-15,180,20);
+    font.size:= 30;
+    font.color:= clred;
+    //font.style:= [fsunderline]
+    caption:= 'Outline FormApp';
+  end ; 
+  with TLabel.Create(inFrm) do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+575,TOPBASE,180,20);
+    font.size:= 20;
+    font.color:= clred;
+    caption:= 'Outline Tree';
+  end;  
+
+//********************************Menu Controls*******************************
+  mt:= TMainMenu.Create(infrm)
+  mi:= TMenuItem.Create(mt)
+  mi1:= TMenuItem.Create(mt)
+  mi2:= TMenuItem.Create(mt)
+  with mi do begin
+    Caption:= 'Play Outline';
+    Name:='ITEM';
+    mt.Items.Add(mi);   
+    OnClick:= @GetMediaData;
+  end;
+  with mi1 do begin
+    Caption:= 'Show Outline';
+    Name:='ITEM2';
+    mt.Items.Add(mi1) ;
+  end;
+  with mi2 do begin
+    Caption:= 'Open Outline';
+    Name:='ITEM3';
+    mt.Items.Add(mi2);
+  end;
+end; 
+
+
+//Main Form App  
+Begin
+  //default outline struct
+  selectFile:= ExePath+TEXTPATH;   
+  SetForm;
+  //SearchAndOpenDoc(ExePath+MEDIAPATH)
+  maxform1.color:= clWebGold;  //or clsilver
+  //writeln(GetASCCI)
+  Writeln(Application.Mainform.Name);
+  Writeln(IntToStr(Application.Handle));
+  //Get the Screen Resolution!
+  Writeln(IntToStr(Screen.Width) + ' '+intToStr(Screen.Height));
+End.
+
+http://www.delphi-treff.de/news/news-details/article/671/
+
+//-----------------------------CodeSnippets--------------------
+procedure TControlParentR(Self: TControl; var T:TWinControl); begin T:= Self.Parent; end;
+procedure TControlParentW(Self: TControl; T: TWinControl); begin Self.Parent:= T; end;
+    RegisterPropertyHelper(@TControlParentR, @TControlParentW, 'PARENT');
+    RegisterProperty('Parent', 'TWinControl', iptRW);
+
+procedure TTXPTool.LVPFFDblClick(Sender: TObject);
+var
+  tmpList: TListItem;
+  fn: string;
+  ft: integer;
+  fs: integer;
+begin
+  tmpList:= LVPFF.Selected;
+  if tmplist <> NIL then begin
+    fn:= tmpList.Caption
+    ft:= tmpList.SubItems.Strings[1];
+    fs:= tmpList.SubItems.Strings[3];
+    if pos('Wave', ft)>0 then
+      PlayThisOne1Click(NIL);
+    if pos('Jpg', ft)>0 then
+      ShowJpg1Click(NIL);
+    if pos('PNG', ft)>0 then
+      ShowTga1Click(NIL);
+    if pos('PCX', ft)>0 then
+      ShowPcx1Click(NIL);
+    if pos('Mission Sound Collection', ft)>0 then
+      ShowPwf1Click(NIL);
+  end;
+end;

@@ -1,0 +1,523 @@
+{
+    This is a TESTBOX for maXbox4 weatherbox testunit !
+    
+    https://www.kdnuggets.com/2021/06/5-tasks-automate-python.html
+    https://github.com/chubin/wttr.in
+    https://github.com/maxkleiner/wttr.in
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+ **********************************************************************}
+{-------------------------------------------------------------------------
+----------------------------------------------------------------------------}
+{
+ (with some improvements)
+  What's to do:
+    o some statistical functions
+    o optimizations
+    o ANSI Terminal Mode Escape 
+}
+
+//{$MODE objfpc}
+//{$inline on }
+//{$GOTO on}
+unit Math_mX4_WeatherBox;
+interface
+
+Const UrlWeatherReport30=
+    //'http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&APPID'+
+      //                               '=55013bf3d09cfb0619989a00ed5bed09';
+                                      
+      'https://wttr.in/%s';               
+      //{sys.argv[1].replace(" ", "+")}'                                
+
+//{$define FPC_HAS_TYPE_SINGLE}
+
+{$ifndef FPUNONE}
+   // uses sysutils;
+
+//{$IFDEF FPDOC_MATH}
+
+Const
+  MinFloat = 0;
+  MaxFloat = 0;
+{$ENDIF}
+
+    { Ranges of the IEEE floating point types, including denormals }
+{$ifdef FPC_HAS_TYPE_SINGLE}
+    const
+      { values according to
+        https://en.wikipedia.org/wiki/Single-precision_floating-point_format#Single-precision_examples
+      }
+      sMinSingle    =  1.1754943508e-38;
+      sMaxSingle    =  3.4028234664e+38;
+{$endif FPC_HAS_TYPE_SINGLE}
+{$ifdef FPC_HAS_TYPE_DOUBLE}
+    const
+      { values according to
+        https://en.wikipedia.org/wiki/Double-precision_floating-point_format#Double-precision_examples
+      }
+      MinDouble    =  2.2250738585072014e-308;
+      MaxDouble    =  1.7976931348623157e+308;
+{$endif FPC_HAS_TYPE_DOUBLE}
+{$ifdef FPC_HAS_TYPE_EXTENDED}
+    const
+      MinExtended  =  3.4e-4932;
+      MaxExtended  =  1.1e+4932;
+{$endif FPC_HAS_TYPE_EXTENDED}
+{$ifdef FPC_HAS_TYPE_COMP}
+    const
+      MinComp      = -9.223372036854775807e+18;
+      MaxComp      =  9.223372036854775807e+18;
+{$endif FPC_HAS_TYPE_COMP}
+
+ 
+//{$if FPC_FULLVERSION >=30101}
+//generic function RandomFrom<T>(const AValues:array of T):T;
+//{$endif}
+
+{ cpu specific stuff }
+
+(*type
+  TFPURoundingMode = {system.}TFPURoundingMode;
+  TFPUPrecisionMode = system.TFPUPrecisionMode;
+  TFPUException = system.TFPUException;
+  TFPUExceptionMask = system.TFPUExceptionMask;
+
+function GetRoundMode: TFPURoundingMode;
+function SetRoundMode(const RoundMode: TFPURoundingMode): TFPURoundingMode;
+function GetPrecisionMode: TFPUPrecisionMode;
+function SetPrecisionMode(const Precision: TFPUPrecisionMode): TFPUPrecisionMode;
+function GetExceptionMask: TFPUExceptionMask;
+function SetExceptionMask(const Mask: TFPUExceptionMask): TFPUExceptionMask;
+procedure ClearExceptions(RaisePending: Boolean =true);      *)
+
+
+implementation
+
+function GetBlogStream7(const S_API, pData: string): string;
+var strm: TStringStream;
+begin
+ //Function HttpPostURL(const URL,URLData: string; const Data:TStream):Boolean;
+  strm:= TStringStream.create('');
+  //sr:=HTTPEncode(pData)+CRLF;
+  //sr:='text='+HTTPEncode(pData)+CRLF;
+  //sr:= sr+'language=english';
+  //if HttpPostURL(S_API, sr, strm) then
+  //if HttpGETBinary(S_API, strm) then
+  
+   HttpGET(Format(S_API,[pData]), strm) //then
+     result:= strm.dataString;
+  strm.free;
+end; 
+
+
+function InRange(const AValue, AMin, AMax: Integer): Boolean;//inline;
+begin
+  Result:=(AValue>=AMin) and (AValue<=AMax);
+end;
+
+function InRange1(const AValue, AMin, AMax: Int64): Boolean;//inline;
+begin
+  Result:=(AValue>=AMin) and (AValue<=AMax);
+end;
+
+{$ifdef FPC_HAS_TYPE_DOUBLE}
+function InRange(const AValue, AMin, AMax: Double): Boolean;inline;
+begin
+  Result:=(AValue>=AMin) and (AValue<=AMax);
+end;
+{$endif FPC_HAS_TYPE_DOUBLE}
+
+function EnsureRange(const AValue, AMin, AMax: Integer): Integer;//inline;
+begin
+  Result:=AValue;
+  If Result<AMin then
+    Result:=AMin;
+  if Result>AMax then
+    Result:=AMax;
+end;
+
+function EnsureRange1(const AValue, AMin, AMax: Int64): Int64;//inline;
+begin
+  Result:=AValue;
+  If Result<AMin then
+    Result:=AMin;
+  if Result>AMax then
+    Result:=AMax;
+end;
+
+{$ifdef FPC_HAS_TYPE_DOUBLE}
+function EnsureRange(const AValue, AMin, AMax: Double): Double;inline;
+begin
+  Result:=AValue;
+  If Result<AMin then
+    Result:=AMin;
+  if Result>AMax then
+    Result:=AMax;
+end;
+{$endif FPC_HAS_TYPE_DOUBLE}
+
+Const
+  EZeroResolution = 1E-16;
+  DZeroResolution = 1E-12;
+  SZeroResolution = 1E-4;
+
+type
+  TSplitDouble = {packed} record
+    cards: Array[0..1] of cardinal;
+  end;
+
+  TSplitExtended = {packed} record
+    cards: Array[0..1] of cardinal;
+    w: word;
+  end;
+
+function IsNan(const d : Single): Boolean; //overload;
+  begin
+  //  result:=(longword(d) and $7fffffff)>$7f800000;
+    result:=(round(d) and $7fffffff)>$7f800000;  //fix it
+  end;
+
+{$ifdef FPC_HAS_TYPE_DOUBLE}
+function IsNan(const d : Double): Boolean;
+  var fraczero, expMaximal: boolean;
+  begin
+//{$if defined(FPC_BIG_ENDIAN) or defined(FPC_DOUBLE_HILO_SWAPPED)}
+    expMaximal := ((TSplitDouble(d).cards[0] shr 20) and $7ff) = 2047;
+    fraczero:= (TSplitDouble(d).cards[0] and $fffff = 0) and
+                (TSplitDouble(d).cards[1] = 0);
+//{$else FPC_BIG_ENDIAN}
+    expMaximal := ((TSplitDouble(d).cards[1] shr 20) and $7ff) = 2047;
+    fraczero := (TSplitDouble(d).cards[1] and $fffff = 0) and
+                (TSplitDouble(d).cards[0] = 0);
+//{$endif FPC_BIG_ENDIAN}
+    Result:=expMaximal and not(fraczero);
+  end;
+{$endif FPC_HAS_TYPE_DOUBLE}
+
+{$ifdef FPC_HAS_TYPE_EXTENDED}
+function IsNan(const d : Extended): Boolean; overload;
+  var
+    fraczero, expMaximal: boolean;
+  begin
+{$ifdef FPC_BIG_ENDIAN}
+//  {$error no support for big endian extended type yet}
+{$else}
+    expMaximal := (TSplitExtended(d).w and $7fff) = 32767;
+    fraczero := (TSplitExtended(d).cards[0] = 0) and
+                    ((TSplitExtended(d).cards[1] and $7fffffff) = 0);
+{$endif FPC_BIG_ENDIAN}
+    Result:=expMaximal and not(fraczero);
+  end;
+{$endif FPC_HAS_TYPE_EXTENDED}
+
+function IsInfinite(const d : Single): Boolean; //overload;
+  begin
+    result:=(round(d) and $7fffffff)=$7f800000;
+  end;
+
+{$ifdef FPC_HAS_TYPE_DOUBLE}
+function IsInfinite1(const d : Double): Boolean; overload;
+  var
+    fraczero, expMaximal: boolean;
+  begin
+//{$if defined(FPC_BIG_ENDIAN) or defined(FPC_DOUBLE_HILO_SWAPPED)}
+    expMaximal := ((TSplitDouble(d).cards[0] shr 20) and $7ff) = 2047;
+    fraczero:= (TSplitDouble(d).cards[0] and $fffff = 0) and
+                (TSplitDouble(d).cards[1] = 0);
+//{$else}
+    (*expMaximal := ((TSplitDouble(d).cards[1] shr 20) and $7ff) = 2047;
+    fraczero := (TSplitDouble(d).cards[1] and $fffff = 0) and
+                (TSplitDouble(d).cards[0] = 0);
+//{$endif FPC_BIG_ENDIAN}
+    Result:=expMaximal and fraczero;  *)
+  end;
+{$endif FPC_HAS_TYPE_DOUBLE}
+
+
+const
+  DELTA = 0.001;
+  EPS = 1E-9;   // required precision of interest rate (after typ. 6 iterations)
+  MAXIT = 20;   // max iteration count to protect agains non-convergence
+
+
+function InterestRate(NPeriods:Integer; APayment,APresentValue,AFutureValue:Float;
+  APaymentTime: TPaymentTime): Float;
+{ The interest rate cannot be calculated analytically. We solve the equation
+  numerically by means of the Newton method:
+  - guess value for the interest reate
+  - calculate at which interest rate the tangent of the curve fv(rate)
+    (straight line!) has the requested future vale.
+  - use this rate for the next iteration. }
+(*const
+  DELTA = 0.001;
+  EPS = 1E-9;   // required precision of interest rate (after typ. 6 iterations)
+  MAXIT = 20;   // max iteration count to protect agains non-convergence   *)
+var
+  r1, r2, dr: Float;
+  fv1, fv2: Float;
+  iteration: Integer;
+begin
+  iteration := 0;
+  r1 := 0.05;  // inital guess
+  repeat
+    r2 := r1 + DELTA;
+    fv1 := FutureValue(r1, NPeriods, APayment, APresentValue, APaymentTime);
+    fv2 := FutureValue(r2, NPeriods, APayment, APresentValue, APaymentTime);
+    dr := (AFutureValue - fv1) / (fv2 - fv1) * delta;  // tangent at fv(r)
+    r1 := r1 + dr;      // next guess
+    inc(iteration);
+  until (abs(dr) < EPS) or (iteration >= MAXIT);
+  Result := r1;
+end;
+
+function NumberOfPeriods(ARate, APayment, APresentValue, AFutureValue: Float;
+  APaymentTime: TPaymentTime): Float;
+{ Solve the cash flow equation (1) for q^n and take the logarithm }
+var q, x1, x2: Float;
+begin
+  if ARate = 0 then
+    Result := -(APresentValue + AFutureValue) / APayment
+  else begin
+    q := 1.0 + ARate;
+    if APaymentTime = ptStartOfPeriod then
+      APayment := APayment * q;
+    x1 := APayment - AFutureValue * ARate;
+    x2 := APayment + APresentValue * ARate;
+    if   (x2 = 0)                    // we have to divide by x2
+      or (glsign(x1) * glsign(x2) < 0)   // the argument of the log is negative
+    then
+      Result := Infinity
+    else begin
+      Result := ln(x1/x2) / ln(q);
+    end;
+  end;
+end;
+
+function Payment(ARate: Float; NPeriods: Integer;
+  APresentValue, AFutureValue: Float; APaymentTime: TPaymentTime): Float;
+var q, qn, factor: Float;
+begin
+  if ARate = 0 then
+    Result := -(AFutureValue + APresentValue) / NPeriods
+  else begin
+    q := 1.0 + ARate;
+    qn := power(q, NPeriods);
+    factor := (qn - 1) / (q - 1);
+    if APaymentTime = ptStartOfPeriod then
+      factor := factor * q;
+    Result := -(AFutureValue + APresentValue * qn) / factor;
+  end;
+end;
+
+function PresentValue(ARate: Float; NPeriods: Integer;
+  APayment, AFutureValue: Float; APaymentTime: TPaymentTime): Float;
+var  q, qn, factor: Float;
+begin
+  if ARate = 0.0 then
+    Result := -AFutureValue - APayment * NPeriods
+  else begin
+    q := 1.0 + ARate;
+    qn := power(q, NPeriods);
+    factor := (qn - 1) / (q - 1);
+    if APaymentTime = ptStartOfPeriod then
+      factor := factor * q;
+    Result := -(AFutureValue + APayment*factor) / qn;
+  end;
+end;
+
+//https://rosettacode.org/wiki/Terminal_control/Clear_the_screen#Stand_alone_function
+
+function  GetConsoleScreenBufferInfo(hConsoleOutput: THandle;
+              CONSOLE_SCREEN_BUFFER_INFO: TConsoleScreenBufferInfo):boolean;
+   external 'GetConsoleScreenBufferInfo@kernel32.dll stdcall';
+   
+{BOOL WINAPI GetConsoleScreenBufferInfo(
+  _In_  HANDLE                      hConsoleOutput,
+  _Out_ PCONSOLE_SCREEN_BUFFER_INFO lpConsoleScreenBufferInfo
+); }  
+
+
+procedure ClearANSIScreen;
+var astdout: THandle;
+    csbi: TConsoleScreenBufferInfo;
+    ConsoleSize: DWORD;
+    NumWritten: DWORD;
+    Origin: TCoord;
+begin
+  astdout := GetStdHandle(STD_OUTPUT_HANDLE);
+  Win32Check(stdout<>INVALID_HANDLE_VALUE);
+  Win32Check(GetConsoleScreenBufferInfo(stdout, csbi));
+  ConsoleSize := csbi.dwSize.X * csbi.dwSize.Y;
+  Origin.X := 0;
+  Origin.Y := 0;
+  {Win32Check(FillConsoleOutputCharacter(stdout, ' ', ConsoleSize, Origin, 
+    NumWritten));
+  Win32Check(FillConsoleOutputAttribute(stdout, csbi.wAttributes, ConsoleSize, Origin, 
+    NumWritten));
+  Win32Check(SetConsoleCursorPosition(stdout, Origin));  }
+end;
+
+const WeatherreportVT=
+
+  ' [38;5;240;1m      .-.     [0m Heavy rain, mist '
+  +' [38;5;240;1m    (   ).   [0m [38;5;118m+14[0m([38;5;118m13[0m) °C[0m '
+  +' [38;5;240;1m   (___(__)  [0m [1m?[0m [38;5;154m9[0m km/h[0m  '     
+  +' [38;5;21;1m   ‚‘‚‘‚‘‚‘   [0m 4 km[0m  '         
+  +' [38;5;21;1m   ‚’‚’‚’‚’   [0m 0.3 mm[0m  ' ;      
+                                                      // +-------------+ 
+
+var Form1:  TForm;   WebBrowser1: TWebBrowser;
+     c: TControlCanvas;
+
+function ColorToHTML(const Color: TColor): string;
+var ColorRGB: Integer;
+begin
+  ColorRGB := ColorToRGB(Color);
+  Result := Format('#%0.2X%0.2X%0.2X',
+    [GetRValue(ColorRGB), GetGValue(ColorRGB), GetBValue(ColorRGB)]);
+end;
+
+procedure loadWebform;
+begin
+ Form1:= TForm.create(self);
+ with form1 do begin
+  Left:= 76 ; Top := 46
+  Width := 1100; Height := 700
+  Caption := 'maXbox4 WinControlWebBrowserRSSStreamFeed_WeatherReport'
+  Color := clBtnFace
+  //Color := clblack;
+  Font.Charset := DEFAULT_CHARSET
+  Font.Color := clWindowText
+  Font.Height := -11
+  Font.Name := 'MS Sans Serif'
+  Font.Style := []
+  OldCreateOrder := False
+  //OnShow := @TForm1FormShow;
+  PixelsPerInch := 96
+  //TextHeight := 13
+  //Show;
+  //c:=TControlCanvas.Create;
+  //TControlCanvas(c).Control:=WebBrowser1;
+  //c.Brush.Style:=bsClear;
+  //c.StretchDraw(c.ClipRect,bmpBG);
+  WebBrowser1:= TWebBrowser.create(form1);
+  with webbrowser1 do begin
+    //parent:= form1;
+    TWinControl(WebBrowser1).Name:= 'MyWebBrowser1';
+    //TWinControl(WebBrowser1).loadfromstream('MyWebBrowser1');
+    TWinControl(WebBrowser1).Parent:= form1;
+    TWinControl(WebBrowser1).setbounds(20, 24, 962, 441)
+    TWinControl(WebBrowser1).color:= clblack;
+    TWinControl(WebBrowser1).Align:= alClient;
+    //https://stackoverflow.com/questions/17121143/how-to-stop-script-errors-in-twebbrowser-in-delphi
+       Silent := True;
+    //EmbeddedWB1.HostCSS := FmtCSS;
+    //WebBrowser1.OleObject.Document.bgColor := '#000000';
+    //WebBrowser1.Document.color
+    //(WebBrowser1.Document as TWinControl).Color := clblack;
+       Color :=  clblack; //'#000000';
+    TabOrder := 0
+    (*ControlData := {
+      4C00000017590000E81800000000000000000000000000000000000000000000
+      000000004C000000000000000000000001000000E0D057007335CF11AE690800
+      2B2E126208000000000000004C0000000114020000000000C000000000000046
+      8000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000100000000000000000000000000000000000000} *)
+    end;
+   end;
+ form1.show;
+end; 
+
+ var  pngStream: TMemoryStream;
+      vURL: ansistring;
+      ComTerminal: TCustomComTerminal;  var
+    AfTerminal1: TAfTerminal; //vt100: TTelnetSend; //TAdTerminal; //TAdTerminalEmulator; // am: TEmulVT;
+    //https://github.com/TurboPack/AsyncPro/tree/master/source
+//{$else}
+//implementation
+//{$endif FPUNONE}
+begin  //@main
+
+  //writeln('RandomFrom1: '+itoa(RandomFrom1([3,6,9,123,12345])));
+   //writeln(GetBlogStream7(UrlWeatherReport30, 'Bern'));
+   //loadWebform;
+   //openbrowser(GetBlogStream7(UrlWeatherReport30, 'Bern')); 
+ (*  SaveToFile(GetBlogStream7(UrlWeatherReport30, 'Bern'),
+                             'C:\maxbox\lazarus\rssweather.htm', false);
+ loadWebform;                              
+ WebBrowser1.Navigate(Format('about:<body bgcolor="%s" style="overflow:hidden"/>',
+                                      [ColorToHTML(clBlack)]));    
+   *)
+ //WebBrowser1.Navigate(Format('about:<body bgcolor="%s"/>',
+   //                                           [ColorToHTML(clBlack)]));    
+
+   loadWebform;     
+   //WebBrowser1.Navigate('file://c:/maxbox/lazarus/rssweather.htm');
+   WebBrowser1.Navigate('https://wttr.in/Bern');
+    WebBrowser1.Navigate('https://wttr.in/Cologne');
+   // WebBrowser1.Navigate('https://wttr.in/Wuhan');
+   // Function wGetX(aURL, afile: string): boolean;
+   //Function wGet2(aURL, afile: string): boolean;'  //without file open
+   // writeln(botoStr(wGetX('https://wttr.in/Cologne.png',
+     //                           exepath+'examples\wttrpic.png')));
+ 
+   //TWinControl(WebBrowser1).color := clblack;
+    //WebBrowser1.Navigate('<body class="">');
+    //WebBrowser1.Navigate('about:<body bgcolor=#859900;/>');
+  //   WebBrowser1.Navigate('file://c:/maxbox/lazarus/rssweather.htm');
+ // WebBrowser1.Navigate(Format('about:<body bgcolor="%s" style="overflow:hidden"/>', [ColorToHTML(clBlack)])); 
+ //WebBrowser1.Free; 
+ 
+ //ANSI A for the terminal;
+ 
+   memo2.font.size:= 12;  
+   memo2.font.name:= 'Lucida console';  
+   pngStream:= TMemoryStream.Create;
+   vURL:= 'https://wttr.in/Cologne?A';
+    try
+      HTTPget(vURL, pngStream)
+    except
+      showmessage('E.message')
+    end 
+    writeln(UTF8toAnsi(streamtoString3(pngStream))); 
+   pngStream.Free;
+   
+   ComTerminal:= TCustomComTerminal.create(self);
+   EditComTerminal(comterminal); 
+   
+End.
+
+{
+Checking the weather is usually a quick thing, but there can be a bit of satisfaction, by doing it with a click of a button.
+
+https://realterm.sourceforge.io/index.html
+
+TEmulVT - ANSI terminal emulation (like a TMemo but with ANSI escape sequences interpretation). 
+
+https://www.theopenforce.com/2020/02/anders-hejlsberg-delphi-1995.html
+
+async free lib
+
+with CL.AddClassN(CL.FindClass('TAfCustomTerminal'),'TAfTerminal') do begin
+
+https://www.kdnuggets.com/2021/06/5-tasks-automate-python.html
+
+https://stackoverflow.com/questions/896069/how-to-create-telnet-client-with-delphi-5
+
+Weather report: Cologne
+
+  [38;5;240;1m     .-.     [0m Heavy rain, mist
+  [38;5;240;1m    (   ).   [0m [38;5;118m+14[0m([38;5;118m13[0m) °C[0m     
+  [38;5;240;1m   (___(__)  [0m [1m?[0m [38;5;154m9[0m km/h[0m       
+  [38;5;21;1m  ‚‘‚‘‚‘‚‘    [0m 4 km[0m           
+  [38;5;21;1m  ‚’‚’‚’‚’    [0m 0.3 mm[0m         
+                                                       +-------------+  
+
+This as well only requires a single dependency.
+Once installed just create a file to run with the script below.
+After that, you are ready to run or schedule each day the following.  }
+

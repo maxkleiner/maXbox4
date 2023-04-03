@@ -1,0 +1,514 @@
+PROGRAM Demo_Crypto3_Testlab_RSA_Proof;
+//#hsign:max: MAXBOX8: /01/17 09:39: 
+
+//http://doctrina.org/How-RSA-Works-With-Examples.html
+{Now to pick two large primes, ap and aq. These numbers must be random and not too close to each other. Here are the numbers that I generated: using Rabin-Miller primality tests:
+ }
+ 
+Const
+  ap = 
+'12131072439211271897323671531612440428472427633701410925634549312301964373042085619324197365322416866541017057361365214171711713797974299334871062829803541';
+  aq =
+'12027524255478748885956220793734512128733387803682075433653899983955179850988797899869146900809131611153346817050832096022160146366346391812470987105415233';
+
+
+//With these two large numbers, we can calculate n and phi(n)
+ ap1 = 
+'12131072439211271897323671531612440428472427633701410925634549312301964373042085619324197365322416866541017057361365214171711713797974299334871062829803540';
+ 
+ aq1 =
+'12027524255478748885956220793734512128733387803682075433653899983955179850988797899869146900809131611153346817050832096022160146366346391812470987105415232';
+
+ Const  addpkey = // - the private key - 
+'89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713';
+//806235500670466656542323835029222154936232894721388
+
+//e - the public key
+//65537 has a gcd of 1 with phi(n), so lets use it as the public key.With these two large numbers, we can calculate n and phi(n)
+ Const E = 65537;
+ 
+
+ //captive true crypt crypto routine for entroypy test and large binary files!
+ Procedure TEnDecryptFile(pathin, pathout: string; keyChave: Word);
+   var
+     InMS, OutMS: TMemoryStream;
+     cnt: integer;
+     C: byte;
+    begin
+      InMS:= TMemoryStream.Create;
+      OutMS:= TMemoryStream.Create;
+      try
+        InMS.LoadFromFile(pathin);
+        InMS.Position:= 0;
+        for cnt:= 0 to InMS.Size- 1 do begin
+           InMS.ReadByte(C, 1);
+           C:= (C Xor Not (Ord(keyChave Shr cnt)));
+           OutMS.WriteBuffer(Chr(C), 1) ;
+        end;
+        OutMS.SaveToFile(pathout);
+      finally
+        InMS.Free;
+        OutMS.Free;
+      end;
+    end;
+    
+    
+   procedure TForm1Button5Click(Sender: TObject);
+   var
+     saveDialog : TSaveDialog;
+     Stream : TFileStream ;
+     glb_fileName1, glb_fileName2, WORD_2: string;
+   begin
+     WORD_2:= 'AESpassw';
+     saveDialog := TSaveDialog.Create(self);
+     saveDialog.Title := 'Choose location to save Decrypted Authentication Code';
+     saveDialog.InitialDir := exepath; //'C:\';
+     saveDialog.DefaultExt := '';
+     saveDialog.Execute();
+     glb_fileName1:= saveDialog.FileName;
+    //open stream and write cipher to a .txt of chosen location
+     try
+       Stream:= TFileStream.Create(saveDialog.GetNamePath + 
+                                      saveDialog.FileName + '.log',fmOpenReadWrite);
+     except
+       Stream:= TFileStream.Create(saveDialog.GetNamePath + 
+                                      saveDialog.FileName + '.txt',fmCreate);
+     end;
+     Stream.Free;
+     //Codec2.Password := WORD_2;
+     //Codec2.DecryptFile(glb_fileName2, saveDialog.FileName + '.txt');
+      glb_fileName2:= exepath+'logdecrypt.txt';
+     AESDecryptFile(glb_fileName2, saveDialog.FileName,WORD_2);
+     saveDialog.Free;
+end;
+
+
+   function TwoFish_ENC(const AString: String): String;
+   var
+     //CryptoLib: TCryptographicLibrary;
+     //Codec: TCodec;
+     encryptedStr: String;
+   begin
+     //CryptoLib := TCryptographicLibrary.Create(nil);
+     //Codec := TCodec.Create(nil);
+     try
+       {Codec.CryptoLibrary := CryptoLib;
+       Codec.StreamCipherId := 'native.StreamToBlock';
+       Codec.BlockCipherId := 'native.Twofish';
+       Codec.ChainModeId := 'native.CBC';
+       Codec.Reset;
+       Codec.Password := '56410AD2-9DD6-4B8C-9D2F-5DE7A7F7085E';
+       Codec.EncryptString(AString, encryptedStr, TEncoding.UTF8); }
+     finally
+       //CryptoLib.Free;
+       //Codec.Free;
+  end;
+  Result := encryptedStr;
+end;
+
+function DisplayStreamX( Stream: TStream): string;
+var
+  P, Sz: integer;
+  aByte: byte;
+  s: string;
+begin
+   try
+   if not assigned( Stream) then
+       result := 'nil'
+      else begin
+       P := Stream.Position;
+       Sz := Stream.Size;
+       Stream.Position := 0;
+       result := Format( 'stream[%d]=', [Sz]);
+       while Stream.Readbyte(aByte, 1) = 1 do begin
+         s := Format( '%2x', [aByte]);
+         if s[1]=' ' then
+           s[1]:= '0';
+         result:= result + ' ' + s
+         end;
+       Stream.Position := P
+       end;
+    except
+      stream.Free;
+   end;  
+end;
+
+function modbig(aval: string; amod: integer): integer;
+var atbig: TInteger;
+begin
+  atbig:= TInteger.create(1)
+  atbig.assign2(aval);
+  //writeln(aval) //atbig.pow(234);
+  atbig.modulo1(amod)
+  //atbig.getnextprime;
+  //atbig.ModPow(atbig,atbig);
+  //atbig.invmod(10);
+  //writeln('ret ^'+atbig.tostring(false))
+  result:= strtoint(atbig.tostring(false)) 
+  atbig.free;
+end; 
+
+function modbig2(aval: string; amod: string): string;
+var atbig, atbig2: TInteger;
+begin
+  atbig:= TInteger.create(1)
+  atbig.assign2(aval);
+  atbig2:= TInteger.create(1)
+  atbig2.assign2(amod);
+  atbig.modulo(atbig2)
+  //atbig.ModPow(atbig,atbig);
+  //atbig.invmod(10);
+  //writeln('ret ^'+atbig.tostring(false))
+  result:= atbig.tostring(false) 
+  atbig.free;
+  atbig2.free;
+end; 
+
+function modpowbig2(aval, apow, amod: string): string;
+var atbig, atbig2, atbig3: TInteger;
+begin
+  atbig:= TInteger.create(1)
+  atbig.assign2(aval);
+  atbig2:= TInteger.create(1)
+  atbig2.assign2(apow);
+  atbig3:= TInteger.create(1)
+  atbig3.assign2(amod);
+  atbig.ModPow(atbig2,atbig3);
+  //atbig.invmod(10);
+  result:= atbig.tostring(false) 
+  atbig.free;
+  atbig2.free;
+  atbig3.free;
+end; 
+
+    var maclist: TStrings;
+        src, s_encrypt, s_decrypt: string;
+        acod: THash; //TCodec;
+        //CryptoLib: TCryptographicLibrary;
+        maes:  TAES; 
+        Stream: TFilestream;
+       // maeskey:  TAESkey; //asym: TSymetricKey;
+        //ablock: TSimpleCodec IBlockCipher;
+
+BEGIN  //Main
+
+  // TEnDecryptFile('C:\maXbox\softwareschule\IBZ_2016\IBZ_IT_Security_2016\DVD Inhalt\Uebungen\26_11_ibz_virus3 - Copy2.txt','C:\maXbox\softwareschule\IBZ_2016\IBZ_IT_Security_2016\DVD Inhalt\Uebungen\26_11_ibz_virus3 - Copy2.txt',0123456789);
+   
+   writeln(bigpow(24,1024))
+   
+   if 10 = 6 and 4 then writeln('true');
+   if 1 = 3 and 9 then writeln('true');
+   if 11 = 2 or 9 then writeln('true');
+   if 10 = 6 + 4 then writeln('true');
+   
+   writeln(botostr(11 = 2 or 9))
+   writeln(itoa(ord('Q'))+' + '+itoa(ord('q')))
+   maXcalcF('7*103%120')
+   maxcalcF('ln(2^4096)/ln(10)')
+   writeln(stringtoHEX(synSHA1('thebox1'))) 
+   
+   //Function GetMacAddresses( const Machine : string; const Addresses : TStrings) : Integer
+   
+    maclist:= TStringlist.create;
+   if GetMacAddresses2(gethostname, maclist) <> 0 then
+       writeln(maclist.text);
+     maclist.Free;  
+   srlist:= TStringlist.create;
+   if GetMacAddresses2(gethostname, srlist) <> 0 then
+       writeln(srlist.text);
+     srlist.Free;  
+   
+   // Def: INF=1/0
+     
+     maxCalcF('1/0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000078785');
+     
+     //writeln((bigpow(2,)))
+     //voice(bigpow(2,))
+       writeln('')
+       writeln(stringtoHEX(synsha1('testh_pk')))
+       //writeln((md5(exepath+'testh.txt')))
+       AESEncryptString('testh', sr,'AESpassw');
+       writeln(sr)
+       AESDecryptString(src, sr,'AESpassw');
+       writeln('str '+src)
+       
+       sr:='';
+       //define a test file first:
+       StrtoFile('testh_pk',exepath+'testh_pk.txt')
+       AESEncryptFile(exepath+'testh_pk.txt', exepath+'testhcrypt.txt','AESpassw');
+       writeln('enc '+exepath+'testhcrypt.txt')
+       AESDecryptFile(exepath+'testh_pk.txt', exepath+'testhcrypt.txt','AESpassw');
+       writeln(filetostring(exepath+'testh_pk.txt'))
+
+       //AESDecryptFile(exepath+'testtest2.pdf','C:\maXbox\softwareschule\IBZ_2016\IBZ_IT_Security_2016\KT2encryptfile','IBZ2017!');
+       //opendoc(exepath+'testtest2.pdf')
+        writeln(md5(exepath+'maxbox4.exe'))
+       
+       AESEncryptString('testh_pk', sr,'AESpassw');
+       writeln(sr)
+      // function B64Encode(const S: AnsiString): AnsiString;
+      writeln(B64Encode(sr));
+      writeln(B64Encode('0b362b6b074423e1dccc817fde487'));
+      //AESEncryptFile(exepath+'maxboxlog4.log', exepath+'maxboxlog4c.log','AESpassw');
+      //TForm1Button5Click(Self) 
+      //BitCount_16   
+      
+      with TAES.Create(256) do begin
+       //  BlockSize codec
+       //SelfTest_Key:
+       //DisplayName
+        writeln(botoStr(TestAes))
+       // SelftestAES
+      end;  
+      //RandomFillStream
+      
+      Stream:= TFileStream.Create(exepath+'testh_pk.txt',fmOpenRead);
+      writeln(DisplayStream(stream))
+      writeln(DisplayStreamX(stream))
+      stream.Free;
+      //Stream_to_Base64
+      //http://doctrina.org/How-RSA-Works-With-Examples.html
+       
+      writeln(bigmulu(ap,aq))
+      writeln('')
+      writeln(bigmulu(ap1,aq1))
+      
+      //e·d mod phi(n)=1  >>> 7·103=721=1 mod 120. [p=11 and q=13.]  //invmod()
+      maXcalcF('7 * 103 % 120')
+      
+      //Extended Euclidean Algorithm with real world example e·d mod phi(n)=1
+      writeln(modbig2(bigmulu(addpkey,'65537'),bigmulu(ap1,aq1)));
+      
+      //encrypt: m^e mod n = 9^7 mod 143 =48=c;
+      //decrypt: c^d mod n = 48^103 mod 143 =9=m;
+  //encrypt: m^e mod n m=     
+  writeln(modpowbig2('1976620216402300889624482718775150','65537',bigmulu(ap,aq)))
+  s_encrypt:= modpowbig2('1976620216402300889624482718775150','65537',bigmulu(ap,aq));
+  s_decrypt:= modpowbig2(s_encrypt,addpkey,bigmulu(ap,aq))
+  writeln('decrypt: '+s_decrypt)
+  
+  //GetEulerPhi( n : int64) : int64');
+  //12 which are relatively prime to 12 are 1, 5, 7, and 11, so phi(12) = 4
+  writeln('EulerPhi '+itoa(GetEulerPhi(12)));
+  writeln('EulerPhi '+itoa(GetEulerPhi(11)));
+      
+END. 
+
+ref:
+
+-------> 1976620216402300889624482718775150 (which is our plaintext "attack at dawn") 
+
+ decrypt
+35052111338673026690212423937053328511880760811579981620642802346685810623109850235943049080973386241113784040794704193978215378499765413083646438784740952306932534945195080183861574225226218879827232453912820596886440377536082465681750074417459151485407445862511023472235560823053497791518928820272257787786 ^d mod n
+
+  constructor TAES.Create( KeySize1: integer);
+   begin
+   FKeySize := KeySize1;
+   if (FKeySize <> 128) and (FKeySize <> 192) and (FKeySize <> 256) then
+     raise Exception.Create( 'Invalid key size for AES.')
+  end;
+
+    doc: testh
+    Initialization vector:
+     CBC
+3417a4adba303c530ae86ede683a5628   (256 bits)
+3417a4adba303c530ae86ede683a5628 
+
+  res  0b36	2b	6b	09	94	74	42	3e	1d	cc	c8	17	fd	e4	87
+  res  e0	0a	f1	57	f5	e6	7c	b5	ee	5c	ff	66	be	01	f3	f4
+	
+    0b362b6b099474423e1dccc817fde487
+    DPvmqytkTtCV5su7PQ==
+    testh base64
+    mQU7+V3UrN/+XomUpHJ4dONOlQma4KpbuklBqW0xAJA=
+    
+  Procedure AESSymetricExecute(const plaintext, ciphertext, password: string)
+Procedure AESEncryptFile(const plaintext, ciphertext, password: string)
+Procedure AESDecryptFile(const replaintext, ciphertext, password: string)
+Procedure AESEncryptString(const plaintext:string; var ciphertext:string;password: string)
+Procedure AESDecryptString(var plaintext:string; const ciphertext:string;password: string)
+
+https://www.garyshood.com/virus/results.php?r=97913d53d5f8b1415a13d0da74441293
+
+http://r.virscan.org/report/c0f2f206ff7b0e457a8ea95ade714392
+
+Scan Execution Time: 8.964
+File Size: 27,720,144 bytes
+
+FILE IS CLEAN!
+Clamav
+
+----------- SCAN SUMMARY -----------
+Infected files: 0
+Total errors: 1
+Time: 0.000 sec (0 m 0 s)
+
+FILE IS CLEAN!
+F-Prot
+Results:
+Files: 1
+Objects scanned: 1
+Infected objects: 0
+Files with errors: 0
+Running time: 00:01
+
+FILE IS CLEAN!
+AntiVir
+
+------ scan results ------
+   file: 
+ scanned files:        1
+        alerts:        0
+    suspicious:        0
+     scan time: 00:00:01
+
+https://scan.kaspersky.com/Home/Result
+Scan result 	File is safe
+File size 	26,44MB
+File type 	PE32/EXE
+Date of scan 	-01-24 21:40:31
+Bases release date 	-01-24 20:35:10 UTC
+MD5 	97913d53d5f8b1415a13d0da74441293
+SHA1 	15565a557b0f9576aa5f23f2a1d06be9699a757b
+SHA	b80b0bfef22c6b4be3dbc4af984ca897144895f3c1e162f3ad7895d14fb4e667
+    
+    (A9 4A 8F E5 CC B1 9B A6 1C 4C 08 73 D3 E9 87 98 2F BB D3) = dfjgjjghjhjjhjhjjhjj1C 4C 08 73 D3 91 E9 87 98 2F BB D3
+   
+   decipher(dfjgjjghjhjjhjhjjhjj1C 4C 08 D3 E9 87 98 2F BB D3)
+   A9 4A 8F E5 CC B1 9B A6 1C 4C 08 73 D3 91 E9 87 98 2F BB D3
+
+Ref: 
+
+http://doctrina.org/How-RSA-Works-With-Examples.html
+
+Procedure BurnMemory( var Buff, BuffLen : integer)
+Procedure BurnMemoryStream( Destructo : TMemoryStream)
+
+https://http2.github.io/faq/#why-is-http2-binary
+
+Why just one TCP connection?
+
+With HTTP/1, browsers open between four and eight connections per origin. Since many sites use multiple origins, this could mean that a single page load opens more than thirty connections.
+
+One application opening so many connections simultaneously breaks a lot of the assumptions that TCP was built upon; since each connection will start a flood of data in the response, there’s a real risk that buffers in the intervening network will overflow, causing a congestion event and retransmits.
+
+Additionally, using so many connections unfairly monopolizes network resources, “stealing” them from other, better-behaved applications (e.g., VoIP)
+
+ Wireless LAN adapter Wi-Fi:
+
+   Connection-specific DNS Suffix  . :
+   Description . . . . . . . . . . . : Intel(R) Centrino(R) Wireless-N 105
+   Physical Address. . . . . . . . . : 80-9B-20-4F-C4-BC
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+   Link-local IPv6 Address . . . . . : fe80::11f2:c30c:7d61:74ac%2(Preferred)
+   IPv4 Address. . . . . . . . . . . : 10.12.8.16(Preferred)
+   Subnet Mask . . . . . . . . . . . : 255.255.0.0
+   Lease Obtained. . . . . . . . . . : 21 January 2017 08:02:10
+   Lease Expires . . . . . . . . . . : 21 January 2017 16:02:09
+   Default Gateway . . . . . . . . . : 10.12.0.1
+   DHCP Server . . . . . . . . . . . : 10.12.0.1
+   DHCPv6 IAID . . . . . . . . . . . : 360746
+   DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-18-4A-28-D2-B8-88-E3-D7-DD-33
+
+   DNS Servers . . . . . . . . . . . : 212.37.
+                                       194.230.55.
+   NetBIOS over Tcpip. . . . . . . . : Enabled
+
+http://security.stackexchange.com/questions/61089/can-truecrypt-encrypt-ssds-without-performance-problems
+
+IE
+
+    11
+    See notes:
+        12
+
+Edge
+*
+    14
+    See notes:
+        2
+    15
+    See notes:
+        2
+
+Firefox
+    50
+    See notes:
+        2
+    51
+    See notes:
+        2
+    52
+    See notes:
+        2
+    53
+    See notes:
+        2
+
+Chrome
+    49
+    See notes:
+        2
+    51
+    See notes:
+        24
+    54
+    See notes:
+        24
+    55
+    See notes:
+        24
+    56
+    See notes:
+        24
+    57
+    See notes:
+        24
+    58
+    See notes:
+        24
+
+Safari
+    10
+    See notes:
+        23
+    TP
+    See notes:
+        23
+
+Opera
+    42
+    See notes:
+        24
+    43
+    See notes:
+        24
+    44
+    See notes:
+        24
+
+iOS Safari
+*
+    9.3
+    See notes:
+        2
+    10.2
+    See notes:
+        2
+
+Opera Mini
+*
+   all
+
+Android Browser
+*
+    4.3
+    4.4
+    4.4.4
+    53
+    See notes:
+        2
+Chrome for Android
+
+The Euler phi-function assigns to an integer n the number of numbers less than n and relatively prime to n. (The number 1 is counted!) The number s is written phi(n). Since 11 is prime, all the numbers less than 11 are relatively prime to 11, so phi(11) = 10, and similarly phi(p) = p - 1 for any prime p. The only numbers less than 12 which are relatively prime to 12 are 1, 5, 7, and 11, so phi(12) = 4. 

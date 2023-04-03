@@ -1,0 +1,534 @@
+program APILayer_Demo_DecodeUnicode;
+//{$IFDEF Lazarus}
+//  {$APPTYPE CONSOLE}
+//{/$ENDIF}
+//https://apilayer.com/marketplace/image_to_text-api?txn=free&e=Sign%20Up&l=Success&live_demo=show
+
+const
+  SUSERAgent = 'Mozilla/5.001 (windows; U; NT4.0; en-US; rv:1.0) Gecko/25250101';
+  URL_APILAY = 'https://api.apilayer.com/image_to_text/url?url=%s'; 
+  URLIMAGEPATH = 'http://www.kleiner.ch/kleiner/images/uml_buch.jpg';
+  URLIMAGEPATH2 = 'http://www.kleiner.ch/kleiner/patterns_klein.gif';
+  // URLIMAGEPATH4 = 'https://breitschbreitsch.files.wordpress.com/2023/03/kleiner_coat_of_arms_20230313_091828_2023.jpg';
+   
+  //URLIMAGEPATH4 = ' https://breitschbreitsch.files.wordpress.com/2023/03/kleiner_coat_of_arms_20230313_091828.jpg';
+  
+  URLIMAGEPATH4 = 'https://archive.org/download/maxbox4/kleiner_coat_of_arms_2023.jpg';
+
+procedure FilelessWB(encodedurl: string);
+var Bytes: TBytes;
+    MS: TMemoryStream;
+    WebBrowser1: TWebBrowser;
+begin   
+    //Bytes:= {TNetEncoding.Base64.}{DecodeString}StrToBytes(filetostring(EncodedPDFString));
+    MS:= TMemoryStream.Create;
+    try
+    HttpGet(EncodedURL, mS)
+    writeln(itoa((ms.size)));
+   { WebBrowser1:= TWebBrowser.create(self);
+    //MS.WriteBufferAB(Bytes, Length(Bytes));
+    MS.WriteBuffer(bytestostr(Bytes), Length(Bytes));  }
+    MS.Seek(0, 0);
+    MS.SaveToFile(exepath+'FileNametest.svg');
+    //MS.SaveToStream(exepath+'FileNametest.svg');
+    //openweb(StreamToString3(ms))
+    openweb(exepath+'FileNametest.svg')
+    //opendoc(exepath+'FileNametest.svg');
+    //RichEdit1.Lines.LoadFromStream( TempStream); // Load stream contents into rich edctrl
+    finally
+      ms.Free;
+    end;  
+    // Now you can navigate to 'FileName.pdf'
+    //WebBrowser1.Navigate(exepath+'FileNametest.pdf');
+end;
+
+procedure FilelessWB2(encodedURL: string);
+var Bytes:TBytes; tMS: TMemoryStream;
+    WebBrowser1: TWebBrowser; frm1:TForm;
+    JPGImage: TJPEGImage;
+begin   
+  //Bytes:={TNetEncoding.Base64.}{DecodeString}StrToBytes(filetostring(EncodedPDFString));
+  tMS:= TMemoryStream.Create;
+  try
+    HttpGet(encodedURL,tmS)
+    writeln('debug size: '+itoa((tms.size)));
+     { WebBrowser1:= TWebBrowser.create(self);
+      MS.WriteBuffer(bytestostr(Bytes),Length(Bytes)); }
+    tMS.Seek(0, 0);
+     //tMS.SaveToFile(exepath+'FileNametest.jpg');
+     //OpenWeb(exepath+'FileNametest.jpg')
+    frm1:= TForm.create(self); 
+    with frm1 do begin
+      setBounds(0,0,500,500)
+      with TImage.create(frm1) do begin
+        parent:= frm1;
+        setBounds(0,0,460,460)
+        JPGImage:= TJPEGImage.Create;      
+        JPGImage.LoadFromStream(tMS);                
+        Picture.Graphic:=(JPGImage);
+      end ;
+     Show;
+    end; 
+  finally
+    tMS.Free;
+    JPGImage.Free;
+  end;  
+   //Now you can navigate to 'FileName.pdf'
+   //WebBrowser1.Navigate(exepath+'FileNametest.pdf');
+end;
+
+function image_to_text_aPI(AURL, url_imgpath, aApikey: string): string;
+var httpRq,hr: THttpConnectionWinInet;
+    rets: TStringStream;   //atout: TProxyCredentials //TTimeOut;
+    heads: TStrings;   iht: IHttpConnection2; //losthost: THTTPConnectionLostEvent;
+begin
+  httprq:= THttpConnectionWinInet.Create(true); 
+  rets:= TStringStream.create('');
+  heads:= TStringlist.create;    
+  try 
+    //heads.add('user-agent ='+SUSERAGENT);
+    heads.add('apikey='+aAPIkey);
+    iht:= httpRq.setHeaders(heads);
+    httpRq.Get(Format(AURL,[url_imgpath]), rets);
+    //httpRq.setRequestheader('x-key',aAPIkey); 
+    writeln('rescode: '+itoa(httprq.getresponsecode));
+    if httprq.getresponsecode = 200 Then
+       result:= rets.datastring
+    Else result:= 'Failed getting response:'+
+             itoa(HttpRq.getresponsecode)+HttpRq.GetResponseHeader('message');
+  except  
+    writeln('Error: '+HttpRq.GetResponseHeader(''));
+    writeln('EHTTP: '+ExceptiontoString(exceptiontype, exceptionparam));       
+  finally
+    httprq:= Nil;
+    rets.Free;
+    heads.Free;
+  end;                  
+end; 
+
+function Image_to_text_API2(AURL, url_imgpath, aApikey: string): string;
+var httpq: THttpConnectionWinInet;
+    rets: TStringStream;  
+    heads: TStrings; iht: IHttpConnection2; //losthost:THTTPConnectionLostEvent;
+begin
+  httpq:= THttpConnectionWinInet.Create(true); 
+  rets:= TStringStream.create('');
+  heads:= TStringlist.create;     
+  try 
+    heads.add('apikey='+aAPIkey);
+    iht:= httpq.setHeaders(heads);
+    httpq.Get(Format(AURL,[url_imgpath]), rets);
+    if httpq.getresponsecode=200 Then result:= rets.datastring
+      else result:='Failed:'+
+             itoa(Httpq.getresponsecode)+Httpq.GetResponseHeader('message');
+  except  
+    writeln('EWI_HTTP: '+ExceptiontoString(exceptiontype,exceptionparam));
+  finally
+    httpq:= Nil;
+    heads.Free;
+    rets.Free;
+  end;                  
+end; 
+
+procedure PyCode(imgpath: string);
+begin
+  with TPythonEngine.Create(Nil) do begin
+  pythonhome:= 'C:\Users\breitsch\AppData\Local\Programs\Python\Python37-32\';
+  try
+    loadDLL;
+    ExecString('import requests');
+    ExecStr('url= "https://api.apilayer.com/image_to_text/url?url='+imgpath+'"'); 
+    ExecStr('payload = {}');  
+    ExecStr('headers= {"apikey": "dy5L70eQx72794XBZ8sewEgYTZR85QC7"}'); 
+    Println(EvalStr('requests.request("GET",url, headers=headers, data=payload).text'));  
+  except
+    raiseError;        
+  finally       
+    free;
+  end; 
+ end;
+end; 
+
+function DecodeUnicodeEscape(const AStr: string): string;
+var Nr:integer;
+    NewStr, OldStr:string;
+begin
+  OldStr:=AStr;
+  NewStr:='';
+  while pos('\u',OldStr)>0 do  begin
+      try
+        Nr:=Hex2Dec(Copy(OldStr, pos('\u',OldStr)+2, 4));
+        NewStr:=NewStr+Copy(OldStr, 0, pos('\u',OldStr)-1)+chr(Nr);
+        oldStr:=Copy(OldStr, pos('\u',OldStr)+6, Length(OldStr));
+      except
+        // do nothing hellcell and be quiet
+        writeln( 'DecodeUnicodeEscape Exception');
+      end;
+    end;
+  Result:=NewStr+OldStr;
+end;            
+
+function DecodeUnicodeEscape2(const AStr: string): string;
+var Nr:integer;
+    NewStr, OldStr:string;
+begin
+  OldStr:=AStr;
+  NewStr:='';
+  while pos('u',OldStr)>0 do  begin
+      try
+        Nr:=Hex2Dec(Copy(OldStr, pos('u',OldStr)+2, 4));
+        NewStr:=NewStr+Copy(OldStr, 0, pos('u',OldStr)-1)+chr(Nr);
+        oldStr:=Copy(OldStr, pos('u',OldStr)+6, Length(OldStr));
+      except
+        // do nothing hellcell and be quiet
+        writeln( 'DecodeUnicodeEscape Exception');
+      end;
+    end;
+  Result:=NewStr+OldStr;
+end;            
+
+var CodePage : LongWord;
+
+Begin //@main
+  //FilelessWB('https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg');
+  //FilelessWB2('https://th.bing.com/th/id/OIP.jFT3xuBUKNYqqS2ZoSGbsgHaEK?w=289&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7');
+  //FilelessWB2PNG('https://www.pngrepo.com/png/429486/60/digger-excavator-shovel.png');
+  //FilelessWB2PNG('https://wiki.gnome.org/Apps/EyeOfGnome?action=AttachFile&do=get&target=screenshot.png');
+  //writeln(DecodeUnicodeEscape(Image_to_text_API2(URL_APILAY, URLIMAGEPATH4, 
+    //                              'dy5L70eQx72794XBZ8sewEgYTZR85QC_')));
+  //http%3A%2F%2Fwww.kleiner.ch%2Fkleiner%2Fimages%2Fuml_buch.jpg"
+  //Pycode(URLIMAGEPATH);   
+  
+  IcsGetAcp( CodePage);
+  writeln('codepage '+itoa(codepage));
+  writeln(Utf8ToAnsi('Schon im 16. Jahrhunderf.in. den alten. Steuerb\u00fcchern erw\u00e4hnt.'));    writeln(Utf8ToString('Schon im 16. Jahrhunderf.in. den alten. Steuerb\u00fcchern erw\u00e4hnt.'));
+  writeln(itoa(getacp));
+  writeln(icsUnicodeToAnsi9('Steuerb\u00fcchern erw\u00e4hnt.',getacp,false));  
+  writeln(UnicodeTostr('Steuerb\u00fcchern erw\u00e4hnt.'));     
+  writeln(ZUnicodeToRaw('Steuerb\u00fcchern erw\u00e4hnt.',getacp));
+  writeln(ZConvertUnicodeToString_CPUTF8('Steuerb\u00fcchern erw\u00e4hnt.',getacp));
+  writeln(ZUnicodeToUnknownRaw('Steuerb\u00fcchern erw\u00e4hnt.',getacp));
+  writeln(AlGSMComm_UnicodeToGSM7BitDefaultAlphabet('Steuerb\u00fcchern erw\u00e4hnt.'));
+  writeln(UnicodeUpperCase2('Steuerb\u00fcchern erw\u00e4hnt.'));
+   writeln(UTF8Decode('Steuerb\u00fcchern erw\u00e4hnt.'));
+   // writeln(CP1252ToUTF8(('Steuerb\u00fcchern erw\u00e4hnt.'));
+    writeln(UTF8encode('Steuerb\u00fcchern erw\u00e4hnt.'));
+   //Solution: 
+   writeln(DecodeUnicodeEscape('Steuerb\u00fcchern erw\u00e4hnt.'));
+   writeln(DecodeUnicodeEscape('\u003cb\u003eLois \u0026amp; Clark\u003c/b\u003e: The New Adventures of Superman'));
+   
+End.
+
+Doc: Image to Text API uses a neural net (LSTM) based OCR engine which is focused on line recognition, but also supports recognizing the character patterns. It supports both handwriting and printed materials.
+
+This DecodeUnicodeEscape() is the simple function I have used - keep in mind that it assumes that the first byte is useless, so in the number sequence "u0026" it will only look at the "26" part (the 2nd byte) which is the hex value of 38 (dec), which in ASCII is an ampersand (see Character Table).
+
+{"lang": "de", "all_text": "Kleiner\nt\nKleiner auf Kleinert affes Geschlechtes Knonauer\nHmtes. Schon im 16. Jahrhunderf.in. den alten. Steuerbüchern erwähnt. Glieder des\nCe chlechtes Kämpthen. In den Schlachten Marignano 1515. Kappel 1531.etc.\nBekanterer Trader des Geflechtes Hufschieu Joh. Kleiner Freiamtshauptmann\nund Triführer in Bauemauffand. 1803 nacer. Längere Zeit Landesabwelens.\n1804 hingerichtet erhielt mit Schneebeli Willi Haberling ein. Denkmal in Foren.\nWappen entnommen dem Wappenbuch Gal in Ser. Central\nbibliothek gu Zürich führen auch\ninen Radmantel tott Banden", "annotations": ["Kleiner", "t", "Kleiner", "auf", "Kleinert", "affes", "Geschlechtes", "Knonauer", "Hmtes", ".", "Schon", "im", "16.", "Jahrhunderf.in", ".", "den", "alten", ".", "Steuerbüchern", "erwähnt", ".", "Glieder", "des", "Ce", "chlechtes", "Kämpthen", ".", "In", "den", "Schlachten", "Marignano", "1515.", "Kappel", "1531.etc", ".", "Bekanterer", "Trader", "des", "Geflechtes", "Hufschieu", "Joh", ".", "Kleiner", "Freiamtshauptmann", "und", "Triführer", "in", "Bauemauffand", ".", "1803", "nacer", ".", "Längere", "Zeit", "Landesabwelens", ".", "1804", "hingerichtet", "erhielt", "mit", "Schneebeli", "Willi", "Haberling", "ein", ".", "Denkmal", "in", "Foren", ".", "Wappen", "entnommen", "dem", "Wappenbuch", "Gal", "in", "Ser", ".", "Central", "bibliothek", "gu", "Zürich", "führen", "auch", "inen", "Radmantel", "tott", "Banden"]}
+
+
+{"lang": "de", "all_text": "Kleiner\nt\nKleiner auf Kleinert affes Geschlechtes Knonauer\nHmtes. Schon im 16. Jahrhunderf.in. den alten. Steuerb\u00fcchern erw\u00e4hnt. Glieder des\nCe chlechtes K\u00e4mpthen. In den Schlachten Marignano 1515. Kappel 1531.etc.\nBekanterer Trader des Geflechtes Hufschieu Joh. Kleiner Freiamtshauptmann\nund Trif\u00fchrer in Bauemauffand. 1803 nacer. L\u00e4ngere Zeit Landesabwelens.\n1804 hingerichtet erhielt mit Schneebeli Willi Haberling ein. Denkmal in Foren.\nWappen entnommen dem Wappenbuch Gal in Ser. Central\nbibliothek gu Z\u00fcrich f\u00fchren auch\ninen Radmantel tott Banden", "annotations": ["Kleiner", "t", "Kleiner", "auf", "Kleinert", "affes", "Geschlechtes", "Knonauer", "Hmtes", ".", "Schon", "im", "16.", "Jahrhunderf.in", ".", "den", "alten", ".", "Steuerb\u00fcchern", "erw\u00e4hnt", ".", "Glieder", "des", "Ce", "chlechtes", "K\u00e4mpthen", ".", "In", "den", "Schlachten", "Marignano", "1515.", "Kappel", "1531.etc", ".", "Bekanterer", "Trader", "des", "Geflechtes", "Hufschieu", "Joh", ".", "Kleiner", "Freiamtshauptmann", "und", "Trif\u00fchrer", "in", "Bauemauffand", ".", "1803", "nacer", ".", "L\u00e4ngere", "Zeit", "Landesabwelens", ".", "1804", "hingerichtet", "erhielt", "mit", "Schneebeli", "Willi", "Haberling", "ein", ".", "Denkmal", "in", "Foren", ".", "Wappen", "entnommen", "dem", "Wappenbuch", "Gal", "in", "Ser", ".", "Central", "bibliothek", "gu", "Z\u00fcrich", "f\u00fchren", "auch", "inen", "Radmantel", "tott", "Banden"]}
+
+{"lang": "de", "all_text": "Kleiner\nt\nKleiner auf Kleinert affes Geschlechtes Knonauer\nHmtes. Schon im 16. Jahrhunderf.in. den alten. Steuerb\u00fcchern erw\u00e4hnt. Glieder des\nCe chlechtes K\u00e4mpthen. In den Schlachten Marignano 1515. Kappel 1531.etc.\nBekanterer Trader des Geflechtes Hufschieu Joh. Kleiner Freiamtshauptmann\nund Trif\u00fchrer in Bauemauffand. 1803 nacer. L\u00e4ngere Zeit Landesabwelens.\n1804 hingerichtet erhielt mit Schneebeli Willi Haberling ein. Denkmal in Foren.\nWappen entnommen dem Wappenbuch Gal in Ser. Central\nbibliothek gu Z\u00fcrich f\u00fchren auch\ninen Radmantel tott Banden", "annotations": ["Kleiner", "t", "Kleiner", "auf", "Kleinert", "affes", "Geschlechtes", "Knonauer", "Hmtes", ".", "Schon", "im", "16.", "Jahrhunderf.in", ".", "den", "alten", ".", "Steuerb\u00fcchern", "erw\u00e4hnt", ".", "Glieder", "des", "Ce", "chlechtes", "K\u00e4mpthen", ".", "In", "den", "Schlachten", "Marignano", "1515.", "Kappel", "1531.etc", ".", "Bekanterer", "Trader", "des", "Geflechtes", "Hufschieu", "Joh", ".", "Kleiner", "Freiamtshauptmann", "und", "Trif\u00fchrer", "in", "Bauemauffand", ".", "1803", "nacer", ".", "L\u00e4ngere", "Zeit", "Landesabwelens", ".", "1804", "hingerichtet", "erhielt", "mit", "Schneebeli", "Willi", "Haberling", "ein", ".", "Denkmal", "in", "Foren", ".", "Wappen", "entnommen", "dem", "Wappenbuch", "Gal", "in", "Ser", ".", "Central", "bibliothek", "gu", "Z\u00fcrich", "f\u00fchren", "auch", "inen", "Radmantel", "tott", "Banden"]}
+
+
+
+Doc: The fact that error code is not "one of the expected return values" tells for the versions that the error comes from an underlying layer and this API just passes it up on internal failure. As a clue, having disabled some network adapter on the system, you might get rid of the error.
+
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----
+
+https://medium.com/@abhay.anand/day-3-linux-commands-you-should-know-65fb849561cc
+https://medium.com/100-days-of-linux/7-fundamental-use-cases-of-netcat-866364eb1742
+https://medium.com/@saravra/how-to-study-cybersecurity-64ee0478e87e
+
+New in maXbox 4.7.6.20 (December 15, 2022)
+New in maXbox 4.7.6.10 (November 12, 2021)
+New in maXbox 4.7.5.80 (July 22, 2021)
+New in maXbox 4.7.4.64 (June 14, 2020)
+New in maXbox 4.7.4.62 (June 8, 2020)
+New in maXbox 4.7.4.60 (April 21, 2020)
+New in maXbox 4.7.3.60 (April 15, 2020)
+New in maXbox 4.7.2.82 (April 7, 2020)
+New in maXbox 4.7.1 (November 15, 2019)
+New in maXbox 4.6.3.10 (August 6, 2019)
+New in maXbox 4.5.8.10 (December 27, 2017)
+New in maXbox 4.2.8.10 (October 24, 2017)
+New in maXbox 4.2.6.10 (August 24, 2017)
+New in maXbox 4.2.5.10 (February 20, 2017)
+New in maXbox 4.2.4.80 (October 21, 2016)
+New in maXbox 4.2.4.60 (September 30, 2016)
+New in maXbox 4.2.4.25 (June 8, 2016)
+New in maXbox 4.2.2.90 (April 25, 2016)
+New in maXbox 4.2.0.80 (April 15, 2016)
+New in maXbox 4.0.2.60 (February 2, 2016)
+New in maXbox 3.9.9.195 (May 19, 2015)
+New in maXbox 3.9.9.190 (March 20, 2015)
+New in maXbox 3.9.9.180 (February 12, 2015)
+New in maXbox 3.9.9.160 (January 14, 2015)
+New in maXbox 3.9.9.120 (November 29, 2014)
+New in maXbox 3.9.9.110 (November 12, 2014)
+New in maXbox 3.9.9.101 (October 25, 2014)
+New in maXbox 3.9.9.100 (October 10, 2014)
+New in maXbox 3.9.9.98 (July 25, 2014)
+New in maXbox 3.9.9.96 (May 15, 2014)
+New in maXbox 3.9.9.95 (April 24, 2014)
+New in maXbox 3.9.9.94 (March 28, 2014)
+New in maXbox 3.9.9.92 (March 20, 2014)
+New in maXbox 3.9.9.91 (March 12, 2014)
+New in maXbox 3.9.9.88 (February 10, 2014)
+New in maXbox 3.9.9.86 (January 27, 2014)
+New in maXbox 3.9.9.85 (January 15, 2014)
+New in maXbox 3.9.9.84 (January 6, 2014)
+New in maXbox 3.9.9.82 (December 16, 2013)
+New in maXbox 3.9.9.81 (December 3, 2013)
+New in maXbox 3.9.9.80 (November 11, 2013)
+New in maXbox 3.9.9.60 (October 21, 2013)
+New in maXbox 3.9.9.20 (October 9, 2013)
+New in maXbox 3.9.9.18 (September 30, 2013)
+New in maXbox 3.9.9.16 (September 17, 2013)
+New in maXbox 3.9.9.8 (September 13, 2013)
+New in maXbox 3.9.9.7 (August 27, 2013)
+New in maXbox 3.9.9.6 (August 7, 2013)
+New in maXbox 3.9.9.5 (July 24, 2013)
+New in maXbox 3.9.9.1 (June 24, 2013)
+New in maXbox 3.9.8.9 (June 10, 2013)
+New in maXbox 3.9.8.8 (May 13, 2013)
+New in maXbox 3.9.8.6 (April 10, 2013)
+New in maXbox 3.9.8.3 (March 18, 2013)
+New in maXbox 3.9.8 (February 28, 2013)
+New in maXbox 3.9.7.4 (January 22, 2013)
+New in maXbox 3.9.7.1 (January 22, 2013)
+New in maXbox 3.9.7 (December 3, 2012)
+New in maXbox 3.9.6.3 (November 14, 2012)
+New in maXbox 3.9.4.4 (October 16, 2012)
+New in maXbox 3.9.3.5 (September 26, 2012)
+New in maXbox 3.9.2 (August 31, 2012)
+New in maXbox 3.9.1 (June 14, 2012)
+New in maXbox 3.9.0 (May 23, 2012)
+New in maXbox 3.8.6.4 (May 11, 2012)
+New in maXbox 3.8.6 (April 20, 2012)
+New in maXbox 3.8.5 (April 3, 2012)
+New in maXbox 3.8.4 (March 2, 2012)
+New in maXbox 3.8.2 (January 20, 2012)
+New in maXbox 3.8.1 (January 3, 2012)
+New in maXbox 3.8.0.9 (December 20, 2011)
+New in maXbox 3.7.1 (December 6, 2011)
+New in maXbox 3.7.0.2 (November 9, 2011)
+New in maXbox 3.6.3.0 (November 3, 2011)
+New in maXbox 3.6.2.0 (October 22, 2011)
+New in maXbox 3.6.1.2 (October 12, 2011)
+New in maXbox 3.6.0.2 (October 3, 2011)
+New in maXbox 3.5.0.6 (September 1, 2011)
+New in maXbox 3.3.0.4 (June 27, 2011)
+New in maXbox 3.2.0 (March 25, 2011)
+New in maXbox 3.1.0 (February 24, 2011)
+New in maXbox 3.0.0 (December 20, 2010)
+New in maXbox 2.9.2 (July 23, 2010)
+New in maXbox 2.9 (June 3, 2010)
+
+
+Zeus64 commented on 18 May 2020
+
+@antarey i do not understand, why you compile to 64 bit the Alcinoe_rio.dpk ? delphi IDE is only 32 bit, so you can not compile for 64 bit, you must compile for 32 bit
+
+Microsoft doesn't name some of these libraries very well, I'm afraid. As long as you link against the 64-bit version of winsock32.lib you should be fine. Here's an MSDN link with a similar problem and more information.
+
+(Nitpick) It's not Microsoft's fault how the libraries are named. If anyone is to be blamed, it's programmers. They had to keep the same names for backwards-compatibility reasons, or you'd see hundreds of questions on here about that. "Why doesn't my program work anymore when I recompile for 64-bit? Stupid Microsoft, they always break everything." – 
+Cody Gray
+?
+Apr 1, 2011 at 3:52
+The name "Win32" was created to distinguish between 16-bit Windows (aka Windows 3.1) and 32-bit Windows (aka Windows 95 et al). 64-bit Windows has been unofficially called "Win64" in a lot of places even on MSDN/TechNet, but there's really no brand "Win64". Windows 64-bit and even Windows RT (aka Windows on ARM) still have "Win32" APIs. Today "Win32" means Win32 desktop apps that run on x86 (32-bit) or x64 (64-bit). – 
+Chuck Walbourn
+Jul 20, 2014 at 18:59
+
+C:\Users\Public\Documents\Embarcadero\Studio\21.0\Samples\Object Pascal\VCL\InetWinSockets
+
+
+64bit build
+
+procedure TDynamicDll.DoOpenDll(const aDllName : string);
+{$IFDEF MSWINDOWS}
+const
+  LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR = $00000100;
+  LOAD_LIBRARY_DEFAULT_DIRS = $00001000;
+Var
+  ExceptMask: TFPUExceptionMask;
+{$ENDIF}
+begin
+  if not IsHandleValid then
+  begin
+    FDllName := aDllName;
+    {$IFDEF MSWINDOWS}
+    ExceptMask := GetExceptionMask;
+    try
+      {$IFDEF FPC}
+      FDLLHandle := LoadLibraryExA(PAnsiChar(AnsiString(GetDllPath+DllName)),
+      {$ELSE}
+      /// [dcc64 Error] PythonEngine.pas(2965): E2010 Incompatible types: 'PWideChar' and 'PAnsiChar'
+      FDLLHandle := LoadLibraryEx(PWidechar(GetDllPath+DllName),
+      {$ENDIF}
+        0, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR or LOAD_LIBRARY_DEFAULT_DIRS);
+    finally
+      SetExceptionMask(ExceptMask);
+    end;
+    {$ELSE}
+    //Linux: need here RTLD_GLOBAL, so Python can do "import ctypes"
+    FDLLHandle := THandle(dlopen(PAnsiChar(AnsiString(GetDllPath+DllName)),
+      RTLD_LAZY+RTLD_GLOBAL));
+    {$ENDIF}
+  end;
+end;
+
+function TMethodsContainer.AddMethod( AMethodName  : PAnsiChar;
+                                      AMethod  : PyCFunction;
+                                      ADocString : PAnsiChar ) : PPyMethodDef;
+begin
+  if FMethodCount = FAllocatedMethodCount then
+    ReallocMethods;
+  Result := Methods[ MethodCount ];
+  Result^.ml_name  := AMethodName;
+  Result^.ml_meth  := AMethod;
+  Result^.ml_flags := METH_VARARGS;
+  Result^.ml_doc   := ADocString;
+  Inc( FMethodCount );
+end;
+
+
+from delphi_module import svg_image
+from io import StringIO
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import  BayesianRidge
+from sklearn.model_selection import RandomizedSearchCV, train_test_split
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.utils import parallel_backend
+parallel_backend('threading')
+import datetime
+import warnings
+warnings.filterwarnings("ignore")
+
+confirmed_df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
+
+parallel_backend('threading')
+
+cols = confirmed_df.keys()
+confirmed = confirmed_df.loc[:, cols[4]:cols[-1]]
+dates = confirmed.keys()
+world_cases = []
+
+for i in dates:
+    confirmed_sum = confirmed[i].sum()
+    world_cases.append(confirmed_sum)
+
+# window size
+window = 7
+
+days_since_1_22 = np.array([i for i in range(len(dates))]).reshape(-1, 1)
+world_cases = np.array(world_cases).reshape(-1, 1)
+
+days_in_future = 10
+future_forcast = np.array([i for i in range(len(dates)+days_in_future)]).reshape(-1, 1)
+
+start = '1/22/2020'
+start_date = datetime.datetime.strptime(start, '%m/%d/%Y')
+future_forcast_dates = []
+for i in range(len(future_forcast)):
+    future_forcast_dates.append((start_date + datetime.timedelta(days=i)).strftime('%m/%d/%Y'))
+
+X_train_confirmed, X_test_confirmed, y_train_confirmed, y_test_confirmed = train_test_split(days_since_1_22[50:], world_cases[50:], test_size=0.05, shuffle=False)
+
+# transform our data for polynomial regression
+bayesian_poly = PolynomialFeatures(degree=5)
+bayesian_poly_X_train_confirmed = bayesian_poly.fit_transform(X_train_confirmed)
+bayesian_poly_X_test_confirmed = bayesian_poly.fit_transform(X_test_confirmed)
+bayesian_poly_future_forcast = bayesian_poly.fit_transform(future_forcast)
+
+# bayesian ridge polynomial regression
+tol = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
+alpha_1 = [1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
+alpha_2 = [1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
+lambda_1 = [1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
+lambda_2 = [1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
+normalize = [True, False]
+
+bayesian_grid = {'tol': tol, 'alpha_1': alpha_1, 'alpha_2' : alpha_2, 'lambda_1': lambda_1, 'lambda_2' : lambda_2,
+                 'normalize' : normalize}
+
+bayesian = BayesianRidge(fit_intercept=True)
+bayesian_search = RandomizedSearchCV(bayesian, bayesian_grid, scoring='neg_mean_squared_error', cv=3, return_train_score=True, n_jobs=-1, n_iter=40, verbose=1)
+bayesian_search.fit(bayesian_poly_X_train_confirmed, y_train_confirmed)
+
+print(bayesian_search.best_params_)
+
+bayesian_confirmed = bayesian_search.best_estimator_
+test_bayesian_pred = bayesian_confirmed.predict(bayesian_poly_X_test_confirmed)
+bayesian_pred = bayesian_confirmed.predict(bayesian_poly_future_forcast)
+print('MAE:', mean_absolute_error(test_bayesian_pred, y_test_confirmed))
+print('MSE:',mean_squared_error(test_bayesian_pred, y_test_confirmed))
+
+plt.plot(y_test_confirmed)
+plt.plot(test_bayesian_pred)
+plt.legend(['Test Data', 'Bayesian Ridge Polynomial Predictions'])
+
+figfile = StringIO()
+plt.savefig(figfile, format='svg')
+figdata_svg = figfile.getvalue()
+svg_image.SvgText = figdata_svg
+
+#plt.show()
+
+C:\Program Files\Streaming\maxbox4>git clone https://github.com/Embarcadero/python4delphi
+Cloning into 'python4delphi'...
+remote: Enumerating objects: 7345, done.
+remote: Counting objects: 100% (286/286), done.
+remote: Compressing objects: 100% (125/125), done.
+remote: Total 7345 (delta 169), reused 268 (delta 161), pack-reused 7059
+Receiving objects: 100% (7345/7345), 196.71 MiB | 20.92 MiB/s, done.
+
+Resolving deltas: 100% (4968/4968), done.
+Updating files: 100% (469/469), done.
+
+C:\Program Files\Streaming\maxbox4>
+C:\Program Files\Streaming\maxbox4>git clone https://github.com/pyscripter/MultiInstaller
+Cloning into 'MultiInstaller'...
+remote: Enumerating objects: 47, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (11/11), done.
+remote: Total 47 (delta 1), reused 3 (delta 0), pack-reused 36
+Receiving objects: 100% (47/47), 3.21 MiB | 8.90 MiB/s, done.
+Resolving deltas: 100% (12/12), done.
+
+C:\Program Files\Streaming\maxbox4>
+
+C:\Program Files\Streaming\maxbox4>git clone https://github.com/project-jedi/jcl
+Cloning into 'jcl'...
+remote: Enumerating objects: 83063, done.
+remote: Counting objects: 100% (448/448), done.
+remote: Compressing objects: 100% (178/178), done.
+remote: Total 83063 (delta 303), reused 383 (delta 266), pack-reused 82615
+Receiving objects: 100% (83063/83063), 80.63 MiB | 26.36 MiB/s, done.
+Resolving deltas: 100% (65805/65805), done.
+Updating files: 100% (3631/3631), done.
+
+C:\Program Files\Streaming\maxbox4>git clone https://github.com/project-jedi/jvcl
+Cloning into 'jvcl'...
+remote: Enumerating objects: 192049, done.
+remote: Counting objects: 100% (761/761), done.
+remote: Compressing objects: 100% (240/240), done.
+remote: Total 192049 (delta 527), reused 729 (delta 510), pack-reused 191288
+Receiving objects: 100% (192049/192049), 85.74 MiB | 1.27 MiB/s, done.
+Resolving deltas: 100% (148220/148220), done.
+Updating files: 100% (21894/21894), done.
+
+C:\Program Files\Streaming\maxbox4>
+
+Malware die eine  fixe Signatur haben sind meist sehr einfach zu beheben, weshalb statische Analysen eine höhere Fix-Rate (28 Prozent) aufweisen, als dynamische Analysen. Nicht jedes der beiden Verfahren eignet sich für bestimmte Schwachstellen. Beide Bewertungstechniken unterscheiden sich grundlegend und weisen dadurch unterschiedliche Prävalenzen aus.
+Ich hätte eine Unterscheidung in statische und dynamische Analyse / Monitoring gemacht.
+
+Generating a PDF via VLCCanvas and TPdfDocumentGDI causes access violation when compiled with Delphi 10.4.1 with record field alignment compiler option set to "byte" or "off". When this option is set to either of "word", "double word" or "quad word", the PDF gets created without errors. The same exact code works fine when compiled with Delphi 10.4 (patch 3), regardless of the field alignment flag.
+It smells like an off-by-one error somewhere (that's why introducing gaps between record fields circumvents it), but I wasn't able to pinpoint it. The exception appears in TPdfWrite.Save method, where the L variable seems to be assigned a meaningless value (zero or negative). But since there's a lot of pointer math and memory copying, the actual cause might as well be completely elsewhere.
+
+<iframe src="data:application/pdf;base64,YOUR_BINARY_DATA" height="100%" width="100%"></iframe>
+----Simple Browser started----

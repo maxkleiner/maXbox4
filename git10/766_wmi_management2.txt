@@ -1,0 +1,552 @@
+PROGRAM Demo_App_WMI_Design2_Eventlog;
+
+//<head> #sign:breitsch: BREITSCH-BOX: 03/04/2023 10:56:24 
+//#tech:.20perf: 0:0:1.690 threads: 14 192.168.56.1 10:56:24 4.7.6.20
+
+CONST 
+  TEXTOUT = 'Hi world of third step code';
+  
+var objIE: variant;  
+
+{TYPE  <Type declarations>} 
+
+  procedure CreateColorDialog;
+  var mydlg: TColorDialog;
+   begin
+     mydlg:= TColorDialog.Create(self);
+     try
+       mydlg.Execute;
+     finally
+       mydlg.Free;
+     end;
+   end; 
+   
+  function ReverseStringX(const s: string): string;
+   var len, ctr: integer;
+   begin
+     len:= length(s);
+     SetLength(result,len);
+     for ctr:= 1 to len do
+       result[len-ctr+1]:= s[ctr];
+   end;
+   
+    function VariantIsObject(const V: Variant): Boolean;
+    begin
+      Result:= {Variants.}VarIsType(V, varDispatch)
+                   or {Variants.}VarIsType(V, varUnknown);
+    end;
+    
+    function WindowSupportsLayersX(const HWnd: {Windows.}HWND): Boolean;
+    //const
+     //WS_EX_LAYERED = $00080000;  // layered window style
+    begin
+     Result := IsFlagSet(
+       {Windows.}GetWindowLong(HWnd, {Windows.}GWL_EXSTYLE), WS_EX_LAYERED
+     );
+    end;
+    
+    function TreeNodeChildCount(ParentNode: TTreeNode): Integer;
+    var
+      ChildNode: {ComCtrls.}TTreeNode;  // references each child node
+    begin
+     Result:= 0;
+     if ParentNode = nil then
+       Exit;
+     ChildNode:= ParentNode.GetFirstChild;
+     while (ChildNode <> Nil) do begin
+       Inc(Result);
+       ChildNode:= ChildNode.GetNextSibling;
+     end;
+    end;
+    
+    // Show the type of a variant
+procedure ShowBasicVariantType(varVar: Variant);
+var
+  typeString : string;
+  basicType  : Integer;
+
+begin
+  // Get the Variant basic type :
+  // this means excluding array or indirection modifiers
+  basicType := VarType(varVar) and VarTypeMask;
+
+  // Set a string to match the type
+  case basicType of
+    varEmpty     : typeString := 'varEmpty';
+    varNull      : typeString := 'varNull';
+    varSmallInt  : typeString := 'varSmallInt';
+    varInteger   : typeString := 'varInteger';
+    varSingle    : typeString := 'varSingle';
+    varDouble    : typeString := 'varDouble';
+    varCurrency  : typeString := 'varCurrency';
+    varDate      : typeString := 'varDate';
+    varOleStr    : typeString := 'varOleStr';
+    varDispatch  : typeString := 'varDispatch';
+    varError     : typeString := 'varError';
+    varBoolean   : typeString := 'varBoolean';
+    varVariant   : typeString := 'varVariant';
+    varUnknown   : typeString := 'varUnknown';
+    varByte      : typeString := 'varByte';
+    varWord      : typeString := 'varWord';
+    varLongWord  : typeString := 'varLongWord';
+    varInt64     : typeString := 'varInt64';
+    varStrArg    : typeString := 'varStrArg';
+    varString    : typeString := 'varString';
+    varAny       : typeString := 'varAny';
+    varTypeMask  : typeString := 'varTypeMask';
+  end;
+  // Show the Variant type
+  ShowMessage('Variant type is '+typeString);
+ end; 
+ 
+   Procedure TestVariant3; 
+    var
+     myVar : Variant;
+   
+   begin
+     // Assign various values to a Variant
+     // and then show the resulting Variant type
+     ShowMessage('Variant value = not yet set');
+     ShowBasicVariantType(myVar);
+   
+     // Simple value
+     myVar := 123;
+     ShowMessage('Variant value = 123');
+     ShowBasicVariantType(myVar);
+   
+     // Calculated value using a Variant and a constant
+     myVar := myVar + 456;
+     ShowMessage('Variant value = 123 + 456');
+     ShowBasicVariantType(myVar);
+   
+     myVar := 'String '+IntToStr(myVar);
+     ShowMessage('Variant value = String 579');
+     ShowBasicVariantType(myVar);
+   end;
+  
+    var isloc: ISWBemLocator;
+        isser: ISWBemServices;
+        iset: ISWbemObjectSet;
+        ENum, osenum: IEnumVariant;
+        tObj: OleVariant;
+        isQuery: string;
+    var
+       wmiLocator: OLEVariant;
+       wmiService: OLEVariant;
+       wmiObject, wmiObjectSet: OLEVariant;
+       wmiProp: OLEVariant;
+       WMIClass, WMIProperty: string;
+       //aenum: TEnumerator;
+  
+Begin  //@main
+//<Executable statements>
+  for it:= 1 to 2 do 
+    Println(TEXTOUT);
+  maXcalcF('Sqrt(PI/e^2)') 
+  writeln(ReverseStringX('step'))
+  writeln(ReverseStringX('this is maXbox4 step of code'))
+  writeln(ReverseStringX(ReverseStringX('this is maXbox4 step of code')))
+  //Object Oriented Call
+  //CreateColorDialog;
+  //CLSIDFromProgID
+  StringToClassID('InternetExplorer.Application');
+  //ClassIDToString( const ClassID : TCLSID) : string
+  writeln(ClassIDToString(StringToClassID('InternetExplorer.Application')));
+  writeln('IE Installed: '+botoStr(ProgIDInstalled('InternetExplorer.Application')))
+  writeln(ClassIDToString(StringToClassID('WbemScripting.SWbemLocator')));
+  writeln('WMI Installed: '+botoStr(ProgIDInstalled('WbemScripting.SWbemLocator')))
+  //wmiLocator := CreateOleObject('WbemScripting.SWbemLocator');
+ 
+  //function VariantIsObject(const V: Variant): Boolean;
+  //VariantIsObject(const V: Variant): Boolean;
+  //objIE:= CreateOleObject('InternetExplorer.Application')
+  //writeln('IE Created: '+botoStr(VariantIsObject(objIE)))
+  //objIE:= unassigned;
+  
+  println('Layer Support: '+botoStr(WindowSupportsLayersX(hinstance)))
+  //TreeNodeChildCount
+  //RecycleBinInfo
+  //WindowsProductID
+  //ShowShellPropertiesDlg(exepath)
+  //glVertex3d(0.5, -0.5, 0.5); //Linke Seite
+  //glVertex3d(-0.5, -0.5, 0.5); 
+  //StrToFile( const s : string; const FileName : string) : Boolean;
+   if StrToFile('this is the filecontent4 it',exepath+'strtofiletext.txt') then
+      writeln(filetoString(exepath+'strtofiletext.txt'));
+     
+     isloc:= WMIStart;
+     isser:= WMIConnect(isloc, 'localhost','',''); //: ISWBemServices;
+    
+     //GetObject("winmgmts:\\" & strComputer)
+     writeln(WMIGetValue(isser, 'Win32_Service','DisplayName'));
+     writeln(WMIGetValue(isser, 'Win32_Service','State'));
+     writeln(WMIGetValue(isser, 'Win32_Service','StartMode'));
+     
+     writeln(WMIGetValue(isser, 'Win32_LogicalMemoryConfiguration','TotalPhysicalMemory'));
+     writeln(WMIGetValue(isser, 'Win32_LogicalMemoryConfiguration','TotalMemory'));
+   
+       writeln(WMIGetValue(isser, 'Win32_NTLogEvent','ComputerName'));
+       writeln(WMIGetValue(isser, 'Win32_NTLogEvent','User'));
+       writeln(WMIGetValue(isser, 'Win32_NTLogEvent','Logfile'));
+  
+       writeln(WMIGetValue(isser, 'Win32_BIOS','InstallDate'));
+       writeln(WMIGetValue(isser, 'Win32_BIOS','SerialNumber'));
+       iset:= WMIExecQuery(isser, 'SELECT SerialNumber FROM Win32_BIOS'); //WbemObjectSet;
+       writeln(botoStr(WMIRowFindFirst(iset, ENum, tObj))); 
+       writeln(botostr(WMIRowFindNext(ENum, tObj)));
+       
+      // isQuery:= 'SELECT State FROM Win32_Service WHERE state=Running';
+      // isQuery:= 'SELECT State,DisplayName,StartMode FROM Win32_Service WHERE State = "Running"';
+      // isQuery:= 'SELECT * FROM Win32_Service WHERE State = "Running"';
+      // isQuery:= 'SELECT * FROM Win32_Service';
+    
+      // isQuery:= 'SELECT Name,DisplayName,State FROM Win32_Service ORDER BY Name';
+     
+      { isQuery:= 'SELECT * FROM Win32_Process';
+       iset:= WMIExecQuery(isser, isQuery); //WbemObjectSet;
+      writeln(botoStr(WMIRowFindFirst(iset, ENum, tempObj))); 
+      it:= 0;
+      repeat 
+          //FindNext(ENum, tempobj);
+         PrintF('Processes run: %s - PID %s',[tempobj.name,(tempobj.processid)]) 
+         inc(it)
+      until not WMIRowFindNext(ENum, tempObj);
+      writeln('Processes : '+itoa(it))
+      tempObj:= unassigned; }
+      
+      //writeln('test first cast: '+vartoStr(tempobj.displayname))
+    //New ObjectQuery("Select * from Win32_NTLogEvent Where Logfile = 'System' and EventType = '3'")
+     
+    //  isQuery:= 'SELECT * FROM Win32_NTLogEvent WHERE Category = "Security"';
+    //  isQuery:= 'Select * from Win32_NTLogEvent Where Logfile = "System" and EventType = "3"';
+      isQuery:= 'Select * from Win32_NTLogEvent Where Logfile = "System" and EventType= "1"'+
+               ' AND User = "NT AUTHORITY\\NETWORK SERVICE"';   
+               //"BUILTIN\\Administrators"';
+      it:= 0;
+      iset:= WMIExecQuery(isser, isQuery); //WbemObjectSet;
+      writeln(botoStr(WMIRowFindFirst(iset, ENum, tObj))); 
+      //TForm1ShowBasicVariantType(tempobj.TimeGenerated)
+      repeat 
+        inc(it)
+        PrintF('-systime %d: %s - Name %s User %s'+#13#10+'%s'+#13#10,
+                [it, tobj.TimeGenerated,tobj.SourceName,tobj.User,tobj.message])
+      until not WMIRowFindNext(ENum, tobj); //}
+      writeln('System Network Errors : '+itoa(it))
+      tObj:= unassigned;
+      
+     // TestVariant3;
+     
+   //  writeln(ClassIDToString(ProgIDToClassId('{7006698D-2974-4091-A424-85DD0B909E23}')));
+     
+       writeln(ClassIDToString(StringToClassID('{76A64158-CB41-11D1-8B02-00600806D9B6}')));
+       writeln(ClassIDToProgID(StringToClassID('{76A64158-CB41-11D1-8B02-00600806D9B6}')));
+     
+     //ClassIDToString(
+     //writeln(ClassIDToProgID(StringToClassID('{3185A766-B338-11E4-A71E-12E3F512A338}')));
+     
+      wmiLocator := CreateOleObject('WbemScripting.SWbemLocator');
+       wMIService   := WmiLocator.ConnectServer('localhost', 'root\CIMV2', '', '');
+      // WMIExecQuery(isser, 'SELECT SerialNumber FROM Win32_BIOS'); //WbemObjectSet;
+      
+       WMIProperty:= 'SerialNumber'; WMIClass:= 'Win32_BIOS';
+       //WmiObjectSet:= wMIService.ExecQuery(Format('Select %s from %s',
+         //                             [WMIProperty, WMIClass]),'WQL',wbemFlagForwardOnly);
+         
+      // isQuery:= 'Select * from Win32_NTLogEvent Where Logfile = "Application" and EventType= "1"';
+      //Set colItems = objWMIService.ExecQuery("Select * from Win32_IP4RouteTable",,48)
+      
+       isQuery:= 'Select * from Win32_NetworkAdapterConfiguration';
+       //isQuery:= 'Select * From Win32_NetworkAdapterConfiguration Where IPEnabled = "True"';
+       
+        WmiObjectSet:= wMIService.ExecQuery(isQuery);
+      
+       //iset:= ISWbemObjectSet(WmiObjectSet);
+       //writeln(botoStr(WMIRowFindFirst(iset, ENum, tObj))); 
+       //Win32_NetworkAdapterConfiguration
+     
+        writeln('obj set returns: '+vartostr(WmiObjectSet.count))
+        
+        //for it:= 0 to WmiObjectSet.count-1 do begin
+       //      tObj:= WmiObjectSet.item('\\SYSTEM\NAMESPACE:CLASS.PROPNAME="IPAddress"');
+             //tObj:= WmiObjectSet.item('Win32_NetworkAdapterConfiguration.Propname="Caption"');
+             //tObj:= WmiObjectSet.item('Win32_LogicalDisk="C:"');
+             //tObj:= WmiObjectSet.get_('Win32_NetworkAdapterConfiguration.Index=1');
+           
+             tObj:= WmiObjectSet.item('Win32_NetworkAdapterConfiguration.Index=1');
+             //writeln(vartostr(tobj.IPAddress(0)))
+        //end;     
+
+        //WmiObjectSet.item[0].Caption;
+        //IPAddress
+        //GetEnumerator 
+        // OSEnum := Utils.Enumerator (OSList);
+        //writeln('set returns: '+(WmiObjectSet.item[1]))
+    
+        //Enum :=  (wmiObjectSet._NewEnum) as IEnumVariant;
+        //writeln(wmiObjectset.Properties_.Item(WMIProperty).Value);
+        wmiObject := wmiService.Get('Win32_Bios') ;
+        wmiProp := wmiObject.Properties_.Item('SerialNumber', 0) ;
+        writeln('CIMType: '+vartostr(wmiprop.CIMType))
+       //  writeln(wmiobject.getobjecttext_(0));
+       //writeln(wmiObjectset.Properties_.Item('Prop', 0));
+      
+     //Enum := wmiObjectSet._NewEnum as IEnumVariant;                              
+     wmilocator:= unassigned;
+     wmiservice:= unassigned;                              
+     WmiObjectSet:= unassigned;
+     wmiObject:= unassigned; 
+     tObj:= unassigned;
+     
+End. 
+
+
+ref:  https://social.msdn.microsoft.com/Forums/en-US/94d93dfc-91fd-4b24-91df-ce8e450eca17/how-to-query-the-win32ntlogevent-class-by-user-using-wmi?forum=vblanguage
+
+EventType
+
+'1 Error
+
+'2 Warning()
+
+'3 Information()
+
+'4 Security audit success
+
+'5 Security audit failure
+
+<QueryList>
+  <Query Id="0" Path="System">
+    <Select Path="System">*[System[(Level=2)]]</Select>
+  </Query>
+</QueryList>
+
+Exception: Could not convert variant of type (OleStr) into type (Date).
+
+-systime : 20170326175444.376055-000 - Name Microsoft-Windows-DistributedCOM User NT AUTHORITY\NETWORK SERVICE
+The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{3185A766-B338-11E4-A71E-12E3F512A338}
+ and APPID 
+{7006698D-2974-4091-A424-85DD0B909E23}
+ to the user NT AUTHORITY\NETWORK SERVICE SID (S-1-5-20) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable). This security permission can be modified using the Component Services administrative tool.
+
+Ref: WMI and Database SQL Programming Starter 12 Tutorial and Tutorial 52
+http://www.softwareschule.ch/download/maxbox_starter12.pdf 
+
+*************** File: C:\maXbox\maXbox4\Examples\705_new_classes_demoapp_wmi.pas
+function WMIStart: ISWBemLocator;
+function WMIConnect(WBemLocator: ISWBemLocator; Server, account, password: string): ISWBemServices;
+function WMIExecQuery(WBemServices: ISWBemServices; query: string): ISWbemObjectSet;
+function WMIConnect(WBemLocator: ISWBemLocator; Server, account, password: string): ISWBemServices;
+function WMIExecQuery(WBemServices: ISWBemServices; query: string): ISWbemObjectSet;
+function WMIRowFindFirst(ObjectSet: ISWbemObjectSet; var ENum:IEnumVariant; var tempobj:OleVariant): boolean;
+function WMIColFindNext(propENum: IENumVariant; var tempobj: OleVariant): boolean;
+function WMIGetValue(wbemservices: ISWBemServices; tablename, fieldname: string): string;
+function WMIConvValue(tempobj: OleVariant; var keyname: string): string;
+
+ref VB
+strComputer = "atl-dc-01"  //case: BITS - Background Intelligent Transfer Service -- Running
+
+Set wbemServices = GetObject("winmgmts:\\" & strComputer)
+Set wbemObjectSet = wbemServices.InstancesOf("Win32_Service")
+
+For Each wbemObject In wbemObjectSet
+    WScript.Echo "Display Name:  " & wbemObject.DisplayName & vbCrLf & _
+                 "   State:      " & wbemObject.State       & vbCrLf & _
+                 "   Start Mode: " & wbemObject.StartMode
+Next
+
+Doc: http://www.softwareschule.ch/blix.htm
+     to teach programming for intermediate
+     
+     https://msdn.microsoft.com/en-us/library/aa752044(v=vs.85).aspx
+     
+   function ProgIDInstalled(const PID: string): Boolean;
+   var
+     WPID: WideString;  // PID as wide string
+     Dummy: TGUID;      // unused out value from CLSIDFromProgID function
+   begin
+     WPID := PID;
+     Result := ActiveX.Succeeded(
+       ActiveX.CLSIDFromProgID(PWideChar(WPID), Dummy)
+     );
+   end;
+   
+   function ResourceIDToStr(const ResID: PChar): string;
+   begin
+     if IsIntResource(ResID) then
+       Result := '#' + SysUtils.IntToStr(Integer(ResID))
+     else
+       Result := string(ResID);
+   end;
+   
+   procedure ShowShellPropertiesDlg(const APath: string);
+   var
+     AExecInfo: ShellAPI.TShellExecuteinfo;  // info passed to ShellExecuteEx
+   begin
+     FillChar(AExecInfo, SizeOf(AExecInfo), 0);
+     AExecInfo.cbSize := SizeOf(AExecInfo);
+     AExecInfo.lpFile := PChar(APath);
+     AExecInfo.lpVerb := 'properties';
+     AExecInfo.fMask := ShellAPI.SEE_MASK_INVOKEIDLIST;
+     ShellAPI.ShellExecuteEx(@AExecInfo);
+   end;
+
+Ref: http://www.softwareschule.ch/download/maxbox_functions.txt
+     writeln(ReverseString(ReverseString(loadfile(exepath+'firstdemo3.txt'))))
+ 
+ Task: try the procedure:
+ procedure ReversePlay(const szFileName: string);
+ 
+ //#TODO: try the procedure reversePlay() with a wav file:
+ 
+ 2017-05 Cumulative Update for Windows 10 Version 1607 for x64-based Systems (KB4019472)
+    
+----File newtemplate.txt not exists - now saved!----
+
+
+function WMIConnect(WBemLocator: ISWBemLocator; Server, account, password: string): ISWBemServices;
+ // connects to a machine for WMI usage.
+  begin
+    Result := nil;
+    try
+      Result := WBEMLocator.ConnectServer(Server, 'root\CIMV2', '', Account,
+               Password, '', 0, nil);
+    except
+      on EOleException do
+        raise EOleException.Create('incorrect credentials.  WMI connection failed.', 1, '', '', 0);
+    end;
+    CoSetProxyBlanket(Result, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE,
+             nil,
+             wbemAuthenticationLevelCall, wbemImpersonationLevelImpersonate,
+             nil, EOAC_NONE);
+  end;
+
+function WMIExecQuery(WBemServices: ISWBemServices; query: string): ISWbemObjectSet;
+  // executes a WQL query.
+  begin
+    Result := nil;
+    try
+      Result := WBEmServices.ExecQuery(query, 'WQL',
+             wbemFlagReturnImmediately,
+             nil);
+    except
+      on EOleException do
+        raise EOleException.Create('Invalid statement.  Please resubmit.', 1, '', '', 0);
+    end;
+  end;
+
+function WMIRowFindFirst(ObjectSet: ISWbemObjectSet; var ENum: IEnumVariant; var tempobj: OleVariant): boolean;
+// finds the first row in a result set.
+  var
+    Value: Longint;
+  begin
+    Enum :=  (ObjectSet._NewEnum) as IEnumVariant;
+    Result := (ENum.Next(1, tempObj, @Value) = 0);
+  end;
+
+function WMIRowFindNext(ENum: IENumVariant; var tempobj: OleVariant): boolean;
+// finds the next row in a result set.
+  var
+    Value: Longint;
+  begin
+    Result := (ENum.Next(1, tempObj, @Value) = 0);
+  end;
+
+function WMIColFindFirst(var propENum: IENumVariant; var tempObj: OleVariant): boolean;
+ // finds the first column in a row.
+  var
+    Value: Longint;
+    propSet: ISWBemPropertySet;
+    SObject: ISWbemObject;
+  begin
+    SObject := IUnknown(tempObj) as ISWBemObject;
+    propSet := SObject.Properties_;
+    propEnum := (propSet._NewEnum) as IEnumVariant;
+    Result := (propEnum.Next(1, tempObj, @Value) = 0);
+  end;
+
+function WMIColFindNext(propENum: IENumVariant; var tempobj: OleVariant): boolean;
+  // finds the next column in a row.
+  var
+    Value: Longint;
+  begin
+    Result := (propENum.Next(1, tempObj, @Value) = 0);
+  end;
+
+function WMIGetValue(wbemservices: ISWBemServices; tablename, fieldname: string): string;
+  { this will return the value of the first fieldname that occurs in tablename }
+  var
+    statement: string;
+    RowENum: IENumVariant;
+    ObjectSet:  ISWbemObjectSet;
+    tempobj: OleVariant;
+    SObject: ISWbemObject;
+    Sprop: ISWBemProperty;
+  begin
+    Result := '';
+    statement := 'SELECT ' + fieldname + ' FROM ' + tablename;
+    ObjectSet := WMIExecQuery(WbemServices, statement);
+    if WMIRowFindFirst(ObjectSet, RowENum, tempobj) then
+      begin
+        SObject := IUnknown(tempObj) as ISWBemObject;
+        SProp := SObject.Properties_.Item(fieldname, 0); // specific field property
+        Result := WMIConvValue(SProp, fieldname);
+      end;
+  end;
+
+function WMIConvValue(tempobj: OleVariant; var keyname: string): string;
+  { generic WMI value to string conversion of "valuename".
+    Returns the field name into "keyname".  Adapted from Denis Blondeau 's SWBEM example. }
+  var
+    Count: Longint;
+    SProp: ISWbemProperty;
+    valuename: string;
+  begin
+    SProp := IUnknown(tempObj) as ISWBemProperty;
+    ValueName := '';
+    if VarIsNull(SProp.Get_Value) then
+      ValueName := '<empty>'
+    else
+      case SProp.CIMType of
+         wbemCimtypeSint8, wbemCimtypeUint8, wbemCimtypeSint16, wbemCimtypeUint16,
+         wbemCimtypeSint32, wbemCimtypeUint32, wbemCimtypeSint64:
+           if VarIsArray(SProp.Get_Value) then
+              begin
+                if VarArrayHighBound(SProp.Get_Value, 1) > 0 then
+                  for Count := 1 to VarArrayHighBound(SProp.Get_Value, 1) do
+                    ValueName := ValueName + ' ' + IntToStr(SProp.Get_Value[Count]);
+              end
+           else
+             ValueName := IntToStr(SProp.Get_Value);
+         wbemCimtypeReal32, wbemCimtypeReal64:
+           ValueName := FloatToStr(SProp.Get_Value);
+         wbemCimtypeBoolean:
+           if SProp.Get_Value then
+             ValueName := 'True'
+           else
+             ValueName := 'False';
+         wbemCimtypeString, wbemCimtypeUint64:
+           if VarIsArray(SProp.Get_Value) then
+              begin
+                if VarArrayHighBound(SProp.Get_Value, 1) > 0 then
+                  for Count := 1 to VarArrayHighBound(SProp.Get_Value, 1) do
+                    ValueName := ValueName + ' ' + SProp.Get_Value[Count];
+              end
+           else
+              ValueName :=  SProp.Get_Value;
+         wbemCimtypeDatetime:
+           ValueName :=  SProp.Get_Value;
+         wbemCimtypeReference:
+           ValueName := SProp.Get_Value;
+         wbemCimtypeChar16:
+           ValueName := '<16-bit character>';
+         wbemCimtypeObject:
+           ValueName := '<CIM Object>';
+      else
+        ValueName := '<Unknown type>';
+      end; {case}
+      keyname := String(SProp.Name);
+      Result := ValueName;
+end;
+
+A Variant variable is always initialized to Unassigned. You can assign almost any kind of value to the variable, and it will keep track of the type and value. 

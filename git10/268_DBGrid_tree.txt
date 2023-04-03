@@ -1,0 +1,606 @@
+{****************************************************************
+ * Project  : DBX Demo - DataBaseSeries maXbase
+ * App Name : 268_SQL_DBGrid_tree.txt, loc's = 201
+ * Purpose  : Demonstrates a tree Queries in Datasets
+ * History  : TSQLConnection, TSQLDataSet, TSQLQuery
+ ****************************************************************}
+
+program SQL_DataBaseDemo_TREE;     //not finished yet!!!
+
+var E: Exception;
+    dbGrid: TDBGrid;
+    dbForm: TForm;
+    //bmAkt: TBookmark; 
+
+const  
+   //ADBNAME = 'D:\Program Files\Common Files\Borland Shared\Data\MASTSQL.GDB';
+   ADBNAME = 'D:\Program Files\Common Files\CodeGear Shared\Data\MASTSQL.GDB';
+   SQLQUERY = 'SELECT * FROM Customer WHERE Company like "%SCUBA%"''';      
+   SQLQUERY2= 'INSERT INTO kings VALUES("Email","FirstN","LastN")';
+   EMAIL='test@tes.ch';
+   FIRSTN='max';
+   LASTN='box';
+   
+{For this demo you need some provider libraries, DemoDB MASTSQL and InterBase
+ which is part of an installation, here's some example code:
+ }
+
+procedure CreateDBGridForm(aSet: TDataSet); forward;
+
+
+function DataSetQuery(aconnect: TSQLConnection): TSQLDataSet;
+var dataset: TSQLDataSet;
+    i: integer;
+begin
+  DataSet:= TSQLDataSet.Create(self);
+  with DataSet do begin
+    SQLConnection:= aconnect;
+    //find all names with SCUBA in it!
+    CommandText:= SQLQUERY;
+    //CommandText:= Format('INSERT INTO kings VALUES("%s","%s","%s")', 
+                             //[Email,FirstN,LastN]); 
+    //ExecSQL(true); 
+    Open; 
+    Writeln(intToStr(Recordcount)+' records found')
+    for i:= 0 to Recordcount - 1 do begin
+      Writeln('Record: '+intToStr(i)+' '+Fields[1].asString)
+      Next;
+    end;
+  end;
+  result:= DataSet;     
+end;      
+  
+
+function SQLReturn(aconnect: TSQLConnection): TSQLQuery;
+var
+  qry: TSQLQuery;
+  i, z: integer;
+begin
+  qry:= TSQLQuery.Create(self);
+  qry.SQLConnection:= aconnect; //maybe before qry.active:= false;
+  qry.SQL.Add(SQLQuery)
+  qry.Open;
+  Writeln(intToStr(qry.Recordcount)+' records found')
+  for i:= 0 to qry.Recordcount - 1 do begin
+    for z:= 0 to qry.Fieldcount - 1 do 
+      Write((qry.Fields[z].asString)+' ');
+    Writeln(#13#10)
+    qry.Next;
+  end;
+ result:= qry;
+end;
+
+
+procedure TSQLPostUser(aDBname: string; const Email, FirstName, LastName: WideString); 
+var 
+  Connection : TSQLConnection; 
+  DataSet    : TSQLDataSet; 
+begin 
+  Connection:= TSQLConnection.Create(nil); 
+  with Connection do begin 
+    ConnectionName:= 'VCLScanner'; 
+    DriverName:= 'INTERBASE'; 
+    LibraryName:= 'dbxint30.dll'; //'dbexpint.dll'; dbExpress Version 2.5 not supported yet 
+    VendorLib:= 'GDS32.DLL'; 
+    GetDriverFunc:= 'getSQLDriverINTERBASE'; 
+    Params.Add('User_Name=SYSDBA'); 
+    Params.Add('Password=masterkey'); 
+    Params.Add('Database='+ADBNAME); 
+    LoginPrompt:= False; 
+    Open; 
+  end; 
+  DataSet:= TSQLDataSet.Create(nil); 
+  with DataSet do begin 
+    SQLConnection:= Connection; 
+    CommandText:= 'INSERT INTO Country VALUES("swiss","bern","europe",300,200)';
+                         //,"%s","%s")', [Email,FirstN,LastN]); 
+    try 
+      ExecSQL(true);
+      //Execute; 
+    except 
+      writeln(' EXEC not at all');
+      //Showmessage(E.message+'SQL or connect missing')
+
+    end; 
+  end; 
+  Connection.Close; 
+  DataSet.Free; 
+  Connection.Free; 
+end; 
+
+
+procedure ConnectInterBase(const aDBname: string);
+var
+  connection : TSQLConnection;
+  DataSet    : TSQLDataSet;
+  dataQuery  : TSQLQuery;
+begin
+  Connection:= TSQLConnection.Create(NIL);
+  try
+    with Connection do begin
+      ConnectionName:= 'VCLScanner';
+      DriverName:= 'INTERBASE';
+      LibraryName:= 'dbxint30.dll';
+      VendorLib:= 'GDS32.DLL';
+      GetDriverFunc:= 'getSQLDriverINTERBASE';
+      Params.Add('User_Name=SYSDBA');
+      Params.Add('Password=masterkey');
+      Params.Add('Database='+ADBNAME);
+      LoginPrompt:= false;
+      Open;
+    end;
+    dataQuery:= SQLReturn(Connection)
+    dataSet:= DataSetQuery(Connection) 
+    writeln('debug '+inttoStr(dataset.recordcount));
+    
+    // writeln('debug1 '+inttoStr(TDataSet(dataset.recordcount)));
+     CreateDBGridForm(TDataset(dataset));
+ 
+   except
+    E:= Exception.Create('SQL Connect Exception: ');
+    Showmessage(E.message+'SQL or connect missing')
+  end;
+  //finalize objects 
+  if connection.Connected then begin
+    DataSet.Close;
+    DataSet.Free;
+    dataQuery.Close;
+    dataQuery.Free;
+    connection.Close;
+    connection.Free;
+  end;  
+end;
+
+procedure createUserTable; 
+var 
+  Connection: TSQLConnection; 
+  SQLstmt: String; 
+begin 
+  Connection := TSQLConnection.Create(nil); 
+  with Connection do begin 
+    ConnectionName := 'VCLScanner'; 
+    DriverName := 'INTERBASE'; 
+    LibraryName := 'dbexpint.dll'; 
+    VendorLib := 'GDS32.DLL'; 
+    GetDriverFunc := 'getSQLDriverINTERBASE'; 
+    Params.Add('User_Name=SYSDBA'); 
+    Params.Add('Password=masterkey'); 
+    {with TWebModule1.create(NIL) do begin 
+        getFile_DataBasePath; 
+        Params.Add(dbPath); 
+        free; 
+    end;} 
+    LoginPrompt := False; 
+    Connected := True; 
+    SQLstmt := 'CREATE TABLE NewMaxCusts ' + 
+    '( ' + 
+    '  CustNo INTEGER NOT NULL, ' + 
+    '  Company CHAR(40), ' + 
+    '  State CHAR(2), ' + 
+    '  PRIMARY KEY (CustNo) ' + 
+    ')'; 
+   try 
+     Execute(SQLstmt, NIL, NIL); 
+   except 
+     //raise 
+   end; 
+    Close; 
+    Free; 
+  end; //end Connection 
+end; 
+
+
+
+procedure CreateDBGridForm(aSet: TDataSet);
+//diaform:= CreateMessageDialog('my fast form perform',mtconfirmation, []);
+var tmpDataSource: TDataSource;
+    TmpTable: TAdoTable;
+   // myset: TDataSet;
+
+begin
+  dbform:= CreateMessageDialog('FastForm DB Perform',mtwarning,[mball,mbhelp,mbok]);
+  dbform.caption:= 'FFP XML DBGrid Demo';
+  dbform.setBounds(50,50,800,500)
+  dbform.formstyle:= fsstayontop;
+  dbform.color:= 123;
+  dbform.show; 
+  dbgrid:= TDBGrid.Create(self)
+  writeln('debug2 '+inttoStr(aset.recordcount));
+  
+  TmpTable:= TADOTable.Create(Self);
+  with TmpTable do begin
+    //dataset
+    connectionString:= 'Provider=MSDASQL;DSN=mx3base;Uid=sa;Pwd=admin';
+    //commandText:= 'SELECT * FROM Table1';
+    tablename:= 'Table1';
+    open;
+    // Set properties of the table 
+    //close;
+  end;
+  
+  
+  with dbGrid do begin
+    Parent:= dbform;
+    left:= 65;
+    top:= 100;
+    width:= 700;
+    height:= 350;
+    ReadOnly:= True;
+     //Options:=DBGrid.Options + [dgEditing];  
+    tmpDataSource:= TDatasource.Create(Self);
+    with tmpDataSource do begin
+      //datasource.assign(aSet);
+      //datasource:= TDatasource(aSet);
+      //dataset:= aSet;
+      dataset:= TDataSet(tmptable);
+      //dataset.assign(aSet);
+      writeln('debug3a '+inttostr(datasetrecordcount(aset)));
+      writeln('debug3 '+inttoStr(dataset.recordcount));
+      IsLinkedto(dataSet);
+      Enabled;
+     //dataSource.dataset:= aset;
+ 
+    end;
+    //DataSource is now linked to a DataSet (a XMLMemory table).
+     dataSource:= tmpDataSource;
+     //dataSource.Assign(tmpdatasource);
+     //dataSource:= TdataSource(tmpDataSource);
+     //dataset
+     //dataSource.assign(tmpdatasource);
+     //TDataSource(tmpdatasource);
+     
+     BeginLayout; //!!
+     writeln('fcount of datasource '+intToStr(fieldcount))
+     //writeln('fname of datasource '+(aSet.filename));
+   end;
+   //tmpDataSource.Free; 
+   tmptable.close;
+   tmptable.Free;
+   
+   //dbGrid.Free;
+   //dbform.Free;
+end;
+
+
+begin
+  Writeln('ShowTime for SQL '+datetostr(Today))
+  //DBX3 InterBaseConnect with Queries and Resultset
+  ConnectInterbase(ADBNAME);
+  //TSQLPostUser(ADBNAME, 'Email', 'FirstName', 'LastName');
+  //maxform1.DelphiSite1Click(self)
+  maxform1.ShellStyle1Click(self)
+  Writeln(GetBDEDirectory);
+  //Function GetAliasPath( const AliasName : string) : string');
+  Writeln('Alias Path of DBDEMOS: '+GetAliasPath('DBDEMOS'));
+  //Writeln(GetQuoteChar(ADBNAME))
+end.
+
+
+
+//In this example we use dbdemos database with Country table  
+
+object ADODataSet1: TADODataSet
+    ConnectionString =
+      'Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\Program Files\Co' +
+      'mmon Files\Borland Shared\Data\dbdemos.mdb;Persist Security Info' +
+      '=False'
+    CommandText = 'select Name  from country'
+  end
+  
+  
+
+Method 	Description
+Append 	Creates an empty record and adds it to the end of the dataset.
+AppendRecord 	Appends a record to the end of the dataset with the given field data and posts the edit.
+ApplyUpdates 	Instructs the database to apply any pending cached updates. Updates are not actually written until the CommitUpdates method is called.
+Cancel 	Cancels any edits to the current record if the edits have not yet been posted.
+CancelUpdates 	Cancels any pending cached updates.
+ClearFields 	Clears the contents of all fields in the current record.
+CommitUpdates 	Instructs the database to apply updates and clear the cached updates buffer.
+Close 	Closes the dataset.
+Delete 	Deletes the current record.
+DisableControls 	Disables input for all data controls associated with the dataset.
+FieldByName 	Returns the TField pointer for a field name.
+
+FindFirst
+
+Example:
+
+  {set up database component}
+  ABSDatabase1.DatabaseName := 'emp_db';
+  ABSDatabase1.DatabaseFileName := 'c:\data\employee_db.abs';
+
+  {set up query component}
+  ABSQuery1.DatabaseName := 'emp_db';
+  ABSQuery1.SQL.Text := 'select * from employee';
+  ABSQuery1.RequestLive := True;
+   
+  if (not ABSDatabase1.Exists) then
+    raise Exception.Create('Database file does not exist');
+
+  {execute and open query}
+  ABSQuery1.Open;
+
+
+   ...
+   for i := MaiList.Count - 1 downto do begin
+       MaiQuery1.close;
+       MaiQuery1.SQL.clear;
+       MaiQuery1.SQL.text := 'Select * from MaiTable.db where (MaiFeld like ''' + MaiList[i] + ')''';
+       MaiQuery1.open;
+       if MaiQuery1.recordcount > 0 then
+          MaiList.delete(i)
+   end:
+   ...
+
+begin
+for i := MaiList.Count - 1 downto 0 do
+begin
+MaiQuery1.close;
+//MaiQuery1.SQL.clear; nicht notwendig
+MaiQuery1.SQL.text := 'Select * from MaiTable.db where MaiFeld like "%' + MaiList[i] + '%"';
+MaiQuery1.open;
+if (i > 1537) and (i < 1541) then
+ShowMessage(MaiQuery1.SQL.text);
+if MaiQuery1.recordcount > 0 then
+MaiList.delete(i)
+end;
+end;
+[/delphi:1:da2a96482f]
+
+
+
+TSQLDataSet is a forward only read only dataset. As you move the cursor
+through the dataset by calling TSQLDataSet.Next it fetches the rows one
+at a time. It does not buffer multiple rows on the client. That is the
+function of TClientDataSet.
+
+Many thanks for that. So I take it that SQLDataset.Open causes the SQL
+
+
+thi is a Sample of insert, in a table with 4 fields, with the SQLQuery.
+
+
+    //CommandText:= Format('INSERT INTO CUSTOMER VALUES("%d","%s","%s","%s","%s")',
+                             //[34,Email,FirstName,LastName,datetoStr(date)]);
+
+begin
+
+TableSQL.Active := False;
+TableSQL.SQL.Clear;
+TableSQL.SQL.Add('INSERT INTO EXAMPLE_TABLE(FIELD1, FIELD2, FIELD3,
+FIELD4) VALUES (:PFIELD1, :PFIELD2, :PFIELD3,:PFIELD4);
+TableSQL.ParamByName('PFIELD1').AsString := 'TEST';
+TableSQL.ParamByName('PFIELD2').AsInteger := 10;
+TableSQL.ParamByName('PFIELD3').AsFloat := 10.34;
+TableSQL.ParamByName('PFIELD4').AsDateTime := Now;
+TableSQL.ExecSQL;
+
+end;
+
+In the table, the FIELD1 is a string, the 2 is an integer, the 3 is a
+flating and the last is a timestamp.
+
+ label1.Caption := tempSQL.FieldByName('CustomerName ').value;
+ Function dStringPad(InputStr, FillChar: String; StrLen: Integer;
+   StrJustify: Boolean): String;
+Var
+   TempFill: String;
+   Counter : Integer;
+Begin
+   If Not (Length(InputStr) = StrLen) Then Begin
+     If Length(InputStr) > StrLen Then Begin
+       InputStr := Copy(InputStr,1,StrLen) ;
+     End
+     Else Begin
+       TempFill := '';
+       For Counter := 1 To StrLen-Length(InputStr) Do Begin
+         TempFill := TempFill + FillChar;
+       End;
+       If StrJustify Then Begin
+         {Left Justified}
+         InputStr := InputStr + TempFill;
+       End
+       Else Begin
+         {Right Justified}
+         InputStr := TempFill + InputStr ;
+       End;
+     End;
+   End;
+   Result:= InputStr;
+End;
+
+
+ttimer
+
+tobjectlist
+
+procedure createUserTable; 
+var 
+  Connection: TSQLConnection; 
+  SQLstmt: String; 
+begin 
+  Connection := TSQLConnection.Create(nil); 
+  with Connection do begin 
+    ConnectionName := 'VCLScanner'; 
+    DriverName := 'INTERBASE'; 
+    LibraryName := 'dbexpint.dll'; 
+    VendorLib := 'GDS32.DLL'; 
+    GetDriverFunc := 'getSQLDriverINTERBASE'; 
+    Params.Add('User_Name=SYSDBA'); 
+    Params.Add('Password=masterkey'); 
+    with TWebModule1.create(NIL) do begin 
+        getFile_DataBasePath; 
+        Params.Add(dbPath); 
+        free; 
+    end; 
+    LoginPrompt := False; 
+    Connected := True; 
+    SQLstmt := 'CREATE TABLE NewMaxCusts ' + 
+    '( ' + 
+    '  CustNo INTEGER NOT NULL, ' + 
+    '  Company CHAR(40), ' + 
+    '  State CHAR(2), ' + 
+    '  PRIMARY KEY (CustNo) ' + 
+    ')'; 
+   try 
+     Execute(SQLstmt, NIL, NIL); 
+   except 
+     raise 
+   end; 
+    Close; 
+    Free; 
+  end; //end Connection 
+end; 
+
+
+Build a Table Tree from Records to Objects    
+********************************************************************************
+
+How to show a database self join in a TreeView 
+Search Keys:
+delphi delphi3000 article borland vcl code-snippet recursion composite-pattern self-join   
+Question/Problem/Abstract:
+
+In a relational database like the well known IBLocal you find a table DEPARTMENT which has a self join on her own, means there is a tree inside with a Parent/Child structure. 
+Answer:
+
+
+In a relational database like the well known IBLocal you find a table DEPARTMENT which has a  self join on her own, means there is a tree inside with a Parent/Child structure: 
+
+DEPT_NO       DEPARTMENT                 HEAD_DEPT 
+100           Sales and Marketing        000 
+120           European Headquarters      100 
+121           Field Office Swiss         120 
+and so on... 
+
+This article is aimed mainly at people interested in trees and recurcions who need to find their  way around self referencing system and get going with a object-visualisation in a tree. Furthermore it's an example for the Composite Design Pattern.   
+First we need a startprocedure mainly to call the query, build the tree with records in objects and   show the tree at last: 
+
+procedure TForm1.btnTreeSelfClick(Sender: TObject); 
+var 
+  dimlist: TStringList; 
+begin 
+  dimlist:= TStringlist.create; 
+  datdepartment:= TBusinessObj.Create(NIL); 
+  try 
+    if datDepartment.open_recursiveQuery then 
+    with TDims.create(NIL, DimList) do begin 
+      FillTree(treeview1, NIL); 
+      Free; 
+    end; 
+    treeview1.FullExpand; 
+    btnLTree.visible:=true; 
+  finally; 
+    dimlist.Free; 
+    datDepartment.Free; 
+  end; 
+end; 
+
+The records in the query must follow one condition [child# > parent#], means a child like  "FieldOffice Swiss" has a child# 121 so the parent it belongs is 120. So we call the query and open the dataset:     
+
+
+function TBusinessObj.open_recursiveQuery: boolean; 
+begin 
+  result:= false; 
+  with qryselfTree do begin 
+    try 
+      SQL.Clear; 
+      SQL.add('SELECT dept_no, department, location, head_dept' + 
+              ' FROM department ORDER BY dept_no'); 
+      open; 
+      result:= true; 
+    except on EDataBaseError 
+          do showmessage('data not found'); 
+    end; 
+  end; 
+end; 
+
+
+Next we implement a class which holds at runtime the whole tree table in objects. Every object is a stored record from the table DEPARTMENT with the attributes you want to publish or  manipulate at runtime. Grace the members FParent, FChild the whole table is chained in objects  with a top level object, in our case the CORPORATE HEADQUARTERS. This top level object doesn't have a parent, the parent is NIL. 
+
+
+TDims = class(TObject) 
+private 
+    FstrDimArt: string ; 
+    FstrDimArtBez: String ; 
+    FParent: TDims ; 
+    FChilds: TList ; 
+  public 
+    Constructor create(Sender: TDims; myRegister: TStringList); 
+    Destructor Destroy; override; 
+    Procedure FillTree(aOl: TTreeview; xnode: TTreenode); 
+    Function IsDimartInChilds (DimArt: string): Boolean; 
+    property DimArtBez: string Read FstrDimArtBez; 
+    property DimArt: string Read FstrDimArt; 
+    property treechilds: TList read FChilds; 
+  end ; 
+
+
+Now comes the real power part, a recursive constructor which collects all records to build the  tree in memory. When a parent like "Sales and Marketing" finds some childs like "European  Headquarters" it creates new objects in a recursion and adds the object to the list: 
+
+        FChilds.Add(TDims.create(self, myRegister)); 
+
+Recursions aren't dark chapter by opening in Delphi the debug windows "Call Stack and Local  Variables" you'll learn a lot. When a function name appears anywhere else in a statement block,  the compiler interprets it as a recursive call to the function itself. 
+The constructor has been used to recursively include another objects. But in every tree an object  without childs terminates without having cycles in them. The last level of a tree is almost the  deepness of recursions. 
+By the way do you know the explanation of a recursion in a "well behaved" dictionary: 
+
+Recursion: See under Recursion ;) 
+
+Let jokes aside, here it is: 
+A programming technique in which a subroutine calls itself. Use care to ensure that a recursion eventually exits. Otherwise, an infinite recursion will cause a stack fault. 
+
+   
+constructor TDims.create(Sender: TDims; myRegister: TStringList); 
+var 
+  bmAkt: TBookmark; 
+Begin 
+  inherited Create; 
+   with datDepartment.qrySelfTree do begin 
+    FstrDimArt:= fieldByName('DEPT_NO').AsString; 
+    FstrDimArtBez:= fieldbyName('DEPARTMENT').AsString; 
+    myRegister.AddObject(Format('%10s',[FstrDimArt]), self); 
+    FChilds:= TList.Create; 
+    FParent:= Sender; 
+    bmAkt:= GetBookmark; 
+    if Locate('DEPT_NO', FstrDimArt,[]) then 
+    while Not (EOF) Do Begin 
+      if (fieldByName('HEAD_DEPT').Asstring = FstrDimArt) then 
+        FChilds.Add(TDims.create(self, myRegister)); 
+      Next; 
+    end; 
+    GotoBookmark (bmAkt); 
+    FreeBookmark (bmAkt); 
+  end; 
+end; 
+
+
+Destructor TDims.Destroy; 
+var  i: integer; 
+Begin 
+  if FChilds <> NIL Then 
+    For i := 0 to FChilds.Count -1 do 
+      TDims(FChilds[i]).Free; 
+    FChilds.Free; 
+  Inherited Destroy; 
+end; 
+
+Now comes the last part, the most efficient way to represent the tabel tree in a view. TTreeView represents a window that displays a hierarchical list of items, such as the headings in a document, the entries in an index, or the files and directories on a disk. 
+Use TTreeView to add an expanding and contracting outline to a form. Each node in a tree view  control consists of a label and a number of optional bitmapped images. Each node can have a  list of subnodes associated with it. By clicking on a node, the user can expand or collapse the associated list of subnodes. 
+At run-time nodes can be added and inserted by using the TTreeNodes methods AddChildFirst, AddChild, AddChildObjectFirst, AddChildObject, AddFirst, Add, AddObjectFirst, AddObject and Insert. We only need AddChild: 
+
+
+Procedure TDims.FillTree(aOl: TTreeview; xnode: TTreenode); 
+var 
+i: integer ; 
+dbcontent: string[255]; 
+begin 
+  dbcontent:= dimart +' '+ dimartbez; 
+  xnode:= aOl.items.addchild(xnode, dbcontent); 
+  for i:= 0 to treechilds.Count -1 do 
+     TDims(treechilds.items[i]).FillTree(aOl, xnode); 
+end; 
+
+I wish more X-mas trees like treeviews ;) 
+
+

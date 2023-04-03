@@ -1,0 +1,216 @@
+program GoogleFreeTranslate_mX4;
+
+//https://rosettacode.org/wiki/100_prisoners#Pascal
+//https://github.com/ssut/py-googletrans/issues/268
+
+const
+  rounds  = 1000; //100000; //100000;
+  
+  AURLS='https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=%s&tl=%s&q=%s';
+  AURL='https://translate.googleapis.com/translate_a/single';
+  UAGENT ='Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0';
+
+function TranslateGoogle(const Text, LangSrc, LangTarget: string): string; forward;
+
+function TranslateGoogle(const Text, LangSrc, LangTarget: string): string;
+var
+  //HTTP: THTTPClient;
+  Response: TStringStream;
+   URI : TIdUri; //synTURI;
+     jo: TJSONObject;  
+   uri2: TURL;
+begin
+  Result := '';
+  if Text = ''  then
+    writeln('dont be empty else Exit;');
+  //HTTP := THTTPClient.Create;
+  Response := TStringStream.Create('');
+  
+  try
+    URI := TidURI.Create('https://translate.googleapis.com/translate_a/single');
+    URI2 := TURL.Create('https://translate.googleapis.com/translate_a/single');
+    //URI := synTURI.Create;
+    //URI.params:= 'client=gtx';
+    with uri2 do begin
+      parameters:= '?client=dict-chrome-ex&';
+      parameters:= parameters+'sl='+ LangSrc+'&';
+    //URI.AddParameter('tl', LangTarget);
+      parameters:= parameters+'tl='+ LangTarget+'&';
+    //URI2.Parameters:= 'hl,'+ LangTarget;
+    //URI.AddParameter('dt', 't');
+    //URI.AddParameter('dt', 'bd');
+    //URI.AddParameter('dj', '1');
+    //URI.AddParameter('ie', 'UTF-8');
+    //URI.AddParameter('source', 'icon');
+    //URI.AddParameter('tk', '467103.467103');
+      Parameters:= parameters+ 'q='+text; 
+    //Replacestring(text, '...', '', [rfReplaceAll]).Replace(#13#10, ' ', [rfReplaceAll]);
+    end;
+    try
+       uri2.url:= uri2.url+uri2.parameters;
+       writeln(URI2.parameters);
+       writeln('add '+uri2.url)
+       writeln(URI2.EncodeUrl(uri2.url,true));
+       //HTTPGet(URI2.EncodeUrl(uri2.url,true),response);
+       //HTTPGet(URI2.EncodeUrl(uri2.url+URI2.parameters,true),response);
+       HTTPGet((uri2.url+URI2.parameters),response);
+       writeln('resp '+uri2.document);
+       writeln('resp '+Response.DataString);
+      begin
+        //jo:= TJSONObject.Create4(Response.DataString);
+        //var JSON := TJSONObject.ParseJSONValue(UTF8ToString(RawByteString(Response.DataString)));
+        if Assigned(jo) then
+        try
+          //((Result := JSON.GetValue('sentences[0].trans', '');
+          //result:= jo.getstring('sentences[0].trans');
+        finally
+          //jo.Free;
+        end;
+      end;
+    except
+      //Result := '';
+      writeln('EHTTP: '+ExceptiontoString(exceptiontype, exceptionparam)); 
+    end;
+  finally
+    //HTTP.Free;
+    Response.Free;
+    uri2.free;
+    uri.free;
+  end;
+end;
+
+function Text_to_traslate_API2(AURL, aclient,langorig,langtarget,atext: string):string;
+var httpq: THttpConnectionWinInet;
+    rets: TStringStream;  
+    heads: TStrings; iht:IHttpConnection2; 
+    jo: TJSON; jarr:TJsonArray2; jobj: TJsonObject2;
+    tmpstr: string; 
+begin
+  httpq:= THttpConnectionWinInet.Create(true); 
+  rets:= TStringStream.create('');
+  heads:= TStringlist.create;     
+   try
+     {heads.add('client='+aclient);
+     heads.add('sl=auto');
+     heads.add('tl='+ langTarget);
+     heads.add('t='+atext); }
+     heads.add('User-Agent='+UAGENT);
+     iht:= httpq.setHeaders(heads);
+     //iht:= httpq.setParameters(heads);
+     httpq.Get(Format(AURLS,[langorig,langtarget,atext]),rets);
+     writeln('server: '+Httpq.GetResponseHeader('server'));
+     //writeln(Httpq.GetResponseHeader('pragma'));  
+     //tmpstr:= StringReplace(rets.datastring, '[','{[',[rfReplaceAll, rfIgnoreCase]);  
+     //tmpstr:= StringReplace(tmpstr, ']',']}',[rfReplaceAll, rfIgnoreCase]);     
+      jo:= TJSON.Create(); 
+      jo.parse(rets.datastring)   
+      jarr:= jo.JsonArray;
+      //writeln(jarr.items[0].stringify);
+      if httpq.getresponsecode=200 Then result:=jarr[0].stringify
+       else result:='Failed:'+
+             itoa(Httpq.getresponsecode)+Httpq.GetResponseHeader('message');    
+   except 
+      writeln('EWI_HTTP: '+ExceptiontoString(exceptiontype,exceptionparam));
+   finally
+     //httpq.free;
+     httpq:= Nil;
+     heads.Free;
+     rets.Free;
+     jo.free;
+   end;                  
+end; 
+
+
+var atext: string;
+
+Begin
+  //init
+  
+ // TranslateGoogle('bonjour mes amis', 'auto', 'en'); 
+  //atext:= 'bonjour mes amis da la ville';
+  atext:= urlencode('A research paper suggests improving GPT-4 performance by 30% by having it consider why it was wrong.');
+ // atext:= 'bonjour mes amis';
+  //atext:= 'guten tag meine freunde';                                     
+  
+  //writeln((Text_to_traslate_API2(AURL, '','dict-chrome', 'es', atext)));
+  //writeln(utf8ToAnsi(Text_to_traslate_API2(AURL,'dict-chrome-ex','fr','es',atext)));
+  writeln(utf8ToAnsi(Text_to_traslate_API2(AURL,'dict-chrome-ex','auto','nl',atext)));
+  
+  //OneCompareRun(100);
+End.
+
+doc: Needs to be dict-chrome-ex or else you'll get a 403 error.
+
+ref:
+https://github.com/rilyu/json4delphi/issues/7
+
+Ref: 1000    mX4 executed: 27/03/2023 17:11:29  Runtime: 0:0:3.740  Memload: 40% use
+     10000   mX4 executed: 27/03/2023 17:24:50  Runtime: 0:0:39.975  Memload: 41% use
+     100000  mX4 executed: 27/03/2023 17:32:31  Runtime: 0:6:31.397  Memload: 38% use
+   mX4 byte code executed: 27/03/2023 17:40:55  Runtime: 0:4:36.349  Memload: 40% use   
+     
+Checking 20 prisoners
+Optimized  100.00% get pardoned out of 100000 checking max 20
+Optimized   89.68% get pardoned out of 100000 checking max 18
+Optimized   78.20% get pardoned out of 100000 checking max 16
+Optimized   65.19% get pardoned out of 100000 checking max 14
+Optimized   50.57% get pardoned out of 100000 checking max 12
+Optimized   33.31% get pardoned out of 100000 checking max 10
+Optimized   15.21% get pardoned out of 100000 checking max 8
+Optimized    3.48% get pardoned out of 100000 checking max 6
+Optimized    0.12% get pardoned out of 100000 checking max 4
+Optimized    0.00% get pardoned out of 100000 checking max 2
+Optimized    0.00% get pardoned out of 100000 checking max 0
+
+Randomly   100.00% get pardoned out of 100000 checking max 20
+Randomly    13.64% get pardoned out of 100000 checking max 18
+Randomly     1.39% get pardoned out of 100000 checking max 16
+Randomly     0.11% get pardoned out of 100000 checking max 14
+Randomly     0.01% get pardoned out of 100000 checking max 12
+Randomly     0.00% get pardoned out of 100000 checking max 10
+Randomly     0.00% get pardoned out of 100000 checking max 8
+Randomly     0.00% get pardoned out of 100000 checking max 6
+Randomly     0.00% get pardoned out of 100000 checking max 4
+Randomly     0.00% get pardoned out of 100000 checking max 2
+Randomly     0.00% get pardoned out of 100000 checking max 0
+
+
+ mX4 executed: 27/03/2023 17:32:31  Runtime: 0:6:31.397  Memload: 38% use     
+ 
+Checking 100 prisoners
+Optimized  100.00% get pardoned out of 1000 checking max 100
+Optimized   88.70% get pardoned out of 1000 checking max 90
+Optimized   80.20% get pardoned out of 1000 checking max 80
+Optimized   66.00% get pardoned out of 1000 checking max 70
+Optimized   50.10% get pardoned out of 1000 checking max 60
+Optimized   31.10% get pardoned out of 1000 checking max 50
+Optimized   12.50% get pardoned out of 1000 checking max 40
+Optimized    2.60% get pardoned out of 1000 checking max 30
+Optimized    0.00% get pardoned out of 1000 checking max 20
+Optimized    0.00% get pardoned out of 1000 checking max 10
+Optimized    0.00% get pardoned out of 1000 checking max 0
+
+Randomly   100.00% get pardoned out of 1000 checking max 100
+Randomly     0.00% get pardoned out of 1000 checking max 90
+Randomly     0.00% get pardoned out of 1000 checking max 80
+Randomly     0.00% get pardoned out of 1000 checking max 70
+Randomly     0.00% get pardoned out of 1000 checking max 60
+Randomly     0.00% get pardoned out of 1000 checking max 50
+Randomly     0.00% get pardoned out of 1000 checking max 40
+Randomly     0.00% get pardoned out of 1000 checking max 30
+Randomly     0.00% get pardoned out of 1000 checking max 20
+Randomly     0.00% get pardoned out of 1000 checking max 10
+Randomly     0.00% get pardoned out of 1000 checking max 0
+
+
+ mX4 executed: 27/03/2023 17:52:23  Runtime: 0:4:58.888  Memload: 39% use
+
+Doc: The task
+
+    Simulate several thousand instances of the game where the prisoners randomly open drawers
+    Simulate several thousand instances of the game where the prisoners use the optimal strategy mentioned in the Wikipedia article, of:
+
+        First opening the drawer whose outside number is his prisoner number.
+        If the card within has his number then he succeeds otherwise he opens the drawer with the same number as that of the revealed card. (until he opens his maximum).
+     
+

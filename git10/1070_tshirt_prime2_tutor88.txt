@@ -1,0 +1,664 @@
+PROGRAM Three_prime3_digit_numbers_mX4;
+
+//http://delphiforfun.org/Programs/TShirt7.htm
+
+{A char is a string with size 1}
+
+{Purpose: tab a table!}
+//https://towardsdatascience.com/two-cool-functions-to-know-in-python-7c36da49f884
+//https://dev.to/dandyvica/understanding-public-private-rsa-keys-3j81
+
+//unit U_TShirt7;
+{Copyright  © 2003, Gary Darby,  www.DelphiForFun.org
+ This program may be used or modified for any non-commercial purpose
+ so long as this original notice remains in place.
+ All other rights are reserved
+ }
+//interface
+
+{uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, ComCtrls; }
+
+type
+  TForm1 = {class(}TForm;
+  var
+    aMemo1: TMemo;
+    FindPrimesBtn: TButton;
+    ListBox1: TListBox;
+    ListBox2: TListBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    FindSumsBtn: TButton;
+    StatusBar1: TStatusBar;
+    Image1: TImage;
+    procedure TForm1FindPrimesBtnClick(Sender: TObject); forward;
+    procedure TForm1FindSumsBtnClick(Sender: TObject); forward;
+    procedure TForm1FormActivate(Sender: TObject); forward;     
+  //private
+{ Private declarations }
+//public
+{ Public declarations }
+   var
+   primes:array[1..987-123] of integer;
+    count:integer;
+//end;
+
+var
+  Form1: TForm1;
+
+//implementation
+//{$R *.DFM}
+
+{*************** IsPrime ************}
+function isprime(n:integer):boolean;
+{Test an integer for "primeness"}
+var i,stop:integer;
+begin
+  result:=false;
+{get rid of most of the cases right away}
+if (n mod 2 = 0) or (n mod 3=0) or (n mod 5 =0) then exit;
+  result:=true;
+  i:=7;
+  stop:=trunc(sqrt(n+0.0)); {no need to check higher than this number}
+ while result and (i<=stop) do begin
+    if i*(n div i)=n then result:=false;
+    inc(i);
+ end;
+end;
+
+function D_IsPrime2(x: Integer): Boolean;
+var q, i: integer;
+begin 
+  if (x <= 1) then begin
+    result:= false
+    Exit;
+  end;  
+  q:= Floor(Sqrt(x)); 
+     //writeln('debug q:'+itoa(q))
+     for i:= 2 to q do 
+       if (x mod i = 0) then begin
+        result:= false;
+        Exit;
+       end;
+    result:= True
+    Exit;
+  end;
+  
+ function D_IsPrime2Slow(N: Integer): Boolean;
+var M: Integer;
+begin
+  synAssert(N > 0);
+  if N = 1 then begin// annoying special case
+    Result := False;
+    exit;
+  end;
+  //for M := 2 to (N div 2) do begin
+  for M := 2 to floor(Sqrt(N)) do begin
+    if N mod M = 0 then begin
+      Result := False;
+      exit;
+    end;
+  end;
+  Result:= True;
+end; 
+
+{*************** IsPrime ************}
+function D_isprime3(n:integer):boolean;
+{Test an integer for "primeness"}
+var i,stop:integer;
+begin
+  result:= false;
+  if (n mod 2=0) or (n mod 3=0) or (n mod 5 =0) then exit;
+  result:=true;
+  i:=5;
+  stop:=trunc(sqrt(n+0.0)); {no need to check higher than this number}
+  while result and (i<=stop) do begin
+    if i*(n div i)=n then result:=false;
+    inc(i);
+  end;
+end;
+
+{*************** IsPrime ************}
+function D_isprime3py(n:integer):boolean;
+{Test an integer for "py primeness"}
+var i,q:integer;
+begin
+   if n <= 1 then begin result:= false;
+      exit; end;
+   q:= Floor(Sqrt(n)); 
+   for i:= 2 to q do 
+     if (n mod i = 0) then begin
+       result:= false;
+       Exit;
+     end;
+   result:= True
+   Exit;
+end;
+
+function Dreturn_abs(n:integer): integer;
+{Test an integer for "py primeness"}
+begin
+   if n < 0 then begin
+      result:= -n; exit end;
+   result:= n
+end;
+
+function Dreturn_abs2(n:integer): integer;
+{Test an integer for "py primeness"}
+begin
+   if n < 0 then result:= -n else
+   result:= n
+end;
+
+Procedure test_primesPerformance;   // Performance Test
+var count, beg, j, r: integer;
+var f :boolean;
+begin
+   processmessagesOFF
+   Println(' prime time performance check ?????: ');
+   count:= 0;
+   beg:= Random(1000000000)+2;
+   for it:=beg to beg+5000 do begin
+     f:= True;
+     j:= 2;
+     r:= Round(Sqrt(it));
+     while f and (j<=r) do
+     if it mod j = 0 then f:= False
+     else inc(j);
+     if f then begin
+       Print(itoa(it)+' ');
+       count:= count+ 1;
+       if count mod 8 = 0 then
+       Println('');
+     end;
+   end;
+   processmessagesON; 
+end;
+
+ 
+function nodups(n:integer):boolean;
+{return true if n has no duplicated digits}
+var
+  i, idx:integer;
+  ch:char;
+  s:string;
+  //digits:array['0'..'9'] of boolean;
+  digits:array[0..9] of boolean;
+begin
+  for idx:= 0 to 9 do digits[idx]:=false;
+  s:=inttostr(n);
+  result:=true; {in case we do not find any duplicates}
+   for i:= 1 to length(s) do begin
+    if digits[atoi(s[i])]=true then begin
+      result:=false;
+      break;
+     end
+//else digits[s[i]]:=true;
+  else digits[atoi(s[i])]:=true;
+ end;
+end;
+
+function nozero(n:integer):boolean;
+{return true if n has no zeros}
+var
+  i:integer;
+  s:string;
+begin
+  s:=inttostr(n);
+  result:=true; {in case we do not find any duplicates}
+  for i:= 1 to length(s) do begin
+    if s[i]='0' then begin
+      result:=false;
+      break;
+  end;
+ end;
+end;
+
+function nodups2(n1,n2:integer):boolean;
+{return true if n1 has no  digits in common with n2}
+var
+  i, idx:integer;
+  ch:char;
+  s:string;
+  digits:array[0..9] of boolean;
+begin
+  for idx:= 0 to 9 do digits[idx]:=false;
+  s:=inttostr(n1);
+  result:=true; {in case we do not find any duplicates}
+for i:= 1 to length(s) do digits[atoi(s[i])]:=true;
+  s:=inttostr(n2);
+  for i:=1 to length(s) do begin
+    if digits[atoi(s[i])]=true then begin
+      result:=false;
+      break;
+  end;
+  end;
+end;
+
+procedure TForm1FindPrimesBtnClick(Sender: TObject);
+var i:integer;
+begin
+  listbox1.clear;
+{First let's list all possible 3 digit primes with no repeat digits}
+count:=0;
+  for i := 123 to 987 do begin
+    if isprime(i) and  nodups(i) and nozero(i) then  begin
+      listbox1.items.add(format('%3d - %3d',[listbox1.Items.count+1,i]));
+      inc(count);
+      primes[count]:=i;
+end;
+end;
+end;
+
+procedure TForm1FindSumsBtnClick(Sender: TObject);
+var i,j,k:integer;
+    n1,n2,n3:integer;
+    sum,minsum:integer;
+begin
+{Now build all sets of three primes with no dups, sum them list the smallest}
+minsum:=10000;  {minimum will be samller than this for sure}
+for i:=1 to count-2 do
+  begin
+    n1:=PRIMES[I];  {get the first prime}
+for j:= i+1 to count-1 do
+    begin
+      n2:=primes[j]; {get the second prime}
+if nodups2(n1,n2) then {if uniqiue from n1 then...}
+for k:= j+1 to count do
+      begin
+        n3:=PRIMES[K]; {get the third prime}
+if nodups2(n1,n3) and nodups2(n2,n3) then {if unique from n1 and n2 then...}
+begin
+          sum:=n1+n2+n3;   {add them up}
+if sum<minsum then {and see if the sum iks smallest yet}
+begin  {if it is, then save it and list it}
+minsum:=sum;
+            listbox2.items.add(format('** %d+%d+%d=%d',[n1,n2,n3,sum]));
+end;
+{to see the other sets}
+{else listbox2.items.add(format('Test - %d+%d+%d=%d',[n1,n2,n3,sum])); }
+end;
+end;
+end;
+end;
+ listbox2.items.add(CRLF+'finished found *** ')
+ listbox2.items.add(format(' %d+%d+%d=%d',[n1,n2,n3,sum]));
+end;
+
+procedure TForm1FormActivate(Sender: TObject);
+begin
+  count:=0;  {initialize count for list of primes}
+end;
+
+type
+ ATSize = record
+    cx: integer;
+    cy: integer;
+ end;   
+
+//https://stackoverflow.com/questions/6804929/how-do-i-determine-the-height-of-a-line-of-text-in-a-tmemo-programmatically
+function CountMemoLineHeights(Memo: TMemo): Integer;
+var
+  DC: HDC;
+  SaveFont: HFont;
+  aSize: TSize; Point : TPoint;
+  I: Integer;
+  pko: PKOLChar;
+  aSize2: ATSize;
+
+begin
+  DC:= GetDC(Memo.Handle);
+  SaveFont:= SelectObject(DC, Memo.Font.Handle);
+  aSize.cX := 0;
+  aSize.cY := 0;
+//  I have not noticed difference in actual line heights for TMemo,
+//    so the next line should work OK
+   //wGetTextExtentPoint32(DC:HDC;Str:PKOLChar;Count:Int;var Size:TSize):BOOL
+   pko:= 'W';
+   botostr(GetViewportOrgEx( DC ,Point));
+   //asize:= TSize(MakeSize(3,4));
+   //GetViewportExtEx( DC , aSize);
+   wGetTextExtentPoint32(DC, pko, 1, asize);
+  {Windows.}
+  //botostr(wGetTextExtentPoint32(DC, pko, 1, aSize));
+//  BTW next (commented) line returns Size.cY = 0 for empty line (Memo.Lines[I] = '') 
+//    Windows.GetTextExtentPoint32(DC, Memo.Lines[I], Length(Memo.Lines[I]), Size);
+  Result:= Memo.Lines.Count * aSize.cY;
+  SelectObject(DC, SaveFont);
+  ReleaseDC(Memo.Handle, DC);
+end;
+
+const
+  test =
+    'This is some longer text with hard linebreaks.'#13#10+
+    'Here are some more lines.'#13#10+
+    'Daher sollten wir hier einiges an Zeilen bekommen.';
+
+procedure TForm1StringGrid1DrawCell(Sender: TObject; ACol, ARow:
+Integer;
+  Rect: TRect; State: TGridDrawState);
+var
+  sl: TStringlist;
+  grid: TStringgrid;
+  needed: Integer;
+  h, i: Integer;
+begin
+  grid:= sender as tstringgrid;
+  if arow >= 1 then begin
+    grid.canvas.fillrect( rect );
+    sl:= TStringlist.Create;
+    Try
+      sl.Text := test; // := grid.cells[acol, arow];
+      if sl.count > 0 then begin
+        h:= grid.canvas.textHeight( sl[0] );
+        needed := sl.count * h + 10;
+        InflateRect( rect, -2, -2 );
+        if (rect.bottom-rect.top) < needed then
+          grid.rowHeights[arow] := needed + 4
+        else begin
+          for i:= 0 to sl.count-1 do begin
+            DrawText( grid.canvas.handle,
+                      Pchar( sl[i] ),
+                      Length( sl[i] ),
+                      rect,
+                      DT_END_ELLIPSIS or DT_NOPREFIX or
+                      DT_SINGLELINE or DT_LEFT );
+            Inc2( rect.Top, h );
+          end;
+        end;
+      end;
+    Finally
+      sl.free
+    End; { Finally }
+  end;
+end; 
+
+procedure TForm1Button1Click(Sender: TObject);
+var
+  Bmp: TBitmap; Image2: TImage;
+begin
+  Bmp:= TBitmap.Create;
+  with Bmp do
+  try
+    Bmp.Width := {round}(Image1.Picture.Bitmap.Width * 2);
+    Bmp.Height := {round}(Image1.Picture.Bitmap.Height * 2);
+
+    {Delphi-method}
+    Bmp.Canvas.CopyRect(rect(0, 0, Bmp.Width, Bmp.Height),
+        Image1.Picture.Bitmap.Canvas, rect(0, 0,                        
+Image1.Picture.Bitmap.Width, Image1.Picture.Bitmap.Height));
+
+    {WinAPI-method}
+    StretchBlt(Bmp.Canvas.Handle, 0, 0, Bmp.Width, Bmp.Height,
+      Image1.Picture.Bitmap.Canvas.Handle, 0, 0,            
+      Image1.Picture.Bitmap.Width, Image1.Picture.Bitmap.Height,      
+      SRCCOPY);//}
+
+      Bmp.SaveToFile('C:\test.bmp');
+      Image2.Picture.Bitmap.Assign(Bmp);
+  finally
+    Free;
+  end;
+end; 
+
+procedure TForm1FormCreate(Sender: TObject);
+var i, intWidth, intMaxWidth: Integer;
+begin
+  intMaxWidth := 0;
+  for i := 0 to ListBox1.Items.Count-1 do begin
+    intWidth := ListBox1.Canvas.TextWidth(ListBox1.Items.Strings[i] + 'x');
+    if intMaxWidth < intWidth then
+      intMaxWidth := intWidth;
+  end;
+  SendMessage(ListBox1.Handle, LB_SETHORIZONTALEXTENT, intMaxWidth, 0);
+end;
+
+procedure loadPForm;
+begin
+Form1:= TForm1.create(self);
+with form1 do begin
+  Left := 192
+  Top := 114
+  Width := 638
+  Height := 382
+  Caption := 'T-Shirt #7'
+  Color := clBtnFace
+  Font.Charset := DEFAULT_CHARSET
+  Font.Color := clWindowText
+  Font.Height := -11
+  Font.Name := 'MS Sans Serif'
+  Font.Style := []
+  OldCreateOrder := False
+  OnActivate := @Tform1FormActivate ;
+  PixelsPerInch := 96
+  //canvas.TextHeight:= 13;  
+  label1:= TLabel.create(self)
+  show;
+  Tform1FormActivate(form1);
+  with label1 do begin
+   parent:= form1
+    Left := 288
+    Top := 56
+    Width := 61
+    Height := 13
+    Caption := '3-digit primes'
+  end;
+  label2:= TLabel.create(self)
+  with label2 do begin
+   parent:= form1
+    Left := 464
+    Top := 56
+    Width := 66
+    Height := 13
+    Caption := 'Smallest sums'
+  end;
+   Image1:= TImage.create(form1)
+   with image1 do begin
+    parent:= form1
+    Left := 16
+    Top := 205
+    Width := 105
+    Height := 105
+    stretch:= true;
+    Picture.bitmap.loadfromresourcename(hinstance, 'BMP47') //TOTHELLO')
+    //Data := {
+      ////FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
+  end;
+  aMemo1:= TMemo.create(form1)
+  with amemo1 do begin
+   parent:= form1
+    Left := 16
+    Top := 16
+    Width := 249
+    Height := 172
+    Color := clYellow
+    Font.Charset := DEFAULT_CHARSET
+    Font.Color := clWindowText
+    Font.Height := -11
+    Font.Name := 'MS Sans Serif'
+    Font.Style := [fsBold]
+    Lines.add (
+      'Among all of the sets of three 3-digit '+
+      'primes there are many that conatin all '
+      +'of the digits from 1 through 9.  For '
+      +'example [127, 463, 859].'
+      +''+CRLF+CRLF
+      
+      +'Today'#39's programming exercise (and '
+      +'T-Shirt candidate)  is to find the set of '
+      +'three 3-digit primes which:'
+      +''+CRLF++CRLF
+      +'1.  Contains all the digits from 1 to 9 and '
+      +'2.  Whose sum is minimum. ');
+    ParentFont := False
+    TabOrder := 0
+  end;
+  FindPrimesBtn:= TButton.create(self)
+  with findprimesbtn do begin
+   parent:= form1
+    Left := 288
+    Top := 16
+    Width := 113
+    Height := 25
+    Caption := '&Find primes'
+    TabOrder := 1
+    OnClick := @TForm1FindPrimesBtnClick
+  end;
+  ListBox1:= TListBox.create(form1)
+  with listbox1 do begin
+   parent:= form1;
+    Left := 288
+    Top := 72
+    Width := 121
+    Height := 240
+    ItemHeight := 13
+    TabOrder := 2
+  end;
+  ListBox2:= TListBox.create(form1)
+  with listbox2 do begin
+   parent:= form1;
+    Left := 464
+    Top := 72
+    Width := 141
+    Height := 240
+    ItemHeight := 13
+    TabOrder := 3
+    //wraptext(listbox2.text);
+  end;
+  //object FindSumsBtn: TButton
+  FindSumsBtn:= TButton.create(self)
+  with findsumsbtn do begin
+   parent:= form1
+    Left := 464
+    Top := 16
+    Width := 113
+    Height := 25
+    Caption := '&Find minimum sum'
+    TabOrder := 4
+    OnClick := @TForm1FindSumsBtnClick;
+  end ;
+  StatusBar1:= TStatusBar.create(form1)
+  with statusbar1 do begin
+   parent:= form1;
+    Left := 0
+    Top := 336
+    Width := 630
+    Height := 19
+    panels.add;
+    panels.items[0].text:= 
+      'Copyright '#169' 2003, Gary Darby, www.DelphiForFun.org, maXbox4  2021';
+    panels.items[0].width:= 100;
+    panels.items[0].alignment:= taCenter; 
+    {Panels := <
+      item
+        Alignment := taCenter
+        Text := 'Copyright  '#169' 2003, Gary Darby,  www.DelphiForFun.org'
+        Width := 50
+      end>  }
+  end;
+  end;
+end;
+
+Const primelimit = 10000;
+var sw: TStopWatch;
+     primelist: TStringlist; mpr: TPrimes;
+ 
+begin  //@main
+
+   writeln(botostr(D_IsPrime2(13)));
+   loadPForm;   
+    
+   writeln('CPUspeed before: '+cpuspeed)
+   sw:= TStopWatch.Create();
+   primelist:= TStringlist.create;
+   try
+     sw.Start;
+     for it:= 0 to primelimit do 
+       primelist.add(botostr(isprime(it)));
+      //writeln('count primes1: '+itoa(CountOccurences('True',primelist.text)));
+     println('count primes1: '+itoa(SubstringCount('TRUE', primelist.text)));
+     sw.Stop;
+     //sw.ElapsedMilliseconds;
+     writeln('Stop Watch Prime Tester1: '+sw.getValueStr)
+     primelist.clear;
+     sw.Start;
+     for it:= 0 to primelimit do 
+       primelist.add(botostr(D_IsPrime2(it)));
+     writeln('count primes2: '+itoa(SubstringCount('TRUE', primelist.text)));
+     sw.stop;
+     writeln('Stop Watch Prime Tester2: '+sw.getValueStr);
+     primelist.clear;
+     sw.Start;
+     for it:= 0 to primelimit do 
+       primelist.add(botostr(D_IsPrime3Py(it)));
+     writeln('count primes3: '+itoa(SubstringCount('TRUE', primelist.text)));
+     sw.stop;
+     writeln('Stop Watch Prime Tester3: '+sw.getValueStr);
+     primelist.clear;
+     writeln('Precompiled Performance_________________');
+     mpr:= TPrimes.create;
+     sw.Start;
+     writeln('compiled class pretest '+botostr(mpr.isprime(4703)))
+     for it:= 0 to primelimit do 
+       primelist.add(botostr(mpr.IsPrime(it)));
+     writeln('count primes4: '+itoa(SubstringCount('TRUE', primelist.text)));   
+     sw.stop;
+     writeln('Stop Watch Prime Tester4: '+sw.getValueStr);
+     sw.Start;
+     primelist.clear;
+     writeln('compiled function pretest '+botostr(flcisprime(4703)))
+     for it:= 0 to primelimit do 
+       primelist.add(botostr(flcIsPrime(it)));
+    {for it:= 0 to 500000 do begin 
+       if it mod 100000 = 0 then apd.position:= apd.position+10;
+       primelist.add(botostr(mpr.IsPrime(it)));
+    end; }  
+     writeln('count primes5: '+itoa(SubstringCount('TRUE', primelist.text)));   
+     sw.stop;
+     writeln('Stop Watch Prime Tester5: '+sw.getValueStr);
+     writeln('CPUspeed after: '+cpuspeed)
+   finally
+     primelist.Free;
+     mpr.Free;
+     sw.Free;
+   end; 
+   
+   writeln(itoa(Dreturn_abs(-30)));
+   writeln(itoa(Dreturn_abs2(-30)));
+   
+   //test_primesPerformance;  
+   writeln('CountMemoLineHeights '+itoa(CountMemoLineHeights(amemo1)));
+             
+(*    Writeln('Demo01	A simple Python evaluator Gauss evaluator '+CRLF+
+   'Demo02	Evaluate a Python expression with ExecSynCheck1 and Strlist'+CRLF+
+   'http://www.softwareschule.ch/examples/pydemo2.txt'          +CRLF+
+   'http://www.softwareschule.ch/examples/pydemo2.htm           '+CRLF+
+   'Demo03	15-powerful-python-one-liners PYLaz_P4D_Demo2       '+CRLF+
+   'Demo04	Eval_IOEvents (advanced case) extension Demo3 PYLaz_P4D_Demo2'+CRLF+
+   'Demo05	Defining a mX4_Python Template                     '+CRLF+
+   'Demo06	Defining a Python Template_PyCryptoDome_Bitcoin    '+CRLF+
+   'Demo07	Using Translator with Subprocess()                 '+CRLF+
+   'Demo08	Using Turtle Graph for new Python types            '+CRLF+
+   'Demo09	Making a URLLib_Agent with GoggleSearch            '+CRLF+
+   'Demo10  Using URLLib_ISBN_Agent_PyPas inside Python        '+CRLF+
+   'Demo11	Using URLLib_JSON_PyPas inside Pascal               '+CRLF+
+   'Demo12	Using a RSA_PyPa crypto methods                     '+CRLF+
+   'Demo13	Using Python_Cheat_Sheet5 big demo                  '+CRLF+
+   'Demo14	Get Import Module with LoadStringJ(PYMODFILE)                '+CRLF+
+   'Demo15	ImportModuleData: this is a extension of Demo14              '+CRLF+
+   'Demo16	Using ImportModuleData_Export in TPythonModule or Pylist     '+CRLF+
+   'Demo17	Using Threading, Windows Console and Command line arguments  '+CRLF+
+   'Demo18	Using Threading and Delphi log window                        '+CRLF+
+   'Demo19	Using VarPyth.pas                                            '+CRLF+
+   'Demo20	Demo8 revisited to allow the new Python type to be subclassed'+CRLF+
+   'Demo21  Container indexing this one!   ' );       *)                              
+End. 
+
+{>>> def my_abs(number):
+...     if number < 0:
+...         return -number
+...     return number}       
+    
+                                  
+                            

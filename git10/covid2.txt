@@ -1,0 +1,744 @@
+{***************************************************************
+ * https://www.nbshare.io/notebook/713100085/How-To-Read-JSON-Data-Using-Python-Pandas/
+ * https://wiki.freepascal.org/Comparing_TAChart_with_Delphi%27s_TeeChart_Standard
+ *       https://restcountries.eu/#api-endpoints-response-example
+ *       http://www.rosettacode.org/wiki/Formatted_numeric_output
+ * Date     : open 18/10/2020  -  14:38:5 
+ *          #sign:breitsch: BREITSCH-BOX: 03/04/2023 11:47:07 
+ *          : 26/02/2021  - better process iterator for json  #locs:424
+ *          : 02/03/2021  - proc TEEChartTestNamingSpace;  
+ ****************************************************************}
+//compilerswitch $N- turns the coprocessor off, {$mode objfpc}{$H+} loc's =1
+
+PROGRAM JSON_Automation_Refactor_23;
+
+{uses Classes, Math, JSON, TChart; }
+  
+Const aURL='https://www.datacamp.com/community/rss.xml';
+      JsonUrl = 'https://pomber.github.io/covid19/timeseries.json';
+      fVal = 7.125;
+      ACOUNTRY1 = 'Afghanistan';  //'Sweden'; Germany  Slovenia Afghanistan     
+      ACOUNTRY2 = 'Zimbabwe';    //Zimbabwe
+
+Countries=       
+ 'Armenia,Hungary,Eswatini,Bahrain,Kazakhstan,Cambodia,Estonia'+
+',Sao Tome and Principe,Burundi,Suriname,Serbia,Jamaica,Thailand,'
++'Denmark,Egypt,Diamond Princess,San Marino,Israel,Holy See'
++',Qatar,Nigeria,Luxembourg,United Kingdom,Burma,New Zealand,Gua'
++'temala,Grenada,Italy,Lebanon,Sri Lanka,Namibia,Afghanistan,'
++'Micronesia,Mongolia,Ethiopia,Dominican Republic,Lesotho,Djibouti'
++',Romania,Pakistan,Panama,MS Zaandam,Papua New Guinea,Andorra'
++',El Salvador,Comoros,Japan,Slovenia,Greece,Iran,Kenya,Trini'
++'dad and Tobago,India,Congo (Kinshasa),Congo (Brazzaville),Austria'
++',Azerbaijan,Ireland,Cote d''Ivoire,Bhutan,Saint Lucia,Togo,Jord'
++'an,Somalia,Eritrea,Peru,Vietnam,Dominica,Georgia,Antigua an'
++'d Barbuda,Benin,Ghana,Poland,Laos,Iceland,Tanzania,Botswana'
++',Mozambique,Saint Vincent and the Grenadines,Central African Republic'
++ ',Gabon,South Africa,Portugal,Rwanda,France,Ukraine,Uganda,'
++'Sudan,Haiti,Indonesia,Cyprus,Ecuador,Malta,Bulgaria,Malaysi'
++'a,Philippines,Switzerland,Mauritania,Gambia,Madagascar,Mali,'
++'Nepal,West Bank and Gaza,Venezuela,Russia,Czechia,Angola,Burk'
++'ina Faso,Timor-Leste,Belize,Nicaragua,Uruguay,Netherlands,Yeme'
++'n,Malawi,North Macedonia,Canada,Cameroon,Guinea-Bissau,Moldova'
++',Spain,Argentina,Chile,Bangladesh,US,Morocco,Niger,Fiji'
++',Kyrgyzstan,Belarus,Liberia,Paraguay,Norway,Zimbabwe,Liechte'
++'nstein,Guinea,Libya,Australia,Bolivia,Chad,Albania,Costa Ri'
++'ca,Sweden,United Arab Emirates,Solomon Islands,Uzbekistan,Cabo Ve'
++'rde,Brunei,Latvia,Seychelles,Taiwan*,Bosnia and Herzegovina,Ir'
++'aq,Barbados,Samoa,Senegal,China,South Sudan,Lithuania,Guyan'
++'a,Cuba,Mauritius,Zambia,Monaco,Algeria,Tunisia,Colombia,'
++'Equatorial Guinea,Turkey,Belgium,Saudi Arabia,Germany,Montenegro'
++',Honduras,Korea South,Oman,Vanuatu,Bahamas,Maldives,Singapo'
++'re,Saint Kitts and Nevis,Kuwait,Kosovo,Slovakia,Mexico,Croatia'
++',Sierra Leone,Syria,Marshall Islands,Brazil,Finland,Tajikistan';
+                           
+var                                         
+   Chart1: TChart;
+   Series1, Series2, Series3: TFastLineSeries;
+  
+   procedure OnDrawAxisLabel(Sender:TChartAxis;var X,Y,Z:Integer;var Text:String; 
+                 var DrawLabel:Boolean);
+   begin
+   end;                       
+
+
+procedure Json_Automation_CovidData(save: boolean);
+ var  XMLhttp : olevariant; // As Object
+  //Set sc = CreateObject("ScriptControl")
+  aTTeeFunction: TTeeFunction ;  JArray: TJsonArray2; JObj: TJsonObject2;
+  strPostData, response, resrange, statuscode, clabel: string;
+  ajt: TJson; 
+  cnt,cnt2, startR, stopR, itmp, sumup: integer;
+  
+begin //@_main_ procedure
+
+  response:= '';  resrange:= '';      
+  XMLhttp:= CreateOleObject('msxml2.xmlhttp')      
+  XMLhttp.Open ('GET', JsonUrl, False)
+  
+  //.setRequestHeader "Content-Type", "application/xml;charset=UTF-16"
+  //.setRequestHeader "Cache-Control", "no-cache"
+  //strPostData= "api_id=" & strApiId & "&user=" & strUserName & "&password=" & strPassword  
+  
+  XMLhttp.setrequestHeader ('Content-Type', 'application/x-www-form-urlencoded');
+  XMLhttp.Send();
+  response:=  XMLhttp.responseText; //)
+  statuscode:=  XMLhttp.status; 
+  
+  ajt:= TJson.create(); 
+  
+  startR:= pos('"'+ACOUNTRY1+'"',response);  
+  stopR:= pos('"'+ACOUNTRY2+'"',response);  
+       
+  //response:= trim(response);
+  writeln('DataLen Overall: '+itoa(length(response)))           
+  //resrange:= Copy(response, start, posEx('],',response,start)-start); 
+  resrange:= Copy(response, startR, stopR-startR);
+  resrange:= '{'+resrange+'}'; 
+  //resrange:= '{'+resrange+']}';   
+  //resrange:= response;                                      
+  writeln('debug sign onpos: '+GetWordOnPos(response, posex('],',response,1)));     
+  try
+    ajt.parse(resrange);
+  except
+    writeln( 'Exception: <TJson>"" parse error: {'+
+                  exceptiontostring(exceptiontype, exceptionparam)) 
+  end;                                             
+  //Split(ajt.Stringify,'{',slist)         
+  writeln('Statuscode: '+(statuscode)+': '+'listlen '+itoa(ajt.count));
+  writeln('Slice jsons country: '+itoa(ajt.count))
+
+  JObj:= ajt.JsonObject;
+  writeln('Get all Countries: ')
+  for cnt:= 0 to jobj.count-1 do 
+     //writeln(Jobj.items[cnt].name+' '+Jobj.items[cnt].value.stringify);  
+     writeln(Jobj.items[cnt].name);  
+  
+     writeln('test single country '+Jobj.items[6].name);     
+     
+     //writeln(ajt.values['France'].stringify); 
+     JArray:= ajt.values['Switzerland'].asarray;   
+     writeln('jitems test '+itoa(jarray.count)); 
+     {for cnt:= 1 to jarray.count-1 do   
+          writeln(jarray.items[cnt].stringify);  //}   
+       
+     {for cnt:= 0 to jobj.count-1 do begin
+       JArray:= ajt.values[Jobj.items[cnt].name].asarray;
+       writeln(Jobj.items[cnt].name)
+       for cnt2:= jarray.count-3 to jArray.count-1 do 
+         write(jarray.items[cnt2].asObject.values['confirmed'].asString+', ');
+         writeln(CRLF)
+     end; }            
+                                                          
+  //*)  //accumulated   
+   Clabel:='Vietnam'; 
+   Chart1.Title.Text.clear;  
+   Chart1.Title.Text.add('Sciplot TimeSerie for: '+Clabel); 
+     JArray:= ajt.values[Clabel].asarray; 
+     writeln('jitems country '+itoa(jarray.count));              
+     for cnt:= 1 to jarray.count-1 do begin      
+        itmp:= jarray.items[cnt].asObject.values['confirmed'].asinteger;
+        chart1.Series[0].Addxy(cnt,itmp,'',clGreen);
+        itmp:= jarray.items[cnt].asObject.values['deaths'].asinteger;
+        chart1.Series[1].Addxy(cnt,itmp,'',clRed);
+        itmp:= jarray.items[cnt].asObject.values['recovered'].asinteger;   
+        chart1.Series[2].Addxy(cnt,itmp,'',clBlue);       
+     end; 
+                                                                   
+   //sum up over all countries  
+   //http://www.teechart.com/support/faq/NewVCL/FAQ_VCL_AXES.htm
+   Chart1.Series[0].Clear; Chart1.Series[1].Clear; Chart1.Series[2].Clear;                    
+   Chart1.BottomAxis.Labels:=false;
+   Chart1.BottomAxis.LabelsFont.name:= 'Arial'
+   Series2.Marks.Visible:=true; 
+   //Series2.Marks.angle :=35; 
+   //Series2.Marks.ShapeStyle:=fosEllipse;  
+   //Series2.Marks.color:= clyellow;
+   //series2.Marks.Style := smsSeriesTitle;            
+   Chart1.Title.Text.clear; 
+   Chart1.Title.Text.add('Sciplot Serie: '+'Worldwide Covid21');      
+   Clabel:='';   
+   for cnt:= 1 to jobj.count-1 do begin          
+       Clabel:= Jobj.items[cnt].name
+       JArray:= ajt.values[Clabel].asarray;
+       for cnt2:= jarray.count-1 to jarray.count-1 do begin      
+         writeln(jarray.items[cnt2].asObject.values['confirmed'].asstring+' '+Clabel);
+         itmp:= jarray.items[cnt2].asObject.values['deaths'].asinteger;
+         sumup:= sumup+ itmp
+         chart1.Series[1].Addxy(cnt,itmp,itoa(itmp div 1000)+' '+Clabel,clRed);       
+     end; 
+   end;                                         
+  writeln('Worldwide Countries:'+itoa(ajt.count)+' Covid Deaths: '+itoa(sumup));  //*)
+  
+  if save then srlist.Savetofile(exepath+'examples\covidtimeserie.txt');
+  
+  XMLhttp:= unassigned;
+  ajt.Clear;
+  ajt.Free;
+  //JObj.Free;
+end;
+
+procedure TForm1SavePic1Click(Sender: TObject);
+var b:TBitmap;
+begin
+  b:=TBitmap.create;
+  b.height:=chart1.height;
+  b.width:=chart1.width;
+  //b.canvas.draw(0,0,TGraphic(chart1).canvas));
+  //b.canvas.draw(0,0,TTeeCanvas(chart1).canvas));
+  //b.canvas.draw(0,0,chart1.series[1].canvas));
+  Chart1.SaveToBitmapFile(exepath+'scigraphplot_c.bmp');
+  openfile(exepath+'scigraphplot_c.bmp')
+  //b.savetofile('graphpic.bmp');
+  b.free;
+end;
+
+{************* Chart1Resize ***********}
+procedure TForm1Chart1Resize(Sender: TObject);
+{keep the chart square}
+begin
+   with chart1 do begin
+     if width>height then width:=height
+     else height:=width;
+     left:=(self.width-width) div 2;
+   end;
+end;
+
+procedure TForm1FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+   chart1.free;
+   chart1:= Nil;
+   Tform(sender).Release;
+   writeln('form & chart closed...')
+end;
+
+procedure setTestSeries;
+var x,y: double;
+begin
+//ExpressionText=x=sqrt(t*t/50)*cos(t); y=sqrt(t*t/50)*sin(t)
+//ExpressionText=x=cos(t)*t; y=-sin(t)*t
+ for it:= 1 to 40 do
+   chart1.Series[0].Addxy(random(100)+10,random(100)+10,'',clBlue);
+ for it:= 1 to 200 do begin
+  x:=sqrt(it*it/50)*cos(it)+70; 
+  y:=sqrt(it*it/50)*sin(it)+70             
+  //chart1.Series[1].Addxy(random(100)+10,random(100)+10,'',clBlue); 
+  chart1.Series[1].Addxy(x,y,'',clBlue); 
+ end;  
+end;
+
+
+{*************** Chart1Click ************}
+procedure TForm1Chart1Click(Sender: TObject);
+ var t,tmp:Longint;
+     x,y:Double;
+begin
+  for t:=0 to Chart1.SeriesCount-1 do
+  with chart1 do begin
+     Series[t].GetCursorValues(x,y);
+     tmp:=Series[t].GetCursorValueIndex;
+     if tmp<>-1 then
+         ShowMessage(' Clicked Series: '+Series[t].Name+' near point: '
+       + Floattostrf(Series[t].XValue[tmp],ffnumber,8,3) + ',   '     
+       + Floattostrf(Series[t].YValue[tmp],ffnumber,8,3))      
+  end;
+end;
+
+procedure PlotSettings;
+var DBChart1: TChart;
+begin
+Series1.ParentChart:=DBChart1;
+//Series1.DataSource:=qryDateSelectData;
+Series2.ParentChart:=DBChart1;
+//Series2.DataSource:=qryDateSelectData;
+//dbChart1.Axes.Bottom.Items.Clear;
+dbChart1.BottomAxis.Title.Caption := 'Date';
+Series1.VertAxis := aLeftAxis;
+//Series2.VertAxis := aLeftAxis;
+Series2.VertAxis := aRightAxis;
+
+dbChart1.Axes.Bottom.DateTimeFormat:='mmm-dd';
+Series1.XLabelsSource := 'Date';
+Series2.XLabelsSource := 'Date';
+Series1.XValues.DateTime:=True;
+Series2.XValues.DateTime:=True;
+Series1.YValues.ValueSource := 'CBParameter1.Text';
+Series2.YValues.ValueSource := 'CBParameter2.Text';
+// scaling
+dbChart1.LeftAxis.AutomaticMaximum := True;
+dbChart1.LeftAxis.AutomaticMinimum := True;
+dbChart1.RightAxis.AutomaticMaximum := True;
+dbChart1.RightAxis.AutomaticMinimum := True;
+//dbChart1.LeftAxis.Minimum := 0;
+// prepare graph labeling
+Series1.Title := 'CBParameter1.Text';
+Series2.Title := 'CBParameter2.Text';;
+dbChart1.LeftAxis.Title.Caption := 'CBParameter1.Text;';
+dbChart1.RightAxis.Title.Caption := 'CBParameter2.Text;';
+dbChart1.Legend.Visible := True;
+dbChart1.Legend.Symbol.Visible := True;
+Series1.Active := True;
+Series2.Active := True;
+dbChart1.SubTitle.Text.Clear;
+dbChart1.Title.Text.Clear;
+dbChart1.Title.Visible := True;
+dbChart1.Title.Text.Add('CBParameter1.Text'+ ' vs. '+ 'CBParameter2.Text');
+end;
+
+
+procedure TForm1StaticText1Click(Sender: TObject);
+begin
+  openWeb(JSONUrl); //:'http://maxbox4.wordpress.com/')
+end;
+
+procedure loadSciForm;
+var form1: TForm; StaticText1: TStaticText;
+begin
+ Form1:= TForm.create(nil)
+  with form1 do begin
+  Left:= 113; Top := 101
+  Width:= 949; Height := 550
+  Caption:= 'Sci-Graph V1.41 maXbox4'
+  Color:= clBtnFace
+  Font.Charset:= DEFAULT_CHARSET
+  Font.Color:= clWindowText
+  Icon.LoadFromResourceName(HInstance,'ZHISTOGRAM'); 
+  Font.Name:= 'MS Sans Serif'
+  Font.Style:= []
+  //Menu := MainMenu1;
+  OldCreateOrder:= False
+  Position:= poScreenCenter
+  Scaled:= False
+  //WindowState := wsMaximized
+  //OnActivate := @TForm1FormActivate;
+  OnClose := @TForm1FormClose ;
+  PixelsPerInch:= 96
+  //TextHeight := 13
+  Chart1:= TChart.create(form1)
+  with chart1 do begin
+   parent:= form1
+    setBounds(0,0 ,945, 512)
+    //BackWall.Brush.Color := clWhite
+    //BackWall.Brush.Style := bsClear
+    BackWall.Dark3D:= False
+    BottomWall.Dark3D:= False
+    MarginLeft:= 10; MarginTop:= 10;     
+    Axes.Bottom.Title.Caption:= 'Days from 2020-1-22 to '+datetimetostr(date-1);
+    Axes.Bottom.DateTimeFormat:='dd-mmm';       
+    LeftAxis.Title.Caption := 'Covid D Amount';
+    Title.font.size:= 20;
+    Title.Text.add('Sciplot TimeSerie: '+ACOUNTRY1) ;
+    Legend.ResizeChart:= False
+    Legend.TopPos:= 4
+    View3D:= False
+    Align:= alClient
+    OnClick:= @Tform1Chart1Click
+    OnResize:= @Tform1Chart1Resize
+    Series1:= TFastLineSeries.create(chart1)
+    with series1 do begin
+     parentchart:= chart1
+      title:= 'Confirmed';
+      Marks.ArrowLength:= 8
+      Marks.Visible:= False
+      SeriesColor:= clGreen
+      LinePen.Color:= clGreen
+      LinePen.Width:= 4
+      XValues.DateTime:= False
+      XValues.Name:= 'X'
+      XValues.Multiplier:= 1
+      XValues.Order:= loAscending
+      YValues.DateTime:= False
+      YValues.Name:= 'Y'
+      YValues.Multiplier:= 1
+      YValues.Order:= loNone
+    end;
+    //object Series2: TFastLineSeries
+    Series2:= TFastLineSeries.create(chart1)
+    with series2 do begin
+     parentchart:= chart1
+      title:= 'deaths';
+      Marks.ArrowLength:= 8
+      Marks.Visible:= False
+      SeriesColor:= clRed
+      LinePen.Color:= clRed
+      XValues.DateTime:= False
+      XValues.Name:= 'X'
+      XValues.Multiplier:= 1
+      XValues.Order:= loAscending
+      YValues.DateTime:= False
+      YValues.Name:= 'Y'
+      YValues.Multiplier:= 1
+      YValues.Order:= loNone
+    end;
+   Series3:= TFastLineSeries.create(chart1)
+    with series3 do begin
+     parentchart:= chart1
+      title:= 'recovered';
+      Marks.ArrowLength:= 8
+      Marks.Visible:= False
+      SeriesColor:= clBlue
+      LinePen.Color:= clBlue
+      XValues.DateTime:= False
+      XValues.Name:= 'X'
+      XValues.Multiplier:= 1
+      XValues.Order:= loAscending
+      YValues.DateTime:= False
+      YValues.Name:= 'Y'
+      YValues.Multiplier:= 1
+      YValues.Order:= loNone
+    end;
+  end; //chart1
+  StaticText1:= TStaticText.create(form1)
+  with statictext1 do begin
+   parent:= form1;
+   setBounds(0, 512, 841, 17)
+    Cursor:= crHandPoint
+    Align:= alBottom
+    Alignment:= taCenter
+    Caption:= 'maXbox4 Serials Source'
+    Font.Charset:= DEFAULT_CHARSET
+    Font.Color:= clBlue
+    Font.Name:= 'MS Sans Serif'
+    Font.Style:= [fsUnderline]
+    ParentFont:= False
+    OnClick:= @Tform1StaticText1Click
+  end;
+  {object PrinterSetupDialog1: TPrinterSetupDialog
+    Left := 584  Top := 168
+  end  }  //PrinterSetupDialog1:= TPrinterSetupDialog.create(form1)
+ end; //form1
+ //form1.Menu := MainMenu1;
+ form1.Show;
+end;
+
+begin //@__main__
+  //ProcessmessagesOFF;
+  memo2.font.name:= 'Courier';   //to see the proportion!
+  writeln('*** Floyd 5 JSON Automation & TEEChart ***');
+  writeln('Covid TimeSeries:Country:,date:,confirmed":0,"deaths":0,"recovered":0')  
+   
+    loadSciForm;
+    json_Automation_CovidData(false);   
+    //setTestSeries; 
+    //TEEChartTestNamingSpace;  
+End.
+
+Ref:  <class 'pandas.core.frame.DataFrame'>
+RangeIndex: 76608 entries, 0 to 76607
+Data columns (total 5 columns):
+ #   Column     Non-Null Count  Dtype
+---  ------     --------------  -----
+ 0   country    76608 non-null  object
+ 1   date       76608 non-null  object
+ 2   confirmed  76608 non-null  int64
+ 3   deaths     76608 non-null  int64
+ 4   recovered  76608 non-null  int64
+dtypes: int64(3), object(2)
+memory usage: 2.9+ MB
+Worldwide Covid Deaths: 2517422 at End of 28. Feb. 2021
+
+
+Doc: https://stackoverflow.com/questions/41733/best-way-to-sort-an-array
+
+function Sort(const s: string):string;
+//insertion sort
+var
+  pRes : pchar;
+  i, j, aLength: NativeInt;
+  tmpc: Char;
+begin
+  aLength := s.Length;
+ 
+  if aLength = 0 then
+    exit('');
+ 
+  Result := s;
+  //without it, s will be sorted
+  UniqueString(Result);
+  //insertion sort
+  pRes := pChar(Result);
+  dec(aLength,1);
+  for i := 0 to aLength do
+  Begin
+    tmpc := pRes[i];
+    j := i-1;
+    while (j>=0) AND (tmpc < pRes[j]) do
+    Begin
+      pRes[j+1] := pRes[j];
+      dec(j);
+    end;
+    inc(j);
+    pRes[j]:= tmpc;
+  end;
+end;
+
+Refactor this:
+
+(*  for cnt:= 40 to slist.count-2 do begin
+     idx := POS('"confirmed":',slist.strings[cnt]);
+     //writeln(itoa(posEx(',',slist.strings[cnt],index+12)))
+     idx2:= posEx(',',slist.strings[cnt],idx+12)   
+     itemp:= strtoint(Copy(slist.strings[cnt], idx+12,idx2-(idx+12))) 
+     //iTemp := StrToInt(COPY(slist.strings[cnt],index+12,1));                  
+     chart1.Series[0].Addxy(cnt,itemp,'',clBlue);
+     idx := POS('"deaths":',slist.strings[cnt]);
+     idx2:= posEx(',',slist.strings[cnt],idx+9)   
+     itemp:= strtoint(Copy(slist.strings[cnt], idx+9,idx2-(idx+9))) 
+     chart1.Series[1].Addxy(cnt,itemp,'',clRed);
+     idx := POS('"recovered":',slist.strings[cnt]);
+     idx2:= posEx('}',slist.strings[cnt],idx+12)   
+     itemp:= strtoint(Copy(slist.strings[cnt], idx+12,idx2-(idx+12))) 
+     chart1.Series[2].Addxy(cnt,itemp,'',clBlue);
+  end; //*)                          
+
+
+https://medium.com/analytics-vidhya/crime-data-pattern-analysis-and-visualization-using-k-means-clustering-ceeb963a2b47
+
+https://laptrinhx.com/arima-vs-lstm-forecasting-electricity-consumption-163169048/
+https://devblogs.microsoft.com/scripting/get-started-with-powershell-development-in-visual-studio-code/
+
+  copy:
+  https://www.datacamp.com/community/rss.xml
+  
+  >>> print(','.join(ctry))
+Afghanistan,Albania,Algeria,Andorra,Angola,Antigua and Barbuda,Argentina,Armenia
+,Australia,Austria,Azerbaijan,Bahamas,Bahrain,Bangladesh,Barbados,Belarus,Belgiu
+m,Belize,Benin,Bhutan,Bolivia,Bosnia and Herzegovina,Botswana,Brazil,Brunei,Bulg
+aria,Burkina Faso,Burma,Burundi,Cabo Verde,Cambodia,Cameroon,Canada,Central Afri
+can Republic,Chad,Chile,China,Colombia,Comoros,Congo (Brazzaville),Congo (Kinsha
+sa),Costa Rica,Cote d'Ivoire,Croatia,Cuba,Cyprus,Czechia,Denmark,Diamond Princes
+s,Djibouti,Dominica,Dominican Republic,Ecuador,Egypt,El Salvador,Equatorial Guin
+ea,Eritrea,Estonia,Eswatini,Ethiopia,Fiji,Finland,France,Gabon,Gambia,Georgia,Ge
+rmany,Ghana,Greece,Grenada,Guatemala,Guinea,Guinea-Bissau,Guyana,Haiti,Holy See,
+Honduras,Hungary,Iceland,India,Indonesia,Iran,Iraq,Ireland,Israel,Italy,Jamaica,
+Japan,Jordan,Kazakhstan,Kenya,Korea, South,Kosovo,Kuwait,Kyrgyzstan,Laos,Latvia,
+Lebanon,Lesotho,Liberia,Libya,Liechtenstein,Lithuania,Luxembourg,MS Zaandam,Mada
+gascar,Malawi,Malaysia,Maldives,Mali,Malta,Marshall Islands,Mauritania,Mauritius
+,Mexico,Micronesia,Moldova,Monaco,Mongolia,Montenegro,Morocco,Mozambique,Namibia
+,Nepal,Netherlands,New Zealand,Nicaragua,Niger,Nigeria,North Macedonia,Norway,Om
+an,Pakistan,Panama,Papua New Guinea,Paraguay,Peru,Philippines,Poland,Portugal,Qa
+tar,Romania,Russia,Rwanda,Saint Kitts and Nevis,Saint Lucia,Saint Vincent and th
+e Grenadines,Samoa,San Marino,Sao Tome and Principe,Saudi Arabia,Senegal,Serbia,
+Seychelles,Sierra Leone,Singapore,Slovakia,Slovenia,Solomon Islands,Somalia,Sout
+h Africa,South Sudan,Spain,Sri Lanka,Sudan,Suriname,Sweden,Switzerland,Syria,Tai
+wan*,Tajikistan,Tanzania,Thailand,Timor-Leste,Togo,Trinidad and Tobago,Tunisia,T
+urkey,US,Uganda,Ukraine,United Arab Emirates,United Kingdom,Uruguay,Uzbekistan,V
+anuatu,Venezuela,Vietnam,West Bank and Gaza,Yemen,Zambia,Zimbabwe
+  
+
+
+(* === compile-time registration functions === *)
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJson(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJsonBase', 'TJson') do
+  with CL.AddClassN(CL.FindClass('TJsonBase'),'TJson') do begin
+    RegisterMethod('Constructor Create');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterMethod('Procedure Delete21( const Index : Integer);');
+    RegisterMethod('Procedure Delete22( const Name : String);');
+    RegisterMethod('Procedure Clear');
+    RegisterMethod('Function Get23( const Index : Integer) : TJsonValue;');
+    RegisterMethod('Function Get24( const Name : String) : TJsonValue;');
+    RegisterMethod('Function Put25( const Value : TJsonEmpty) : TJsonValue;');
+    RegisterMethod('Function Put26( const Value : TJsonNull) : TJsonValue;');
+    RegisterMethod('Function Put27( const Value : Boolean) : TJsonValue;');
+    RegisterMethod('Function Put28( const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Put29( const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Put30( const Value : String) : TJsonValue;');
+    RegisterMethod('Function Put31( const Value : TJsonArray2) : TJsonValue;');
+    RegisterMethod('Function Put32( const Value : TJsonObject2) : TJsonValue;');
+    RegisterMethod('Function Put33( const Value : TJsonValue) : TJsonValue;');
+    RegisterMethod('Function Put34( const Value : TJson) : TJsonValue;');
+    RegisterMethod('Function Putbool( const Value : Boolean) : TJsonValue;');
+    RegisterMethod('Function Putint( const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Putext( const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Putstr( const Value : String) : TJsonValue;');
+    RegisterMethod('Function Putarr( const Value : TJsonArray2) : TJsonValue;');
+    RegisterMethod('Function Putobj( const Value : TJsonObject2) : TJsonValue;');
+    RegisterMethod('Function Putval( const Value : TJsonValue) : TJsonValue;');
+    RegisterMethod('Function Putjson( const Value: TJson) : TJsonValue;');
+
+    RegisterMethod('Function Put35(const Name:String;const Value : TJsonEmpty) : TJsonValue;');
+    RegisterMethod('Function Put36(const Name:String;const Value : TJsonNull) : TJsonValue;');
+    RegisterMethod('Function Put37(const Name : String; const Value : Boolean) : TJsonValue;');
+    RegisterMethod('Function Put38(const Name : String; const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Put39(const Name:String; const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Put40(const Name : String; const Value : String) : TJsonValue;');
+    RegisterMethod('Function Put41(const Name:String; const Value:TJsonArray2) : TJsonValue;');
+    RegisterMethod('Function Put42(const Name:String;const Value:TJsonObject2): TJsonValue;');
+    RegisterMethod('Function Put43(const Name:String; const Value :TJsonValue) : TJsonValue;');
+    RegisterMethod('Function Put44( const Name : String; const Value : TJson) : TJsonValue;');
+    RegisterMethod('Function Put45( const Value : TJsonPair) : TJsonValue;');
+    RegisterProperty('StructType', 'TJsonStructType', iptr);
+    RegisterProperty('JsonObject', 'TJsonObject2', iptr);
+    RegisterProperty('JsonArray', 'TJsonArray2', iptr);
+    RegisterProperty('Count', 'Integer', iptr);
+    RegisterProperty('Values', 'TJsonValue String', iptr);
+    SetDefaultPropery('Values');
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJsonObject2(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJsonBase', 'TJsonObject') do
+  with CL.AddClassN(CL.FindClass('TJsonBase'),'TJsonObject2') do begin
+    RegisterMethod('Constructor Create( AOwner : TJsonBase)');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterMethod('Procedure Merge( Addition : TJsonObject2)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Function Add( const Name : String) : TJsonPair');
+    RegisterMethod('Function Insert(const Index : Integer; const Name : String) :TJsonPair');
+    RegisterMethod('Function Put9(const Name: String; const Value : TJsonEmpty) :TJsonValue;');
+    RegisterMethod('Function Put10(const Name: String; const Value : TJsonNull) :TJsonValue;');
+    RegisterMethod('Function Put11(const Name : String; const Value : Boolean) : TJsonValue;');
+    RegisterMethod('Function Put12(const Name : String; const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Put13(const Name: String; const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Put14(const Name : String; const Value : String) : TJsonValue;');
+    RegisterMethod('Function Put15(const Name: String; const Value: TJsonArray2):TJsonValue;');
+    RegisterMethod('Function Put16(const Name: String; const Value:TJsonObject2):TJsonValue;');
+    RegisterMethod('Function Put17(const Name: String; const Value: TJsonValue): TJsonValue;');
+    RegisterMethod('Function Put18(const Value : TJsonPair) : TJsonValue;');
+    RegisterMethod('Function Putbool(const Name:String; const Value: Boolean) : TJsonValue;');
+    RegisterMethod('Function Putint(const Name: String; const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Putext(const Name: String; const Value : Extended): TJsonValue;');
+    RegisterMethod('Function Putstr(const Name : String; const Value : String) : TJsonValue;');
+    RegisterMethod('Function Putarr(const Name:String;const Value:TJsonArray2) : TJsonValue;');
+    RegisterMethod('Function Putobj(const Name: String;const Value:TJsonObject2):TJsonValue;');
+    RegisterMethod('Function Putval(const Name:String; const Value:TJsonValue) : TJsonValue;');
+    RegisterMethod('Function Putpair( const Value : TJsonPair) : TJsonValue;');
+
+    RegisterMethod('Function Find( const Name : String) : Integer');
+    RegisterMethod('Procedure Delete19( const Index : Integer);');
+    RegisterMethod('Procedure Delete20( const Name : String);');
+    RegisterMethod('Procedure Clear');
+    RegisterProperty('Count', 'Integer', iptr);
+    RegisterProperty('Items', 'TJsonPair Integer', iptr);
+    RegisterProperty('Values', 'TJsonValue String', iptr);
+    SetDefaultPropery('Values');
+    RegisterProperty('AutoAdd', 'Boolean', iptrw);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJsonPair(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJsonBase', 'TJsonPair') do
+  with CL.AddClassN(CL.FindClass('TJsonBase'),'TJsonPair') do begin
+    RegisterMethod('Constructor Create( AOwner : TJsonBase; const AName : String)');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterProperty('Name', 'String', iptrw);
+    RegisterProperty('Value', 'TJsonValue', iptr);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJsonArray2(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJsonBase', 'TJsonArray2') do
+  with CL.AddClassN(CL.FindClass('TJsonBase'),'TJsonArray2') do begin
+    RegisterMethod('Constructor Create( AOwner : TJsonBase)');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterMethod('Procedure Merge( Addition : TJsonArray2)');
+    RegisterMethod('Function Add : TJsonValue');
+    RegisterMethod('Function Insert( const Index : Integer) : TJsonValue');
+    RegisterMethod('Function Put0( const Value : TJsonEmpty) : TJsonValue;');
+    RegisterMethod('Function Put1( const Value : TJsonNull) : TJsonValue;');
+    RegisterMethod('Function Put2( const Value : Boolean) : TJsonValue;');
+    RegisterMethod('Function Put3( const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Put4( const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Put5( const Value : String) : TJsonValue;');
+    RegisterMethod('Function Put6( const Value : TJsonArray2) : TJsonValue;');
+    RegisterMethod('Function Put7( const Value : TJsonObject2) : TJsonValue;');
+    RegisterMethod('Function Put8( const Value : TJsonValue) : TJsonValue;');
+    RegisterMethod('Procedure Delete( const Index : Integer)');
+    RegisterMethod('Procedure Clear');
+    RegisterProperty('Count', 'Integer', iptr);
+    RegisterProperty('Items', 'TJsonValue Integer', iptr);
+    SetDefaultPropery('Items');
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJsonValue(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJsonBase', 'TJsonValue') do
+  with CL.AddClassN(CL.FindClass('TJsonBase'),'TJsonValue') do begin
+    RegisterMethod('Constructor Create( AOwner : TJsonBase)');
+   RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterMethod('Procedure Clear');
+    RegisterProperty('ValueType', 'TJsonValueType', iptr);
+    RegisterProperty('AsString', 'String', iptrw);
+    RegisterProperty('AsNumber', 'Extended', iptrw);
+    RegisterProperty('AsInteger', 'Integer', iptrw);
+    RegisterProperty('AsBoolean', 'Boolean', iptrw);
+    RegisterProperty('AsObject', 'TJsonObject2', iptrw);
+    RegisterProperty('AsArray', 'TJsonArray2', iptrw);
+    RegisterProperty('IsNull', 'Boolean', iptrw);
+    RegisterProperty('IsEmpty', 'Boolean', iptrw);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJsonBase(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TObject', 'TJsonBase') do
+  with CL.AddClassN(CL.FindClass('TObject'),'TJsonBase') do  begin
+    RegisterMethod('Constructor Create( AOwner : TJsonBase)');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterMethod('Function Encode( const S : String) : String');
+    RegisterMethod('Function Decode( const S : String) : String');
+    RegisterMethod('Procedure Split(onst S:String; const Delimiter:Char; Strings: TStrings)');
+    RegisterMethod('Function IsJsonObject( const S : String) : Boolean');
+    RegisterMethod('Function IsJsonArray( const S : String) : Boolean');
+    RegisterMethod('Function IsJsonString( const S : String) : Boolean');
+    RegisterMethod('Function IsJsonNumber( const S : String) : Boolean');
+    RegisterMethod('Function IsJsonBoolean( const S : String) : Boolean');
+    RegisterMethod('Function IsJsonNull( const S : String) : Boolean');
+    RegisterMethod('Function AnalyzeJsonValueType( const S : String) : TJsonValueType');
+    RegisterProperty('Owner', 'TJsonBase', iptr);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_Jsons(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('TJsonValueType','(jvNone,jvNull,jvString,jvNumber,jvBoolean,jvObject,jvArray )');
+  CL.AddTypeS('TJsonStructType', '( jsNone, jsArray, jsObject )');
+  CL.AddTypeS('TJsonNull', '( jsnull2 )');
+  CL.AddTypeS('TJsonEmpty', '( jsempty )');
+  SIRegister_TJsonBase(CL);
+  CL.AddClassN(CL.FindClass('TOBJECT'),'TJsonObject2');
+  CL.AddClassN(CL.FindClass('TOBJECT'),'TJsonArray2');
+  SIRegister_TJsonValue(CL);
+  SIRegister_TJsonArray2(CL);
+  SIRegister_TJsonPair(CL);
+  SIRegister_TJsonObject2(CL);
+  SIRegister_TJson(CL);
+end;
+     
+     
+ ////----Simple Browser started----
+    
+    
+    
+    
+                      

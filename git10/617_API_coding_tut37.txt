@@ -1,0 +1,313 @@
+program API_Coding_Demo;
+
+//////////////////////////////////////////////////////////////////////
+//  #sign:breitsch: BREITSCH-BOX: 02/04/2023 20:24:27 
+//  Purpose: Tutorial of API demo function in 3 ways                         
+//  #path>C:\Program Files\Streaming\maxbox4\Import\tutor110\
+//  Lines of Code #locs:101
+//////////////////////////////////////////////////////////////////////
+
+// DLL Declaration of LIB Mpr.dll to call it direct:
+// TODO: Copy a file in a connected share path
+
+   Function MyNETConnect(hw: hwnd; dw: dword): Longint;
+         External 'WNetConnectionDialog@Mpr.dll stdcall';
+     
+   Const SHARENAME = '\\MAXBOX8\Users\Public';
+     
+
+procedure testIDCreateStackWindows;
+var //idstack: TIDStack;
+    idstackw: TIdStackWindows;
+begin
+  idstackw:= TIdStackWindows.create;
+  writeln('isDottedIP: '+botostr(idstackw.isDottedIP('192.168.11.1')))
+  writeln('IsNumericIP: '+botostr(idstackw.IsNumericIP('192.168.11.1')))
+  writeln('ResolveHost: '+idstackw.ResolveHost('192.168.11.1'))
+  writeln('WSGetHostByName: '+idstackw.WSGetHostName)
+  idstackw.Free;
+end;
+
+
+function Get_Printerport(Printername: string): string;
+var
+  Reg: TRegistry;
+  p: Integer;
+begin
+  Reg:= TRegistry.Create;
+  with Reg do begin
+    RootKey:= HKEY_CURRENT_USER;
+    if OpenKey('\Software\Microsoft\Windows NT\CurrentVersion\Devices\',True) then begin
+      if ValueExists(Printername) then begin
+        // Im reg Key steht so etwas wie   "winspool,LPT1:"
+        // The reg Key value may look like "winspool,LPT1:"
+        Result:= ReadString(Printername);
+        p     := Pos(',', Result);
+        Result:= Copy(Result, p + 1,Length(Result) - p);
+      end;
+    end;
+    CloseKey;
+  end;
+end;
+
+
+function TJvNetworkConnect_Execute: Boolean;
+var fconnect: boolean;
+begin
+  //RESOURCETYPE_DISK
+  //WNetDisconnectDialog
+  fconnect:= false; //true;
+  if fConnect then
+    Result:= WNetConnectionDialog(GetForegroundWindow, RESOURCETYPE_DISK)= NO_ERROR
+  else
+    Result:= WNetDisconnectDialog(GetForegroundWindow, RESOURCETYPE_DISK)= NO_ERROR;
+end;
+
+
+// API main script
+begin
+  //mysearch test beep;
+  Beep;
+  //StartFileFinder;
+  //SearchAndOpenDoc(ExePath+'examples\rec_files3.txt')
+  testIDCreateStackWindows;
+  PrintF('%3.4n',[123456789.123456]); //-->'123.456.789,1235'
+   
+   { with TJvNetworkConnect.create(self) do begin
+     Execute;
+     free;
+   end; }
+   
+   // OO Call:   
+   with TJvConnectNetwork.Create(self) do begin
+     Execute;
+     free;
+   end; 
+   
+   // API Call function:
+     TJvNetworkConnect_Execute;
+  
+   // DLL Call: MyNETConnect(GetForegroundWindow, RESOURCETYPE_DISK)
+     if MyNETConnect(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR then
+          writeln('connect dialog of DLL call');
+    
+   // without Dialog:  
+     if ConnectDrive('Z:',SHARENAME, True,True) = NO_ERROR then 
+          writeln('Net Share '+SHARENAME+' on Z:\ Connected');  
+    
+     if DisconnectNetDrive('Z:', True, True, True) = NO_ERROR then
+          writeln('Net Share '+SHARENAME+' on Z:\ Disconnected!');  
+
+End.
+
+
+Ref:
+
+https://msdn.microsoft.com/en-us/library/windows/desktop/aa385433%28v=vs.85%29.aspx
+
+http://whatismyipaddress.com/ip/178.196.193.131
+
+http://www.hostip.info/use.html
+
+doc:
+WNetConnectionDialog function
+
+The WNetConnectionDialog function starts a general browsing dialog box for connecting to network resources. The function requires a handle to the owner window for the dialog box.
+Syntax C++
+
+
+DWORD WNetConnectionDialog(
+  _In_ HWND  hwnd,
+  _In_ DWORD dwType );
+
+Parameters
+
+hwnd [in]  Handle to the owner window for the dialog box.
+dwType [in]
+
+    Resource type to allow connections to. This parameter can be the following value.
+    Value	Meaning
+
+    RESOURCETYPE_DISK
+
+    Connections to disk resources.
+
+Return value
+
+If the function succeeds, the return value is NO_ERROR. If the user cancels the dialog box, the function returns –1.
+
+If the function fails, the return value is a system error code, such as one of the following values.
+Return code	Description
+
+ERROR_EXTENDED_ERROR
+
+A network-specific error occurred. To obtain a description of the error, call the WNetGetLastError function.
+
+ERROR_INVALID_PASSWORD
+
+The specified password is invalid.
+
+ERROR_NO_NETWORK
+
+The network is unavailable.
+
+ERROR_NOT_ENOUGH_MEMORY
+
+There is insufficient memory to start the dialog box.
+
+Remarks
+
+If the user clicks OK in the dialog box, the requested network connection will have been made when the WNetConnectionDialog function returns.
+
+If the function attempts to make a connection and the network provider returns the message ERROR_INVALID_PASSWORD, the system prompts the user to enter a password. The system uses the new password in another attempt to make the connection.
+
+This is Windows API tutorial for the C programming language. It is pure Windows API tutorial. It does not cover MFC. After reading this tutorial, you will be able to program non trivial Windows applications. Even if you program in a higher level programming language, this tutorial will give you valuable knowledge of how things work under the hood. Note that this tutorial uses C99. 
+
+********************
+
+After we define our data, we register our class and check for any errors.
+    /* The class is registered, let''s create the program*/
+    hwnd = CreateWindowEx (
+           0,                   /* Extended possibilites for variation */
+           szClassName,         /* Classname */
+           "MyFirstProgram v1.0.0.0",       /* Title Text */
+           WS_OVERLAPPEDWINDOW, /* default window */
+           CW_USEDEFAULT,       /* Windows decides the position */
+           CW_USEDEFAULT,       /* where the window ends up on the screen */
+           230,                 /* The programs width */
+           75,                  /* and height in pixels */
+           HWND_DESKTOP,        /* The window is a child-window to desktop */
+           NULL,                /* No menu */
+           hThisInstance,       /* Program Instance handler */
+           NULL                 /* No Window Creation data */
+           );
+
+    /* Make the window visible on the screen */
+    ShowWindow (hwnd, SW_SHOW);
+    UpdateWindow(hwnd);
+
+    /* Run the message loop. It will run until GetMessage() returns 0 */
+    while (GetMessage (&messages, NULL, 0, 0))
+    {
+        /* Translate virtual-key messages into character messages */
+        TranslateMessage(&messages);
+        /* Send message to WindowProcedure */
+        DispatchMessage(&messages);
+    }
+    /* The program return-value is 0 - The value that PostQuitMessage() gave */
+    return messages.wParam;
+}
+
+We use CreateWindowEx to build our main window GUI. We define some information about what kind of window we are creating.
+We then show the window, update it, and begin our message loop so that our program can actually communicate with the operating system.
+Windows Procedure Callback
+
+LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
+    HWND hwndButton;
+    switch (message) {                 /* Handles all Windows Messages */
+        case WM_COMMAND:{
+              if(((HWND)lParam) && (HIWORD(wParam) == BN_CLICKED)){
+                int iMID;
+                iMID = LOWORD(wParam);
+                switch(iMID){
+                  case IDBUTTON:{
+                       MessageBox(hwnd, (LPCTSTR)"You just pushed me!",  (LPCTSTR) "My Program!", MB_OK|MB_ICONEXCLAMATION);
+                       break;
+                       }
+                  default:
+                       break;
+                }
+              }
+              break;
+            }
+        case WM_DESTROY:{
+              PostQuitMessage (0);       /* send a WM_QUIT to Message Queue, to shut off program */
+              break;
+             }
+
+The Window Procedure function is the Win32 API way of sending and receiving Windows messages declared as WM_ .
+
+We define the actual function that we prototyped earlier in the program. We create an HWND for the button, and declare each of our window messages and process them.
+
+In WM_COMMAND, we use a switch to look at the LPARAM and WPARAM parameters, and decide what command has been sent to us and about which control. If we receive the correct message that states our button was clicked, we show a message box.
+
+In WM_DESTROY, we declare PostQuitMessage(0), to exit our program. This message is activated when the X button is clicked on our title bar.
+Window Message Create
+
+        case WM_CREATE:{
+               hwndButton = CreateWindowEx(0,                    /* more or ''extended'' styles */
+                         TEXT("BUTTON"),                         /* GUI ''class'' to create */
+                         TEXT("Push Me"),                        /* GUI caption */
+                         WS_CHILD|WS_VISIBLE|BS_DEFPUSHBUTTON,   /* control styles separated by | */
+                         10,                                     /* LEFT POSITION (Position from left) */
+                         10,                                     /* TOP POSITION  (Position from Top) */
+                         200,                                    /* WIDTH OF CONTROL */
+                         30,                                     /* HEIGHT OF CONTROL */
+                         hwnd,                                   /* Parent window handle */
+                         (HMENU)IDBUTTON,                        /* control''s ID for WM_COMMAND */
+                         g_hInst,                                /* application instance */
+                         NULL);
+               break;
+             }
+        default:                      /* messages that we will not process */
+            return DefWindowProc (hwnd, message, wParam, lParam);
+    }
+
+    return 0;
+}
+
+In WM_CREATE we use CreateWindowEx to create a graphical control as a button. We define the text we use, the styles, the positions, the sizes, the parent window, our menu ID which we use in WM_COMMAND, and declare which HINSTANCE this control belongs to.
+
+Default is called when a message comes that we do not want to handle. Of course at the end of our program we return 0, since we declared the function as an int, and windows waits for us to return a zero.
+Some C++ and Win32 Data types
+
+DataTypes
+
+You do not need to know the following datatypes in order to use Win32 API, the lesson here is, that most Win32 datatypes are similar, if not the same as C++ datatypes. You are free to use standard C++ datatypes to express any Win32 datatypes. A lot of the datatypes in Win32 API, are synonyms and are not really that important to know, but I''ll give you a quick reference anyway:
+-BOOL is a windows datatype that is an equal representation of the simple bool used in C++. Its value can either be true or false.
+-WORD This is a 16-bit integer, that is similar to long. Specifically used for some windows functions. It is the equivalent of unsigned short in C++.
+-FLOAT is the equivalent of float in C++.
+-UINT is the equivalent of unsigned int in C++.
+-WINAPI, APIENTRY, CALLBACK, APIPRIVATE, STDCALL are all exactly the same as __stdcall in C++, which is the standard calling convention.
+-CDECL, WINAPIV, are both the same as __cdecl calling convention in C++.
+-FASTCALL is the same as __fastcall calling convention in C++.
+-PASCAL is the same as __pascal calling convention in C++.
+-WPARAM equivalent to an unsigned int pointer, and is used in Windows Messages.
+-LPARAM in Win32 API this is used for Windows Messages, starting with prefix WM_, but is actually a pointer to a long.
+-LRESULT Same as HRESULT or LONG/long, but a pointer to the long.
+-INT Standard integer datatype, same as int in C++ (signed).
+-BYTE is a synonym for unsigned char in C++. It is used for text characters.
+-DWORD This is similar to LONG or long in standard C++.
+-LONG is a substitute for INT.
+
+-HRESULT is the exact equivalent of a long in C++.
+-HANDLE This is a standard long in Win32 API, but usually used to indicate a GUI object, graphical object, or some other win32 objects.
+-HINSTANCE This is also a long similar to HANDLE except used to declare the instance of a windows program. Similar to a window ID for each object in win32.
+-HWND This long is used to indicate the window object itself, hence the name H-Wind(ow).
+-LPSTR Pointer to a string in Win32.
+-LPCSTR This object is a long pointer to a constant string.
+-LPTSTR This long pointer is equivalent to LPSTR, but there are two versions of this function, one expecting an ANSI string, and the other expecting a Unicode string.
+-LPCTSTR This is a combination of TCHARs in an LPTSTR. It can contain unicode or ANSI.
+Learning Win32 API C++ Programming
+
+Of course there are many more Window Messages that you could handle, and many more CreateWindowEx classes that we can use in our program, including many other GUI functions that we can show instead of a message box. For further reading and learning about more messages I ask that you favorite this tutorial and http://msdn.microsoft.com/library
+
+I tried to make this tutorial as simple as possible to follow for beginners and also enough examples for many of you to understand the structure of a windows program. However, I'm sure that one will have many questions about the various functions and data types.
+
+You may have already done quite a bit of console programming with C++. Although, you probably wondered how they get those nice graphical user interfaces (GUI) in windows programs that don't have a black screen. Well, these GUI programs are called Win32 API programs.
+
+
+All the possible words in Latin letters up to 50 letters. It's 26^50 (~5.6x10^70) words. Yes, most of these words are rubbish. However, each word has page with links to related websites.
+
+http://www.arduino.cc/en/Tutorial/ASCIITable
+
+http://www.vwlowen.co.uk/arduino/usb-digital/pc-control.htm
+
+SUMMARY;LANGUAGE=de-DE:Kickoff MAS IT Master Thesis FS15
+DTSTART;TZID=W. Europe Standard Time:20150518T163000
+DTEND;TZID=W. Europe Standard Time:20150518T173000
+
+http://www.yunqa.de/delphi/doku.php/products/regex/syntax#quantifiers
+
+The self driven Google Car is called: auto auto
+I just uploaded 'Tutor 37 API Coding' to @academia! https://www.academia.edu/12370895/Tutor_37_API_Coding

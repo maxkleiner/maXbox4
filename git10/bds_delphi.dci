@@ -1,0 +1,2992 @@
+[code | completion file for maXbox and arduino]
+code of version mX4.7.4.62 from http://www.softwareschule.ch/maxbox.htm #locs=2992
+
+[arrayd | array declaration (var) | Borland.EditOptions.Pascal]
+array[0..|] of ;
+
+[arrayc | array declaration (const) | Borland.EditOptions.Pascal]
+array[0..|] of = ();
+
+[begin | begin ... end block | Borland.EditOptions.Pascal]
+begin
+  |
+end;
+
+[c# | c# statement | Borland.EditOptions.Pascal]
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace | ConsoleApplication2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+        }
+    }
+}
+
+[cases | case statement | Borland.EditOptions.Pascal]
+case | of
+  : ;
+  : ;
+end;
+
+[dll | dll statement | Borland.EditOptions.Pascal]
+
+function | MyGetTickCount: Longint;
+   external 'GetTickCount@kernel32.dll stdcall';
+
+
+[except | exception statement | Borland.EditOptions.Pascal]
+ 
+procedure | EXceptionsOnmaXbox;
+var
+   filename,emsg:string;
+begin
+   filename:= '';
+   try
+     if filename = '' then
+       RaiseException(erCustomError, 'Exception: File name cannot be blank');
+   except
+     emsg:= ExceptionToString(ExceptionType, ExceptionParam);
+       //do act with the exception message i.e. email it or
+       //save to a log etc
+     writeln(emsg)  
+   end;
+end;  
+
+
+[list | list statement | Borland.EditOptions.Pascal]
+
+   procedure GetDBProviders;
+      var  ws: TWideStrings;
+      begin
+        ws:= TWideStringList.Create;
+        getProviderNames(ws)
+        for it:= 1 to ws.count -1 do 
+          writeln(intToStr(it) +' '+ws.strings[it]);
+        ws.free;
+     end; 
+     
+[performance | performance statement | Borland.EditOptions.Pascal]
+    
+procedure CallTicker(msecs: integer);
+begin
+ with TStopWatch.create do begin
+   start
+     | //Delay2StopWatch(msecs)
+   stop
+   writeln('Stop Watch CPU Tester: '+getValueStr)
+ end;    
+end;
+     
+
+[ticker | ticker statement | Borland.EditOptions.Pascal]
+    
+procedure CallTicker(msecs: integer);
+begin
+ with TStopWatch.create do begin
+   start
+     | //Delay2StopWatch(msecs)
+   stop
+   writeln('Stop Watch CPU Tester: '+getValueStr)
+ end;    
+end;
+
+
+[header | header statement | Borland.EditOptions.Pascal]
+   
+///////////////////////////////////////////////////////////////////////////
+//  #sign:Administrator: PC08: 02/04/2014 09:22:47 PM 
+//  Purpose: how to call best functions, on progress with experiments 
+//  #path>E:\maxbox3\mXGit39991\maxbox3\examples\
+//  Lines of Code #locs:265
+///////////////////////////////////////////////////////////////////////////
+//TODO: Save the QRCode to webserver_file, #locs:265
+   
+
+[myformtemplate | formtemplate statement | Borland.EditOptions.Pascal]
+  with TCustomDrawForm.create(self) do begin
+    image1.height:= 600; //add properties
+    showmodal;           //add methods
+    free;                //free it
+  end;
+  
+[todo | Borland.EditOptions.Pascal]
+  //TODO: transfer the App to a LED Matrix!
+  
+
+[casee | case statement (with else) | Borland.EditOptions.Pascal]
+case | of
+  : ;
+  : ;
+else ;
+end;
+
+[classf | class declaration (all parts) | Borland.EditOptions.Pascal]
+T| = class(T)
+private
+
+protected
+
+public
+
+published 
+
+end;
+
+[classd | class declaration (no parts) | Borland.EditOptions.Pascal]
+T| = class(T)
+
+end;
+
+[classc | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+T| = class(T)
+private
+
+protected
+
+public
+  constructor Create; override;
+  destructor Destroy; override;
+published 
+
+end;
+
+[Exception | class declaration (with Create) | Borland.EditOptions.Pascal]
+
+  Exception| = class(TObject)
+  private
+    FMessage: string;
+    FHelpContext: Integer;
+  public
+    constructor Create(const Msg: string);
+    constructor CreateFmt(const Msg: string; const Args: array of const);
+    constructor CreateRes(Ident: Integer); overload;
+    constructor CreateRes(ResStringRec: PResStringRec); overload;
+    constructor CreateResFmt(Ident: Integer; const Args: array of const); overload;
+    constructor CreateResFmt(ResStringRec: PResStringRec; const Args: array of const); overload;
+    constructor CreateHelp(const Msg: string; AHelpContext: Integer);
+    constructor CreateFmtHelp(const Msg: string; const Args: array of const;
+      AHelpContext: Integer);
+    constructor CreateResHelp(Ident: Integer; AHelpContext: Integer); overload;
+    constructor CreateResHelp(ResStringRec: PResStringRec;AHelpContext:Integer); overload;
+    constructor CreateResFmtHelp(ResStringRec: PResStringRec; const Args: array of const;
+      AHelpContext: Integer); overload;
+    constructor CreateResFmtHelp(Ident: Integer; const Args: array of const;
+      AHelpContext: Integer); overload;
+    property HelpContext: Integer read FHelpContext write FHelpContext;
+    property Message: string read FMessage write FMessage;
+  end;
+
+
+
+[ttimer | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+TTimer| = class(TComponent)
+private
+  FInterval: Cardinal;
+  FWindowHandle: HWND;
+  FOnTimer: TNotifyEvent;
+  FEnabled: Boolean;
+  procedure UpdateTimer;
+  procedure SetEnabled(Value: Boolean);
+  procedure SetInterval(Value: Cardinal);
+  procedure SetOnTimer(Value: TNotifyEvent);
+  procedure WndProc(var Msg: TMessage);
+protected
+  procedure Timer; dynamic;
+public
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+published
+  property Enabled: Boolean read FEnabled write SetEnabled default True;
+  property Interval: Cardinal read FInterval write SetInterval default 1000;
+  property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
+end;
+
+[tstringbuilder | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+
+type
+  TAnsiStringBuilder | = class
+  protected
+    FString : AnsiString;
+    FLength : Integer;
+
+    procedure EnsureCapacity(const L: Integer);
+    function  GetAsAnsiString: AnsiString;
+    procedure SetAsAnsiString(const S: AnsiString);
+    function  GetAsString: String;
+
+  public
+    constructor Create(const S: AnsiString = ''); overload;
+    constructor Create(const Capacity: Integer); overload;
+
+    property  Length: Integer read FLength;
+    property  AsAnsiString: AnsiString read GetAsAnsiString write SetAsAnsiString;
+    property  AsString: String read GetAsString;
+    procedure Clear;
+    procedure Assign(const S: TAnsiStringBuilder);
+
+    procedure Append(const S: AnsiString); overload;
+    procedure AppendCRLF;
+    procedure AppendLn(const S: AnsiString = '');
+    procedure Append(const S: AnsiString; const Count: Integer); overload;
+    procedure AppendCh(const C: AnsiChar); overload;
+    procedure AppendCh(const C: AnsiChar; const Count: Integer); overload;
+    procedure Append(const BufPtr: Pointer; const Size: Integer); overload;
+    procedure Append(const S: TAnsiStringBuilder); overload;
+    procedure Pack;
+  end;
+  
+[ttxtfile | class declaration (with Create overrides) | Borland.EditOptions.Pascal]
+  
+  TTxtFile = | class (TObject)
+  private
+    FDefaultExt: TFileExt;
+    FTextFile: TextFile;
+    function GetActive: Boolean;
+    function GetEof: Boolean;
+    function GetEoln: Boolean;
+    function GetMode: TFileMode;
+    function GetName: string;
+    function GetSeekEoln: Boolean;
+    procedure SetActive(state: Boolean);
+    procedure SetMode(const NewMode: TFileMode);
+  public
+    constructor Create(Name : TFileName);
+    destructor Destroy; override;
+    procedure Append;
+    procedure Assign(FName: string);
+    procedure Close; virtual;
+    procedure Flush;
+    //function loadfromStreamFile(const aFileName: string; memStream:
+    //                                  TMemoryStream ): Boolean;
+    procedure ReadLn(var S : string);
+    procedure ReSet; virtual;
+    procedure ReWrite; virtual;
+    procedure SetTextBuf(var Buf; Size : Word);
+    procedure Write(const S : string);
+    procedure WriteLn(const S : String);
+    property Active: Boolean read GetActive write SetActive;
+    property DefaultExt: TFileExt read FDefaultExt write FDefaultExt;
+    property Eof: Boolean read GetEof;
+    property Eoln: Boolean read GetEoln;
+    property FileName: string read GetName write Assign;
+    property SeekEoln: Boolean read GetSeekEoln;
+    property state: TFileMode read GetMode write SetMode;
+  end;
+  
+ [tcanvas | class declaration (with Create overrides) | Borland.EditOptions.Pascal]
+  
+  TCanvas = | class (TObject)
+  TCanvas = class(TPersistent)
+  procedure Arc(X1, Y1, X2, Y2, X3, Y3, X4, Y4: Integer);
+  procedure Chord(X1, Y1, X2, Y2, X3, Y3, X4, Y4: Integer);
+  procedure Draw(X, Y: Integer; Graphic: TGraphic);
+  procedure Ellipse(X1, Y1, X2, Y2: Integer);
+  procedure FloodFill(X, Y: Integer; Color: TColor; FillStyle: Byte);
+  procedure LineTo(X, Y: Integer);
+  procedure MoveTo(X, Y: Integer);
+  procedure Pie(X1, Y1, X2, Y2, X3, Y3, X4, Y4: Integer);
+  procedure Rectangle(X1, Y1, X2, Y2: Integer);
+  procedure Refresh;
+  procedure RoundRect(X1, Y1, X2, Y2, X3, Y3: Integer);
+  function TextHeight(Text: String): Integer;
+  procedure TextOut(X, Y: Integer; Text: String);
+  function TextWidth(Text: String): Integer;
+  property Handle: Integer; read write;
+  property Pixels: Integer Integer Integer; read write;
+  property Brush: TBrush; read;
+  property CopyMode: Byte; read write;
+  property Font: TFont; read;
+  property Pen: TPen; read;
+end;
+
+[tbitmap | class declaration (with Create overrides) | Borland.EditOptions.Pascal]
+
+TBitmap = | class(TGraphic)
+  procedure LoadFromStream(Stream: TStream);
+  procedure SaveToStream(Stream: TStream);
+  property Canvas: TCanvas; read write;
+  property Handle: HBITMAP; read write;
+end;  
+ 
+[tgraphic | class declaration (with Create overrides) | Borland.EditOptions.Pascal]
+
+TGraphic = | class(TPersistent)
+  procedure LoadFromFile(const Filename: String);
+  procedure SaveToFile(const Filename: String);
+  property Empty: Boolean; read write;
+  property Height: Integer; read write;
+  property Modified: Boolean; read write;
+  property Width: Integer; read write;
+  property OnChange: TNotifyEvent; read write;
+end;
+
+[TNotifyEvent | procedure declaration | Borland.EditOptions.Pascal]
+
+TNotifyEvent = procedure(Sender: TObject);
+
+[tmultilang | class declaration (with Create overrides) | Borland.EditOptions.Pascal]
+TMultiLangSC | = class(TComponent)
+  private
+    fLanguage: integer;
+    fResDLL: string;
+    fResDLLHandle: tHandle;
+    sDLLState: boolean;
+    fOnLangChanging: tLangChanging;
+    fOnLangChanged: tLangChanged;
+    procedure SetLanguage(const Value: integer);
+    procedure ChangeLanguage(const LanguageOffset: integer);
+    procedure ChangeComponent(theComponent: TComponent;
+                                const theLanguageOffset : integer);
+    function GetTopComponent: TComponent;
+    function IsOSMultilanguage: boolean;
+    function GetActualSystemLanguage: word;
+  protected
+    //Loaded Initializes the component after the form file has been
+    //read into memory.
+    procedure Loaded; override;
+    procedure setResDLL(const sDLLPath: ansiString);
+  public
+    constructor Create(AOwner: TComponent); override;
+    function GetResourceString(const number: integer): string;
+    function currentLanguage: integer;
+    function currentSystemLanguage(mylid:word): integer;
+    function currentUserLanguage: integer;
+    property LanguageOffset: integer read fLanguage write SetLanguage;
+    property ResDLL: string read fResDLL write setResDLL;
+  published
+    {change of published names since version 1.5}
+    property OnLangChanging: tLangChanging read fOnLangChanging write fOnLangChanging;
+    property OnLangChanged: tLangChanged read fOnLangChanged write fOnLangChanged;
+  end;
+
+
+
+[tobserver | class declaration (with Create/Destroy ) | Borland.EditOptions.Pascal]
+
+{-------O B S E R V E R  Pattern ------------------------}
+type
+  TStObserverAction = procedure(aInputData : TObject) of object;
+
+TStObserver| = class
+    private
+      FEventTable : TList;
+    protected
+      function  GetObserver(Index : Integer) : TStObserverAction;
+      procedure SetObserver(Index : Integer; InObserver : TStObserverAction);
+      function  GetCount : Integer;
+    public
+      constructor Create;
+      destructor  Destroy; override;
+      procedure Add(aHandler : TStObserverAction);
+      procedure Remove(aIndex : Integer);
+      procedure Notify(aInputData : TObject);
+      property  Handler[aIndex : Integer] : TStObserverAction
+                   read GetObserver write SetObserver;
+      property  Count : Integer read GetCount;
+  end;
+
+
+[tchain | class declaration (with Create/Destroy) | Borland.EditOptions.Pascal]
+  
+{------- C H A I N -Pattern--------------------------------}
+type
+  TStChainAction = procedure(aInputData, aResultData : TObject; var aStopNow : boolean) of object;
+
+  TStChain |= class
+    private
+      FEventTable: TList;
+    protected
+      function  GetHandler(Index : Integer) : TStChainAction;
+      procedure SetHandler(Index : Integer; InHandler : TStChainAction);
+      function  GetCount: Integer;
+
+    public
+      constructor Create;
+      destructor  Destroy; override;
+      procedure Add(aHandler : TStChainAction);
+      procedure Remove(aIndex : Integer);
+      procedure Handle(aInputData, aResultData : TObject);
+      procedure Insert(aIndex : Integer; aHandler : TStChainAction);
+      property Handler[aIndex : Integer] : TStChainAction
+                  read GetHandler write SetHandler;
+      property  Count: Integer read GetCount;
+  end;
+
+[tsingleton | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+
+{------ S I N G L E T O N ---------------------}
+type
+  TStSingleton| = class(TObject)
+    private
+      FRefCount: integer;
+    protected
+    public
+      class function NewInstance : TObject; override;
+      procedure FreeInstance; override;
+      procedure AllocResources; virtual;
+      procedure FreeResources; virtual;
+  end;
+  
+[tmediator | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+
+{------ M E D I A T O R ------------------------}
+type
+  TStMediatorAction = procedure(aInputData, aResultData : TObject) of object;
+
+  TStMediator| = class
+    private
+      FEventTable: TStringList;
+    protected
+      function  GetCount: Integer;
+    public
+      constructor Create;
+      destructor  Destroy; override;
+      procedure Add(const aEventName : string; aHandler : TStMediatorAction);
+      procedure Remove(const aEventName : string);
+      procedure Handle(const aEventName : string; aInputData, aResultData : TObject);
+      function  IsHandled(const aEventName : string) : boolean;
+      property  Count: Integer read GetCount;
+  end;
+
+[tvisitor | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+  
+{------ Visitor ------------------------}
+
+TXmlInterpreterVisitor = class(TObject)
+private
+protected
+  procedure Visit(Exp : TXmlStartTag); overload; virtual;
+  procedure Visit(Exp : TXmlEndTag); overload; virtual;
+  procedure Visit(Exp : TXmlNode); overload; virtual;
+  procedure Visit(Exp : TXmlTagList); overload; virtual;
+  procedure Visit(Exp : TXmlProlog); overload; virtual;
+  procedure Visit(Exp : TXmlDoc); overload; virtual;
+public
+end;
+
+
+[tcommand | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+  
+{------ Command ------------------------}
+
+TDocumentCommand = class(TObject)
+private
+  FDocument : TDocument;
+protected
+  procedure DoExecute; virtual; abstract;
+  procedure DoRollback; virtual;
+  // Used Self Encapsulate Field refactoring here. Now descendant commands
+  // can access the document, even if they are declared in other units
+  property Document : TDocument read FDocument write FDocument;
+public
+  constructor Create(ADocument : TDocument);
+ 
+  procedure Execute;
+  procedure Rollback; // Reverse effect of Execute
+end;
+
+
+[tstrategy | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+  
+{------ Strategy ------------------------}
+TDocumentStrategy = class(TObject)
+private
+  FFileText : TStringList;
+  FStrategy : TDocumentStrategy;
+ 
+  function  GetText : string;
+  procedure SetText(const Value : string);
+  function  GetMemento : TDocumentMemento;
+  procedure SetMemento(const Value : TDocumentMemento);
+protected
+public
+  constructor Create;
+  destructor  Destroy; override;
+ 
+  procedure OpenFile(const FileName : string);
+  procedure CloseFile;
+  procedure SearchAndReplace(const FindText,ReplaceText : string);
+  procedure PrettyPrint;
+
+  property Text    : string read GetText write SetText;
+  property Memento : TDocumentMemento read GetMemento write SetMemento;
+end;  
+
+
+[tdecorator | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+  
+{------ Decorator ------------------------}
+
+type 
+  TTextStream = class (TObject) 
+  protected 
+    function GetEndOfText: Boolean; virtual; abstract; 
+  public 
+    function ReadLine: string; virtual; abstract; 
+    procedure WriteLine(const Line: string); virtual; abstract; 
+    property EndOfText: Boolean read GetEndOfText; 
+  end; 
+
+  TTextFilter = class (TTextStream) 
+  private 
+    FOwnsStream: Boolean; 
+    FTextStream: TTextStream; 
+  protected 
+    function GetEndOfText: Boolean; override; 
+    function GetTextStream: TTextStream; 
+    procedure SetTextStream(Value: TTextStream); 
+  public 
+    constructor Create(ATextStream: TTextStream; AOwnsStream: Boolean); 
+    destructor Destroy; override; 
+    function ReadLine: string; override; 
+    procedure WriteLine(const Line: string); override; 
+    property OwnsStream: Boolean read FOwnsStream write FOwnsStream; 
+    property TextStream: TTextStream read GetTextStream write SetTextStream; 
+  end; 
+
+[TControl | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+
+{------ Graphic & CustomControl ------------------------}
+
+  TGraphicControl = class(TControl)
+  private
+    FCanvas: TCanvas;
+    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+  protected
+    procedure Paint; virtual;
+    property Canvas: TCanvas read FCanvas;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+  TCustomControl = class(TWinControl)
+  private
+    FCanvas: TCanvas;
+    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+  protected
+    procedure Paint; virtual;
+    procedure PaintWindow(DC: HDC); override;
+    property Canvas: TCanvas read FCanvas;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+
+[tbigint | class declaration (with Create/Destroy overrides) | Borland.EditOptions.Pascal]
+
+  TMyBigInt| = class
+  private
+    Len: Integer;
+    Value: AnsiString;
+    procedure Trim;
+    procedure Shift(k: Integer);
+    procedure MultiplyAtom(Multiplier1: TMyBigInt; Multiplier2: Integer);
+  public
+    constructor Create(iValue: Integer = 0);
+    procedure Add(Addend1, Addend2: TMyBigInt);
+    procedure Multiply(Multiplier1, Multiplier2: TMyBigInt); overload;
+    procedure Multiply(Multiplier1: TMyBigInt; Multiplier2: Integer); overload;
+    function ToString: string;
+    procedure CopyFrom(mbCopy: TMyBigInt);
+  end;
+
+
+[tmenu | class declaration (with MainMenu) | Borland.EditOptions.Pascal]
+
+   with TMainMenu.create(clogFrm) do begin;
+     GameMi:= TMenuItem.Create(clogfrm);
+     gamemi.Caption:= '&Save Graph as PNG ';
+     gamemi.OnClick:= LogBox_btnSaveClick;
+     Items.Add(gamemi);
+     Game2:= TMenuItem.Create(clogfrm);
+     game2.Caption:= ' &Close LogBox';
+     game2.OnClick:= LogBox_CloseClick;
+     Items.Add(game2);
+   end;
+    
+
+[IInterface | interface declaration  | Borland.EditOptions.Pascal]
+  IInterface | = interface
+    ['{00000000-0000-0000-C000-000000000046}']
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
+  end;
+
+  
+[IUnknown | interface declaration  | Borland.EditOptions.Pascal]
+  IUnknown | = IInterface;
+//{$M+}
+  IInvokable = interface(IInterface)
+  end;
+//{$M-}
+  
+
+[IIncomeInt | interface declaration  | Borland.EditOptions.Pascal]
+  IIncomeInt | = interface (IUnknown)
+    ['{DBB42A04-E60F-41EC-870A-314D68B6913C}']
+    function GetIncome(const aNetto: Extended): Extended; stdcall;
+    function GetIncome2(const aNetto: Currency): Currency; stdcall;
+    function GetRate: Extended;
+    function queryDLLInterface(var queryList: TStringList): TStringList;
+            stdcall;
+    function queryDLLInterfaceTwo(var queryList: TStringList): TStringList;
+            stdcall;
+    procedure SetRate(const aPercent, aYear: integer); stdcall;
+    //property Rate: Double read GetRate;
+  end;
+
+[IVCLScanner | interface declaration  | Borland.EditOptions.Pascal]
+   IVCLScanner | = interface(IInvokable)
+  ['{8FFBAA56-B4C2-4A32-924D-B3D3DE2C4EFF}']
+    function PostData(const UserData: WideString; const CheckSum: integer):
+                                                              Boolean; stdcall;
+    procedure PostUser(const Email, FirstName, LastName: WideString); stdcall;
+    function GetTicketNr: longint; stdcall;
+  end;
+
+[IVCLOrchestrator | interface declaration  | Borland.EditOptions.Pascal]
+  IVCLOrchestrator | = interface(IInvokable)
+  ['{8FFBAA56-B4C2-4A32-924D-B3D3DE2C4EFA}']
+    function SetSequence(S, Localizar, Substituir: shortstring):
+                                                 shortstring; stdcall;
+    procedure lineToNumber(xmemo: String; met: boolean); stdcall;
+  end;
+
+[TVCLScanner | class declaration  | Borland.EditOptions.Pascal]
+ TVCLScanner = class(TInvokableClass, IVCLScanner)
+  public
+    function PostData(const UserData: WideString; const CheckSum: integer): Boolean; stdcall;
+    procedure PostUser(const Email, FirstName, LastName : WideString); stdcall;
+    function GetTicketNr: longint; stdcall;
+  end;
+
+
+[myDLL | class declaration  | Borland.EditOptions.Pascal]
+
+function DMathFact(N: Integer):Float; external 'Fact@dmath.dll';
+
+[myRegEx | class declaration  | Borland.EditOptions.Pascal]
+
+       with TPerlRegEx.Create do try        //Perl Delphi RegEx
+         RegEx:= '<title>(.+?)</title>'; 
+         Options:= [preCaseLess]; 
+         Subject:= 'testa <title> My TRex on Regex Delphi</title> testb'; 
+         If Match then 
+             ShowMessageBig(Groups[1])  //SubExpressions[1]),MatchedText
+         else 
+           ShowMessageBig('Regex Not found');
+       finally
+         Free;
+       end;      
+
+
+[myFastForm | class declaration  | Borland.EditOptions.Pascal]
+  
+procedure |CreateMyFastForm;
+ //diaform:= CreateMessageDialog('my fast form perform',mtconfirmation, []);
+var 
+    dbform: TForm;
+    ard: TRadioGroup;
+begin
+   dbform:= CreateMessageDialog('My Fast Form Template - FFP',mtwarning,
+                                        [mball, mbyes, mbhelp, mbok]);
+   with dbform do begin
+     font.size:= 12;
+     caption:= 'FFP XML Demo';
+     setBounds(50,50,800,600)
+     FormStyle:= fsStayontop;
+     Color:= 12234;  //clWebGold;//12234;
+     autoScroll:= true;
+   with TLabel.Create(self) do begin
+     parent:= dbform;
+     SetBounds(400,60,500,600)
+     font.size:= 18;
+     //dblist.Add('All Converted to...XML')
+     caption:= 'entry in a list dblist.text...';
+   end;  
+   with TRadioGroup.Create(self) do begin
+     parent:= dbform;
+     top:= 130;
+     left:= 60;
+     items.add('first entry of');
+     items.add('second entry off');
+     items.add('third entry off');
+     ItemIndex:= 2; 
+     //writeln(Items.Strings[ItemIndex]); 
+   end;
+   Show;
+   Canvas.Draw(400,200,getBitMap(Exepath+'\examples\citymax.bmp'));
+  end; 
+   //SelectDirectory
+end;
+  
+  
+[myForm | class declaration  | Borland.EditOptions.Pascal]
+
+var 
+  aFrm: TForm;
+  mT: TTimer;
+  tB: TTrackBar;
+  statBar1: TStatusBar;
+
+//**************************Event Handlers*******************************
+procedure |TFrm1_trackSpeedChange(Sender: TObject);
+begin
+  //mt.Interval:= 1000 div tB.Position;
+  writeln(intToStr(1000 div tB.Position));
+end;
+
+procedure TFrm1_closeForm(Sender: TObject; var Action: TCloseAction);
+begin
+  {if mt <> NIL then begin
+    mT.enabled:= false;
+    mT.Free;
+    mT:= NIL;
+  end;}
+  ///afrm.Free;  
+  action:= caFree;
+  afrm:= NIL;
+end;
+
+procedure TFrm1_CloseClick(Sender: TObject);
+begin
+  afrm.Close;
+end;
+
+procedure TFrm1_PauseClick(Sender: TObject);
+begin
+  {if mT <> NIL then
+    mt.enabled:= not mt.enabled; }
+end;
+
+//**************************Form Builder*******************************
+procedure loadForm;
+begin
+  aFrm:= TForm.Create(self);
+  //mT:= TTimer.Create(self);
+  //mt.onTimer:= @TFrm1_timerRedrawTimer;
+  //mt.interval:= MILLISECONDS;
+  //mt.free;  in on close            
+  with aFrm do begin
+    Caption:= '********** Form Template ***********';  
+    height:= 510;
+    width:= 700;
+    Position:= poScreenCenter;
+    //Color:= clBlack;
+    onClose:= @TFrm1_closeForm;
+    //onPaint:= @TFrm1_FormPaint;
+    Canvas.Pen.color:= clBlue;
+    Canvas.Pen.Width:= 15;
+    Show;
+    canvas.brush.bitmap:= getBitmapObject(Exepath+'examples\images\bmp47.bmp');
+    Canvas.FillRect(Rect(600,300,100,100));
+  end;
+  with TBitBtn.Create(aFrm) do begin
+    Parent:= aFrm;
+    setbounds(310,390,150,55);
+    caption:= 'Pause';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'CL_MPPAUSE'); 
+    mXButton(05,05,width, height,12,12,handle);
+    //event handler
+    onClick:= @TFrm1_PauseClick;
+  end;
+  with TBitBtn.Create(aFrm) do begin
+    Parent:= aFrm;
+    setbounds(480,390,150, 55);
+    caption:= 'Close';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'CL_MPSTOP'); 
+    mXButton(05,05,width, height,12,12,handle);
+    onClick:= @TFrm1_CloseClick;
+  end;
+  tB:= TTrackBar.create(aFrm);
+  with tB do begin
+    parent:= aFrm;
+    setBounds(40,402,230,40);
+    Min:= 10; Max:= 100
+    Frequency:= 10
+    Position:= 1000 div 50;
+    linesize:= 4;
+    ThumbLength:= 30;
+    SetFocus;
+    OnChange:= @TFrm1_trackSpeedChange;
+  end;
+  statbar1:= TStatusBar.Create(aFrm);
+  with statbar1 do begin
+    parent:= aFrm;
+    showhint:= true;
+    hint:= 'this is a LED BoX';
+    Panels.add;
+      panels.items[0].width:= 200;
+      panels.items[0].text:= '200';
+    Panels.add;
+      panels.items[1].width:= 150;
+      panels.items[1].text:= '150';
+  end;
+end;  
+
+
+[aForm | class declaration  | Borland.EditOptions.Pascal]
+
+procedure |ShowEOleException(AExc: EOleException; aQuery: String);
+var
+  ErrShowFrm: TForm;
+  Memo: TMemo;
+begin
+  ErrShowFrm:= TForm.Create(NIL);
+  ErrShowFrm.Position:= poScreenCenter;
+  ErrShowFrm.Width:= 640;
+  ErrShowFrm.Height:= 480;
+  Memo:= TMemo.Create(ErrShowFrm);
+  Memo.Parent:= ErrShowFrm;
+  Memo.Align:= alClient; //ErrShowFrm.Align;
+
+  Memo.Lines.Clear;
+  if assigned(AExc) then begin 
+    Memo.Lines.Add('Message: '+ AExc.Message);
+     Memo.Lines.Add('   Source: '+ AExc.Source);
+     Memo.Lines.Add('   Source: '+ AExc.helpFile);
+     //Memo.Lines.Add('   ClassName: ' + AExc.ClassName);
+     Memo.Lines.Add('   Error Code: '+ IntToStr(AExc.ErrorCode));
+  end;
+  Memo.Lines.Add('   Query: ' + aQuery);
+  ErrShowFrm.ShowModal;
+  Memo.Free;
+  ErrShowFrm.Free;
+end;
+
+
+
+[TMemo | class declaration  | Borland.EditOptions.Pascal]
+TMemo | = class(TCustomMemo)
+  published
+    property Align;
+    property Alignment;
+    property Anchors;
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    property BiDiMode;
+    property BorderStyle;
+    property Color;
+    property Constraints;
+    property Ctl3D;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property HideSelection;
+    property ImeMode;
+    property ImeName;
+    property Lines;
+    property MaxLength;
+    property OEMConvert;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ScrollBars;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property WantReturns;
+    property WantTabs;
+    property WordWrap;
+    property OnChange;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseActivate;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDock;
+    property OnStartDrag;
+  end;
+  
+[TCustomMemo | class declaration  | Borland.EditOptions.Pascal]
+TCustomMemo | = class(TCustomEdit)
+  private
+    FLines: TStrings;
+    FAlignment: TAlignment;
+    FScrollBars: TScrollStyle;
+    FWordWrap: Boolean;
+    FWantReturns: Boolean;
+    FWantTabs: Boolean;
+    procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
+    procedure WMNCDestroy(var Message: TWMNCDestroy); message WM_NCDESTROY;
+  protected
+    function GetCaretPos: TPoint; virtual;
+    procedure SetCaretPos(const Value: TPoint); virtual;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWindowHandle(const Params: TCreateParams); override;
+    procedure KeyPress(var Key: Char); override;
+    procedure Loaded; override;
+    procedure SetAlignment(Value: TAlignment);
+    procedure SetLines(Value: TStrings);
+    procedure SetScrollBars(Value: TScrollStyle);
+    procedure SetWordWrap(Value: Boolean);
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
+    property WantReturns: Boolean read FWantReturns write FWantReturns default True;
+    property WantTabs: Boolean read FWantTabs write FWantTabs default False;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function GetControlsAlignment: TAlignment; override;
+    property CaretPos: TPoint read GetCaretPos write SetCaretPos;
+    property Lines: TStrings read FLines write SetLines;
+  end;  
+
+
+[TCustomEdit | class declaration  | Borland.EditOptions.Pascal]
+TCustomEdit | = class(TWinControl)
+  private
+    FMaxLength: Integer;
+    FBorderStyle: TBorderStyle;
+    FPasswordChar: Char;
+    FReadOnly: Boolean;
+    FAutoSize: Boolean;
+    FAutoSelect: Boolean;
+    FHideSelection: Boolean;
+    FOEMConvert: Boolean;
+    FCharCase: TEditCharCase;
+    FCreating: Boolean;
+    FModified: Boolean;
+    FOnChange: TNotifyEvent;
+    FOldSelLength: Integer;
+    FOldSelStart: Integer;
+    procedure AdjustHeight;
+    function GetModified: Boolean;
+    function GetCanUndo: Boolean;
+    procedure SetBorderStyle(Value: TBorderStyle);
+    procedure SetCharCase(Value: TEditCharCase);
+    procedure SetHideSelection(Value: Boolean);
+    procedure SetMaxLength(Value: Integer);
+    procedure SetModified(Value: Boolean);
+    procedure SetOEMConvert(Value: Boolean);
+    procedure SetPasswordChar(Value: Char);
+    procedure SetReadOnly(Value: Boolean);
+    procedure SetSelText(const Value: string);
+    procedure UpdateHeight;
+    procedure WMSetFont(var Message: TWMSetFont); message WM_SETFONT;
+    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
+    procedure CMEnter(var Message: TCMGotFocus); message CM_ENTER;
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
+    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
+    procedure WMContextMenu(var Message: TWMContextMenu);
+      message WM_CONTEXTMENU;
+  protected
+    procedure Change; dynamic;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWindowHandle(const Params: TCreateParams); override;
+    procedure CreateWnd; override;
+    procedure DestroyWnd; override;
+    procedure DoSetMaxLength(Value: Integer); virtual;
+    function GetSelLength: Integer; virtual;
+    function GetSelStart: Integer; virtual;
+    function GetSelText: string; virtual;
+    procedure SetAutoSize(Value: Boolean); override;
+    procedure SetSelLength(Value: Integer); virtual;
+    procedure SetSelStart(Value: Integer); virtual;
+    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
+    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
+    property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
+    property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
+    property MaxLength: Integer read FMaxLength write SetMaxLength default 0;
+    property OEMConvert: Boolean read FOEMConvert write SetOEMConvert default False;
+    property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
+    property ParentColor default False;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure Clear; virtual;
+    procedure ClearSelection;
+    procedure CopyToClipboard;
+    procedure CutToClipboard;
+    procedure DefaultHandler(var Message); override;
+    procedure PasteFromClipboard;
+    procedure Undo;
+    procedure ClearUndo;
+    function GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
+    procedure SelectAll;
+    procedure SetSelTextBuf(Buffer: PChar);
+    property CanUndo: Boolean read GetCanUndo;
+    property Modified: Boolean read GetModified write SetModified;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
+    property SelLength: Integer read GetSelLength write SetSelLength;
+    property SelStart: Integer read GetSelStart write SetSelStart;
+    property SelText: string read GetSelText write SetSelText;
+    property Text;
+  published
+    property TabStop default True;
+  end;
+
+[TObject | class declaration  | Borland.EditOptions.Pascal]
+ TObject | = class
+    constructor Create;
+    procedure Free;
+    class function InitInstance(Instance: Pointer): TObject;
+    procedure CleanupInstance;
+    function ClassType: TClass;
+    class function ClassName: ShortString;
+    class function ClassNameIs(const Name: string): Boolean;
+    class function ClassParent: TClass;
+    class function ClassInfo: Pointer;
+    class function InstanceSize: Longint;
+    class function InheritsFrom(AClass: TClass): Boolean;
+    class function MethodAddress(const Name: ShortString): Pointer;
+    class function MethodName(Address: Pointer): ShortString;
+    function FieldAddress(const Name: ShortString): Pointer;
+    function GetInterface(const IID: TGUID; out Obj): Boolean;
+    class function GetInterfaceEntry(const IID: TGUID): PInterfaceEntry;
+    class function GetInterfaceTable: PInterfaceTable;
+    function SafeCallException(ExceptObject: TObject;
+      ExceptAddr: Pointer): HResult; virtual;
+    procedure AfterConstruction; virtual;
+    procedure BeforeDestruction; virtual;
+    procedure Dispatch(var Message); virtual;
+    procedure DefaultHandler(var Message); virtual;
+    class function NewInstance: TObject; virtual;
+    procedure FreeInstance; virtual;
+    destructor Destroy; virtual;
+  end;
+
+
+[TPersistent | class declaration  | Borland.EditOptions.Pascal]
+ TPersistent | = class(TObject)
+  private
+    procedure AssignError(Source: TPersistent);
+  protected
+    procedure AssignTo(Dest: TPersistent); virtual;
+    procedure DefineProperties(Filer: TFiler); virtual;
+    function  GetOwner: TPersistent; dynamic;
+  public
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); virtual;
+    function  GetNamePath: string; dynamic;
+  end;
+
+
+[TStrings | class declaration  | Borland.EditOptions.Pascal]
+ TStrings | = class(TPersistent)
+  private
+    FDefined: TStringsDefined;
+    FDelimiter: Char;
+    FLineBreak: string;
+    FQuoteChar: Char;
+    FNameValueSeparator: Char;
+    FStrictDelimiter: Boolean;
+    FUpdateCount: Integer;
+    FAdapter: IStringsAdapter;
+    function GetCommaText: string;
+    function GetDelimitedText: string;
+    function GetName(Index: Integer): string;
+    function GetValue(const Name: string): string;
+    procedure ReadData(Reader: TReader);
+    procedure SetCommaText(const Value: string);
+    procedure SetDelimitedText(const Value: string);
+    procedure SetStringsAdapter(const Value: IStringsAdapter);
+    procedure SetValue(const Name, Value: string);
+    procedure WriteData(Writer: TWriter);
+    function GetDelimiter: Char;
+    procedure SetDelimiter(const Value: Char);
+    function GetLineBreak: string;
+    procedure SetLineBreak(const Value: string);
+    function GetQuoteChar: Char;
+    procedure SetQuoteChar(const Value: Char);
+    function GetNameValueSeparator: Char;
+    procedure SetNameValueSeparator(const Value: Char);
+    function GetStrictDelimiter: Boolean;
+    procedure SetStrictDelimiter(const Value: Boolean);
+    function GetValueFromIndex(Index: Integer): string;
+    procedure SetValueFromIndex(Index: Integer; const Value: string);
+  protected
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure Error(const Msg: string; Data: Integer); overload;
+    procedure Error(Msg: PResStringRec; Data: Integer); overload;
+    function ExtractName(const S: string): string;
+    function Get(Index: Integer): string; virtual; abstract;
+    function GetCapacity: Integer; virtual;
+    function GetCount: Integer; virtual; abstract;
+    function GetObject(Index: Integer): TObject; virtual;
+    function GetTextStr: string; virtual;
+    procedure Put(Index: Integer; const S: string); virtual;
+    procedure PutObject(Index: Integer; AObject: TObject); virtual;
+    procedure SetCapacity(NewCapacity: Integer); virtual;
+    procedure SetTextStr(const Value: string); virtual;
+    procedure SetUpdateState(Updating: Boolean); virtual;
+    property UpdateCount: Integer read FUpdateCount;
+    function CompareStrings(const S1, S2: string): Integer; virtual;
+  public
+    destructor Destroy; override;
+    function Add(const S: string): Integer; virtual;
+    function AddObject(const S: string; AObject: TObject): Integer; virtual;
+    procedure Append(const S: string);
+    procedure AddStrings(Strings: TStrings); virtual;
+    procedure Assign(Source: TPersistent); override;
+    procedure BeginUpdate;
+    procedure Clear; virtual; abstract;
+    procedure Delete(Index: Integer); virtual; abstract;
+    procedure EndUpdate;
+    function Equals(Strings: TStrings): Boolean;
+    procedure Exchange(Index1, Index2: Integer); virtual;
+    function GetEnumerator: TStringsEnumerator;
+    function GetText: PChar; virtual;
+    function IndexOf(const S: string): Integer; virtual;
+    function IndexOfName(const Name: string): Integer; virtual;
+    function IndexOfObject(AObject: TObject): Integer; virtual;
+    procedure Insert(Index: Integer; const S: string); virtual; abstract;
+    procedure InsertObject(Index: Integer; const S: string;
+      AObject: TObject); virtual;
+    procedure LoadFromFile(const FileName: string); virtual;
+    procedure LoadFromStream(Stream: TStream); virtual;
+    procedure Move(CurIndex, NewIndex: Integer); virtual;
+    procedure SaveToFile(const FileName: string); virtual;
+    procedure SaveToStream(Stream: TStream); virtual;
+    procedure SetText(Text: PChar); virtual;
+    property Capacity: Integer read GetCapacity write SetCapacity;
+    property CommaText: string read GetCommaText write SetCommaText;
+    property Count: Integer read GetCount;
+    property Delimiter: Char read GetDelimiter write SetDelimiter;
+    property DelimitedText: string read GetDelimitedText write SetDelimitedText;
+    property LineBreak: string read GetLineBreak write SetLineBreak;
+    property Names[Index: Integer]: string read GetName;
+    property Objects[Index: Integer]: TObject read GetObject write PutObject;
+    property QuoteChar: Char read GetQuoteChar write SetQuoteChar;
+    property Values[const Name: string]: string read GetValue write SetValue;
+    property ValueFromIndex[Index: Integer]: string read GetValueFromIndex write SetValueFromIndex;
+    property NameValueSeparator: Char read GetNameValueSeparator write SetNameValueSeparator;
+    property StrictDelimiter: Boolean read GetStrictDelimiter write SetStrictDelimiter;
+    property Strings[Index: Integer]: string read Get write Put; default;
+    property Text: string read GetTextStr write SetTextStr;
+    property StringsAdapter: IStringsAdapter read FAdapter write SetStringsAdapter;
+  end;
+  
+
+[TStringList | class declaration  | Borland.EditOptions.Pascal]
+ TStringList | = class(TStrings)
+  private
+    FList: PStringItemList;
+    FCount: Integer;
+    FCapacity: Integer;
+    FSorted: Boolean;
+    FDuplicates: TDuplicates;
+    FCaseSensitive: Boolean;
+    FOnChange: TNotifyEvent;
+    FOnChanging: TNotifyEvent;
+    procedure ExchangeItems(Index1, Index2: Integer);
+    procedure Grow;
+    procedure QuickSort(L, R: Integer; SCompare: TStringListSortCompare);
+    procedure SetSorted(Value: Boolean);
+    procedure SetCaseSensitive(const Value: Boolean);
+  protected
+    procedure Changed; virtual;
+    procedure Changing; virtual;
+    function Get(Index: Integer): string; override;
+    function GetCapacity: Integer; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: string); override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+    procedure SetCapacity(NewCapacity: Integer); override;
+    procedure SetUpdateState(Updating: Boolean); override;
+    function CompareStrings(const S1, S2: string): Integer; override;
+    procedure InsertItem(Index: Integer; const S: string; AObject: TObject); virtual;
+  public
+    destructor Destroy; override;
+    function Add(const S: string): Integer; override;
+    function AddObject(const S: string; AObject: TObject): Integer; override;
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Exchange(Index1, Index2: Integer); override;
+    function Find(const S: string; var Index: Integer): Boolean; virtual;
+    function IndexOf(const S: string): Integer; override;
+    procedure Insert(Index: Integer; const S: string); override;
+    procedure InsertObject(Index: Integer; const S: string;
+      AObject: TObject); override;
+    procedure Sort; virtual;
+    procedure CustomSort(Compare: TStringListSortCompare); virtual;
+    property Duplicates: TDuplicates read FDuplicates write FDuplicates;
+    property Sorted: Boolean read FSorted write SetSorted;
+    property CaseSensitive: Boolean read FCaseSensitive write SetCaseSensitive;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
+  end;
+
+
+[TStream | class declaration  | Borland.EditOptions.Pascal]
+ TStream | = class(TObject)
+ { TStream abstract class }
+  private
+    function GetPosition: Int64;
+    procedure SetPosition(const Pos: Int64);
+    procedure SetSize64(const NewSize: Int64);
+  protected
+    function GetSize: Int64; virtual;
+    procedure SetSize(NewSize: Longint); overload; virtual;
+    procedure SetSize(const NewSize: Int64); overload; virtual;
+  public
+    function Read(var Buffer; Count: Longint): Longint; virtual; abstract;
+    function Write(const Buffer; Count: Longint): Longint; virtual; abstract;
+    function Seek(Offset: Longint; Origin: Word): Longint; overload; virtual;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; overload; virtual;
+    procedure ReadBuffer(var Buffer; Count: Longint);
+    procedure WriteBuffer(const Buffer; Count: Longint);
+    function CopyFrom(Source: TStream; Count: Int64): Int64;
+    function ReadComponent(Instance: TComponent): TComponent;
+    function ReadComponentRes(Instance: TComponent): TComponent;
+    procedure WriteComponent(Instance: TComponent);
+    procedure WriteComponentRes(const ResName: string; Instance: TComponent);
+    procedure WriteDescendent(Instance, Ancestor: TComponent);
+    procedure WriteDescendentRes(const ResName: string; Instance, Ancestor: TComponent);
+    procedure WriteResourceHeader(const ResName: string; out FixupInfo: Integer);
+    procedure FixupResourceHeader(FixupInfo: Integer);
+    procedure ReadResHeader;
+    property Position: Int64 read GetPosition write SetPosition;
+    property Size: Int64 read GetSize write SetSize64;
+  end;
+  
+[TBits | class declaration  | Borland.EditOptions.Pascal]
+ TBits | = class
+  private
+    FSize: Integer;
+    FBits: Pointer;
+    procedure Error;
+    procedure SetSize(Value: Integer);
+    procedure SetBit(Index: Integer; Value: Boolean);
+    function GetBit(Index: Integer): Boolean;
+  public
+    destructor Destroy; override;
+    function OpenBit: Integer;
+    property Bits[Index: Integer]: Boolean read GetBit write SetBit; default;
+    property Size: Integer read FSize write SetSize;
+  end;
+  
+[TStack | class declaration  | Borland.EditOptions.Pascal]
+ TStack | = class(TOrderedList)
+  protected
+    procedure PushItem(AItem: Pointer); override;
+  end;  
+
+[TObjectStack | class declaration  | Borland.EditOptions.Pascal]
+  TObjectStack | = class(TStack)
+  public
+    function Push(AObject: TObject): TObject;
+    function Pop: TObject;
+    function Peek: TObject;
+  end;
+
+[TColorDialog | class declaration  | Borland.EditOptions.Pascal]
+
+procedure | anonymtest;
+begin
+  with maxform1.memo1 do
+    with TColorDialog.create(self) do
+     try 
+       Execute 
+       gutter.color:= color;
+     finally
+       Free
+     end;
+end;
+
+
+[TObjectQueue | class declaration  | Borland.EditOptions.Pascal]
+  TObjectQueue | = class(TQueue)
+  public
+    function Push(AObject: TObject): TObject;
+    function Pop: TObject;
+    function Peek: TObject;
+  end;
+
+
+[TList | class declaration  | Borland.EditOptions.Pascal]
+ TList | = class(TObject)
+  private
+    FList: PPointerList;
+    FCount: Integer;
+    FCapacity: Integer;
+  protected
+    function Get(Index: Integer): Pointer;
+    procedure Grow; virtual;
+    procedure Put(Index: Integer; Item: Pointer);
+    procedure Notify(Ptr: Pointer; Action: TListNotification); virtual;
+    procedure SetCapacity(NewCapacity: Integer);
+    procedure SetCount(NewCount: Integer);
+  public
+    destructor Destroy; override;
+    function Add(Item: Pointer): Integer;
+    procedure Clear; virtual;
+    procedure Delete(Index: Integer);
+    class procedure Error(const Msg: string; Data: Integer); overload; virtual;
+    class procedure Error(Msg: PResStringRec; Data: Integer); overload;
+    procedure Exchange(Index1, Index2: Integer);
+    function Expand: TList;
+    function Extract(Item: Pointer): Pointer;
+    function First: Pointer;
+    function GetEnumerator: TListEnumerator;
+    function IndexOf(Item: Pointer): Integer;
+    procedure Insert(Index: Integer; Item: Pointer);
+    function Last: Pointer;
+    procedure Move(CurIndex, NewIndex: Integer);
+    function Remove(Item: Pointer): Integer;
+    procedure Pack;
+    procedure Sort(Compare: TListSortCompare);
+    procedure Assign(ListA: TList; AOperator: TListAssignOp = laCopy; ListB: TList = nil);
+    property Capacity: Integer read FCapacity write SetCapacity;
+    property Count: Integer read FCount write SetCount;
+    property Items[Index: Integer]: Pointer read Get write Put; default;
+    property List: PPointerList read FList;
+  end;
+
+
+[TComponent | class declaration  | Borland.EditOptions.Pascal]
+ TComponent | = class(TPersistent, IInterface, IInterfaceComponentReference)
+  private
+    FOwner: TComponent;
+    FName: TComponentName;
+    FTag: Longint;
+    FComponents: TList;
+    FFreeNotifies: TList;
+    FDesignInfo: Longint;
+    FComponentState: TComponentState;
+    FVCLComObject: Pointer;
+    function GetComObject: IUnknown;
+    function GetComponent(AIndex: Integer): TComponent;
+    function GetComponentCount: Integer;
+    function GetComponentIndex: Integer;
+    procedure Insert(AComponent: TComponent);
+    procedure ReadLeft(Reader: TReader);
+    procedure ReadTop(Reader: TReader);
+    procedure Remove(AComponent: TComponent);
+    procedure RemoveNotification(AComponent: TComponent);
+    procedure SetComponentIndex(Value: Integer);
+    procedure SetReference(Enable: Boolean);
+    procedure WriteLeft(Writer: TWriter);
+    procedure WriteTop(Writer: TWriter);
+    { IInterfaceComponentReference }
+    function IInterfaceComponentReference.GetComponent = IntfGetComponent;
+    function IntfGetComponent: TComponent;
+  protected
+    FComponentStyle: TComponentStyle;
+    procedure ChangeName(const NewName: TComponentName);
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); dynamic;
+    function GetChildOwner: TComponent; dynamic;
+    function GetChildParent: TComponent; dynamic;
+    function GetOwner: TPersistent; override;
+    procedure Loaded; virtual;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); virtual;
+    procedure PaletteCreated; dynamic;
+    procedure ReadState(Reader: TReader); virtual;
+    procedure SetAncestor(Value: Boolean);
+    procedure SetDesigning(Value: Boolean; SetChildren: Boolean = True);
+    procedure SetInline(Value: Boolean);
+    procedure SetDesignInstance(Value: Boolean);
+    procedure SetName(const NewName: TComponentName); virtual;
+    procedure SetChildOrder(Child: TComponent; Order: Integer); dynamic;
+    procedure SetParentComponent(Value: TComponent); dynamic;
+    procedure Updating; dynamic;
+    procedure Updated; dynamic;
+    class procedure UpdateRegistry(Register: Boolean; const ClassID,ProgID: string); virtual;
+    procedure ValidateRename(AComponent: TComponent;
+      const CurName, NewName: string); virtual;
+    procedure ValidateContainer(AComponent: TComponent); dynamic;
+    procedure ValidateInsert(AComponent: TComponent); dynamic;
+    procedure WriteState(Writer: TWriter); virtual;
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
+    { IDispatch }
+    function GetTypeInfoCount(out Count: Integer): HResult; stdcall;
+    function GetTypeInfo(Index, LocaleID: Integer; out TypeInfo): HResult; stdcall;
+    function GetIDsOfNames(const IID: TGUID; Names: Pointer;
+      NameCount, LocaleID: Integer; DispIDs: Pointer): HResult; stdcall;
+    function Invoke(DispID: Integer; const IID: TGUID; LocaleID: Integer;
+      Flags: Word; var Params; VarResult, ExcepInfo, ArgErr: Pointer): HResult; stdcall;
+  public
+    constructor Create(AOwner: TComponent); virtual;
+    destructor Destroy; override;
+    procedure BeforeDestruction; override;
+    procedure DestroyComponents;
+    procedure Destroying;
+    function ExecuteAction(Action: TBasicAction): Boolean; dynamic;
+    function FindComponent(const AName: string): TComponent;
+    procedure FreeNotification(AComponent: TComponent);
+    procedure RemoveFreeNotification(AComponent: TComponent);
+    procedure FreeOnRelease;
+    function GetEnumerator: TComponentEnumerator;
+    function GetParentComponent: TComponent; dynamic;
+    function GetNamePath: string; override;
+    function HasParent: Boolean; dynamic;
+    procedure InsertComponent(AComponent: TComponent);
+    procedure RemoveComponent(AComponent: TComponent);
+    procedure SetSubComponent(IsSubComponent: Boolean);
+    function SafeCallException(ExceptObject: TObject;
+      ExceptAddr: Pointer): HResult; override;
+    function UpdateAction(Action: TBasicAction): Boolean; dynamic;
+    function IsImplementorOf(const I: IInterface): Boolean;
+    function ReferenceInterface(const I: IInterface;Operation:TOperation): Boolean;
+    property ComObject: IUnknown read GetComObject;
+    property Components[Index: Integer]: TComponent read GetComponent;
+    property ComponentCount: Integer read GetComponentCount;
+    property ComponentIndex: Integer read GetComponentIndex write SetComponentIndex;
+    property ComponentState: TComponentState read FComponentState;
+    property ComponentStyle: TComponentStyle read FComponentStyle;
+    property DesignInfo: Longint read FDesignInfo write FDesignInfo;
+    property Owner: TComponent read FOwner;
+    property VCLComObject: Pointer read FVCLComObject write FVCLComObject;
+  published
+    property Name: TComponentName read FName write SetName stored False;
+    property Tag: Longint read FTag write FTag default 0;
+  end;
+  
+
+[TObjectList | class declaration  | Borland.EditOptions.Pascal]  
+TObjectList | = class(TList)
+  private
+    FOwnsObjects: Boolean;
+  protected
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+    function GetItem(Index: Integer): TObject;
+    procedure SetItem(Index: Integer; AObject: TObject);
+  public
+    constructor Create; overload;
+    constructor Create(AOwnsObjects: Boolean); overload;
+    function Add(AObject: TObject): Integer;
+    function Extract(Item: TObject): TObject;
+    function Remove(AObject: TObject): Integer;
+    function IndexOf(AObject: TObject): Integer;
+    function FindInstanceOf(AClass: TClass; AExact: Boolean = True; AStartAt: Integer = 0): Integer;
+    procedure Insert(Index: Integer; AObject: TObject);
+    function First: TObject;
+    function Last: TObject;
+    property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
+    property Items[Index: Integer]: TObject read GetItem write SetItem; default;
+  end;
+  
+
+[TComponentList | class declaration  | Borland.EditOptions.Pascal]  
+  TComponentList | = class(TObjectList)
+  private
+    FNexus: TComponent;
+  protected
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+    function GetItems(Index: Integer): TComponent;
+    procedure SetItems(Index: Integer; AComponent: TComponent);
+    procedure HandleFreeNotify(Sender: TObject; AComponent: TComponent);
+  public
+    destructor Destroy; override;
+    function Add(AComponent: TComponent): Integer;
+    function Extract(Item: TComponent): TComponent;
+    function Remove(AComponent: TComponent): Integer;
+    function IndexOf(AComponent: TComponent): Integer;
+    function First: TComponent;
+    function Last: TComponent;
+    procedure Insert(Index: Integer; AComponent: TComponent);
+    property Items[Index: Integer]: TComponent read GetItems write SetItems; default;
+  end;
+ 
+
+[TClassList | class declaration  | Borland.EditOptions.Pascal]  
+  TClassList | = class(TList)
+  protected
+    function GetItems(Index: Integer): TClass;
+    procedure SetItems(Index: Integer; AClass: TClass);
+  public
+    function Add(AClass: TClass): Integer;
+    function Extract(Item: TClass): TClass;
+    function Remove(AClass: TClass): Integer;
+    function IndexOf(AClass: TClass): Integer;
+    function First: TClass;
+    function Last: TClass;
+    procedure Insert(Index: Integer; AClass: TClass);
+    property Items[Index: Integer]: TClass read GetItems write SetItems; default;
+  end; 
+  
+  
+[TControl | class declaration  | Borland.EditOptions.Pascal]
+ TControl | = class(TComponent)
+  private
+    FParent: TWinControl;
+    FWindowProc: TWndMethod;
+    FLeft: Integer;
+    FTop: Integer;
+    FWidth: Integer;
+    FHeight: Integer;
+    FControlStyle: TControlStyle;
+    FControlState: TControlState;
+    FDesktopFont: Boolean;
+    FVisible: Boolean;
+    FEnabled: Boolean;
+    FParentFont: Boolean;
+    FParentColor: Boolean;
+    FAlign: TAlign;
+    FAutoSize: Boolean;
+    FDragMode: TDragMode;
+    FIsControl: Boolean;
+    FBiDiMode: TBiDiMode;
+    FParentBiDiMode: Boolean;
+    FAnchors: TAnchors;
+    FText: PChar;
+    FFont: TFont;
+    FActionLink: TControlActionLink;
+    FColor: TColor;
+    FConstraints: TSizeConstraints;
+    FMargins: TMargins;
+    FCursor: TCursor;
+    FDragCursor: TCursor;
+    FPopupMenu: TPopupMenu;
+    FHint: string;
+    FFontHeight: Integer;
+    FScalingFlags: TScalingFlags;
+    FShowHint: Boolean;
+    FParentShowHint: Boolean;
+    FDragKind: TDragKind;
+    FDockOrientation: TDockOrientation;
+    FHostDockSite: TWinControl;
+    FWheelAccumulator: Integer;
+    FUndockWidth: Integer;
+    FUndockHeight: Integer;
+    FLRDockWidth: Integer;
+    FTBDockHeight: Integer;
+    FFloatingDockSiteClass: TWinControlClass;
+    FOnCanResize: TCanResizeEvent;
+    FOnConstrainedResize: TConstrainedResizeEvent;
+    FOnMouseDown: TMouseEvent;
+    FOnMouseMove: TMouseMoveEvent;
+    FOnMouseUp: TMouseEvent;
+    FOnDragDrop: TDragDropEvent;
+    FOnDragOver: TDragOverEvent;
+    FOnResize: TNotifyEvent;
+    FOnStartDock: TStartDockEvent;
+    FOnEndDock: TEndDragEvent;
+    FOnStartDrag: TStartDragEvent;
+    FOnEndDrag: TEndDragEvent;
+    FOnClick: TNotifyEvent;
+    FOnDblClick: TNotifyEvent;
+    FOnContextPopup: TContextPopupEvent;
+    FOnMouseActivate: TMouseActivateEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseWheel: TMouseWheelEvent;
+    FOnMouseWheelDown: TMouseWheelUpDownEvent;
+    FOnMouseWheelUp: TMouseWheelUpDownEvent;
+    FHelpType: THelpType;
+    FHelpKeyword: String;
+    FHelpContext: THelpContext;
+    procedure CalcDockSizes;
+    function CheckNewSize(var NewWidth, NewHeight: Integer): Boolean;
+    function CreateFloatingDockSite(Bounds: TRect): TWinControl;
+    procedure DoActionChange(Sender: TObject);
+    function DoCanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
+    function DoCanResize(var NewWidth, NewHeight: Integer): Boolean;
+    procedure DoConstraintsChange(Sender: TObject);
+    procedure DoConstrainedResize(var NewWidth, NewHeight: Integer);
+    procedure DoDragMsg(var DragMsg: TCMDrag);
+    procedure DoMouseActivate(var Message: TCMMouseActivate);
+    procedure DoMouseDown(var Message: TWMMouse; Button: TMouseButton;
+      Shift: TShiftState);
+    procedure DoMouseUp(var Message: TWMMouse; Button: TMouseButton);
+    procedure DoMarginChange(Sender: TObject);
+    procedure FontChanged(Sender: TObject);
+    function GetAlignWithMargins: Boolean;
+    function GetBoundsRect: TRect;
+    function GetClientHeight: Integer;
+    function GetClientWidth: Integer;
+    function GetLRDockWidth: Integer;
+    function GetMouseCapture: Boolean;
+    function GetText: TCaption;
+    function GetTBDockHeight: Integer;
+    function GetUndockWidth: Integer;
+    function GetUndockHeight: Integer;
+    procedure InvalidateControl(IsVisible, IsOpaque: Boolean);
+    function IsAnchorsStored: Boolean;
+    function IsBiDiModeStored: Boolean;
+    function IsCaptionStored: Boolean;
+    function IsColorStored: Boolean;
+    function IsEnabledStored: Boolean;
+    function IsFontStored: Boolean;
+    function IsHintStored: Boolean;
+    function IsHelpContextStored: Boolean;
+    function IsOnClickStored: Boolean;
+    function IsShowHintStored: Boolean;
+    function IsVisibleStored: Boolean;
+    procedure ReadIsControl(Reader: TReader);
+    procedure ReadExplicitLeft(Reader: TReader);
+    procedure ReadExplicitTop(Reader: TReader);
+    procedure ReadExplicitWidth(Reader: TReader);
+    procedure ReadExplicitHeight(Reader: TReader);
+    procedure SetAlignWithMargins(Value: Boolean);
+    procedure SetAnchors(Value: TAnchors);
+    procedure SetAction(Value: TBasicAction);
+    procedure SetAlign(Value: TAlign);
+    procedure SetBoundsRect(const Rect: TRect);
+    procedure SetClientHeight(Value: Integer);
+    procedure SetClientSize(Value: TPoint);
+    procedure SetClientWidth(Value: Integer);
+    procedure SetColor(Value: TColor);
+    procedure SetCursor(Value: TCursor);
+    procedure SetDesktopFont(Value: Boolean);
+    procedure SetFont(Value: TFont);
+    procedure SetHeight(Value: Integer);
+    procedure SetHelpContext(const Value: THelpContext);
+    procedure SetHelpKeyword(const Value: String);
+    procedure SetHostDockSite(Value: TWinControl);
+    procedure SetLeft(Value: Integer);
+    procedure SetMouseCapture(Value: Boolean);
+    procedure SetParentColor(Value: Boolean);
+    procedure SetParentFont(Value: Boolean);
+    procedure SetShowHint(Value: Boolean);
+    procedure SetParentShowHint(Value: Boolean);
+    procedure SetPopupMenu(Value: TPopupMenu);
+    procedure SetText(const Value: TCaption);
+    procedure SetTop(Value: Integer);
+    procedure SetVisible(Value: Boolean);
+    procedure SetWidth(Value: Integer);
+    procedure SetZOrderPosition(Position: Integer);
+    procedure UpdateAnchorRules;
+    procedure WriteIsControl(Writer: TWriter);
+    procedure WriteExplicitLeft(Writer: TWriter);
+    procedure WriteExplicitTop(Writer: TWriter);
+    procedure WriteExplicitWidth(Writer: TWriter);
+    procedure WriteExplicitHeight(Writer: TWriter);
+    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMNCLButtonDown(var Message: TWMNCLButtonDown); message WM_NCLBUTTONDOWN;
+    procedure WMRButtonDown(var Message: TWMRButtonDown); message WM_RBUTTONDOWN;
+    procedure WMMButtonDown(var Message: TWMMButtonDown); message WM_MBUTTONDOWN;
+    procedure WMLButtonDblClk(var Message: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
+    procedure WMRButtonDblClk(var Message: TWMRButtonDblClk); message WM_RBUTTONDBLCLK;
+    procedure WMMButtonDblClk(var Message: TWMMButtonDblClk); message WM_MBUTTONDBLCLK;
+    procedure WMMouseMove(var Message: TWMMouseMove); message WM_MOUSEMOVE;
+    procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
+    procedure WMRButtonUp(var Message: TWMRButtonUp); message WM_RBUTTONUP;
+    procedure WMMButtonUp(var Message: TWMMButtonUp); message WM_MBUTTONUP;
+    procedure WMMouseWheel(var Message: TWMMouseWheel); message WM_MOUSEWHEEL;
+    procedure WMCancelMode(var Message: TWMCancelMode); message WM_CANCELMODE;
+    procedure WMWindowPosChanged(var Message: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
+    procedure CMVisibleChanged(var Message: TMessage); message CM_VISIBLECHANGED;
+    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
+    procedure CMMouseActivate(var Message: TCMMouseActivate); message CM_MOUSEACTIVATE;
+    procedure CMParentFontChanged(var Message: TMessage); message CM_PARENTFONTCHANGED;
+    procedure CMSysFontChanged(var Message: TMessage); message CM_SYSFONTCHANGED;
+    procedure CMParentColorChanged(var Message: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMParentShowHintChanged(var Message: TMessage); message CM_PARENTSHOWHINTCHANGED;
+    procedure CMHintShow(var Message: TMessage); message CM_HINTSHOW;
+    procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
+    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    procedure CMFloat(var Message: TCMFloat); message CM_FLOAT;
+    procedure CMBiDiModeChanged(var Message: TMessage); message CM_BIDIMODECHANGED;
+    procedure CMParentBiDiModeChanged(var Message: TMessage); message CM_PARENTBIDIMODECHANGED;
+    procedure CMMouseWheel(var Message: TCMMouseWheel); message CM_MOUSEWHEEL;
+    procedure WMContextMenu(var Message: TWMContextMenu); message WM_CONTEXTMENU;
+    procedure SetConstraints(const Value: TSizeConstraints);
+    procedure SetMargins(const Value: TMargins);
+  protected
+    FAnchorMove: Boolean;
+    FAnchorRules: TPoint;
+    FAnchorOrigin: TPoint;
+    FOriginalParentSize: TPoint;
+    FExplicitLeft: Integer;
+    FExplicitTop: Integer;
+    FExplicitWidth: Integer;
+    FExplicitHeight: Integer;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
+    procedure AdjustSize; dynamic;
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure BeginAutoDrag; dynamic;
+    function CanResize(var NewWidth, NewHeight: Integer): Boolean; virtual;
+    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
+    procedure Changed;
+    procedure ChangeScale(M, D: Integer); dynamic;
+    procedure Click; dynamic;
+    procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight: Integer); virtual;
+    function CalcCursorPos: TPoint;
+    function DesignWndProc(var Message: TMessage): Boolean; dynamic;
+    procedure DblClick; dynamic;
+    procedure DefaultDockImage(DragDockObject: TDragDockObject; Erase: Boolean); dynamic;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure DockTrackNoTarget(Source: TDragDockObject; X, Y: Integer); dynamic;
+    procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); dynamic;
+    procedure DoEndDock(Target: TObject; X, Y: Integer); dynamic;
+    procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); dynamic;
+    procedure DoStartDock(var DragObject: TDragObject); dynamic;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+      MousePos: TPoint): Boolean; dynamic;
+    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint):Boolean; dynamic;
+    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
+    procedure DragCanceled; dynamic;
+    procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
+      var Accept: Boolean); dynamic;
+    procedure DoEndDrag(Target: TObject; X, Y: Integer); dynamic;
+    procedure DoStartDrag(var DragObject: TDragObject); dynamic;
+    procedure DrawDragDockImage(DragDockObject: TDragDockObject); dynamic;
+    procedure EraseDragDockImage(DragDockObject: TDragDockObject); dynamic;
+    function GetAction: TBasicAction; virtual;    
+    function GetActionLinkClass: TControlActionLinkClass; dynamic;
+    function GetClientOrigin: TPoint; virtual;
+    function GetClientRect: TRect; virtual;
+    function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
+    function GetDockEdge(MousePos: TPoint): TAlign; dynamic;
+    function GetDragImages: TDragImageList; virtual;
+    function GetEnabled: Boolean; virtual;
+    function GetFloating: Boolean; virtual;
+    function GetFloatingDockSiteClass: TWinControlClass; virtual;
+    function GetPalette: HPALETTE; dynamic;
+    function GetPopupMenu: TPopupMenu; dynamic;
+    procedure Loaded; override;
+    function MouseActivate(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer; HitTest: Integer): TMouseActivate; dynamic;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); dynamic;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); dynamic;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); dynamic;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+    procedure PositionDockRect(DragDockObject: TDragDockObject); dynamic;
+    function PaletteChanged(Foreground: Boolean): Boolean; dynamic;
+    procedure ReadState(Reader: TReader); override;
+    procedure RequestAlign; virtual;
+    procedure Resize; dynamic;
+    procedure ScaleConstraints(M, D: Integer);
+    procedure SendCancelMode(Sender: TControl);
+    procedure SendDockNotification(Msg: Cardinal; WParam, LParam: Integer);
+    procedure SetAutoSize(Value: Boolean); virtual;
+    procedure SetDragMode(Value: TDragMode); virtual;
+    procedure SetEnabled(Value: Boolean); virtual;
+    procedure SetName(const Value: TComponentName); override;
+    procedure SetParent(AParent: TWinControl); virtual;
+    procedure SetParentComponent(Value: TComponent); override;
+    procedure SetParentBiDiMode(Value: Boolean); virtual;
+    procedure SetBiDiMode(Value: TBiDiMode); virtual;
+    procedure SetZOrder(TopMost: Boolean); dynamic;
+    procedure UpdateExplicitBounds;
+    procedure UpdateBoundsRect(const R: TRect);
+    procedure VisibleChanging; dynamic;
+    procedure WndProc(var Message: TMessage); virtual;
+    property ActionLink: TControlActionLink read FActionLink write FActionLink;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
+    property Caption: TCaption read GetText write SetText stored IsCaptionStored;
+    property Color: TColor read FColor write SetColor stored IsColorStored default clWindow;
+    property DesktopFont:Boolean read FDesktopFont write SetDesktopFont default False;
+    property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDrag;
+    property DragMode: TDragMode read FDragMode write SetDragMode default dmManual;
+    property Font: TFont read FFont write SetFont stored IsFontStored;
+    property IsControl: Boolean read FIsControl write FIsControl;
+    property MouseCapture: Boolean read GetMouseCapture write SetMouseCapture;
+    property ParentBiDiMode: Boolean read FParentBiDiMode write SetParentBiDiMode default True;
+    property ParentColor:Boolean read FParentColor write SetParentColor default True;
+    property ParentFont: Boolean read FParentFont write SetParentFont default True;
+    property ParentShowHint: Boolean read FParentShowHint write SetParentShowHint default True;
+    property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
+    property ScalingFlags: TScalingFlags read FScalingFlags write FScalingFlags;
+    property Text: TCaption read GetText write SetText;
+    property WheelAccumulator:Integer read FWheelAccumulator write FWheelAccumulator;
+    property WindowText: PChar read FText write FText;
+    property OnCanResize: TCanResizeEvent read FOnCanResize write FOnCanResize;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
+    property OnConstrainedResize: TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
+    property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
+    property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
+    property OnDragDrop: TDragDropEvent read FOnDragDrop write FOnDragDrop;
+    property OnDragOver: TDragOverEvent read FOnDragOver write FOnDragOver;
+    property OnEndDock: TEndDragEvent read FOnEndDock write FOnEndDock;
+    property OnEndDrag: TEndDragEvent read FOnEndDrag write FOnEndDrag;
+    property OnMouseActivate: TMouseActivateEvent read FOnMouseActivate write FOnMouseActivate;
+    property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
+    property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
+    property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
+    property OnMouseWheelDown: TMouseWheelUpDownEvent read FOnMouseWheelDown
+      write FOnMouseWheelDown;
+    property OnMouseWheelUp: TMouseWheelUpDownEvent read FOnMouseWheelUp write
+      FOnMouseWheelUp;
+    property OnResize: TNotifyEvent read FOnResize write FOnResize;
+    property OnStartDock: TStartDockEvent read FOnStartDock write FOnStartDock;
+    property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure BeginDrag(Immediate: Boolean; Threshold: Integer = -1);
+    procedure BringToFront;
+    function ClientToScreen(const Point: TPoint): TPoint;
+    function ClientToParent(const Point: TPoint; AParent: TWinControl = nil): TPoint;
+    procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
+    procedure DefaultHandler(var Message); override;
+    function Dragging: Boolean;
+    procedure DragDrop(Source: TObject; X, Y: Integer); dynamic;
+    function DrawTextBiDiModeFlags(Flags: Longint): Longint;
+    function DrawTextBiDiModeFlagsReadingOnly: Longint;
+    property Enabled: Boolean read GetEnabled write SetEnabled stored IsEnabledStored default True;
+    procedure EndDrag(Drop: Boolean);
+    function GetControlsAlignment: TAlignment; dynamic;
+    function GetParentComponent: TComponent; override;
+    function GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
+    function GetTextLen: Integer;
+    function HasParent: Boolean; override;
+    procedure Hide;
+    procedure InitiateAction; virtual;
+    procedure Invalidate; virtual;
+    procedure MouseWheelHandler(var Message: TMessage); dynamic;
+    function IsRightToLeft: Boolean;
+    function ManualDock(NewDockSite: TWinControl; DropControl: TControl = nil;
+      ControlSide: TAlign = alNone): Boolean;
+    function ManualFloat(ScreenPos: TRect): Boolean;
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+    procedure Refresh;
+    procedure Repaint; virtual;
+    function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
+      DropControl: TControl; ControlSide: TAlign): Boolean;
+    function ScreenToClient(const Point: TPoint): TPoint;
+    function ParentToClient(const Point: TPoint; AParent: TWinControl = nil): TPoint;
+    procedure SendToBack;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); virtual;
+    procedure SetDesignVisible(Value: Boolean); dynamic;
+    procedure SetTextBuf(Buffer: PChar);
+    procedure Show;
+    procedure Update; virtual;
+    function UseRightToLeftAlignment: Boolean; dynamic;
+    function UseRightToLeftReading: Boolean;
+    function UseRightToLeftScrollBar: Boolean;
+    property Action: TBasicAction read GetAction write SetAction;
+    property Align: TAlign read FAlign write SetAlign default alNone;
+    property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored default [akLeft, akTop];
+    property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode stored IsBiDiModeStored;
+    property BoundsRect: TRect read GetBoundsRect write SetBoundsRect;
+    property ClientHeight: Integer read GetClientHeight write SetClientHeight stored False;
+    property ClientOrigin: TPoint read GetClientOrigin;
+    property ClientRect: TRect read GetClientRect;
+    property ClientWidth: Integer read GetClientWidth write SetClientWidth stored False;
+    property Constraints: TSizeConstraints read FConstraints write SetConstraints;
+    property ControlState: TControlState read FControlState write FControlState;
+    property ControlStyle: TControlStyle read FControlStyle write FControlStyle;
+    property DockOrientation: TDockOrientation read FDockOrientation write FDockOrientation;
+    property ExplicitLeft: Integer read FExplicitLeft;
+    property ExplicitTop: Integer read FExplicitTop;
+    property ExplicitWidth: Integer read FExplicitWidth;
+    property ExplicitHeight: Integer read FExplicitHeight;
+    property Floating: Boolean read GetFloating;
+    property FloatingDockSiteClass: TWinControlClass read GetFloatingDockSiteClass write FFloatingDockSiteClass;
+    property HostDockSite: TWinControl read FHostDockSite write SetHostDockSite;
+    property LRDockWidth: Integer read GetLRDockWidth write FLRDockWidth;
+    property Parent: TWinControl read FParent write SetParent;
+    property ShowHint: Boolean read FShowHint write SetShowHint stored IsShowHintStored;
+    property TBDockHeight: Integer read GetTBDockHeight write FTBDockHeight;
+    property UndockHeight: Integer read GetUndockHeight write FUndockHeight;
+    property UndockWidth: Integer read GetUndockWidth write FUndockWidth;
+    property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored default True;
+    property WindowProc: TWndMethod read FWindowProc write FWindowProc;
+  published
+    property AlignWithMargins: Boolean read GetAlignWithMargins write SetAlignWithMargins default False;
+    property Left: Integer read FLeft write SetLeft;
+    property Top: Integer read FTop write SetTop;
+    property Width: Integer read FWidth write SetWidth;
+    property Height: Integer read FHeight write SetHeight;
+    property Cursor: TCursor read FCursor write SetCursor default crDefault;
+    property Hint: string read FHint write FHint stored IsHintStored;
+    property HelpType: THelpType read FHelpType write FHelpType default htContext;
+    property HelpKeyword: String read FHelpKeyword write SetHelpKeyword stored IsHelpContextStored;
+    property HelpContext: THelpContext read FHelpContext write SetHelpContext stored IsHelpContextStored default 0;
+    property Margins: TMargins read FMargins write SetMargins;
+end;
+
+  TControlClass = class of TControl;
+  
+[TThread | class declaration  | Borland.EditOptions.Pascal]
+  TThread | = class
+  private
+{$IFDEF MSWINDOWS}
+    FHandle: THandle;
+    FThreadID: THandle;
+{$ENDIF}
+{$IFDEF LINUX}
+    // ** FThreadID is not THandle in Linux **
+    FThreadID: Cardinal;
+    FCreateSuspendedSem: TSemaphore;
+    FInitialSuspendDone: Boolean;
+{$ENDIF}
+    FCreateSuspended: Boolean;
+    FTerminated: Boolean;
+    FSuspended: Boolean;
+    FFreeOnTerminate: Boolean;
+    FFinished: Boolean;
+    FReturnValue: Integer;
+    FOnTerminate: TNotifyEvent;
+    FSynchronize: TSynchronizeRecord;
+    FFatalException: TObject;
+    procedure CallOnTerminate;
+    class procedure Synchronize(ASyncRec: PSynchronizeRecord; QueueEvent: Boolean = False); overload;
+{$IFDEF MSWINDOWS}
+    function GetPriority: TThreadPriority;
+    procedure SetPriority(Value: TThreadPriority);
+{$ENDIF}
+{$IFDEF LINUX}
+    // ** Priority is an Integer value in Linux
+    function GetPriority: Integer;
+    procedure SetPriority(Value: Integer);
+    function GetPolicy: Integer;
+    procedure SetPolicy(Value: Integer);
+{$ENDIF}
+    procedure SetSuspended(Value: Boolean);
+  protected
+    procedure CheckThreadError(ErrCode: Integer); overload;
+    procedure CheckThreadError(Success: Boolean); overload;
+    procedure DoTerminate; virtual;
+    procedure Execute; virtual; abstract;
+    procedure Queue(AMethod: TThreadMethod); overload;
+    procedure Synchronize(AMethod: TThreadMethod); overload;
+    property ReturnValue: Integer read FReturnValue write FReturnValue;
+    property Terminated: Boolean read FTerminated;
+  public
+    constructor Create(CreateSuspended: Boolean);
+    destructor Destroy; override;
+    procedure AfterConstruction; override;
+    procedure Resume;
+    procedure Suspend;
+    procedure Terminate;
+    function WaitFor: LongWord;
+    class procedure Queue(AThread: TThread; AMethod: TThreadMethod); overload;
+    class procedure RemoveQueuedEvents(AThread: TThread; AMethod: TThreadMethod);
+    class procedure StaticQueue(AThread: TThread; AMethod: TThreadMethod);
+    class procedure Synchronize(AThread: TThread; AMethod: TThreadMethod); overload;
+    class procedure StaticSynchronize(AThread: TThread; AMethod: TThreadMethod);
+    property FatalException: TObject read FFatalException;
+    property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
+{$IFDEF MSWINDOWS}
+    property Handle: THandle read FHandle;
+    property Priority: TThreadPriority read GetPriority write SetPriority;
+{$ENDIF}
+{$IFDEF LINUX}
+    // ** Priority is an Integer **
+    property Priority: Integer read GetPriority write SetPriority;
+    property Policy: Integer read GetPolicy write SetPolicy;
+{$ENDIF}
+    property Suspended: Boolean read FSuspended write SetSuspended;
+{$IFDEF MSWINDOWS}
+    property ThreadID: THandle read FThreadID;
+{$ENDIF}
+{$IFDEF LINUX}
+    // ** ThreadId is Cardinal **
+    property ThreadID: Cardinal read FThreadID;
+{$ENDIF}
+    property OnTerminate: TNotifyEvent read FOnTerminate write FOnTerminate;
+  end;
+
+ 
+  
+[classp | class declaration (with getter/setter) | Borland.EditOptions.Pascal]
+T| = class(T)
+private
+  FColor: TColor
+  ...
+protected
+  function GetColor: TColor; virtual;
+  procedure SetColor(Value: TColor); virtual;
+public
+  property Color: TColor read GetColor write SetColor; 
+
+end;
+
+[fors | for (no begin/end) | Borland.EditOptions.Pascal]
+for | :=  to  do
+
+[forb | for statement | Borland.EditOptions.Pascal]
+for | :=  to  do
+begin
+
+end;
+
+[function | function declaration | Borland.EditOptions.Pascal]
+function |(): ;
+begin
+
+end;
+
+[ifs | if (no begin/end) | Borland.EditOptions.Pascal]
+if | then
+
+[ifb | if statement | Borland.EditOptions.Pascal]
+if | then
+begin
+
+end;
+
+[ife | if then (no begin/end) else (no begin/end) | Borland.EditOptions.Pascal]
+if | then
+
+else
+
+[ifeb | if then else | Borland.EditOptions.Pascal]
+if | then
+begin
+
+end
+else
+begin
+
+end;
+
+[procedure | procedure declaration | Borland.EditOptions.Pascal]
+procedure |();
+begin
+
+end;
+
+[trye | try except | Borland.EditOptions.Pascal]
+try
+  |
+except
+
+end;
+
+[tryf | try finally | Borland.EditOptions.Pascal]
+try
+  | 
+finally
+
+end;
+
+[trycf | try finally (with Create/Free) | Borland.EditOptions.Pascal]
+|variable := typename.Create; 
+try
+
+finally
+  variable.Free;
+end;
+
+[whileb | while statement | Borland.EditOptions.Pascal]
+while | do
+begin
+
+end;
+
+[whiles | while (no begin) | Borland.EditOptions.Pascal]
+while | do
+
+[withb | with statement | Borland.EditOptions.Pascal]
+with | do
+begin
+
+end;
+
+[withs | with (no begin) | Borland.EditOptions.Pascal]
+with | do
+
+[switche | switch statement (with default) | Borland.EditOptions.C&C++]
+switch (|)
+{
+  case : ;
+  break;
+  case : ;
+  break;
+  default: ;
+}
+
+[classfc | class declaration (all parts) | Borland.EditOptions.C&C++]
+class T| : public T
+{
+private:
+
+protected:
+
+public:
+
+__published:
+
+};
+
+[classdc | class declaration (no parts) | Borland.EditOptions.C&C++]
+class T| : public T
+{
+};
+
+[classcc | class declaration (with constructor/desctructor) | Borland.EditOptions.C&C++]
+class T| : public T
+{
+private:
+
+protected:
+
+public:
+  __fastcall T();
+  __fastcall ~T();
+__published:
+
+};
+
+[struct | structure declaration | Borland.EditOptions.C&C++]
+struct |
+{
+};
+
+[templ | template class declaration | Borland.EditOptions.C&C++]
+template <class T>
+class |
+{
+};
+
+[forsc | for (no opening/closing braces) | Borland.EditOptions.C&C++]
+for (|; ;)
+
+[forbc | for statement | Borland.EditOptions.C&C++]
+for (|; ;)
+{
+
+}
+
+[functionc | function declaration | Borland.EditOptions.C&C++]
+|()
+{
+
+}
+
+[ifsc | if (no opening/closing braces) | Borland.EditOptions.C&C++]
+if (|)
+
+[ifbc | if statement | Borland.EditOptions.C&C++]
+if (|)
+{
+
+}
+
+[ifec | if (no opening/closing braces) else (no opening/closing braces) | Borland.EditOptions.C&C++]
+if (|)
+
+else
+
+[ifebc | if else | Borland.EditOptions.C&C++]
+if (|)
+{
+
+}
+else
+{
+
+}
+
+
+[tryec | try catch | Borland.EditOptions.C&C++]
+try
+{
+  |
+}
+catch()
+{
+}
+
+[whilebc | while statement | Borland.EditOptions.C&C++]
+while (|)
+{
+
+}
+
+[whilesc | while (no opening/closing braces) | Borland.EditOptions.C&C++]
+while (|)
+
+[doc | Full Document | Borland.EditOptions.HTML]
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+  |
+  </body>
+</html>
+
+
+[table | Basic Table | Borland.EditOptions.HTML]
+<table>
+  <tr>
+    <td>|</td>
+  </tr>
+</table>
+
+[link | A HREF Link | Borland.EditOptions.HTML]
+<a href="|"></a>
+[font | Font Tag | Borland.EditOptions.HTML]
+<font>|</font>
+[block | Blockquote Tag | Borland.EditOptions.HTML]
+<blockquote>|</blockquote>
+[br | Line Break | Borland.EditOptions.HTML]
+<br>
+|
+[hr | Horizontal Rule | Borland.EditOptions.HTML]
+<hr>
+|
+[div | Div Tag | Borland.EditOptions.HTML]
+<div>|</div>
+[b | Bold Tag | Borland.EditOptions.HTML]
+<b>|</b>
+[i | Italic Tag | Borland.EditOptions.HTML]
+<i>|</i>
+[em | Emphasis Tag | Borland.EditOptions.HTML]
+<em>|</em>
+[strong | Strong Tag | Borland.EditOptions.HTML]
+<strong>|</strong>
+[form | Form Tag | Borland.EditOptions.HTML]
+<form action="|" method="get"></form>
+[h1 | Header 1 | Borland.EditOptions.HTML]
+<h1>|</h1>
+[h2 | Header 2 | Borland.EditOptions.HTML]
+<h2>|</h2>
+[h3 | Header 3 | Borland.EditOptions.HTML]
+<h3>|</h3>
+[h4 | Header 4 | Borland.EditOptions.HTML]
+<h4>|</h4>
+[h5 | Header 5 | Borland.EditOptions.HTML]
+<h5>|</h5>
+[h6 | Header 6 | Borland.EditOptions.HTML]
+<h6>|</h6>
+[img | Image Tag | Borland.EditOptions.HTML]
+<img src="|">
+[input | Input Tag | Borland.EditOptions.HTML]
+<input type="|">
+[pre | Pre Tag | Borland.EditOptions.HTML]
+<pre>|</pre>
+[html | HTML Tag | Borland.EditOptions.HTML]
+<html>
+|
+</html>
+[head | Head Tag | Borland.EditOptions.HTML]
+<head>
+|
+</head>
+[title | Title Tag | Borland.EditOptions.HTML]
+<title>
+|
+</title>
+[body | Body Tag | Borland.EditOptions.HTML]
+<body>
+|
+</body>
+[tr | Table Row Tag | Borland.EditOptions.HTML]
+<tr>|</tr>
+[td | Table Data Tag | Borland.EditOptions.HTML]
+<td>|</td>
+[classccc | new class declaration | Borland.EditOptions.C#]
+/// <summary>
+/// Summary description for Class1.
+/// </summary>
+public class Class1
+{
+  public Class1()
+  {
+    //
+    // TODO: Add constructor logic here
+    //
+    |
+  }
+}
+
+
+[unit | unit declaration (with all parts) | Borland.EditOptions.Pascal]
+Unit |Unitname(Modul)
+Interface
+Uses
+  imported resource
+  exported resource
+Const <CTV>
+Type  
+Var 
+
+Implementation
+<CTV>
+  Initialization
+  Finalization
+
+  Begin
+  End;
+End.
+
+
+[Program1 | unit declaration (with all parts) | maXbox.EditOptions.Pascal]
+
+PROGRAM |Name_of_App;
+CONST 
+<Constant declarations> 
+
+TYPE 
+<Type declarations> 
+
+VAR 
+<Variable declarations>
+
+<FUNCTION>
+<PROCEDURE> 
+
+BEGIN  //Main
+<Executable statements>
+<Definitions>  
+END. 
+ 
+[Program | unit declaration (with all parts) | maXbox.EditOptions.Pascal]
+
+PROGRAM |Demo_App_mX;
+CONST 
+//<Constant declarations> 
+  TEXTOUT = 'hi world of code rage';
+
+{TYPE 
+<Type declarations>} 
+
+Var 
+//<Variable declarations>
+  i: integer;
+
+//<FUNCTION>
+//<PROCEDURE> 
+
+BEGIN  //Main
+//<Executable statements>
+  for i:= 1 to 3 do 
+    Writeln(TEXTOUT+CRLF);
+  maXcalcF('2^64 /(60*60*24*365)')  
+//<Definitions>  
+END. 
+
+[GetGeoCode | example | maXbox.EditOptions.Pascal]
+function GetGeoCode(C_form,apath: string; const data: string; sfile: boolean): string;
+ex.:  writeln(GetGeoCode('xml',ExePath+'outputmap.xml','cathedral cologne',false));
+
+[readln | example | maXbox.EditOptions.Pascal]
+procedure readln1(var ast: string);
+begin
+  inputquery('maXbox Console Input','please type:',ast);
+end;
+
+[writeln | example | maXbox.EditOptions.Pascal]
+procedure MyWriteln(const sln: string);
+begin
+  maxForm1.memo2.Lines.Add(sln);
+end;
+
+[firstword | example | maXbox.EditOptions.Pascal]
+function FirstWord(const S: String): String; //  First word
+var
+  x: integer;
+begin
+  x:= pos(string(' '), s);
+  if x > 0
+    then result:= Copy(S, 1, x-1)
+  else result:= S;
+end;
+
+[countpos | example | maXbox.EditOptions.Pascal]
+function CountPos(const subtxt: string; Text: string): Integer;
+begin
+  if (Length(subtxt)= 0) Or (Length(Text)= 0) Or (Pos(subtxt,Text)= 0) then
+    result:= 0
+  else
+    result:= (Length(Text)- Length(StringReplace(Text,subtxt,'',
+      [rfReplaceAll]))) div Length(subtxt);
+end;
+
+[set | settings.inc]
+{$I settings.inc}
+|
+
+// mX3: Get the Code Completion with CTRL J, eg. you type CLASSC first und put the cursor after the C of CLASSC or put IInterface as an Interface
+// and then you put Ctrl J
+
+************************************************************************
+**********************mXOpen Class Tools API****************************
+************************************************************************
+
+of unit uPSI_fMain;    //in sources
+
+Note: Call all Methods with maxForm1, e.g.:
+                            maxForm1.ShellStyle1Click(self); 
+
+
+procedure SIRegister_TMaxForm1(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TForm', 'TMaxForm1') do
+  with CL.AddClassN(CL.FindClass('TForm'),'TMaxForm1') do begin
+    RegisterProperty('memo2', 'TMemo', iptrw);
+    RegisterProperty('memo1', 'TSynMemo', iptrw);
+    RegisterProperty('Splitter1', 'TSplitter', iptrw);
+    RegisterProperty('PSScript', 'TPSScript', iptrw);
+    RegisterProperty('PS3DllPlugin', 'TPSDllPlugin', iptrw);
+    RegisterProperty('MainMenu1', 'TMainMenu', iptrw);
+    RegisterProperty('Program1', 'TMenuItem', iptrw);
+    RegisterProperty('Compile1', 'TMenuItem', iptrw);
+    RegisterProperty('Files1', 'TMenuItem', iptrw);
+    RegisterProperty('open1', 'TMenuItem', iptrw);
+    RegisterProperty('Save2', 'TMenuItem', iptrw);
+    RegisterProperty('Options1', 'TMenuItem', iptrw);
+    RegisterProperty('Savebefore1', 'TMenuItem', iptrw);
+    RegisterProperty('Largefont1', 'TMenuItem', iptrw);
+    RegisterProperty('sBytecode1', 'TMenuItem', iptrw);
+    RegisterProperty('Saveas3', 'TMenuItem', iptrw);
+    RegisterProperty('Clear1', 'TMenuItem', iptrw);
+    RegisterProperty('Slinenumbers1', 'TMenuItem', iptrw);
+    RegisterProperty('About1', 'TMenuItem', iptrw);
+    RegisterProperty('Search1', 'TMenuItem', iptrw);
+    RegisterProperty('SynPasSyn1', 'TSynPasSyn', iptrw);
+    RegisterProperty('memo1', 'TSynMemo', iptrw);
+    RegisterProperty('SynEditSearch1', 'TSynEditSearch', iptrw);
+    RegisterProperty('WordWrap1', 'TMenuItem', iptrw);
+    RegisterProperty('XPManifest1', 'TXPManifest', iptrw);
+    RegisterProperty('SearchNext1', 'TMenuItem', iptrw);
+    RegisterProperty('Replace1', 'TMenuItem', iptrw);
+    RegisterProperty('PSImport_Controls1', 'TPSImport_Controls', iptrw);
+    RegisterProperty('PSImport_Classes1', 'TPSImport_Classes', iptrw);
+    RegisterProperty('ShowInclude1', 'TMenuItem', iptrw);
+    RegisterProperty('SynEditPrint1', 'TSynEditPrint', iptrw);
+    RegisterProperty('Printout1', 'TMenuItem', iptrw);
+    RegisterProperty('mnPrintColors1', 'TMenuItem', iptrw);
+    RegisterProperty('dlgFilePrint', 'TPrintDialog', iptrw);
+    RegisterProperty('dlgPrintFont1', 'TFontDialog', iptrw);
+    RegisterProperty('mnuPrintFont1', 'TMenuItem', iptrw);
+    RegisterProperty('Include1', 'TMenuItem', iptrw);
+    RegisterProperty('CodeCompletionList1', 'TMenuItem', iptrw);
+    RegisterProperty('IncludeList1', 'TMenuItem', iptrw);
+    RegisterProperty('ImageList1', 'TImageList', iptrw);
+    RegisterProperty('ImageList2', 'TImageList', iptrw);
+    RegisterProperty('CoolBar1', 'TCoolBar', iptrw);
+    RegisterProperty('ToolBar1', 'TToolBar', iptrw);
+    RegisterProperty('tbtnLoad', 'TToolButton', iptrw);
+    RegisterProperty('ToolButton2', 'TToolButton', iptrw);
+    RegisterProperty('tbtnFind', 'TToolButton', iptrw);
+    RegisterProperty('tbtnCompile', 'TToolButton', iptrw);
+    RegisterProperty('tbtnTrans', 'TToolButton', iptrw);
+    RegisterProperty('tbtnUseCase', 'TToolButton', iptrw);   //3.8
+    RegisterProperty('toolbtnTutorial', 'TToolButton', iptrw);
+    RegisterProperty('tbtn6res', 'TToolButton', iptrw);
+    RegisterProperty('ToolButton5', 'TToolButton', iptrw);
+    RegisterProperty('ToolButton1', 'TToolButton', iptrw);
+    RegisterProperty('ToolButton3', 'TToolButton', iptrw);
+    RegisterProperty('statusBar1', 'TStatusBar', iptrw);
+    RegisterProperty('SaveOutput1', 'TMenuItem', iptrw);
+    RegisterProperty('ExportClipboard1', 'TMenuItem', iptrw);
+    RegisterProperty('Close1', 'TMenuItem', iptrw);
+    RegisterProperty('Manual1', 'TMenuItem', iptrw);
+    RegisterProperty('About2', 'TMenuItem', iptrw);
+    RegisterProperty('loadLastfile1', 'TMenuItem', iptrw);
+    RegisterProperty('imglogo', 'TImage', iptrw);
+    RegisterProperty('cedebug', 'TPSScriptDebugger', iptrw);
+    RegisterProperty('debugPopupMenu1', 'TPopupMenu', iptrw);
+    RegisterProperty('BreakPointMenu', 'TMenuItem', iptrw);
+    RegisterProperty('Decompile1', 'TMenuItem', iptrw);
+    RegisterProperty('N2', 'TMenuItem', iptrw);
+    RegisterProperty('StepInto1', 'TMenuItem', iptrw);
+    RegisterProperty('StepOut1', 'TMenuItem', iptrw);
+    RegisterProperty('Reset1', 'TMenuItem', iptrw);
+    RegisterProperty('N3', 'TMenuItem', iptrw);
+    RegisterProperty('DebugRun1', 'TMenuItem', iptrw);
+    RegisterProperty('PSImport_ComObj1', 'TPSImport_ComObj', iptrw);
+    RegisterProperty('PSImport_StdCtrls1', 'TPSImport_StdCtrls', iptrw);
+    RegisterProperty('PSImport_Forms1', 'TPSImport_Forms', iptrw);
+    RegisterProperty('PSImport_DateUtils1', 'TPSImport_DateUtils', iptrw);
+    RegisterProperty('tutorial4', 'TMenuItem', iptrw);
+    RegisterProperty('ExporttoClipboard1', 'TMenuItem', iptrw);
+    RegisterProperty('ImportfromClipboard1', 'TMenuItem', iptrw);
+    RegisterProperty('N4', 'TMenuItem', iptrw);
+    RegisterProperty('N5', 'TMenuItem', iptrw);
+    RegisterProperty('N6', 'TMenuItem', iptrw);
+    RegisterProperty('ImportfromClipboard2', 'TMenuItem', iptrw);
+    RegisterProperty('tutorial1', 'TMenuItem', iptrw);
+    RegisterProperty('N7', 'TMenuItem', iptrw);
+    RegisterProperty('ShowSpecChars1', 'TMenuItem', iptrw);
+    RegisterProperty('OpenDirectory1', 'TMenuItem', iptrw);
+    RegisterProperty('procMess', 'TMenuItem', iptrw);
+    RegisterProperty('tbtnUseCase', 'TToolButton', iptrw);
+    RegisterProperty('ToolButton7', 'TToolButton', iptrw);
+    RegisterProperty('EditFont1', 'TMenuItem', iptrw);
+    RegisterProperty('UseCase1', 'TMenuItem', iptrw);
+    RegisterProperty('tutorial21', 'TMenuItem', iptrw);
+    RegisterProperty('OpenUseCase1', 'TMenuItem', iptrw);
+    RegisterProperty('PSImport_DB1', 'TPSImport_DB', iptrw);
+    RegisterProperty('tutorial31', 'TMenuItem', iptrw);
+    RegisterProperty('SynHTMLSyn1', 'TSynHTMLSyn', iptrw);
+    RegisterProperty('HTMLSyntax1', 'TMenuItem', iptrw);
+    RegisterProperty('ShowInterfaces1', 'TMenuItem', iptrw);
+    RegisterProperty('Tutorial5', 'TMenuItem', iptrw);
+    RegisterProperty('AllFunctionsList1', 'TMenuItem', iptrw);
+    RegisterProperty('ShowLastException1', 'TMenuItem', iptrw);
+    RegisterProperty('PlayMP31', 'TMenuItem', iptrw);
+    RegisterProperty('SynTeXSyn1', 'TSynTeXSyn', iptrw);
+    RegisterProperty('texSyntax1', 'TMenuItem', iptrw);
+    RegisterProperty('N8', 'TMenuItem', iptrw);
+    RegisterProperty('GetEMails1', 'TMenuItem', iptrw);
+    RegisterMethod('Procedure IFPS3ClassesPlugin1CompImport(Sender:TObject;x:TPSPascalCompiler));
+    RegisterMethod('Procedure IFPS3ClassesPlugin1ExecImport(Sender : TObject; Exec : TPSExec; x : TPSRuntimeClassImporter)');
+    Procedure PSScriptCompile( Sender : TPSScript)');
+    Procedure Compile1Click( Sender : TObject);
+    Procedure PSScriptExecute( Sender : TPSScript);
+    Procedure open1Click( Sender : TObject);
+    Procedure Save2Click( Sender : TObject);
+    Procedure Savebefore1Click( Sender : TObject);
+    Procedure Largefont1Click( Sender : TObject);
+    Procedure FormActivate( Sender : TObject);
+    Procedure SBytecode1Click( Sender : TObject);
+    Procedure FormKeyPress( Sender : TObject; var Key : Char);
+    Procedure Saveas3Click( Sender : TObject);
+    Procedure Clear1Click( Sender : TObject);
+    Procedure Slinenumbers1Click( Sender : TObject);
+    Procedure About1Click( Sender : TObject);
+    Procedure Search1Click( Sender : TObject);
+    Procedure FormCreate( Sender : TObject);
+    Procedure Memo1ReplaceText(Sender:TObject;const ASearch,AReplace:String;Line,Col:Int;var Action: TSynReplaceAction);
+    Procedure Memo1StatusChange(Sender:TObject; Changes:TSynStatusChanges);
+    Procedure WordWrap1Click( Sender : TObject);
+    Procedure SearchNext1Click( Sender : TObject);
+    Procedure Replace1Click( Sender : TObject);
+    Function PSScriptNeedFile(Sender:TObject; const OrginFileName: String; var FileName, Output : String) : Boolean;
+    Procedure ShowInclude1Click( Sender : TObject);
+    Procedure Printout1Click( Sender : TObject);
+    Procedure mnuPrintFont1Click( Sender : TObject);
+    Procedure Include1Click( Sender : TObject);
+    Procedure FormDestroy( Sender : TObject);
+    Procedure FormClose( Sender : TObject; var Action : TCloseAction);
+    Procedure UpdateView1Click( Sender : TObject);
+    Procedure CodeCompletionList1Click( Sender : TObject);
+    Procedure SaveOutput1Click( Sender : TObject);
+    Procedure ExportClipboard1Click( Sender : TObject);
+    Procedure Close1Click( Sender : TObject);
+    Procedure Manual1Click( Sender : TObject);
+    Procedure LoadLastFile1Click( Sender : TObject);
+    Procedure Memo1Change( Sender : TObject);
+    Procedure Decompile1Click( Sender : TObject);
+    Procedure StepInto1Click( Sender : TObject);
+    Procedure StepOut1Click( Sender : TObject);
+    Procedure Reset1Click( Sender : TObject);
+    Procedure cedebugAfterExecute( Sender : TPSScript);
+    Procedure cedebugBreakpoint(Sender:TObject;const FileName:String;Position,Row,Col:Cardinal);
+    Procedure cedebugCompile( Sender : TPSScript);
+    Procedure cedebugExecute( Sender : TPSScript);
+    Procedure cedebugIdle( Sender : TObject);
+    Procedure cedebugLineInfo(Sender: TObject;const FileName:String; Position,Row,Col:Cardinal);
+    Procedure Memo1SpecialLineColors(Sender: TObject; Line: Integer; var Special: Boolean; var FG, BG : TColor);
+    Procedure BreakPointMenuClick( Sender : TObject);
+    Procedure DebugRun1Click( Sender : TObject);
+    Procedure tutorial4Click( Sender : TObject);
+    Procedure ImportfromClipboard1Click( Sender : TObject);
+    Procedure ImportfromClipboard2Click( Sender : TObject);
+    Procedure tutorial1Click( Sender : TObject);
+    Procedure ShowSpecChars1Click( Sender : TObject);
+    Procedure StatusBar1DblClick( Sender : TObject);
+    Procedure PSScriptLine( Sender : TObject);
+    Procedure OpenDirectory1Click( Sender : TObject);
+    Procedure procMessClick( Sender : TObject);
+    Procedure tbtnUseCaseClick( Sender : TObject);
+    Procedure EditFont1Click( Sender : TObject);
+    Procedure tutorial21Click( Sender : TObject);
+    Procedure tutorial31Click( Sender : TObject);
+    Procedure HTMLSyntax1Click( Sender : TObject);
+    Procedure ShowInterfaces1Click( Sender : TObject);
+    Procedure Tutorial5Click( Sender : TObject);
+    Procedure ShowLastException1Click( Sender : TObject);
+    Procedure PlayMP31Click( Sender : TObject);
+    Procedure AllFunctionsList1Click( Sender : TObject);
+    Procedure texSyntax1Click( Sender : TObject);
+    Procedure GetEMails1Click( Sender : TObject);
+    Procedure DelphiSite1Click, 'DelphiSite1Click;
+    procedure DelphiSite1Click(Sender: TObject);;
+    procedure TerminalStyle1Click(Sender: TObject);;
+    procedure ReadOnly1Click(Sender: TObject);;
+    procedure ShellStyle1Click(Sender: TObject);;
+    procedure Console1Click(Sender: TObject);;     //3.2
+    procedure BigScreen1Click(Sender: TObject);;
+    procedure Tutorial91Click(Sender: TObject);;
+    procedure SaveScreenshotClick(Sender: TObject);;
+    procedure Tutorial101Click(Sender: TObject);;
+    procedure SQLSyntax1Click(Sender: TObject);;
+    procedure XMLSyntax1Click(Sender: TObject);;
+    procedure ComponentCount1Click(Sender: TObject);;
+    procedure NewInstance1Click(Sender: TObject);;
+    procedure CSyntax1Click(Sender: TObject);;
+    procedure Tutorial6Click(Sender: TObject);;
+    procedure New1Click(Sender: TObject);;
+    procedure AllObjectsList1Click(Sender: TObject);;
+    procedure LoadBytecode1Click(Sender: TObject);;
+    procedure CipherFile1Click(Sender: TObject);;
+      //V3.5
+    procedure NewInstance1Click(Sender: TObject);;
+    procedure toolbtnTutorialClick(Sender: TObject);;
+    procedure Memory1Click(Sender: TObject);;
+    procedure SyntaxCheck1Click(Sender: TObject);;
+    procedure JavaSyntax1Click(Sender: TObject);;
+    procedure SyntaxCheck1Click(Sender: TObject);;
+    procedure ScriptExplorer1Click(Sender: TObject);;
+    procedure FormOutput1Click(Sender: TObject);;
+    //V3.6
+    procedure GotoEnd1Click(Sender: TObject);;
+    procedure AllResourceList1Click(Sender: TObject);;
+    procedure tbtn6resClick(Sender: TObject);;
+     //V3.7
+    procedure Info1Click(Sender: TObject);;
+    procedure Tutorial10Statistics1Click(Sender: TObject);;
+    procedure Tutorial11Forms1Click(Sender: TObject);;
+    procedure Tutorial12SQL1Click(Sender: TObject);;
+    //V3.8
+    procedure ResourceExplore1Click(Sender: TObject);;
+    procedure Info1Click(Sender: TObject);;
+    procedure CryptoBox1Click(Sender: TObject);;
+    procedure ModulesCount1Click(Sender: TObject);;
+    procedure N4GewinntGame1Click(Sender: TObject);;
+    procedure PHPSyntax1Click(Sender: TObject);;
+    procedure SerialRS2321Click(Sender: TObject);;
+    procedure CSyntax2Click(Sender: TObject);;
+    procedure Calculator1Click(Sender: TObject);;
+    procedure Tutorial13Ciphering1Click(Sender: TObject);;
+    procedure Tutorial14Async1Click(Sender: TObject);;
+    procedure PHPSyntax1Click(Sender: TObject);;
+    procedure BtnZoomPlusClick(Sender: TObject);;
+    procedure BtnZoomMinusClick(Sender: TObject);;
+    procedure btnClassReportClick(Sender: TObject);;
+    procedure ThreadDemo1Click(Sender: TObject);;
+    procedure HEXView1Click(Sender: TObject);;
+    procedure ExporttoHTML1Click(Sender: TObject);;
+    procedure Minesweeper1Click(Sender: TObject);;
+    procedure PicturePuzzle1Click(Sender: TObject);;
+   //V3.9
+    procedure sbvclhelpClick(Sender: TObject);;
+    procedure DependencyWalker1Click(Sender: TObject);;
+    procedure CB1SCListDrawItem(Control:TWinControl;Index:Integer;aRect:TRect;State: TOwnerDrawState);;
+    procedure WebScanner1Click(Sender: TObject);;
+    procedure mnToolbar1Click(Sender: TObject);;
+    procedure mnStatusbar2Click(Sender: TObject);;
+    procedure mnConsole2Click(Sender: TObject);;
+    procedure mnCoolbar2Click(Sender: TObject);;
+    procedure mnSplitter2Click(Sender: TObject);;
+    procedure WebServer1Click(Sender: TObject);;
+    procedure PerlSyntax1Click(Sender: TObject);;
+    procedure PythonSyntax1Click(Sender: TObject);;
+    procedure DMathLibrary1Click(Sender: TObject);
+    procedure IntfNavigator1Click(Sender: TObject);
+    procedure FullTextFinder1Click(Sender: TObject);;
+    function AppName: string;;
+    function ScriptName: string;;
+    function LastName: string;;
+    procedure FractalDemo1Click(Sender: TObject);;
+    procedure SimuLogBox1Click(Sender: TObject);;
+    procedure OpenExamples1Click(Sender: TObject);;
+    procedure Halt1Click(Sender: TObject);;
+    procedure Stop;;
+    procedure CodeSearch1Click(Sender: TObject);;
+    procedure RubySyntax1Click(Sender: TObject);;
+    procedure Undo1Click(Sender: TObject);;
+    procedure LinuxShellScript1Click(Sender: TObject);;
+    procedure WebScannerDirect(urls: string);;
+    procedure WebScanner(urls: string);;
+    procedure LoadInterfaceList2;;
+    procedure DLLSpy1Click(Sender: TObject);;
+    procedure Memo1DblClick(Sender: TObject);;
+    procedure URILinksClicks1Click(Sender: TObject);;
+    procedure GotoLine1Click(Sender: TObject);;
+    procedure ConfigFile1Click(Sender: TObject);;
+    procedure ActiveLineColor1Click(Sender: TObject);;
+    //procedure DoEditorExecuteCommand(EditorCommand: word);;
+    procedure SkyStyle1Click(Sender: TObject);;
+    procedure CountWords1Click(Sender: TObject);;
+    Procedure Memo1PlaceBookmark( Sender : TObject; var Mark : TSynEditMark);
+    Procedure Memo1GutterClick(Sender:TObject; Button:TMouseButton; X, Y, Line : Integer; Mark : TSynEditMark);
+    Procedure Bookmark11Click( Sender : TObject);
+    Procedure Bookmark21Click( Sender : TObject);
+    Procedure Bookmark31Click( Sender : TObject);
+    Procedure Bookmark41Click( Sender : TObject);
+    Procedure Bookmark51Click( Sender : TObject);
+    Function GetStatChange : boolean;
+    Procedure SetStatChange( vstat : boolean);
+    Function GetActFileName : string;
+    Procedure SetActFileName( vname : string);
+    Function GetLastFileName : string;
+    Procedure SetLastFileName( vname : string);
+    Procedure WebScannerDirect( urls : string);
+    Procedure LoadInterfaceList2;
+    Function GetStatExecuteShell : boolean;
+    Procedure DoEditorExecuteCommand( EditorCommand : word);
+    function GetActiveLineColor: TColor;
+    procedure SetActiveLineColor(acolor: TColor);
+    procedure ScriptListbox1Click(Sender: TObject);;
+    procedure Memo2KeyPress(Sender: TObject; var Key: Char);;
+    procedure EnlargeGutter1Click(Sender: TObject);;
+    procedure Tetris1Click(Sender: TObject);;
+    procedure ToDoList1Click(Sender: TObject);;
+    procedure ProcessList1Click(Sender: TObject);;
+    procedure TCPSockets1Click(Sender: TObject);;
+    procedure ConfigUpdate1Click(Sender: TObject);;
+    procedure ADOWorkbench1Click(Sender: TObject);;
+    procedure SocketServer1Click(Sender: TObject);;
+    procedure FormDemo1Click(Sender: TObject);;
+    procedure Richedit1Click(Sender: TObject);;
+    procedure SimpleBrowser1Click(Sender: TObject);;
+    procedure DOSShell1Click(Sender: TObject);;
+    procedure SynExport1Click(Sender: TObject);;
+    procedure ExporttoRTF1Click(Sender: TObject);;
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);;
+    procedure SOAPTester1Click(Sender: TObject);;
+    procedure Sniffer1Click(Sender: TObject);;
+    procedure AutoDetectSyntax1Click(Sender: TObject);;
+    procedure FPlot1Click(Sender: TObject);;
+    procedure PasStyle1Click(Sender: TObject);;
+    procedure Tutorial183RGBLED1Click(Sender: TObject);;
+    procedure Reversi1Click(Sender: TObject);;
+    procedure ManualmaXbox1Click(Sender: TObject);;
+    procedure BlaisePascalMagazine1Click(Sender: TObject);
+    procedure AddToDo1Click(Sender: TObject);
+    procedure CreateGUID1Click(Sender: TObject);
+    procedure Tutorial27XML1Click(Sender: TObject);;
+    procedure CreateDLLStub1Click(Sender: TObject);;
+    procedure Tutorial28DLL1Click(Sender: TObject);;
+    procedure ResetKeyPressed;;
+    procedure FileChanges1Click(Sender: TObject);;
+    procedure OpenGLTry1Click(Sender: TObject);;
+    procedure AllUnitList1Click(Sender: TObject);;
+    procedure Tutorial29UMLClick(Sender: TObject);
+    procedure CreateHeader1Click(Sender: TObject);
+    procedure Oscilloscope1Click(Sender: TObject);
+    procedure Tutorial30WOT1Click(Sender: TObject);
+    procedure GetWebScript1Click(Sender: TObject);
+    procedure Run1Click(Sender: TObject);
+    procedure Checkers1Click(Sender: TObject);');
+    procedure TaskMgr1Click(Sender: TObject);');
+    procedure WebCam1Click(Sender: TObject);');
+    procedure Tutorial31Closure1Click(Sender: TObject);');
+    procedure GEOMapView1Click(Sender: TObject);');
+    MaxForm1.GPSSatView1Click, 'GPSSatView1Click');
+    MaxForm1.N3DLab1Click, 'N3DLab1Click');
+    procedure ExternalApp1Click(Sender: TObject);');
+    procedure PANView1Click(Sender: TObject);
+    procedure Tutorial39GEOMaps1Click(Sender: TObject);
+    procedure UnitConverter1Click(Sender: TObject);
+    maxform1.myscript1click(self)
+    procedure Terminal1Click(Sender: TObject);
+    procedure Tutorial361Click(Sender: TObject);
+    procedure TrainingArduino1Click(Sender: TObject);
+    procedure Chess41Click(Sender: TObject);
+    procedure OrangeStyle1Click(Sender: TObject);
+    procedure Darkcolor1Click(Sender: TObject);
+    procedure ShowIndent1Click(Sender: TObject);');
+    procedure InternetRadio1Click(Sender: TObject);');
+    procedure MyScript2Click(Sender: TObject);');
+    procedure ExternalApp22Click(Sender: TObject);');
+
+ 
+  procedure SIRegister_Tdebugoutput(CL: TPSPascalCompiler);
+  with CL.AddClassN(CL.FindClass('TForm'),'Tdebugoutput') do begin
+      RegisterProperty('output', 'TMemo', iptrw);
+      RegisterProperty('mycaption', 'string', iptrw);
+  AddRegisteredVariable('Application', 'TApplication');
+  AddRegisteredVariable('Screen', 'TScreen');
+  AddRegisteredVariable('Self', 'TForm');
+  AddRegisteredVariable('Memo1', 'TSynMemo');
+  AddRegisteredVariable('memo2', 'TMemo');
+  AddRegisteredVariable('maxForm1', 'TMaxform1');  //!!
+  AddRegisteredVariable('debugout', 'Tdebugoutput');  //!!
+  AddRegisteredVariable('hlog','THotlog');  //!!
+  AddRegisteredVariable('it','integer');  //for closure!!
+  AddRegisteredVariable('sr','string');  //for closure!!
+  AddRegisteredVariable('srlist','TStringlist');  //for closure!!
+  AddRegisteredVariable('bt','boolean');  //for closure!!
+  AddRegisteredVariable('ft','double');  //for closure!!
+    end;
+  end;
+  
+  // To stop the while loop, click on Options/Show Include (boolean switch)!
+  Control a loop in a script with a form event:
+  IncludeON;   //control the while loop            
+  while maxform1.ShowInclude1.checked do begin   //menu event Options/Show Include
+  end;    
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_fMain(CL: TPSPascalCompiler);
+begin
+ CL.AddConstantN('BYTECODE','String').SetString( 'bytecode.txt');
+ CL.AddConstantN('PSTEXT','String').SetString( 'PS Scriptfiles (*.txt)|*.TXT');
+ CL.AddConstantN('PSMODEL','String').SetString( 'PS Modelfiles (*.uc)|*.UC');
+ CL.AddConstantN('PSPASCAL','String').SetString( 'PS Pascalfiles (*.pas)|*.PAS');
+ CL.AddConstantN('PSINC','String').SetString( 'PS Includes (*.inc)|*.INC');
+ CL.AddConstantN('DEFFILENAME','String').SetString( 'firstdemo.txt');
+ CL.AddConstantN('DEFINIFILE','String').SetString( 'maxboxdef.ini');
+ CL.AddConstantN('EXCEPTLOGFILE','String').SetString( 'maxboxerrorlog.txt');
+ Const('ALLFUNCTIONSLIST','String').SetString( 'upsi_allfunctionslist.txt
+ Const('ALLFUNCTIONSLISTPDF','String').SetString( 'maxbox_functions_all.pdf
+ Const('ALLOBJECTSLIST','String').SetString( 'docs\VCL.pdf
+ Const('ALLRESOURCELIST','String').SetString( 'docs\upsi_allresourcelist.txt
+ Const('ALLUNITLIST','String').SetString( 'docs\maxbox3_9.xml');
+ CL.AddConstantN('INCLUDEBOX','String').SetString('pas_includebox.inc');
+ CL.AddConstantN('BOOTSCRIPT','String').SetString('maxbootscript.txt');
+ CL.AddConstantN('MBVERSION','String').SetString( '4.7.1.80');
+ CL.AddConstantN('VERSION','String').SetString('4.7.1.80');
+ CL.AddConstantN('MBVER','String').SetString('471');
+ CL.AddConstantN('MBVERI','Integer').SetInt(471);
+ Const('MBVERIALL','Integer').SetInt(47180);
+ Const('EXENAME','String').SetString( 'maXbox4.exe
+ Const('MXVERSIONFILE','String').SetString( 'http://www.softwareschule.ch/maxvfile.txt
+ Const('MXINTERNETCHECK','String').SetString( 'www.ask.com
+ CL.AddConstantN('MXSITE','String').SetString('http://www.softwareschule.ch/maxbox.htm');
+ CL.AddConstantN('MXMAIL','String').SetString( 'max@kleiner.com');
+ CL.AddConstantN('TAB','Char').SetString( #$09);
+ CL.AddConstantN('CODECOMPLETION','String').SetString( 'bds_delphi.dci');
+
+ SIRegister_TMaxForm1(CL);
+ 
+ Deprecated!! look at:  Resources App in /Help or maxbox3_9.xml
+ ***************************************************************************
+ RESSOURCE LIST OUT OF MX EXE
+ ***************************************************************************
+ AddRessources BITMAP FROM EXE:
+ Example: glyph.LoadFromResourceName(getHINSTANCE,'FLOPPY'); 
+ CURSORS:
+ 32761 CURSOR
+ 32762 CURSOR
+ 32763 CURSOR
+ 32764 CURSOR
+ 32765 CURSOR
+ 32766 CURSOR
+ 32767 CURSOR
+ 
+ BITMAPS:
+ BBABORT BITMAP
+ BBALL BITMAP
+ BBCANCEL BITMAP
+ BBCLOSE BITMAP
+ BBHELP BITMAP
+ BBIGNORE BITMAP
+ BBNO BITMAP
+ BBOK BITMAP
+ BBRETRY BITMAP
+ BBYES BITMAP
+ CDROM - CL_MPBACK - CL_MPEJECT - CL_MPNEXT - CL_MPPAUSE - CL_MPPLAY - CL_MPPREV
+ CL_MPRECORD - CL_MPSTEP - CL_MPSTOP - CLOSED - CLOSEDFOLDER - CURRENTFOLDER
+ DBEDIT - DBGARROW - DBINSERT - DBMULTIARROW - DBMULTIDOT - DBN_CANCEL
+ DBN_DELETE - DBN_EDIT - DBN_FIRST - DBN_INSERT - DBN_LAST - DBN_NEXT - DBN_POST
+ DBN_PRIOR - DBN_REFRESH - DI_MPBACK - DI_MPEJECT - DI_MPNEXT - DI_MPPAUSE 
+ DI_MPPLAY - DI_MPPREV - DI_MPRECORD - DI_MPSTEP - DI_MPSTOP - EN_MPBACK
+ EN_MPEJECT - EN_MPNEXT - EN_MPPAUSE - EN_MPPLAY - EN_MPPREV - EN_MPRECORD 
+ EN_MPSTEP - EN_MPSTOP - EXECUTABLE - FLOPPY - HARD - KNOWNFILE - LEAF 
+ MINUS - NETWORK - OPEN - OPENFOLDER - PLUS - PREVIEWGLYPH - RAM - SYNEDITINTERNALIMAGES
+ SYNEDITWRAPPED - TDOUBLEBUFFEREDPANEL - TPANELFRAME - UNKNOWNFILE -  
+ 
+ Most used Res: 
+          'FLOPPY'; 'EXECUTABLE'; 'HARD'; 'LEAF'; 
+          'NETWORK'; 'OPENFOLDER'; 'OPEN'; 'PREVIEWGLYPH';
+          'RAM'; 'SYNEDITINTERNALIMAGES'; 'SYNEDITWRAPPED';
+          'TDOUBLEBUFFEREDPANEL'; 'TPANELFRAME';
+          'UNKNOWNFILE'; 'KNOWNFILE';
+          'LED***'; 'JVSIMLOGICBOX';
+          'TEEChart'; 'RCDATA IWSERVER';
+          
+ For STRING Resources see root file : upsi_allresourceslist.txt or Open/Resources  
+ as AddOn /Help in maXbox App !
+        
+End.
+
+Code Completion: CTRL J
+mX3: Get the Code Completion with CTRL J, 
+   eg. you type CLASSC first und put the cursor after the C of CLASSC or
+   put IInterface as an Interface
+ and then you put Ctrl J
+
+************************************************************************
+**********************mXOpen Class Tools API****************************
+************************************************************************
+
+of unit uPSI_fMain;    //in sources
+Note: Call all Methods with maxForm1, e.g.:
+                            maxForm1.ShellStyle1Click(self);
+                            maxForm1.getActFilename 
+
+
+////////////////////////////////////////////////////////////////////////////
+//Form Template Library FTL
+////////////////////////////////////////////////////////////////////////////
+For Form Building out of the Script, eg. 399_form_templates.txt
+
+25 FTL For Form Building out of the Script, eg. 399_form_templates.txt
+
+263 unit uPSI_JvProfiler32;                    TProfReport
+270 unit uPSI_ImgList;                         TCustomImageList
+278 unit uPSI_JvImageWindow;                   TJvImageWindow
+317 unit uPSI_JvParserForm;                    TJvHTMLParserForm
+497 unit uPSI_DebugBox;                        TDebugBox
+513 unit uPSI_ImageWin;                        TImageForm, TImageForm2
+514 unit uPSI_CustomDrawTreeView;              TCustomDrawForm
+515 unit uPSI_GraphWin;                        TGraphWinForm
+516 unit uPSI_actionMain;                      TActionForm
+518 unit uPSI_CtlPanel;                        TAppletApplication
+529 unit uPSI_MDIEdit;                         TEditForm
+535 unit uPSI_CoolMain; {browser}              TWebMainForm
+538 unit uPSI_frmExportMain;                   TSynexportForm
+585 unit uPSI_usniffer; {//PortScanForm}       TSniffForm
+618 unit uPSI_delphi_arduino_Unit1;            TLEDForm
+620 unit uPSI_fplotMain;                       TfplotForm1
+660 unit uPSI_JvDBQueryParamsForm;             TJvQueryParamsDialog
+677 unit uPSI_OptionsFrm;                      TfrmOptions;
+718 unit uPSI_MonForm;                         TMonitorForm
+742 unit uPSI_SimplePortMain;                  TPortForm1
+770 unit uPSI_ovccalc;                         TOvcCalculator  //widget	
+810 unit uPSI_DbExcept;                        TDbEngineErrorDlg
+812 unit uPSI_GL_actorUnit1;                   TglActorForm1  //OpenGL Robot
+846 unit uPSI_synhttp_daemon;                  TTCPHttpDaemon, TTCPHttpThrd, TPingThread
+867 unit uPSI_Debug;                           TfrmDebug
+904 unit uPSI_U_HexView;                       THexForm2
+911 unit uPSI_U_Oscilloscope4; (OscfrmMain)    TOscfrmMain
+959 unit uPSI_AdSelCom;                        TComSelectForm
+1029 unit uPSI_GPSUDemo;                       TFDemo
+1031 unit uPSI_ScreenThreeDLab;                TFormLab3D
+1051 unit uPSI_panUnit1;                       TPanForm1 //GLScene
+1052 unit uPSI_DD83u1;  {Arduino Tester Frm}   TDD83f1
+1059 unit uPSI_uconvMain;                      TfconvMain //PS
+1076 unit uPSI_CustomizeDlg;                   TCustomizeDlg / TJvAddPrinterDialog;
+1146 unit uPSI_ChessPrg;                       TChessForm1
+1216 uPSI_KDialogs,                            TKBrowseFolderDialog
+
+
+myFastForm  class declaration  | Borland.EditOptions.Pascal  //Dialog Form
+myForm  class declaration  | Borland.EditOptions.Pascal   //with Events
+aForm  class declaration  | Borland.EditOptions.Pascal   //single Form
+[getForm(x,y)] of object TForm [loadForm(x,y)]
+[ticker | ticker statement | Borland.EditOptions.Pascal]
+[except | exception statement | Borland.EditOptions.Pascal]
+
+////////////////////////////////////////////////////////////////////////////
+//End of bds_delphi.dci  3.9.9.195
+//  4.2.8.10: November 2017,  4.2.6.10: January 2018,  4.7.4.62: June 2020  
+////////////////////////////////////////////////////////////////////////////

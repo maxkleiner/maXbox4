@@ -1,0 +1,902 @@
+program Installs;
+ 
+(*  #sign:breitsch: BREITSCH-BOX: 03/04/2023 10:16:34 
+ * implements some install utilities class
+ * http://natureofcode.com/book/chapter-10-neural-networks/ ,
+ * 1_31: test calls with assert and https docker
+ *)
+ 
+ 
+CONST DESTPATH = 'examples\astroids_res\'; 
+
+   SOURCEPATH = 'http://www.softwareschule.ch/examples/astroids_res.zip';
+   SOURCEFILE = 'astroids_res.zip';
+ 
+   REGPATH3= '\Software\Microsoft\Internet Explorer\TypedURLs';  
+   REGROOT3= HKEY_CURRENT_USER;
+   
+   SOURCESHA1 = '1829B720F343E4A8E89B6D05FA3009007E6E1A9A';
+
+
+
+type TAofReal= array[0..2] of real;
+//function feedForward(ins: array of integer; ws: array of real): integer; forward;
+
+
+function RepeatedDigits2(N: Int64): Boolean;
+begin
+  N := AbsInt(N);
+  if N > 0 then
+    Result :=
+      N = {SysUtils.}StrToInt64(
+        StringOfChar(
+          Chr(48 + N mod 10),
+          Succ({Math.}Floor({Math.}Log10(N)))
+        )
+      )
+  else
+    Result:= True;
+end;
+
+function IsLockKeyOn2(const KeyCode: Integer): Boolean;
+begin
+  if not (
+    KeyCode in [{Windows.}VK_CAPITAL, VK_NUMLOCK, {Windows.}VK_SCROLL]
+  ) then
+    {raise} {SysUtils.}Exception.Create('Invalid lock key specified.');
+  Result := ({Windows.}GetKeyState(KeyCode));
+end;
+
+function NowGMT: TDateTime;
+var
+  ST: {Windows.}TSystemTime;  // current system time
+begin
+  // This Windows API function gets system time in UTC/GMT
+  {Windows.}GetSystemTime(ST);
+  Result:= {SysUtils.}SystemTimeToDateTime(ST);
+end;
+
+function letHASH(afile, mode: string): string;
+var cryplib: TCryptographicLibrary;
+begin
+  with THash.create(self) do begin
+     //Features
+     crypLib:= TCryptographicLibrary.Create(nil);
+     CryptoLibrary:= crypLib;
+     HashId:= mode; //'native.hash.SHA-1';
+     Begin_Hash();
+     writeln(hash)
+     HashFile(afile)
+     result:= strtoHex1(StreamtoAnsiString(HashOutputValue));
+     Burn;
+     crypLib.free;
+     End_Hash;
+     Free
+  end; 
+end; 
+
+
+CONST 
+  UrlSentimentAPI2='http://text-processing.com/api/sentiment/';  
+
+procedure GetSentimentStream(C_form,apath: string; const Data: string);
+var encodURL: string;
+    mapStrm: TStringStream;
+begin
+  encodURL:= Format(UrlSentimentAPI2,[c_form,HTTPEncode(Data)]);
+  mapStrm:= TStringStream.create('');
+  try
+    HttpGet(EncodURL, mapStrm);  //WinInet
+    mapStrm.Position:= 0;
+    //SaveStringtoFile(apath, mapStrm.datastring)
+    //OpenDoc(apath);
+    //result:= mapStrm.datastring;
+    writeln(mapStrm.datastring)
+  finally
+    mapStrm.Free;
+    encodURL:= '';
+  end;
+end;
+
+procedure GetSentimentStream2(C_form: string; const pData: string);
+
+var
+  PostData: TStringList;
+  IdHTTP1: TIdHTTP;
+  res, tmps: string;
+begin
+  PostData:=TStringList.Create;
+  try
+    //PostData.Add('ipaddress='+ip.text);
+    //PostData.Add('data='+pdata);
+    PostData.Add('text='+pdata);
+    HTTPEncode(pdata)
+    PostData.Add(HTTPEncode(quotedstr(pData)));
+    IdHTTP1:= TIdHTTP.create(self)
+    writeln(HTTPEncode(postdata.text))
+    res:=IdHTTP1.Post1(UrlSentimentAPI2,postdata);
+    writeln(postdata.text)
+    //IdHTTP1.Request.Referer;
+    writeln(res);
+  finally
+    PostData.Free;
+    IdHTTP1.Free;
+  end;
+end;
+
+Function RegRead(keyRoot: Longint; keyPath, myField: String): string;
+begin
+  result:= RegistryRead(keyroot, keyPath, myField)
+end;  
+
+
+//TrimAppMemorySize
+
+//var weights : array[0..2] of real;
+var weights: TAofReal;
+    ashaFM: TSHA2FamilyMember ;
+    cryplib: TCryptographicLibrary;
+    x, y : byte;
+    UserSpaceAvail, TotalSpaceAvail, DiskSize: Comp; {disk size}
+
+begin   //@main
+    
+    //  voix:=CreateOLEObject('SAPI.SpVoice');
+    //writeln(SystemCheck)
+   Writeln(DateTimeGMTToHttpStr(Now))
+   writeln('machine or host name is: '+getHostName)
+   writeln('user name is: '+getUserName)
+   writeln('domain name is: '+domainname('localhost'));
+   writeln('IP Address of own Host: '+GetHostByName(getHostName));
+   writeln('Registry read test of url2: '
+                        +RegRead(REGROOT3, REGPATH3, 'url2'))
+   writeln('Services File Path is: '+ServicesFilePath);
+   writeln(botostr(getisadmin))
+   
+   if (OSCheck(true) and 
+            not getIsAdmin) then writeln('os check true -not admin'); 
+ 
+   writeln('Shell Version is: '+intToStr(GetShellVersion));
+   WriteLog(ExePath+'systemchecklog.txt',memo2.text)
+  //ExecuteShell('cmd','/k systeminfo > systeminfo_dell.txt')
+  //ExecuteShell('cmd','/c systeminfo > systeminfo_machine.txt')
+  //SearchAndOpenFile('systeminfo_machine.txt')
+   writeln(SHA1('.\examples\astroids_res.zip'))
+   
+   if GetDiskSpace('C',UserSpaceAvail,TotalSpaceAvail,DiskSize) then
+     printF('UserSpaceAvail: %d TotalSpaceAvail: %d DiskSize: %d',
+    [UserSpaceAvail div 1024,TotalSpaceAvail div 1024,DiskSize div 1024]);
+  
+   If DirectoryExists(Exepath+DESTPATH) then begin
+       //ProcessMessagesOFF;
+       //SetAstro_Form 
+       PlaySound(Exepath+DESTPATH+'\sounds\music.wav', 0, SND_ASYNC);
+    end else begin 
+       makeDir(exepath+DESTPATH)
+       showmessageBig2('box download astroids_res.zip from: '+
+         SOURCEPATH+
+          ' to ..\examples\astroids_res\',true);
+      if DownloadFile(SOURCEPATH,
+                Exepath+'examples\astroids_res.zip')
+      then begin 
+        DeCompress(Exepath+DESTPATH,
+          exepath+'examples\astroids_res.zip');  
+        writeln('downloaded and unpackeded, music starts...!')
+        //ProcessMessagesOFF;
+        //SetAstro_Form; 
+        //PlaySound(DESTPATH+'\sounds\music.wav',0,SND_ASYNC or SND_LOOP);
+        PlaySound(DESTPATH+'\sounds\music.wav', 0, SND_ASYNC);
+      end;
+   end;  
+
+    writeln(botostr(RepeatedDigits2(1233433)))
+    writeln(botostr(IsLockKeyOn(VK_NUMLOCK)))
+    //writeln(botostr(IsLockKeyOn2(VK_NUMLOCK)))
+    TrimAppMemorySize;
+   { writeln(datetimetostr(NowGMT))
+  writeln(datetimetostr(NowAsGMTTime))
+  writeln(datetimetostr(GMTToLocalTime(NowGMT)))
+  writeln(datetimetostr(GMTTimeToLocalTime(NowGMT)))
+  writeln(datetimetostr(GMTToLocalTime(NowAsGMTtime)))
+     }
+    
+     println(ComputeSHA256('this is IBZ','S'))
+     println(GetSHA256('this is IBZ'));
+     //println(SHA256('this is IBZ','S'))
+     println(SHA512('this is IBZ','S'))
+    { 
+     writeln('doubleSHA256: '+deblank(SHA256(hextoStr(strdelete('$',
+                  deblank(SHA256('hello','S')))),'S')))
+     writeln('doubleSHA256: '+deblank(SHA256(hextoAscii(strdelete('$',
+                  deblank(SHA256('hello','S')))),'S')))
+    }  
+     {writeln('doubleSHA256: '
+        +deblank(SHA256(msHEXtocharacterset(strdelete('$',
+                  deblank(SHA256('hello','S')))),'S')))
+         }
+     
+     //writeln('doubleSHA256: '+SHA256ToStr(calcDoubleSHA256('hello')))
+     //getDoubleSHA256
+     
+     writeln('FreePhysicalMemory: '+itoa(GetFreePhysicalMemory))
+  
+      with THash.create(self) do begin
+        //Features
+        crypLib:= TCryptographicLibrary.Create(nil);
+        CryptoLibrary:= crypLib;
+        HashId:= 'native.hash.SHA-1';
+        //cryptolibrary.CustomCipher
+        writeln(hash)
+        //HashString('this is Plaintext to hash!');
+        HashFile(exepath+'maXbox4.exe')
+        writeln(strtoHex1(StreamtoAnsiString(HashOutputValue)));
+        crypLib.free;
+        Free
+      end; 
+      
+    {  writeln(letHash(exepath+'maXbox4.exe','native.hash.SHA-1'))
+      writeln(letHash(exepath+'maXbox4.exe','native.hash.SHA-256'))
+      writeln(itoa(GetFreePhysicalMemory))
+      writeln(sha256('this is Plaintext to hash!','S'))
+    }  
+      //writeln(sha512('const Plaintext: string','S'))
+     
+     // ExecuteShell('cmd','/c rundll32.exe url.dll,
+                //MailToProtocolHandler max@kleiner.ch')
+    // ExecuteShell('cmd','/c runas "/user:Administrator" '+
+      //                        ExePath+'maXbox4.exe')
+      
+    //GetSentimentStream2('','this is good and well');
+    
+    { x:= 10
+        y:= 4
+        println(itoa(x shr y))
+        println(itoa(x shl y))
+        println(itoa(x and y))
+        println(itoa(x or y))
+        println(itoa(x xor y))
+        println(itoa(not x))
+     } 
+End.
+
+
+ref:
+
+print x >> y # Right Shift
+print x << y # Left Shift
+print x & y # Bitwise AND
+print x | y # Bitwise OR
+print x ^ y # Bitwise XOR
+print ~x # Bitwise NOT
+
+http://www.the-spoiler.com/OTHER/Virgin/the.7th.guest.1.html
+
+C:> net user Administrator /active:yes
+
+https://maxbox4.wordpress.com/code/
+https://www.academia.edu/36608990/TensorFlow_AI_Demo
+https://www.scribd.com/document/378905755/tensorflow-machinelearning-task9
+http://peterroelants.github.io/posts/neural_network_implementation_part04/
+http://peterroelants.github.io/posts/neural_network_implementation_part05/
+
+ref code
+from win32com.client import constants
+import win32com.client
+speaker = win32com.client.Dispatch("SAPI.SpVoice", constants.SVSFlagsAsync)
+speaker.Speak("Hello, fellow Python programmer")
+
+
+doc:
+212:  Just semantics, but to avoid a common misunderstanding: sha256 does hashing, not encoding. Encoding is something entirely different. For one it implies it can be decoded, whereas hashing is strictly a one-way (and destructive) operation. – RocketNuts Feb 29 at 18:48 
+
+Youre hashing the hexadecimal representation of the first hash. You need to hash the actual hash -- the binary data that the hex represents.
+
+This is a text-based implementation, using a 20x20 grid (just like the original Mark 1 Perceptron had). The rate of improvement drops quite markedly as you increase the number of training runs. 
+A perceptron is an algorithm used in machine-learning. It's the simplest of all neural networks, consisting of only one neuron,
+ and is typically used for pattern recognition.
+A perceptron attempts to separate input into a positive and a negative class with the aid of a linear function.
+ The inputs are each multiplied by weights, random weights at first, and then summed.
+  Based on the sign of the sum a decision is made.
+
+In order for the perceptron to make the right decision, it needs to train with input for which the correct outcome is known,
+ so that the weights can slowly be adjusted until they start producing the desired results. 
+ 
+ TensorFlow:
+ dir(tf)
+ ['AUTO_REUSE', 'AggregationMethod', 'Assert', 'AttrValue', 'COMPILER_VERSION', '
+CXX11_ABI_FLAG', 'ConditionalAccumulator', 'ConditionalAccumulatorBase', 'ConfigProto', 'DType', 'DeviceSpec', 'Dimension', 'Event', 'FIFOQueue', 'FixedLenFeature', 'FixedLenSequenceFeature', 'FixedLengthRecordReader', 'GIT_VERSION', 'GPUOp
+tions', 'GRAPH_DEF_VERSION', 'GRAPH_DEF_VERSION_MIN_CONSUMER', 'GRAPH_DEF_VERSIO N_MIN_PRODUCER', 'Graph', 'GraphDef', 'GraphKeys', 'GraphOptions', 'HistogramProto', 'IdentityReader', 'IndexedSlices', 'InteractiveSession', 'LMDBReader', 'Log
+Message', 'MONOLITHIC_BUILD', 'MetaGraphDef', 'NameAttrList', 'NoGradient', 'NodeDef', 'NotDifferentiable', 'OpError', 'Operation', 'OptimizerOptions', 'PaddingFIFOQueue', 'Print', 'PriorityQueue', 'QUANTIZED_DTYPES', 'QueueBase', 'RandomSh
+uffleQueue', 'ReaderBase', 'RegisterGradient', 'RunMetadata', 'RunOptions', 'Session', 'SessionLog', 'SparseConditionalAccumulator', 'SparseFeature', 'SparseTensor', 'SparseTensorValue', 'Summary', 'SummaryMetadata', 'TFRecordReader', 'Tensor', 'TensorArray', 'TensorInfo', 'TensorShape', 'TextLineReader', 'VERSION', 'V
+arLenFeature', 'Variable', 'VariableScope', 'WholeFileReader', '__builtins__', '__cached__', '__compiler_version__', '__cxx11_abi_flag__', '__doc__', '__file__'
+, __git_version__', '__loader__', '__monolithic_build__', '__name__', '__package__', '__path__', '__spec__', '__version__', 'abs', 'accumulate_n', 'acos', 'acosh', 'add', 'add_check_numerics_ops', 'add_n', 'add_to_collection', 'all_variables', 'angle', 'app', 'arg_max', 'arg_min', 'argmax', 'argmin', 'as_dtype', 'as_string', 'asin', 'asinh', 'assert_equal', 'assert_greater', 'assert_greater_equal', 'assert_integer', 'assert_less', 'assert_less_equal', 'assert_negative'', 'assert_non_negative', 'assert_non_positive, 'assert_none_equal', 'assert_positive', 'assert_proper_iterable', 'assert_rank', 'assert_rank_at_least', 'assert_rank_in', 'assert_same_float_dtype', 'assert_scalar', 'assert_type', 'assert_variables_initialized', 'assign', 'assign_add', 'assign_sub', 'atan', 'atan2', 'atanh',batch_to_space', 'batch_to_space_nd', 'betainc', 'bfloat16'', 'bincount', 'bitcast', 'bitwise', 'bool', 'boolean_mask', 'broadcast_dynamic_shape', 'broadcast_static_shape', 'case', 'cast', 'ceil', 'check_numerics', 'cholesky', 'cholesky_solve', 'clip_by_average_norm', 'clip_by_global_norm', 'clip_by_norm'', 'clip_by_value', colocate_with', 'compat', 'complex', 'complex128', 'complex64', 'concat','cond', 'confusion_matrix', 'conj', 'constant', 'constant_initializer', 'container', 'contrib', 'control_dependencies', 'convert_to_tensor', 'convert_to_tensor_or_indexed_slices', 'convert_to_tensor_or_sparse_tensor', 'cos', 'cosh', 'count_nonzero', 'count_up_to', 'create_partitioned_variables', 'cross', 'cumprod', 'cumsum', 'data', 'decode_base64', 'decode_csv', 'decode_json_example', 'decode_raw', 'delete_session_tensor', 'depth_to_space', 'dequantize', 'deserialize_many_sparse', 'device', 'diag', 'diag_part', 'digamma', 'distributions', 'div', 'divide', 'double', 'dynamic_partition', 'dynamic_stitch', 'edit_distance', 'einsum', 'encode_base64', 'equal', 'erf', 'erfc', 'errors', 'estimator', 'exp', 'expand_dims', 'expm1', 'extract_image_patches', 'eye', 'fake_quant_with_min_max_args', 'fake_quant_with_min_max_args_gradient', 'fake_quant_with_min_max_vars', 'fake_quant_with_min_max_vars_gradient', 'fake_quant_with_min_max_vars_per_channel', 'fake_quant_with_min_max_vars_per_channel_gradient', 'feature_column', 'fft', 'fft2d', 'fft3d', 'fill', 'fixed_size_partitioner', 'flags', 'float16', 'float32', 'float64', 'floor', 'floor_div', 'floordiv', 'floormod', 'foldl', 'foldr', 'gather', 'gather_nd', 'get_collection', 'get_collection_ref', 'get_default_graph', 'get
+_default_session', 'get_local_variable', 'get_seed', 'get_session_handle', 'get_session_tensor', 'get_variable', 'get_variable_scope', 'gfile', 'global_norm', 'global_variables', 'global_variables_initializer', 'glorot_normal_initializer',
+'glorot_uniform_initializer', gradients', 'graph_util', 'greater', 'greater_equal', 'group', 'guarantee_const', 'half', 'hessians', 'histogram_fixed_width', 'identity', 'identity_n', 'ifft', 'ifft2d', 'ifft3d', 'igamma', 'igammac', 'imag', 'image', 'import_graph_def', 'initialize_all_tables', 'initialize_all_variables
+', 'initialize_local_variables', 'initialize_variables', 'initializers', 'int16', 'int32', 'int64', 'int8', 'invert_permutation', 'is_finite', 'is_inf', 'is_nan', 'is_non_decreasing', 'is_numeric_tensor', 'is_strictly_increasing', 'is_variable_initialized', 'keras', 'layers', 'lbeta', 'less', 'less_equal', 'lgamma', 'lin_space', 'linalg', 'linspace', 'load_file_system_library', 'load_op_library','local_variables', 'local_variables_initializer', 'log', 'log1p', 'log_sigmoid',
+ 'logging', logical_and', 'logical_not', 'logical_or', 'logical_xor', 'losses', 'make_ndarray', 'make_template', 'make_tensor_proto', 'map_fn', 'matching_files', 'matmul', 'matrix_band_part', 'matrix_determinant', 'matrix_diag', 'matrix_di
+ag_part', 'matrix_inverse', 'matrix_set_diag', 'matrix_solve', 'matrix_solve_ls', 'matrix_transpose', 'matrix_triangular_solve', 'maximum', 'meshgrid', 'metrics', 'min_max_variable_partitioner', 'minimum', 'mod', 'model_variables', 'moving_average_variables', 'multinomial', 'multiply', 'name_scope', 'negative', 'newaxis', 'nn', 'no_op', 'no_regularizer', 'norm', 'not_equal', 'one_hot', 'ones', 'on es_initializer', 'ones_like', 'op_scope', 'orthogonal_initializer', 'pad', 'parallel_stack', 'parse_example', 'parse_single_example', 'parse_single_sequence_example', 'parse_tensor', 'placeholder', 'placeholder_with_default', 'polygamma', 'pow', 'profiler', 'py_func', 'python_io', 'pywrap_tensorflow', 'qint16', 'qint32', 'qint8', 'qr', 'quantize', 'quantize_v2', 'quantized_concat', 'quint16', 'quint8', 'random_crop', 'random_gamma', 'random_normal','random_normal_initializer', 'random_poisson', 'random_shuffle', 'random_uniform', 'random_uniform_initializer', 'range', 'rank', 'read_file', 'real', 'realdiv', 'reciprocal', 'reduce_all', 'reduce_any', 'reduce_join', 'reduce_logsumexp', 'reduce_max', 'reduce_mean', 'reduce_min', 'reduce_prod', 'reduce_sum', 'register_tensor_conversion_function', 'report_uninitialized_variables', 'required_space_to_batch_paddings', 'reset_default_graph', 'reshape', 'resource', 'resource_loader', 'reverse', 'reverse_sequence', 'reverse_v2', 'rint', 'round', 'rsqrt', 'saturate_cast', 'saved_model', 'scalar_mul', 'scan', 'scatter_add', 'scatter_div', 'scatter_mul', 'scatter_nd', 'scatter_nd_add', 'scatter_nd_sub', 'scatter_nd_update', 'scatter_sub', 'scatter_update', 'segment_max', 'segment_mean', 'segment_min', 'segment_prod', 'segment_sum', 'self_adjoint_eig', 'self_adjoint_eigvals', 'sequence_mask', 'serialize_many_sparse', 'serialize_sparse', 'serialize_tensor', 'set_random_seed', 'setdiff1d', 'sets', 'shape', 'shape_n', 'sigmoid', 'sign', 'sin', 'sinh', 'size', 'slice', 'space_to_batch', 'space_to_batch_nd', 'space_to_depth', 'sparse_add', 's
+parse_concat', 'sparse_fill_empty_rows', 'sparse_mask', 'sparse_matmul', 'sparse_maximum', 'sparse_merge', 'sparse_minimum', 'sparse_placeholder', 'sparse_reduce_max', 'sparse_reduce_max_sparse', 'sparse_reduce_sum', 'sparse_reduce_sum_sparse', 'sparse_reorder', 'sparse_reset_shape', 'sparse_reshape', 'sparse_retain','sparse_segment_mean', 'sparse_segment_sqrt_n', 'sparse_segment_sum', 'sparse_slice', 'sparse_softmax', 'sparse_split', 'sparse_tensor_dense_matmul', 'sparse_tensor_to_dense', 'sparse_to_dense', 'sparse_to_indicator', 'sparse_transpose', 'spectral', 'split', 'sqrt', 'square', 'squared_difference', 'squeeze', 'stack', 'stop_gradient', 'strided_slice', 'string', 'string_join', 'string_split', 'strin
+g_to_hash_bucket', 'string_to_hash_bucket_fast','string_to_hash_bucket_strong', 'string_to_number', 'substr', 'subtract', 'summary', 'svd', 'sysconfig', 'table
+s_initializer', 'tan', 'tanh', 'tensordot', 'test', 'tile', 'to_bfloat16', 'to_double', 'to_float', 'to_int32', 'to_int64', 'trace', 'train', 'trainable_variables', 'transpose', 'truediv', 'truncated_normal', 'truncated_normal_initializer',
+ 'truncatediv', 'truncatemod', 'tuple', 'uint16', 'uint32', 'uint64', 'uint8', 'uniform_unit_scaling_initializer', 'unique'', 'unique_with_counts', 'unsorted_segment_max', 'unsorted_segment_sum', 'unstack', 'user_ops', 'variable_axis_size_partitioner', 'variable_op_scope', 'variable_scope', 'variables_initializer', 'variance_scaling_initializer', 'variant', 'verify_tensor_all_finite', 'where', 'while_loop', 'write_file', 'zeros', 'zeros_initializer', 'zeros_like', 'zeta']
+
+Where f(X)=0, representing emails that do not contain x1 or where f(X)>0 representing emails that contain x1 one or more times. These conditions are called binary splits
+because they divide the instance space into two groups: those that satisfy the  condition and those that don't. We can also split the instance space into more than two segments to create non-binary splits. For inst, where f(X) = 0; 0 < F(X) < 5;
+F(X) > 5, and so on.
+
+ <    <  E = w x +b < t
+Since this rule is linear, each feature makes an independent contribution to the score
+of an instance. This contribution depends on wi. If it is positive, then a positive xi will increase the score. If wi is negative, a positive xi decreases the score. If wi is small or zero, then the contribution it makes to the overall result is negligible. It can be seen that the features make a measurable contribution to the final prediction.
+Since this rule is linear, each feature makes an independent contribution to the score of an instance. This contribution depends on wi. If it is positive, then a positive xi willincrease the score. If wi is negative, a positive xi decreases the score. If wi is small or zero, then the contribution it makes to the overall result is negligible. It can be seen that the features make a measurable contribution to the final prediction.
+
+The IPython console
+• NumPy, which is an extension that adds support for multi-dimensional arrays, matrices, and high-level mathematical functions
+• SciPy, which is a library of scientific formulae, constants, and mathematical functions
+• Matplotlib, which is for creating plots
+• Scikit-learn, which is a library for machine learning tasks such as classification, regression, and clustering
+There is only enough space to give you a flavor of these huge libraries, and an
+
+Installing the major distributions is usually a pretty painless task.
+
+px2 = px.reshape((-1,3))
+df = pd.DataFrame({'R':px2[:,0],'G':px2[:,1],'B':px2[:,2]})
+
+import pandas as pd
+import numpy as np
+
+x_data = np.random.rand(100)
+df = pd.DataFrame(x_data)
+df.describe()
+
+pd.DataFrame(np.random.rand(100))
+pd.DataFrame(np.random.rand(100)).describe()
+
+http://peterroelants.github.io/posts/neural_network_implementation_part05/
+
+def multilayer_perceptron(x, weights, biases):
+# Hidden layer with ReLU activation
+layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
+layer_1 = tf.nn.relu(layer_1)
+# Hidden layer with ReLU activation
+layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
+layer_2 = tf.nn.relu(layer_2)
+# Output layer with linear activation
+out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
+return out_layer
+ 
+# Store layers weight &amp; bias
+weights = {
+'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])),
+'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
+'out': tf.Variable(tf.random_normal([n_hidden_2, n_classes]))
+}
+biases = {
+'b1': tf.Variable(tf.random_normal([n_hidden_1])),
+'b2': tf.Variable(tf.random_normal([n_hidden_2])),
+'out': tf.Variable(tf.random_normal([n_classes]))
+}
+ 
+# Construct model
+pred = multilayer_perceptron(x, weights, biases)
+
+There are many situations where cross-entropy needs to be measured but the distribution of p {\displaystyle p} p is unknown. An example is language modeling, where a model is created based on a training set T {\displaystyle T} T, and then its cross-entropy is measured on a test set to assess how accurate the model is in predicting the test data. In this example, p {\displaystyle p} p is the true distribution of words in any corpus, and q {\displaystyle q} q is the distribution of words as predicted by the model. Since the true distribution is unknown, cross-entropy cannot be directly calculated. In these cases, an estimate of cross-entropy is calculated using the following formula:
+
+Cross entropy can be used to define the loss function in machine learning and optimization. The true probability p i {\displaystyle p_{i}} p_{i} is the true label, and the given distribution q i {\displaystyle q_{i}} q_{i} is the predicted value of the current model.
+
+class Dog:
+
+    kind = 'canine'         # class variable shared by all instances
+    def __init__(self, name):
+        self.name = name    # instance variable unique to each instance
+
+>>> d = Dog('Fido')
+>>> e = Dog('Buddy')
+>>> d.kind                  # shared by all dogs
+'canine'
+>>> e.kind                  # shared by all dogs
+'canine'
+>>> d.name                  # unique to d
+'Fido'
+>>> e.name                  # unique to e
+'Buddy'
+
+The objective is to generate a TensorFlow code that allows to find the best parameters W and b, that from input data x_data, adjunct them to y_data output data, in our case it will be a straight line defined by y_data = W * x_data + b . The reader knows that W should be close to 0.1 and b to 0.3, but TensorFlow does not know and it must realize it for itself.
+
+Entropy: This measure of impurity is based on the expected information
+content of the split. Consider a message telling you about the class of a series of randomly drawn samples. The purer the set of samples, the more predictable this message becomes, and therefore the smaller the expected information. Entropy is measured by the following formula:
+- plog 2 p - (1- p)log2 (1- p)
+
+Tell me and I forget. Teach me and I remember. Involve me and I learn. Benjamin Franklin
+
+http://jorditorres.org/research-teaching/tensorflow/first-contact-with-tensorflow-book/first-contact-with-tensorflow/
+
+# Show confusion table
+conf_matrix = metrics.confusion_matrix(y_true, y_pred, labels=None)  # Get confustion matrix
+# Plot the confusion table
+class_names = ['${:d}$'.format(x) for x in range(0, 10)]  # Digit class names
+fig = plt.figure()
+ax = fig.add_subplot(111)
+# Show class labels on each axis
+ax.xaxis.tick_top()
+major_ticks = range(0,10)
+minor_ticks = [x + 0.5 for x in range(0, 10)]
+ax.xaxis.set_ticks(major_ticks, minor=False)
+ax.yaxis.set_ticks(major_ticks, minor=False)
+ax.xaxis.set_ticks(minor_ticks, minor=True)
+ax.yaxis.set_ticks(minor_ticks, minor=True)
+ax.xaxis.set_ticklabels(class_names, minor=False, fontsize=15)
+ax.yaxis.set_ticklabels(class_names, minor=False, fontsize=15)
+# Set plot labels
+ax.yaxis.set_label_position("right")
+ax.set_xlabel('Predicted label')
+ax.set_ylabel('True label')
+fig.suptitle('Confusion table', y=1.03, fontsize=15)
+# Show a grid to seperate digits
+ax.grid(b=True, which=u'minor')
+# Color each grid cell according to the number classes predicted
+ax.imshow(conf_matrix, interpolation='nearest', cmap='binary')
+# Show the number of samples in each cell
+for x in xrange(conf_matrix.shape[0]):
+    for y in xrange(conf_matrix.shape[1]):
+        color = 'w' if x == y else 'k'
+        ax.text(x, y, conf_matrix[y,x], ha="center", va="center", color=color)       
+plt.show()
+
+
+https://stackoverflow.com/questions/31104416/name-xrange-is-not-defined-in-python-3
+
+y_conv=tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
+y_conv as y_predict
+
+cross_entropy = -tf.reduce_sum(y_*tf.log(y_conv))
+train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
+correct_prediction = tf.equal(tf.argmax(y_conv,1), tf.argmax(y_,1))
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+
+# fix "alchemy category":
+training_data[:,3]=[0 if x=="arts_entertainment" else x for x in training_data[:,3]]
+training_data[:,3]=[1 if x=="business" else x for x in training_data[:,3]]
+training_data[:,3] = [2 if x=="computer_internet" else x for x in training_data[:,3]]
+training_data[:,3] = [3 if x=="culture_politics" else x for x in training_data[:,3]]
+training_data[:,3] = [4 if x=="gaming" else x for x in training_data[:,3]]
+training_data[:,3] = [5 if x=="health" else x for x in training_data[:,3]]
+training_data[:,3]=[6 if x=="law_crime" else x for x in training_data[:,3]]
+training_data[:,3]=[7 if x=="recreation" else x for x in training_data[:,3]]
+training_data[:,3]=[8 if x=="religion" else x for x in training_data[:,3]]
+training_data[:,3]=[9 if x=="science_technology" else x for x in training_data[:,3]]
+training_data[:,3]=[10 if x=="sports" else x for x in training_data[:,3]]
+training_data[:,3]=[11 if x=="unknown" else x for x in training_data[:,3]]
+training_data[:,3]=[12 if x=="weather" else x for x in training_data[:,3]]
+training_data[:,3] = [999 if x=="?" else x for x in training_data[:,3]]
+
+
+C:\maXbox\mX46210\DataScience\sillynames>pip3 install virtualenv
+Collecting virtualenv
+  Downloading https://files.pythonhosted.org/packages/b6/30/96a02b2287098b23b875
+bc8c2f58071c35d2efe84f747b64d523721dc2b5/virtualenv-16.0.0-py2.py3-none-any.whl
+(1.9MB)
+    100% |¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦| 1.9MB 312kB/s
+Installing collected packages: virtualenv
+Successfully installed virtualenv-16.0.0
+
+C:\maXbox\mX46210\DataScience\sillynames>python -m virtualenv venv
+PYTHONHOME is set.  You *must* activate the virtualenv before using it
+Using base prefix 'C:\\Users\\max\\AppData\\Local\\Programs\\Python\\Python36\\'
+
+New python executable in C:\maXbox\mX46210\DataScience\sillynames\venv\Scripts\python.exe
+Installing setuptools, pip, wheel...done.
+
+import re
+import sys
+
+#loco = sys.argv[1]
+cab = 6176
+fileZ = open('cabs.txt')
+fileZ = list(set(fileZ))
+
+for line in fileZ:
+     if cab in line: 
+        IPaddr = (line.strip().split())
+        print(IPaddr[4])
+        
+arr =np.array([1,2,3,4,5,6])
+ts = arr.tostring()
+print np.fromstring(ts,dtype=int)
+
+>>>[1 2 3 4 5 6]
+
+H = \sigma(X \cdot W_h + \mathbf{b}_h) = \frac{1}{1+e^{-(X \cdot W_h + \mathbf{b}_h)}} = \begin{bmatrix} 
+h_{11} & h_{12} & h_{13} \\
+\vdots & \vdots & \vdots \\
+h_{N1} & h_{N2} & h_{N3}
+\end{bmatrix}
+
+
+CaseCrunch is proud to announce the results of the lawyer challenge. CaseCruncher Alpha scored an accuracy of 86.6%. The lawyers scored an accuracy of 62.3%.
+
+Over 100 commercial London lawyers signed up for the competition and made over 750 predictions over the course of a week in an unsupervised environment.
+
+The problems were real complaints about PPI mis-selling decided and published by the Financial Ombudsman Service under the FOIA.
+The main reason for the large winning margin seems to be that the network had a better grasp of the importance of non-legal factors than lawyers.
+
+Evaluating these results is tricky. These results do not mean that machines are generally better at predicting outcomes than human lawyers. These results show that if the question is defined precisely (such as - was this complaint about PPI mis-selling upheld or rejected by the FOS?), machines are able to compete with and sometimes outperform human lawyers.
+
+This experiment also suggests that there may be factors other than legal factors contributing to the outcome of cases. Further research is necessary to establish this proposition beyond the specific parameters of this experiment.
+
+The use case for systems like CaseCruncher Alpha is clear. Legal decision prediction systems like ours can solve legal prediction tasks permanently and reliably.
+The City regulator, the Financial Conduct Authority, has announced a June 2019 deadline for customers to make claims for the mis-selling of payment protection insurance (PPI).
+
+Random forest
+Random forests or random decision forests are an ensemble learning method for classification, regression and other tasks, that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes or mean prediction of the individual trees. Random decision forests correct for decision trees' habit of overfitting to their training set.
+
+A random forest is a meta estimator that fits a number of decision tree classifiers on various sub-samples of the dataset and use averaging to improve the predictive accuracy and control over-fitting. The sub-sample size is always the same as the original input sample size but the samples are drawn ...
+
+The random Forest is an ensemble classifier. It has gained a significant interest in the recent past, due to its quality performance in several areas. A lot of new research work/survey reports related to different areas also reflects this.
+[Search domain www.quora.com] https://www.quora.com/What-is-a-random-forest
+More results
+Random forest
+Random forests or random decision forests are an ensemble learning method for classification, regression and other tasks, that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes or mean prediction of the individual trees. Random decision forests correct for decision trees' habit of overfitting to their training set.
+
+https://sourcedexter.com/amazing-tensorflow-github-projects/#gettingStarted
+
+    "and {1} targets".format(type_true, type_pred))
+ValueError: Classification metrics can't handle a mix of continuous-multioutput and multilabel-indicator targets
+
+# Training for 1,000 steps means 128,000 training examples with the default
+# batch size. This is roughly equivalent to 5 epochs since the training dataset
+# contains 25,000 examples.
+estimator.train(input_fn=train_input_fn, steps=1000);
+
+-------------------------------------------------
+Data Science Workshop of 28.5.2018, 13-15:00 pm
+-------------------------------------------------
+Agenda: Introduction to TensorFlow
+
+We showed 4 building blocks:
+
+1. Introduction (till slide 38)
+
+https://web.stanford.edu/class/cs20si/lectures/slides_01.pdf
+
+2. Methodology
+
+https://www.tensorflow.org/tutorials/
+
+3. Practical Approach
+
+C:\maXbox\mX46210\DataScience\confusionlist\mnist_softmax21.py
+
+http://cs231n.github.io/python-numpy-tutorial/
+
+: X:\1_Public\Documents\Data Science Workshops
+
+4. Best Introduction as Ranking
+
+https://ep2017.europython.eu/media/conference/slides/introduction-to-tensorflow.pdf
+
+Discussion:
+--------------------------------
+
+Topics: 
+- CaseCrunch UseCase
+- Start Values for Weights
+- How to change Stochastic Gradient
+- Why do you have reduce_mean()
+- Are there other classifications or what is best?
+- What is the random by RandomForest?
+- Implicit or explicit screen classification?
+
+---------------------------------------
+CaseCrunch is proud to announce the results of the lawyer challenge. CaseCruncher Alpha scored an accuracy of 86.6%. The lawyers scored an accuracy of 62.3%.
+Over 100 commercial London lawyers signed up for the competition and made over 750 predictions over the course of a week in an unsupervised environment.
+The problems were real complaints about PPI mis-selling decided and published by the Financial Ombudsman Service under the FOIA.
+The main reason for the large winning margin seems to be that the network had a better grasp of the importance of non-legal factors than lawyers.
+
+----------------------------------------------
+Question about weights at the beginning
+I know initializations define the probability distribution used to set the initial random weights of layers. The options gives are uniform lecun_uniform, normal,
+identity, orthogonal, zero, glorot_normal, glorot_uniform, he_normal, and he_uniform.
+How does my selection here impact my end result or model? Shouldn’t it not matter
+because we are “training” whatever random model we start with and come up with a more
+optimal weighting of the layers anyways?
+
+-------------------------------------------
+- How to change Stochastic Gradient Steps
+
+Is the learning rate related to the shape of the error gradient, as it dictates the rate of descent?
+Yes >>> #3 optimize this loss  with learn rate , e.g. 0.4  
+     
+  train_step = tf.train.GradientDescentOptimizer(0.4).minimize(cross_entropy)
+
+----------------------------------------
+- Why do you have reduce_mean()
+
+There are three training modes for neural networks
+stochastic gradient descent: Adjust the weights after every single training example
+batch training: Adjust the weights after going through all data (an epoch)
+mini-batch training: Adjust the weights after going through a mini-batch. This is
+usually 128 training examples.
+# Training for 1,000 steps means 128,000 training examples with the default
+# batch size. This is roughly equivalent to 5 epochs since the training dataset
+# contains 25,000 examples.
+estimator.train(input_fn=train_input_fn, steps=1000);
+
+------------------------------------------------------
+- Are there other classifications or what is best?
+
+I have tried using Naive bayes on a labeled data set of crime data but got really poor results (7% accuracy). Naive Bayes runs much faster than other alogorithms I’ve been using so I wanted to try finding out why the score was so low.best?
+
+After reading I found that Naive bayes should be used with balanced datasets because it has a bias for classes with higher frequency. Since my data is unbalanced I wanted to try using the Complementary Naive Bayes since it is specifically made for dealing with data skews.
+Note that if your algorithm returns everything, it will return every relevant result possible, and thus have high recall, but have very poor precision. On the other hand, if it returns only one element, the one that it is the most certain is relevant, it will have high precision but low recall.
+In order to judge such algorithms, the common cost function is the F-score!
+- have high precision, not return irrelevant information
+- have high recall, return as much relevant results as possible
+
+-----------------------------------------------------------------
+- What is the random by RandomForest?
+
+A:  The sub-sample size is always the same as the original input sample size but the samples of a decision tree are drawn by random.
+
+Random forests or random decision forests are an ensemble learning method for classification, regression and other tasks, that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes or mean prediction of the individual trees.
+
+Also, you should be aware of the most amazing feature of random forests in Python:
+instant parallelization! Those of us who started out doing this in R and then moved over are always amazed, especially when you get to work on a machine with a few dozen cores.
+You can use decision tree methods, specifically Random Forests for calculating the most important attributes based on information gain if you have already
+found a way to identify how to label a person.
+However, if you do not have any label information maybe you can use some expert view
+for preliminary attribute selection. After that you make unsupervised classification in order to retrieve your labels. Lastly, you can select the most important fields using Random Forest or other methods like Bayesian Belief Networks.
+
+I would recommend training on more balanced subsets of data. Training random
+forest on sets of randomly selected positive example with a similar number of negative samples. In particular if the discriminative features exhibit a lot of variance this will be fairly effective and avoid over-fitting.
+
+--------------------------------------------------------------------
+- Implicit or explicit screen classification?
+
+Best classification algorithms store the knowledge implicitly. This means, that they are not able to convert this knowledge to rules, which could be expressed explicitly in the form of if-then sentences or decision trees. If an algorithm is able to express its knowledge in explicit form, it is called ‘a machine learning algorithm’. While extracting explicit rules from large databases may be interesting in some cases, the resulting classification success using these explicit rules is usually lower then when using classifiers, which store the knowledge implicitly.
+
+General recommendations and info on different algorithms
+----------------------------------------------------------
+Naive Bayes
+The veteran of classification. It will furnish best classificaiton results, regardless of the many methods introduced, especially due to the use of m-estimate of probability [4] and Laplace-law of propability. It is very fast in learning and classification. Natively handles only discrete attributes and requires a special discretization engine for real valued attributes. The algorithm will compute
+probability distributions for all attributes for each class and classify in to the most probable class.
+
+K-NN or K nearest neighbors
+Another veteran of classification. Gives best classification results especially with real valued attributes. Its biggest setback is performance. The learning phase is fast, but each classification requires that all the examples are read again. (Naive Bayes requires only that all the classes are read again.) As the name suggests, the algorithm will search up K nearest neighbors and then classify in to the majority class in this selection of K neighbors.
+
+Linear Classifier
+Specifically designed to address the problems of prior probabilities of classes and is prior probability invariant. (Solves problems of majority class prevalance and differences in probability distribution of classes between acquired and test examples). As fast as Naive bayesian and also able to handle real valued attributes. It is a compromise between the speed of naive bayesian
+and the ability of K-NN to handle real valued attributes. The algorithm will compute probability distributions for all attributes for each class and classify to the most probable class. Main difference to the Naive Bayes: Training one class does affect the response of other classes. This allows the response of specific classes to be hand engineered (fuzzy logic design). The response of the class is interpreted as: Average probability across all attributes, that this new example belongs to this class. We classify to the class with the strongest response.
+
+https://www.virustotal.com/en/file/be006cda3c61085e1600f81a4d4aa66d8765807a9293bd8326464d2356a93a76/analysis/
+
+python top:
+
+>>> nums2 = list(range(20))
+>>> print([x ** 2 for x in nums2])
+>>> print(np.random.random((8,4)))
+
+from scipy.misc import imread, imsave, imresize
+
+http://cs231n.github.io/python-numpy-tutorial/
+
+# Read an JPEG image into a numpy array
+img = imread(r'assets/cat.jpg')
+print(img.dtype, img.shape)  # Prints "uint8 (400, 248, 3)"
+
+Broadcasting
+Broadcasting is a powerful mechanism that allows numpy to work with arrays of different shapes when performing arithmetic operations. Frequently we have a smaller array and a larger array, and we want to use the smaller array multiple times to perform some operation on the larger array.
+
+class Greeter(object):
+
+    # Constructor
+    def __init__(self, name):
+        self.name = name  # Create an instance variable
+
+    # Instance method
+    def greet(self, loud=False):
+        if loud:
+            print('HELLO, %s!' % self.name.upper())
+        else:
+            print('Hello, %s' % self.name)
+
+g = Greeter('Fred')  # Construct an instance of the Greeter class
+g.greet()            # Call an instance method; prints "Hello, Fred"
+g.greet(loud=True)   # Call an instance method; prints "HELLO, FRED!"
+
+
+https://machinelearningmastery.com/naive-bayes-for-machine-learning/
+
+https://machinelearningmastery.com/how-to-define-your-machine-learning-problem/
+
+https://jeffdelaney.me/blog/useful-snippets-in-pandas/
+
+ 
+    Task (T): Classify a tweet that has not been published as going to get retweets or not.
+    Experience (E): A corpus of tweets for an account where some have retweets and some do not.
+    Performance (P): Classification accuracy, the number of tweets predicted correctly out of all tweets considered as a percentage.
+    
+Doc of python:
+
+>>> from operator import add
+>>> listoflists = [['the', 'cat'], ['sat', 'on'], ['the', 'mat']]
+>>> help(reduce)
+Help on built-in function reduce in module __builtin__:
+ 
+reduce(...)
+    reduce(function, sequence[, initial]) -> value
+ 
+    Apply a function of two arguments cumulatively to the items of a sequence,
+    from left to right, so as to reduce the sequence to a single value.
+    For example, reduce(lambda x, y: x+y, [1, 2, 3, 4, 5]) calculates
+    ((((1+2)+3)+4)+5).  If initial is present, it is placed before the items
+    of the sequence in the calculation, and serves as a default when the
+    sequence is empty.
+ 
+>>> reduce(add, listoflists, [])
+['the', 'cat', 'sat', 'on', 'the', 'mat']
+>>> 
+
+from itertools import product
+ 
+while True:
+    bexp = input('\nBoolean expression: ')
+    bexp = bexp.strip()
+    if not bexp:
+        print("\nThank you")
+        break
+    code = compile(bexp, '<string>', 'eval')
+    names = code.co_names
+    print('\n' + ' '.join(names), ':', bexp)
+    for values in product(range(2), repeat=len(names)):
+        env = dict(zip(names, values))
+        print(' '.join(str(v) for v in values), ':', eval(code, env))
+        
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----
+
+EKON 22 2018
+
+Machine Learning II
+
+Das neue Zauberwort heißt Machine Learning, ich zeige konkret drei Anwendungen mit TensorFlow oder dewresearch.com in VS-Code, C++ und Delphi API. Anhand eines neuronalen Netzes als Handschrifterkennung lassen sich die Anwendungen auch grafisch darstellen. TensorFlow ist eine plattformunabhängige Open-Source-Programmbibliothek für künstliche Intelligenz bzw. maschinelles Lernen im Umfeld von Sprache, Big Data, Data Science und Bildverarbeitungsaufgaben.
+
+Delphi API's fannfloat.dll
+Scikit-learn
+
+Einführung in Machine Learning
+In diesem Talk zeige ich die 4 Gruppen des ML auf:
+Regression, Dimension Reduction, Clustering und Classification. Die meisten 
+ML-Projekte scheitern angeblich an fehlender Datenkonsolidierung und infolge  nicht vorhandener Hypothese. Anhand des bekannten IRIS Dataset gehen wir die 4 Gruppen mit je 4 Algorithmen durch und vermeiden diesen Mangel.
+
+Titel: Patterns Konkret
+Autor: Max Kleiner (Hrsg.), Silvia Rothen, Bernhard Angerer
+ ISBN: 3-935042-46-9 
+ 
+ 
+per le botteghe non e la fine: le salveranno i nostri anziani
+Für die Geschäfte ist es nicht das Ende: Unsere Senioren werden sie retten
+«Wie werden wir uns von Zürich nach Ostermundigen bewegen?», «Werden wir von Robotern gepflegt?», «Ist es noch notwendig, Sprachen zu lernen?», «Wer macht meinen Job?», «Was wäre, wenn es selbstfahrende Autos gäbe?».
+
+A friendly scripter application that uses a Delphi engine to test and analyze algorithms and methods
+
+maXbox is an intuitive scripting tool designed to help you create scripts. It bundles a Delphi engine that can be used to test, teach and analyze algorithms in a practical manner.
+
+You can run the application from a portable drive and quickly deploy it using byte or text code. maXbox provides a comprehensive collection of exercises and examples, as well as a handy debug and decompile function.
+
+On top of that, the program was built on RemObjects Pascal Script and maXbox starter provides numerous tutorials from all over the world.
+
+class -----------------------------------------------------------------
+THash = class( TTPLb_BaseNonVisualComponent, ICryptographicLibraryWatcher, IHash_TestAccess)
+  private
+    FHashObj: TSimpleHash;
+    FHash   : IHash;
+    FLib: TCryptographicLibrary;
+    FHashId: string;
+    FIntfCached: boolean;
+
+    function  GetIsHashing: boolean;
+    function  GetHashOutput: TStream;
+    function  GetonProgress: TOnHashProgress;
+    procedure SetOnProgress( Value: TOnHashProgress);
+    procedure ProgIdsChanged;
+
+    procedure SetLib( Value: TCryptographicLibrary);
+    procedure Dummy( const Value: string);
+    procedure SetHashId( const Value: string);
+    procedure SetIntfCached( Value: boolean);
+    function  GetFeatures: TAlgorithmicFeatureSet;
+    procedure ReadData( Reader: TReader);
+    procedure WriteData( Writer: TWriter);
+
+    // IHash_TestAccess. Just for testing
+    function GetHasher: IHasher;
+
+  protected
+    procedure Notification(
+      AComponent: TComponent; Operation: TOperation); override;
+    procedure DefineProperties( Filer: TFiler); override;
+    function  GetHashDisplayName: string; virtual;
+    procedure Loaded; override;
+    property  InterfacesAreCached: boolean     read FIntfCached write SetIntfCached;
+
+  public
+    constructor Create( AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Begin_Hash;
+    procedure UpdateMemory( const Plaintext{in}; PlaintextLen: integer);
+    procedure End_Hash;
+    procedure Burn;
+
+    procedure HashStream( Plaintext: TStream);
+    procedure HashFile  ( const PlaintextFileName: string);
+    procedure HashString( const Plaintext: string);
+    procedure HashAnsiString( const Plaintext: ansistring);
+    function  isUserAborted: boolean;
+
+    property  isHashing: boolean               read GetIsHashing;
+    property  HashId: string                   read FHashId      write SetHashId;
+    property  HashOutputValue: TStream         read GetHashOutput;
+
+  published
+    property  Hash: string                       read GetHashDisplayName write Dummy stored False;
+    property  Features: TAlgorithmicFeatureSet   read GetFeatures stored False;
+
+    property  CryptoLibrary: TCryptographicLibrary    read FLib write SetLib;
+    property  OnProgress  : TOnHashProgress    read GetonProgress   write SetOnProgress;
+
+ end;
+
+----app_template_loaded_code checked----
+----File newtemplate.txt not exists - cached - now saved!
+
+2. Ablauf
+
+Die Semesterarbeit beinhaltet folgende Meilensteine:
+
+– In der Firma ein Thema suchen, und mit Vorteil einen Ansprechpartner/Betreuer in der Firma definieren.
+
+– Erstellen einer Projektskizze (siehe unten), Eingabe an die Schule
+
+– Individuelle Kurzpräsentation (10') und Diskussion (10') des Themas an der Schule vor einer Dozierendengruppe.
+
+– Eventuell Überarbeitung der Projektskizze gemäss Feedback an der Präsentation.
+
+– Zuordnung eines Experten durch die Schule für die Begleitung.
+
+– Durchführung der Arbeit in eigener Terminplanung, 1-3 Zwischenreviews mit dem Experten.
+
+– Schlusspräsentation der Arbeit (Plenum mit allen Kursteilnehmenden). Dauer ca. 15 Min. Präsentation + 10 Min. Diskussion pro Arbeit.
+
+– Abgabe des Berichtes an den Experten bis 2.10.2018
+
+– Beurteilung durch den Experten bis 15.10.2018
+
+
+Die Projektskizze umfasst eine ein- bis zweiseitige Aufgabenstellung und eine 10-minütige Power-Point Präsentation mit folgenden Teilen:
+
+– Titel
+
+– Umfeld
+
+– Problemstellung
+
+– Lösungsansatz (Vorgehen, Methoden)
+
+– Name und Kontaktadressen der Gruppenmitglieder, und des Ansprechpartners/Betreuers in der Firma
+
+Gruppenarbeiten sind, wo möglich, erwünscht und je nach Rahmenbedingungen sogar von Vorteil.
+
+Der nominelle Aufwand liegt bei 90h, kann je nach Vorbereitungsphase und Komplexität aber auch höher sein.
+
+Semesterprojekte können vertraulich behandelt werden. Massgebend für die Rahmenbedingungen ist das Studienreglement
+
+ 
+
+Berner Fachhochschule
+
+Technik und Informatik
+
+Andrea Moser
+
+Administration Weiterbildung

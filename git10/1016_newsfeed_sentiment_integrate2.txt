@@ -1,0 +1,214 @@
+{# ImageAI is a Python library built to empower Computer Vision
+from imageai.Detection import ObjectDetection
+#Using TensorFlow backend.
+##!/usr/bin/env python
+import wget and integrate in maXbox control }
+//The question is: should I read the newspaper today?
+
+program Unified_NewsfeedSentiment_Summary2;
+
+const C=CRLF;    
+const SCRIPTNAMEP= '1016_newsfeed_sentiment.py';
+const DETECTOUTFILE= 'newsfeed_titlesout22.txt';
+
+Const PYSCRIPT6 = 
+'import nltk                                                 '+C+
+'from nltk.sentiment.vader import SentimentIntensityAnalyzer '+C+
+'import wget                                                 '+C+
+'import sys, datetime as dt                                  '+C+
+'#nltk.download("vader_lexicon")                             '+C+
+'import feedparser                                           '+C+
+'import pandas as pd                                         '+C+
+'pd.set_option("max_colwidth", 400)                          '+C+
+'import numpy as np                                          '+C+
+'print("this first line after imports")                      '+C+
+'                                                            '+C+
+'                                                            '+C+
+'def GraphViz(node):                                           '+C+
+'    d = Graph(node)                                           '+C+
+'                                                              '+C+
+'    from graphviz import Digraph                              '+C+
+'    dot = Digraph("Graph", strict=False)                      '+C+
+'    dot.format = "png"                                        '+C+
+'                                                              '+C+
+'    def rec(nodes, parent):                                   '+C+
+'        for d in nodes:                                       '+C+
+'            if not isinstance(d, dict):                       '+C+
+'                dot.node(d, shape=d._graphvizshape)           '+C+
+'                dot.edge(d, parent)                           '+C+
+'            else:                                             '+C+
+'                for k in d:                                   '+C+
+'                    dot.node(k._name, shape=k._graphvizshape) '+C+
+'                    rec(d[k], k)                              '+C+
+'                    dot.edge(k._name, parent._name)           '+C+
+'    for k in d:                                               '+C+
+'        dot.node(k._name, shape=k._graphvizshape)             '+C+
+'        rec(d[k], k)                                          '+C+
+'    return dot                                                '+C+
+'                                                              '+C+
+'                                                              '+C+
+'news_feed=feedparser.parse("http://feeds.bbci.co.uk/news/world/rss.xml")'+C+
+'sid = SentimentIntensityAnalyzer()                                   '+C+
+'descriptions=["very negative","negative","slightly negative", \'      +C+
+'         "neutral","slightly positive", "positive","very positive"]  '+C+
+'num_descriptions = len(descriptions)                                 '+C+
+'frontpage = pd.DataFrame()                                           '+C+
+'output_path = sys.argv[1]                                            '+C+
+'                                                                     '+C+
+'def compound_polarity_descript(compound):                            '+C+
+'   return descriptions[int(((1 + compound) / 2) * num_descriptions)] '+C+
+'                                                                     '+C+
+'#wget.download(url, out=destination) #, useragent= "maXbox4")        '+C+
+'for entry in news_feed.entries:                                      '+C+
+'  ss = sid.polarity_scores(entry.title + "\n" + entry.summary)     '+C+
+'  series = pd.Series(                                              '+C+
+'   [                                                               '+C+
+'      ss["neg"],                                                   '+C+
+'      ss["neu"],                                                   '+C+
+'      ss["pos"],                                                   '+C+
+'      ss["compound"],                                              '+C+
+'      compound_polarity_descript(ss["compound"]),                  '+C+
+'      entry.title,                                                 '+C+
+'      entry.summary                                                '+C+
+'    ],                                                             '+C+
+'    index=[                                                        '+C+
+'      "neg","neu","pos",                                           '+C+
+'      "compound",                                                  '+C+
+'      "human",                                                     '+C+
+'      "title",                                                     '+C+
+' #print(eachItem["name"],": ",eachItem["percentage_probability"])  '+C+
+'      "summary"                                                    '+C+
+'    ])                                                             '+C+
+'  frontpage=pd.concat([frontpage,series.to_frame().T],ignore_index=True)'+C+
+'                                                                     '+C+
+'alist=[]                                                             '+C+
+'for count,entry in enumerate(news_feed.entries):                     '+C+
+'  alist.append(str(count)+": "+entry.title+": "+                     '+C+
+'   str(sid.polarity_scores(entry.title+entry.summary)["compound"]))  '+C+
+'                                                                     '+C+
+'finallist = "\n".join(alist)                                         '+C+
+'with open(output_path, "w") as file:                                 '+C+
+'  file.write("BBC-News Sentiment of "+str(dt.datetime.now())+        '+C+
+'               "\n"+str(finallist)+                                  '+C+
+'               "\n"+str(dt.datetime.utcnow()))                       '+C+    
+'                                                                     '+C+
+'compound_frontpage = frontpage["compound"].mean(skipna = True)       '+C+
+'print("\n")                                                          '+C+
+'print(frontpage)                                                     '+C+
+'print("News today: "+compound_polarity_descript(compound_frontpage)) '+C+
+'print("integrate newsfeed sentiment detector compute ends...")       ';
+
+//*)
+
+const ACTIVESCRIPT = PYSCRIPT6;
+
+var RUNSCRIPT, outputPath: string;
+    startTime64, endTime64, freq64: Int64;
+
+begin //@main
+  //-init env
+  maxform1.console1click(self);
+  memo2.height:= 205;
+  QueryPerformanceFrequency(freq64); 
+  
+  //-config
+  saveString(exepath+SCRIPTNAMEP, ACTIVESCRIPT);
+  sleep(600)
+  //outputPath:= '.\crypt\output\'+DETECTOUTFILE;
+  
+  outputPath:= 'C:\maXbox\EKON24\crypt\output\'+DETECTOUTFILE;
+  
+  if fileExists(exepath+SCRIPTNAMEP) then begin
+      RUNSCRIPT:= exepath+SCRIPTNAMEP;
+      
+    QueryPerformanceCounter(startTime64);
+    //writeln(getDosOutput('python '+RUNSCRIPT+' '+outputpath, exePath));
+    writeln(getDosOutput('py '+RUNSCRIPT+' '+outputpath, exePath));
+    QueryPerformanceCounter(endTime64);
+    println('elapsedSeconds:= '+floattostr((endTime64-startTime64)/freq64));
+    openFile(outputPath)
+    //}
+  end; 
+end.   
+
+
+
+#//----app_template_loaded_code----
+#//----File newtemplate.txt not exists - now saved!----
+#https://stackabuse.com/object-detection-with-imageai-in-python/
+# https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/yolo-tiny.h5
+#https://imageai.readthedocs.io/en/latest/detection/index.html
+
+https://github.com/dsblank/simple_kernel
+https://forum.lazarus.freepascal.org/index.php?topic=38955.0
+https://ipython-books.github.io/16-creating-a-simple-kernel-for-jupyter/
+
+The kernel and client live in different processes and this decoupling between the client and kernel makes it possible to write kernels in any language. They communicate via messaging protocols (I think its 0MQ) implemented on top of network sockets and these messages are encoded in JSON in a text-based document format.
+
+"""
+There are 80 possible objects that you can detect with the
+ObjectDetection class, and they are as seen below.
+  person,   bicycle,   car,   motorcycle,   airplane,
+  bus,   train,   truck,   boat,   traffic light,   fire hydrant,   stop_sign,
+  parking meter,   bench,   bird,   cat,   dog,   horse,   sheep,   cow,   elephant,   bear,   zebra,    giraffe,   backpack,   umbrella,   handbag,   tie,   suitcase,   frisbee,   skis,   snowboard,    sports ball,   kite,   baseball bat,   baseball glove,   skateboard,   surfboard,   tennis racket,    bottle,   wine glass,   cup,   fork,   knife,   spoon,   bowl,   banana,   apple,   sandwich,   orange,
+  broccoli, carrot, hot dog, pizza,  donot, cake,  chair,   couch,   potted plant,   bed,    dining table,   toilet,   tv,   laptop,   mouse,   remote,   keyboard,   cell phone,   microwave,    oven,   toaster,   sink,   refrigerator,   book,   clock,   vase,   scissors,   teddy bear,   hair dryer, toothbrush.
+
+To detect only some of the objects above, you will need to call the CustomObjects function and set the name of the
+object(s) yiu want to detect to through. The rest are False by default. In below example, we detected only chose detect only person and dog.
+
+custom = detector.CustomObjects(person=True, dog=True)
+
+>>> console output:
+car  :  54.72719669342041
+car  :  97.26507663726807
+car  :  97.5576639175415
+person  :  53.6459743976593
+person  :  56.598347425460815
+person  :  72.28184938430786
+laptop  :  57.53162503242493
+bottle  :  10.687477886676788
+bottle  :  11.373373866081238
+
+image detector compute ends...
+image detector compute ends...
+"""
+
+Die Safety-Measures sind Massnahmen, welche du im Design und der Implementierung umsetzt, um die Software sicher zu gestalten. Die meisten Safety-Measures wurden bereits durch die Risikoanalyse gefunden, die weiteren findest du auf Grund deiner Erfahrung oder der anzuwendenden Norm. Die Safety-Measures, welche ich immer wieder angetroffen habe sind:
+
+    Bereichsprüfungen an Schnittstellen von Komponenten
+    Prüfung der zwischengespeicherten Daten mit CRC oder redundanten Daten
+    Plausibilitätsprüfungen über verschiedene Daten-Arten
+    Programmflussüberwachung
+    Runtime-Tests zur Sicherstellung der Korrektheit des Prozessors, wie z.B. RAM, ROM
+    Prüfungen auf nullptr
+    Zyklisches verarbeiten und versenden der Daten
+    
+BBC-News Sentiment of 2021-06-07 17:06:39.438889
+0: Pakistan train accident: Dozens killed in Sindh collision: -0.9001
+1: Unlocking: India states start reopening amid dip in Covid cases: 0.25
+2: Norway police say body on shore is Kurdish-Iranian boy who died in Channel: -0.7003
+3: Chinese birth-control policy could cut millions of Uyghur births, report finds: -0.4939
+4: Jeff Bezos and brother to fly to space in Blue Origin flight: 0.296
+5: Apple employees rally against office working plan: 0.0
+6: Greek islands aim to go 'Covid-free' to welcome back tourists: 0.4588
+7: Afghan policewomen abuse: US and EU urge inquiry: -0.9493
+8: Egerton Ryerson statue toppled at Canada indigenous school protest: -0.25
+9: Peru election: Fujimori's lead narrows as rural votes come in: 0.5719
+10: The Rolling Stones and Tom Jones call for streaming reforms: 0.0
+11: Ukraine's Euro 2020 football kit provokes outrage in Russia: -0.6808
+12: Why Kim Jong-un is waging war on slang, jeans and foreign films: -0.93
+13: Kenya's Thandiwe Muriu: Standing out in camouflage: 0.7269
+14: Daniel Ellsberg: The 90-year-old whistleblower tempting prosecution: -0.3182
+15: 'My foggy glasses solution helped me through Covid': 0.7579
+16: 'Clothes are torn, worn out - I can't find work gloves': -0.25
+17: The couple rescuing the house they bought by accident: -0.4767
+18: Letter from Africa: How Zimbabwe is still haunted by Robert Mugabe: -0.9001
+19: Egerton Ryerson: Statue toppled of architect of 'shameful' school system: 0.2732
+20: Prince Harry and Meghan: California residents react to birth of royal baby girl: 0.0
+21: Pakistan train cash: Footage shows collision aftermath: -0.7845
+22: Ukraine conflict: The couple that's survived seven years of war: 0.5267
+23: British Normandy Memorial unveiled on 77th D-Day anniversary: -0.5574
+24: Venice residents in environmental protest against first post-Covid cruise ship: -0.765
+2021-06-07 15:06:39.438889    
+
+----Simple Browser started----

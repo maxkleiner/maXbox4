@@ -1,0 +1,916 @@
+PROGRAM Bigint_ClassProof_Tutor_41_2;
+
+//(Fast) binominal coefficient computing of the class TMyBigInt
+// ------------------------------------------------
+//#sign:breitsch: BREITSCH-BOX: 02/04/2023 22:53:38 
+//uses Sysutils, MyBigInt; #locs=285
+//ref: uPSI_ubigFloatV3.pas - uPSI_UBigIntsV4.pas
+
+Function IntToBase32(Numb: Longint): String;
+var numlett: string;
+begin
+  numlett:= NUMBERS+LETTERS;
+  Result:= '';
+  for It:= 0 to 4 do begin
+    Insert(numlett[(Numb And 31)+1], Result, 1);
+    Numb:= Numb Shr 5;
+  end;
+end;
+
+Function IntToBase32X(Numb: Longint): String;
+begin
+  Result:= '';
+  for It:= 0 to 4 do begin
+    Insert(NUMBLETTS[(Numb And 31)+1], Result, 1);
+    Numb:= Numb Shr 5;
+  end;
+end;
+
+function getPermutation(npr, k: integer): extended; 
+//2. Permutation(Variation without repeating) = nPr = n!/(n-k)!
+begin
+  result:= (Fact(npr)/Fact(npr-k));
+  //test 4 of 10 = 5040 = NPR(10,4)
+end;
+
+function getCombination(npr, k: integer): extended; 
+//3. Combination (binominal coefficient)= nCr = nPr / k!
+begin
+  result:= (Fact(npr)/Fact(npr-k)/Fact(k));
+  //ncr:= npr/round(fact(ncr))
+  //test 4 of 20 = 4845 = NCR(20,4)
+end;
+
+
+function GetBigIntDirect: string;
+  //unit mybigint
+var mbResult: TMyBigInt;
+     i: integer;
+begin
+  mbResult:= TMyBigInt.Create(333);
+  try
+    // Faktoren im Zaehler aufmultiplizieren  -->2^12=4096
+    for i:= 1  to 12 do begin
+      mbResult.Multiply(mbresult, mbresult);
+      //writeln(inttostr(i)+': '+mbresult.tostring);   
+      end;
+    Result:= mbResult.ToString;
+  finally 
+    //FreeAndNil(mbResult);
+    mbResult.Free;
+  end;
+end;
+
+function GetBigInt: string;
+  //unit mybigint
+var mbResult: TMyBigInt;
+     i: integer;
+begin
+  mbResult:= TMyBigInt.Create(1000);
+  try
+    // Faktoren im Zaehler aufmultiplizieren
+    for i:= 1  to 55 do 
+      mbResult.Multiply1(mbResult, 200001);
+    Result:= mbResult.ToString;
+  finally 
+    //FreeAndNil(mbResult);
+    mbResult.Free;
+  end;
+end;
+
+function BigPow(aone, atwo: integer): string;
+var tbig1, tbig2: TInteger;
+begin
+  tbig1:= TInteger.create(aone);
+  //tbig2:= TInteger.create(10);
+  try
+    tbig1.pow(atwo);
+  finally
+    result:= tbig1.toString(false);
+    tbig1.Free;
+  end;
+end;
+
+//I'm trying to move SysTools to Win64. There is a class TStDecimal which is a fixed-point value with a total of 38 significant digits. The class itself uses a lot of asm code.
+
+function BigDecimal(aone: float; atwo: integer): string;
+begin
+  with TStDecimal.create do begin
+    try
+      //assignfromint(aone) //2 
+      assignfromfloat(aone) //2 
+      RaiseToPower(atwo)  //23
+      result:= asstring
+    finally  
+      free
+    end;
+  end;  
+end;
+
+function BigFloat(aone: extended; atwo: integer): string;
+begin
+  with TBigFloat.create do begin
+    try
+      Setsigdigits(40); //2 
+      //PiConst(280);
+      //RaiseToPower(atwo)  //23
+      //power(tbigfloat,atwo)
+      Assign7(aone)
+      IntPower(atwo, 40)
+      result:= Tostring(normal)
+      writeln(ConverttoString(scientific));
+      writeln(ConverttoString(normal));
+      //writeln(itoa(Digitcount));
+      //writeln(ConverttoExtended(normal));
+    finally  
+      free
+    end;
+  end;  
+end;
+
+function BigDiv2(aone, atwo: string): string;
+var tbig1, tbig2: TInteger;
+begin
+  tbig1:= TInteger.create(10);
+  tbig2:= TInteger.create(10);
+  try
+    tbig1.assign2(atwo)
+    tbig2.assign2(aone)
+    tbig2.Divide(tbig1)
+  finally
+  // Function ConvertToDecimalString( commas : boolean) : string');
+     result:= tbig2.ConvertToDecimalString(true)
+     //199987.7401
+    //writeln(ConverttoExtended(normal));
+    writeln('Digitcount of BigDiv: '+itoa(tbig2.Digitcount));
+    tbig1.Free;
+    tbig2.free;
+  end;
+end;  
+
+function GetBigIntFact(aval: byte): string;
+//call of unit mybigint
+var mbRes: TMyBigInt; i: integer;
+begin
+  mbRes:= TMyBigInt.Create(1);
+  try
+    //multiplication of factor
+    for i:= 1  to aval do 
+      mbRes.Multiply1(mbres, i);
+    Result:= mbRes.ToString;
+  finally 
+    //FreeAndNil(mbResult);
+    mbRes.Free;
+  end;
+end;
+
+function BigFac(n: integer): string;
+  var tbig1: TInteger;
+  begin 
+    result:= '0'
+    tbig1:= TInteger.create(n);  //temp
+       //tbig1.assign(tbig2)
+	   tbig1.factorial;
+    result:= tbig1.tostring(false)
+    tbig1.free; 
+  end; 
+  
+  //Big Fibonacci full Decimals!
+  function FiboPythonBigInt(n: integer): string;
+  var tbig1, tbig2, tbig3: TInteger;
+  begin 
+    result:= '0'
+    tbig1:= TInteger.create(1);  //temp
+    tbig2:= TInteger.create(0);  //result (a)
+    tbig3:= Tinteger.create(1);  //b
+    for it:= 1 to n do begin
+    	tbig1.assign(tbig2)
+	   tbig2.assign(tbig3);
+	   tbig1.add(tbig3);
+	   tbig3.assign(tbig1);
+	 end; 
+    result:= tbig2.tostring(false)
+    tbig3.free;
+    tbig2.free;
+    tbig1.free; 
+  end; 
+
+//<PROCEDURE> 
+
+BEGIN  //Main
+//<Executable statements>
+//MkDir(ExePath+WIPEDIR);
+ writeln('Test very very large number 1: ')
+  //Writeln333^4096: '+GetBigIntDirect);
+  Writeln('Test very large number: ')
+  //Writeln(GetBigInt);
+  maxcalcF('12!')
+  maxcalcF('70!')
+  //maxcalcF29*37*(127^(-1))*179*15749^(-1)*2082607');
+  //prime factors
+  maxcalcF('29*37*(127^-1)*179*(15749^-1)*2082607');
+  maxcalcF('29*37*(1/127)*179*(1/15749)*2082607');
+  maxcalcF('333^2')
+  maxcalcF('2^12')
+  maxcalcF('400000078669/2000123')
+  try
+    maxcalcF('333^4096')
+  except
+    RaiseException(erCustomError, 'Exception: To large Compute');
+  end;
+  
+   //ref: Zastrov -> Rechenbuch der Elektronik
+   maXcalcF('SQRT(16)')
+   maXcalcF('SQRT(4.3*(10^-9)*5.6*(10^-6))')
+   maXcalcF('1/(39*(10^4)*((2.8*(10^8))^2)*SQRT(4.3*(10^-9)*5.6*(10^-6)))')
+ 
+  Writeln('Zastrov Ref Ends ^');
+  writeln(powerbig(333,4096))
+  Writeln('');
+  writeln('le_1 of 333^ 4096 length: '+itoa(length(powerbig(333,4096))));
+  Writeln('');
+  
+  writeln('le_2 of 333^ 4096 length: '+itoa(length(bigpow(333,4096))));
+  Writeln('');
+  writeln(bigpow(333,4096))
+  Writeln('');
+
+  writeln('le_3 of 333.123^ 6 length: '+itoa(length(bigdecimal(333.123,6))));
+  Writeln('');
+  Writeln(BigDecimal(333.123,6))
+  Writeln('')
+  
+  writeln('le_4 of 333.123^6 length: '+itoa(length(bigfloat(333.123,6))));
+  Writeln('');
+  Writeln(BigFloat(333.123,6))
+  Writeln('')
+  
+  //   1366556882568704.475430858133305689 
+  //   1.366556882568704475430858133305689 E 15
+  //   1.366556882568704475430858133305689 × 10^15    wolfram alpha
+
+  writeln('le_5 of 333.123^7 length: '+itoa(length(bigfloat(333.123,7))));
+  Writeln('');
+  Writeln(BigFloat(333.123,7))
+  Writeln('')
+  
+  //   455231528391934540.968953753941191036747
+  //   4.55231528391934540968953753941191036747 E 17
+  //   4.55231528391934540968953753941191036747 × 10^17   wolfram alpha
+  //length(BigPow(333,4096)
+  
+  writeln('BigDiv1: '+BigDiv('400000078669','2000123'));
+  writeln('BigDiv2: '+BigDiv2('400000078669','2000123'));
+ 
+  Writeln('')
+  Writeln('Big Lotto Combination 1600 of 5000!')
+  Writeln('')
+  Writeln(BinominalCoefficient(5000, 1600));    
+  Writeln('')
+  Writeln('Lotto Combination 6 of 45!')
+  Writeln(BinominalCoefficient(45, 6));    
+  Writeln('Lotto Combination 39 of 45!')
+  Writeln(BinominalCoefficient(45, 39));    
+
+  Writeln('');  
+  Writeln('Lotto Combination 6 of 49!')
+  Writeln(BinominalCoefficient(49, 6));  
+  Writeln('');  
+  //Writeln(LoadFileAsString(ExePath+WIPEDIR+'newfile4.txt'));}
+  PrintF('Extended Fact0 of 70: %.18f ',[factorial(70)]);
+  writeln('Big Int Fact1 of 70: '+GetBigIntFact(70));
+  writeln('Big Int Fact2 of 70: '+BigFactorial('70'));
+  writeln('Big Int Fact3 of 70: '+BigFac(70));
+  
+END. 
+
+Doc:
+  http://www.softwareschule.ch/download/maxbox_starter41.pdf
+  
+Ref:  
+
+//-----------------------------app_template_loaded--------------------
+
+
+   TMyBigInt = class
+   private
+     Len: Integer;
+     Value: AnsiString;
+     procedure Trim;
+     procedure Shift(k: Integer);
+     procedure MultiplyAtom(Multiplier1: TMyBigInt; Multiplier2: Integer);
+   public
+     constructor Create(iValue: Integer = 0);
+     procedure Add(Addend1, Addend2: TMyBigInt);
+     procedure Multiply(Multiplier1, Multiplier2: TMyBigInt); overload;
+     procedure Multiply(Multiplier1: TMyBigInt; Multiplier2: Integer); overload;
+     function ToString: string;
+     procedure CopyFrom(mbCopy: TMyBigInt);
+   end;
+ 
+
+
+//*** Code: Unit MyBigInt *************************************************
+
+unit MyBigInt;
+
+interface
+
+uses Sysutils, Math;
+
+const 
+  Base = 10;
+
+type
+  TMyBigInt = class
+  private
+    Len: Integer;
+    Value: AnsiString;
+    procedure Trim;
+    procedure Shift(k: Integer);
+    procedure MultiplyAtom(Multiplier1: TMyBigInt; Multiplier2: Integer);
+  public
+    constructor Create(iValue: Integer = 0);
+    procedure Add(Addend1, Addend2: TMyBigInt);
+    procedure Multiply(Multiplier1, Multiplier2: TMyBigInt); overload;
+    procedure Multiply(Multiplier1: TMyBigInt; Multiplier2: Integer); overload;
+    function ToString: string;
+    procedure CopyFrom(mbCopy: TMyBigInt);
+  end;
+
+implementation
+
+constructor TMyBigInt.Create(iValue: Integer = 0);
+var 
+  sTmp: ShortString; 
+  i: Integer;
+begin
+  inherited Create;
+  sTmp := IntToStr(abs(iValue));
+  Len  := Length(sTmp);
+  SetLength(Value, Len);
+  for i := 1 to Len do Value[i] := Chr(StrToInt(sTmp[Len - i + 1]));
+end;
+
+procedure TMyBigInt.Add(Addend1, Addend2: TMyBigInt);
+  { zwei TMyBigInt miteinander addieren }
+var 
+  i, iCarry, iTemp: Integer;
+begin
+  // Länge der Wert-Strings angleichen
+  iTemp := max(Addend1.Len, Addend2.Len);
+  SetLength(Value, iTemp);
+  for i := Len + 1 to iTemp do Value[i] := #0; // Für den Fall Addend1/Addend2=Self
+  Len := iTemp;
+  // Berechnung von Übertrag und Summe
+  iCarry := 0;
+  for i := 1 to Len do begin
+    iTemp := iCarry;
+    if i <= Addend1.Len then iTemp := iTemp + Ord(Addend1.Value[i]);
+    if i <= Addend2.Len then iTemp := iTemp + Ord(Addend2.Value[i]);
+    Value[i] := Char(iTemp mod Base);
+    iCarry   := iTemp div Base;
+  end;
+  if iCarry > 0 then begin
+    Len := Len + 1;
+    SetLength(Value, Len);
+    Value[Len] := Char(iCarry);
+  end;
+end;
+
+procedure TMyBigInt.Multiply(Multiplier1, Multiplier2: TMyBigInt);
+  { zwei TMyBigInt miteinander multipliziren }
+var 
+  mbResult, mbTemp: TMyBigInt; 
+  i: Integer;
+begin
+  mbResult := TMyBigInt.Create;
+  try
+    mbTemp := TMyBigInt.Create;
+    try
+      for i := 1 to Multiplier2.Len do begin
+        // Multiplizieren nach der "Schulmethode"
+        mbTemp.MultiplyAtom(Multiplier1, Ord(Multiplier2.Value[i]));
+        mbTemp.Shift(i - 1);
+        mbResult.Add(mbResult, mbTemp);
+      end;
+    finally 
+      FreeAndNil(mbTemp);
+    end;
+    CopyFrom(mbResult);
+  finally 
+    FreeAndNil(mbResult);
+  end;
+end;
+
+procedure TMyBigInt.Multiply(Multiplier1: TMyBigInt; Multiplier2: Integer);
+  { TMyBigInt und einen Integer multiplizieren }
+var 
+  mbTemp: TMyBigInt;
+begin
+  mbTemp := TMyBigInt.Create(Multiplier2);
+  try 
+    Multiply(Multiplier1, mbTemp);
+  finally
+  end;
+end;
+
+function TMyBigInt.ToString: string;
+  { Zahl in einen String umwandeln }
+var 
+  i: Integer;
+begin
+  Trim;
+  Result := '';
+  for i := Len downto 1 do Result := Result + IntToStr(Ord(Value[i]));
+end;
+
+procedure TMyBigInt.CopyFrom(mbCopy: TMyBigInt);
+  { von mbCopy kopieren }
+begin
+  Value := mbCopy.Value;
+  Len   := mbCopy.Len;
+end;
+
+procedure TMyBigInt.Trim;
+  { führende Nullen entfernen }
+var 
+  i, p: Integer;
+begin
+  p := Len;
+  for i := Len downto 1 do begin
+    if not (Value[i] in ['0']) then break;
+    p := i - 1;
+  end;
+  if p < Len then begin
+    SetLength(Value, p);
+    Len := p;
+  end;
+end;
+
+procedure TMyBigInt.Shift(k: Integer);
+  { von hinten mit k Nullen auffüllen, also mit Base^k multiplizieren }
+var 
+  i: Integer;
+begin
+  if k = 0 then Exit;
+  SetLength(Value, Len + k);
+  for i := Len downto 1 do Value[i + k] := Value[i];
+  for i := 1 to k do Value[i] := #0;
+  Len := Len + k;
+end;
+
+procedure TMyBigInt.MultiplyAtom(Multiplier1: TMyBigInt; Multiplier2: Integer);
+  { Multiplikation mit einer Ziffer }
+var 
+  i, iCarry, iTemp: Integer;
+begin
+  // Multiplikation mit 1
+  if Multiplier2 = 1 then begin
+    CopyFrom(Multiplier1);
+    Exit;
+  end;
+  SetLength(Value, Multiplier1.Len);
+  Len    := Multiplier1.Len;
+  iCarry := 0;
+  for i := 1 to Len do begin
+    iTemp    := Ord(Multiplier1.Value[i]) * Multiplier2 + iCarry;
+    Value[i] := Char(iTemp mod Base);
+    iCarry   := iTemp div Base;
+  end;
+  if iCarry > 0 then begin
+    Len := Len + 1;
+    SetLength(Value, Len);
+    Value[Len] := Char(iCarry);
+  end;
+end;
+
+end.
+
+ref: 1600 of 2000!
+9823417950011944552607411003906235086949379873170262661746719694930352134476860809695114750245468018380007731944983053142634321229286834563161108254707931986941224820326418987485804325136943151573324828694718403969704759075038168353250812684007443866397669413205364346387771473492500863008002740826284331264272588129024091161831846019957509876500506119953846165099241912422739490659992668065243361204102616149435275804786359496321025
+
+---------------------------------------------------
+C Data Type | Object Pascal |  Description
+
+-------------------------------------------------------------------------------------
+
+LPSTR       PAnsiChar;  String >pointer
+LPCSTR      PAnsiChar;  String >pointer
+DWORD       Integer;    Whole numbers
+BOOL        LongBool;   Boolean values
+PBOOL       ^BOOL;      Pointer to a Boolean value
+Pbyte       ^Byte;      Pointer to a byte value
+PINT        ^Integer;   Pointer to an integer value
+Psingle     ^Single;    Pointer to a single (floating point) value
+PWORD       ^Word;      Pointer to a 16-bit value
+PDWORD      ^DWORD;     Pointer to a 32-bit value
+LPDWORD     PDWORD;     Pointer to a 32-bit value
+UCHAR       Byte;       8-bit values (can represent characters)
+PUCHAR      ^Byte;      Pointer to 8-bit values
+SHORT       Smallint;   16-bit whole numbers
+UINT        Integer;    32-bit whole numbers. Traditionally,
+                        this was used to represent unsigned integers, but Object 
+                        Pascal does not have a true unsigned integer data type.
+PUINT       ^UINT;      Pointer to 32-bit whole numbers
+ULONG       Longint;    32-bit whole numbers. Traditionally,
+                        this was used to represent unsigned integers,
+                        but Object Pascal does not have a true
+                        unsigned integer data type.
+PULONG      ^ULONG;     Pointer to 32-bit whole numbers
+PLongint    ^Longint;   Pointer to 32-bit values
+PInteger    ^Integer;   Pointer to 32-bit values
+PSmallInt   ^Smallint;  Pointer to 16-bit values
+PDouble     ^Double;    Pointer to double (floating point) values
+LCID        DWORD;      A local identifier
+LANGID      Word;       A language identifier
+THandle     Integer;    An object handle. Many Windows API functions return a value
+                        of type THandle, which identobject ifies that object within
+                        Windows’internal object tracking tables.
+PHandle     ^THandle;   A pointer to a handle
+WPARAM      Longint;    A 32-bit message parameter. Under earlier versions of Windows,
+                        this was a 16-bit data type.
+LPARAM      Longint;    A 32-bit message parameter
+LRESULT     Longint;    A 32-bit function return value
+HWND        Integer;    A handle to a window. All windowed controls, child windows,
+                        main windows, etc., have a corresponding window handle that
+                        identifies them within Windows’internal tracking tables.
+HHOOK       Integer;    A handle to an installed Windows system hook
+ATOM        Word;       An index into the local or global atom table for a string
+HGLOBAL     THandle;    A handle identifying a glob. allocated dynamic memory object.
+                        Under 32-bit Windows, there is no distinction between globally
+                        and locally allocated memory.
+HLOCAL      THandle;    A handle identifying a locally allocated dynamic memory object.
+                        Under 32-bit Windows, there is no distinction between globally
+                        and locally allocated memory.
+FARPROC     Pointer;    A pointer to a procedure, usually used as a parameter type in
+                        functions that require a callback function
+HGDIOBJ     Integer;    A handle to a GDI object. Pens, device contexts, brushes, etc.,
+                        all have a handle of this type that identifies them within
+                        Windows’internal tracking tables.
+                    
+ 
+ type
+  TDigits = array of int64;
+  TInteger  = class(TObject)
+  private
+    Sign:  integer;
+    fDigits: TDigits;
+    Base:  integer;
+    procedure AbsAdd(const I2: TInteger);
+    function  AbsCompare(I2: TInteger): integer; overload;
+    function  AbsCompare(I2: int64): integer; overload;
+    procedure AbsSubtract(const I2: TInteger);
+    function  GetBasePower: integer;
+    procedure Trim;
+    function  GetLength: integer;
+    //procedure ChangeLength(new: integer);
+    procedure SetDigitLength(const k: integer);
+    procedure assignsmall(I2: int64);
+    procedure  divmodsmall(d: int64; var rem: int64);
+    procedure  divide2; { fast divide by 2 }
+   public
+
+    constructor Create(const initialValue: int64);  overload;
+    //{$IF compilerversion <= 15}
+    constructor Create;  overload;
+    //{$IFEND}
+    procedure Free;
+    property Digits: TDigits Read fDigits;
+    procedure Assign(const I2: TInteger); overload;
+    procedure Assign(const I2: int64); overload;
+    procedure Assign(const I2: string); overload;
+    procedure AbsoluteValue;
+    procedure Add(const I2: TInteger); overload;
+    procedure Add(const I2: int64); overload;
+    procedure AssignZero;
+    procedure AssignOne;
+    procedure Subtract(const I2: TInteger); overload;
+    procedure Subtract(const I2: int64); overload;
+    procedure Mult(const I2: TInteger); overload;
+    procedure Mult(const I2: int64); overload;
+    procedure FastMult(const I2: TInteger);
+    procedure Divide(const I2: TInteger); overload;
+    procedure Divide(const I2: int64); overload;
+    procedure  Modulo(Const I2: TInteger); overload;
+    procedure  Modulo(Const N: int64); overload;
+    procedure ModPow(const I2, m: TInteger);
+    procedure InvMod(I2: TInteger);
+    procedure DivideRem(const I2: TInteger; var remain: TInteger);
+    procedure DivideRemTrunc(const I2: TInteger; var remain: TInteger);
+    Procedure DivideRemFloor(const I2: TInteger; var remain: TInteger);
+    Procedure DivideRemEuclidean(const I2: TInteger; var remain: TInteger);
+    function Compare(I2: TInteger): integer; overload;
+    function Compare(I2: int64): integer; overload;
+    procedure Factorial;
+    function ConvertToDecimalString(commas: boolean): string;
+    function ConvertToInt64(var N: int64): boolean;
+    function DigitCount: integer;
+    procedure SetSign(s: integer);
+    function GetSign: integer;
+    function IsOdd: boolean;
+    function IsPositive: boolean;
+    function IsNegative: boolean;
+    function IsProbablyPrime: boolean;
+    function IsZero: boolean;
+    //function IsOne: boolean;
+    procedure ChangeSign;
+    procedure Pow(const exponent: int64); overload;
+
+
+    procedure Sqroot;
+    procedure Square;
+    procedure FastSquare;
+
+    procedure Gcd(const I2: TInteger); overload;
+    procedure Gcd(const I2: int64); overload;
+    procedure NRoot(const Root: int64); overload;
+    //procedure NRoot(const Root :Tinteger); overload;
+    function GetBase: integer;
+
+    function BitCount: integer;
+    function  ConvertToHexString: String;
+    function  AssignRandomPrime(BitLength: integer; seed: String; mustMatchBitLength: boolean): boolean;
+    function  AssignHex(HexStr: String): boolean;
+    procedure  RandomOfSize(size: integer);
+    procedure  Random(maxint: TInteger);
+    procedure  Getnextprime;
+
+    //property Length: integer read GetLength write Setdigitlength {ChangeLength};
+    //{$IF compilerversion > 19}
+    class operator Implicit(a: Int64): TInteger;
+    class operator Implicit(a: TInteger): Int64;
+    //class operator Implicit(s: string): TInteger;
+    //class operator Implicit(a: TInteger): TInteger;
+    class operator Implicit(a: TInteger): string; // write to a string;
+    class operator Negative(a: TInteger): TInteger;
+
+    class operator Add(a, b: TInteger): TInteger;
+    class operator Subtract(a, b: TInteger): TInteger;
+    class operator Inc(var a: TInteger): TInteger;
+    class operator Dec(var a: TInteger): TInteger;
+    class operator Equal(a, b: TInteger): boolean;
+    class operator NotEqual(a: TInteger; b: TInteger): boolean;
+    class operator GreaterThan(a: TInteger; b: TInteger): boolean;
+    class operator GreaterThanOrEqual(a: TInteger; b: TInteger): boolean;
+    class operator LessThan(a: TInteger; b: TInteger): boolean;
+    class operator LessThanOrEqual(a: TInteger; b: TInteger): boolean;
+    class operator Multiply(a, b: TInteger): TInteger;
+    class operator IntDivide(a, b: TInteger): TInteger;
+    class operator Modulus(a, b: TInteger): TInteger;
+
+    //{$IFEND}
+  end;
+  {Caution - calculations with mixed basevalues are not allowed,
+   changes to Baseval should be made before any other TInteger
+   operations}
+
+                        
+ TBigFloat = class(TObject)
+    {Numbers are converted internally to a decimal number between -1 and +1
+    and a power of 10 required to reproduce the original value. (.xxxxxx * 10^exponent).
+     xxxxxx is a TFloatInt type, arbitrarily large integer descendant of TInteger. }
+  protected
+    procedure CheckLogPlaces(const MaxSig: TMaxSig);
+    procedure CheckPiPlaces(const MaxSig: TMaxSig);
+    procedure LogBasicIteration(const MaxSig: TMaxSig);
+    procedure LogSolveCubic(const MaxSig: TMaxSig);
+    procedure LogNear1(const MaxSig: TMaxSig);
+    procedure calculate_PI_AGM(const MaxSig: TMaxSig);
+    procedure expRaw(const MaxSig: TMaxSig);
+    procedure R_Function(aa, bb: TBigFloat; const MaxSig: TMaxSig);
+    procedure Split(var ldp, rdp: integer);
+    function GetDigitatX(const x: word): integer;
+    procedure MoveBaseLeft(const n: integer);
+    procedure MoveBaseRight(const n: integer);
+    function GetBasePower: integer;
+    function GetTopPower(const n: int64): integer;
+    function GetTopPower2(const n: int64): integer;
+    procedure Compact;
+    procedure Add1up;
+    procedure AssignHalf;
+    procedure AssignTwo;
+    procedure AssignThree;
+    procedure SquareRaw;
+    function GetNumber(s: string): boolean;
+    function ShowNumber(const View: TView): string;
+    procedure AssignFour;
+
+  public
+    decpart:   TFloatInt;
+    sigdigits: word;   {how many significant digits too show}
+    exponent:  integer;   {restrict exponents to integers}
+    {create and destroy}
+    constructor Create; overload;
+    constructor Create(const MaxSig: TMaxSig); overload;
+    destructor Destroy; override;
+    {}
+
+     {assign}
+    procedure Assign(A: TBigFloat); overload;
+    procedure Assign(A: TBigFloat; SigDig: word); overload;
+    procedure Assign(A: TInteger); overload;
+    procedure Assign(N: int64); overload;
+    procedure Assign(N: int64; SigDig: integer); overload;
+    procedure Assign(d: extended); overload;
+    procedure Assign(S: string); overload;
+    procedure Assign(S: string; SigDig: word); overload;
+
+    {assign fixed values}
+    procedure AssignZero;
+    procedure AssignOne;
+
+
+    {add, subtract, multiply, divide and square}
+    procedure Add(B: TBigFloat); overload;
+    procedure Add(B: int64); overload;
+    procedure AbsAdd(B: TBigFloat);
+    procedure Subtract(B: TBigFloat); overload;
+    procedure Subtract(B: int64); overload;
+    procedure Mult(B: TBigFloat); overload;
+    procedure Mult(B: TBigfloat; const MaxSig: TMaxSig); overload;
+    procedure Mult(B: TInteger); overload;
+    procedure Mult(B: int64); overload;
+    procedure MultRaw(B: TBigFloat);
+    procedure Reciprocal(const MaxSig: TMaxSig);
+    procedure Divide(B: TBigFloat; const MaxSig: TMaxSig); overload;
+    procedure Divide(B: TInteger; const MaxSig: TMaxSig); overload;
+    procedure Divide(B: int64; const MaxSig: TMaxSig); overload;
+    procedure Square(const MaxSig: TMaxSig);
+
+
+    {Compare, iszero, max and min}
+    function Compare(B: TBigFloat): integer;
+    function IsZero: boolean;
+    procedure MaxBigFloat(B: TBigFloat);
+    procedure MinBigFloat(B: TBigFloat);
+
+    {Sqroot, Nroot, Intpower and Power}
+    procedure Sqrt; overload;
+    procedure Sqrt(const MaxSig: TMaxSig); overload;
+    procedure NRoot(N: integer; const MaxSig: TMaxSig);
+    procedure IntPower(intpower: integer; const MaxSig: TMaxSig);
+    procedure Power(power: TBigfloat; const MaxSig: TMaxSig);
+
+    {Log, Log10 and Exp}
+    procedure Log(const MaxSig: TMaxSig);
+    procedure Log10(const MaxSig: TMaxSig);
+    procedure Exp(const MaxSig: TMaxSig);
+
+    {Constants - Pi and Log2}
+    procedure PiConst(const MaxSig: TMaxSig);
+    procedure Log2Const(const MaxSig: TMaxSig);
+
+    {RoundToPrec, Trunc, Floor, Ceiling}
+    procedure RoundToPrec(const MaxSig: TMaxSig); overload;
+    procedure RoundToPrec; overload;
+
+    procedure Trunc(const x: integer = 0);
+    procedure Floor(const x: integer = 0);
+    procedure Ceiling(const x: integer = 0);
+    procedure Round(const x:integer  = 0); overload;
+
+
+    {Change sign of number}
+    procedure AbsoluteValue;
+    procedure Negate;
+
+    {Conversions}
+    procedure SetSigDigits(const newsigdigits: integer);
+
+    function ConvertToString(const View: TView): string;
+    function ConvertToExtended(var num: extended): boolean;
+    function ConvertToInt64(var N: int64): boolean;
+    function IntPart: int64;
+  end;
+
+procedure SIRegister_TBigFloat(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TObject', 'TBigFloat') do
+  with CL.AddClassN(CL.FindClassTObject'),'TBigFloat') do begin
+    RegisterPropertydecpart', 'TFloatInt', iptrw);
+    RegisterPropertysigdigits', 'word', iptrw);
+    RegisterPropertyexponent', 'integer', iptrw);
+    Constructor Create;');
+    Constructor Create1( const MaxSig : TMaxSig);');
+    Procedure Assign( A : TBigFloat);');
+    Procedure Assign3( A : TBigFloat; SigDig : word);');
+    Procedure Assign4( A : TInteger);');
+    Procedure Assign5( N : int64);');
+    Procedure Assign6( N : int64; SigDig : integer);');
+    Procedure Assign7( d : extended);');
+    Procedure Assign8( S : string);');
+    Procedure Assign9( S : string; SigDig : word);');
+    Procedure AssignZero');
+    Procedure AssignOne');
+    Procedure Add( B : TBigFloat);');
+    Procedure Add1( B : int64);');
+    Procedure AbsAdd( B : TBigFloat)');
+    Procedure Subtract( B : TBigFloat);');
+    Procedure Subtract1( B : int64);');
+    Procedure Mult( B : TBigFloat);');
+    Procedure Mult1( B : TBigfloat; const MaxSig : TMaxSig);');
+    Procedure Mult2( B : TInteger);');
+    Procedure Mult3( B : int64);');
+    Procedure MultRaw( B : TBigFloat)');
+    Procedure Reciprocal( const MaxSig : TMaxSig)');
+    Procedure Divide( B : TBigFloat; const MaxSig : TMaxSig);');
+    Procedure Divide1( B : TInteger; const MaxSig : TMaxSig);');
+    Procedure Divide2( B : int64; const MaxSig : TMaxSig);');
+    Procedure Square( const MaxSig : TMaxSig)');
+    Function Compare( B : TBigFloat) : integer');
+    Function IsZero : boolean');
+    Procedure MaxBigFloat( B : TBigFloat)');
+    Procedure MinBigFloat( B : TBigFloat)');
+    Procedure Sqrt;');
+    Procedure Sqrt1( const MaxSig : TMaxSig);');
+    Procedure NRoot( N : integer; const MaxSig : TMaxSig)');
+    Procedure IntPower( intpower : integer; const MaxSig : TMaxSig)');
+    Procedure Power( power : TBigfloat; const MaxSig : TMaxSig)');
+    Procedure Log( const MaxSig : TMaxSig)');
+    Procedure Log10( const MaxSig : TMaxSig)');
+    Procedure Exp( const MaxSig : TMaxSig)');
+    Procedure PiConst( const MaxSig : TMaxSig)');
+    Procedure Log2Const( const MaxSig : TMaxSig)');
+    Procedure RoundToPrec( const MaxSig : TMaxSig);');
+    Procedure RoundToPrec1;');
+    Procedure Trunc( const x : integer)');
+    Procedure Floor( const x : integer)');
+    Procedure Ceiling( const x : integer)');
+    Procedure Round( const x : integer);');
+    Procedure AbsoluteValue');
+    Procedure Negate');
+    Procedure SetSigDigits( const newsigdigits : integer)');
+    Function ConvertToString( const View : TView) : string');
+    Function ConvertToExtended( var num : extended) : boolean');
+    Function ConvertToInt64( var N : int64) : boolean');
+    Function IntPart : int64');
+  end;
+end;
+
+procedure SIRegister_TInteger(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TObject', 'TInteger') do
+  with CL.AddClassN(CL.FindClassTObject'),'TInteger') do begin
+    Constructor Create( const initialValue : int64)');
+    Constructor Create1');
+    Procedure Free');
+    RegisterPropertyDigits', 'TDigits', iptr);
+    Procedure Assign( const I2 : TInteger);');
+    Procedure Assign1( const I2 : int64);');
+    Procedure Assign2( const I2 : string);');
+    Procedure AbsoluteValue');
+    Procedure Add( const I2 : TInteger);');
+    Procedure Add1( const I2 : int64);');
+    Procedure AssignZero');
+    Procedure AssignOne');
+    Procedure Subtract( const I2 : TInteger);');
+    Procedure Subtract1( const I2 : int64);');
+    Procedure Mult( const I2 : TInteger);');
+    Procedure Mult1( const I2 : int64);');
+    Procedure FastMult( const I2 : TInteger)');
+    Procedure Divide( const I2 : TInteger);');
+    Procedure Divide1( const I2 : int64);');
+    Procedure Modulo( const I2 : TInteger);');
+    Procedure Modulo1( const N : int64);');
+    Procedure ModPow( const I2, m : TInteger)');
+    Procedure InvMod( I2 : TInteger)');
+    Procedure DivideRem( const I2 : TInteger; var remain : TInteger)');
+    Procedure DivideRemTrunc( const I2: TInteger; var remain: TInteger)');
+    Procedure DivideRemFloor( const I2: TInteger; var remain: TInteger)');
+    Procedure DivideRemEuclidean(const I2:TInteger; var remain:TInteger)');
+    Function Compare( I2 : TInteger) : integer;');
+    Function Compare1( I2 : int64) : integer;');
+    Procedure Factorial');
+    Function ConvertToDecimalString( commas : boolean) : string');
+    Function ToString( commas : boolean) : string');
+    Function ConvertToInt64( var N : int64) : boolean');
+    Function DigitCount : integer');
+    Procedure SetSign( s : integer)');
+    Function GetSign : integer');
+    Function IsOdd : boolean');
+    Function IsPositive : boolean');
+    Function IsNegative : boolean');
+    Function IsProbablyPrime : boolean');
+    Function IsZero : boolean');
+    Procedure ChangeSign');
+    Procedure Pow( const exponent : int64);');
+    Procedure Sqroot');
+    Procedure Square');
+    Procedure FastSquare');
+    Procedure Gcd( const I2 : TInteger);');
+    Procedure Gcd1( const I2 : int64);');
+    Procedure NRoot( const Root : int64);');
+    Function GetBase : integer');
+    Function BitCount : integer');
+    Function ConvertToHexString : String');
+    Function AssignRandomPrime( BitLength : integer; seed : String; mustMatchBitLength : boolean) : boolean');
+    Function AssignHex( HexStr : String) : boolean');
+    Procedure RandomOfSize( size : integer)');
+    Procedure Random( maxint : TInteger)');
+    Procedure Getnextprime');
+  end;
+end;
+
+
+SysTools is hosted under Sourceforge: sourceforge.net/projects/tpsystools. The class TStDecimal is defined in the unit StDecMth. It has the following description: {Note: StDecMth declares and implements TStDecimal. This is a fixed- point value with a total of 38 significant digits of which 16 are to the right of the decimal point.} 

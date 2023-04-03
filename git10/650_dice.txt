@@ -1,0 +1,345 @@
+unit U_Drawdice;
+
+//@Tutor: http://www.softwareschule.ch/download/maxbox_starter10_plus.pdf
+
+interface
+
+{unit design for probability in two pages}
+//http://www.delphiforfun.org/Programs/Delphi_Techniques/Beginners.htm#Dice
+// adopt /enlarge to script engine maXbox by max , #locs:313
+//#sign:breitsch: BREITSCH-BOX: 02/04/2023 16:28:00 
+
+{uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls;
+ }
+//type
+  //TForm1 = class(TForm)
+ var form1: TForm;  
+    Image1, image2: TImage;
+    chk1, chk2: TCheckbox;
+    DrawDiceBtn, SimuDiceBtn, SimuDiceBtn2: TBitBtn;
+    procedure TForm1_DrawDiceBtnClick(Sender: TObject);
+    procedure TForm1_FormActivate(Sender: TObject);
+  //end;
+
+
+implementation
+//{$R *.DFM}
+
+var
+  colwidth, rowheight:integer;
+  dotleft,dottop,dotsize:integer;
+
+    procedure drawdot(col,row :integer; lefttop: TPoint);
+    {local procedure to draw a single dot}
+    begin
+      image1.canvas.ellipse(lefttop.x+col*colwidth+dotleft,
+                           lefttop.y+row*rowheight+dottop,
+                           lefttop.x+col*colwidth+dotleft+dotsize,
+                           lefttop.y+row*rowheight+dottop+dotsize);
+    end;
+
+{************ DrawDie *********}
+procedure drawdie(image:TImage; LeftTop:TPoint; diesize, n :integer);
+{Draw a single die at "lefttop" with side "diesize" and "n" dots}
+begin  {drawdie}
+  with image do {this will let us automatically refer to properties and
+                 methods of image inside the following
+                 Begin ... End structure without writing image. each time}
+  begin
+    {clear the image and draw the outine}
+    canvas.brush.color:=clYellow;
+    canvas.Pen.color:=clBlack;
+    //rect(lefttop.x, lefttop.y,lefttop.x, lefttop.y);
+    canvas.rectangle1(rect(lefttop.x,lefttop.y, lefttop.x+diesize,lefttop.y+diesize));
+    canvas.brush.color:=clblack; {set brush to dot color}
+    {to draw the dots we will divide the die face into 3 rows and 3 columns and
+     put dots in the proper rows and colums for each number}
+    colwidth:=diesize div 3;  {column width, 1/3 of image width}
+    rowheight:=diesize div 3; {row height, 1/3 of image height}
+    dotleft:=colwidth div 4; {we'll put the left side of the dot 1/4 of the way
+                              across the column}
+    dottop:=rowheight div 4; {and the dot top 1/4 of the way down from the row top}
+    dotsize:=colwidth div 2; {make the size of the dot equal 1/2 the column width}
+    case n of      {draw a specific number by calling a "drawdot" procedure with
+                    the column and row number for each dot in the number.
+                    rows and columns are assumed to be numbered 0,1,2}
+      1: begin
+           drawdot(1,1,lefttop); {draw a simgle dot in the middle column and row}
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE1');
+         end;  
+      2: begin         {draw 2 dots, top left and bottom righht}
+           drawdot(0,0,lefttop);
+           drawdot(2,2,lefttop);
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE2');
+         end;
+      3: begin       {etc.}
+           drawdot(0,0,lefttop);
+           drawdot(1,1,lefttop);
+           drawdot(2,2,lefttop);
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE3');
+           end;
+      4: begin
+           drawdot(0,0,lefttop);
+           drawdot(0,2,lefttop);
+           drawdot(2,0,lefttop);
+           drawdot(2,2,lefttop);
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE4');
+         end;
+      5: begin
+           drawdot(0,0,lefttop);
+           drawdot(0,2,lefttop);
+           drawdot(1,1,lefttop);
+           drawdot(2,0,lefttop);
+           drawdot(2,2,lefttop);
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE5');
+         end;
+      6: begin
+           drawdot(0,0,lefttop);
+           drawdot(0,1,lefttop);
+           drawdot(0,2,lefttop);
+           drawdot(2,0,lefttop);
+           drawdot(2,1,lefttop);
+           drawdot(2,2,lefttop);
+           image2.Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE6');
+        end;
+    end; {case}
+  end;
+end;
+
+{*********** DrawDiceBtnClick *********}
+procedure TForm1_DrawDiceBtnClick(Sender: TObject);
+var size, offset:integer;
+begin
+  image1.canvas.brush.color:=form1.color;
+  with image1 do canvas.fillrect(clientrect);
+  size:=9*image1.height div 10; {make size 90% of height}
+  offset:=image1.height div 20; {make offset 5% of height}
+  drawdie(image1,point(offset,offset),size,random(6)+1); {draw 1st die}
+  drawdie(image1,point(offset+image1.width div 2,offset),size,random(6)+1); {draw 2nd}
+end;
+
+function DiceSimulation_SameNumberPair: integer;
+var size, offset, rand1, rand2:integer;
+begin
+  image1.canvas.brush.color:=form1.color;
+  with image1 do canvas.fillrect(clientrect);
+  size:=9*image1.height div 10; {make size 90% of height}
+  offset:=image1.height div 20; {make offset 5% of height}
+  result:= 0;
+  repeat 
+   rand1:= random(6)+1;
+   rand2:= random(6)+1;
+   inc(result)
+   drawdie(image1,point(offset,offset),size,rand1); {draw 1st die}
+   drawdie(image1,point(offset+image1.width div 2,offset),size,rand2); {draw 2nd}
+  until rand1 = rand2;
+end;
+
+function DiceSimulation_OneNumberPair(anumb: byte): integer;
+var size, offset, rand1, rand2:integer;
+begin
+  image1.canvas.brush.color:=form1.color;
+  with image1 do canvas.fillrect(clientrect);
+  size:=9*image1.height div 10; {make size 90% of height}
+  offset:=image1.height div 20; {make offset 5% of height}
+  result:= 0;
+  repeat 
+   rand1:= random(6)+1;
+   rand2:= random(6)+1;
+   inc(result)
+   drawdie(image1,point(offset,offset),size,rand1); {draw 1st die}
+   drawdie(image1,point(offset+image1.width div 2,offset),size,rand2); {draw 2nd}
+  until rand1 And rand2 = anumb; //(rand1 = anumb) or (rand2 = anumb); 11/36
+end;
+
+function DrawDiceSameSimulationMany(aturn: integer; atype: char): float;
+var asum, aret: integer;
+begin
+ asum:= 0;
+ with TStopwatch.Create do begin
+     Start;
+    if atype = 'A' then begin
+      for it:= 1 to aturn do begin
+        aret:= DiceSimulation_SameNumberPair;
+        writeln(itoa(it)+' '+'simulation count: '+itoa(aret))
+        asum:= asum + aret;
+      end;   
+      result:= aturn / asum;
+      writeln('simulation same number count total: '+itoa(aturn)+' ~6/36');
+    end else begin
+      for it:= 1 to aturn do begin
+        aret:= DiceSimulation_OneNumberPair(6);
+        writeln(itoa(it)+' '+'simulation count: '+itoa(aret))
+        asum:= asum + aret;
+      end;
+      result:= aturn / asum;
+      writeln('simulation one number count total: '+itoa(aturn)+' ~1/36');
+    end; 
+    Stop;
+     writeln('Time runs: '+GetValueStr +' of: '+inttoStr(aturn)+' rolling'); 
+  end; //stopwatch   
+end;  
+  
+
+procedure TForm1_MouseClickSim(Sender: TObject);
+begin
+  if chk1.checked then
+   writeln('N same pair simulation probability: '+
+                 floattoStr(DrawDiceSameSimulationMany(150,'A'))+' %')
+   else
+    writeln('simulation count: '+intToStr(DiceSimulation_SameNumberPair));
+end;
+
+procedure TForm1_MouseClickSim2(Sender: TObject);
+begin
+  if chk2.checked then
+   writeln('N one pair simulation probability: '+
+                 floattoStr(DrawDiceSameSimulationMany(150,'B'))+' %')
+  else
+    writeln('simulation count: '+intToStr(DiceSimulation_OneNumberPair(6)));
+end;
+
+procedure TForm1_MouseDownClick(Sender: TObject; Button: TMouseButton;
+                                        Shift: TShiftState; X,Y: Integer);
+begin
+  TBitBtn(sender).glyph.LoadFromResourceName(getHINSTANCE,'LED_RED_ON');
+end;
+
+procedure TForm1_MouseUpClick(Sender: TObject; Button: TMouseButton;
+                                      Shift: TShiftState; X,Y: Integer);
+begin
+  TBitBtn(sender).glyph.LoadFromResourceName(getHINSTANCE,'LED_GREEN_ON');
+end;
+
+procedure letBuildForm;
+var RS : TResourceStream;
+begin
+ Form1:= TForm.create(self)
+ with form1 do begin
+  setBounds(192,133,696,210)
+  Caption:= 'Dice Simulation 2016'
+  FormStyle:= fsstayonTop;
+  Color:= clGreen; //clBtnFace
+  Font.Charset:= DEFAULT_CHARSET; Font.Color:= clWindowText;
+  Font.Height:= -11; Font.Name:= 'MS Sans Serif';
+  Font.Style:= []
+  OldCreateOrder:= False
+  Position:= poScreenCenter
+  OnActivate:= @TForm1_FormActivate;
+  PixelsPerInch:= 96
+  //TextHeight(13)
+  Show;
+ end;
+  Image1:= TImage.create(form1)
+  with image1 do begin
+    parent:= form1;
+    setBounds(320,28,249,113)
+  end;
+  Image2:= TImage.create(form1)
+  with image2 do begin
+    parent:= form1;
+    transparent:= true;
+    //RS:= TResourceStream.Create(HInstance,'Splashscreen_Background', RT_RCDATA);   
+    setBounds(580,50,249,113)
+    Picture.Bitmap.LoadFromResourcename(HInstance,'JV_DICE6');
+  end;
+  DrawDiceBtn:= TBitBtn.create(form1);
+   with DrawDiceBtn do begin
+     parent:= form1;
+     font.size:= 12; //font.style:= [fsbold]
+     setBounds(80,15,220,36)
+     Caption:= '&Draw pair random dice'
+     glyph.LoadFromResourceName(getHINSTANCE,'LED_GREEN_ON'); 
+     TabOrder:= 0
+     OnClick:= @TForm1_DrawDiceBtnClick;
+     onMouseDown:= @TForm1_MouseDownClick;
+     onMouseUp:= @TForm1_MouseUpClick;
+   end;
+   SimuDiceBtn:= TBitBtn.create(form1);
+   with SimuDiceBtn do begin
+     parent:= form1;
+     font.size:= 12; //font.style:= [fsbold]
+     setBounds(80,65,220,36)
+     Caption:= '&Run same pair of dice'
+     glyph.LoadFromResourceName(getHINSTANCE,'AQUA'); 
+     TabOrder:= 1
+     OnClick:= @TForm1_MouseClickSim
+   end;
+   SimuDiceBtn2:= TBitBtn.create(form1);
+   with SimuDiceBtn2 do begin
+     parent:= form1;
+     font.size:= 12; //font.style:= [fsbold]
+     setBounds(80,115,220,36)
+     Caption:= 'R&uns one pair of dice'
+     glyph.LoadFromResourceName(getHINSTANCE,'BLUE'); 
+     TabOrder:= 2
+     OnClick:= @TForm1_MouseClickSim2
+   end;
+   chk1:= TCheckbox.create(form1);
+   with chk1 do begin
+     parent:= form1;
+     caption:= 'P(n)=6/36';
+     font.color:= clRed;
+     setBounds(8,65,70,22)
+   end;  
+   chk2:= TCheckbox.create(form1);
+   with chk2 do begin
+     parent:= form1;
+     caption:= 'P(n)=1/36';
+     font.color:= clRed;
+     setBounds(8,115,70,22)
+   end;  
+end;
+
+procedure TForm1_FormActivate(Sender: TObject);
+begin
+  RANDOMIZE;  {start with a random seed so results do not repeat from run ro run}
+              {for testing it is often a good idea not to set the random seed}
+  writeln('FormActivate RANDOMIZE Set');  
+end;
+
+begin   //main
+  letBuildForm;
+  //TForm1_FormActivate(Self);
+  //writeln('many same pair simulation probability: '+
+    //              floattoStr(DrawDiceSameSimulationMany(150,'A')))
+  //writeln('many one pair simulation probability: '+
+    //              floattoStr(DrawDiceSameSimulationMany(150,'B')))
+  maxcalcF('1/6 * 100')  
+  maxcalcF('1/36 * 100')  
+  maxcalcF('11/36 * 100')  
+End.
+end.
+
+{many same simulation prob: 0.0284575981787137
+ mX3 executed: 12/14/2015 10:12:04 AM  Runtime: 0:1:23.945  Memload: 62% use
+}
+
+{many same simulation prob: 0.0273772586238365
+ mX3 executed: 12/15/2015 5:33:03 PM  Runtime: 0:1:17.173  Memload: 63% use
+     mX3 executed: 12/15/2015 6:57:54 PM  Runtime: 0:1:12.307  Memload: 55% use}
+{Doc: Problem Description
+
+Brute Force solves a class of problems that can be represented as equations with integer solutions.  The solution must be from a predefined set of integers.  As restrictive as that sounds, there a many problems that qualify.  Examples:
+bullet	
+
+The  word arithmetic problems called Alphametics,  where each variable is a digit 0..9.   The Alphametics program previously posted only solved addition problems.  BruteForce should be able to solve problems with other operations, although I haven't tried any yet.  
+bullet	
+
+ NxN Magic squares have a solution set consisting of the integers 1..N2.    
+bullet	
+
+What 3 digit number together with it's square contains all 10 digits?.   
+bullet	
+
+The Bookshelf problem: "Kristen noticed that if she arranged her 9 volume set of Horse books with volumes 6729 on the top shelf of her bookcase and 13458 on the bottom, the result was a fraction with value 1/2.  She started rearranging the books trying to make other fractions (1/3, 1/4, 1/5, 1/6, 1/7, 1/8 and 1/9).  Can you help her?"  
+bullet	
+
+The 5 Olympic rings overlap to form 9 distinct areas.  Write the digits 1..9 in the areas so that the sum of the digits in any ring is 11.   
+
+Brute Force tries to solve such problems.     }
+
+https://www.scribd.com/doc/293420684/Dice-and-the-Law-of-Probability
+https://www.academia.edu/19687633/Dice_and_the_Law_of_Probability

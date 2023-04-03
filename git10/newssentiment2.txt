@@ -1,0 +1,515 @@
+unit Datacamp_SSLRSS_Stream_Sentiment2;
+
+interface
+
+{uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, SimpleRSS, OleCtrls, SHDocVw, SimpleRSSTypes, StdCtrls; }
+  
+Const 
+  URLSentimentAPI2='http://text-processing.com/api/sentiment/';  
+  //doc: http://text-processing.com/docs/sentiment.html
+  RSS_NewsFeed = 'http://feeds.bbci.co.uk/news/world/rss.xml';       
+  BBCFeed = 'http://feeds.bbci.co.uk/news/world/rss.xml';
+  BLogFeed = 'http://maxbox4.wordpress.com/blog/feed';
+  DatacampFeed = 'https://www.datacamp.com/community/rss.xml';
+
+type
+  TForm1 = TForm;
+  var
+    WebBrowser1: TWebBrowser;
+    SimpleRSS: TSimpleRSS;
+    Label1: TLabel;
+    Label2: TLabel;
+    WebBrowser2: TWebBrowser;
+    atj: TJson;
+    procedure TForm1FormShow(Sender: TObject);
+  //private
+    { Private declarations }
+  //public
+    { Public declarations }
+  //end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+//uses ComObj;
+
+//{$R *.dfm}
+
+function TJsonBaseGetOwnerName: String;
+var
+  TheOwner: TJsonBase;
+begin
+  Result := '';
+  TheOwner := nil;
+  while True do begin
+    if not Assigned(TheOwner) then Break
+    else if TheOwner is TJsonPair then
+    begin
+      Result := (TheOwner as TJsonPair).Name;
+      Break;
+    end
+    else TheOwner := TheOwner.Owner;
+  end;
+end;
+
+procedure TJsonBaseRaiseError(const Msg: String);
+var
+  S: String;
+begin
+  S := Format('<%s>%s', ['ClassName', Msg]);
+  raise Exception.Create(S);
+end;
+
+procedure TJsonBaseRaiseParseError(const JsonString: String);
+begin
+  TJsonBaseRaiseError(Format('"%s" parse error: %s', [TJsonBaseGetOwnerName, JsonString]));
+end;
+
+procedure TJsonArrayParse(JsonString: String);
+var
+  I: Integer;
+  S: String;
+  List: TStringList;
+  Item: TJsonValue;
+begin
+  atj.Clear;
+  JsonString := Trim(JsonString);
+  if not atj.IsJsonArray(JsonString) then TJsonBaseRaiseParseError(JsonString);
+  S := Trim(Copy(JsonString, 2, Length(JsonString) - 2));
+  List := TStringList.Create;
+  try
+    Split(S, ',', List);
+    for I := 0 to List.Count - 1 do begin
+      //Item := atj.Add;
+      Item.Parse(List[I]);
+    end;
+  finally
+    List.Free;
+  end;
+end;
+
+procedure TForm1FormShow(Sender: TObject);
+Var
+  Item : TRSSItem;
+  Category : TRSSItemCategory;
+  channelcategory : TRSSChannelCategory;
+begin
+  channelcategory := SimpleRSS.Channel.Optional.Categories.Add;
+  channelcategory.Category := 'test';
+  With SimpleRSS.Channel.Optional.Categories.Add do
+    Begin
+      Category := 'test 2 with domain';
+      Domain := '-???-';
+    end; // with do
+  Item := SimpleRSS.Items.Add;
+  With Item do
+    Begin
+      Title := 'First News Article';
+      Description := 'This is merely a simple test';
+      Author.name := 'robert@sadev.co.za';
+      Source.Title := 'Made up';
+      Source.URL := 'http://www.nowhere.com';
+      Source.Include := True;
+      Category := Item.Categories.Add;
+      Category.Title := 'TEST';
+    end; // with do
+  Item := SimpleRSS.Items.Add;
+  With Item do
+    Begin
+      Title := 'Second News Article';
+      Description := 'This is slightly more complex test';
+      Author.name := 'robert@sadev.co.za';
+      Source.Title := 'Made up';
+      Source.URL := 'http://www.nowhere.com';
+      Source.Include := True;
+      Category := Item.Categories.Add;
+      Category.Title := 'TEST';
+      Category.Domain := 'thisorthat';
+      GUID.Include := True;
+      GUID.GUID := CreateClassID;
+      PubDate.DateTime := Now;
+      PubDate.TimeZone := 'SAST';
+    end; // with do
+  Item := SimpleRSS.Items.Add;
+  With Item do
+    Begin
+      Title := 'Third News Article';
+      Description := 'This is should have an video attached.';
+      Author.name := 'robert@sadev.co.za';
+      With Item.Categories.Add do
+        Begin
+          Title := 'TEST';
+        end; // with do
+      GUID.Include := True;
+      GUID.GUID := CreateClassID;
+      GUID.IsPermaLink := True;
+      Enclosure.Include := True;
+      Enclosure.URL := 'http://blah.com/blah.mpg';
+      Enclosure.Length := 1024;
+      Enclosure.EnclosureType := 'audio/mpeg';
+    end; // with do
+  Item := SimpleRSS.Items.Add;
+  With Item do
+    Begin
+      Title := 'Another News Article';
+      Description := 'Comments Field';
+      Author.name := 'robert@sadev.co.za';
+      Category := Item.Categories.Add;
+      Category.Title := 'TEST';
+      GUID.Include := True;
+      GUID.GUID := CreateClassID;
+      Comments := 'http://idontcare.com/edit.dll/post';
+    end; // with do
+  {SimpleRSS.SaveToFile('c:\maxbox\lazarus\rsstest.xml');
+  WebBrowser1.Navigate('file://c:/maxbox/lazarus/rsstest.xml');
+  SimpleRSS.LoadFromFile('c:\maxbox\lazarus\rsstest.xml');
+  SimpleRSS.SaveToFile('c:\maxbox\lazarus\rsstest2.xml');
+  WebBrowser2.Navigate('file://c:/maxbox/lazarus/rsstest2.xml');  }
+end;
+
+procedure loadWebform;
+begin
+ Form1:= TForm1.create(self);
+ with form1 do begin
+  Left:= 76
+  Top := 46
+  Width := 770
+  Height := 640
+  Caption := 'WinControlWebBrowserRSSStreamFeed'
+  Color := clBtnFace
+  Font.Charset := DEFAULT_CHARSET
+  Font.Color := clWindowText
+  Font.Height := -11
+  Font.Name := 'MS Sans Serif'
+  Font.Style := []
+  OldCreateOrder := False
+  OnShow := @TForm1FormShow;
+  PixelsPerInch := 96
+  //TextHeight := 13
+  //Show;
+  Label1:= TLabel.create(form1)
+  with label1 do begin
+   parent:= form1
+    Left := 16
+    Top := 8
+    Width := 149
+    Height := 13
+    Caption := 'Output from component (export)'
+  end;
+  Label2:= TLabel.create(form1)
+  with label2 do begin
+   parent:= form1
+    Left := 16
+    Top := 280
+    Width := 242
+    Height := 13
+    Caption := 'output reloaded and reoutputed (import then export)'
+  end ;
+  WebBrowser1:= TWebBrowser.create(form1);
+  with webbrowser1 do begin
+    //parent:= form1;
+    TWinControl(WebBrowser1).Name := 'MyWebBrowser1';
+    TWinControl(WebBrowser1).Parent := form1;
+    TWinControl(WebBrowser1).setbounds(20, 24, 662, 441)
+    TWinControl(WebBrowser1).Align := alClient;
+    TabOrder := 0
+    (*ControlData := {
+      4C00000017590000E81800000000000000000000000000000000000000000000
+      000000004C000000000000000000000001000000E0D057007335CF11AE690800
+      2B2E126208000000000000004C0000000114020000000000C000000000000046
+      8000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000100000000000000000000000000000000000000} *)
+  end;
+  WebBrowser2:= TWebBrowser.create(form1);
+  with webbrowser2 do begin
+    TWinControl(WebBrowser2).Name := 'MyWebBrowser2';
+    TWinControl(WebBrowser2).Parent := form1;
+    TWinControl(WebBrowser2).setbounds(20, 304, 662, 441)
+    TWinControl(WebBrowser2).visible:= False;
+    
+    Align := alCustom
+    TabOrder := 1
+    (*ControlData := {
+      4C00000017590000361F00000000000000000000000000000000000000000000
+      000000004C000000000000000000000001000000E0D057007335CF11AE690800
+      2B2E126208000000000000004C0000000114020000000000C000000000000046
+      8000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000100000000000000000000000000000000000000} *)
+  end ;
+  //object SimpleRSS: TSimpleRSS
+  SimpleRSS:= TSimpleRSS.create(form1)
+  with simplerss do begin
+   parent:= form1;
+    //XMLFileOptions.Options:= [doNodeAutoCreate, doAttrNull, doAutoPrefix, doNamespaceDecl]
+    //XMLFileOptions.ParseOptions := []
+    Channel.Required.Title := 'SADev RSS'
+    Channel.Required.Link := 'http://www.sadev.co.za'
+    Channel.Required.Desc := 'RSS For www.sadev.co.za'
+    Channel.Optional.Language := 22; //langEN_ZA;
+    Channel.Optional.Copyright := '(C) Copyright Robert MacLean 2003 All Rights Reserved'
+    Channel.Optional.ManagingEditor := 'robert@sadev.co.za'
+    Channel.Optional.WebMaster := 'robert@sadev.co.za'
+    Channel.Optional.PubDate.DateTime := 37718.823652233800000000
+    Channel.Optional.PubDate.TimeZone := 'SAST'
+    Channel.Optional.LastBuildDate.DateTime := 37826.573645833320000000
+    Channel.Optional.LastBuildDate.TimeZone := 'GMT'
+    //Channel.Optional.Categories := <>
+    Channel.Optional.Generator := 'Test App'
+    Channel.Optional.Docs := 'http://backenduser.land.com/rss'
+    Channel.Optional.Cloud.Port := 1
+    Channel.Optional.TTL := 60
+    Channel.Optional.Image.Include := False
+    Channel.Optional.Image.Required.URL := 'URL Required'
+    Channel.Optional.Image.Required.Title := 'Title Required'
+    Channel.Optional.Image.Required.Link := 'Link Required'
+    Channel.Optional.Image.Optional.Width := 0
+    Channel.Optional.Image.Optional.Height := 0
+    Channel.Optional.Rating := 'PICS Rating Here'
+    Channel.Optional.SkipHours.h01 := True
+    Channel.Optional.SkipHours.h02 := True
+    Channel.Optional.SkipHours.h03 := True
+    Channel.Optional.SkipHours.h04 := True
+    Channel.Optional.SkipHours.h05 := True
+    Channel.Optional.SkipHours.h06 := True
+    Channel.Optional.SkipHours.h07 := True
+    Channel.Optional.SkipHours.h22 := True
+    Channel.Optional.SkipHours.h23 := True
+    Channel.Optional.SkipHours.h00 := True
+    Channel.Optional.SkipDays.Monday := False
+    Channel.Optional.SkipDays.Tuesday := False
+    Channel.Optional.SkipDays.Wednesday := False
+    Channel.Optional.SkipDays.Thursday := False
+    Channel.Optional.SkipDays.Friday := False
+    Channel.Optional.SkipDays.Saturday := True
+    Channel.Optional.SkipDays.Sunday := True
+    {Items := <
+      item
+        Title := 'Test'
+        Description := 'This one was added in the delphi IDE'
+        Categories := <
+          item
+            Title := 'InsideIDETest'
+          end>
+        Enclosure.Length := 0
+        PubDate.DateTime := 37719.760242476850000000
+        PubDate.TimeZone := 'GMT'
+      end>  }
+    Version := '2.0'            
+    Left := 144
+    Top := 96
+   end;
+ end;
+ form1.show;
+end; 
+
+function GetBlogStream7(const S_API, pData: string): string;
+var strm: TStringStream;
+begin
+ //Function HttpPostURL(const URL,URLData: string; const Data:TStream):Boolean;
+  strm:= TStringStream.create('');
+  //sr:=HTTPEncode(pData)+CRLF;
+  //sr:='text='+HTTPEncode(pData)+CRLF;
+  //sr:= sr+'language=english';
+  //if HttpPostURL(S_API, sr, strm) then
+  //if HttpGETBinary(S_API, strm) then
+   HttpGET(S_API, strm) //then
+     result:= strm.dataString;
+  strm.free;
+end; 
+
+function GetBlogStream8(const S_API, pData: string; 
+                               astrm: TStringStream): TStringStream;
+begin
+ //Function HttpPostURL(const URL,URLData: string; const Data:TStream):Boolean;
+  //strm:= TStringStream.create('');
+  //sr:=HTTPEncode(pData)+CRLF;
+  //sr:='text='+HTTPEncode(pData)+CRLF;
+  //sr:= sr+'language=english';
+  //if HttpPostURL(S_API, pdata, astrm) then
+  //if HttpGETBinary(S_API, strm) then
+   HttpGET(S_API, astrm) //then
+     result:= astrm;
+  //strm.free;
+end; 
+
+function GetBlogStream8Sentiment(const S_API, pData: string; 
+                               astrm: TStringStream): TStringStream;
+begin
+ //Function HttpPostURL(const URL,URLData: string; const Data:TStream):Boolean;
+  //strm:= TStringStream.create('');
+  //sr:=HTTPEncode(pData)+CRLF;
+  sr:='text='+HTTPEncode(pData)+CRLF;
+  sr:= sr+'language=english';
+  if HttpPostURL(S_API, sr, astrm) then
+  //if HttpGETBinary(S_API, strm) then
+   //HttpGET(S_API, astrm) //then
+     result:= astrm;
+  //strm.free;
+end; 
+
+const Testjson = '{'
+                    +' "Afghanistan": [  '
+                    +' { '
+                    +'  "date": "2020-1-22",'
+                    +'  "confirmed": 0,'
+                    +'  "deaths": 0,'
+                    +'  "recovered": 109'
+                    +' }]}';
+                    
+  sentimback2= '{"probability": {"neg": 0.48632073174039103, "neutral": '
+                +'0.88297579276162275, "pos": 0.51367926825960897}, "label": "neutralg"}';              
+
+var strm: TStringStream;  textin, blogstring, sentimback, cnode, response: string;
+       var  XMLhttp: OleVariant;
+           statuscode: byte;
+
+begin //@main
+
+  strm:= TStringStream.create('');
+  //strm:=  GetBlogStream8(BlogCodeFeed,'', strm);
+  //strm:= GetBlogStream8(datacampfeed, 'rss',strm);
+  strm:= GetBlogStream8(bbcfeed, 'rss',strm);
+  writeln(strm.dataString);
+  blogstring:= strm.dataString;
+  //blogstring:= vartostr(strm.dataString);
+  //SaveToFile(strm.dataString,'c:\maxbox\lazarus\rssbbctest.xml', false);
+
+  with TSimpleRSS.create(self) do begin
+    XMLType:= xtRDFrss;           // bbcnews: xtRDFrss;
+    //( xtRDFrss, xtRSSrss, xtAtomrss, xtiTunesrss )');
+    IndyHTTP:= TIdHTTP.create(self);
+    //LoadFromHTTP(RSS_NewsFeed);
+    //LoadFromHTTP(BlogCodeFeed);
+    //LoadFromHTTP(Climatefeed);
+    //LoadFromHTTP(WeatherFeed5Bern);
+    //LoadFromString(strm.dataString);
+    //GenerateXML;
+    try
+      LoadFromStream((strm));
+    except
+    end  
+    //SaveToFile('c:\maxbox\lazarus\rssbbctest.xml');       
+    writeln('RSSFeedVersion: '+Version)
+    writeln('SimpleRSSVersion: '+SimpleRSSVersion)
+    for it:= 0 to items.count-1 do 
+      writeln(itoa(it)+': '+Items[it].title+': '+items[it].pubdate.getdatetime);
+      
+    strm.size:= 0;
+    writeln('Sentiment of: '+ Items[11].title);
+    writeln(GetBlogStream8Sentiment(URLSentimentAPI2, Items[11].title,strm).datastring); 
+    sentimback:= GetBlogStream8Sentiment(URLSentimentAPI2, Items[11].title,strm).datastring;
+    //writeln(GetBlogStream8Sentiment(URLSentimentAPI2, Items,strm).datastring);  
+    strm.Free;  
+  end;     //*)
+  
+  with TJson.create() do begin
+    clear;
+    parse(sentimback2);
+    cnode:= JsonObject.items[0].name;  //'probability'
+    writeln(itoa(JsonObject.count));
+    writeln(values[cnode].asobject.values['neutral'].asstring);
+    writeln(values['label'].asstring);
+    free;
+  end;  
+  
+  cnode:='';
+  with TJson.create() do begin
+    clear;
+    parse(Testjson);
+    writeln(itoa(JsonObject.count));
+    //values[JsonObject.items[0].name].asarray
+    cnode:= JsonObject.items[0].name;
+    writeln(values[cnode].asarray.items[0].asobject.values['date'].asstring);
+    writeln(values[cnode].asarray.items[0].asobject.values['recovered'].asstring);
+    free;
+  end;  
+  
+  XMLhttp:= CreateOleObject('msxml2.xmlhttp')      
+  XMLhttp.Open('POST', URLSentimentAPI2, False)   //False is async
+  XMLhttp.setRequestHeader('Content-Type','application/json');
+  XMLhttp.Send('text="White House warns of email attack"'+CRLF+'language=english');
+ 
+  response:=  XMLhttp.responseText; //assign the data
+  writeln(response)
+  statuscode:=  XMLhttp.status; 
+  writeln('statuscode '+itoa(statuscode))
+  writeln('text="White House warns of email attack"')
+  
+  with TJson.create() do begin
+    clear;
+    parse(response);
+    cnode:= JsonObject.items[0].name;  //'probability'
+    writeln(itoa(JsonObject.count));
+    writeln('prob: '+values[cnode].asobject.values['neutral'].asstring);
+    writeln('result: '+(values['label'].asstring));
+    free;
+  end;  
+  
+  textin:= 'Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself';
+  Writeln('Sentiment of: '+textin)
+  
+  XMLhttp:= CreateOleObject('msxml2.xmlhttp')      
+  XMLhttp.Open('POST', URLSentimentAPI2, False)   //False is async
+  XMLhttp.setRequestHeader('Content-Type','application/json');
+  XMLhttp.Send('text='+'"'+textin+'"'+CRLF+'language=english');
+  response:=  XMLhttp.responseText; //assign data
+  writeln(response)
+  statuscode:=  XMLhttp.status; 
+  writeln('statuscode: '+itoa(statuscode))
+  
+  
+  //loadWebform; 
+  //WebBrowser1.loadfromstream
+  //WebBrowser1.Navigate('file://c:/maxbox/lazarus/rssbbctest.xml');
+  //SimpleRSS.LoadFromFile('c:\maxbox\lazarus\rsstest.xml');
+
+End.
+
+{doc: To analyze the sentiment of some text, do an HTTP POST to http://text-processing.com/api/sentiment/ with form encoded data containg the text you want to analyze. You’ll get back a JSON object response with 2 attributes:
+label:	will be either pos if the text is determined to be positive, neg if the text is negative, or neutral if the text is neither pos nor neg.
+probability:	an object that contains the probability for each label. neg and pos will add up to 1, while neutral is standalone. If neutral is greater than 0.5 then the label will be neutral. Otherwise, the label will be pos or neg, whichever has the greater probability.
+
+Parameters
+text:	Required - the text you want to analyze. It must not exceed 80,000 characters.
+language:	The default language is english, but this API also supports dutch and french.
+}
+
+
+{http://simplerss.sourceforge.net
+Provides a simple methods for accessing, importing, exporting and working with RSS, RDF, Atom & iTunes Feeds
+Result.insert(0).Title := Node.Text
+Specification:
+http://feedvalidator.org/docs/rss2.html
+http://web.resource.org/rss/1.0/modules/content/
+Si vis pacem, para bellum
+ <?xml version="1.0" ?> 
+- <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
+- <!-- XML Generated by SimpleRSS http://simplerss.sourceforge.net at Sat, 15 Jan 2021 09:35:36
+  --> 
+- <channel xmlns="" rdf:about="">
+  <title>Title Required</title> 
+  <link>Link Required</link> 
+  <description>Description Required</description> 
+- <items>
+  <rdf:Seq /> 
+  </items>
+  </channel>
+  </rdf:RDF>
+  <html>
+<head><title>301 Moved Permanently</title></head>
+<body>
+<center><h1>301 Moved Permanently</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+https://w1.weather.gov/xml/current_obs/
+
+Sentiment of Microsoft hack: White House warns of 'active threat' of email attack
+{"probability": {"neg": 0.51108353826440212, "neutral": 0.88038686858763526, "pos": 0.48891646173559788, label: neutral} 
+
+ //}

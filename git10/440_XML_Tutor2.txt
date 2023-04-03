@@ -1,0 +1,1260 @@
+PROGRAM XML_Tutor_Spiral;
+
+///////////////////////////////////////////////////////////////////////////
+//  #sign:breitsch: BREITSCH-BOX: 02/04/2023 18:24:37 
+//  Purpose: Explains an XML object for Tutorial 27 
+//  #path>r110\C:\Program Files\Streaming\maxbox4\Import\tutor110\   
+//  Lines of Code #locs:566
+///////////////////////////////////////////////////////////////////////////
+
+Const TEXTOUT = 'hi world of XML picture ';
+      PICPATH= 'D:\kleiner2005\entwickler\gl\Archipelago\Data';
+      PICMAIN= 'D:\kleiner2005\entwickler\gl\Archipelago\Data\TextureMap.jpg';
+      
+ //############################################################################
+// XML Archimedes Spiral Architect
+//############################################################################
+//TODO: function with an XML tree also sava as png
+  //{TODO: transfer the App with a timer to a benchmark Matrix!}
+
+      
+function GetProcessMemoryInfo(Process: THandle;var MemoryCounters:TProcessMemoryCounters;
+                                    cb: DWORD): BOOL; //stdcall;; 
+     External 'GetProcessMemoryInfo@psapi.dll stdcall';
+     
+procedure TForm1_BtnLoadXmlWithALXmlDocumentClick(Sender: TObject); forward;   
+procedure TForm1_BtnGenerate100000NodeWithALXmlDocumentClick(Sender: TObject); forward;
+
+
+{TYPE <Type declarations>} 
+
+  var FWait, switch: Boolean;
+     
+      aFrm: TForm;
+      RB: TRadioGroup; 
+      ProgBar: TProgressBar;
+      statBar: TStatusBar;
+      EDTileSize: TEdit;
+
+//<FUNCTION>
+//<PROCEDURE> 
+{**************************************************}
+//function GetProcessMemoryInfo; external 'psapi.dll';
+{****************************************************}
+
+function ProcessMemoryUsage(ProcessID: DWORD): DWORD;
+var ProcessHandle : THandle;
+    MemCounters   : TProcessMemoryCounters;
+begin
+  Result:= 0;
+  ProcessHandle:= OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ,
+                               false, ProcessID);
+  try
+    if GetProcessMemoryInfo(ProcessHandle,
+                            MemCounters,
+                            sizeof(MemCounters))
+    then Result:= MemCounters.WorkingSetSize;
+  finally
+    CloseHandle(ProcessHandle);
+  end;
+end;
+
+
+Procedure OVCInternationalDemoClass;
+begin
+ with TOvcIntlSup.Create do begin
+    //Function InternationalDate( ForceCentury : Boolean) : string');
+    writeln('InternationalDate: '+InternationalDate(true));
+    //Function InternationalDatePChar( Dest : PChar; ForceCentury : Boolean) : PChar');
+    writeln('InternationalLongDate: '+InternationalLongDate(false,false));
+    //Function InternationalTime( ShowSeconds : Boolean) : string');
+    writeln('InternationalTime: '+InternationalTime(false));
+    //Function InternationalTimePChar( Dest : PChar; ShowSeconds : Boolean) : PChar');
+    //Function MonthStringToMonth( const S : string; Width : Byte) : Byte');
+    writeln(Country)
+    Free;
+  end;
+  //TerminateProcess( hProcess : THandle; uExitCode : UINT) : BOOL');
+  //GetExitCodeProcess( hProcess : THandle; var lpExitCode : DWORD) : BOOL');
+ //FatalExit( ExitCode : Integer)');
+end;    
+
+
+function CheckIEStartCommand: string;
+begin
+  Application.ProcessMessages;
+  with TRegistry.Create do try
+     rootkey:= HKey_Classes_Root;
+     OpenKey('\htmlfile\shell\open\command',false);
+     try 
+       result:= ReadString('');
+     except
+       result:= ''; 
+     end;
+     CloseKey;
+  finally
+     Free;
+  end;
+end;
+
+function SplitToken(const Text: string; SplitChar: Char;
+                          var First, Last: string): Boolean;
+var SplitPos: Integer;
+begin
+  Result:= False;
+  SplitPos:= Pos(SplitChar, Text);
+  if SplitPos = 0 then Exit;
+  First:= Trim(Copy(Text, 1, SplitPos -1));
+  Last:= Trim(Copy(Text, SplitPos +1, Length(Text) -SplitPos));
+  Result:= (First <>'') and (Last <>'');
+end;
+
+procedure SplitImages(Sender: TObject);
+var pic: TPicture;
+    bmp, bmp2: TBitmap;
+    s, sd, f : Integer;
+    x, y, cnt, idefaul : Integer;
+begin
+   SetCurrentDir(PICPATH); //ExtractFilePath(Application.ExeName));
+   //s:= StrToInt('1024'); //(EDTileSize.Text);
+   idefaul:= 1024;
+   if TryStrToInt(EDTileSize.text,idefaul) then
+     s:= idefaul;
+   pic:= TPicture.Create;
+   cnt:= 0;
+    //writeln(Items.Strings[ItemIndex]); 
+   if RB.itemindex=1 then      //medium
+      f:=2
+   else if RB.itemindex=0 then  //low
+      f:=4
+   else f:=1;
+   sd:= s div f;
+   ProgBar.Position:=0;
+   Screen.Cursor:=crHourGlass;
+   bmp:= TBitmap.Create;
+   bmp.PixelFormat:=pf24bit;
+   bmp.Width:= sd;
+   bmp.Height:= sd;
+   if f<>1 then begin
+      bmp2:=TBitmap.Create;
+      bmp2.PixelFormat:=pf24bit;
+      bmp2.Width:=s;
+      bmp2.Height:=s;
+   end else bmp2:= NIL;
+   statBar.panels.items[0].text:='Loading Jpeg '+PICMAIN+' texture...';
+   //Refresh;
+   pic.LoadFromFile(PICMAIN);
+   x:=0;
+   while x<pic.Width do begin
+      y:=0; 
+      while y<pic.Height do begin
+        if sd<>s then begin
+          bmp2.Canvas.Draw(-x, -y, pic.Graphic);
+          bmp.Canvas.StretchDraw(Rect(0, 0, sd, sd), bmp2);
+        end else bmp.Canvas.Draw(-x, -y, pic.Graphic);
+        statBar.panels.items[1].text:=Format('Generating tile %d-%d...',[x div s,y div s]);
+        //Refresh;
+        bmp.SaveToFile(Format('Tex_%d_%d.bmp', [x div s, y div s]));
+        ProgBar.StepBy(1);
+        Inc(cnt);
+        y:= y + s;
+      end; //Inc(x, s);
+      x:= x+s;
+   end;
+   if assigned(bmp2) then
+      bmp2.Free;
+   bmp.Free;
+   pic.Free;
+   Screen.Cursor:= crDefault;
+   statBar.panels.items[0].text:='Completed!';
+   ShowMessage(inttoStr(cnt)+' Picture Splits Done!');
+end;
+
+
+procedure TFrm_CloseClick(Sender: TObject);
+begin
+  afrm.Close;
+end;
+
+procedure TFrm_DeleteClick(Sender: TObject);
+begin
+ if MessageDlg('Wanna Delete *.bmp files? at '+PICPATH, 
+        mtConfirmation,[mbYes, mbNo],0) = mrYes then
+          deletefiles(PICPATH,'*.bmp');
+end;  
+
+procedure TFrm_PerformClick(Sender: TObject);
+begin
+  //afrm.repaint;
+  TForm1_BtnGenerate100000NodeWithALXmlDocumentClick(self)
+  //afrm.Canvas.brush.bitmap.free;
+end; 
+
+procedure Tfrm_StaticText1Click(Sender: TObject);
+begin {link to delphiforfun when text is clicked}
+ Screen.Cursor:= crHourGlass;
+ wGet('http://max.kleiner.com/images/texturemap.jpg',PICPATH+'\texturemap.jpg');
+ Screen.Cursor:= crDefault;
+ //OpenDoc(Exepath+'texturemap.jpg');
+end;
+
+procedure loadXMLPicForm;
+begin
+  aFrm:= TForm.Create(self);
+  with aFrm do begin
+    Caption:= '********** XML Split Plot Demo Tutor Template ***********';  
+    height:= 650;
+    width:= 900;
+    Position:= poScreenCenter;
+    FormStyle:= fsStayonTop;
+    //Color:= clBlack;
+    SetDesignVisible(true);
+    //onClose:= @TFrm_closeClick;
+    //onPaint:= @TFrm_FormPaint;
+    Canvas.Pen.color:= clBlue;
+    GetControlsAlignment;
+    EnableAutoRange;
+    formstate;
+    ScreenSnap;
+    SnapBuffer;
+    Show;
+    //showbitmap(GetFormImage);
+    writeln('hasParent: '+booleantoString(hasParent))
+    //canvas.brush.bitmap:= getBitmapObject(Exepath+'examples\images\citymax.bmp');
+    //Canvas.FillRect(Rect(850,390,600,140));
+  end;
+  with TLabel.create(self) do begin
+    parent:= aFrm;
+    setBounds(18,26,276,32);
+    font.size:= 13;
+    font.color:= clTeal;
+    Caption:= 
+      'This utility will generate 16 1024x1024 (Full) bmp '#13#10'textures from ' +
+      #39'TextureMap.jpg'#39' file (size 4.28 MB=4096*4096). '+CRLF+ 'or 100000 XML nodes'+
+       ' doc: samplegen.xml'
+      +CRLF+ 'Get file from http://max.kleiner.com/images/texturemap.jpg';
+    Font.Charset:= DEFAULT_CHARSET;
+    //Font.Height:= -13;
+    Font.Name:= 'Arial';
+    Font.Style:= [fsItalic,fsBold];
+    ParentFont:= False;
+  end;
+  with TLabel.create(self) do begin
+    parent:= aFrm;
+    setBounds(557,28,100,30);
+    Caption:= 'Resolution Size: ';
+  end;
+  RB:= TRadioGroup.Create(self);
+    with RB do begin
+     parent:= afrm;
+     SetBounds(20,180,300,130)
+     font.size:= 12;
+     items.add('Low Resolution Size (256)');
+     items.add('Medium Resolution Size (512)');
+     items.add('Full Resolution Size (1024)');
+     ItemIndex:= 1; 
+     writeln(Items.Strings[ItemIndex]); 
+   end;
+  with TBitBtn.Create(aFrm) do begin
+    Parent:= aFrm;
+    setbounds(215,520,150,55);
+    caption:= '&Split Picture';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TCHARTGALLERYPANEL'); 
+    mXButton(05,05,width, height,12,12,handle);
+    //event handler
+    onClick:= @SplitImages;
+  end;
+  with TBitBtn.Create(aFrm) do begin
+    Parent:= aFrm;
+    setbounds(700, 520,150, 55);
+    caption:= '&Close';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TAFTERMINAL');  
+    mXButton(05,05,width, height,12,12,handle);
+    onClick:= @TFrm_CloseClick;
+  end;
+  with TBitBtn.Create(aFrm) do begin
+    Parent:= aFrm;
+    setbounds(540, 520,150, 55);
+    caption:= 'Load &XML Doc';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TCHARTGRID'); //CL_MPPREV'); 
+    mXButton(05,05,width, height,12,12,handle);
+    onClick:= @TForm1_BtnLoadXmlWithALXmlDocumentClick;
+  end;
+  with TBitBtn.Create(aFrm) do begin
+    Parent:= aFrm;
+    setbounds(380, 520,150, 55);
+    caption:= '&Perform XML';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TAFFILEVIEWER');  
+    mXButton(05,05,width, height,12,12,handle);
+    onClick:= @TFrm_PerformClick;
+  end;
+ EDTileSize:= TEdit.create(afrm)
+  with EDTileSize do begin
+    Parent:= aFrm;
+    setbounds(650,25,125,55);
+    text:= '1024';
+    font.size:= 12;
+    //onClick:= @TFrm_EditClick;
+  end;
+  progBar:= TProgressBar.create(aFrm);
+  with progBar do begin
+    parent:= aFrm;
+    setBounds(20,140,550,25);
+    Smooth:= True;
+    TabOrder:= 4;
+    Min:= 0; Max:= 16; //Frequency:= 10;
+    //OnChange:= @TFrm_trackSpeedChange;
+  end;
+  with TOvcCalculator.create(self) do begin
+    parent:= aFrm;
+  //free;
+    setbounds(22,340,200,150);
+    displaystr:= 'maxCalc';
+  end;
+  statbar:= TStatusBar.Create(aFrm);
+  with statbar do begin
+    parent:= aFrm;
+    showhint:= true;
+    hint:= 'this is a Graphic Split Converter Plot';
+    Panels.add;
+      panels.items[0].width:= 500;
+      panels.items[0].text:= 'XML Plot';
+    Panels.add;
+      panels.items[1].width:= 350;
+      panels.items[1].text:= 'XML Split mode Resolution last set';
+  end;
+   with TStaticText.create(afrm) do begin
+    setBounds(20,115,200,30);
+    Cursor:= crHandPoint;
+    parent:= aFrm; //frmmon;
+    //Color:= clRed;
+    Caption:= 'http://max.kleiner.com/images/texturemap.jpg ';
+    Font.Color:= clBlue;
+    //Font.Height:= 10
+    Font.Style:= [fsUnderline]
+    OnClick:= @Tfrm_StaticText1Click;
+  end;
+ end;
+ 
+ 
+function TForm1_scrollAllNode(aNode: TalXmlNode): Integer;
+Var aStack: Tstack;
+    i: integer;
+begin
+  Result:= 0;
+  aStack:= TStack.Create;
+  try
+  //TRowNum = longint;  {actually 0..2 billion}
+  //TColNum = integer;  {actually 0..16K}
+  {with TStVMatrix.Create(1,2,3,4,'',6) do begin
+  flushcache; free; end;}   
+    For i:= 0 to aNode.ChildNodes.Count - 1 do
+        aStack.Push((ANode.ChildNodes[i]));
+      While astack.Count > 0 do begin
+        inc(result);
+        aNode:= TalxmlNode(astack.Pop);
+        If assigned(ANode.ChildNodes) then
+          For i:= 0 to ANode.ChildNodes.Count - 1 do
+            aStack.Push((ANode.ChildNodes[i]));
+        If assigned(ANode.AttributeNodes) then
+          For i:= 0 to ANode.attributeNodes.Count - 1 do
+            aStack.Push((ANode.AttributeNodes[i]));
+      end;
+  finally
+    aStack.Free;
+  end;
+end;
+
+{****************************************************************}
+Function CreateEmptyXMLDocument(Rootname:AnsiString): TalXMLDocument;
+Var aXmlDoc: TAlXMLDocument;
+begin
+  aXmlDoc:= TAlXMLDocument.Create;
+  Result:= aXmlDoc;
+  with result do begin
+    Options:= []; ParseOptions:= [];
+    XML:= '';
+  end;
+End;
+
+Function CreateEmptyXMLDocument2(Rootname:AnsiString):IXMLDocument;
+Var aXmlDoc: TALXMLDocument;
+begin
+  aXmlDoc:= TALXMLDocument.Create;
+  //Result := aXmlDoc;
+  with aXMLDoc do begin
+    Options:= []; ParseOptions:= [];
+    FileName:= '';
+  end;
+End;
+
+
+procedure TForm1_BtnLoadXmlWithALXmlDocumentClick(Sender: TObject);
+Var aALXMLDocument: TALXmlDocument;
+    aNodeCount: Integer;
+    memUsage: DWORD;
+    aStartDate: cardinal;
+    MemoLoadXmlDocu: TMemo;
+    E: Exception;
+    mOpenDialog: TOpenDialog;
+begin
+   mOpenDialog:= TOpenDialog.create(self);
+   mOpenDialog.DefaultExt:= '*.xml';
+   mOpenDialog.Filter:= 'Xml|*.xml';
+   MemoLoadXmlDocu:= TMemo.create(aFrm) 
+   with MemoLoadXmlDocu do begin
+    setBounds(600,110,260,350);
+    parent:= aFrm; //frmmon;
+    Font.Color:= clBlue;
+    //Font.Height:= 10
+    Font.Style:= [fsUnderline]
+  end;
+  If mOpenDialog.Execute then begin
+   MemoLoadXmlDocu.Lines.Clear;
+    memUsage:= ProcessMemoryUsage(GetCurrentProcessID);
+    Try
+      aALXMLDocument:= TALXmlDocument.Create;
+      Try
+        ProgBar.Position:= 0;
+        aStartDate := GetTickCount;
+        aALXMLDocument.LoadFromFile(mOpenDialog.FileName, false);
+        aNodeCount := TForm1_scrollAllNode(aALXMLDocument.Node);
+        MemoLoadXmlDocu.Lines.Add('Memory used: ' + 
+        FormatFloat('0,',(ProcessMemoryUsage(GetCurrentProcessID) - 
+                        memUsage)) + ' bytes');
+        MemoLoadXmlDocu.Lines.Add('Number of nodes created: ' + 
+                      IntToStr(aNodeCount));
+        ProgBar.StepBy(4);
+        MemoLoadXmlDocu.Lines.Add('Time to load and scroll all nodes: ' +
+                      IntToStr(GetTickCount - aStartDate) + ' ms');
+        aStartDate := GetTickCount;
+        ProgBar.StepBy(4);
+        aALXMLDocument.SaveToFile(ALGetModulePath + 'samplegen_loadandsave.xml');
+        ProgBar.StepBy(4);
+        MemoLoadXmlDocu.Lines.Add('Time to save the xml to disk: ' + 
+                      IntToStr(GetTickCount - aStartDate) + ' ms');
+        //ALDeleteFile(ALGetModulePath + 'sample3.xml');
+        ProgBar.StepBy(4);
+      finally
+        aALXMLDocument.Free;
+        mOpenDialog.Free;
+        Writeln(' docu and opendialog free ');
+        statbar.panels.items[0].text:= 'doc+dialog free at: '+timetoStr(time);
+        end;
+      except
+      //on E: Exception do
+        MemoLoadXmlDocu.Lines.Add('Error: ' + E.Message);
+    end;
+  end;
+end;
+
+
+{*****************************************************************************}
+procedure TForm1_BtnGenerate100000NodeWithALXmlDocumentClick(Sender: TObject);
+Var aXMLDocument: TALXMLDocument; //iXmlDocument;
+    aNewRec, aValueRec: TAlXmlNode;//iXmlNode;
+    memUsage: DWORD;
+    aStartDate: cardinal;
+    k,i: integer;
+    E: Exception;
+    MemoGenNodesXmlDoc: TMemo;
+begin
+  memUsage:= ProcessMemoryUsage(GetCurrentProcessID);
+   MemoGenNodesXmlDoc:= TMemo.create(aFrm) 
+   with MemoGenNodesXmlDoc do begin
+     parent:= aFrm; 
+     Lines.Clear;
+     setBounds(600,110,260,350);
+     //Cursor:= crHandPoint;
+     Font.Color:=clred;
+     Font.Style:=[fsBold]
+    //OnClick:= @Tfrm_StaticText1Click;
+   end;
+  Try
+    ProgBar.Position:= 0;
+    aXMLDocument:= TALXmlDocument.Create;
+    try
+    //aXMLDocument:= CreateEmptyXMLDocument('root');
+      aStartDate:= GetTickCount;
+      aXMLDocument.Active:= true;
+      aXMLDocument.AddChild('root');
+      ProgBar.StepBy(4);
+      For k:= 1 to 1000 do begin
+        aNewRec:= aXMLDocument.DocumentElement.AddChild(alRandomStrU(8),0);
+        aNewrec.Attributes[alRandomStrU(8)]:=alRandomStrU(25);
+        aNewrec.Attributes[alRandomStrU(8)]:=alRandomStrU(25);
+        For i:= 1 to 100 do begin
+          aValueRec:= aNewRec.AddChild(alRandomStrU(8),0);
+          aValueRec.Text:= alRandomStrU(25);
+        end; 
+      end;
+      ProgBar.StepBy(4);
+      MemoGenNodesXmlDoc.Lines.Add('Memory used: ' + 
+      FormatFloat('0,',(ProcessMemoryUsage(GetCurrentProcessID)-memUsage))+' bytes');
+      MemoGenNodesXmlDoc.Lines.Add('Time to create all nodes: '
+          + IntToStr(GetTickCount - aStartDate) + ' ms');
+      aStartDate:= GetTickCount;
+      ProgBar.StepBy(4);
+      aXMLDocument.SaveToFile(string(ALGetModulePath + 'samplegen.xml'));
+      MemoGenNodesXmlDoc.Lines.Add('Time to save the xml to disk: '
+                    + IntToStr(GetTickCount - aStartDate) + ' ms');
+      //ALDeleteFile(ALGetModulePath + 'samplegen.xml');
+      ProgBar.StepBy(4);
+    finally
+      aXMLDocument.Free;
+      statbar.panels.items[0].text:= 'Performance done at: '+timetoStr(time);
+        //MemoGenNodesXmlDoc.Free;
+    end;  
+  except
+   //on E: Exception do
+    MemoGenNodesXmlDoc.Lines.Add('Error: ' + E.Message);
+  end;
+end;
+
+
+{******************************************************************************}
+function  ALRandomStr1A(const aLength: Longint; const aCharset: Array of ansiChar): AnsiString;
+var X: Longint;
+begin
+  if aLength <= 0 then exit;
+  SetLength(Result, aLength);
+  for X:=1 to aLength do Result[X]:= aCharset[Random(length(aCharset))];
+end;
+
+function ALRandomStrX(const aLength: Longint): AnsiString;
+begin
+  Result:= ALRandomStr1A(aLength,['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']);
+  //Result := ALRandomStr1A(aLength,TCharArray([LETTERSET]));
+end;
+
+
+Begin  //Main
+//<Executable statements>
+  Writeln('');
+  Writeln('Start Command of IE: '+CheckIEStartCommand);  
+//<Definitions>  
+   {ares:= TResolver.create;  with TResolver.create do begin
+   writeln(inttostr(GetHostByName(gethostname)));
+    Free;  end;  }
+    {repeat 
+     TApplication_PaintView(aform.canvas);
+     switch:= NOT switch;
+     Sleep(20);
+   until isKeyPressed or FWait;}
+ // function GetMacAddresses(const Machine: string; const Addresses: TStrings):Integer;
+   OVCInternationalDemoClass;
+   loadXMLPicForm;
+ 
+  //GetProcessMemoryInfo(Process 
+     writeln('mem from dll '+inttostr(ProcessMemoryUsage(GetCurrentProcessID)));
+      writeln('proc all from dll '
+              +inttostr(getProcessmemoryinfo2(GetCurrentProcessID).workingsetsize));
+     writeln('proc all from dll '
+              +inttostr(getProcMemInfo(GetCurrentProcessID).workingsetsize));
+      writeln('proc peak workingset '
+      +inttostr(getProcMemInfo(GetCurrentProcessID).PeakWorkingSetSize div 1024));
+     //SplitImages(self);
+     //deletefiles(PICPATH,'*.bmp');
+     //TForm1_ButtonLoadXmlWithALXmlDocumentClick(self);
+     writeln(alRandomStrU(42))
+     writeln(alRandomStrX(42))
+
+End. 
+
+http://glscene.sourceforge.net/wikka/HomePage
+
+
+unit Unit1;
+
+interface
+
+uses Windows,
+     Messages,
+     SysUtils,
+     Variants,
+     Classes,
+     Graphics,
+     Controls,
+     Forms,
+     Dialogs,
+     Contnrs,
+     StdCtrls,
+     xmldom,
+     XMLIntf,
+     msxmldom,
+     XMLDoc,
+     AlFcnString,
+     AlXmlDoc,
+     ExtCtrls,
+     OleCtrls,
+     SHDocVw,
+     ComObj,
+     ALFcnFile,
+     ALStringList;
+
+{------------------------------------}
+Const WM_XmlFullyLoaded = WM_user + 1;
+
+type
+
+  PPROCESS_MEMORY_COUNTERS = ^PROCESS_MEMORY_COUNTERS;
+  PROCESS_MEMORY_COUNTERS = record
+    cb : DWORD;
+    PageFaultCount : DWORD;
+    PeakWorkingSetSize : DWORD;
+    WorkingSetSize : DWORD; //Task managers MemUsage number
+    QuotaPeakPagedPoolUsage : DWORD;
+    QuotaPagedPoolUsage : DWORD;
+    QuotaPeakNonPagedPoolUsage : DWORD;
+    QuotaNonPagedPoolUsage : DWORD;
+    PagefileUsage : DWORD; //TaskMan's VM Size number
+    PeakPagefileUsage : DWORD;
+  end;
+  TProcessMemoryCounters = PROCESS_MEMORY_COUNTERS;
+
+  TForm1 = class(TForm)
+    ButtonLoadXmlWithALXmlDocument: TButton;
+    ButtonLoadXmlWithXmlDocument: TButton;
+    MemoLoadXmlWithALXmlDocument: TMemo;
+    MemoLoadXmlWithXmlDocument: TMemo;
+    MainOpenDialog: TOpenDialog;
+    ButtonGenerate100000NodeWithALXmlDocument: TButton;
+    MemoGenerate100000NodeWithALXmlDocument: TMemo;
+    MemoGenerate100000NodeWithXmlDocument: TMemo;
+    ButtonGenerate100000NodeWithXmlDocument: TButton;
+    ButtonParseXMLWithALXmlDocumentInSaxMode: TButton;
+    MemoParseXmlWithALXmlDocumentInSaxMode: TMemo;
+    Panel1: TPanel;
+    Label8: TLabel;
+    Label12: TLabel;
+    Panel2: TPanel;
+    PanelWebBrowser: TPanel;
+    procedure ButtonLoadXmlWithALXmlDocumentClick(Sender: TObject);
+    procedure ButtonLoadXmlWithXmlDocumentClick(Sender: TObject);
+    procedure ButtonGenerate100000NodeWithALXmlDocumentClick(Sender: TObject);
+    procedure ButtonGenerate100000NodeWithXmlDocumentClick(Sender: TObject);
+    procedure ButtonParseXMLWithALXmlDocumentInSaxModeClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+  private
+    FnodeCount: Integer;
+    Function scrollAllNode(aNode: iXmlNode): Integer; overload;
+    Function scrollAllNode(aNode: TalXmlNode): Integer; overload;
+  public
+    { Public declarations }
+  end;
+
+function GetProcessMemoryInfo(Process : THandle; var MemoryCounters : TProcessMemoryCounters; cb : DWORD) : BOOL; stdcall;
+function ProcessMemoryUsage(ProcessID : DWORD): DWORD;
+
+var
+  Form1: TForm1;
+
+implementation
+
+//{$R *.dfm}
+
+{**************************************************}
+function GetProcessMemoryInfo; external 'psapi.dll';
+
+{****************************************************}
+function ProcessMemoryUsage(ProcessID : DWORD): DWORD;
+var ProcessHandle : THandle;
+    MemCounters   : TProcessMemoryCounters;
+begin
+  Result := 0;
+  ProcessHandle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ,
+                               false,
+                               ProcessID);
+  try
+    if GetProcessMemoryInfo(ProcessHandle,
+                            MemCounters,
+                            sizeof(MemCounters))
+    then Result := MemCounters.WorkingSetSize;
+  finally
+    CloseHandle(ProcessHandle);
+  end;
+end;
+
+{****************************************************************}
+Function CreateEmptyXMLDocument(Rootname:AnsiString):IXMLDocument;
+Var aXmlDoc: TXMLDocument;
+begin
+  aXmlDoc := TXMLDocument.Create(nil);
+  Result := aXmlDoc;
+  with result do begin
+    Options := [];
+    ParseOptions := [];
+    FileName := '';
+  end;
+End;
+
+{******************************************************}
+function TForm1.scrollAllNode(aNode: iXmlNode): Integer;
+Var aStack: Tstack;
+    i: integer;
+begin
+  Result := 0;
+  aStack := Tstack.Create;
+  try
+       For i := 0 to aNode.ChildNodes.Count - 1 do
+        aStack.Push(pointer(ANode.ChildNodes[i]));
+
+      While astack.Count > 0 do begin
+        inc(result);
+        aNode := ixmlNode(astack.Pop);
+        If assigned(ANode.ChildNodes) then
+          For i := 0 to ANode.ChildNodes.Count - 1 do
+            aStack.Push(pointer(ANode.ChildNodes[i]));
+
+        If assigned(ANode.AttributeNodes) then
+          For i := 0 to ANode.AttributeNodes.Count - 1 do
+            aStack.Push(pointer(ANode.AttributeNodes[i]));
+      end;
+   finally
+    aStack.Free;
+  end;
+
+end;
+
+{********************************************************}
+function TForm1.scrollAllNode(aNode: TalXmlNode): Integer;
+Var aStack: Tstack;
+    i: integer;
+begin
+  Result := 0;
+  aStack := Tstack.Create;
+  try
+
+      For i := 0 to aNode.ChildNodes.Count - 1 do
+        aStack.Push(pointer(ANode.ChildNodes[i]));
+
+      While astack.Count > 0 do begin
+        inc(result);
+        aNode := TalxmlNode(astack.Pop);
+        If assigned(ANode.ChildNodes) then
+          For i := 0 to ANode.ChildNodes.Count - 1 do
+            aStack.Push(pointer(ANode.ChildNodes[i]));
+
+        If assigned(ANode.AttributeNodes) then
+          For i := 0 to ANode.attributeNodes.Count - 1 do
+            aStack.Push(pointer(ANode.AttributeNodes[i]));
+      end;
+   finally
+    aStack.Free;
+  end;
+
+end;
+
+{********************************************************************}
+procedure TForm1.ButtonLoadXmlWithALXmlDocumentClick(Sender: TObject);
+Var aALXMLDocument: TALXmlDocument;
+    aNodeCount: Integer;
+    MemoryUsage: DWORD;
+    aStartDate: cardinal;
+begin
+  If MainOpenDialog.Execute then begin
+     MemoLoadXmlWithALXmlDocument.Lines.Clear;
+    MemoryUsage := ProcessMemoryUsage(GetCurrentProcessID);
+    Try
+
+      aALXMLDocument:= TALXmlDocument.Create;
+      Try
+        aStartDate := GetTickCount;
+        aALXMLDocument.LoadFromFile(AnsiString(MainOpenDialog.FileName));
+        aNodeCount := scrollAllNode(aALXMLDocument.Node);
+        MemoLoadXmlWithALXmlDocument.Lines.Add('Memory used: ' + FormatFloat('0,',(ProcessMemoryUsage(GetCurrentProcessID) - MemoryUsage)) + ' bytes');
+        MemoLoadXmlWithALXmlDocument.Lines.Add('Number of nodes created: ' + IntToStr(aNodeCount));
+        MemoLoadXmlWithALXmlDocument.Lines.Add('Time to load and scroll all nodes: ' + IntToStr(GetTickCount - aStartDate) + ' ms');
+        aStartDate := GetTickCount;
+        aALXMLDocument.SaveToFile(ALGetModulePath + 'sample.xml');
+        MemoLoadXmlWithALXmlDocument.Lines.Add('Time to save the xml to disk: ' + IntToStr(GetTickCount - aStartDate) + ' ms');
+        ALDeleteFile(ALGetModulePath + 'sample.xml');
+      finally
+        aALXMLDocument.Free;
+      end;
+
+    except
+      on E: Exception do
+        MemoLoadXmlWithALXmlDocument.Lines.Add('Error: ' + E.Message);
+    end;
+
+  end;
+
+end;
+
+{******************************************************************}
+procedure TForm1.ButtonLoadXmlWithXmlDocumentClick(Sender: TObject);
+Var aXMLDocument: iXmlDocument;
+    aNodeCount: Integer;
+    MemoryUsage: DWORD;
+    aStartDate: cardinal;
+begin
+  If MainOpenDialog.Execute then begin
+
+    MemoLoadXmlWithXmlDocument.Lines.Clear;
+    MemoryUsage := ProcessMemoryUsage(GetCurrentProcessID);
+
+    Try
+      aXMLDocument:= CreateEmptyXMLDocument('root');
+      aStartDate := GetTickCount;
+      aXMLDocument.LoadFromFile(MainOpenDialog.FileName);
+      aNodeCount := scrollAllNode(aXMLDocument.node);
+      MemoLoadXmlWithXmlDocument.Lines.Add('Memory used: ' + FormatFloat('0,',(ProcessMemoryUsage(GetCurrentProcessID) - MemoryUsage)) + ' bytes');
+      MemoLoadXmlWithXmlDocument.Lines.Add('Number of nodes created: ' + IntToStr(aNodeCount));
+      MemoLoadXmlWithXmlDocument.Lines.Add('Time to load and scroll all nodes: ' + IntToStr(GetTickCount - aStartDate) + ' ms');
+      aStartDate := GetTickCount;
+      aXMLDocument.SaveToFile(String(ALGetModulePath + 'sample.xml'));
+      MemoLoadXmlWithXmlDocument.Lines.Add('Time to save the xml to disk: ' + IntToStr(GetTickCount - aStartDate) + ' ms');
+      ALDeleteFile(ALGetModulePath + 'sample.xml');
+
+    except
+      on E: Exception do
+        MemoLoadXmlWithXmlDocument.Lines.Add('Error: ' + E.Message);
+    end;
+
+  end;
+
+end;
+
+{*******************************************************************************}
+procedure TForm1.ButtonGenerate100000NodeWithALXmlDocumentClick(Sender: TObject);
+Var aALXMLDocument: TALXmlDocument;
+    aNewRec, aValueRec: TalXmlNode;
+    MemoryUsage: DWORD;
+    aStartDate: cardinal;
+    k,i: integer;
+begin
+  MemoGenerate100000NodeWithALXmlDocument.Lines.Clear;
+  MemoryUsage := ProcessMemoryUsage(GetCurrentProcessID);
+
+  Try
+
+    aALXMLDocument:= TALXmlDocument.Create;
+    Try
+      aStartDate := GetTickCount;
+      aALXMLDocument.Active := True;
+      aALXMLDocument.AddChild('root');
+      For k := 1 to 1000 do begin
+        aNewRec := aALXMLDocument.DocumentElement.AddChild(alRandomStr(8));
+        aNewrec.Attributes[alRandomStr(8)] := alRandomStr(25);
+        aNewrec.Attributes[alRandomStr(8)] := alRandomStr(25);
+        For i := 1 to 100 do begin
+          aValueRec := aNewRec.AddChild(alRandomStr(8));
+          aValueRec.Text := alRandomStr(25);
+        end;
+      end;
+
+      MemoGenerate100000NodeWithALXmlDocument.Lines.Add('Memory used: ' + FormatFloat('0,',(ProcessMemoryUsage(GetCurrentProcessID) - MemoryUsage)) + ' bytes');
+      MemoGenerate100000NodeWithAlXmlDocument.Lines.Add('Time to create all nodes: ' + IntToStr(GetTickCount - aStartDate) + ' ms');
+
+      aStartDate := GetTickCount;
+      aALXMLDocument.SaveToFile(ALGetModulePath + 'sample.xml');
+      MemoGenerate100000NodeWithAlXmlDocument.Lines.Add('Time to save the xml to disk: ' + IntToStr(GetTickCount - aStartDate) + ' ms');
+      ALDeleteFile(ALGetModulePath + 'sample.xml');
+
+    finally
+      aALXMLDocument.Free;
+    end;
+
+  except
+    on E: Exception do
+      MemoGenerate100000NodeWithALXmlDocument.Lines.Add('Error: ' + E.Message);
+  end;
+end;
+
+{*****************************************************************************}
+procedure TForm1.ButtonGenerate100000NodeWithXmlDocumentClick(Sender: TObject);
+Var aXMLDocument: iXmlDocument;
+    aNewRec, aValueRec: iXmlNode;
+    MemoryUsage: DWORD;
+    aStartDate: cardinal;
+    k,i: integer;
+begin
+  MemoGenerate100000NodeWithXmlDocument.Lines.Clear;
+  MemoryUsage := ProcessMemoryUsage(GetCurrentProcessID);
+
+  Try
+
+      aXMLDocument:= CreateEmptyXMLDocument('root');
+      aStartDate := GetTickCount;
+      aXMLDocument.Active := true;
+      aXMLDocument.AddChild('root');
+      For k := 1 to 1000 do begin
+        aNewRec := aXMLDocument.DocumentElement.AddChild(alRandomStrU(8));
+        aNewrec.Attributes[alRandomStrU(8)] := alRandomStrU(25);
+        aNewrec.Attributes[alRandomStrU(8)] := alRandomStrU(25);
+        For i := 1 to 100 do begin
+          aValueRec := aNewRec.AddChild(alRandomStrU(8));
+          aValueRec.Text := alRandomStrU(25);
+        end;
+      end;
+      MemoGenerate100000NodeWithXmlDocument.Lines.Add('Memory used: ' + FormatFloat('0,',(ProcessMemoryUsage(GetCurrentProcessID) - MemoryUsage)) + ' bytes');
+      MemoGenerate100000NodeWithXmlDocument.Lines.Add('Time to create all nodes: ' + IntToStr(GetTickCount - aStartDate) + ' ms');
+
+      aStartDate := GetTickCount;
+      aXMLDocument.SaveToFile(string(ALGetModulePath + 'sample.xml'));
+      MemoGenerate100000NodeWithXmlDocument.Lines.Add('Time to save the xml to disk: ' + IntToStr(GetTickCount - aStartDate) + ' ms');
+      ALDeleteFile(ALGetModulePath + 'sample.xml');
+
+  except
+    on E: Exception do
+      MemoGenerate100000NodeWithXmlDocument.Lines.Add('Error: ' + E.Message);
+  end;
+end;
+
+{****************************************************************************************}
+procedure TForm1.ALXMLDocumentSaxModeParseComment(Sender: TObject; const str: AnsiString);
+begin
+  inc(FNodeCount);
+end;
+
+{***************************************************************************************************************}
+procedure TForm1.ALXMLDocumentSaxModeParseProcessingInstruction(Sender: TObject; const Target, Data: AnsiString);
+begin
+  inc(FNodeCount);
+end;
+
+{****************************************************************************************************************************}
+procedure TForm1.ALXMLDocumentSaxModeParseStartElement(Sender: TObject; const Name: AnsiString; const Attributes: TALStrings);
+begin
+  FNodeCount := FNodeCount + 2 * (Attributes.Count) + 1;
+end;
+
+{*************************************************************************************}
+procedure TForm1.ALXMLDocumentSaxModeParseText(Sender: TObject; const str: AnsiString);
+begin
+  inc(FNodeCount);
+end;
+
+{******************************************************************************}
+procedure TForm1.ButtonParseXMLWithALXmlDocumentInSaxModeClick(Sender: TObject);
+var aStartDate: cardinal;
+    aXMLDocument: TalXmlDocument;
+begin
+  If MainOpenDialog.Execute then begin
+
+    MemoParseXmlWithALXmlDocumentInSaxMode.Lines.Clear;
+
+    aXMLDocument := ALcreateEmptyXmlDocument('root');
+    try
+
+      Try
+
+    aXMLDocument.OnParseProcessingInstruction
+     := ALXMLDocumentSaxModeParseProcessingInstruction;
+        aXMLDocument.OnParseStartElement := ALXMLDocumentSaxModeParseStartElement;
+        aXMLDocument.OnParseText := ALXMLDocumentSaxModeParseText;
+        aXMLDocument.OnParseComment := ALXMLDocumentSaxModeParseComment;
+
+        FnodeCount := 0;
+        aStartDate := GetTickCount;
+        aXMLDocument.LoadFromFile(AnsiString(MainOpenDialog.FileName), True);
+        MemoParseXmlWithALXmlDocumentInSaxMode.Lines.Add('Number of nodes crawled: ' + IntToStr(FNodeCount));
+        MemoParseXmlWithALXmlDocumentInSaxMode.Lines.Add('Time to scroll all nodes: ' + IntToStr(GetTickCount - aStartDate) + ' ms');
+
+      except
+        on E: Exception do
+          MemoParseXmlWithALXmlDocumentInSaxMode.Lines.Add('Error: ' + E.Message);
+      end;
+
+    finally
+      aXMLDocument.Free;
+    end;
+
+  end;
+
+end;
+
+{-------------------}
+var ie: IWebBrowser2;
+
+{*******************************************}
+procedure TForm1.FormCreate(Sender: TObject);
+var Url, Flags, TargetFrameName, PostData, Headers: OleVariant;
+begin
+  ie := CreateOleObject('InternetExplorer.Application') as IWebBrowser2;
+  SetWindowLong(ie.hwnd, GWL_STYLE, GetWindowLong(ie.hwnd, GWL_STYLE) and not WS_BORDER and not WS_SIZEBOX and not WS_DLGFRAME );
+  SetWindowPos(ie.hwnd, HWND_TOP, Left, Top, Width, Height, SWP_FRAMECHANGED);
+  windows.setparent(ie.hwnd, PanelWebBrowser.handle);
+  ie.Left := maxint; // don't understand why it's look impossible to setup the position
+  ie.Top  := maxint; // don't understand why it's look impossible to setup the position
+  ie.Width := 100;
+  ie.Height := 300;
+  ie.MenuBar := false;
+  ie.AddressBar := false;
+  ie.Resizable := false;
+  ie.StatusBar := false;
+  ie.ToolBar := 0;
+  Url := 'http://static.arkadia.com/html/alcinoe_like.html';
+  ie.Navigate2(Url,Flags,TargetFrameName,PostData,Headers);
+  ie.Visible := true;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TALXMLDocument(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TObject', 'TALXMLDocument') do
+  with CL.AddClassN(CL.FindClass('TObject'),'TALXMLDocument') do begin
+    RegisterMethod('Constructor Create');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Function AddChild( const TagName : AnsiString) : TALXMLNode');
+    RegisterMethod('Function CreateElement( const TagOrData : AnsiString) : TALXMLNode');
+    RegisterMethod('Function CreateNode( const NameOrData : AnsiString; NodeType : TALXMLNodeType; const AddlData : AnsiString) : TALXMLNode');
+    RegisterMethod('Function IsEmptyDoc : Boolean');
+    RegisterMethod('Procedure LoadFromFile( const AFileName : AnsiString; const saxMode : Boolean)');
+    RegisterMethod('Procedure LoadFromStream( const Stream : TStream; const saxMode : Boolean)');
+    RegisterMethod('Procedure LoadFromXML( const XML: AnsiString;const saxMode:Boolean)');
+    RegisterMethod('Procedure SaveToFile( const AFileName : AnsiString)');
+    RegisterMethod('Procedure SaveToStream( const Stream : TStream)');
+    RegisterMethod('Procedure SaveToXML( var XML : AnsiString)');
+    RegisterProperty('ChildNodes', 'TALXMLNodeList', iptr);
+    RegisterProperty('DocumentElement', 'TALXMLNode', iptrw);
+    RegisterProperty('Encoding', 'AnsiString', iptrw);
+    RegisterProperty('Node', 'TALXMLNode', iptr);
+    RegisterProperty('StandAlone', 'AnsiString', iptrw);
+    RegisterProperty('Version', 'AnsiString', iptrw);
+    RegisterProperty('Active', 'Boolean', iptrw);
+    RegisterProperty('NodeIndentStr', 'AnsiString', iptrw);
+    RegisterProperty('Options', 'TALXMLDocOptions', iptrw);
+    RegisterProperty('ParseOptions', 'TALXMLParseOptions', iptrw);
+    RegisterProperty('XML', 'AnsiString', iptrw);
+    RegisterProperty('OnParseProcessingInstruction',
+    'TAlXMLParseProcessingInstructionEvent', iptrw);
+    RegisterProperty('OnParseStartDocument', 'TNotifyEvent', iptrw);
+    RegisterProperty('OnParseEndDocument', 'TNotifyEvent', iptrw);
+    RegisterProperty('OnParseStartElement', 'TAlXMLParseStartElementEvent', iptrw);
+    RegisterProperty('OnParseEndElement', 'TAlXMLParseEndElementEVent', iptrw);
+    RegisterProperty('OnParseText', 'TAlXMLParseTextEvent', iptrw);
+    RegisterProperty('OnParseComment', 'TAlXMLParseTextEvent', iptrw);
+    RegisterProperty('OnParseCData', 'TAlXMLParseTextEvent', iptrw);
+    RegisterProperty('Tag', 'NativeInt', iptrw);
+  end;
+end;
+
+procedure SIRegister_TALXMLNode(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TObject', 'TALXMLNode') do
+  with CL.AddClassN(CL.FindClass('TObject'),'TALXMLNode') do
+  begin
+    RegisterMethod('Constructor Create( const NameOrData : AnsiString; const AddlData : AnsiString)');
+    RegisterMethod('Function CloneNode( Deep : Boolean) : TALXMLNode');
+    RegisterMethod('Function AddChild( const TagName : AnsiString; Index : Integer) : TALXMLNode;');
+    RegisterMethod('Function HasAttribute( const Name : AnsiString) : Boolean;');
+    RegisterMethod('Function NextSibling : TALXMLNode');
+    RegisterMethod('Function PreviousSibling : TALXMLNode');
+    RegisterProperty('AttributeNodes', 'TALXMLNodeList', iptr);
+    RegisterProperty('Attributes', 'AnsiString AnsiString', iptrw);
+    RegisterProperty('ChildNodes', 'TALXMLNodeList', iptrw);
+    RegisterProperty('HasChildNodes', 'Boolean', iptr);
+    RegisterProperty('IsTextElement', 'Boolean', iptr);
+    RegisterProperty('LocalName', 'AnsiString', iptr);
+    RegisterProperty('NodeName', 'AnsiString', iptrw);
+    RegisterProperty('NodeType', 'TALXMLNodeType', iptr);
+    RegisterProperty('NodeValue', 'AnsiString', iptrw);
+    RegisterProperty('OwnerDocument', 'TALXMLDocument', iptrw);
+    RegisterProperty('ParentNode', 'TALXMLNode', iptr);
+    RegisterProperty('Prefix', 'AnsiString', iptr);
+    RegisterProperty('Text', 'AnsiString', iptrw);
+    RegisterProperty('XML', 'AnsiString', iptrw);
+    RegisterMethod('Procedure SaveToStream( const Stream : TStream; const SaveOnlyChildNode : Boolean)');
+    RegisterMethod('Procedure SaveToFile( const AFileName : AnsiString; const SaveOnlyChildNode : Boolean)');
+    RegisterMethod('Procedure LoadFromFile( const AFileName : AnsiString; const FileContainOnlyChildNode : Boolean)');
+    RegisterMethod('Procedure LoadFromStream( const Stream : TStream; const StreamContainOnlyChildNode : Boolean)');
+  end;
+end;
+
+
+
+
+{********************************************************************}
+procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  try
+    ie.quit;
+  except
+  end;
+  sleep(500);
+end;
+
+initialization
+  //{$IFDEF DEBUG}
+  ReportMemoryleaksOnSHutdown := True;
+  //{$ENDIF}
+  SetMultiByteConversionCodePage(CP_UTF8);
+
+end.
+
+
+//############################################################################
+// Archimedes Spiral App
+//############################################################################
+
+procedure SIRegister_TOvcIntlSup(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TObject', 'TOvcIntlSup') do
+  with CL.AddClassN(CL.FindClass('TObject'),'TOvcIntlSup') do begin
+    RegisterMethod('Constructor Create');
+    Procedure Free');
+    Function CurrentDateString( const Picture : string; Pack : Boolean) : string');
+    Function CurrentDatePChar( Dest : PChar; Picture : PChar; Pack : Boolean) : PChar');
+    Function CurrentTimeString( const Picture : string; Pack : Boolean) : string');
+    Function CurrentTimePChar( Dest : PChar; Picture : PChar; Pack : Boolean) : PChar');
+    Function DateToDateString(const Picture: string; Julian : TStDate; Pack : Boolean) : string');
+    Function DateToDatePChar(Dest:PChar;Picture:PChar;Julian:TStDate;Pack:Boolean):PChar;
+    Function DateTimeToDatePChar( Dest : PChar; Picture : PChar; DT : TDateTime; Pack : Boolean) : PChar');
+    Function DateStringToDMY( const Picture, S : string; var Day, Month, Year : Integer; Epoch : Integer) : Boolean');
+    Function DatePCharToDMY( Picture, S : PChar; var Day, Month, Year : Integer; Epoch : Integer) : Boolean');
+    Function DateStringIsBlank( const Picture, S : string) : Boolean');
+    Function DatePCharIsBlank( Picture, S : PChar) : Boolean');
+    Function DateStringToDate( const Picture, S : string; Epoch : Integer) : TStDate');
+    Function DatePCharToDate( Picture, S : PChar; Epoch : Integer) : TStDate');
+    Function DayOfWeekToString( WeekDay : TDayType) : string');
+    Function DayOfWeekToPChar( Dest : PChar; WeekDay : TDayType) : PChar');
+    Function DMYtoDateString( const Picture : string; Day, Month, Year : Integer; Pack : Boolean; Epoch : Integer) : string');
+    Function DMYtoDatePChar( Dest : PChar; Picture : PChar; Day, Month, Year : Integer; Pack : Boolean; Epoch : Integer) : PChar');
+    Function InternationalCurrency( FormChar : Char; MaxDigits : Byte; Float, AddCommas, IsNumeric : Boolean) : string');
+    Function InternationalCurrencyPChar( Dest : PChar; FormChar : Char; MaxDigits : Byte; Float, AddCommas, IsNumeric : Boolean) : PChar');
+    Function InternationalDate( ForceCentury : Boolean) : string');
+    Function InternationalDatePChar( Dest : PChar; ForceCentury : Boolean) : PChar');
+    Function InternationalLongDate( ShortNames : Boolean; ExcludeDOW : Boolean) : string');
+    Function InternationalLongDatePChar(Dest:PChar;ShortNames:Boolean; ExcludeDOW:Boolean):PChar');
+    Function InternationalTime( ShowSeconds : Boolean) : string');
+    Function InternationalTimePChar( Dest : PChar; ShowSeconds : Boolean) : PChar');
+    Function MonthStringToMonth( const S : string; Width : Byte) : Byte');
+    Function MonthPCharToMonth( S : PChar; Width : Byte) : Byte');
+    Function MonthToString( Month : Integer) : string');
+    Function MonthToPChar( Dest : PChar; Month : Integer) : PChar');
+    Procedure ResetInternationalInfo');
+    Function TimeStringToHMS(const Picture,S: string;var Hour,Minute,Second: Integer) : Boolean');
+    Function TimePCharToHMS( Picture, S : PChar; var Hour, Minute, Second : Integer) : Boolean');
+    Function TimeStringToTime( const Picture, S : string) : TStTime');
+    Function TimePCharToTime( Picture, S : PChar) : TStTime');
+    Function TimeToTimeString(const Picture:string; T:TStTime; Pack:Boolean) : string');
+    Function TimeToTimePChar(Dest: PChar; Picture:PChar; T:TStTime; Pack:Boolean):PChar');
+    Function TimeToAmPmString(const Picture:string; T:TStTime; Pack: Boolean) : string');
+    Function TimeToAmPmPChar(Dest:PChar; Picture:PChar; T:TStTime; Pack:Boolean): PChar');
+    RegisterProperty('AutoUpdate', 'Boolean', iptrw);
+    RegisterProperty('CurrencyLtStr', 'string', iptrw);
+    RegisterProperty('CurrencyRtStr', 'string', iptrw);
+    RegisterProperty('DecimalChar', 'Char', iptrw);
+    RegisterProperty('CommaChar', 'Char', iptrw);
+    RegisterProperty('Country', 'string', iptr);
+    RegisterProperty('CurrencyDigits', 'Byte', iptrw);
+    RegisterProperty('ListChar', 'Char', iptrw);
+    RegisterProperty('SlashChar', 'Char', iptrw);
+    RegisterProperty('TrueChar', 'Char', iptrw);
+    RegisterProperty('FalseChar', 'Char', iptrw);
+    RegisterProperty('YesChar', 'Char', iptrw);
+    RegisterProperty('NoChar', 'Char', iptrw);
+    RegisterProperty('OnWinIniChange', 'TNotifyEvent', iptrw);
+  end;
+end;
+
+
+----app_template_loaded_code----
+
+10 vor 10 kannst Du entweder live am PC schauen
+http://www.srf.ch/livestream/player/srf-1
+
+oder anschliessend an die Sendung:
+http://www.srf.ch/sendungen/10vor10
+
+und am TV in SRF Info
+um 22:30
+oder um 23 Uhr
+
+Wieso dann ausgerechnet um 10 vor 10!?!
+----Simple Browser started----
+----Simple Browser started----
+
+Don't know anything Arduino specific (their forums seem to be overrun
+by C language naz), but for the AVR micro controllers in general I
+know of 3 commercial products:
+
+mikroPascal Pro (http://www.mikroe.com/mikropascal/avr/)
+Embedded Pascal for AVR (http://users.iafrica.com/r/ra/rainier/pAVR.htm)
+Pascal-scm for Amtel AVR (http://www.e-lab.de/AVRco/index_en.html)
+
+All three have some kind of evaluation version, however usually
+limited to 4KB or 8KB of flash code 
+
+    unit hwiringpi;
+    (* Pascal wrapper unit for Gordon Henderson wiringPi library. The source can
+    * be found at https://projects.drogon.net/raspberry-pi/wiringpi/. Wrapper and
+    * pascal sample by Alex Schaller.
+    *
+    * wiringPi:
+    * Arduino compatable (ish) Wiring library for the Raspberry Pi
+    * Copyright (c) 2012 Gordon Henderson
+    ***********************************************************************
+    * This file is part of wiringPi:
+    * https://projects.drogon.net/raspberry-pi/wiringpi/
+    *
+    * wiringPi is free software: you can redistribute it and/or modify
+    * it under the terms of the GNU General Public License as published by
+    * the Free Software Foundation, either version 3 of the License, or
+    * (at your option) any later version.
+    *
+    * wiringPi is distributed in the hope that it will be useful,
+    * but WITHOUT ANY WARRANTY; without even the implied warranty of
+    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    * GNU General Public License for more details.
+    *
+    * You should have received a copy of the GNU General Public License
+    * along with wiringPi. If not, see <http://www.gnu.org/licenses/>.
+    ***********************************************************************
+    *)
+    // Handy defines
+    //{$link ./wiringPi/wiringPi.o}
+    //{$linklib c}
+    interface
+    const
+    NUM_PINS = 17;
+    WPI_MODE_PINS = 0;
+    WPI_MODE_GPIO = 1;
+    INPUT = 0;
+    OUTPUT = 1;
+    PWM_OUTPUT = 2;
+    LOW = 0;
+    HIGH = 1;
+    PUD_OFF = 0;
+    PUD_DOWN = 1;
+    PUD_UP = 2;
+    // Pin mappings from P1 connector to WiringPi library
+    // Px represents to physical pin on the RaspberryPi P1 connector
+    P3 = 8;
+    P5 = 9;
+    P7 = 7;
+    P8 = 15;
+    P10 = 16;
+    P11 = 0;
+    P12 = 1;
+    P13 = 2;
+    P15 = 3;
+    P16 = 4;
+    P18 = 5;
+    P19 = 12;
+    P21 = 13;
+    P22 = 6;
+    P23 = 14;
+    P24 = 10;
+    P26 = 11;
+    Function wiringPiSetup:longint;cdecl;external;
+    Procedure wiringPiGpioMode(mode:longint);cdecl;external;
+    Procedure pullUpDnControl(pin:longint; pud:longint);cdecl;external;
+    Procedure pinMode(pin:longint; mode:longint);cdecl;external;
+    Procedure digitalWrite(pin:longint; value:longint);cdecl;external;
+    Procedure pwmWrite(pin:longint; value:longint);cdecl;external;
+    Function digitalRead(pin:longint):longint;cdecl;external;
+    Procedure delay(howLong:dword);cdecl;external;
+    Procedure delayMicroseconds(howLong:dword);cdecl;external;
+    Function millis:dword;cdecl;external;
+    implementation
+    //end.
+    
+    https://play.google.com/store/apps/details?id=com.n0n3m4.droidpascal

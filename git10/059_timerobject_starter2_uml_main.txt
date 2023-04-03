@@ -1,0 +1,128 @@
+program TimerEvent_Object_UML;
+// tutorial on http://www.softwareschule.ch/download/maxbox_starterpdf
+// timerevent with time dialog synchronisation or event triggering, loc's=112
+// with UML in maxbox_starter4.pdf on Tutorials
+
+{$I .\059_timerobject_starter2_uml_form.inc}
+
+const MILLISECONDS = 1000; //one second
+ 
+var myTimer, myTimer2: TTimer; //is an object of class TTimer!
+    run_time: TDateTime;
+    glob_count: longint;
+    timelog_str: string;
+    start_b: boolean;
+    timeFrm: TForm;
+
+//-------------------------------slot begin---------------------//
+procedure CloseButtonClick(Sender: TObject);
+begin
+  timeFrm.Close;
+end;
+
+procedure closeFormClick(Sender: TObject; var Action: TCloseAction);
+begin
+  if myTimer <> NIL then begin
+    myTimer.enabled:= false;
+    myTimer.Free;
+    myTimer:= NIL;
+  end;
+  timeFrm.Free;
+  timeFrm:= NIL;
+end;    
+
+procedure startStopClick(Sender: TObject);
+begin
+  //toogle the clock  
+  if start_b then begin
+    myTimer.enabled:= false;
+    okbtn.caption:= 'Go on';
+    writeln(FormatDateTime('"run time is:" nn:ss:zzz',time-run_time)); 
+  end else begin
+    run_time:= time;
+    myTimer.enabled:= true; 
+    okbtn.caption:= 'Stop'; 
+  end; //state transition
+    start_b:= NOT start_b;
+end;
+//-------------------------------slot end---------------------//
+
+function getExePath: string;
+begin
+  result:= ExtractFilePath(Application.ExeName)
+end;
+
+procedure timeEventLogger(vlog: string);
+var 
+  myTimeList: TStringList;
+begin
+  //object gets created(constructor)
+  myTimeList:= TStringList.create;
+  //Exception Handling
+  try
+    myTimeList.Add(vlog)
+    myTimeList.SaveToFile(getExePath+'timerobject2_log.txt');
+  finally //or except
+    //showMessage('time log file not found');
+    myTimeList.Free;
+  end    
+end;
+
+procedure timer2Event(Sender: TObject);
+begin
+  //if assigned(mytimer) then
+  if mytimer <> NIL then begin
+    mytimer.onTimer:= NIL;
+    mytimer.Free;
+    mytimer2.Free;
+  end;
+ //must be at the end, otherwise dialog blocks the event! 
+ ShowMessage('timer1 and timer2 is stopped');
+end;  
+
+procedure timer1Event(Sender: TObject);
+begin
+  inc(glob_count)
+  {if glob_count >= 60 then begin
+    myTimer.enabled:= false;
+    myTimer.Free;
+    myTimer:= NIL;
+  end;}
+  timelog_str:= timelog_str + IntToStr(glob_count)+' time: '
+                                     +TimeToStr(time)+#13#10
+  timeLbl.caption:= TimeToStr(time); //send time to form              
+  timeEventLogger(timelog_str);  
+end;  
+
+//main program
+begin
+  glob_count:= 0;
+  start_b:= true;
+  ShowMessage('Press OK to start at: '+dateToStr(date)+': '+timeToStr(time))
+  myTimer:= TTimer.Create(self);
+  myTimer.Interval:= MILLISECONDS;
+  myTimer.onTimer:= @timer1Event;
+  //second object if wish
+  {myTimer2:= TTimer.Create(self);
+   myTimer2.Interval:= 4000;
+   myTimer2.onTimer:= @timer2Event;}
+  timeFrm:= loadTimerForm;
+  timeFrm.onClose:= @closeFormClick;
+  okBtn.onClick:= @startStopClick;
+  closeBtn.onClick:= @closeButtonClick;
+end.
+
+{//Purpose
+Use the Timer component to trigger an event, either one time or repeatedly, after a measured interval. Write the code that you want to occur at the specified time inside the timer component's OnTimer event. 
+//Tasks
+To specify the amount of elapsed time before the timer event is triggered, use the Interval property. 
+To discontinue a timed event, set the timer component's Enabled property to False. TTimer encapsulates the Windows API timer functions.
+
+Unit
+ExtCtrls
+//Description
+TTimer is used to simplify calling the Windows API timer functions SetTimer and KillTimer, and to simplify processing the WM_TIMER messages. Use one timer component for each timer in the application.
+The execution of the timer occurs through its OnTimer event. TTimer has an Interval property that determines how often the timer’s OnTimer event occurs. Interval corresponds to the parameter for the Windows API SetTimer function.
+Caution: Limitations on the total number of timers system-wide are system dependent.
+//Sender of a button click:
+The parameter "Sender" references the control that was used to call the method. If you click on the Button1 control, causing the Button1Click method to be called, a reference or pointer to the Button1 object is passed to Button1Click in the parameter called Sender.}

@@ -1,0 +1,666 @@
+{***************************************************************
+/*
+* System: maXbox :Product: Closures Report
+* File: $RCS:271_closures_study.txt$: #locs=312
+* Purpose: Implements and calls some function patterns
+*
+* Release V:1.2.8
+* ©:public domain; Company: kleiner kommunikation
+* Author: Max
+* Filepath: $E:\maxbox\maxbox3\examples\271_closures_study.txt$
+*
+* Created: 2012-02-09 by mX4
+* Modified: $Date: 2012-05-11 2:40p $ @: Max
+* Revision: $LastChanged: #sign:breitsch: BREITSCH-BOX: 02/04/2023 19:22:38 
+*/*}
+
+program Closure_Studies_Snippets;
+
+// this is in conjunction with the Report in Der Entwickler 2012, locs=236
+// in V4.1 you find closure enabled in maXbox 
+// see also Script 043_pas_proceduretype.txt
+
+
+function GetShortPathName(lname, sname: pchar; mpath: longint): bool;
+  external 'GetShortPathNameW@kernel32.dll stdcall';
+
+
+function TFormMain_GetTime: TDateTime;     //Function Enclosing
+begin
+  result:= StrToTime(FormatDateTime('h:n',time)); // cut seconds
+end;
+
+
+function RoundSchweiz(value: Extended):Extended;  //Function Casing
+  var i:integer;
+      j:double;
+  begin
+  // 0-3 Rappen --> auf 0 abrunden
+  // 4-5 Rappen --> auf 5 aufrunden
+  // 6-7 Rappen --> auf 5 abrunden
+  // 8-9 Rappen --> auf 0 aufrunden
+    i:= round(frac(abs(value)*10) * 10);
+    case i of
+      0: j:=0;
+      1: j:=-0.01;
+      2: j:=-0.02;
+      3: j:=-0.03;
+      4: j:= 0.01;
+      5: j:= 0;
+      6: j:=-0.01;
+      7: j:=-0.02;
+      8: j:= 0.02;
+      9: j:= 0.01;
+    end;
+    if j=0
+    then result:=value
+    else if value<0
+         then result:=value-j
+         else result:=value+j;
+  end;
+
+Function TDaten3_BerechneMwStBetrag(aNettobetrag, aMwStSatz:Extended;
+  //func delegate
+                 aWaehrung:string):Extended;
+BEGIN
+  result:=Round2Dec(aNettobetrag*aMwStSatz/100);
+  if AnsiUpperCase(aWaehrung)='SFR' then result:= RoundSchweiz(result);
+END;
+
+
+function GetQuery(SQLCommand: string; aQuery: TQuery): TFields;  //function object enclosing
+begin
+  aQuery.SQL.Text:= SQLCommand;
+  aQuery.Open;
+  aQuery.Active:= true;
+  result:= aQuery.Fields;
+end; 
+
+Procedure TDaten_CopyDS(t: TDataSet);
+//Procedure parameter as an object
+// Beim Kopieren immer AsVariant benutzen!!!
+// Leere, nicht initialisierte Integer-, Float- und DateTime-Felder liefern mit AsInteger oder value
+// den Wert 0 und nicht NULL!
+// Wenn das Feld eine Nachschlagetabelle benutzt, und das Nachschlagefeld mit Min/Max begrenzt ist, gibt es bei Locate und Lookup eine Exception!!!
+var a:array[0..60] of Variant;
+    i:integer;
+begin
+  with T do begin
+       //if State in dsEditModes then Post;
+       for i:=0 to FieldCount-1 do a[i]:=Fields[i].AsVariant;
+       Insert;
+       if (Name='Kunde') or (Name='Liefer') or (Name='Personal') or
+          (Name='Angebot') or (Name='Auftrag') or (Name='Kasse')or(Name='Artikel')
+       then for i:=1 to FieldCount-1 do Fields[i].AsVariant:=a[i] // no new copy
+       else for i:=0 to FieldCount-1 do Fields[i].AsVariant:=a[i];
+  end;
+end;
+
+function BinToInt(Value: string): Integer;
+var
+  i, iValueSize: Integer;
+begin
+  Result := 0;
+  iValueSize := Length(Value);
+  for i := iValueSize downto 1 do
+    if Value[i] = '1' then Result := Result + (1 shl (iValueSize - i));
+end; 
+
+//--------------------------closure tests--------------------------
+type
+  TMath_func = PROCEDURE(VAR x: single);
+
+var 
+  fct1x, fct2x, fct3x: TMath_func;
+  
+  PROCEDURE fct1(var x: single);
+  BEGIN
+    x:= Sin(x);
+  END;
+  
+  PROCEDURE fct2(var x: single);
+  BEGIN
+    x:= Cos(x);
+  END;
+ 
+  PROCEDURE nth_power(var x: single);
+  BEGIN
+    x:= power(x,4);
+  END;
+  
+PROCEDURE fct_table(start, stop, step: single; fct: TMath_func; fct_name: string);
+  VAR x: single;
+  BEGIN
+    x:= start;
+    Writeln('x | ' + fct_name);
+    WHILE x <= stop DO BEGIN
+      fct(x);
+      Writeln(floatToStr(x) +' | '+ floatToStr((x)));
+      x := x + step;
+    END;
+  END;  
+
+Function fct_table2(start, stop, step: single; fct: TMath_func;
+                                     fct_name: string): TMath_func;
+  VAR x: single;
+  BEGIN
+    x:= start;
+    Writeln('x | ' + fct_name);
+    WHILE x <= stop DO BEGIN
+      fct(x);
+      Writeln(floatToStr(x) +' | '+ floatToStr((x)));
+      x := x + step;
+    END;
+    {@function a: boolean; begin
+    end;}
+    result:= fct;
+  END; 
+  
+  function generate_power_func(var n: single; fct: TMath_func): TMath_func;
+  var x: single;
+  begin
+    //print "id(n): %X" % id(n)
+    fct(x);  //call
+    result:= fct;//_power(x);   //nth_power(n);
+        //return x**n
+    //print "id(nth_power): %X" % id(nth_power)
+  end;
+  
+//----------------------------change to python syntax--------------------------  
+(*def generate_power_func(n):
+    print "id(n): %X" % id(n)
+    def nth_power(x):
+        return x**n
+    print "id(nth_power): %X" % id(nth_power)
+    return nth_power
+
+>>> raised_to_4 = generate_power_func(4)
+id(n): CCF7DC
+id(nth_power): C46630
+>>> repr(raised_to_4)
+'<function nth_power at 0x00C46630>'
+
+>>> del generate_power_func
+>>> raised_to_4(2) ---> 16  *)
+  
+//Anonymous in Delphi
+ Procedure ClosureGag;
+ begin
+  with TForm.Create(self) do begin
+    Color:= clnavy;
+    BorderStyle := bsNone;
+    WindowState := wsMaximized;
+    Show;
+  end;
+ end; 
+ 
+//------------------------- ref to proc ----------------------//   
+
+type TProc = procedure; 
+
+procedure repeatProc;
+var
+  i: integer;
+begin
+  for i:= 1 to 9999999 do;
+end;
+    
+procedure TestClosure; 
+var OldCursor: TCursor;
+  begin
+    OldCursor:= Screen.Cursor;
+    try
+      Screen.Cursor:= crHourglass;
+      // Do some lengthy process to show the hourglass cursor
+    finally
+      Screen.Cursor:= OldCursor;
+    end;
+  end;
+  
+procedure ShowHourGlass(Proc: TProc);
+var
+  OldCursor: TCursor;
+begin
+  OldCursor:= Screen.Cursor;
+  Screen.Cursor:= crHourGlass;
+  try
+    Writeln('Start Proc...');
+    Proc();
+    Writeln('End Proc.');
+  finally
+    Screen.Cursor:= OldCursor
+  end;
+end;
+
+
+var 
+  mylst: TStringlist;
+  i: integer;
+  ms: string;
+  me: extended;
+  mes: single;
+
+begin
+  //maxform1.ShellStyle1click(self)
+    //maxform1.Console1Click(self)
+  //maxform1.Decompile1Click(self)
+
+   mylst:= TStringlist.create;
+   with TSession.Create(NIL) do try
+     SessionName:= 'Mars4'
+     //getAliasNames(mylst);
+     Writeln('BDE / DB Alias List:  ******************************');
+     for i:= 1 to mylst.count-1 do
+        write(mylst[i]+' ');
+   finally
+     Free;
+     mylst.Free; 
+   end;      
+ 
+  Writeln('BDE/DB Parameters: ******************************');
+  Writeln('BDE Directory '+GetBdeDirectory);
+  //writeln('DB Alias Path '+GetAliasPath('DBDEMOS'));
+  writeln('Temp File Path'+getTempDir)
+  Writeln('*************************************************');
+
+  Writeln(floatToStr(TDaten3_BerechneMwStBetrag(260, 19, 'SFR')))
+  writeln(timetoStr(TFormMain_GetTime))  //cut seconds
+  writeln(timeToStr(time))
+  GetTickCount //no return
+
+    fct1x:= @fct1
+    fct2x:= @fct2
+    fct3x:= @nth_power;
+    fct_table(0.1, 0.7, 0.1, fct1x, 'Sin(x)');
+    fct_table(0.1, 0.9, 0.1, fct2x, 'Cos(x)');
+    
+    fct1x:= fct_table2(0.1, 0.7, 0.1, fct1x, 'Sin(x)');
+    fct1x:= fct_table2(0.1, 0.7, 0.1, @fct1, 'Sin(x) Closure schem');
+ 
+    mes:= 0.5;
+    fct1x(mes);
+    writeln('back from pointer without schema '+floatToStr(mes))
+    fct1(mes);
+    writeln('back from pointer closure schema '+floatToStr(mes))
+ 
+    ms:= roundfloattoStr(power(2,10),0);
+    writeln((ms))
+    assert2(ms='1024', ' must be 1024')
+    assert2(roundfloattoStr(power(2,10),0)='1024', ' must be 1024')
+    //ClosureGag;
+    
+    with TAssertTest.create do begin
+      TestNotNull;
+      TestFailNull;
+      TestFailEqualsCurrency;
+      Free;
+    end;
+ 
+    with TAssert.create do begin
+      //TestNotNull;
+      //TestFailNull;
+      //TestFailEqualsCurrency;
+      //Fail('goan fail of assert');
+      //AssertEquals
+      Free;
+    end;
+    //TAssert.Fail
+    writeln('//assertnull;')
+
+    ShowHourGlass(@repeatProc);
+    
+End.
+
+
+Interfaces for Testing
+function GetShortPathName(lname, sname: pchar; mpath: longint): bool;  //external
+function TFormMain_GetTime: TDateTime;     //Function Enclosing
+function RoundSchweiz(value: Extended):Extended;  //Function Casing
+Function TDaten3_BerechneMwStBetrag(aNettobetrag, aMwStSatz:Extended;  //func delegate
+function GetQuery(SQLCommand: string; aQuery: TQuery): TFields;  //function object enclosing
+procedure TDaten_CopyDS(t: TDataSet);         //Procedure parameter as an object
+function BinToInt(Value: string): Integer;
+  PROCEDURE fct1(var x: single);
+  PROCEDURE fct2(var x: single);
+  PROCEDURE nth_power(var x: single);
+PROCEDURE fct_table(start, stop, step: single; fct: TMath_func;
+Function fct_table2(start, stop, step: single; fct: TMath_func;
+function generate_power_func(var n: single; fct: TMath_func): TMath_func;
+Procedure ClosureGag;
+
+
+Closures Studies and Sources:
+
+http://tronicek.blogspot.com/2007/12/closures-closure-is-form-of-anonymous_28.html
+
+http://www.javac.info/
+
+def generate_power_func(n):
+    print "id(n): %X" % id(n)
+    def nth_power(x):
+        return x**n
+    print "id(nth_power): %X" % id(nth_power)
+    return nth_power
+
+
+>>> raised_to_4 = generate_power_func(4)
+id(n): CCF7DC
+id(nth_power): C46630
+>>> repr(raised_to_4)
+'<function nth_power at 0x00C46630>'
+
+
+>>> del generate_power_func
+
+
+>>> raised_to_4(2)
+16
+
+
+PHP:
+[/php]
+Just found a somewhat simpler example ...
+[php]# define a function within a function and return it to the calling scope
+# the inner function can access variables in the calling function, i.e. its closure
+
+def times(n):
+def _f(x):
+return x * n
+return _f
+
+t3 = times(3)
+print t3 #
+print t3(7) # 21
+[/php]
+Here the inner function _f() is the block of code of the closure, similar to the lambda code in the first example.
+
+
+Now, we can put those two facts together by having a function return a "customized" version of an inner function. For example:
+
+>>> def outer(x):
+...   def inner(y):
+...     return x+y
+...   return inner
+...
+>>> customInner=outer(2)
+>>> customInner(3)
+5
+
+The trick that you want to notice in what's going on there is what happens to the value of x. The argument x
+ is a local variable in outer() and the behavior of local variables isn't normally very exciting. But in this
+  case, x is global to the function inner(). And since inner() uses the name, it doesn't go away when outer()
+   exits. Instead inner() captures it or "closes over" it. You can call outer() as many times as you like and each value of x will be captured separately.
+
+The function that's returned is called a closure. The idea is potentially useful because we can specify part
+ of the behavior of a function based on data at runtime.
+
+
+At this stage you might say, "OK, I followed your tedious explanation, but what good is such a thing? Is it
+ anything more than a curiosity for ordinary programming?" The answer to that is that it is occasionally
+  useful when something, such as a library interface, requires a function and you want to specify more than a
+   couple of them that are very similar.
+
+Imagine that you're designing a GUI interface and you need six buttons that do similar things. Tkinter
+ buttons take a function to call as an argument and it would be tedious to write six very similar functions.
+  Instead you might do something like this:
+
+from Tkinter import *
+
+def makeButtonFunc(buttonName):
+
+  def buttonFunc():
+    print buttonName
+
+  return buttonFunc
+
+class mainWin:
+
+  def __init__(self,root):
+    self.root=root
+    self.createWidgets()
+    return None
+
+  def createWidgets(self):
+    for buttonName in ("A","B","C","D","E","F"):
+      b=Button(self.root,text=buttonName,
+        command=makeButtonFunc(buttonName))
+      b.pack()
+    return None
+
+def main():
+  root=Tk()
+  mainWin(root)
+  root.mainloop()
+  return None
+
+if __name__=="__main__":
+  main()
+
+
+That's clearly better than writing six functions that are virtually identical.
+
+There are lots of people who like using closures. I, personally, don't. To me, it feels like using a subtle
+ trick and I prefer my programs to be as obvious as possible. In a similar situation, I'd use a Python object
+  with a __call__() method. If a Python object has that method and it's called as though it were a function,
+   that method is run. In a program I wrote, I'd probably replace makeButtonFunc() with something like:
+
+
+class makeButtonFunc:
+  def __init__(self,buttonName):
+    self.buttonName=buttonName
+
+  def __call__(self):
+    print self.buttonName
+
+
+Which would do the same thing. Of course, I'd give the class a different name.
+
+Posted: Mon - September 18, 2006 at 08:07 PM   Main   Category:  Geek
+
+
+6.1 – Closures
+
+When a function is written enclosed in another function, it has full access to local variables from the
+ enclosing function; this feature is called lexical scoping. Although that may sound obvious, it is not.
+  Lexical scoping, plus first-class functions, is a powerful concept in a programming language, but few
+   languages support that concept.
+
+Let us start with a simple example. Suppose you have a list of student names and a table that associates
+ names to grades; you want to sort the list of names, according to their grades (higher grades first). You
+  can do this task as follows:
+
+    names = {"Peter", "Paul", "Mary"}
+    grades = {Mary = 10, Paul = 7, Peter = 8}
+    table.sort(names, function (n1, n2)
+      return grades[n1] > grades[n2]    -- compare the grades
+    end)
+
+Now, suppose you want to create a function to do this task:
+
+    function sortbygrade (names, grades)
+      table.sort(names, function (n1, n2)
+        return grades[n1] > grades[n2]    -- compare the grades
+      end)
+    end
+
+The interesting point in the example is that the anonymous function given to sort accesses the parameter
+ grades, which is local to the enclosing function sortbygrade. Inside this anonymous function, grades is
+ neither a global variable nor a local variable. We call it an external local variable, or an upvalue. (The
+  term "upvalue" is a little misleading, because grades is a variable, not a value. However, this term has
+   historical roots in Lua and it is shorter than "external local variable".)
+
+Why is that so interesting? Because functions are first-class values. Consider the following code:
+
+    function newCounter ()
+      local i = 0
+      return function ()   -- anonymous function
+               i = i + 1
+               return i
+             end
+    end
+    
+    c1 = newCounter()
+    print(c1())  --> 1
+    print(c1())  --> 2
+
+Now, the anonymous function uses an upvalue, i, to keep its counter. However, by the time we call the
+ anonymous function, i is already out of scope, because the function that created that variable (newCounter)
+  has returned. Nevertheless, Lua handles that situation correctly, using the concept of closure. Simply put,
+   a closure is a function plus all it needs to access its upvalues correctly. If we call newCounter again,
+    it will create a new local variable i, so we will get a new closure, acting over that new variable:
+
+    c2 = newCounter()
+    print(c2())  --> 1
+    print(c1())  --> 3
+    print(c2())  --> 2
+
+So, c1 and c2 are different closures over the same function and each acts upon an independent instantiation
+ of the local variable i. Technically speaking, what is a value in Lua is the closure, not the function. The
+ function itself is just a prototype for closures. Nevertheless, we will continue to use the term "function"
+  to refer to a closure whenever there is no possibility of confusion.
+
+Closures provide a valuable tool in many contexts. As we have seen, they are useful as arguments to higher
+-order functions such as sort. Closures are valuable for functions that build other functions too, like our
+ newCounter example; this mechanism allows Lua programs to incorporate fancy programming techniques from the
+  functional world. Closures are useful for callback functions, too. The typical example here occurs when you
+   create buttons in a typical GUI toolkit. Each button has a callback function to be called when the user
+    presses the button; you want different buttons to do slightly different things when pressed. For instance
+    , a digital calculator needs ten similar buttons, one for each digit. You can create each of them with a
+     function like the next one:
+
+    function digitButton (digit)
+      return Button{ label = digit,
+                     action = function ()
+                                add_to_display(digit)
+                              end
+                   }
+    end
+
+
+with TForm.Create(self) do begin
+  BorderStyle := bsNone;
+  WindowState := wsMaximized;
+  Show;
+end;   
+  
+  This JSR provides support for operating on an arbitrary "block of Java code", or body, which is either a
+   statement list, an expression, or a combination of both. We call the mechanism a closure expression.
+    Wrapping statements or an expression in a closure expression does not change their meaning, but merely
+     defers their execution. Evaluating a closure expression produces a closure object. The closure object
+      can later be invoked, which results in execution of the body, yielding the value of the expression (if
+ one was present) to the invoker. A closure expression can have parameters, which act as variables whose
+  scope is the body. In this case the invoker of the closure object must provide compatible arguments, which
+   become the values for the parameters.' 
+   
+  Closures Bullets:
+  
+  Ein Closure als Code Block
+  Functional Programming - eine Renaissance 
+  Dynamic Languages - Fluch oder Segen?
+  Long History - Smalltalk with Blocks, von Lisp bis Ruby
+  Objektorientiert versus Blockorientiert
+  Design eines digitalen Lügendetektors mit Closures
+  
+  
+  As there is a growing interest in dynamic languages, more people are running into a programming concept called Closures or Blocks. People from a C/C++/Java/C# language background don't have closures and as a result aren't sure what they are. Here's a brief explanation, those who have done a decent amount of programming in languages that have them won't find this interesting.
+
+Closures have been around for a long time. I ran into them properly for the first time in Smalltalk where they're called Blocks. Lisp uses them heavily. They're also present in the Ruby scripting language - and are a major reason why many rubyists like using Ruby for scripting.
+
+Essentially a closure is a block of code that can be passed as an argument to a function call. I'll illustrate this with a simple example. Imagine I have a list of employee objects and I want a list of those employees who are managers, which I determine with an IsManager property. Using C#, I'd probably write it like this.
+
+  public static IList Managers(IList emps) {
+    IList result = new ArrayList();
+    foreach(Employee e in emps)
+      if (e.IsManager) result.Add(e);
+    return result;
+  }
+
+In a language that has Closures, in this case Ruby, I'd write this.
+
+def managers(emps)
+  return emps.select {|e| e.isManager}
+end
+  
+
+Essentially select is a method defined on the Ruby collection class. It takes a block of code, a closure, as an argument. In ruby you write that block of code between curlies (not the only way). If the block of code takes any arguments you declare those between the vertical bars. What select does is iterate through the input array, executes the block of code with each element, and returns an array of those elements for which the block evaluated as true.
+
+Now if you're a C programmer you probably think "I could do that with a function pointer", if you're a Java programmer you probably think "I could do that with an anonymous inner class", a C#er would consider a delegate. These mechanisms are similar to closures, but there are two telling differences.
+
+The first one is a formal difference, closures can refer to variables visible at the time they were defined. Consider this method
+
+def highPaid(emps)
+  threshold = 150
+  return emps.select {|e| e.salary > threshold}
+end
+  
+
+Notice that the code in the select block is referring to a local variable defined in the enclosing method. Many of the alternatives to closures in languages that don't have real closures can't do that. Closures allow you to do even more interesting stuff. Consider this function.
+
+def paidMore(amount)
+  return Proc.new {|e| e.salary > amount}
+end
+
+This function returns a closure, indeed it returns a closure whose behavior depends on the argument sent into it. I can create such a function with and assign it to a variable.
+
+highPaid = paidMore(150)
+
+The variable highPaid contains a block of code (called a Proc in Ruby) that will return whether a tested object has a salary greater than 150. I might use it like this.
+
+john = Employee.new
+john.salary = 200
+print highPaid.call(john)
+  
+
+The expression highPaid.call(john) calls the e.salary > amount code I defined earlier, with the amount variable in that code bound the to the 150 I passed in when I created the proc object. Even if that 150 value went out of scope when I issue the print call, the binding still remains.
+
+So the first crucial point about closures is that they are a block of code plus the bindings to the environment they came from. This is the formal thing that sets closures apart from function pointers and similar techniques.(Java's anonymous inner classes can access locals - but only if they are final.)
+
+The second difference is less of a defined formal difference, but is just as important, if not more so in practice. Languages that support closures allow you to define them with very little syntax. While this might not seem an important point, I believe it's crucial - it's the key to make it natural to use them frequently. Look at Lisp, Smalltalk, or Ruby code and you'll see closures all over the place - much more frequently used than the similar structures in other languages. The ability to bind to local variables is part of that, but I think the biggest reason is that the notation to use them is simple and clear.
+
+A good case in point is what happened when ex-Smalltalkers started in Java. Initially many people, including me, experimented with using anonymous inner classes to do many of things that we'd done with blocks in smalltalk. But the resulting code was just too messy and ugly so we gave up.
+
+Like any term in software there is a lot of blur about the exact definition of closure. Some people say that the term only applies to an actual value that includes bindings from its environment, such as the value returned by highPaid. Others use the term 'closure' to refer to a programming construct that has the ability to bind to its environment. This debate, an example of the TypeInstanceHomonym, is usually carried out with the politeness and lack of pedantry that our profession is known for.
+
+I use closures a lot in Ruby, but I don't tend to create Procs and pass them around. Most of the time my use of closures is based around CollectionClosureMethods similar to the select method I showed earlier. Another common use is the 'execute around method', such as when processing a file.
+
+File.open(filename) {|f| doSomethingWithFile(f)}
+
+Here the open method opens the file, executes the supplied block, and then closes it. This can be a very handy idiom for things like transactions (remember to commit or rollback) or indeed anything where you have to remember to do something at the end. I use this extensively in my xml transformation routines.
+
+Such use of closures is actually much less than what people in the Lisp and functional programming worlds do. But even with my limited uses I miss them a lot when programming in languages without them. They are one of those things that seem minor when you first come across them, but you quickly grow to like them.
+
+Other languages: C# 3.0 | C# 2.0 | Python | Boo | Lisp | JavaScript
+
+Neal Gafter has an excellent posting on the history of closures. Vadim Nasardinov led me to this interesting tidbit of history of closures in Java from Guy Steele.
+  
+  http://gafter.blogspot.com/2007/01/definition-of-closures.html
+  
+--------------------------------------  
+  How many times have you written a piece of code and thought “I wish I could reuse this block of code”? How many times have you refactored existing code to remove redundancies? How many times have you written the same block of code more than once before realising that an abstraction exists? How many times have you extracted such abstractions successfully? How difficult was it to do and how much effort was involved? How constrained were you by the current Java language constructs? These are all questions pertaining to the everyday challenges we face as Java programmers in our struggles to achieve zero code redundancy.
+
+Closures are reusable blocks of code that capture the environment and can be passed around as method arguments for immediate or deferred execution. Why do we need them in Java? There are many reasons for and against, but the fundamental benefit they provide is the facilitation of redundant code avoidance. The current Java closures specification makes a strong point of this in the first paragraph where it states: “they allow one to more easily extract the common parts of two almost-identical pieces of code”.
+
+Closures provide an elegant means of reusing blocks of code and avoiding code duplication without the boilerplate. This is the fundamental benefit that closures bring to Java. All other benefits are derived benefits inherited from this fundamental benefit. In fact, all the needs addressed by the Java closures proposal are all derived benefits.
+I know I am just stating the obvious and reiterating my point here, but it is just too easy to overlook this one fundamental benefit and be overwhelmed by all others. Java closures make it easier to eliminate redundant code and avoid it altogether!
+
+--------------------------------
+You cannot in the current Java language write anonymous inner classes without also writing boilerplate code. This is a necessary redundancy that cannot be eliminated.
+
+For example, the code snippet below contains boilerplate that is redundant and that you should not have to write.
+
+new Thread(new Runnable() {
+  public void run() {
+    System.out.println("Anonymous Inner Class");
+  }
+}).start();
+
+..whereas closures eliminate the redundant boilerplate required above:
+
+new Thread({ =>
+  System.out.println("Closure")
+}).start();
+
+As an aside, inner classes are a poor man’s closure because
+they do not capture the enclosing environment in its entirety (that is: they do not capture variable names, the ‘this’ object, the referents of break, continue, return, etc..). Inner classes are definitely not closures. See closure definition.
+
+608-21759

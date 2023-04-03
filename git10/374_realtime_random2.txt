@@ -1,0 +1,998 @@
+program Realtime_Random2_Tutorial;
+
+//mX3 directory change, preparation for RealTime Tutorial 23
+//shows coding with time and response in a conditional way, #locs=464
+//G9 was the band of the Neukühl Epoch!
+//#sign>breitsch: BREITSCH-BOX: 02/04/2023 18:05:06 
+//#tech!perf: 0:0:0.979 threads: 9 192.168.56.1 18:05:06 4.7.6.20
+
+function  timeGetTimeDLL: Longint;
+   external 'timeGetTime@winmm.dll stdcall';
+   
+function  QueryPerformanceFrequencyDLL(var lfreq: int64): bool;
+   external 'QueryPerformanceFrequency@kernel32.dll stdcall';
+
+function  QueryPerformanceCounterDLL(var lcount: int64): bool;
+   external 'QueryPerformanceCounter@kernel32.dll stdcall';
+
+
+type
+   TCoin = array[0..1] of shortstring;
+   
+   TTimeRec = record
+     Second: Integer;
+     Minute: Integer;
+     Hour: Integer;
+   end;
+   
+   HMSRec = record
+     Hours: byte;
+     Minutes: byte;
+     Seconds: byte;
+     NotUsed: byte;
+   end;
+
+TGetTime = procedure(var aTime: TTimeRec);
+
+const mp3song = 'G9_vision.mp3';  //Default
+      NCoins = 10;
+      NDice = 8;
+
+
+var 
+    idHTTP: TIDHTTP;
+    zipStream: TFileStream;
+    myform: TForm;
+    mygrid: TStringGrid;
+    
+
+function MSecToTime(mSec: Int64): string;
+var dt: TDateTime;
+begin
+  dt:= (mSec/1000/86400);  //SecsPerDay;
+  Result:= FormatDateTime('" song length is:" nn:ss:zzz',dt) ;
+end; 
+
+procedure TimeFormatDemo;
+var
+  TheLength: LongInt;
+  aplayer: TMediaPlayer; 
+  ahmsrec: HMSrec;
+begin
+  aplayer.TimeFormat:= tfHMS; {Set time format - note some devices don’t support tfHMS }
+  TheLength:= aplayer.Length; { Store length of currently loaded media in var }
+  with aHMSRec {(TheLength)} do begin{ Typecast TheLength as HMSRec record }
+    writeln(IntToStr(longint(Hours))); { Display Hours in Label1 }
+    writeln(IntToStr(Minutes)); { Display Minutes }
+    writeln(IntToStr(Seconds)); { Display Seconds }
+  end;
+end;
+
+function NumProcessThreads2: integer;
+var
+  hsnapshot: THandle;
+  Te32: TTHREADENTRY32;
+  proch: dWord;
+begin
+  Result:= 0;
+  proch:= GetCurrentProcessID;
+  hSnapShot:= CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+ 
+  Te32.dwSize:= sizeof(Te32);
+  if Thread32First(hSnapShot, Te32) then begin
+    if Te32.th32OwnerProcessID = proch then
+      inc(Result);
+    while Thread32Next(hSnapShot, Te32) do begin
+      if Te32.th32OwnerProcessID = proch then
+        inc(Result);
+    end;
+  end;
+  CloseHandle(hSnapShot);
+  writeln('WinDir '+getwindir);
+  writeln('SysDir '+getsysdir);
+  //getsystempath
+end;
+
+
+procedure ParkMillerDemo;
+//http://home.comcast.net/~JamesMClark5/Pascal/Random.htm
+var C: boolean;
+    I, Tails, D1, D2: integer;
+    aCoin: TCoin;
+    Seed: longint;
+begin
+    write('Seed value = '+floattoStr(456.45));
+    Seed:= Round(time); //Readln(Seed);
+    PMrandomize(Seed);
+    aCoin[0]:= 'head';
+    aCoin[1]:= 'tail';
+    writeln('');
+    writeln('Tossing ' +inttoStr(NCoins)+' coins:');
+    Tails:= 0;
+    for I:= 1 to NCoins do begin
+       C:= Brand(0.5);
+       write(aCoin[integer(C)]+'  ');
+       if C then inc(Tails);
+    end;
+    writeln(' ');
+    writeln(inttoStr(Tails)+' tails and '+intToStr(NCoins-Tails)+ ' heads');
+    writeln('');
+    writeln('Tossing '+inttoStr(NDice)+ ' pairs of dice:');
+    for I:= 1 to NDice do begin
+        D1:= Irand(6)+1;
+        D2:= Irand(6)+1;      
+        write(' '+inttostr(D1)+ '+'+ inttostr(D2)+ '='+ inttoStr(D1+D2));
+    end;
+    writeln(#13#10);
+    writeln('Six random angles between 180 and 270 degrees:');
+    for I:= 1 to 6 do begin
+      //write(floattoStr(180 + 90*Rrand)+'    ');
+      write(format('%.3f  ',[180+90*Rrand]));
+    end;
+    writeln(#13#10);
+end;    
+
+
+procedure DelayLEDLoop;
+//http://www.arduino.cc
+var ledValue: boolean;
+    ledSwitchTime, leddiff, atime: longint;
+begin
+  leddiff:= 1000;
+  ledswitchtime:= 0;
+  ledValue:= false;
+  //MillisecondsElapsed;
+  Repeat
+    atime:= MilliSecondOfTheDay(now)-ledSwitchTime;
+    if atime > leddiff then begin
+      ledValue:= NOT ledValue;
+      if ledValue then begin
+        maxform1.imglogo.show;
+        writeln('LED is ON  at: '+timetoStr(time));
+      end else begin 
+        writeln('LED is OFF at: '+timetoStr(time));
+        maxform1.imglogo.hide;
+      end;
+      //digitalWrite(ledPin, ledValue);
+      ledswitchtime:= MilliSecondOfTheDay(Now);
+    end;
+  until isKeyPressed;
+   //memo2.setFocus;
+end;
+
+
+procedure DelayNoLoop;
+//http://www.arduino.cc
+var ledValue: boolean;
+begin
+  ledValue:= false;
+  Repeat
+    ledValue:= NOT ledValue;
+    if ledValue then begin
+      maxform1.imglogo.show;
+      maxform1.imglogobox.hide;
+      writeln('LED is ON  at: '+timetoStr(time));
+      Delay(1000);
+    end else begin 
+      writeln('LED is OFF at: '+timetoStr(time));
+      maxform1.imglogo.hide;
+      maxform1.imglogobox.show;
+      Delay(1000);
+    end;
+    //digitalWrite(ledPin, ledValue);
+  until isKeyPressed;
+  maxform1.imglogo.show;
+  maxform1.imglogobox.show;
+end;
+
+
+//Event Stream Data Simulation  ESDS
+procedure letStreamDataWork;
+var biglist: TStringList;
+begin
+  biglist:= TStringList.create;
+  memo2.setfocus;
+  writeln(getbigPI)
+  repeat 
+    biglist.add('Value for mem[%d] enter : '
+                   +inttoStr(RandomRange(500,100000000)));
+    biglist.add(getbigPI+getbigPI+getbigPI+getbigPI)
+    with TJvMemoryInfos.Create(self) do begin
+      writeln('Available Mem '+FreeMemory);
+      Free;
+    end;   
+  until isKeypressed;
+  writeln('elements of biglist '+intToStr(biglist.count))
+  writeln('capacity of biglist '+intToStr(biglist.capacity))
+  biglist.Free; //destruct
+end; 
+ 
+procedure letStreamDataWorkRefresh;
+var biglist: TStringList;
+  jvmem: TJvMemoryInfos;
+begin
+  biglist:= TStringList.create;
+  memo2.setfocus;
+  writeln(getbigPI)
+  jvmem:= TJvMemoryInfos.Create(self);
+  repeat 
+    biglist.add('Value for mem[%d] enter : '
+                   +inttoStr(RandomRange(500,100000000)));
+    biglist.add(getbigPI+getbigPI+getbigPI+getbigPI)
+    jvmem.Refresh(self);
+    writeln('Available Mem: '+jvmem.FreeMemory);
+  until isKeypressed;
+  writeln('elements of biglist '+intToStr(biglist.count))
+  writeln('capacity of biglist '+intToStr(biglist.capacity))
+  biglist.Free; //destruct
+  jvmem.Free;
+end; 
+
+
+procedure Randmax2;
+//http://home.comcast.net/~JamesMClark5/Pascal/Random.htm
+var R: byte;
+    I: integer;
+    sout: string;
+begin
+  writeln('');
+  R:= 71;
+  for I:= 1 to 272 do begin
+     R:= ((longint(628)*R + 157) AND $3FF) SHR 2;
+     sout:= sout + Format('%-*.3d',[5,R]);
+     if (I mod 16)=0 then sout:= sout+#13#10;
+  end;
+  writeln(sout)
+end;
+
+
+procedure LoopTest;
+begin
+ Randomize; 
+ REPEAT
+    Writeln(inttoStr(Random(256*256)));
+ UNTIL isKeypressed;  //on memo2 output
+ IF isKeypressed THEN writeln('key has been pressed!');
+end;
+
+procedure LoopTest2;
+begin
+  Randomize; 
+  WHILE NOT isKeypressed do 
+    Writeln(inttoStr(Random(256*256)));
+end;
+
+
+procedure DrawonForm(Sender: TObject);
+var
+  X,Y,i: Integer;
+begin
+  //myform.WindowState:= wsMaximized;
+  myform.Canvas.Pen.Width:= 5;
+  myform.Canvas.Pen.Style:= psDot;
+  Randomize;
+  for i:= 1 to 50 do begin
+    X:= X + 4;
+    Y:= Y + 4;
+    myform.Canvas.Pen.Color:= Random(65535);
+    myform.Canvas.Rectangle(X,Y,X + Random(400),Y+Random(400));
+    myForm.ScrollBy(1,1);
+    inc(x); inc(y);
+  end;  
+end;
+
+
+procedure mygettime(var aTime: TTimeRec);
+begin  //dummy
+end;
+
+var
+  aTime: TTimeRec;
+  Handle: THandle;
+  GetTime: TGetTime;
+  aTimeFormat: TMPTimeFormats;
+
+procedure doGetkernelTimeTest;
+var addr: longint;
+begin
+  Handle:= LoadLibrary('winmm.dll');
+  if Handle <> 0 then begin
+    addr:= GetProcAddress(Handle, 'timeGetTime');
+    gettime:= @myGettime;
+    if addr {@GetTime} <> 0 {nil} then begin
+       GetTime(aTime);
+       with aTime do
+          WriteLn('The time is '+inttostr(Hour)+ ':'+inttostr(Minute));
+  end;
+  FreeLibrary(Handle);
+ end; 
+end;
+
+
+procedure TForm1GridClick(Sender: TObject);
+begin
+  showMessageBig('Grid has been clicked');
+end;  
+
+procedure TForm1Button1Click(Sender: TObject);
+var
+  I,J,X,Y: Word;
+begin
+  I:= 0; J:= 0;
+  myform.Canvas.Textout(20,235,S_RepeatChar(90,' '));
+  while I < 64000 do begin
+    Randomize;
+    while J < 64000 do begin
+      Y:= Random(J);
+      Inc(J);
+    end;
+    X:= Random(I);
+    mygrid.Cells[3,3]:= intToStr(X);
+    Inc(I);
+  end;
+  //TForm(sender).Canvas.TextOut(10, 10, 'handler is finished');
+  myform.Canvas.TextOut(20, 235, 'The Ignore Button1Click handler is finished');
+  //writeln(objectToStr(sender));
+end;
+
+procedure TForm1Button2Click(Sender: TObject);
+var
+  I,J,X,Y: Word;
+begin
+  I:= 0; J:= 0;
+  myform.Canvas.Textout(20,255,S_RepeatChar(90,' '));
+  while I < 64000 do begin
+    Randomize;
+    while J < 64000 do begin
+      Y:= Random(J);
+      Inc(J);
+      //Application.ProcessMessages;
+    end;
+    X:= Random(I);
+    mygrid.Cells[3,3]:= intToStr(X);
+    Inc(I);
+    Application.ProcessMessages;
+  end;
+  myform.Canvas.TextOut(20, 255, 'The Process Button2Click handler is finished');
+  //drawOnForm(self);
+end;
+
+
+procedure DoFormCreate(Sender: TObject);
+var j, it: integer;
+begin
+   ProcessMessagesOFF;  //to test events
+   myform:= TForm.create(self);
+   myform.setbounds(0,0,600,320);
+   myform.caption:= 'Process Messages Demo';
+   with TButton.create(myform) do begin
+      caption:= '&Ignore Messages';
+      parent:= myform;
+      SetBounds(300,235,100,40)
+      onClick:= @TForm1Button1Click;
+   end;
+   with TButton.create(myform) do begin;
+     caption:= '&Process Messages';
+     parent:= myform;
+     SetBounds(430,235,100,40)
+     onClick:= @TForm1Button2Click;
+   end;
+   mygrid:= TStringGrid.create(myform);
+   with mygrid do begin
+     parent:= myform;
+     height:=200;
+     width:=400;
+     j:= 1;
+     for it:= 1 to 4 do begin
+       for j:= 1 to 4 do 
+         Cells[j,it]:= inttostr(it*j);
+     end;
+    onclick:= @TForm1GridClick;
+   end;
+   with TJvStarfield.Create(myform) do begin
+     parent:= myform;
+     stars:= 300;
+     maxSpeed:= 12;
+     setBounds(0,200,myform.width,20);
+     active:= true; 
+   end; 
+   myform.color:= clyellow;
+   myform.showmodal;
+   mygrid.Free;
+   myform.Free;
+   ProcessMessagesON;
+end;
+
+
+var timeres: DWord;
+   StartExec,
+   EndExec,
+   PerfFreq: Int64;
+
+  
+begin   {@main}
+  ProcessMessagesON;
+  //ProcessMessagesOFF;
+  //mp3song1:= ExtractWord(5,myurl,['/']);
+  Randmax2;
+  ParkMillerDemo;
+  ShowmessageBig('You should press a key on output window to stop that loop!');
+  memo2.setfocus;
+  LoopTest2;
+  Writeln('');
+  //DelayLEDLoop;
+  //DelayNoLoop;
+  dogetKerneltimeTest;
+  timeres:= timeGetTime;
+  Sleep(1000);
+  Writeln('mX4 '+inttostr(timeGetTime-timeres));
+  timeres:= timeGetTimeDLL;
+  Sleep(1000);
+  Writeln('DLL: '+inttostr(timeGetTimeDLL-timeres));
+  timeres:= timeGetTime;
+  Delay(1000);
+  Writeln('Delay: '+inttostr(timeGetTime-timeres));
+  DoFormCreate(self);
+  //letStreamDataWorkRefresh;
+  //if QueryPerformanceFrequencyDLL(PerfFreq) then writeln('so good perffreq');
+  if QueryPerformanceFrequencyDLL(PerfFreq) then
+    QueryPerformanceCounterDLL(StartExec);
+    Sleep(1000);
+    QueryPerformanceCounterDLL(EndExec);
+    writeln(Format('Perf Counter DLL Debug:: (readcount = %d), ExecTime = %.3f ms',
+       [1 {ReadCount}, ((EndExec - StartExec)*1000.0)/PerfFreq]))
+
+  if QueryPerformanceFrequency(PerfFreq) then
+    QueryPerformanceCounter(StartExec);
+    Sleep(1000);
+    QueryPerformanceCounter(EndExec);
+    writeln(Format('Perf Counter Int Debug:: (readcount = %d), ExecTime = %.3f ms',
+       [1 {ReadCount}, ((EndExec - StartExec)*1000.0)/PerfFreq]))
+
+  if QueryPerformanceFrequency1(PerfFreq) then
+    QueryPerformanceCounter1(StartExec);
+    Sleep(1000);
+    QueryPerformanceCounter1(EndExec);
+    writeln(Format('Perf Counter Int1 Debug:: (readcount = %d), ExecTime = %.3f ms',
+      [1 {ReadCount}, ((EndExec - StartExec)*1000.0)/PerfFreq]))
+      
+      Writeln('Count of Threads A: '+intToStr(Threadcount));
+      Writeln('Count of Threads B: '+intToStr(numProcessThreads2));
+    
+      //numprocessthreads
+    //rand
+End.
+
+asm Capture Group Theorem end
+
+There above all two things which do not exists:
+
+Random and Time!
+Random cause everything is defined by determinism
+Time cause only Space exists, time is just a change in Space
+
+
+more G9 songs:
+'http://max.kleiner.com/download/olemosbruja.mp3'
+'http://www.kleiner.ch/kleiner/download/G9_whitemagic.mp3'
+'http://www.kleiner.ch/kleiner/download/G9_japan.mp3'
+'http://www.kleiner.ch/kleiner/download/G9_lordofdarkness.mp3';
+'http://www.kleiner.ch/kleiner/download/G9_nowage.mp3';
+'http://www.kleiner.ch/kleiner/download/G9_olemosbruja.mp3';
+'http://www.kleiner.ch/kleiner/download/G9_playchess.mp3';
+'http://www.kleiner.ch/kleiner/download/G9_vision.mp3';
+'http://www.kleiner.ch/kleiner/download/G9_zeitraum.mp3';
+
+
+
+---code_cleared_checked---
+
+BEGIN
+ Randomize; 
+ REPEAT
+  TextAttr:=Random(256);
+  Write('Hilfe')
+ UNTIL KEYPRESSED
+END.
+
+Hallo,
+Post by Hilmar Bunjes
+Hallo,
+ich bin gerade am programmieren (Java, dürfte hierfür aber egal sein)
+und brauche einen Algorithmus für einen Zufallszahlengenerator, der
+reproduzierbare Zufallszahlen erzeugt. Also ich brauche eine vernünftige
+Verteilung der Zufallszahlen, muss aber die Möglichkeit haben, bei
+gleichem Startwert auch immer die gleich Folge an Zufallszahlen zu
+bekommen. Der Startwert sollte sich verändern lassen.
+von Steve Schafer, TeamB (Borland)
+
+var RandSeed: longint;
+function Random: double;
+begin
+RandSeed := 134775813 * RandSeed + 1;
+result := (RandSeed xor $80000000) / 4294967296.0;
+if Result < 0 then
+Result := Result + 1;
+end;
+
+Grüße,
+Joachim
+
+
+http://www.pup.ethz.ch/et3.html
+
+Zufallszahlen
+
+
+Randomize;   (* Zufallszahlengenerator initialisieren *)
+
+Zufall, Ungewiheit, Gluck, Pech { sind das nicht ziemlich diuse Begrie? Eher
+aus dem Bereich der Wahrsager als dem der Wissenschaftler? Eine wissenschaftliche Untersuchung
+des Zufalls ist moglich, und sie begann mit der Analyse von Glucksspielen
+durch B. Pascal, C. Huygens, Jakob Bernoulli und P. Fermat4. Diese Analyse hat den
+Wahrscheinlichkeitskalkul hervorgebracht, der lange fur einen unbedeutenden Zweig der
+Mathematik gehalten wurde. Einen ersten Erfolg erzielte der Kalkul in der statistischen
+Mechanik durch Untersuchungen von L. Boltzmann und J.W. Gibbs5: Die  }
+"
+Menge von
+Zufall\, die in einem Liter Luft ist, wird durch den Begri der Entropie gemessen. Der
+nachste groe Erfolg ist mit der Entwicklung der Quantentheorie verknupft. Heutzutage
+ist der Zufall in wissenschaftlichen Theorien fast uberall prasent: Rauschen in der
+Signalubertragung, Ausbreitung von Epidemien, Entwicklung von Borsenkursen, chaotisches
+Verhalten von nichtlinearen Systemen, Spieltheorie, Wetterprognosen, : : : .
+
+
+Die Zufallszahlen, die ein Computersystem erstellen kann, sind natürlich keine echten Zufallszahlen.Sie werden aus der Systemzeit berechnet.Der Zufallsgenerator sollte beim Programmstart initialisiert werden:
+
+procedure TForm1.CreateForm(Sender: TObject);
+begin
+  Randomize;
+end;
+ 
+
+Jetzt können eigentlich recht problemlos Zufallszahlen erstellt werden und zwar mit dem Befehl Random:
+
+procedure TForm1.Button1Click(Sender: TObject);
+const
+  ZufallBereich = 5;
+begin
+  Caption:=IntToStr(Random(Zufallsbereich));
+end;
+ 
+http://www.math.uni-frankfurt.de/~numerik/lehre/Vorlesungen/pros-12/Zufallszahlen%20und%20Benford/ran-shell.pdf
+
+http://home.comcast.net/~JamesMClark5/Pascal/Random.htm
+
+
+Guten Tag Heini
+Ja richtig, die Funktion hat einen pseudo Zufalls Term, wobei die Initialisierung mit Randomize massgebend ist.
+Damit Zufallszahlen erzeugt werden können, behilft sich Random der aktuellen Uhrzeit in msec, die sich ja laufend ändert. Weiter existiert die Prozedur Randomize, die den Zufallsgenerator initialisiert. Diese muss vor der Verwendung von Random einmal aufgerufen werden. Die Initalisierung des Zufallsgenerators erfolgt durch einfachen Aufruf der Prozedur Randomize (ohne Parameter).
+Die Zufallszahlen, die ein Computersystem erstellen kann, sind natürlich keine echten Zufallszahlen. Sie lassen sich aus der Systemzeit berechnen. Der Zufallsgenerator sollte beim Programmstart eben initialisiert werden.
+Das ist wirklich ein spannendes Thema, wir haben bei den Kryptologen immer wieder über Rausch- oder eben Zufallsgeneratoren gesprochen.
+Heutzutage ist der Zufall in wissenschaftlichen Theorien fast überall präsent: Rauschen in der Signaluebertragung, Ausbreitung von Epidemien, Entwicklung von Börsenkursen, chaotisches
+Verhalten von nichtlinearen Systemen, Spieltheorie, Wetterprognosen und eben Kryptologie.
+Ich versuche noch den Source Code rauszufinden, leider ist er im System Unit nicht einsehbar, da er im Kernel steckt.
+Aber so ungefähr könnte er so aussehen:
+var RandSeed: longint;
+function Random: double;
+begin
+RandSeed := 134775813 * RandSeed + 1;
+result := (RandSeed xor $80000000) / 4294967296.0;
+if Result < 0 then
+Result := Result + 1;
+end;
+Mehr über den Zufall findest du auf
+http://www.math.uni-frankfurt.de/~numerik/lehre/Vorlesungen/pros-12/Zufallszahlen%20und%20Benford/ran-shell.pdf
+es grüsst dich, Max
+
+Hello Arduino-Friends,
+
+as byproduct of a resuch project I have made a little driver for the arduino motorshield  modified from Stepper.cpp of Tom Igoe.
+Half and full step modus, endless run and a run for n steps both with the possebility of a hardware interrupt is possible,  driving DC motors, too.
+
+The methodes are:
+  
+initialisation:
+//DC-motors
+Motorshield myMotorshield(PWM_PIN_A,PWM_PIN_B,BRAKE_PIN_A,BRAKE_PIN_B,DIR_PIN_A,DIR_PIN_B,DC-Delay<0..2^16>ms,AD-Resolution (2^<x>));
+DC-Delay prevents short circuit bey changing dc-motor direction
+//stepper-motors
+Motorshield myMotorshield(stepsPerRevolution,PWM_PIN_A,PWM_PIN_B,BRAKE_PIN_A,BRAKE_PIN_B,DIR_PIN_A,DIR_PIN_B,MODUS <HALF><FULL>,AD-Resolution (2^<x>));
+
+setup:
+
+DC:
+  myMotorshield.setDC(MOTOR <MOTA><MOTB>,PWM<0..1023>); //sing of PWM codes direction
+
+stop/run:
+myMotorshield.setDCbrake(MOTOR <MOTA><MOTB>,<STOP><GOON>);
+
+Stepper:
+void myMotorshield.setSpeed(Speed in 1/s)
+
+void myMotorshield.step(Steps <+-><1..1023><0> 0 codes endless run, Interrupt pin ) setting interrupt pin to LOW for more than 1 step movement stops
+
+Examples for each mode are included.
+
+Best regards from Germany Tobi
+ 
+Here is a program that demonstrates how to use the PMrand unit:
+
+program Rand3;
+uses PMrand;
+
+type
+    TCoin = array[boolean] of string[4];
+
+const
+    Coin: TCoin = ('head', 'tail');
+    NCoins = 10;
+    NDice = 8;
+
+var
+    Seed: longint;
+    C: boolean;
+    I, Tails, D1, D2: integer;
+
+begin
+    write('Seed value = ');  Readln(Seed);
+    PMrandomize(Seed);
+    writeln;
+    writeln('Tossing ', NCoins, ' coins:');
+    Tails:= 0;
+    for I:= 1 to NCoins do begin
+        C:= Brand(0.5);
+        write(Coin[C]:5);
+        if C then inc(Tails);
+    end;
+    writeln;
+    writeln(Tails, ' tails and ', NCoins-Tails, ' heads');
+
+    writeln;
+    writeln('Tossing ', NDice, ' pairs of dice:');
+    for I:= 1 to NDice do begin
+        D1:= Irand(6)+1;
+        D2:= Irand(6)+1;
+        write(' ', D1, '+', D2, '=', D1+D2);
+    end;
+    writeln;
+
+    writeln;
+    writeln('Six random angles between 180 and 270 degrees:');
+    for I:= 1 to 6 do begin
+        write(180 + 90*Rrand :8:3);
+    end;
+    writeln;
+    readln;
+end.
+
+Notice how the structured constant named 'Coin' is used to translate the boolean values false and true to the string values 'head' and 'tail'.  Notice also how we can use an expression to modify the range of a random variable by 'rescaling' the random function.  For example, the expression "180 + 90*Rrand" obtains a range of 180 to 270; but Rrand by itself has a range of 0 to 1.  To determine the new range from the old range, substitute the old range limits 0 and 1 into the expression, like this:
+
+    180 + 90*0 = 180
+    180 + 90*1 = 270
+
+(Since Rrand returns a real value, 90*Rrand becomes a real value, even though 90 is an integer; and likewise the addition is real, even though 180 is an integer.) 
+
+A typical output of this demo program is:
+
+Seed value = 45
+
+Tossing 10 coins:
+ tail head tail head head head tail head head tail
+4 tails and 6 heads
+
+Tossing 8 pairs of dice:
+ 2+5=7 6+6=12 2+5=7 4+4=8 2+4=6 4+4=8 2+5=7 5+5=10
+
+Six random angles between 180 and 270 degrees:
+ 192.458 218.372 244.797 229.822 266.799 206.902
+
+If you enter a seed value of 45, you will always get this output; and if you enter a seed value of 91, you will always get some other output.  But if you enter a seed value of 0, the output will always be different, because the program will actually use a seed taken from the computer's clock time.
+
+Most programs that use the PMrand unit will not call the PMrandomize procedure, because the initialization section of PMrand calls PMrandomize to start the random sequence from the computer's clock -- and this is what most programs need.  
+
+
+
+Real-time systems have evolved over the past decades in a relatively calm manner - performance has increased, one can say dramatically, but the main paradigms were pretty stable since the mid 80s. This has changed now. The big change that is moving into the embedded field is multicore - and that is not an adaptation of our current methods but a re-design from scratch in quite a few cases - notably of our way of thinking about real-time. Precisely this area of real-time embedded multicore has been a long-time focus of James Anderson's Real-Time Systems Group from the Department of Computer Science, University of North Carolina at Chapel Hill, covering a wide range from multicore RT, embedded applications, testing to certification issues. OSADL and the Real Time Linux Foundation Working Group gratefully acknowledge Prof. Anderson's offer to host this year's workshop at the University of North Carolina at Chapel Hill.
+
+Linux in embedded systems is well established, ranging from consumer electronics to network devices and increasingly industrial applications including safety related systems. The technological resources suitable for high-availability, real-time, and safety critical systems have been continuously expanding and improving - allowing to cover the entire development life cycle of industrial projects based on open-source tools. At the core of this development is the availability of stable operating systems with reliable real-time properties. Extending and improving these real-time properties of open-source RTOS is continuous research and development effort that OSADL documents in the form of the annual Real Time Linux Workshop. 
+
+
+A real-time system is a type of hardware or software that operates with a time constraint.
+
+A hard real-time system (also known as an immediate real-time system) is hardware or software that must operate within the confines of a stringent deadline. The application may be considered to have failed if it does not complete its function within the allotted time span. Examples of hard real-time systems include components of pacemakers, anti-lock brakes and aircraft control systems.
+
+
+SuperPascal is based on Niklaus Wirth's 'sequential language Pascal, extending it with features for safe and efficient concurrency. Pascal itself was used heavily as a publication language in the 1970s; it was used to teach structured programming practices and featured in text books, for example, on compilers[2] and programming languages.[3] Brinch Hansen had earlier developed the language Concurrent Pascal,[4] one of the earliest concurrent languages for the design of operating systems and real-time control systems.
+
+
+FP-RTOS
+
+A realtime kernel for embedded development. Primarily developed for ARM devices. Written entirely in Pascal and inline assembler.
+
+    Preemptive multitasking
+    Synchronization primitives(Mutex, Critical section, spinlock, and signals)
+    Threadsafe queue and delays
+    Optional safety features: Deadlock detection, priority inheritance, etc 
+
+
+If we are going to depend on real-time programming systems
+in our daily lives, we must be able to find such obscure
+errors before the systems are put into operation.
+Fortunately, a compiler can de.tect many of these errors
+if processes and monitors are represented by a structured
+notation in a high-level programming language. In addition,
+we must exclude low-level machine features (registers,
+addresses, and interrupts) from the language and
+let a virtual machine control them. If we want real-time
+systems to be highly reliable, we must stop programming
+them in assembly language. (The use of hardware protection
+mechanisms is merely an expensive, inadequate way
+of making arbitrary mac.\line language 'programs behave
+almost as predictably as compiled programs.)
+
+
+The asm timeGetTime end function retrieves the system time, in milliseconds. The system time is the time elapsed since Windows was started.
+Parameters
+
+This function has no parameters.
+Return value
+
+Returns the system time, in milliseconds.
+Remarks
+
+The only difference between this function and the timeGetSystemTime function is that timeGetSystemTime uses the MMTIME structure to return the system time. The timeGetTime function has less overhead than timeGetSystemTime.
+
+Note that the value returned by the timeGetTime function is a DWORD value. The return value wraps around to 0 every 2^32 milliseconds, which is about 49.71 days. This can cause problems in code that directly uses the timeGetTime return value in computations, particularly where the value is used to control code execution. You should always use the difference between two timeGetTime return values in computations.
+
+The default precision of the timeGetTime function can be five milliseconds or more, depending on the machine. You can use the timeBeginPeriod and timeEndPeriod functions to increase the precision of timeGetTime. If you do so, the minimum difference between successive values returned by timeGetTime can be as large as the minimum period value set using timeBeginPeriod and timeEndPeriod. Use the QueryPerformanceCounter and QueryPerformanceFrequency functions to measure short time intervals at a high resolution,
+
+
+
+Dynamic Loading
+You can access routines in a library through direct calls to Win32 APIs, including LoadLibrary, FreeLibrary,
+and GetProcAddress. These functions are declared in Windows.pas. on Linux, they are implemented for
+compatibility in SysUtils.pas; the actual Linux OS routines are dlopen, dlclose, and dlsym (all declared in libc; see
+the man pages for more information). In this case, use procedural-type variables to reference the imported routines.
+For example,
+When you import routines this way, the library is not loaded until the code containing the call to LoadLibrary
+executes. The library is later unloaded by the call to FreeLibrary. This allows you to conserve memory and to run
+your program even when some of the libraries it uses are not present.
+
+
+
+procedure ProcessMessages;
+The ProcessMessages method interrupts the execution of your application so that
+Windows can respond to events. For example, the user might want to move a form on
+the screen while your application is doing some complex processing that would
+ordinarily prevent Windows from responding to keyboard or mouse events. By calling
+ProcessMessages, your application permits Windows to process these events at the time
+ProcessMessages is called. The ProcessMessages method cycles the Windows message loop
+until it is empty and then returns control to your application.
+Example
+This example uses two buttons that are long enough to accommodate lengthy captions
+on a form. When the user clicks the button with the caption Ignore Messages, the code
+begins to generate a long series of random numbers. If the user tries to resize the form
+while the handler is running, nothing happens until the handler is finished. When the
+user clicks the button with the caption Process Messages, more random numbers are
+generated, but Windows can still respond to a series of mouse events, such as resizing
+the form.
+Note How quickly these event handlers run depends on the microprocessor of your
+computer. A message appears on the form informing you when the handler has finished
+executing.
+
+
+
+02.07.2013 11.30-14.00 , Brasserie Lipp, Uraniastrasse 9, Zürich
+
+Für das Internet der Dinge entwickeln
+Max Kleiner, kleiner kommunikation
+
+Viele sehen im Internet of Things vor allem eines: ein gigantisches Potenzial für neue Geschäftsmodelle. Bald wird die ganze Welt programmierbar sein. Jedes EBike, jede Waschmaschine, Kaffeemaschine, jeder Blutdruckmesser oder jede Armbanduhr wird irgendwie vernetzt sein. Geräte werden untereinander als Physical Computing kommunizieren, sich aufeinander abstimmen. Man geht also nicht mehr ins Internet, sondern das Internet ist Teil von uns, Sensoren messen meinen Blutzucker und berechnen so die nächste Krankenkassenprämie.Es kann auch sein, dass intelligente Gebäude so störanfällig werden, dass der Fahrstuhl des Grauens Wirklichkeit wird.Nette Spielereien oder der Anfang einer neuen solargetriebenen Manufakturindustrie inklusive 3D-Drucker und Roboter in der Altersbetreuung
+
+Max Kleiner wird konkret und bespricht, wie mit Android ein Arduino Board gesteuert wird:
+
+    REST als Command Protocol
+    Web to Serial Applications
+    Microcontrollers
+    Aktoren und Sensoren
+    RFIDs sind überall
+
+
+
+See How it works :
+
+    All we need to do is add this permission in manifest file
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />  
+
+    and create LocationManager instance like this
+
+    LocationManager locationManager = (LocationManager) 
+    getSystemService(Context.LOCATION_SERVICE);
+
+    Check if GPS is enabled or not
+
+    then implement LocationListener and Get Coordinates
+
+    LocationListener locationListener = new MyLocationListener();  
+    locationManager.requestLocationUpdates(  
+    LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+
+    here is the sample code to do so
+
+
+/*----------Listener class to get coordinates ------------- */
+private class MyLocationListener implements LocationListener {
+
+    @Override
+    public void onLocationChanged(Location loc) {
+        editLocation.setText("");
+        pb.setVisibility(View.INVISIBLE);
+        Toast.makeText(
+                getBaseContext(),
+                "Location changed: Lat: " + loc.getLatitude() + " Lng: "
+                    + loc.getLongitude(), Toast.LENGTH_SHORT).show();
+        String longitude = "Longitude: " + loc.getLongitude();
+        Log.v(TAG, longitude);
+        String latitude = "Latitude: " + loc.getLatitude();
+        Log.v(TAG, latitude);
+        /*-------to get City-Name from coordinates -------- */
+        String cityName = null;
+        Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = gcd.getFromLocation(loc.getLatitude(),
+                    loc.getLongitude(), 1);
+            if (addresses.size() > 0)
+                System.out.println(addresses.get(0).getLocality());
+            cityName = addresses.get(0).getLocality();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String s = longitude + "\n" + latitude + "\n\nMy Current City is: "
+            + cityName;
+        editLocation.setText(s);
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {}
+
+    @Override
+    public void onProviderEnabled(String provider) {}
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {}
+}
+
+     
+begin
+  RunProgram:=TProcess.Create(nil);
+  RunProgram.Commandline:='calc.exe';
+  RunProgram.Execute;
+  Sleep(1000);             // Adds a 1 second delay
+  RunProgram.Commandline:='notepad.exe';
+  RunProgram.Execute;
+  RunProgram.Free;
+end.
+
+
+Hier der Link
+http://www.xbee-api.com/
+Angehängt das Java-Programm.
+
+-- 
+/**
+ * Copyright (c) 2008 Andrew Rapp. All rights reserved.
+ *  
+ * This file is part of XBee-API.
+ *  
+ * XBee-API is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *  
+ * XBee-API is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *  
+ * You should have received a copy of the GNU General Public License
+ * along with XBee-API.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package ch.ecotronics.xbee;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
+import com.rapplogic.xbee.api.RemoteAtRequest;
+import com.rapplogic.xbee.api.RemoteAtResponse;
+import com.rapplogic.xbee.api.XBee;
+import com.rapplogic.xbee.api.XBeeAddress64;
+import com.rapplogic.xbee.api.XBeeException;
+import com.rapplogic.xbee.api.XBeeResponse;
+import com.rapplogic.xbee.api.XBeeTimeoutException;
+import com.rapplogic.xbee.api.PacketListener;
+
+/** 
+ * This example uses Remote AT to turn on/off I/O pins.  
+ * This example is more interesting if you connect a LED to pin 20 on your end device.  
+ * Remember to use a resistor to limit the current flow.  I used a 215 Ohm resistor.
+ * <p/>
+ * Note: if your coordinator is powered on and receiving I/O samples, make sure you power off/on to drain 
+ * the traffic before running this example.
+ * 
+ * @author andrew
+ *
+ */
+public class RemoteAtLed {
+
+  private final static Logger log = Logger.getLogger(RemoteAtLed.class);
+  private int waitOn = 2000;
+  private int waitOff = 1000;
+  
+  private RemoteAtLed() throws XBeeException, InterruptedException {
+    
+    XBee xbee = new XBee();
+    
+    try {
+
+      xbee.open("COM14", 57600);      
+      
+      // replace with SH + SL of your end device
+      //XBeeAddress64 addr64 = new XBeeAddress64(0, 0x13, 0xa2, 0, 0x40, 0x0a, 0x3e, 0x02);
+      XBeeAddress64 addr64 = new XBeeAddress64( 0x00,0x13,0xa2,0x00, 0x40,0x9c,0x66,0xa2);
+      
+      
+      boolean alwaysTrue = true;
+      
+      while (alwaysTrue) {
+        try {
+          // turn on end device (pin 20) D0 (Digital output high = 5) 
+          RemoteAtRequest request = new RemoteAtRequest(addr64, "D0", new int[] {5});
+          
+          RemoteAtResponse response = (RemoteAtResponse) xbee.sendSynchronous(request, 10000);
+          
+          
+          if (response.isOk()) {
+            log.info("successfully turned on pin 20 (D0)"); 
+          } else {
+            throw new RuntimeException("failed to turn on pin 20.  status is " + response.getStatus());
+          }
+  
+          
+          // wait a bit
+          Thread.sleep(waitOn);
+          // now turn off end device D0
+          request.setValue(new int[] {4});
+          
+          response = (RemoteAtResponse) xbee.sendSynchronous(request, 10000);
+          
+          if (response.isOk()) {
+            log.info("successfully turned off pin 20 (D0)");  
+          } else {
+            throw new RuntimeException("failed to turn off pin 20.  status is " + response.getStatus());
+          }
+          Thread.sleep(waitOff);
+        } catch (Exception exc) {
+          log.info("Connection temporarily broken");
+        }
+
+      }
+      
+    } catch (XBeeTimeoutException e) {
+      log.error("request timed out. make sure you remote XBee is configured and powered on");
+    } catch (Exception e) {
+      log.error("unexpected error", e);
+    } finally {
+      xbee.close();
+    }
+  }
+  
+  public static void main(String[] args) throws XBeeException, InterruptedException {
+    PropertyConfigurator.configure("log4j.properties");
+    new RemoteAtLed();
+  }
+  
+}

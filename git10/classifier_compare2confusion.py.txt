@@ -1,0 +1,252 @@
+#classifier compare to confusion matrix for tutorial 66 maXbox in a 2D array
+# need pydotplus & graphviz, config path at scripttime, line 23
+#tutor: https://www.scribd.com/document/395644319/maXbox-starter66-machine-learning4
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn import linear_model
+from sklearn.datasets.samples_generator import make_regression
+from scipy.stats.stats import pearsonr
+# Install: pip install spacy && python -m spacy download en
+import os, spacy, time
+
+# Load English tokenizer, tagger, parser, NER and word vectors
+#nlp = spacy.load('en_core_web_sm')
+#nlp = spacy.load('de_core_news_sm')
+
+basePath = os.path.dirname(os.path.abspath(__file__))
+print('base path is: '+basePath)
+
+os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
+
+#//C:\maXbox\mX46210\DataScience\confusionlist\tut-text-ml1
+
+keywordtok="C:\maXbox\mX46210\DataScience\kwlisgt803_textanalysis_spacy2Output5.txt"
+"""
+# Import Dataset
+dataset = pd.read_csv(keywordtok,sep = ', ')
+
+# Process whole documents
+text = open(keywordtok).read()
+doc = nlp(text)
+
+# Find named entities, phrases and concepts
+for entity in doc.ents:
+    print(entity.text, entity.label_)
+    
+"""
+from wordcloud import WordCloud
+#from nltk.corpus import stopwords
+
+# Es hat sich gezeigt, dass Word-Clouds mit einem Frequency-Array deutlich schneller und mit
+# weniger Speicherbedarf erstellt werden können. Daher haben wir ganz oben in der spaCY-Schleife # gleich die entsprechenden Dicts angelegt.
+# In[33]:
+#file_content=open (basePath+"/tut-text-ml1/KeywordsMax_20180215_CuBr3.txt").read()
+"""
+file_content=open (keywordtok).read()
+wc = WordCloud(background_color="white", max_words=30)
+#wc.generate_from_frequencies(dataset)
+wc.generate(file_content)
+
+plt.figure(figsize=(12,12))
+plt.title("awordcloud of machine learning")
+plt.imshow(wc, interpolation='bilinear')
+plt.axis("off");
+"""
+
+def plotPredictions(clf):
+        targets = ['Class 0', 'Class 1']
+        handles = []
+        colors = ['purple', 'yellow']
+        xx, yy = np.meshgrid(np.arange(2, 4, 6),
+                        np.arange(10, 70, 0.5))
+        Z = clf.predict(np.c_[X])
+        #Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+        plt.figure(figsize=(8, 6))
+        #Z = Z.reshape(xx.shape)
+        #plt.contourf(xx, yy, [Z], cmap=plt.cm.Paired, alpha=0.8)
+        plt.scatter(X[:,0], X[:,1], s=600, label=targets, c=y.astype(np.float))
+        plt.scatter(X[:,2], X[:,3], s=600, label=targets, c=y.astype(np.float))
+        for color in colors:
+           xx = X[:,0]
+           yy = X[:,1]
+           s = 150
+           handles.append(plt.scatter(xx, yy, label=targets, 
+                                 c=color, s=s))
+        for color in colors:
+           xx = X[:,2]
+           yy = X[:,3]
+           s = 150
+           handles.append(plt.scatter(xx, yy, label=targets, 
+                                 c=color, s=s))
+        plt.legend(handles, targets, loc=4)
+        plt.show()
+        
+def print_accuracy(f):
+    print("Accuracy = {0}%".format(100*np.sum(f(X) == y)/len(y)))
+    #print("Accuracy = {0}%".format(100*np.sum(f(X_test) == Y_test)/len(Y_test)))
+    return (100*np.sum(f(X) == y)/len(y))
+    time.sleep(0.5) # to let print get out before any progress bars
+        
+# data frame builder @main --------------------------
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+
+from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neural_network import MLPClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QA
+
+datlist2 = [[1,2,3,4,0],[3,4,5,6,0], [5,6,7,8,1],
+                        [7,8,9,10,1],[10,8,6,4,0],[9,7,5,3,1]]  #[9,7,5,3,1]]
+                     
+arr2 = np.array(datlist2, dtype='float')
+print(arr2,'\n')
+
+y=arr2[0:,4]
+X=arr2[0:,0:4]
+features = ['A','B','C','D']
+targets = ['class 0', 'class 1']
+
+print(y,'\n',X,'\n')
+
+df= pd.DataFrame.from_records(arr2, columns=features+['Class'])
+print(df.head(6),'\n')
+print(df.describe(),'\n')
+
+# start with 7 classifier --------------------------
+
+svm = LinearSVC(random_state=100)
+y_pred = svm.fit(X,y).predict(X)
+
+print('linear svm score1: ',svm.score(X,y))
+print('score2: ',accuracy_score(y, y_pred))
+print('score3: ',print_accuracy(svm.predict))
+
+#0.8333333333333334
+print(confusion_matrix(y, y_pred))
+print("Numbs of mislabeled points out of total %d points : %d"
+               % (X.shape[0],(y != y_pred).sum()))
+print(y)
+print(y_pred)               
+print('classification report: \n',classification_report(y,y_pred,target_names=targets)) 
+
+clf = SVC(random_state=100)
+y_pred = clf.fit(X,y).predict(X)
+print('supportvectormachine score1: ',clf.score(X,y))
+print('score2: ',accuracy_score(y, y_pred))
+print(confusion_matrix(y, y_pred))
+#plotPredictions(clf)
+print('classification report: \n',classification_report(y,y_pred,target_names=targets)) 
+
+clf = GaussianNB()
+y_pred = clf.fit(X,y).predict(X)
+print('gaussian nb score2: ',accuracy_score(y, y_pred))
+print(confusion_matrix(y, y_pred))
+
+clf = MLPClassifier(alpha=1, random_state=100)
+y_pred = clf.fit(X,y).predict(X)
+print('mlperceptron score2: ',accuracy_score(y, y_pred))
+print(confusion_matrix(y, y_pred))
+
+clf = KNeighborsClassifier(n_neighbors=3)
+y_pred = clf.fit(X,y).predict(X)
+print('kneighbors score2: ',accuracy_score(y, y_pred))
+print(confusion_matrix(y, y_pred))
+#plotPredictions(clf)
+
+clf = DecisionTreeClassifier(random_state=100,max_depth=5)
+y_pred = clf.fit(X,y).predict(X)
+print('decision tree score2: ',accuracy_score(y, y_pred))
+print(confusion_matrix(y, y_pred))
+
+from sklearn.externals.six import StringIO  
+import pydotplus
+from sklearn import tree
+
+dot_data = StringIO() 
+tree.export_graphviz(clf, out_file=dot_data,  
+                         feature_names=features)  
+graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
+print(graph,dot_data, basePath)  
+#Image(graph.create_png())  
+graph.write_png(basePath+'\maxboxdecisiontree_graph2.png')  
+
+clf = QA()
+y_pred = clf.fit(X,y).predict(X)
+print('\n QuadDiscriminantAnalysis score2: ',accuracy_score(y, y_pred))
+print(confusion_matrix(y, y_pred))
+
+Xtest=[9,6,10,12]
+#Xtest= [Xtest]
+#Xtest = np.array(Xtest).reshape(1, -1)
+y_pred = clf.predict([Xtest])
+print('QA predict Xtest: ',y_pred)
+
+print('pearson correlation, coeff:, p-value:')
+for i in range(3):
+  print (pearsonr(X[:,i],X[:,i+1]))
+#plt.show()
+print ('pearson ref test: ',pearsonr([1,3,5,7,10,9],[2,4,6,8,8,7]))
+a = [1,4,6,5]
+b = [1,2,3,2]
+print ('pearson ref test: ',pearsonr(a,b),'\n')
+
+corr = np.corrcoef(X, rowvar=0)  # correlation matrix
+w, v = np.linalg.eig(corr)        # eigen values & eigen vectors
+print('eigenvalues & eigenvector:')
+print(w)
+print(v)
+
+print('correlation matrix: \n',df.corr(),'\n')
+
+basePath = os.path.dirname(os.path.abspath(__file__))
+print(basePath)
+
+
+#----app_template_loaded_code----
+#----File newtemplate.txt not exists - now saved!----
+#""" w X  . y
+#  File "C:\Users\max\AppData\Local\Programs\Python\Python36\lib\site-packages\sk
+#learn\utils\validation.py", line 441, in check_array
+#    "if it contains a single sample.".format(array))
+#ValueError: Expected 2D array, got 1D array instead:
+#array=[ 1.2  4. ].
+#Reshape your data either using array.reshape(-1, 1) if your data has a single fe
+#ature or array.reshape(1, -1) if it contains a single sample. 
+# Label Encoder to turn those columns into numbers. I'd like to use# OneHotEncoder to take it o
+#https://stackoverflow.com/questions/47957151/error-expected-2d-array-got-1d-array-instead-using-onehotencoder
+#https://www.esecurityplanet.com/views/article.php/1501001/Security-Threat-Correlation-The-Next-Battlefield.htm
+#    res = cache.get(item)
+#TypeError: unhashable type: 'slice'
+# http://www.softwareschule.ch/examples/archimedes_maXbox3.html
+"""
+C:\maXbox\mX46210\DataScience>pip3 install geopy
+Collecting geopy
+  Downloading https://files.pythonhosted.org/packages/cd/0a/4cbd4ebf904ffb8394cb
+224f1967867cb98b931b77d9520116ce61b20123/geopy-1.18.0-py2.py3-none-any.whl (97kB)
+Collecting geographiclib<2,>=1.49 (from geopy)
+  Downloading https://files.pythonhosted.org/packages/5b/ac/4f348828091490d77899
+bc74e92238e2b55c59392f21948f296e94e50e2b/geographiclib-1.49.tar.gz
+Building wheels for collected packages: geographiclib
+  Running setup.py bdist_wheel for geographiclib ... done
+Successfully built geographiclib
+Installing collected packages: geographiclib, geopy
+Successfully installed geographiclib-1.49 geopy-1.18.0
+
+"""
+
+#"""
+
+
+
+
+

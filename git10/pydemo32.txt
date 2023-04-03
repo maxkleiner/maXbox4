@@ -1,0 +1,120 @@
+Program Python_Pascal_PrimeTime32_SynDat_Tutorial91;
+
+//https://www.programiz.com/python-programming/time/sleep
+//Note: modify PYHOME and PYDLL :  SynDat <make the fake>
+//http://www.softwareschule.ch/download/maxbox_starter91.pdf
+
+Const //PYHOME = 'C:\Users\breitsch\AppData\Local\Programs\Python\Python37-32\';
+    PYHOME = 'C:\Users\breitsch\AppData\Local\Programs\Python\Python37-32\';
+    PYDLL  = 'C:\Users\breitsch\AppData\Local\Programs\Python\Python37-32\python37.dll'; 
+    PYSCRIPT = 'C:\maXbox\maxbox3\maxbox3\maXbox3\examples\module1maxbox1.py';
+    LB= CR+LF;
+       
+Const PRIME =  'def py_is_prime(n):'+LB+
+               '  import math'+LB+
+               '  """ totally naive implementation """'+LB+
+               '  if n <= 1:'+LB+
+               '    return False'+LB+
+               '  q = math.floor(math.sqrt(n))'+LB+
+               '  for i in range(2, q + 1):'+LB+
+               '    if (n % i == 0):'+LB+
+               '      return False'+LB+
+               '  return True';
+
+      ATIME='while True: '+LB+ 
+            '  localtime = time.localtime()'+LB+ 
+            '  result = time.strftime("%I:%M:%S %p", localtime)'+LB+ 
+            '  print(result, end="", flush=True)'+LB+ 
+            '  print("\r", end="", flush=True)'+LB+ 
+            '  time.sleep(1)';                        
+              
+var  PyForm: TForm; pyMemo: TMemo; pyval: variant;
+     eg: TPythonEngine; aPythonVersion: TPythonVersion;
+     apd: TApdMeter; sw: TStopWatch; 
+
+begin  //@main
+  //myloadscript2:= filetostring(PYSCRIPT2);
+  PyForm:= loadForm2(200,300, clgreen,'PyFrm4D_SynDat_Tester_EKON25');
+  pyMemo:= TMemo.create(PyForm);
+  apd:= TApdMeter.create(pyform);
+  //apd.color:= clyellow;
+  apd.parent:= pyform;
+  apd.barcolor:= clred;
+  apd.position:= 30;
+  apd.SetBounds(10,100, 150, 150);
+  apd.visible:= true;
+  pyMemo.parent:= PyForm
+  PyForm.show;
+  
+  //println('user_max_complete = '+eng.evalStr('top_users[0][1]')); 
+  //https://medium.com/@swathiarun63/10-fantastic-python-packages-af2a16a1183a
+  //PYLaz_P4D_Demo2;   EKON25 - explicit better than implicit
+  eg:= TPythonEngine.Create(Nil);
+  try
+    eg.pythonhome:= PYHOME;
+    eg.loadDLL;
+    println('test import '+GetPythonEngine.EvalStr('__import__("decimal").Decimal(0.1)'));
+    println('test import '+eg.EvalStr('__import__("decimal").Decimal(0.1)'));  
+    //https://medium.com/@swathiarun63/10-fantastic-python-packages-af2a16a1183a
+    apd.position:= 60;
+    pyMemo.lines.add('call test with execStr() from faker import Faker');
+    sw:= TStopWatch.Create();
+    sw.Start;
+    eg.execStr('from faker import Faker');
+    eg.execStr('import simplejson as json');  //# instead of import json
+    eg.execStr('import dumper');
+    eg.execStr('fake = Faker()');
+    println(eg.evalStr('fake.profile()'));
+    eg.execStr('profile1 = fake.simple_profile()');
+    //eg.execStr('ad= dumper.dump(profile1)');
+    //println(eg.evalStr('dumper.dump(profile1)'))
+    
+    println(eg.evalStr('f"my profile: {fake.profile()}"'));
+    //println(eg.evalStr('json.dumps(fake.profile(),indent=4)'));
+    println(eg.evalStr('fake.credit_card_number()')); //}
+    sw.Stop;
+    //sw.ElapsedMilliseconds;
+    writeln('Stop Watch Faker Tester1: '+sw.getValueStr)
+  except
+    eg.raiseError;
+    writeln(ExceptionToString(ExceptionType, ExceptionParam));  
+  finally
+    eg.Free;
+    sw.Free;
+    sw:= Nil;
+    apd.position:= 100;
+  end;  
+End.
+
+Ref: https://towardsdatascience.com/build-a-data-streaming-job-in-5-mins-with-pyspark-faker-a4f3d2420384
+     https://www.codespeedy.com/faker-library-in-python/
+{'job': 'Research officer, political party', 'company': 'Davis-Perez', 'ssn': '520-11-9286', 'residence': '18365 Katherine Plains\nAliceville, OK 31762', 'current_location': (Decimal('47.667757'), Decimal('14.943272')), 'blood_group': 'O-', 'website': ['https://www.thompson.com/', 'https://graham.com/', 'http://www.thomas.com/'], 'username': 'hbass', 'name': 'Tammy Crane', 'sex': 'F', 'address': '3144 Stephanie Road\nWilliambury, MT 95571', 'mail': 'wthompson@yahoo.com', 'birthdate': datetime.date(1962, 11, 25)}
+4978088480978
+ mX4 executed: 05/12/2021 11:43:04  Runtime: 0:0:2.197  Memload: 36% use
+ 
+
+Optimizations
+
+The Faker constructor takes a performance-related argument called use_weighting. It specifies whether to attempt to have the frequency of values match real-world frequencies (e.g. the English name Gary would be much more frequent than the name Lorimer). If use_weighting is False, then all items have an equal chance of being selected, and the selection process is much faster. The default is True.
+
+Doc: One thing to note is that the map() function returns an iterable object, and thus we can use the list() function to generate a list from this iterable.
+writeln('RegVersion: '+itoa(TPythonEngine(eng).RegVersion));
+https://stackoverflow.com/questions/16779799/py-initialize-and-py-finalize-and-matplotlib
+
+import threading 
+  
+def print_hello_three_times():
+  for i in range(3):
+    print("Hello")
+  
+def print_hi_three_times(): 
+    for i in range(3): 
+      print("Hi") 
+
+t1 = threading.Thread(target=print_hello_three_times)  
+t2 = threading.Thread(target=print_hi_three_times)  
+t1.start()
+t2.start()
+
+This package implements JSON support for FPC.
+    

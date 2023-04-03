@@ -1,0 +1,665 @@
+{***************************************************************
+ *            ADVAPI3DLL Tester  - still on work
+ * Project  : education system bITbox  TRex doublehash demo
+ * Unit Name: 672_regex_ask_task.txt
+ * Purpose  : Demonstrates a Hashes and/or a function doing same task!
+ * Date     : 18/10/2014  -  14:38:5 
+ *          #sign:breitsch: BREITSCH-BOX: 03/04/2023 09:21:16 
+ *          : 11/11/2015  - better process on/off  #locs:485
+ * //https://en.bitcoin.it/wiki/Protocol_documentation#Hashes
+ 
+ ****************************************************************}
+//compilerswitch $N- turns the coprocessor off, {$mode objfpc}{$H+} loc's =1
+
+PROGRAM BooleanLAB_RegExTask_HASHES_SHA256;
+
+type
+
+  SHA_CTX2 = Record
+     Unknown: Array[0.. 5] of LongWord;
+     State: Array[0.. 4] of LongWord;
+     Count: UInt64;
+     Buffer: Array[0..63] of Byte;
+   End;
+   
+   SHA_RES = Array[0..4] of LongWord;
+   SHA_RES2 = Array[1..20] of Byte;
+   TSHA_RES3 = Array[1..32] of Byte;
+   
+
+function getUserNameExAfromDLL(nameform: DWord; namebuffer: array of char; 
+                                               var nsize: DWord): boolean;
+     external 'GetUserNameExA@secur32.dll stdcall';
+     
+(*function SHA256_CTX(nameform: DWord; namebuffer: array of char; 
+                                               var nsize: DWord): boolean;
+     external 'SHA256@libeay32.dll stdcall';
+      
+function libeay32version: pchar;
+     external 'SSLeay_version@libeay32.dll stdcall';
+
+procedure SHA256Init(var Context: SHA_CTX2);
+     external 'SHA256_Init@libeay32.dll stdcall';     *)
+     
+     
+   //-----------------advapi + stdcall!
+     
+   Procedure SHA_CTXInit(out Context: SHA_CTX2) ; 
+       External 'A_SHAInit@advapi32.dll stdcall'; //Name 'A_SHAInit';
+
+   Procedure SHA_CTXUpdate(out Context: SHA_CTX2; Input: Pchar; 
+                                        inLen: LongWord); //StdCall;
+       External 'A_SHAUpdate@advapi32.dll stdcall'; //Name 'A_SHAUpdate';             
+   Procedure SHA_CTXGetResult(out Context: SHA_CTX2; Out aResult: SHA_RES2);
+       External 'A_SHAFinal@advapi32.dll stdcall'; // Name 'A_SHAFinal';    
+    
+ 
+ type
+    TCryptProv = THandle;
+    TAlgID = integer;
+    TCryptKey = Pchar;
+    TCryptHash = THandle; //PChar;
+    TCryptData = Pchar;   
+                        
+  Const
+    PROV_RSA_FULL = 1;
+    PROV_RSA_AES = 24;
+    CRYPT_VERIFYCONTEXT = $F0000000;
+    CRYPT_NEWKEYSET = $00000008;
+     // use with PROV_RSA_AES To get SHA-2 values.
+  //http://www.tek-tips.com/faqs.cfm?fid=7423
+    CALG_SHA256 = $0000800C;
+    CALG_SHA384 = $0000800D;
+    CALG_SHA512 = $0000800E;
+    HP_HASHVAL = $0002;
+    crypt32 = 'crypt32.dll';
+    MS_ENHANCED_PROV = 'Microsoft Enhanced Cryptographic Provider v1.0';
+    HASH256TEST= 'The quick brown fox jumps over the lazy dog';
+ 
+    // cbHashDataLen := 32;    // sha256 = 32 bytes. 
+    
+    function CryptAcquireContext(out phProv: TCryptProv; szContainer:
+        PChar; szProvider: PChar; dwProvType: DWord; 
+              dwFlags: DWord): boolean; //stdcall;
+          External 'CryptAcquireContextA@advapi32.dll stdcall';     
+   
+
+    function CryptCreateHash(phProv: TCryptProv; Algid: TAlgID; hKey:
+       TCryptKey;  dwFlags: DWord; out phHash: TCrypthash): boolean;
+       External 'CryptCreateHash@advapi32.dll stdcall'; 
+       
+  function CryptHashData(phHash: TCryptHash; aRes: PChar; dwDataLen:
+       DWord; dwFlags: DWord): boolean; //stdcall;
+       External 'CryptHashData@advapi32.dll stdcall'; 
+       
+  function CryptGetHashParam(phHash: TCryptHash; dwParam: Dword; 
+                   out pbdata: TSHA_RES3;
+     var dwDataLen: DWord; dwFlags: DWord): Boolean; //stdcall;
+        External 'CryptGetHashParam@advapi32.dll stdcall'; 
+    
+       
+   function CryptDestroyHash(phHash: TCryptHash): Boolean; //stdcall;
+       External 'CryptDestroyHash@advapi32.dll stdcall'; 
+     
+ function CryptReleaseContext(phProv: TCryptProv; dwFlags:DWord): boolean;
+             //stdcall;
+       External 'CryptReleaseContext@advapi32.dll stdcall';
+       
+  //https://msdn.microsoft.com/en-us/library/windows/desktop/aa380202%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396  
+  
+var ApplicationEvents1: TApplicationEvents; 
+    sha22: TSHA2 ;
+    aha: THash ;
+    //aha256:  TSHA256Hash; //">//-<class name="TSHA256Hash">
+    //ahas: TSimpleHash ;
+    shacon: SHA_CTX2;
+    shares2: SHA_RES2;
+    shares3: TSHA_RES3;
+    hProv: TCryptProv;
+    hhash: TCryptHash;
+    hkey: TCryptKey;
+    pbData: Pchar;
+    bHash: array[0..$7F] of Byte;
+    cbHashDataLen: dword; //byte;
+ 
+Const
+  cFmtText = '%.2x';
+  cBase = 16;
+  MAXTARGET = '00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+ 
+
+function GetNumbers(const Value: string): string;
+var ch: char;
+  Index, Count: integer;
+begin
+  SetLength(Result, Length(Value));
+  Count := 0;      
+  for Index := 1 to length(Value) do begin
+    ch := Value[Index];
+    if (ch >= '0') and (ch <='9') then  begin
+      inc(Count);
+      Result[Count]:= ch;
+    end;
+  end;
+  SetLength(Result, Count);
+end;
+
+
+ function SHA1ADirect2(const fileName: string): string;
+ var idsha: TIdHashSHA1;
+  fs: TFileStream;
+ begin
+   idsha:= TIdHashSHA1.Create;
+   fs:= TFileStream.Create(fileName,fmOpenRead OR fmShareDenyWrite);
+   try
+     result:= idsha.AsHex(idsha.HashValue(fs));
+   finally
+     fs.Free;
+     idsha.Free;
+   end;
+ end;
+ 
+ function SHA1ADirect3(const fileName: string): string;
+ var fs: TFileStream;
+ begin
+   with TIdHashSHA1.Create do begin
+     fs:= TFileStream.Create(fileName,fmOpenRead);
+     try
+       result:= AsHex(HashValue(fs));
+     finally
+       fs.Free;
+       Free
+     end;  
+   end;
+ end;
+ 
+ function SHA1ADirect4(const fileName: string): string;
+ begin
+   with TIdHashSHA1.Create do begin
+     try
+       result:= 
+         AsHex(HashValue(TFileStream.Create(fileName, fmShareDenyNone)));
+     finally
+       Free
+     end;  
+   end;
+ end;
+ 
+
+procedure Read_BigEndien_u32_Hex(const Value: string; BinaryOut: TStream);
+var
+  Idx, Nibble: integer;
+  Ch: Char;
+  isHighNibble: boolean;
+  ByteValue: byte;
+begin
+ByteValue := 0;
+isHighNibble := True;
+for Idx := 1 to Length( Value) do begin
+  Ch := Upcase( Value[ Idx]);
+  if Ch = ' ' then continue;
+  {$IFDEF UNICODE}
+  if Ord( Ch) >= 256 then continue;
+  {$ENDIF}
+  if (Ch >= '0') and (Ch <= '9') then
+      Nibble := Ord( Ch) - Ord( '0')
+    else
+      Nibble := Ord( Ch) - Ord( 'A') + 10;
+  if (Nibble < 0) or (Nibble > 15) then
+    raise; //Exception.Create( '');
+  if isHighNibble then
+      ByteValue := Nibble shl 4
+    else begin
+      ByteValue := ByteValue + Nibble;
+      //BinaryOut.WriteBuffer( ByteValue, 1)
+      end;
+  isHighNibble := not isHighNibble
+  end
+end;
+
+
+function SwapEndien_u32( Value: uint32): uint32;
+begin
+result := ((Value and $000000FF) shl 24) or
+          ((Value and $0000FF00) shl  8) or
+          ((Value and $00FF0000) shr  8) or
+          ((Value and $FF000000) shr 24)
+end;
+
+type Int64Rec = record
+    Hi: int64;
+    Lo: cardinal;
+        Words: array [0..3] of Word;
+        Bytes: array [0..7] of Byte;
+end;
+ 
+
+Const HexSymbols = '0123456789ABCDEF';  
+
+function binToHEX_Str(const bin: array of byte): string;
+var i: integer;
+begin
+  SetLength(Result, 2*Length(bin));
+  writeln('test length: '+itoa(length(bin)))
+  for i:=  0 to Length(bin)-1 do begin
+    Result[1 + 2*i + 0]:= HexSymbols[1 + bin[i] shr 4];
+    Result[1 + 2*i + 1]:= HexSymbols[1 + bin[i] and $0F];
+  end;
+end;
+
+
+function bintoAsciiX(const bin: array of byte): AnsiString;
+var i: integer;
+begin
+  SetLength(Result, Length(bin));
+  for i:= 0 to Length(bin)-1 do
+    Result[1+i]:= Chr(bin[i]);
+end;
+   
+function bintobase64test(astr: string): string;
+var msobj: variant;
+begin   
+  msobj:= CreateOLEObject('MSXML2.DOMDocument');
+//With msobj do begin
+    msobj.LoadXML('<root />')
+    msobj.DocumentElement.DataType := 'bin.Hex'; //"bin.base64"
+    msobj.DocumentElement.nodeTypedValue:= astr
+    {ToHexString =} 
+    ReplaceStr(msobj.DocumentElement.text, LF, '');
+    result:= msobj.DocumentElement.text;
+  msobj:= unassigned;   
+End; // With
+
+type
+  THashAlgorithm = (haMD5, haSHA1, haSHA2);
+
+
+function CalcHash(Archivo: string; Algorithm: THashAlgorithm): string; 
+//overload;
+var Stream: TFileStream;
+begin
+  Result:= 'EmptyStr';
+  if FileExists(Archivo) then
+  try
+    Stream:= TFileStream.Create(Archivo,fmOpenRead or fmShareDenyWrite);
+    try
+      //Result:= CalcHash(Stream,Algorithm);
+    finally
+      Stream.Free;
+    end;
+  except end;
+end;
+
+function CalcHash2(Str: string; Algorithm: THashAlgorithm): string;
+var
+  Stream: TStringStream;
+begin
+  Result:= 'EmptyStr';
+  Stream:= TStringStream.Create(Str);
+  try
+    //Result:= CalcHash(Stream,Algorithm);
+  finally
+    Stream.Free;
+  end;
+end;
+
+function IsDriveReady3(const Drive: string): Boolean;
+var
+  ErrorMode: Word;    // current error mode
+  DriveNum: Integer;  // zero based number of drive
+begin
+  Result := False;
+  // Get zero based drive number
+  //DriveNum := GetDriveNumber(Drive);
+  if DriveNum = -1 then
+    Exit;
+  ErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
+  try
+    // DiskSize requires 1 based drive numbers
+    // returns -1 for invalid drives
+    if {SysUtils.}DiskSize(DriveNum + 1) <> -1 then
+      Result := True;
+  finally
+    {Windows.}SetErrorMode(ErrorMode);
+  end;
+end;
+
+  procedure write2(amemo: TMemo);
+  begin
+    for it:= 1 to 10 do writeln(amemo.lines[it])
+  end;  
+
+
+var vtext : variant;
+var vSHA256 : variant; //As Object
+var shastr: string;
+
+                      
+ Begin //@main
+    //calls some test functions
+    printF('this is %.18f ',[maxCalc('sqr(cos(ln(2)^e))')]);
+    printF('this is Area of r=1  %.18f ',[maxCalc('PI*(1^2)')]);
+    printF('this is Area of d=2r %.18f ',[maxCalc('PI/4*(2^2)')]);
+    writeln(getVersionString(exepath+'maxbox4.exe'));
+   (* sr:= loadFileAsString(exepath+'maxbox_functions_all.pdf');
+    writeln('file compare J: '+inttoStr(CompText(sr, sr)));
+    writeln('file lenght size: '+intToStr(length(sr)));
+    writeln('getSystemDir: '+botostr(getSystemDirectory2(sr)))   
+      writeln(sr)    *)
+      writeln('UpTime: '+UpTime)
+      writeln(B2X(255)) 
+      
+    {  I was developing a program that validate a CPF, a type of document of my country. I already did all the math. But in the input Edit1, the user will insert like:
+       123.456.789-00
+I have to get only the numbers, without the hyphen and the dots, to my calcs worth. }
+
+    sr:= '123.456.789-00$p'
+    writeln(ReplaceRegExpr('\D',sr,'',true))
+    //\D is a non-digit, and \W is a non-word character, both should work)
+    Writeln(GetNumbers('123.456.789-00'));
+     
+ //https://en.bitcoin.it/wiki/Protocol_documentation#Hashes
+ {hello
+2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824 (first round of sha-256)
+9595c9df90075148eb06860365df33584b75bff782a510c6cd4883a419833d50 (second round of sha-256)}
+(* writeln(SHA256('hello','S'));
+ writeln(lowercase('2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824'))
+ //writeln(hextobin2('2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824'))
+ writeln(hextostr('2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824'))
+ writeln(hextoascii('2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824'))
+ writeln('hexto: test' +msHEXtocharacterset('2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824'))
+ 
+ writeln(asciitohex(',òMº_°£&è;*Å¹âž\§B^s3b“‹˜$'))
+ writeln('length: ' +itoa(length(',òMº_°£&è;*Å¹âž\§B^s3b“‹˜$')))
+ writeln(SHA256(hextoascii('2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824'),'S'));
+ writeln(deblank(lowercase(SHA256(hextostr('2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824'),'S'))));
+ writeln('doubleSHA: '+deblank(SHA256(hextoStr(strdelete('$',deblank(SHA256('hello','S')))),'S')))
+ writeln('doubleSHA: '+deblank(SHA256(hextoAscii(strdelete('$',deblank(SHA256('hello','S')))),'S')))
+//writeln('allinone:' +deblank(lowercase(SHA256(deblank(trimleadl(hextostr(SHA256('hello','S')))),'S'))));
+    *)
+ 
+ //https://en.bitcoin.it/wiki/Proof_of_work
+ 
+ (*writeln(deblank(lowercase(SHA256('Hello, world!0','S'))))
+ writeln(deblank(lowercase(SHA256('Hello, world!1','S'))))
+ writeln(deblank(lowercase(SHA256('Hello, world!2','S'))))
+ writeln(deblank(lowercase(SHA512('Hello, world!2','S'))))
+ 
+ writeln(cstrtohex(tlsp_SHA256('Hello, world!0','',24)))
+  writeln(deblank(lowercase(SHA256('Hello, world!4248','S'))))
+ writeln(deblank(lowercase(SHA256('Hello, world!4249','S'))))
+ writeln(deblank(lowercase(computeSHA256('Hello, world!4250','S'))))
+  writeln(cstrtohex(tlsp_SHA256('Hello, world!4250','',29)))
+ wr3iteln(deblank(lowercase(computeSHA256('Hello, world!4250','S'))))
+   *)   
+  writeln('length(MAXTARGET: '+itoa(length(MAXTARGET)))                    
+  //writeln(deblank(lowercase(SHA256(MAXTARGET,'S'))))
+  
+    sha22:= TSHA2.create(SHA_256)
+    sha22:= Nil;
+    //selfTestcFundamentutils;
+    //writeln('libeay32version: '+libeay32version)
+    
+    //SHA256Init(shacon); -----------ADVAPI32.DLL------------------    
+    sr:= filetoString(exepath+'maXbox4.exe');
+    
+    SHA_CTXInit(shacon)
+    
+    // SHA_CTXUpdate(shacon, 'maXbox!!', length('maXbox!!'))
+    
+    SHA_CTXUpdate(shacon, sr, length(sr))
+  
+    SHA_CTXGetResult(shacon, shares2);
+     
+     writeln(itoa(shacon.count))
+     writeln('SHA1: '+(binToHEX_Str(shares2)))
+     
+  //advanced API SHA256 ----------------------------------------------
+     
+   writeln('context: '+botostr(CryptAcquireContext(hProv, '', '',
+                                PROV_RSA_AES, CRYPT_VERIFYCONTEXT)));
+   
+   writeln('create: '+
+     botostr(CryptCreateHash(hProv,CALG_SHA256,hkey,0,hHash))); 
+   
+   // Procedure CryptCreateHash(phProv: TCryptProv; Algid: TAlgID; hKey:
+     //  TCryptKey;  dwFlags: DWord; out phHash: TCryptHash);
+   
+   pbData:= 'maXbox!?lkkoojjhg,';
+ 
+   sr:= filetoString(exepath+'maXbox4.exe');
+   
+   //sr:= 'Hello, world!4250';  //bitcoin miner ex. 0000C3AF...
+   
+   writeln('cryptdata: '
+              +botostr(CryptHashData(hhash,sr,length(sr),0)));
+  
+   cbHashDataLen:= 32;
+    if (CryptGetHashParam(hHash, HP_HASHVAL,shares3,cbHashDataLen, 0))
+      then begin
+       for it:= 1 to cbHashDataLen do
+         shastr:= shastr +UpperCase(IntToHex((shares3[it]),2));
+      writeln('SHA256: '+shastr)
+    end;  
+    
+  writeln('SHA256: '+(binToHEX_Str(shares3)))
+ 
+  println('destroy hash-hnd: '+botostr(CryptDestroyHash(hhash)));  
+  println('Crypt_ReleaseContext: '+botostr(CryptReleaseContext(hProv, 0)));
+  
+  // V2.4.6.10  August 2017
+  
+  writeln(version)
+  
+  if version = '4.2.6.10' then 
+       writeln('SHA256: '+deblank(getSHA256(sr)))
+ 
+  //writeln(sha256(sr,'S'))
+   //writeln('SHA256: '+cstrtoHex(shastr))
+    // writeln(cstrtohex(synsha1(sr)))
+   //  writeln(sha1(exepath+'maXbox4.exe'))  
+    // writeln(sha256(exepath+'maXbox4.exe','F'))
+    
+    //https://gist.github.com/jermity/b81622a2b10449c6be99
+    
+  (*  vtext:= CreateOLEObject('System.Text.UTF8Encoding');
+  vSHA256:= CreateOLEObject('System.Security.Cryptography.SHA256Managed');
+   //ToHexexString
+   //cstrtohex(vSHA256.ComputeHash_2((vtext.GetBytes_4('mypassword')))) 
+   writeln(UTF8toAnsi(vtext.GetBytes_4('mypasswordpo')));
+  //vSHA256.ComputeHash_2(UTF8toAnsi(vtext.GetBytes_4('mypassword'))) 
+   //vSHA256.ComputeHash_2(); 
+   vtext:= unassigned;
+   vSHA256:= unassigned;   *)
+   //getdrivenumber
+   
+   //TMimeChar
+   //InlineEmailEx
+   
+   //TClamSend
+   
+   //writeln(botostr(IsDriveReady('D')))
+   
+  // write2(memo2)
+                     
+End.  
+
+
+Doc:
+//--------------------------------------------------------------------
+//  This code assumes that the handle of a cryptographic context 
+//  has been acquired and that a hash object has been created 
+//  and its handle (hHash) is available.
+
+CryptAcquireContext(hProv, nil, nil, PROV_RSA_AES, CRYPT_VERIFYCONTEXT);
+CryptCreateHash(hProv, CALG_SHA256, nil, 0, hHash); 
+
+cbHashDataLen := 32;    // sha256 = 32 bytes.                             
+
+Ref:
+    https://en.bitcoin.it/wiki/Target
+    https://bitcoinwisdom.com/
+    http://www.delphipraxis.net/155688-mini-sha1.html
+    https://www.clubdelphi.com/foros/showthread.php?t=80799
+    
+    //Exception: OLE error 80131700.
+    
+    It's important to realize that block generation is not a long, set problem (like doing a million hashes), but more like a lottery. Each hash basically gives you a random number between 0 and the maximum value of a 256-bit number (which is huge). If your hash is below the target, then you win. If not, you increment the nonce (completely changing the hash) and try again.
+    Die Schwierigkeit wird alle 2016 Blöcke angepasst. Das Netzwerk versucht, die Schwierigkeit so anzupassen, dass es das mit der Leistung des gesamten Netzwerks ungefähr 14 Tage dauert um 2016 Blöcke herzustellen. Deshalb steigt wenn die Leistung des Netzwerks zunimmt, die Schwierigkeit ebenfalls.
+   
+   Es gibt zwei grundlegende Varianten um zu minen: Alleine oder als Mitglied eines Pools. Wenn Sie alleine minen möchten, lesen Sie am Besten hier nach, wie Sie die Bitcoin-Software installieren und für eine JSON-RPC-Verbindung (siehe: Running Bitcoin (Wiki)) konfigurieren. Die andere Option ist es einem Mining-Pool beizutreten. Es gibt mehrere Pools, aus denen Sie wählen können. Bei einem Pool wird der Gewinn aus jedem Block, der ein Mitglied generiert durch alle Mitglieder des Pools geteilt. Der Vorteil den Sie durch den Beitritt eines Pools erhalten sind regelmässigere und gleichmässige Auszahlungen. Diese fallen jedoch kleiner aus. Wenn Sie alleine minen erhalten Sie grössere und unregelmässigere Auszahlungen. Letztendlich verdienen Sie jedoch etwa dasselbe.
+    
+    https://www.weusecoins.com/de/mining-anleitung/
+    
+    "Hello, world!0" => 1312af178c253f84028d480a6adc1e25e81caa44c749ec81976192e2ec934c64
+    
+    "Hello, world!4248" => 6e110d98b388e77e9c6f042ac6b497cec46660deef75a55ebc7cfdf65cc0b965
+"Hello, world!4249" => c004190b822f1669cac8dc37e761cb73652e7832fb814565702245cf26ebb9e6
+"Hello, world!4250" => 0000c3af42fc31103f1fdc0151fa747ff87349a4714df7cc52ea464e12dcd4e9
+
+The Bitcoin Protocol-specification gives an example of double-SHA-256 encoding.
+    hello
+    2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824 (first round of sha-256)
+    9595c9df90075148eb06860365df33584b75bff782a510c6cd4883a419833d50 (second round of sha-256)
+
+Doc:
+I've tried various SHA256 calculators and the first encoding matches no problem, but the second always resolves to
+
+    d7914fe546b684688bb95f4f888a92dfc680603a75f23eb823658031fff766d9
+
+I've also tried UPPERCASE and swapping the byte endianness.
+
+     Just semantics, but to avoid a common misunderstanding: sha256 does hashing, not encoding. Encoding is something entirely different. For one it implies it can be decoded, whereas hashing is strictly a one-way (and destructive) operation. – RocketNuts Feb 29 at 18:48 
+          
+You're hashing the hexadecimal representation of the first hash. You need to hash the actual hash -- the binary data that the hex represents.
+
+Try this:
+$ echo -n hello |openssl dgst -sha256 -binary |openssl dgst -sha256
+
+  lambda: a+b --> a.+(b)
+
+  type
+    TCaptionTextControl = class(TControl);
+    TCaptionTextControl(Controls[i]).Caption := 'Whatever you Want';
+
+
+Proposal for Abreviation Symbol:
+
+  01 FALSE    //Contradiction
+
+  02 AND      //Conjunction x*y
+
+  03 INHIB    //Inhibition x*^y
+
+  04 PRAEP    //Praependence x
+
+  05 PRAE     //Praesection ^x*y
+
+  06 POST     //Postpendence y
+
+  07 XOR      //Exclusive OR x*^y+^x*y
+
+  08 OR       //Disjunction OR = x+y
+
+  09 NOR      //Rejection
+
+  10 AEQ      //Aequivalence x<-->y, ^x*^y+x*y
+
+  11 NEGY     //YNegation ^y
+
+  12 IMPY     //YImplication y-->x; x+^y
+
+  13 NEGX     //Xnegation ^x
+
+  14 IMPX     //XImplication x-->y; ^x+y
+
+  15 NAND     //Exclusion
+
+  16 TRUE     //TRUE Tautologic
+  
+ //ShellExecute in W64
+//ExecuteCommand('cmd','/k FC /L/N C:\maxbook\maxbox3\maxbox391.exe C:\maxbook\maxbox3\maxbox3.exe')
+ //  ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxboxdef1.ini C:\maxbook\maxbox3\maxboxdef2.ini')
+   
+getRulesbyContract  
+  couple of slides i have but you got the point
+  one important things that i want to stress
+  difference between data and delta is the difference
+  units to add :
+  
+//
+// Create SHA256 hash for input buffer using OpenSSL functions
+//
+
+void CreateSha256Hash(BYTE *byteBuffer, DWORD dwSize)
+{
+
+ BYTE byteResultHash[SHA256_DIGEST_LENGTH];
+ SHA256_CTX c;
+
+ //initialize hash functions
+ SHA256_Init(&c);
+
+ //add the input buffer for hash creation
+ SHA256_Update(&c, byteBuffer, dwSize);
+
+ //Finalize and get the hash data
+ SHA256_Final(byteResultHash, &c);
+
+}
+type
+  ...
+  sha256: TDCP_sha256;
+
+var 
+  result, ss:string;
+  i, x: integer;
+  myDigestSha2: array[0..31] of byte;
+  f:textfile;
+
+//collecting file names in a cycle that running few minutes to the TStringList
+...
+
+  for x := 1 to TStringList1.items.count do begin
+    ss := TStringList1.items[x];
+    sha256.Burn;
+    sha256.Init;
+    sha256.UpdateStr(ss);
+    sha256.Final(myDigestSha2);
+
+    for i:= 0 to 31 do
+      result := result + IntToHex(myDigestSha2[i],2);
+
+    assignfile(f,'myfile.hsh');
+    rewrite(f);
+    writeln (f,result);
+    closefile(f);
+  end;
+  
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+
+// http://msdn.microsoft.com/en-us/library/ff729221(VS.85).aspx
+
+typedef struct {
+  ULONG         i[2];
+  ULONG         buf[4];
+  unsigned char in[64];
+  unsigned char digest[16];
+} MD5_CTX;
+
+void WINAPI MD5Init(MD5_CTX*);
+void WINAPI MD5Update(MD5_CTX*, unsigned char* input, unsigned int inlen);
+void WINAPI MD5Final(MD5_CTX*);
+
+Function ToHexString(rabyt)
+
+  'Ref: http://stackoverflow.com/questions/1118947/converting-binary-file-to-base64-string
+  With CreateObject("MSXML2.DOMDocument")
+    .LoadXML "<root />"
+    .DocumentElement.DataType = "bin.Hex"
+    .DocumentElement.nodeTypedValue = rabyt
+    ToHexString = Replace(.DocumentElement.text, vbLf, "")
+  End With
+End Function
+

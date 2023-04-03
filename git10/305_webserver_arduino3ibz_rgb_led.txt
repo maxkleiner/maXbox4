@@ -1,0 +1,727 @@
+program Motion_HTTPServer_Arduino41_RGB_LED;
+
+// first httpserver script & arduino control of webmax of internet series
+// start after script loading with http://127.0.0.1/LED or /DEL
+// Send the RGB command LED and DEL to shine on a LED on Arduino Board, #locs=466
+//#sign:breitsch: BREITSCH-BOX: 02/04/2023 17:15:39 
+//update: return value, form top, COM status change, toogle web switch
+//V4.1 with RGB LED to switch 3 colors independent
+
+Const
+  BACKMAP = 'examples\images\bmp47.bmp';
+  SIG ='<--------->';
+  IPADDR = '127.0.0.1';
+  APORT = 8000;
+  COMPORT ='COM3';
+  
+
+var  HTTPServer: TIdCustomHTTPServer;
+     //ends: TOnSessionEndEvent;
+     cPort: TComPort;
+     webswitch: boolean;
+   
+   
+function getHTMLContentString(lastline: shortstring): string;
+begin   
+  result:= '<html><head><title>maXbox WebConnect Arduino</title></head><body><h1>Welcome to RGB LED WebBox3 *** Shine on you Crazy Diamond ***</h1>'#13+
+    'Check script 305_webserver_arduino3 to discover more:<br><ul><li>Search for '#13 +
+    '<b>a LED</b> to <b>light Event OnCommandGet and tag R/G/B or switch ON/OFF</b>!'+
+    '<br> Example: 192.168.48.126:8000/R'+
+    '<br><br><b>'+lastline+'</b>'+
+    '<p align="center"><a href="http://www.opensource.org/"target=""><img src="OSLogo.gif"></a>'+
+    '</ul></body></html>';
+end; 
+
+
+procedure letOpenBrowser;
+// TS_ShellExecuteCmd = (seCmdOpen,seCmdPrint,seCmdExplore);
+begin
+  //ShellAPI.ShellExecute(Handle,PChar('open'),'http://127.0.0.1:8000/',Nil,Nil,0);
+   S_ShellExecute('http:'+IPADDR+':'+IntToStr(APORT)+'/','',seCmdOpen)
+end;
+
+
+//******************************* HTTP Server *****************************//
+procedure HTTPServerGet(aThr: TIdPeerThread; reqInfo: TIdHTTPRequestInfo;
+                                       respInfo: TIdHTTPResponseInfo);
+var localcom: string;
+    ByteSent: Cardinal;
+begin
+   Writeln(Format('Command %s %s at %-10s received from %s:%d',[ReqInfo.Command, ReqInfo.Document, DateTimeToStr(Now), aThr.Connection.socket.binding.PeerIP,
+                           aThr.Connection.socket.binding.PeerPort]));
+   localcom:= ReqInfo.Document;
+   writeln('web debug: '+localcom)
+   if ReqInfo.Document = '/' then begin
+     RespInfo.ContentText:= 
+       getHTMLContentString('Switch LED is ON with /LED or OFF with /DEL in URL')
+       respinfo.writeheader;
+   end else
+   if uppercase(localcom) = uppercase('/LED') then begin
+      cPort.WriteStr('1')
+      writeln(localcom+ ': LED on');
+      RespInfo.ContentText:= getHTMLContentString('LED is:  ON');
+   end else
+   if uppercase(localcom) = uppercase('/DEL') then begin
+      cPort.WriteStr('A');
+      writeln(localcom+ ': LED off');
+      RespInfo.ContentText:= getHTMLContentString('LED is:  OFF')
+   end else 
+    if (uppercase(localcom) = uppercase('/ON')) or 
+                       (uppercase(localcom) = uppercase('/R')) then begin
+      webswitch:= NOT webswitch;
+      if webswitch then begin
+        cPort.WriteStr('1')
+        RespInfo.ContentText:= getHTMLContentString('LED Red is: ON Switch');
+      end else begin
+        cPort.WriteStr('A');
+        RespInfo.ContentText:= getHTMLContentString('LED Red is: OFF Switch')
+      end
+     end else
+    if uppercase(localcom) = uppercase('/G') then begin
+      webswitch:= NOT webswitch;
+      if webswitch then begin
+        cPort.WriteStr('2')
+        RespInfo.ContentText:= getHTMLContentString('LED is: Green');
+      end else begin
+        cPort.WriteStr('B');
+        RespInfo.ContentText:= getHTMLContentString('LED is: Green OFF Switch')
+      end
+     end else
+    if uppercase(localcom) = uppercase('/B') then begin
+      webswitch:= NOT webswitch;
+      if webswitch then begin
+        cPort.WriteStr('3')
+        RespInfo.ContentText:= getHTMLContentString('LED is: Blue');
+      end else begin
+        cPort.WriteStr('C');
+        RespInfo.ContentText:= getHTMLContentString('LED is: Blue OFF Switch')
+      end
+     end else 
+    if uppercase(localcom) = uppercase('/RGB') then begin
+      webswitch:= NOT webswitch;
+      if webswitch then begin
+        cPort.WriteStr('1')
+        cPort.WriteStr('2')
+        cPort.WriteStr('3')
+        RespInfo.ContentText:= getHTMLContentString('LED is: RGB ON');
+      end else begin
+        cPort.WriteStr('A')
+        cPort.WriteStr('B')
+        cPort.WriteStr('C');
+        RespInfo.ContentText:= getHTMLContentString('LED is: RGB OFF')
+      end
+     end 
+  else begin
+      RespInfo.ResponseNo:= 404; //just Not found round
+      RespInfo.ContentText:=
+        '<html><head><title>Sorry WebBox3 Error</title></head><body><h1>' +
+      RespInfo.ResponseText + '</h1></body></html>';
+   end; 
+end;
+    
+    
+procedure HTTPServerStartExecute(Sender: TObject);
+begin
+  HTTPServer:= TIdCustomHTTPServer.Create(self)
+  with  HTTPServer do begin
+    if Active then Free;
+    if not Active then begin
+      Bindings.Clear;
+      bindings.Add;
+      bindings.items[0].Port:= APORT;
+      bindings.items[0].IP:= IPADDR;//'127.0.0.1';'192.168.1.53';
+      Active:= true;
+      onCommandGet:= @HTTPServerGet;
+      PrintF('Listening HTTP on %s:%d.',[Bindings[0].IP,Bindings[0].Port]);
+    end;
+    //Showmessage('Close OK to HTTP Server');
+    //HTTPServer.Free;
+  end;
+end;
+
+//*******************************COM Port Arduino*****************************//
+  var
+  chk_led1, chk_led2, chk_led3, chk_led4: TCheckBox;
+  btn_connect, btn_Setup, btn_loop: TBitBtn;
+  statBar: TStatusBar;
+  comFrm: TForm;
+ 
+procedure LED_Checker(ab: boolean; checker: boolean);
+begin
+  if checker then begin
+    chk_led1.Checked:= ab;
+    chk_led2.Checked:= ab;
+    chk_led3.Checked:= ab;
+    chk_led4.Checked:= ab;
+  end else begin  
+    chk_led1.Enabled:= ab;
+    chk_led2.Enabled:= ab;
+    chk_led3.Enabled:= ab;
+    chk_led4.Enabled:= ab;
+  end;
+end;  
+
+procedure TForm1_btn_connectClick(Sender: TObject);
+begin
+  if cPort.Connected then begin
+     btn_connect.Caption:= 'Connect';  // Toggle the caption of Connection Button !
+     btn_Setup.Enabled:= True;         // If not connected, lets enable the Setup Button
+     btn_loop.Enabled:= false;         // Knight Rider demo button is disabled at first
+      // This block resets the state of all Leds to Off
+      // According to Arduino Code the Chars A,B,C,D,E are used
+      // to set Digital Pins (2-6) to LOW
+     with cPort do begin
+        WriteStr('A');
+        WriteStr('B');
+        WriteStr('C');
+        WriteStr('D');
+     end;  
+      // This block resets the state of all Check Boxes to Unchecked
+       LED_Checker(false, true);
+      cPort.Close;              // COM Port in use is closed
+      statBar.Panels[1].Text:='Disconnected';  
+      LED_Checker(false, false); //enabler
+      statBar.Panels[0].Text:=' Port closed '+ cPort.Port;
+    end else begin
+      btn_connect.Caption:='Disconnect';   // Toggle the caption of Connection Button
+      btn_Setup.Enabled:=False;            // If not connected, lets disable Setup Button
+      btn_loop.Enabled:=true;              // Now Rider demo button is enabled
+      cPort.Open;                           // COM Port in use is finally opened
+      statBar.Panels[1].Text:='Connected';  
+      statBar.Panels[0].Text:= 'Port in use ' + cPort.Port; 
+      // This block enables the check boxes
+      // so the user can change them to set LED states when COM Port is connected
+      LED_Checker(true, false);
+    end
+end;
+
+procedure TForm1_btn_SetupClick(Sender: TObject);
+begin
+  cPort.ShowSetupDialog;                                 // Opens the predefined Setup Dialog  (part of ComPort component)
+  statBar.Panels[0].Text:= 'Port in use ' + cPort.Port;  // Status is set to display Port in use after setup dialog
+end;
+
+
+procedure TForm1_FormCreateCom(Sender: TObject);
+begin
+  cPort:= TComPort.Create(self);
+  with cPort do begin
+    BaudRate:= br9600;
+    Port:= COMPORT; //'COM5';
+    Parity.Bits:= prNone;
+    StopBits:= sbOneStopBit;
+    DataBits:= dbEight;
+   {FlowControl.OutCTSFlow:= False;
+    FlowControl.OutDSRFlow:= False;
+    FlowControl.ControlDTR:= dtrDisable;
+    FlowControl.ControlRTS:= rtsDisable;
+    FlowControl.XonXoffOut:= False;
+    FlowControl.XonXoffIn:= False;}
+  end;
+  statBar.Panels[0].Text:='Pre Port in use '+ cPort.Port; //show predefined Port at start
+  if cPort.Connected=true then begin
+    statBar.Panels[1].Text:= 'Connected'   
+    statBar.Panels[0].Text:=' Port in use '+ cPort.Port;      
+  end else begin
+    statBar.Panels[1].Text:= 'Disconnected'
+    statBar.Panels[0].Text:=' Port closed '+ cPort.Port;
+  end;        
+end;
+
+// Next are the procedures to turning ON and OFF each led using the variables
+// Sending the predifined vars thru serial comm (on byte at the time)
+// Ports 2,3,4,5,6 are turned ON by sending it corresponding var 1,2,3,4,5
+// and they are turned OFF by sending it corresponding var A,B,C,D,E
+
+procedure chk_led1Click(Sender: TObject);
+var strback: string;
+begin
+  if chk_led1.Checked=true then
+    cPort.WriteStr('1')
+  else
+    cPort.WriteStr('A');
+  writeln('debug: com led 1 signal');
+  if cPort.ReadStr(strback,1) > 0 then
+    writeln('debug: com back led 1 signal ' +strback);
+end;
+
+procedure chk_led2Click(Sender: TObject);
+begin
+  if chk_led2.Checked=true then
+    cPort.WriteStr('2')
+  else cPort.WriteStr('B')
+end;
+
+procedure chk_led3Click(Sender: TObject);
+begin
+  if chk_led3.Checked=true then
+    cPort.WriteStr('3')
+  else cPort.WriteStr('C')
+end;
+
+procedure chk_led4Click(Sender: TObject);  //special piezo sound
+var i: integer;
+begin
+  if chk_led4.Checked=true then
+    for i:= 1 to 200 do begin 
+      cPort.WriteStr('4')
+      sleep(random(5))           
+      cPort.WriteStr('D')
+      sleep(2)           
+    end
+  else cPort.WriteStr('D')
+end;
+// Here ends the ON/OFF procedures for each LED
+
+procedure TForm1_FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if cPort.Connected then begin
+    cPort.WriteStr('A');     // If the application is closed, its good to leave
+    cPort.WriteStr('B');     // everything as we found it at start.
+    cPort.WriteStr('C');     // So we reset all the leds to OFF
+    cPort.WriteStr('D');
+    cPort.Close;
+  end;
+  HTTPServer.Free;
+  Writeln('Server Stopped at '+DateTimeToInternetStr(Now, true))
+end;
+
+procedure TForm1_btn_loopClick2(Sender: TObject);
+var i: byte;
+begin
+// We turn off all Led Check Boxes to allow a clean state before and after Rider mode
+   LED_Checker(false, true);
+// Here begins the rough mode of Knight Rider Demo ;)
+    try
+      with cPort do begin
+        for i:= 1 to 5 do begin
+          WriteStr('1'); Sleep(50);
+          WriteStr('A'); Sleep(50);
+          WriteStr('1'); Sleep(150);
+          WriteStr('A'); Sleep(150);
+          WriteStr('2'); Sleep(150);
+          WriteStr('B'); Sleep(150);
+          WriteStr('1'); Sleep(450);
+          WriteStr('A'); Sleep(250);
+          WriteStr('3'); Sleep(150);
+          WriteStr('C'); Sleep(150);
+          WriteStr('1'); Sleep(150);
+          WriteStr('A'); Sleep(150);
+          WriteStr('1'); Sleep(50);
+          WriteStr('A'); Sleep(1000); 
+        end;
+      end;
+   except
+      Showmessage('comport not in use - connect first'); 
+   end;    
+end;
+
+Procedure LabelFactory(a,b,c,d: byte; title: shortstring);
+begin
+  with TLabel.create(self) do begin
+    parent:= comfrm;
+    SetBounds(a,b,c,d);
+    Caption:= title
+  end;
+end;
+
+Procedure CheckBoxFactory(a,b,c,d: byte; title: shortstring;
+                          abox: TCheckbox; anevent: TNotifyEvent);
+begin
+  with abox do begin
+    parent:= comfrm;
+    SetBounds(a,b,c,d)
+    Caption:= title;
+    Enabled:= False;
+    //OnClick:= anevent;
+  end;
+end;
+
+Procedure BtnFactory(a,b,c,d: smallint; title: shortstring; apic: shortstring;
+                          abtn: TBitBtn; anevent: TNotifyEvent);
+begin
+ with abtn do begin
+   parent:= comfrm;
+   setBounds(a,b,c,d)
+   font.size:= 12;
+   glyph.LoadFromResourceName(HINSTANCE, apic); //Knownfile
+   mXButton(05,05,width, height,12,12,handle);
+   caption:= title;
+   //onClick:= anevent;
+ end;
+end; 
+   
+//******************************* Form Build********************************
+procedure InitComPortForm;
+var img: TImage;   abit: TBitmap;
+begin
+ comFrm:= TForm.create(self);
+ img:= TImage.Create(comFrm);
+ with img do begin
+   parent:= comFrm;
+   setbounds(250,100,400,300)
+ end;
+ with comFrm do begin
+   FormStyle:= fsStayOnTop;
+   Position:= poScreenCenter;
+   caption:='COM Port meets Arduino RGB LED - DblClick to Save Outline';
+   //color:= clsilver;
+   width:= 700; height:= 570;
+   //onCreate:= @TForm1_FormCreate;        
+   onClose:= @TForm1_FormClose;
+   Show;
+   //canvas.brush.bitmap:= getBitmapObject(Exepath+'examples\images\bmp47.bmp');
+   abit:= TBitmap.create;
+   abit.loadfromresourcename(0,'BMP47');
+   img.Canvas.brush.bitmap:=  abit;
+   //getBitmapObject(Exepath+'examples\images\bmp47.bmp');
+   img.Canvas.FillRect(Rect(420,300,0,0))
+   abit.free;
+ end;
+
+ btn_Setup:=  TBitBtn.create(comfrm);   //Android Constructors
+ btn_Loop:= TBitBtn.create(comfrm);
+ btn_connect:= TBitBtn.create(comfrm);
+ btn_connect.onClick:= @TForm1_btn_connectClick;
+ BtnFactory(180,440,150,55, 'C&onnect Node','CL_MPNEXT',btn_connect, NIL);
+ btn_loop.onClick:= @TForm1_btn_loopClick2;
+ BtnFactory(340,440,150,55, '&Knight Rider','CL_MPPLAY',btn_loop, NIL);
+ btn_Setup.onClick:= @TForm1_btn_SetupClick;
+ BtnFactory(500,440,150,55, '&COM Settings','LEDbulbon',btn_Setup, NIL);
+
+  chk_led1:= TCheckBox.create(self)
+  chk_led1.OnClick:= @chk_led1Click;
+  CheckBoxFactory(16,42,57,17, 'Led 1',chk_led1,NIL);
+  chk_led2:= TCheckBox.create(self)
+  chk_led2.OnClick:= @chk_led2Click;
+  CheckBoxFactory(16,66,57,17, 'Led 2',chk_led2,NIL);
+  chk_led3:= TCheckBox.create(self)
+  chk_led3.OnClick:= @chk_led3Click;
+  CheckBoxFactory(16,90,57,17, 'Led 3',chk_led3,NIL);
+  chk_led4:= TCheckBox.create(self)
+  chk_led4.OnClick:= @chk_led4Click;
+  CheckBoxFactory(16,114,57,17, 'Led 4',chk_led4,NIL);
+
+  with TLabel.create(self) do begin
+    parent:= comfrm;
+     setBounds(16,12,69,13)
+     Caption:= 'LED Control';
+     Font.Charset:= DEFAULT_CHARSET;
+     Font.Color:= clMaroon;
+     Font.Size:= 13;
+     Font.Name:= 'MS Sans Serif';
+     Font.Style:= [fsBold];
+  end;
+  with TLabel.create(self) do begin
+    parent:= comfrm;
+     setBounds(155,12,69,13)
+     Caption:= 'Arduino PIN';
+     Font.Charset:= DEFAULT_CHARSET;
+     Font.Color:= clNavy;
+     Font.Size:= 13;
+     Font.Name:= 'MS Sans Serif';
+     Font.Style:= [fsBold];
+  end;
+  LabelFactory(80,42,39,13, SIG)
+  LabelFactory(80,66,39,13, SIG)
+  LabelFactory(80,90,39,13, SIG)
+  LabelFactory(80,114,39,13, SIG)
+  LabelFactory(156,42,38,13, 'Dig 11 Red')
+  LabelFactory(156,66,38,13, 'Dig 12 Green')
+  LabelFactory(156,90,38,13, 'Dig 13 Int Blue')
+  LabelFactory(156,114,38,13, 'Dig 6 Spec Piezo')
+ 
+  with TDateTimePicker.Create(self) do begin
+    parent:= comfrm;
+    date;
+    top:= 190; left:= 15;
+    calAlignment:= albottom;
+  end;
+  statBar:= TStatusBar.create(self);
+  with statBar do begin
+    parent:= comFrm;
+     Panels.add;
+     panels.items[0].width:= 200;
+     panels.items[0].text:= '200';
+     Panels.add;
+     panels.items[1].width:= 150;
+     panels.items[1].text:= '150';
+  end;
+  TForm1_FormCreateCom(self); 
+end;   //******************************End Form Build************************
+
+
+begin //main server App 
+   writeln('machine IP: '+GetIpAddress(getHostName))
+   writeln('Thread ID :'+intToStr(CurrentThreadID))
+   writeln('Process ID :'+intToStr(CurrentProcessID))
+   writeln('machine name is: '+getHostName)
+   writeln('user name is: '+getUserName)
+
+   InitComPortForm; 
+   HTTPServerStartExecute(self);
+   letOpenBrowser;
+   Writeln('Server Started at '+DateTimeToInternetStr(Now, true))
+  //GetTimeZoneInformation
+End.
+
+//***********************************web Code Snippets******************
+ (*procedure AccessDenied;
+  begin
+    ResponseInfo.ContentText:=
+      '<html><head><title>Error</title></head><body><h1>Access denied</h1>'#13 +
+      'You do not have sufficient priviligies to access this document.</body></html>';
+    ResponseInfo.ResponseNo:= 403;
+  end;*)
+  
+   (*procedure AuthFailed;
+     begin
+      ResponseInfo.ContentText:=
+      '<html><head><title>Error</title></head><body><h1>Authentication failed</h1>'#13 +
+      'Check the file ip_a.ini to discover the demo password:<br><ul><li>Search for '#13 +
+      '<b>AuthUsername</b> in <b>maXboxMain.pas</b>!</ul></body></html>';
+    ResponseInfo.AuthRealm:= CAUTHENTICATIONREALM; *)
+
+    (*if not HTTPServer.Active then begin
+    HTTPServer.Bindings.Clear;
+    Binding := HTTPServer.Bindings.Add;
+    Binding.Port := StrToIntDef(edPort.text, 80);
+    Binding.IP := '127.0.0.1';
+  end;*)
+  
+     //statusbar1.SimpleText:= 'http active on v1.9';
+     //+ [IdServerInterceptOpenSSL.SSLOptions.Method]
+      //DisplayMessage(Format('OpenSSLVersion is: %s', [getOpenSSLVersion]))
+     
+ procedure TfrmServer.pgpEHTMLHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+var
+  LTag: string;
+begin
+  LTag := LowerCase(TagString);
+  if LTag = 'date' then
+    ReplaceText := DateToStr(Now)
+  else if LTag = 'time' then
+    ReplaceText := TimeToStr(Now)
+  else if LTag = 'datetime' then
+    ReplaceText := DateTimeToStr(Now)
+  else if LTag = 'server' then
+    ReplaceText := httpServer.ServerSoftware;
+end;
+
+Port Not Open.Fault : Port Not Open. Date/time : 30.09.2012 17:53:52 Stack dump ---------- 0055632D 00556DB4 00556EFF 00556F71 0010EA73 0010FA01 0001A20A 00103D2F 000024DA 000055C5 00005608 000056E5 000FF62D 00101499 00111208 0070F174 00109E7E 0000BC4C 00108D45 00004489 00113E79 00113923 0046A014 0046A7B7 0046A90C 00308923 002228ED 0022293E 0022295B 00222985 0003644F 00005466 Fault : Port Not Open.Fault : Port Not Open. Date/time : 30.09.2012 17:53:52 Stack dump ---------- 0055632D 00556DB4 00556EFF 00556F71 0010EA73 0010FA01 0001A20A 00103D2F 000024DA 000055C5 00005608 000056E5 000FF62D 00101499 00111208 0070F174 00109E7E 0000BC4C 00108D45 00004489 00113E79 00113923 0046A014 0046A7B7 0046A90C 00308923 002228ED 0022293E 0022295B 00222985 0003644F 00005466 Date/time : 30.09.2012 17:53:52 Stack dump 
+
+//*******************************************Arduino Code**********************
+/*
+ * Delphi LEDs Control
+ * -----------------
+ * Turns on and off 5 light emitting diodes(LED) connected to digital  
+ * pins 2 thru 6. The LEDs will be controlled using check boxes on maXbox
+ * that sends serial data to Arduino Board.
+ *
+ * IMPORTANT!!: Don't forget to download the Example 305_webserver_arduino3.txt that controls the leds connected to arduino board.
+ *
+ * Created April 02 2009
+ * copyleft 2009 Roberto Ramirez <beta@thepenguincult.com>
+ * Full Source code at http://www.thepenguincult.com/proyectos/arduino-delphi-control/
+ * 
+ */
+
+int val = 0;       // variable to store the data from the serial port
+int ledPin1 = 2;   // LED connected to digital pin 2
+int ledPin2 = 3;   // LED connected to digital pin 3
+int ledPin3 = 4;   // LED connected to digital pin 4
+int ledPin4 = 5;   // LED connected to digital pin 5
+int ledPin5 = 6;   // LED connected to digital pin 6
+
+void setup() {
+
+  pinMode(ledPin1,OUTPUT);    // declare the LED's pin as output
+  pinMode(ledPin2,OUTPUT);    // declare the LED's pin as output
+  pinMode(ledPin3,OUTPUT);    // declare the LED's pin as output
+  pinMode(ledPin4,OUTPUT);    // declare the LED's pin as output
+  pinMode(ledPin5,OUTPUT);    // declare the LED's pin as output
+
+  Serial.begin(9600);        // connect to the serial port
+}
+
+void loop () {
+  val = Serial.read();      // read the serial port
+
+  if (val !=-1){
+
+    if (val=='1'){
+      digitalWrite(ledPin1,HIGH);
+    }
+    
+    else if (val=='A'){
+      digitalWrite(ledPin1,LOW);
+      }
+    if (val=='2'){
+      digitalWrite(ledPin2,HIGH);
+    }
+    else if (val=='B'){
+      digitalWrite(ledPin2,LOW);
+      }
+    if (val=='3'){
+      digitalWrite(ledPin3,HIGH);
+    }
+    else if (val=='C'){
+      digitalWrite(ledPin3,LOW);
+      }
+    if (val=='4'){
+      digitalWrite(ledPin4,HIGH);
+    }
+    else if (val=='D'){
+      digitalWrite(ledPin4,LOW);
+      }
+    if (val=='5'){
+      digitalWrite(ledPin5,HIGH);
+    }
+    else if (val=='E'){
+      digitalWrite(ledPin5,LOW);
+      }
+    //Serial.println();
+  }
+}
+
+//Second Edition RGB LED ***************************************333
+//Binary sketch size: 1944 bytes (of a 32256 byte maximum)
+
+/*
+  Blink LEDMAX_Delphi_WebofThings2
+  Turns on an LED on for one second, then off for one second, repeatedly.
+ 
+  This example code of maXbox is in the public domain.
+ */
+ 
+  int ledPin11 = 11;
+  int ledPin12 = 12;
+  int ledPin13 = 13;
+  int ledPin6Spec = 6;
+  
+  int counter =0;
+  int change = 1;
+  int val = 0;       // variable to store the data from the serial port
+   
+
+void setup() {                
+  // initialize the digital pin as an output.
+  // Pin 13 has an LED connected on most Arduino boards:
+ 
+ Serial.begin(9600);  
+  //pinMode(ledPin1, OUTPUT);     
+  pinMode(ledPin11, OUTPUT);     
+  pinMode(ledPin12, OUTPUT);     
+  pinMode(ledPin13, OUTPUT);     
+
+  pinMode(ledPin6Spec, OUTPUT);     
+}
+
+int changeCounter() {
+  if (counter ==255)
+       change=-1;
+  if (counter ==0)
+       change= 1;
+  counter = counter + change;
+return counter;
+}
+       
+void ledmax(){
+  digitalWrite(ledPin11, HIGH);   // set the LED on
+  delay(500);              // wait for a second
+  digitalWrite(ledPin11, LOW);    // set the LED off
+  delay(500);              // wait for a second
+  digitalWrite(ledPin11, HIGH);   // set the LED on
+  delay(500);              // wait for a second
+  digitalWrite(ledPin11, LOW);    // set the LED off
+  delay(500);              // wait for a second
+ }
+
+void loop() {
+  //digitalWrite(ledPin1, HIGH);   // set the LED on
+  //delay(4000);              // wait for a second
+  //digitalWrite(ledPin1, LOW);    // set the LED off
+  //delay(1000);              // wait for a second
+
+val = Serial.read();      // read the serial port
+
+  if (val !=-1){
+    if (val=='1'){
+      digitalWrite(ledPin11,HIGH);
+    }
+    else if (val=='A'){
+      digitalWrite(ledPin11,LOW);
+      }
+      
+    if (val=='2'){
+      digitalWrite(ledPin12,HIGH);
+    }
+    else if (val=='B'){
+      digitalWrite(ledPin12,LOW);
+      }
+   
+    if (val=='3'){
+      digitalWrite(ledPin13,HIGH);
+    }
+    else if (val=='C'){
+      digitalWrite(ledPin13,LOW);
+      }
+ 
+    if (val=='4'){
+      digitalWrite(ledPin6Spec,HIGH);
+    }
+    else if (val=='D'){
+      digitalWrite(ledPin6Spec,LOW);
+      }
+   
+   //Serial.write('X');
+   Serial.write(val);
+  }
+
+  //counter = changeCounter();
+  //analogWrite(ledPin2, counter);
+  //delay(10);
+  
+  //ledmax();
+  
+  // digitalWrite(13, HIGH);    // set the LED off
+  //delay(100);              // wait for a second
+ 
+    //digitalWrite(13, LOW);    // set the LED off
+  //delay(100);              // wait for a second
+ 
+ // digitalWrite(13, LOW);    // set the LED off
+  //delay(1000);              // wait for a second
+}
+
+//all colors test
+
+const int red = 9; const int green = 10; const int blue = 11;  
+int time = 1000; int multiple = 2;  
+void setup() 
+{pinMode(red, OUTPUT);   pinMode(green, OUTPUT);   pinMode(blue, OUTPUT); } 
+
+void loop() 
+{   digitalWrite(red, HIGH);     // red 
+    delay(time);   
+    digitalWrite(green, HIGH);   // yellow
+       delay(time);
+     digitalWrite(red, LOW);      // green 
+       delay(time);
+     digitalWrite(blue, HIGH);    // cyan
+     delay(time);
+     digitalWrite(green, LOW);    // blue
+     delay(time);
+     digitalWrite(red, HIGH);     // magenta 
+     delay(time);
+     digitalWrite(green, HIGH);   // white 
+     delay(time*=multiple);
+     digitalWrite(blue, LOW);     // reset
+        digitalWrite(green, LOW);
+           time/=multiple; } 
+
+      cPort.WriteStr('1')
+      Sleep(1000);
+      cPort.WriteStr('A');
+  

@@ -1,0 +1,383 @@
+PROGRAM Langtranslator;
+
+CONST 
+//<Constant declarations> 
+  TEXTOUT = 'hi world of code translator rage';
+  RAPIDAPITrans ='https://nlp-translation.p.rapidapi.com/v1/translate';
+  LIBRETRANSLATE='https://libretranslate.pussthecat.org/detect';
+  CUSERAGENT= 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0';
+ 
+
+{TYPE 
+<Type declarations>} 
+
+Var 
+//<Variable declarations>
+  i: integer;  protectAPI: string;
+
+//<FUNCTION>
+//<PROCEDURE> 
+
+  
+function getPostDetectLang(feedstream: string): string;
+var
+  Url,aAPI_KEY, source: string;
+  jo, locate: TJSONObject;
+  httpReq,hr: Olevariant;
+  strm: TStringStream;
+begin
+  httpReq:= CreateOleObject('WinHttp.WinHttpRequest.5.1');
+  // Open the HTTPs connection.  
+  try              
+    hr:= httpReq.Open('POST','https://libretranslate.pussthecat.org/detect', false);
+    httpReq.setRequestheader('user-agent', CUSERAGENT);
+    httpReq.setRequestheader('content-type','application/x-www-form-urlencoded');  
+    //httpReq.setRequestheader('X-RapidAPI-Host','nlp-translation.p.rapidapi.com');   
+    //httpReq.setRequestheader('X-RapidAPI-Key','...333'); 
+              
+    if hr= S_OK then HttpReq.Send('q='+HTTPEncode(feedstream));
+     /// Send HTTP Post Request & get Responses. 
+    
+    If HttpReq.Status = 200 Then
+       result:= HttpReq.responseText
+    Else result:= 'Failed at getting response:'+itoa(HttpReq.Status)+HttpReq.responseText;
+    //writeln('debug response '+HttpReq.GetAllResponseHeaders);     
+  finally
+    httpreq:= unassigned;  
+  end;                  
+end; 
+
+function getPostTranslateLibre2(feedstream: string): string;
+var
+  Url,aAPI_KEY, source: string;
+  jo, locate: TJSONObject;
+  httpReq,hr: Olevariant;
+  strm: TStringStream;
+begin
+  httpReq:= CreateOleObject('WinHttp.WinHttpRequest.5.1');
+  // Open the HTTPs connection.  
+  try              
+    hr:= httpReq.Open('POST','https://libretranslate.pussthecat.org/translate', false);
+    httpReq.setRequestheader('user-agent',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0');
+    httpReq.setRequestheader('content-type','application/x-www-form-urlencoded');  
+    //httpReq.setRequestheader('X-RapidAPI-Host','nlp-translation.p.rapidapi.com');   
+    //httpReq.setRequestheader('X-RapidAPI-Key','...333'); 
+              
+    if hr= S_OK then HttpReq.Send('q='+HTTPEncode(feedstream)+
+                                  '&source=es'+'&target=en');
+    If HttpReq.Status = 200 Then
+       result:= HttpReq.responseText
+    Else result:= 'Failed at getting response:'+itoa(HttpReq.Status)+HttpReq.responseText;
+    //writeln('debug response '+HttpReq.GetAllResponseHeaders);     
+  finally
+    httpreq:= unassigned;  
+  end;                  
+end; 
+
+function getPostTranslateLibre3(feedstream, fromlang, tolang: string): string;
+var
+  Url,aAPI_KEY, source: string;
+  jo, locate: TJSONObject;
+  httpReq,hr: Olevariant;
+  strm: TStringStream;
+begin
+  httpReq:= CreateOleObject('WinHttp.WinHttpRequest.5.1');
+  // Open the HTTPs connection.  
+  try              
+    hr:= httpReq.Open('POST','https://libretranslate.pussthecat.org/translate', false);
+    httpReq.setRequestheader('user-agent',CUSERAGENT  );
+    httpReq.setRequestheader('content-type','application/x-www-form-urlencoded');  
+             
+    if hr= S_OK then HttpReq.Send('q='+HTTPEncode(feedstream)+
+                                  '&source='+fromlang+'&target='+tolang);
+    If HttpReq.Status = 200 Then
+       result:= HttpReq.responseText
+    Else result:= 'Failed at getting response:'+itoa(HttpReq.Status)+HttpReq.responseText;
+    //writeln('debug response '+HttpReq.GetAllResponseHeaders);     
+  finally
+    httpreq:= unassigned;  
+  end;                  
+end; 
+
+//https://www.codeproject.com/Articles/5319146/How-to-Use-Rest-API-with-Python
+ procedure getAstronautAPI;
+ var res: string; i:integer;
+ begin
+ with TWinApiDownload.create do begin
+    Useragent:= 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1'; 
+    Url:= 'http://api.open-notify.org/astros.json';
+    Download1(res);
+    with TJSONObject.create4(res) do begin 
+      //writeln(tostring2(2,3))
+      if getstring('message') = 'success' then
+        for i:= 0 to getJSONArray('people').length-1 do 
+          writeln(itoa(i)+':'+getJSONArray('people').getJSONObject(i).getString('name'));  
+      free;
+    end;   
+   free; //ApiDownload
+  end;
+ end; 
+
+
+function HexToString16(const str: string): string;
+var
+  i: Integer;
+  code: string;
+begin
+  Result := '';
+  i := 1;
+  while i < Length(str) do begin
+    code := Copy(str, i, 4);
+    Result := Result + Chr(StrToInt('$' + code));
+    Inc2(i, 4);
+  end;
+end;
+
+Function HexStringToBytes(Const Value: String): TBytes;
+Var
+  i, v: Integer;
+  dg0, dg1: Byte;
+  HexStr: String;
+Begin
+  HexStr := '';
+  For i:= 1 To Length(Value) Do If Value[i] <> #32 Then HexStr := HexStr + Value[i];
+  SetLength( Result, Length(HexStr) Div 2 );
+  For i:= 1 To Length(HexStr) Div 2 Do Begin
+      dg0 := 0;
+      dg1 := 1;
+      If TryStrToInt( '$' + HexStr[i*2 -1], v ) Then dg0 := Byte(v) Shl 4;
+      If TryStrToInt( '$' + HexStr[i*2], v )    Then dg1 := Byte(v);
+      Result[i-1] := dg0 + dg1;
+    End;
+End;
+
+type  TWordObj = TStringlist;
+{************ LoadListBox ***********}
+procedure loadlistbox(List:TIntList);
+var
+  i:integer;  amemo1: TMemo; Label1: TLabel;
+begin
+  amemo1.clear;
+  for i:= 0 to list.count-1 do
+  if list.objects[i]<>nil
+  then amemo1.lines.add(format('%4d  %s',[list[i],
+                                  TWordObj(list.objects[i]).text]))
+  else amemo1.lines.add(format('%4d  ',[list[i]]));
+  Label1.caption:='List size = '+inttostr(list.count);
+end;
+
+procedure countrepWords;
+var
+  i : integer;
+  iCount : integer;
+  idxFound : integer;
+  someText : string;
+  s : TStringList;  ilist: TIntlist; intlist2: TInteger; //intlist3: TInt;
+  oneWord : string;
+
+begin
+  someText:= 'this that theother and again this that theother this is not that';
+  oneWord := '';
+  s := TStringList.Create;
+  for i := 1 to length(someText) do begin
+    if someText[i] = ' ' then begin
+      idxFound := s.indexof(oneWord);
+      if idxFound >= 0 then begin
+        iCount := integer(s.objects[idxFound]);
+        //ilist:= TIntlist.create; ilist.add(iCount + 1)
+        s.Objects[idxFound] := Tinteger.create(icount+1);
+      end else begin
+        s.AddObject(oneWord, TInteger.create(1));
+      end;
+      oneWord := '';
+    end else begin
+      oneWord := oneWord + someText[i];
+    end;
+  end;
+
+  if oneWord <> '' then
+    if idxFound >= 0 then begin
+      iCount := integer(s.objects[idxFound]);
+      s.Objects[idxFound] := TInteger.create(iCount + 1);
+    end else begin
+      s.AddObject(oneWord, TInteger.create(1));
+    end;
+    
+   writeln('on list :'+itoa(s.count)) 
+
+  // put the results on the screen in a text box.
+  //memo2.Text := '';
+  for i := 0 to s.Count - 1 do begin
+    //memo2.Lines.Add(intToStr(integer(s.Objects[i])) + ' ' + s[i]);
+      //TIntlist(s.Objects[i]).integers[0];
+      //writeln( TInteger(s.Objects[0]).tostring(normal));
+    memo2.Lines.Add(Tinteger(s.Objects[i]).tostring(normal) + ' ' + s[i]);
+  end;  
+end;    
+
+procedure CountrepWords2;
+var
+  i : integer;
+  iCount : integer;
+  idxFound : integer;
+  someText : string;
+  s : TStringList;  ilist: TIntList;{TIntlist2;} intlist2: TInteger; //intlist3: TInt;
+  oneWord : string;
+
+begin
+  someText:= 'this that theother and again this that theother this is not that';
+  oneWord := '';
+  s := TStringList.Create;
+  for i:= 1 to length(someText) do begin
+    if someText[i] = ' ' then begin
+      idxFound := s.indexof(oneWord);
+      if idxFound >= 0 then begin
+        iCount := s.objects[idxFound];
+        ilist:= TIntList.create; ilist.add(iCount + 1)
+        s.Objects[idxFound] := ilist;
+      end else begin
+        ilist:= TIntlist.create; ilist.add(1)
+        s.AddObject(oneWord, ilist);
+      end;
+      oneWord := '';
+    end else begin
+      oneWord := oneWord + someText[i];
+    end;
+  end;
+
+  if oneWord <> '' then
+    if idxFound >= 0 then begin
+      iCount := s.objects[idxFound];
+      ilist:= TIntlist.create; ilist.add(iCount + 1)
+      s.Objects[idxFound] := ilist;
+    end else begin
+      ilist:= TIntlist.create; ilist.add(1)
+      s.AddObject(oneWord, ilist);
+    end;
+  writeln('on list :'+itoa(s.count)) 
+  for i := 0 to s.Count - 1 do 
+    memo2.Lines.Add(itoa(TIntlist(s.Objects[i]).integers[0])+ ' ' + s[i]);
+end;    
+
+procedure CountrepWords3;
+var
+  i , iCount, idxFound : integer;
+  someText : string;
+  s : TStringList;  ilist: TList;{TIntlist2;} intlist2: TInteger; //intlist3: TInt;
+  oneWord : string;  aint: Tlongintlist; //TIntArray;
+
+begin
+  someText:= 'this that theother and again this that theother this is not that';
+  oneWord := '';
+  s := TStringList.Create;
+  for i:= 1 to length(someText) do begin
+    if someText[i] = ' ' then begin
+      idxFound := s.indexof(oneWord);
+      if idxFound >= 0 then begin
+        iCount := s.objects[idxFound];
+        ilist:= TList.create; ilist.add(iCount + 1)
+        s.Objects[idxFound] := ilist;
+      end else begin
+        ilist:= Tlist.create; ilist.add(1)
+        s.AddObject(oneWord, ilist);
+      end;
+      oneWord := '';
+    end else begin
+      oneWord := oneWord + someText[i];
+    end;
+  end;
+
+  if oneWord <> '' then
+    if idxFound >= 0 then begin
+      iCount := s.objects[idxFound];
+      ilist:= Tlist.create; ilist.add(iCount + 1)
+      s.Objects[idxFound] := ilist;
+    end else begin
+      ilist:= Tlist.create; ilist.add(1)
+      s.AddObject(oneWord, ilist);
+    end;
+  writeln('on list :'+itoa(s.count)) 
+  for i := 0 to s.Count - 1 do 
+    memo2.Lines.Add(itoa(Tlist(s.Objects[i]).items[0])+ ' ' + s[i]);
+    //Tlongintlist.create(3);
+    writeln(itoa(Tlist.create.add(23)))
+end;    
+  
+  var art: integer;  UTF8Str: RawByteString;
+
+BEGIN  //Main
+//<Executable statements>
+   println('myip: '+GetHTM('http://ipinfo.io/ip'));
+   writeln(utf8decode('this Â© is PapiermÃ¼hlestrasse'))
+//<Definitions>  
+   for it:= 1 to 100 do art:= art+it;
+   writeln(CharRange('A','Z'));
+   writeln(CharRange('0','9'));
+   writeln(itoa(art));
+   art:= 0;
+   for it:= 1 to 17 do begin
+     if isprime(it) then art:= art+ intpowerint(it,2);
+     //writeln(itoa(art))
+   end;  
+    writeln(itoa(art));
+    countrepWords;
+    countrepWords2;
+    countrepWords3;
+    
+    getAstronautAPI;
+    
+    writeln(getPostTranslateLibre2('con mucho cuidado'));
+    writeln(getPostTranslateLibre2('con mucho cuitado'));
+    writeln(getPostTranslateLibre2('cuidado'));
+    writeln(getPostDetectLang('con mucho cuidado'));
+    writeln(utf8toAnsi(getPostTranslateLibre3('It is important to note this does nothing to prevent someone from making an API request with your key,','en','es')));  //}
+    writeln(utf8toAnsi(getPostTranslateLibre3('Germany''s conundrum over its ties with USA,',
+                                                       'en','it')));
+    writeln(utf8toAnsi(getPostTranslateLibre3('Germany''s conundrum over its ties with USA,',
+                                                       'en','fr'))); 
+    writeln(utf8toAnsi(getPostTranslateLibre3('Conundrum','en','de')));     //*)
+    writeln('')
+    writeln(('Es importante se'+chr($00f1)+'alar que esto no hace')) 
+   { writeln(itoa(ZDefaultSystemCodePage));
+    writeln(Utf8ToAnsiEx('Es importante se\u00f1alar que esto no hace',1252)) 
+    writeln(Utf8ToAnsi('Es importante se\u00f1alar que esto no hace')) 
+    writeln((ALUTF8HTMLdecode('Es importante se\u00f1alar que esto no hace'))) 
+     writeln((Ansitoutf8('Es importante se\u00f1alar que esto no hace'))) 
+    writeln(Ansitoutf8ex('Es importante se\u00f1alar que esto no hace',1252))  
+     writeln('utf8decode '+UTF8decode('Es importante se\u00f1alar que esto no hace'));     
+           }
+    writeln(UnicodeLowerCaseFoldingU('se\u00f1alar')); //end; //UTF8ToWideString UTF8ToWideString
+    writeln('')  
+    //FLCFloatStringTest;
+    FLCFloatTest;
+    //TestSplit(self);    
+END.
+
+ref: This regex will work, as a string literal:
+
+"[a-zA-Z\u00f1\u00d1]*"
+
+It's equivalent to this:
+
+"[a-zA-ZñÑ]*"
+ 
+
+https://www.findlatitudeandlongitude.com/?lat=24.5557025&lon=-81.7825914&zoom=
+
+Once set, we will then return: access-control-allow-origin: https://some-customer-defined-domain.com which will thus restrict AJAX requests to the specified domain. It is important to note this does nothing to prevent someone from making an API request with your key, it just makes AJAX requests from within a browser stop working. Please see our detailed advice on protecting your API key(s) .
+
+Edit the API proxy. Select Develop > API Proxies > helloworld_apikey, and go to the Develop view.
+Select the Verify API Key policy, and modify the policy XML to tell the policy to look in the header rather than in the queryparam:
+
+<APIKey ref="request.header.x-apikey"/>
+Save the API proxy to deploy the change.
+Make the following API call using cURL to pass the API key as a header called x-apikey. Don't forget to substitute your organization name.
+
+curl -v -H "x-apikey: API_KEY" http://ORG_NAME-test.apigee.net/helloapikey
+Note that to fully complete the change, you'd also need to configure the AssignMessage policy to remove the header instead of the query parameter. For example:
+
+https://betterprogramming.pub/how-to-hide-your-api-keys-c2b952bc07e6 
+
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----

@@ -1,0 +1,258 @@
+unit XmlDocRssParser_mX4_47520_Demo;
+//#TODO: TRSSFeed -->TRSSItems change to ownedcollection
+
+interface
+
+{uses
+  RssParser, RssModel; SIRegister_TSimpleRSS(CL: TPSPascalCompiler);}
+  
+Const 
+  URLSentimentAPI2='http://text-processing.com/api/sentiment/';  
+  RSS_NewsFeed = 'http://feeds.bbci.co.uk/news/world/rss.xml';
+  
+type
+  ERSSParserException = Exception;
+//type
+  E = Exception;
+    
+  type
+  TRSSItem2 = record
+  //private
+    FPubDate: TDate;           
+    FLink: string;
+    FTitle: string;
+    FDescription: string;            
+  end;
+  
+type  
+  aTRSSFeed = record
+  {private
+    FDescription: string;
+    FTitle: string;
+    FLink: string;
+    FItems: TObjectList<TRSSItem>;
+  public
+    constructor Create;
+    destructor Destroy; override;  }
+    //function AddItem: TRSSItem;
+   //var
+     Title: string; //read FTitle write FTitle;
+     Description: string; //read FDescription write FDescription;
+     Link: string; //read FLink write FLink;
+     Items: TObjectList; //<TRSSItem> read FItems;
+  end;
+
+//type
+  //TXmlDocRssParser = class(TInterfacedObject, IRSSParser)
+  //public
+    function ParseRSSDate(DateStr: string): TDateTime;
+    function TXmlDocRssParserParseRSSFeed(aXML: string): TRSSItem; //TRSSFeed;
+  //end;
+
+implementation
+
+{uses
+  XMLDoc, XMLIntf, Windows, Classes, SysUtils; 
+            with RegClassS(CL,'TComponent', 'TSimpleRSS') do}
+
+function FetchNextToken(var s: string; space: string {= ' '}): string;
+var SpacePos: Integer;
+begin
+  SpacePos := Pos(space, s);
+  if SpacePos = 0 then begin
+    Result := s;
+    s := '';
+  end
+  else begin
+    Result := Copy(s, 1, SpacePos - 1);
+    Delete(s, 1, SpacePos);
+  end;
+end;
+
+type 
+  TMonths2 = array[1..12] of string;
+var amonths: TMonths2;
+ 
+function MonthToInt(MonthStr: string): Integer;
+var
+  M: Integer;
+begin
+  getShortMonthNames;
+  for M := 1 to 12 do
+    if aMonths[M] = MonthStr then begin
+      result:= M
+      Exit; //(M);
+    end;  
+  raise ERSSParserException.CreateFmt('Unknown month: %s', [MonthStr]);
+end;
+
+{ TXmlDocRssParser }
+
+function ParseRSSDate(DateStr: string): TDateTime;
+var df: TFormatSettings;
+  s: string;
+  Day, Month, Year, Hour, Minute, Second: Integer;
+begin
+  s := DateStr;
+  // Parsing date in this format: Mon, 06 Sep 2009 16:45:00 +0000
+  try
+    FetchNextToken(s,' ');                          // Ignore "Mon, "
+    Day := StrToInt(FetchNextToken(s,' '));         // "06"
+    //Month := MonthToInt(FetchNextToken(s,' '));     // "Sep"
+    Month := EnglishShortMonthA(FetchNextToken(s,' '));     // "Sep"
+    
+    Year := StrToInt(FetchNextToken(s,' '));        // "2009"
+    Hour := StrToInt(FetchNextToken(s, ':'));   // "16"
+    Minute := StrToInt(FetchNextToken(s, ':')); // "45"
+    Second := StrToInt(FetchNextToken(s,' '));      // "00"
+    Result := EncodeDate(Year, Month, Day) + EncodeTime(Hour, Minute, Second, 0);
+  except
+    //on E: Exception do
+      raise ERSSParserException.CreateFmt('Can''t parse date "%s": %s',
+                                      [DateStr, 'E.Message']);
+  end;
+end;
+
+function TXmlDocRssParserParseRSSFeed(aXML: string): TRSSItem; //TRSSFeed -->TRSSItems;
+var
+  Doc: TAlXMLDocument;
+  ChannelNode, Node: TALXMLNode; //IXMLNode;
+  //itemList: TAlXMLNodeList;
+  RssItem: TRSSItem;
+begin
+  Result:= Nil; //nil;
+  try
+    Result:= TRSSItem.create(nil); //TRSSFeed.Create;
+    Doc:= TAlXMLDocument.create;
+    doc.LoadfromXML(aXML, false);
+    //doc.XML:= aXML;
+    Doc.Active := True;
+    //ChannelNode:= Doc.DocumentElement;
+    //ChannelNode:= Doc.DocumentElement.ChildNodes.First;
+    channelnode:= doc.documentelement.ChildNodes.findnode('channel');
+    //ChannelNode:= Channelnode.ChildNodes['channel'].ChildNodes;
+    //itemlist:= ChannelNode.ChildNodes;
+    writeln(objtostr(channelnode))
+    Node:= ChannelNode.ChildNodes.First;
+    //Node:= ChannelNode.First;
+    writeln(objtostr(node))
+    while Node <> nil do begin
+      //writeln('debug node.nodename: '+node.nodename)
+      // Some feeds have atom:link element & other similar. We are only looking
+      // for elements without namespace
+      //if Node.NamespaceURI = '' then
+      //if Node.Nodename = 'channel' then begin
+        if Node.NodeName = 'title' then begin
+          Result.Title := Node.Text
+          writeln('node.Text '+node.Text)
+        end else
+        if Node.NodeName = 'link' then
+          Result.Link := Node.Text
+        else
+        if Node.NodeName = 'description' then
+          Result.Description := Node.Text
+        else
+        if Node.NodeName = 'item' then begin 
+          try
+            //writeln('xmlrss item found')
+            //RssItem := Result.Additem;  
+            RssItem := TRssitem.create(nil);   
+            //Node.ChildNodes[0].Text;    
+            RssItem.Title := Node.childnodes.findnode('title').text;
+            //RssItem.Title := Node.attributes['title'];
+            writeln(itoa(it)+': title: '+rssitem.title)
+            RssItem.Link := Node.childnodes.findnode('link').text;;
+            writeln('link: '+rssitem.link)
+            RssItem.Description := Node.childnodes.findnode('description').text;
+            writeln('descript: '+rssitem.description)
+            {RssItem.PubDate:=} ParseRSSDate(Node.ChildNodes.findnode('pubDate').Text);
+            inc(it) 
+          except  
+            writeln('fff1'+ExceptionToString(ExceptionType, ExceptionParam));
+          end;  
+        end;
+      //end;
+      Node:= Node.NextSibling;
+    end;
+    doc.Free;
+  except
+    //on E: Exception do
+    begin
+      writeln('fff2: '+ExceptionToString(ExceptionType, ExceptionParam));
+      if Result <> Nil then Result.Free;
+      Xraise(ERSSParserException.CreateFmt('Failed to parse RSS: %s',
+                                                            ['E.Message']));
+    end;
+  end;
+end;
+
+var ovFormatSettings : TFormatSettings;
+    IIndyHTTP:TIdHTTP; XMLSType: string; adoms: widestring;
+     rssitem: TRSSItem;
+
+begin //@main
+   maxform1.orangestyle1click(self)
+   ovFormatSettings:= GetFormatSettings2 ;
+   //amonths:= ovFormatSettings.shortmonthnames;
+   writeln(getShortMonthNames);
+  {Months[1]:'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+    'Aug', 'Sep', 'Oct', 'Nov', 'Dec');  }
+    
+  IIndyHTTP:=TIdHTTP.create(self);
+  with TSimpleRSS.create(self) do begin
+    XMLType:= xtRDFrss;
+    IndyHTTP:= iindyhttp;
+    LoadFromHTTP(RSS_NewsFeed);
+    writeln('RSSFeedVersion: '+Version)
+    writeln('SimpleRSSVersion: '+SimpleRSSVersion)
+    GenerateXML;
+    //savetoFile('C:\maXbox\mX47464\maxbox4\examples\1017_bbcnews.xml')
+    writeln('DOMVendor '+itoa(Xmlfile.DOMVendor))
+    writeln('ChildNodesCount: '+itoa(xmlfile.ChildNodes.getcount));
+    writeln(xmlfile.NodeIndentStr )
+    xmlfile.savetoXML(adoms)
+    //xmlfile.savetoFile('C:\maXbox\mX47464\maxbox4\examples\1017_bbcnews2.xml')
+    //writeln('xmlfile.savetoXML '+(adoms))
+    XMLSType:= adoms;
+    rssitem:= TXmlDocRssParserParseRSSFeed(XMLStype)
+    writeln('rssitem.title '+rssitem.title)
+    writeln('rssitem.link '+rssitem.link)
+    for it:= 0 to items.count-1 do begin
+      //Items[it].description
+      writeln(itoa(it)+': '+Items[it].title+': '+items[it].pubdate.getdatetime);
+    end;   
+  end;  
+End.
+
+//Ref: http://simplerss.sourceforge.net/
+{<link>https://www.bbc.co.uk/news/</link>
+<description>BBC News - World</description}
+//RegisterProperty('PubDate', 'TRFC822DateTime', iptrw);
+
+{procedure SIRegister_TRSSItems(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TOwnedCollection', 'TRSSItems') do
+  with CL.AddClassN(CL.FindClass('TOwnedCollection'),'TRSSItems') do begin
+    RegisterMethod('Function Add : TRSSItem');
+    RegisterMethod('Function Insert( Index : Integer) : TRSSItem');
+    RegisterProperty('Items', 'TRSSItem Integer', iptrw);
+    SetDefaultPropery('Items');
+  end;
+end;}
+
+{(*----------------------------------------------------------------------------*)
+procedure SIRegister_TRFC822DateTime(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TPersistent', 'TRFC822DateTime') do
+  with CL.AddClassN(CL.FindClass('TPersistent'),'TRFC822DateTime') do
+  begin
+    RegisterMethod('Function GetDateTime : string');
+    RegisterMethod('Procedure LoadDateTime( S : string)');
+    RegisterMethod('Procedure LoadDCDateTime( S : string)');
+    RegisterMethod('Constructor Create');
+    RegisterMethod('Function Changed : Boolean');
+    RegisterMethod('Function LastSpace( S : string) : Integer');
+    RegisterProperty('DateTime', 'TDateTime', iptrw);
+    RegisterProperty('TimeZone', 'string', iptrw);
+  end;
+end;}

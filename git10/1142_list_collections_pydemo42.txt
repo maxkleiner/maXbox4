@@ -1,0 +1,313 @@
+PROGRAM list_collections_pydemo42;
+//Python Cheat Sheet: Functions and Tricks
+//http://www.softwareschule.ch/examples/cheatsheetpython.pdf
+//https://www.atug.com/andypatterns/collections.htm
+
+//https://realpython.com/python-json/
+//https://wiki.freepascal.org/Developing_Python_Modules_with_Pascal#Minimum_Python_API
+{Purpose: Python Cheat Sheet: Functions and Tricks. }
+
+//<Constant declarations> 
+//Please check providers list below:['mymemory', 'microsoft', 'deepl', 'libre'].
+{TYPE <Type declarations> Pascal-Delphi-Python-Json-OLEAutomation} 
+                                                                          
+Const PYHOME32='C:\Users\breitsch\AppData\Local\Programs\Python\Python37-32\'; 
+      PYDLL32 ='C:\Users\breitsch\AppData\Local\Programs\Python\Python37-32\python37.dll'; 
+      
+
+Var  //<Variable declarations>
+  i: integer; eg: TPythonEngine;
+  runterrors, sdata: ansistring;
+
+//<FUNCTION> //<PROCEDURE> 
+//Generate public key and private key
+
+
+Const REXDEF= 'def striphtml(data):      '+LF+
+               '  p = re.compile(r"<.*?>")'+LF+
+               '  return p.sub("", data)  ';  
+               
+//https://gist.github.com/lkdocs/6519378               
+Const DEF_RSAKEYS= 'def generate_RSA(bits=2048): '+LF+
+          '  '''''+LF+
+          //'  Generate an RSA keypair with exponent of 65537 in PEM format'+LF+
+          //'  param: bits The key length in bits '+LF+
+          //'  Return private key and public key '+LF+
+          '  '''''+LF+
+          '  from Crypto.PublicKey import RSA '+LF+
+          '  new_key = RSA.generate(bits, e=65537)'+LF+ 
+          '  public_key = new_key.publickey().exportKey("PEM")'+LF+ 
+          '  private_key = new_key.exportKey("PEM")'+LF+ 
+          '  return private_key, public_key';
+          
+          
+Const CPM= 'class PeopleManager:          '+LF+
+           '   def __init__(self):        '+LF+
+           '      self.People = []        '+LF+
+           '   def Add(self, person):     '+LF+
+           '      self.People.append(person) ';
+           
+Const CP=  'class Person:                   '+LF+
+           '   def __init__(self,name,age): '+LF+
+           '      self.Name = name          '+LF+
+           '      self.Age = age            ';
+          
+               
+Begin  //@Main
+//<Executable statements>
+//https://www.amazon.com/Patterns-konkret-Max-Kleiner/dp/3935042469
+{ ISBN-10 ? : 3935042469  ISBN-13 ? : 978-3935042468} 
+
+  eg:= TPythonEngine.Create(Nil);
+  eg.pythonhome:= PYHOME32;
+  eg.opendll(PYDLL32)
+  //eng.IO:= pyMemo;
+  if PythonOK then 
+  try
+    eg.Execstring('import base64'+LF+'import urllib.parse');
+    eg.Execstring('import urllib.request, os, textwrap, json, requests, uuid');
+    eg.Execstring(REXDEF);
+    
+   { eg.Execstring('import nacl');
+    eg.Execstring('from nacl.encoding import HexEncoder'+CRLF+
+                   'from nacl.exceptions import CryptoError'+CRLF+
+                   'from nacl.encoding import Base64Encoder'+CRLF+
+                   'from pydub import AudioSegment');  }           
+    
+   //eg.Execstring('from Crypto.PublicKey import RSA');                
+    
+   
+   //26. One-liner with Python -c command    
+   print(getDosOutput('py -c "import sys; print(sys.version.split()[0])"',exePath));
+   //python -c "import sys; print(sys.version.split()[0])"   
+   //Or check the value of the environment variable:   
+   CaptureConsoleOutput('py -c"import sys;print(sys.version.split()[0])"', 
+                                                             maxform1.memo2); 
+                                                             
+ //1. Multiple inputs from user  
+ //print(getDosOutput('py -c "n1, n2, n3=input(''enter number : '').split()"',exePath));   
+   
+   //print(getDosOutput('py -c "print("odd" if int(input(''Enter a number: ''))%2 else "even")"',exepath));
+   
+   //5. Reverse an string   
+   println(' reversestring: '+eg.evalstr('"John maXbox"[::-1]'));
+   print(' reversestr: '+getDosOutput('py -c "print(''John maXbox''[::-1])"',exePath)); 
+   eg.Execstring('v1 = "madam" # is a palindrome string');
+   println('Palindrome checker: '+eg.evalstr('v1.find(v1[::-1]) == 0 # True'));
+   
+   //9. Most repeated item in a list
+   eg.Execstring('lst = [1, 2, 3, 4, 3, 4, 4, 5, 6, 3, 1, 6, 7, 9, 4, 0]');
+   println('repeaters: '+eg.evalstr('max(lst, key=lst.count)'));
+   println('repeaters: '+eg.evalstr('max(set(lst), key=lst.count)'));
+   
+   //10. List comprehensions  prime
+   eg.Execstring('cities = ["Bern", "Dublin", "Oslo"]');
+   eg.Execstring('def visit(city):'+LF+
+                 '  return ("Welcome to "+city)');
+   println('comprehensions: '+eg.evalstr('[visit(city) for city in cities]'));
+   //12. Item index during looping
+   eg.Execstring('alst = ["blue", "lightblue", "pink", "orange", "red"]');
+   println('item index: '+eg.evalstr('[(idx,item) for idx, item in enumerate(alst)]'));
+   
+   //14. Concatenate list elements to in a single string
+   println('concate: '+eg.evalstr('", ".join(["john","sara","jim","rock"])'));
+   //16. Check an object attributes
+   println('dir(): '+eg.evalstr('dir("hello world")'));
+   
+   //eg.Execstring('import emoji');
+   //20. Easiest way to generate Universally Unique IDs
+   println('uuid: '+eg.evalstr('uuid.uuid4()'));
+   
+   //println(getDosOutput('py -c "import os; print(os.getenv(''PATH'').split('';''))"',exePath));
+   // lambda function
+   //Python’s “lambda” functions are anonymous functions
+   eg.Execstr('strings = ["food", "ba", "maXbox", "baz"]');
+   eg.execstr('strings.sort(key=lambda s: len(s))');
+   println('lambda sort by length:'+eg.evalstr('strings'));
+   println('eval expression:'+eg.evalstr('len(strings)'));
+   
+   //println('lambda sort by length:'+
+     //        eg.evalstr('sorted(strings.sort(key=lambda s: len(s)))'));
+     
+   println('design ex1: '+eg.evalstr('len(set(range(1,1001)).difference(set(map(lambda x:x**2, range(1,1001)))))'));  
+   
+   eg.execstr('from math import sqrt');
+   eg.execstr('non_square_numbs = list(range(1, 1001))');
+   eg.execstr('for n in range(1, int(sqrt(1001))):'+LF+
+                      ' non_square_numbs.remove(n ** 2)');
+   println('design ex2: '+eg.evalstr('len(non_square_numbs)')); 
+   
+   //collection in dynamic typing
+   eg.Execstring(CPM);
+   eg.Execstring(CP);
+   eg.Execstr('m = PeopleManager()');
+   eg.Execstr('m.Add( Person("Andy",38))');
+   eg.Execstr('m.Add( Person("Brian",26))');
+   println('persons: '+eg.evalstr('PeopleManager().__dict__'));
+   println('persons: '+eg.evalstr('m.People')); 
+   println('persons: '+eg.evalstr('m.People[0].Name,m.People[0].Age')); 
+   println('persons: '+eg.evalstr('list(m.People)'));
+   println('persons: '+eg.evalstr('len(m.People)')); 
+   println('persons: '+eg.evalstr('[[t.Name,t.Age] for t in m.People]')); 
+   //https://stackoverflow.com/questions/10814535/can-i-iterate-over-a-class-in-python/73124559#73124559                  
+  except
+    eg.raiseError;
+  finally
+    eg.Free;
+    //aPythonVersion.Free;
+  end; 
+ //end; 
+   //sdata:= loadfile(Exepath+'\examples\058_pas_filefinder32test.psb'); 
+  //writeln(botostr(RunBytecode(sdata, runterrors)));
+  //GetJSONData;  
+  //maXcalcF('2^64 /(60*60*24*365)')  
+//<Definitions>  
+End. 
+
+Ref:  https://www.sonarqube.org/features/multi-languages/python/
+https://medium.com/@alains/7-advanced-python-features-you-should-know-about-b0d98733efcd
+https://python.plainenglish.io/15-most-powerful-python-one-liners-you-cant-skip-ea722d402de
+ mX4 executed: 07/03/2022 18:43:27  Runtime: 0:0:3.535  Memload: 39% use
+ mX4 executed: 20/09/2021 19:20:40  Runtime: 0:0:2.782  Memload: 69% use
+ mX4 executed: 26/07/2022 14:17:36  Runtime: 0:0:3.58  Memload: 42% use
+ 
+ max(...)
+    max(iterable, *[, default=obj, key=func]) -> value
+    max(arg1, arg2, *args, *[, key=func]) -> value
+
+    With a single iterable argument, return its biggest item. The
+    default keyword-only argument specifies an object to return if
+    the provided iterable is empty.
+    With two or more arguments, return the largest argument.
+    
+    for city in cities:
+        visit(city)
+        
+Doc: ASIDE: A python Zen approach
+
+In a dynamically typed language you don't need wrapper functions which do typecasting, since whilst types are associated with objects, variables and lists don't care what they refer to.  I wrote this in about two minutes and shows how in Python you just 'get on with it' and work on the client problem, rather than fighting the implementation language.
+
+class PeopleManager:
+    def __init__(self):
+        self.People = []
+    def Add(self, person):
+        self.People.append(person)
+class Person:
+    def __init__(self,name,age):
+        self.Name = name
+        self.Age = age
+
+m = PeopleManager()
+m.Add( Person('Andy',38) )
+m.Add( Person('Harry',28) )
+
+print m
+print len(m.People)                  
+        
+
+    Machine learning: Machine learning is an AI application that automatically learns and improves from previous sets of experiences without the requirement for explicit programming.
+    Deep learning: Deep learning is a subset of ML that learns by processing data with the help of artificial neural networks.
+    Neural network: Neural networks are computer systems that are loosely modeled on neural connections in the human brain and enable deep learning.
+    Cognitive computing: Cognitive computing aims to recreate the human thought process in a computer model. It seeks to imitate and improve the interaction between humans and machines by understanding human language and the meaning of images.
+    Natural language processing (NLP): NLP is a tool that allows computers to comprehend, recognize, interpret, and produce human language and speech.
+    Computer vision: Computer vision employs deep learning and pattern identification to interpret image content (graphs, tables, PDF pictures, and videos).
+        
+
+C:\maXbox\mX39998\maxbox3>py
+Python 3.6.3 (v3.6.3:2c5fed8, Oct  3 2017, 18:11:49) [MSC v.1900 64 bit (AMD64
+ on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import psutil, os
+>>> p = psutil.Process( os.getpid())
+>>> for dll in p.memory_maps():
+...   print(dll.path)
+...
+C:\Users\max\AppData\Local\Programs\Python\Python36\python.exe
+C:\Users\max\AppData\Local\Programs\Python\Python36\DLLs\_bz2.pyd
+C:\Users\max\AppData\Local\Programs\Python\Python36\DLLs\_ctypes.pyd
+C:\Users\max\AppData\Local\Programs\Python\Python36\DLLs\select.pyd
+C:\Users\max\AppData\Local\Programs\Python\Python36\DLLs\_socket.pyd
+C:\Users\max\AppData\Local\Programs\Python\Python36\python36.dll
+C:\Windows\System32\locale.nls
+C:\Windows\Globalization\Sorting\SortDefault.nls
+C:\Windows\System32\en-US\KernelBase.dll.mui
+C:\Windows\SysWOW64\en-US\kernel32.dll.mui
+C:\Windows\System32\ucrtbase.dll
+C:\Users\max\AppData\Local\Programs\Python\Python36\DLLs\_lzma.pyd
+C:\Users\max\AppData\Local\Programs\Python\Python36\Lib\site-packages\psutil\_
+util_windows.cp36-win_amd64.pyd
+C:\Users\max\AppData\Local\Programs\Python\Python36\python3.dll
+C:\Windows\System32\api-ms-win-crt-filesystem-l1-1-0.dll
+C:\Windows\System32\api-ms-win-crt-conio-l1-1-0.dll
+C:\Windows\System32\api-ms-win-crt-process-l1-1-0.dll
+C:\Windows\System32\api-ms-win-crt-environment-l1-1-0.dll
+C:\Windows\System32\api-ms-win-crt-time-l1-1-0.dll
+C:\Windows\System32\api-ms-win-crt-convert-l1-1-0.dll
+C:\Windows\System32\api-ms-win-crt-string-l1-1-0.dll
+C:\Users\max\AppData\Local\Programs\Python\Python36\vcruntime140.dll
+C:\Windows\System32\api-ms-win-crt-heap-l1-1-0.dll
+C:\Windows\System32\pdh.dll
+C:\Windows\System32\api-ms-win-crt-locale-l1-1-0.dll
+C:\Windows\System32\version.dll
+C:\Windows\System32\winnsi.dll
+C:\Windows\System32\IPHLPAPI.DLL
+C:\Windows\System32\wtsapi32.dll
+C:\Windows\System32\api-ms-win-crt-stdio-l1-1-0.dll
+C:\Windows\System32\api-ms-win-crt-math-l1-1-0.dll
+C:\Windows\System32\api-ms-win-crt-runtime-l1-1-0.dll
+C:\Windows\System32\rsaenh.dll
+C:\Windows\System32\cryptsp.dll
+C:\Windows\System32\bcrypt.dll
+C:\Windows\System32\bcryptprimitives.dll
+C:\Windows\System32\cryptbase.dll
+C:\Windows\System32\powrprof.dll
+C:\Windows\System32\KernelBase.dll
+C:\Windows\System32\sspicli.dll
+C:\Windows\System32\ole32.dll
+C:\Windows\System32\oleaut32.dll
+C:\Windows\System32\rpcrt4.dll
+C:\Windows\System32\msvcrt.dll
+C:\Windows\System32\ws2_32.dll
+C:\Windows\System32\user32.dll
+C:\Windows\System32\msctf.dll
+C:\Windows\System32\shlwapi.dll
+C:\Windows\System32\imm32.dll
+C:\Windows\System32\advapi32.dll
+C:\Windows\System32\shell32.dll
+C:\Windows\System32\kernel32.dll
+C:\Windows\System32\combase.dll
+C:\Windows\System32\gdi32.dll
+C:\Windows\System32\sechost.dll
+C:\Windows\System32\psapi.dll
+C:\Windows\System32\nsi.dll
+C:\Windows\System32\ntdll.dll
+>>>
+
+
+Then to convert any file from wav to mp3 just use pydub as
+import pydub
+sound = pydub.AudioSegment.from_wav("D:/example/apple.wav")
+sound.export("D:/example/apple.mp3", format="mp3")
+
+
+Patterns konkret.
+ISBN-13: 9783935042468  ISBN-10: 3935042469
+Author: Kleiner, Max
+Binding: Paperback
+Publisher: Software + Support
+Published: September 2003
+
+https://mymemory.translated.net/doc/spec.php
+Hello PyWorld_, This data will be written on the file.
+Hola PyWorld_,&#10; Estos datos se escribirán en el archivo.
+
+Install a 32-bit package with a 64 pip installer -t (Target)
+C:\Users\max\AppData\Local\Programs\Python\Python36-32>pip3 install -t C:\Users\
+max\AppData\Local\Programs\Python\Python36-32\Lib bitcoin
+----File newtemplate.txt not exists - now saved!----
+
+ mX4 executed: 18/03/2022 09:28:15  Runtime: 0:0:3.913  Memload: 44% use       
+ mX4 executed: 18/03/2022 09:28:34  Runtime: 0:0:3.43  Memload: 44% use 
+ mX4 executed: 22/03/2022 11:34:50  Runtime: 0:0:3.553  Memload: 47% use 
+ mX4 executed: 01/08/2022 17:21:17  Runtime: 0:0:2.488  Memload: 44% use 
+ mX4 executed: 01/08/2022 17:21:33  Runtime: 0:0:2.496  Memload: 44% use   

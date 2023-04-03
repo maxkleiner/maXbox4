@@ -1,0 +1,1259 @@
+PROGRAM Demo_App_mX_cALwON;
+
+
+{ ****************************************************************
+  Sourcefile     :  DBopen.PAS
+  Typ            :  Form-Unit
+  Engineer       :  Max Kleiner
+  First Release  :  10.01.1997
+  Compiler       :  Delphi 1.2, Betriebssystem :  Win95
+  Purpose        :  Ermöglicht Suche und Oeffnen einer Schatzung
+                    Basiert komplett auf SQL
+  Revisions      :  25.10.96 Erster dialog zum Oeffnen einer Schatzung
+                    29.10.96 Überarbeitet mit Query
+                    10.01.97 Suchdialog und SQL Editor implementiert
+                    02.04.2014 migrate to maXbox  - not finished yet
+ **************************************************************** }
+
+
+//unit DBOPEN1;
+
+{interface
+
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, ExtCtrls, Buttons, Grids, DBGrids, DB, DBTables,
+  DBLookup; }
+
+var
+    //TdbOpenDlg: TForm;
+    lblBis: TLabel;
+    lblVon: TLabel;
+    edtEndDate: TEdit;
+    edtBeginDate: TEdit;
+    lblStichtag: TLabel;
+    CalBtnTo: TSpeedButton;
+    Bevel1: TBevel;
+    edtSchSuchen: TEdit;
+    lblTop: TLabel;
+    GrundSource: TDataSource;
+    DBGrid1: TDBGrid;
+    btnCancel: TBitBtn;
+    tblGrund: TQuery;
+    tblGrundSite: TIntegerField;
+    tblGrundSchatzNr: TIntegerField;
+    edtTitel: TEdit;
+    lblObName: TLabel;
+    lblObjadress: TLabel;
+    lblOrt: TLabel;
+    lblEigen: TLabel;
+    lblTitel: TLabel;
+    lblSchNr: TLabel;
+    edtname: TEdit;
+    edtadress: TEdit;
+    edtOrt: TEdit;
+    SQLStatements: TMemo;
+    tblGrundStichtag: TDateTimeField;
+    btnSuchen: TBitBtn;
+    edtArt: TEdit;
+    lblSchArt: TLabel;
+    btnLoad: TBitBtn;
+    CalBtnFrom: TSpeedButton;
+    QueryCount: TQuery;
+    btnSQL: TBitBtn;
+    btnAlle: TBitBtn;
+    tblGrundObjektort: TStringField;
+    tblGrundObjektstrasse: TStringField;
+    tblGrundTitel: TStringField;
+    tblGrundObjektname: TStringField;
+    hlpBitBtn: TBitBtn;
+    dScrAuftrag: TDataSource;
+    tblGrundAuftragNr: TIntegerField;
+    LookupQuery: TQuery;
+    LookupSource: TDataSource;
+    ComboBox1: TComboBox;
+      { procedure CalBtnToClick(Sender: TObject);
+       procedure FormCreate(Sender: TObject);
+       procedure btnCancelClick(Sender: TObject);
+       procedure FormDestroy(Sender: TObject);
+       procedure ShowRecordsClick(Sender: TObject);
+       procedure ShowSQLClick(Sender: TObject);
+       procedure edtSchSuchenExit(Sender: TObject);
+       procedure btnAllClick(Sender: TObject);
+       procedure CalBtnFromClick(Sender: TObject);
+       procedure hlpBitBtnClick(Sender: TObject);
+       procedure DBGrid1DblClick(Sender: TObject);
+       procedure btnLoadClick(Sender: TObject);
+       procedure edtAuftragDblClick(Sender: TObject);
+     //private
+       function GetFromDate: TDateTime;
+       function GetToDate: TDateTime;
+       procedure SetFromDate(NewDate: TDateTime);
+       procedure SetToDate(NewDate: TDateTime);
+       procedure getHausObjekte;
+       function GetSQLRecordCount: integer;
+       function SomeEntries:Boolean;
+     protected
+       procedure BuildSQLString(var TheQuery: TStringList);
+       procedure AddCondition(var TheQuery: TStringList;
+                           const field, comparison, value: String);
+     public }
+       BeginDate: TDateTime;
+    EndDate: TDateTime;
+    modalresult: TModalresult;
+  //end;  
+  
+  type  TdbOpenDlg = TForm;
+
+var
+  dbOpenDlg: TdbOpenDlg;
+
+     function IsDate(Source: TEdit):Boolean; forward;
+     procedure getHausObjekte; forward;
+
+ 
+
+//implementation
+
+//{$R *.DFM}
+
+//uses Pickdate;
+
+procedure TdbOpenDlg_FormCreate(Sender: TObject);
+begin
+  tblGrund.open;
+   beginDate:=StrToDate('01.01.1984');
+  endDate:=Date;
+  {edtAuftrag.LookupDisplay := 'Nachname;FirmenName';}
+  dbOpenDlg.activeControl:=edtSchSuchen;  {first with schatzNr}
+  lblTop.caption:='Mandant suchen und laden';
+  //IntToStr(getSQLRecordCount);
+end;
+
+procedure TdbOpenDlg_FormDestroy(Sender: TObject);
+begin
+
+  tblGrund.close;
+
+end;
+
+procedure TdbOpenDlg_btnCancelClick(Sender: TObject);
+begin
+ {GlobSchatzNr:=tblGrundSchatzNr.value;}             {debug}
+  dbOpenDlg.close;
+end;
+
+
+
+{property Methoden}
+
+procedure TdbOpenDlg_SetFromDate(NewDate: TDateTime);
+begin
+  edtBeginDate.Text:= DateToStr(NewDate);
+end;
+
+procedure TdbOpenDlg_SetToDate(NewDate: TDateTime);
+begin
+  edtEndDate.Text:= DateToStr(NewDate);
+end;
+
+function TdbOpenDlg_GetFromDate: TDateTime;
+begin
+  if edtBeginDate.Text = '' then Result := 0
+  else Result:= StrToDate(edtBeginDate.Text);
+end;
+
+function TdbOpenDlg_GetToDate: TDateTime;
+begin
+  if edtEndDate.Text = '' then Result := 0
+  else Result := StrToDate(edtEndDate.Text);
+end;
+
+var mycal2: TDateTimePicker;
+procedure TestDate;
+begin
+mycal2:= TDateTimePicker.Create(self)
+  with mycal2 do begin
+  //parent:= inFrm;
+    //autocomplete:= true;
+    //SetBounds(LEFTBASE+255, TOPBASE+60, 305, 60);
+    //font.size:= 12; color:= clPurple;
+    //SCROLLWIDTH:= width * 2;
+    checked;
+    date;
+    show;
+    //onclick:= @generalClick;
+    //tag
+   //format:= ;
+   //mycal2.Free;
+   end;
+end;   
+
+
+var brDateForm: TDateTimePicker; //TJvPickdate; //TCalendar; //TBRDateForm
+var jvpd:   TJvDateTimePicker;
+
+procedure TdbOpenDlg_Button1Click(Sender: TObject);
+begin
+  dbOpenDlg.ModalResult:= mrOK;
+end;
+
+procedure TdbOpenDlg_CalBtnFromClick(Sender: TObject);
+var abitmap: TBitmap;
+begin
+  dbOpenDlg:= TdbOpenDlg.Create(self)
+  with dbOpenDlg do begin
+    setbounds(0,0,400,400)
+    with TImage.Create(dbopendlg) do begin
+      parent:= dbopenDlg;
+      Setbounds(150,20,100,100)
+      abitmap:= TBitmap.create;
+      abitmap.loadfromresourcename(hinstance, 'TIMEBMP');     
+      picture.bitmap:=  abitmap;
+      //getbitmap(Exepath+'examples\images\time.bmp')
+      abitmap.free;
+    end;
+    //showmodal goes later
+  end;
+  with TBitBtn.Create(dbopenDlg) do begin
+    parent:= dbopenDlg;
+    setbounds(20,300,150,40)
+    caption:= 'OK Date';
+    glyph.LoadFromResourceName(getHINSTANCE,'TPSIMPORT_COMOBJ'); 
+    onClick:= @TdbOpenDlg_Button1Click;
+  end;  
+  try
+    with TDateTimePicker.Create(dbopenDlg) do begin
+      parent:= dbopenDlg;
+      SetBounds(20,20,100,100);
+      if dbopenDlg.showModal = mrOK then
+        beginDate:= Datetime;
+      writeln('date with time: '+datetimetoStr(Datetime));
+    end;
+    writeln('get date back '+datetoStr(begindate));   //debug
+  finally
+    dbopenDlg.Release;    //than free
+  end;
+end;
+
+procedure TdbOpenDlg_CalBtnToClick(Sender: TObject);
+begin
+  try
+    BrDateForm:= TDateTimePicker.create(self);
+    if not (EndDate = 0) then
+    BrDateForm.Datetime:= EndDate;
+    //if BrDateForm.ShowModal = mrOk then
+    EndDate:= BrDateForm.Datetime;
+  finally
+    brDateForm.Free;
+  end;
+end;
+
+procedure TdbOpenDlg_CalBtnFromClick2(Sender: TObject);
+var days: TDaysOfWeek;
+begin
+  dbOpenDlg:= TdbOpenDlg.create(self)
+  with dbOpenDlg do begin
+    setbounds(0,0,400,400)
+    //showmodal later
+  end;
+   with TBitBtn.create(dbopenDlg) do begin
+     parent:= dbopenDlg;
+     setbounds(20,300,150,40)
+     caption:= 'OK Date';
+     glyph.LoadFromResourceName(getHINSTANCE,'TPSIMPORT_COMOBJ'); 
+     onclick:= @TdbOpenDlg_Button1Click;
+   end;  
+  try
+   with TJvDateTimePicker.create(dbopenDlg) do begin
+     parent:= dbopenDlg;
+     SetBounds(20,20,100,100);
+     height:= 200;
+     //name
+     //aday:= monday;    
+  days:= [sun,mon,tue];
+// TDayOfWeekName = (Sun, Mon, Tue, Wed, Thu, Fri, Sat);
+  //TDaysOfWeek = set of TDayOfWeekName;
+    jvpd:= TJvDateTimePicker.create(dbopenDlg);
+    //SetupPopupCalendar(Twincontrol(jvpd),mon,days,clred,nil,true,now,now);       
+  
+     if dbopenDlg.showModal = mrOK then
+       BeginDate:= NullDate;
+     writeln('date with time: '+datetimetostr(Nulldate));
+   end;
+    writeln('get date back '+datetostr(begindate));   //debug
+  finally
+    dbopenDlg.Release;    //than free
+  end;
+end;
+
+
+
+procedure TdbOpenDlg_AddCondition(var TheQuery: TStringList;
+                        const field, comparison, value: String);
+begin
+  if TheQuery.Count > 2 then
+  {When Count > 2, there is already at least one condition}
+   TheQuery.Add('AND '+field+comparison+value)
+  else
+   TheQuery.Add(field+comparison+value)
+end;
+
+function IsDate(Source: TEdit) :Boolean;
+{This function returns True if a TEdit contains a date}
+begin
+  try
+    StrToDate(TEdit(Source).Text);   {typecast of checking}
+    result := True
+  except
+    result := False;
+  end;
+end;
+
+function TdbOpenDlg_SomeEntries:Boolean;
+begin
+ Result:=
+ not ((edtSchsuchen.text = '') and
+      (edtName.Text = '') and (edtTitel.text = '') and (edtAdress.text = '') and
+      (edtOrt.text = '') and (BeginDate = 0) and (EndDate = 0) and
+      (edtArt.text = '') and (comboBox1.text = ''));
+end;
+
+procedure TdbOpenDlg_BuildSQLString(var TheQuery: TStringList);
+begin
+  if BeginDate <> 0 then
+  if not IsDate(edtBeginDate) then begin
+    edtBeginDate.SetFocus;
+    raise Exception.Create('Date value expected');
+  end;
+  if EndDate <> 0 then
+  if not IsDate(edtEndDate) then begin
+    edtEndDate.SetFocus;
+    raise Exception.Create('Date value expected');
+  end;
+  {if edtEigen.text <> '' then}
+ { theQuery.Add('SELECT * FROM GRUNDDAT G, AUFTRAGG A') else}   {once will be a join}
+  TheQuery.Add('SELECT * FROM GRUNDDAT') ;
+  if TdbOpenDlg_SomeEntries then begin
+    TheQuery.Add('WHERE');
+      TdbOpenDlg_addCondition(theQuery,'Typ','<>','2');
+   (* if edtEigen.text <> '' then                                 {join}
+      addCondition(TheQuery,'A.AuftragNr','=',edtEigen.text);*)
+    if edtSchSuchen.text <> '' then
+      TdbOpenDlg_addCondition(TheQuery,'SchatzNr','=',edtSchSuchen.text);
+    if edtTitel.text <> '' then                    {#39 is '}
+      TdbOpenDlg_addCondition(theQuery,'UPPER'+'('+'Titel'+')',
+                 'LIKE ',#39 + uppercase(edtTitel.text)+'%'#39);
+    if edtName.Text <> '' then
+      TdbOpenDlg_AddCondition(TheQuery,'UPPER'+'('+'Objektname'+')',
+                 'LIKE',#39 + uppercase(edtName.Text)+'%'#39);
+    if edtAdress.text <> '' then
+      TdbOpenDlg_addCondition(theQuery,'UPPER'+'('+'Objektstrasse'+')',
+                    'LIKE',#39 + uppercase(edtAdress.text)+'%'#39);
+    if edtOrt.text <> '' then
+      TdbOpenDlg_addCondition(theQuery,'UPPER'+'('+'Objektort'+')',
+                    'LIKE',#39 + uppercase(edtOrt.text)+'%'#39);
+//    if edtAuftrag.text <> '' then                      {Lookup}
+  //    addCondition(theQuery,'AuftragNr','=',intToStr(tblAuftragAuftragNr.value));
+    if edtArt.text <> '' then
+      TdbOpenDlg_addcondition(theQuery,'UPPER'+'('+'Schatzart'+')',
+                    'LIKE',#39 + uppercase(edtArt.text)+'%'#39);
+    if BeginDate <> 0 then             {because DateTime is not a string}
+        TdbOpenDlg_AddCondition(TheQuery,'Stichtag','>=',
+                       ':BeginDate');
+    if EndDate <> 0 then
+        TdbOpenDlg_AddCondition(TheQuery,'Stichtag','<=',
+                       ':EndDate');
+  end; {if not empty strings}
+end;
+
+procedure TdbOpenDlg_ShowRecordsClick(Sender: TObject);
+var
+  TheQuery: TStringList;
+begin
+  TheQuery := TStringList.Create;
+  theQuery.clear;
+  try                             {ev close clear}
+   if not TdbOpenDlg_someEntries then begin
+    modalresult:= mrOK;
+    Exit;
+   end;
+   TdbOpenDlg_BuildSQLString(TheQuery);
+   {Query is built. Process it dear megamax}
+   screen.cursor:= crSQLWait;
+    with tblGrund do begin
+      Close;
+      SQL.Clear;
+      SQL := TheQuery;
+      if beginDate <> 0 then
+      ParamByName('beginDate').AsDateTime:=beginDate;
+      if endDate <> 0 then
+      ParamByName('endDate').AsDateTime:=endDate;
+      Open;
+    end;
+  finally
+    TheQuery.Free;
+    screen.Cursor:= crDefault;
+  end;
+end;
+
+
+
+
+procedure TdbOpenDlg_ShowSQLClick(Sender: TObject);
+var
+  TheQuery: TStringList;
+begin
+  TheQuery := TStringList.Create;
+  try
+    if (SQLStatements.Lines[1] <> '') then
+    theQuery.assign(SQLStatements.Lines
+    )else begin
+      TdbOpenDlg_BuildSQLString(TheQuery);
+      {Query is built. Process it}
+      SQLStatements.Lines := TheQuery;
+    end;
+    with SQLStatements do begin
+    if (SQLStatements.visible=false) then SQLStatements.visible:= true else
+    SQLStatements.visible:=false;
+  end;
+  finally
+   TheQuery.Free;
+  end;
+end;
+
+
+procedure TdbOpenDlg_edtSchSuchenExit(Sender: TObject);
+begin
+  try
+    TdbOpenDlg_showRecordsClick(sender);
+  except
+    showmessage('schatzung not found');
+    {tblGrund.findNearest([edtSchSuchen]);}
+  end;
+end;
+
+function TdbOpenDlg_GetSQLRecordCount: integer;
+begin
+  with QueryCount do begin
+    try
+      Close; SQL.Clear;
+      SQL.Add('Select Count(*)'+                           { PARAORA}
+              ' from Grunddat where typ <> 2');
+      open;
+      result:=fields[0].asInteger;
+      { SQL.Add('Select Count(*) As Anz'+                   ORA
+              ' from Grunddat where typ <> 2');
+      open;
+      result:=fieldByName('Anz').asInteger;}
+    finally;
+      close;
+    end;
+  end; {with}
+end;
+
+procedure TdbOpenDlg_btnAllClick(Sender: TObject);
+begin
+  try                             {ev close clear}
+    with tblGrund do begin
+      Close;
+      SQL.Clear;
+      SQL.Add('Select Site,SchatzNr,AuftragNr,Titel,Objektname,Objektstrasse,Objektort,Stichtag'+
+              ' from grunddat where typ <> 2'+
+              'order by Site, SchatzNr');
+      Open;
+    end;
+  finally
+    end;
+end;
+
+
+procedure TdbOpenDlg_hlpBitBtnClick(Sender: TObject);
+begin
+ Application.HelpContext(31);
+end;
+
+procedure TdbOpenDlg_DBGrid1DblClick(Sender: TObject);
+begin
+  ModalResult:=mrOK;
+end;
+
+procedure TdbOpenDlg_btnLoadClick(Sender: TObject);
+begin
+ TdbOpenDlg_showRecordsClick(sender);
+end;
+
+procedure TdbOpenDlg_edtAuftragDblClick(Sender: TObject);
+begin
+  getHausObjekte;
+  while not LookupSource.dataSet.EOF do begin
+    combobox1.items.add(lookupSource.dataSet.fieldValues['Objektname']);
+    lookupSource.dataSet.next;
+  end;
+
+end;
+
+procedure getHausObjekte;
+begin
+  with lookupQuery do begin
+      Close;
+      SQL.Clear;
+      SQL.Add('Select Site,SchatzNr,AuftragNr,Titel,Objektname,Objektstrasse,Objektort,Stichtag'+
+              ' from grunddat where typ <> 2'+
+              'order by Site, SchatzNr');
+      Open;
+  end;
+end;
+
+procedure getwindowfunc;
+var messi: Hwnd;
+  text: array[0..80] of char;
+  found: boolean;
+begin
+  messi:= gettopwindow(getdesktopwindow);
+  repeat
+    //getClassName(messi, pchar('text'), 80);
+      //if strpas(text) = 'TMessageForm' then found:= true;
+      //found:= strpas((text)) = 'TMessageForm';
+      //GetNextWindow(messi, GW_HWNDNEXT);
+  until (messi=0) or found;    
+    //TJvForthScript
+    //TAtomList
+end;
+  
+
+begin //main
+  TdbOpenDlg_CalBtnFromClick(self);
+  //TdbOpenDlg_CalBtnFromClick2(self);
+  ShowMessage(GetVisibleWindowsF(TStringlist.create).text);
+  {sleep(10000);
+  maxform1.SaveScreenshotClick(self)}
+
+end.
+
+
+
+
+CONST 
+//<Constant declarations> 
+  TEXTOUT = 'hi world of code rage';
+
+{TYPE 
+<Type declarations>} 
+
+Var 
+//<Variable declarations>
+  i: integer;
+
+//<FUNCTION>
+//<PROCEDURE> 
+
+BEGIN  //Main
+//<Executable statements>
+  for i:= 1 to 3 do 
+    Writeln(TEXTOUT+CRLF);
+  maXcalcF('2^64 /(60*60*24*365)')  
+//<Definitions>  
+END. 
+
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----
+
+object dbOpenDlg: TdbOpenDlg
+  Left = 232
+  Top = 124
+  HelpContext = 31
+  ActiveControl = edtSchSuchen
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Schatzung Suchen'
+  ClientHeight = 368
+  ClientWidth = 765
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clBlack
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = [fsBold]
+  OldCreateOrder = True
+  Position = poScreenCenter
+  Visible = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Bevel1: TBevel
+    Left = 5
+    Top = 6
+    Width = 676
+    Height = 355
+  end
+  object lblBis: TLabel
+    Left = 516
+    Top = 64
+    Width = 19
+    Height = 16
+    Caption = 'Bis'
+    FocusControl = edtEndDate
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblVon: TLabel
+    Left = 363
+    Top = 64
+    Width = 24
+    Height = 16
+    Alignment = taRightJustify
+    Caption = 'Von'
+    FocusControl = edtBeginDate
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblStichtag: TLabel
+    Left = 338
+    Top = 41
+    Width = 205
+    Height = 16
+    AutoSize = False
+    Caption = 'Stichtag / Zeitraum'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    WordWrap = True
+  end
+  object CalBtnTo: TSpeedButton
+    Left = 545
+    Top = 60
+    Width = 21
+    Height = 21
+    Hint = 'Browse calendar'
+    Glyph.Data = {
+      4E010000424D4E01000000000000760000002800000012000000120000000100
+      040000000000D800000000000000000000001000000010000000000000000000
+      BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+      3333330000003333333333333333330000003338888888888888330000003304
+      0404404040483300000033FFFFFFFFFFFF483300000033FFFFFFFFFFFF483300
+      000033FF000F0007FF483300000033FFF0FF7F70FF483300000033FFF0FFFFF0
+      FF483300000033FFF0FF0007FF483300000033FF00FF0FFFFF483300000033FF
+      F0FF0000FF483300000033FFFFFFFFFFFF483300000033FFFFFFFFFFFF483300
+      000033F7777777777F4833000000330000000000003333000000333333333333
+      333333000000333333333333333333000000}
+    Layout = blGlyphRight
+    ParentShowHint = False
+    ShowHint = True
+    OnClick = CalBtnToClick
+  end
+  object lblTop: TLabel
+    Left = 16
+    Top = 13
+    Width = 209
+    Height = 18
+    Caption = 'Mandant suchen und laden:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clYellow
+    Font.Height = -16
+    Font.Name = 'Arial'
+    Font.Style = [fsBold, fsItalic]
+    ParentFont = False
+  end
+  object lblObName: TLabel
+    Left = 16
+    Top = 89
+    Width = 73
+    Height = 16
+    Caption = 'Objektname'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblObjadress: TLabel
+    Left = 16
+    Top = 114
+    Width = 83
+    Height = 16
+    Caption = 'Objektstrasse'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblOrt: TLabel
+    Left = 16
+    Top = 139
+    Width = 54
+    Height = 16
+    Caption = 'Objektort'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblEigen: TLabel
+    Left = 16
+    Top = 163
+    Width = 78
+    Height = 16
+    Caption = 'Auftraggeber'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblTitel: TLabel
+    Left = 16
+    Top = 65
+    Width = 26
+    Height = 16
+    Caption = 'Titel'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblSchNr: TLabel
+    Left = 16
+    Top = 41
+    Width = 88
+    Height = 16
+    Caption = 'Schatznummer'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblSchArt: TLabel
+    Left = 346
+    Top = 89
+    Width = 42
+    Height = 16
+    Alignment = taRightJustify
+    Caption = 'Auftrag'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object CalBtnFrom: TSpeedButton
+    Left = 395
+    Top = 60
+    Width = 21
+    Height = 21
+    Hint = 'Browse calendar'
+    Glyph.Data = {
+      4E010000424D4E01000000000000760000002800000012000000120000000100
+      040000000000D800000000000000000000001000000010000000000000000000
+      BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+      3333330000003333333333333333330000003338888888888888330000003304
+      0404404040483300000033FFFFFFFFFFFF483300000033FFFFFFFFFFFF483300
+      000033FF000F0007FF483300000033FFF0FF7F70FF483300000033FFF0FFFFF0
+      FF483300000033FFF0FF0007FF483300000033FF00FF0FFFFF483300000033FF
+      F0FF0000FF483300000033FFFFFFFFFFFF483300000033FFFFFFFFFFFF483300
+      000033F7777777777F4833000000330000000000003333000000333333333333
+      333333000000333333333333333333000000}
+    Layout = blGlyphRight
+    ParentShowHint = False
+    ShowHint = True
+    OnClick = CalBtnFromClick
+  end
+  object edtEndDate: TEdit
+    Left = 571
+    Top = 61
+    Width = 90
+    Height = 20
+    AutoSize = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+  end
+  object edtBeginDate: TEdit
+    Left = 422
+    Top = 61
+    Width = 90
+    Height = 20
+    AutoSize = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+  end
+  object edtSchSuchen: TEdit
+    Left = 112
+    Top = 37
+    Width = 61
+    Height = 20
+    AutoSize = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+    OnDblClick = edtSchSuchenExit
+  end
+  object DBGrid1: TDBGrid
+    Left = 16
+    Top = 188
+    Width = 657
+    Height = 165
+    DataSource = GrundSource
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit]
+    ParentFont = False
+    TabOrder = 5
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clBlack
+    TitleFont.Height = -11
+    TitleFont.Name = 'MS Sans Serif'
+    TitleFont.Style = [fsBold]
+    OnDblClick = DBGrid1DblClick
+  end
+  object btnCancel: TBitBtn
+    Left = 687
+    Top = 204
+    Width = 74
+    Height = 26
+    Caption = '&Cancel'
+    TabOrder = 6
+    OnClick = btnCancelClick
+    Kind = bkCancel
+  end
+  object edtTitel: TEdit
+    Left = 112
+    Top = 60
+    Width = 192
+    Height = 21
+    AutoSize = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 7
+  end
+  object edtname: TEdit
+    Left = 112
+    Top = 85
+    Width = 192
+    Height = 20
+    AutoSize = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 8
+  end
+  object edtadress: TEdit
+    Left = 112
+    Top = 109
+    Width = 192
+    Height = 20
+    AutoSize = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 9
+  end
+  object edtOrt: TEdit
+    Left = 112
+    Top = 133
+    Width = 192
+    Height = 20
+    AutoSize = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 10
+  end
+  object SQLStatements: TMemo
+    Left = 395
+    Top = 109
+    Width = 277
+    Height = 68
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    Lines.Strings = (
+      'SQLStatements definieren')
+    ParentFont = False
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 11
+    Visible = False
+  end
+  object btnSuchen: TBitBtn
+    Left = 687
+    Top = 168
+    Width = 74
+    Height = 26
+    Caption = '&Suchen'
+    TabOrder = 3
+    OnClick = ShowRecordsClick
+    Glyph.Data = {
+      BE060000424DBE06000000000000360400002800000024000000120000000100
+      0800000000008802000000000000000000000001000000010000000000000000
+      80000080000000808000800000008000800080800000C0C0C000C0DCC000F0CA
+      A600000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000F0FBFF00A4A0A000808080000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00030303030303
+      0404040404040303030303030303030303FFF8F8F8F8F8F803FF030303030302
+      0403030402020202020204040303030303F8F8FF03F8030303030303F8F8FF03
+      030303020204040202020202020202020403030303F8FFF8F80303FFFFFFFFFF
+      0303F8FF030303020202020202FAFAFAFAFA02020204030303F8FF030303FFF8
+      F8F8F8F8FF0303F8FF03030202020202FA0303030303FA020202040303F8FF03
+      03FFF80303030303F8FF0303F8FF03020202020203030303030303FA02020403
+      03F8FF0303F803030303030303F8FF03F8FF03020202020202030303030303FA
+      0404040303F8FFFFFFFFF8FF0303030303F8F8F8F80303FAFAFAFAFAFAFA0303
+      030303030303030303F8F8F8F8F8F8F803030303030303030303030303030303
+      030303030303030303030303030303030303030303030303FFFFFFFFFFFF0303
+      030303030303030303030404040404040303FFFFFFFF030303030303F8F8F8F8
+      F8F803FA040404030303030303FA02020202020403F8F8F8F8FF0303030303F8
+      FF03030303F803FA02020403030303030303FA020202020403F8FF03F8FF0303
+      03030303F803030303F80303FA0202040303030303040402020202040303F803
+      03F8FFFFFFFFFFF8F803030303F80303FA020202040404040402020202020204
+      0303F8FF0303F8F8F8F8F8030303FFFF03F8030303FA02020202020202020202
+      FAFA0204030303F8FFFF030303030303FFFFF8F8FFF803030303FAFA02020202
+      0202FAFA0303FA0303030303F8F8FFFFFFFFFFFFF8F80303F803030303030303
+      FAFAFAFAFAFA030303030303030303030303F8F8F8F8F8F80303030303030303
+      0303030303030303030303030303030303030303030303030303030303030303
+      0303}
+    NumGlyphs = 2
+  end
+  object edtArt: TEdit
+    Left = 395
+    Top = 85
+    Width = 266
+    Height = 21
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 12
+  end
+  object btnLoad: TBitBtn
+    Left = 687
+    Top = 240
+    Width = 74
+    Height = 26
+    Caption = '&Laden'
+    TabOrder = 4
+    OnClick = btnLoadClick
+    Kind = bkOK
+  end
+  object btnSQL: TBitBtn
+    Left = 687
+    Top = 132
+    Width = 74
+    Height = 26
+    Caption = 'SQL'
+    TabOrder = 13
+    OnClick = ShowSQLClick
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      0400000000000001000000000000000000001000000010000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+      5000555555555555577755555555555550B0555555555555F7F7555555555550
+      00B05555555555577757555555555550B3B05555555555F7F557555555555000
+      3B0555555555577755755555555500B3B0555555555577555755555555550B3B
+      055555FFFF5F7F5575555700050003B05555577775777557555570BBB00B3B05
+      555577555775557555550BBBBBB3B05555557F555555575555550BBBBBBB0555
+      55557F55FF557F5555550BB003BB075555557F577F5575F5555577B003BBB055
+      555575F7755557F5555550BB33BBB0555555575F555557F555555507BBBB0755
+      55555575FFFF7755555555570000755555555557777775555555}
+    NumGlyphs = 2
+  end
+  object btnAlle: TBitBtn
+    Left = 687
+    Top = 96
+    Width = 74
+    Height = 26
+    Caption = '&Alle'
+    TabOrder = 14
+    OnClick = btnAllClick
+    Glyph.Data = {
+      E2060000424DE206000000000000360400002800000024000000130000000100
+      080000000000AC02000000000000000000000001000000010000000000000000
+      80000080000000808000800000008000800080800000C0C0C000C0DCC000F0CA
+      A600000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000F0FBFF00A4A0A000808080000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00030303030304
+      0403030303030303030303030303030303F8F8FF030303030303030303030303
+      0303040202040303030303030303030303030303F80303F8FF03030303030303
+      0303030303040202020204030303030303030303030303F803030303F8FF0303
+      0303030303030303040202020202020403030303030303030303F80303030303
+      03F8FF030303030303030304020202FA02020202040303030303030303F8FF03
+      03FF03030303F8FF03030303030303020202FA02FA0202020403030303030303
+      03F8FF03F803FF030303F8FF03030303030303FA02FA020202FA020202040303
+      0303030303F8FFF8030303FF030303F8FF03030303030304FA0202020202FA02
+      020204030303030303F8F80303030303FF030303F8FF0303030304020202FA02
+      020202FA0202020403030303F8FF0303F8FF030303FF030303F8FF0303030202
+      02FA03FA02020204FA02020204030303F8FF03F803F8FF0303F8FF030303F8FF
+      0303FA02FA030303FA02020204FA020202040303F8FFF8030303F8FF0303F8FF
+      030303F8FF0303FA0303030303FA02020204FA020202040303F80303030303F8
+      FF0303F8FF030303F8FF0303030303030303FA02020204FA0202040303030303
+      03030303F8FF0303F8FF0303F8FF030303030303030303FA02020204FA020203
+      030303030303030303F8FF0303F8FFF8030303030303030303030303FA020202
+      04FA030303030303030303030303F8FF0303F8FF030303030303030303030303
+      03FA0202020403030303030303030303030303F8FF0303F8FF03030303030303
+      030303030303FA0202040303030303030303030303030303F8FF03F8FF030303
+      0303030303030303030303FA0202030303030303030303030303030303F8FFF8
+      FF030303030303030303030303030303FA030303030303030303030303030303
+      0303F8030303}
+    NumGlyphs = 2
+  end
+  object hlpBitBtn: TBitBtn
+    Left = 687
+    Top = 61
+    Width = 74
+    Height = 26
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'Arial'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 15
+    OnClick = hlpBitBtnClick
+    Kind = bkHelp
+  end
+  object ComboBox1: TComboBox
+    Left = 112
+    Top = 157
+    Width = 193
+    Height = 21
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ItemHeight = 13
+    ParentFont = False
+    TabOrder = 16
+    Text = 'Kleiner Max'
+    OnDblClick = edtAuftragDblClick
+  end
+  object GrundSource: TDataSource
+    DataSet = tblGrund
+    Left = 592
+    Top = 304
+  end
+  object tblGrund: TQuery
+    AutoCalcFields = False
+    DatabaseName = 'cwBase'
+    SQL.Strings = (
+      
+        'Select Site, SchatzNr, AuftragNr, Titel, Objektname, Objektort, ' +
+        'Objektstrasse, Stichtag'
+      ' from grunddat where typ <> 2'
+      'order by Site, SchatzNr ')
+    Left = 546
+    Top = 303
+    object tblGrundSchatzNr: TIntegerField
+      DisplayLabel = 'SchNr'
+      DisplayWidth = 6
+      FieldName = 'SchatzNr'
+    end
+    object tblGrundTitel: TStringField
+      DisplayWidth = 30
+      FieldName = 'Titel'
+      Size = 60
+    end
+    object tblGrundObjektname: TStringField
+      DisplayWidth = 30
+      FieldName = 'Objektname'
+      Size = 60
+    end
+    object tblGrundObjektstrasse: TStringField
+      DisplayWidth = 24
+      FieldName = 'Objektstrasse'
+      Size = 60
+    end
+    object tblGrundObjektort: TStringField
+      DisplayWidth = 17
+      FieldName = 'Objektort'
+      Size = 60
+    end
+    object tblGrundStichtag: TDateTimeField
+      DisplayWidth = 12
+      FieldName = 'Stichtag'
+    end
+    object tblGrundSite: TIntegerField
+      DisplayWidth = 6
+      FieldName = 'Site'
+    end
+    object tblGrundAuftragNr: TIntegerField
+      FieldName = 'AuftragNr'
+      Visible = False
+    end
+  end
+  object QueryCount: TQuery
+    DatabaseName = 'cwBase'
+    SQL.Strings = (
+      'select count(*) as Anz from grunddat'
+      'where typ <> 2')
+    Left = 544
+    Top = 272
+  end
+  object dScrAuftrag: TDataSource
+    Left = 592
+    Top = 272
+  end
+  object LookupQuery: TQuery
+    DatabaseName = 'cwBase'
+    SQL.Strings = (
+      'Select Site, SchatzNr, AuftragNr, Titel, Objektname, Objektort, '
+      'Auftraggeber, Objektstrasse, Stichtag'
+      ' from grunddat where typ <> 2'
+      'order by Site, SchatzNr '
+      '')
+    Left = 40
+    Top = 234
+  end
+  object LookupSource: TDataSource
+    DataSet = LookupQuery
+    Left = 64
+    Top = 274
+  end
+
+
+Doc: Pick a Date Example:
+ 	
+Umgebungskarte: Bern
+	Bern 	So, 06.07.14 	ab 	07:32 	7 	IC 711
+IC 711 	
+	InterCity
+Richtung: St. Gallen
+Restaurant Minibar Familienwagen mit Spielplatz Reservierung möglich BZ RZ
+Umgebungskarte: Zürich HB
+	Zürich HB 	  	an 	08:28 	11
+  	
+Umgebungskarte: Zürich HB
+	Zürich HB 		ab 	08:40 	8 	EC 163
+EC 163 	
+	EuroCity Transalpin
+Richtung: Graz Hbf
+Restaurant VELOS: Reservierung obligatorisch Reservierung möglich VL
+  	
+Umgebungskarte: Schwarzach-St.Veit
+	Schwarzach-St.Veit 	  	an 	14:48 	2
+  	
+Umgebungskarte: Schwarzach-St.Veit
+	Schwarzach-St.Veit 		ab 	15:11 	3 	EC 113
+EC 113 	
+	EuroCity
+Richtung: Klagenfurt Hbf
+Restaurant VELOS: Reservierung obligatorisch Reservierung möglich RZ VL
+  	
+Umgebungskarte: Pörtschach/Wörther See
+	Pörtschach/Wörther See 	  	an 	17:06 	1
+  	
+Dauer: 9:34; fährt täglich, nicht 23. Apr bis 14. Mai 2014 

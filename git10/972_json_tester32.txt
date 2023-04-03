@@ -1,0 +1,1005 @@
+program TestJson32;
+                            
+//{$APPTYPE CONSOLE}
+//https://github.com/rilyu/json4delphi/blob/master/test/TestJson.dpr
+{objects and array still on progress, but with putx (1-45] works!}
+//https://github.com/rilyu/json4delphi/blob/master/test/TestJson.dpr
+
+{uses
+  SysUtils,
+  Jsons in '..\src\Jsons.pas';  }
+  
+//https://stackoverflow.com/questions/19415616/how-to-parse-specified-value-from-json-object-in-delphi-xe3                
+  
+Const
+StrJson=
+'{ '+
+'   "destination_addresses" : [ "Paris, France" ], '+
+'   "origin_addresses" : [ "Amsterdam, Nederland" ], '+
+'   "rows" : [  '+
+'      {      '+
+'         "elements" : [  '+
+'            {  '+
+'               "distance" : { '+
+'                  "text" : "504 km", '+
+'                  "value" : 504203   '+
+'               },  '+
+'               "duration" : {  '+
+'                  "text" : "4 uur 54 min.",  '+
+'                  "value" : 17638  '+
+'               },  '+
+'               "status" : "OK"  '+
+'            }   '+
+'         ]   '+
+'      }  '+
+'   ],   '+
+'   "status" : "OK"  '+
+'}';
+
+const stshort = '{"data":{"results":[{"Branch":"ACCT590003"}]}}';
+
+const jsonnames =
+'{'+
+  '"Names": ['
+   +'{'
+   +'   "FirstName": "Kim",'
+   +'   "Surname": "Jensen" '
+   +' },'
+   +' {'
+   +'   "FirstName": "Amery",'
+   +'   "Surname": "Mcmillan"'
+   +' },'
+   +' {'
+   +'   "FirstName": "Denton",'
+   +'   "Surname": "Burnett"'
+   +' }'
+  +'] '
+ +'}';
+ 
+ const jsonnamesarray =
+' ['
+   +'{'
+   +'   "FirstName": "Kim",'
+   +'   "Surname": "Jensen" '
+   +' },'
+   +' {'
+   +'   "FirstName": "Amery",'
+   +'   "Surname": "Mcmillan"'
+   +' },'
+   +' {'
+   +'   "FirstName": "Denton",'
+   +'   "Surname": "Burnett"'
+   +' }'
+  +'] ';
+
+
+
+procedure RunJSonTest23;
+var
+  Json: TJson;
+  Str: String;
+begin
+  Json := TJson.Create;
+
+  try
+    Json.Put36('null-field', jvnull);
+    Json.Put37('boolean-field-true', True);
+
+    Json['boolean-field-false'].AsBoolean := not Json.Get24('boolean-field-true').AsBoolean;
+    Json['number-field'].AsNumber := 3.1415926535;
+    Json['number-field-integer'].AsInteger := Json['number-field'].AsInteger;
+    Json['string-field'].AsString := 'Hello world';
+
+    //with Json.Put41('array-field', empty).AsArray do
+   with Json.Put35('array-field', jsempty).AsArray do begin
+      Put0(jsempty);
+      Put1(jvnull);
+      Put2(False);
+      Put2(True);
+      Put3(299792458);
+      Put4(2.7182818284);
+      Put5('The magic words are squeamish ossifrage');
+      with Put0(jsempty).AsObject do
+      begin
+        Put10('array-object-field-1', jvnull);
+        Put14('array-object-field-2', 'json4delphi');
+      end; //*)
+    end;
+    with Json.Put35('object-field', jsempty).AsObject do
+    begin
+      Put11('object-field-1', True);
+      Put13('object-field-2', 6.6260755e-34);
+    end;  //*)
+    
+  with Json['field7'].AsObject do
+  begin
+    Put11('subfield1', True);
+    Put13('subfield2', 2.7182818284);
+    Put14('subfield3', 'json4delphi');
+    Put10('subfield4',jsnull2);
+  end;
+  
+  with Json['field8'].AsObject do
+  begin
+    Putbool('subfield1', True);
+    Putext('subfield2', 3.14159265358979);
+    Putstr('subfield3', 'json5delphi');
+    Put10('subfield4',jsnull2);
+  end;
+  
+  //object
+  with Json['field7'].AsObject do
+  begin
+    Putext('subfield1', 2.7182818284);
+    Putstr('subfield2', 'json4delphi');
+  end;
+
+  //array
+  with Json['field9'].AsArray do
+  begin
+    Put4(6.6260755e-34);
+    Put5('The magic words are squeamish ossifrage');
+  end;
+    
+    Str := Json.Stringify;
+    Writeln(Str);
+    Json.Clear;
+    Json.Parse(Str);
+    //https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+    Json.Clear;
+    Json['x'].AsInteger := 5;
+    Json['y'].AsInteger := 6;
+    writeln(Json.Stringify);
+    writeln(CRLF)
+    
+    //get
+  Str := Json['field4'].AsString;
+
+  //parse
+  Json.Parse('{"a":1}');
+
+  //stringify
+  Str := Json.Stringify;
+  writeln(str)
+  
+  finally
+    Json.Free;
+  end;
+end;
+
+procedure ParseJSonValue;
+var
+   JSonValue:TJSonValue; jsarr: TJSonArray2;  jsobj, JOb: TJsonObject2;
+   ajt: TJson;
+   stjson, cnode, clabel:string;  cnt, cnt2, cnt3: integer;
+   Branch: string;
+   aLst:TALStrings;
+begin
+   stjson := '{"data":{"results":[{"Branch":"ACCT590003"}]}}';
+   //JsonValue := TJSonObject.ParseJSONValue(st);
+   ajt:= TJson.create();
+   ajt.Parse(stjson);
+    writeln(botostr( ajt.IsJsonObject( stjson)));
+     writeln(botostr( ajt.IsJsonString( stjson)));
+      writeln(botostr( ajt.IsJsonArray( stjson)));
+   cnode:= ajt.JsonObject.items[0].name;
+   writeln(cnode)
+   //Branch := JsonValue.GetValue<string>('data.results[0].Branch');
+   //writeln('prob: '+values[cnode].asobject.values['neutral'].asstring);
+   //writeln('branch: '+ajt.values['data'].['results'].asarray['Branch'].asstring);
+   {writeln('branch: '+ajt['data'].asobject.items[0].value.asstring);
+   Exception: <TJsonValue>"results" value type error: jvArray to jvString. }
+   writeln('branch: '+ajt['data'].asobject['results'].asarray[0].asObject['Branch'].asstring);
+   print('branch: '+ajt['data'].asobject['results'].asarray[0].asObject['Branch'].asstring);
+  
+   //Exception: <TJsonValue>"results" value type error: jvArray to jvString. }
+ 
+   ajt.Free;
+   
+   aLst:= TALStrings.create;
+   
+   //ALJSONToTStrings(st, aLst, '','','')  
+   
+   aLst.Free;  
+   writeln('');
+   
+    ajt:= TJson.create();
+    ajt.Parse(StrJson); 
+     writeln(botostr( ajt.IsJsonObject(StrJson)));
+     writeln(botostr( ajt.IsJsonString(StrJson)));
+      writeln(botostr( ajt.IsJsonArray(StrJson)));
+    writeln('get third name: '+ ajt.JsonObject.items[2].name);
+    writeln('get four name: '+ ajt.JsonObject.items[3].name);
+   println('dist: '+ajt['rows'].asarray[0].asObject['elements'].asarray[0].asobject['distance'].asobject['text'].asstring);
+   
+     //JObj:= ajt.JsonObject;
+   
+    jsarr:= ajt.JsonObject.values['rows'].asarray;
+    writeln('count test: '+itoa(jsarr.count))
+    
+    jOb:= ajt.JsonObject;
+    for cnt:= 2 to job.count-2 do begin         
+       Clabel:= job.items[cnt].name;
+       writeln('iterate: '+clabel)
+       JsArr:= job.values[Clabel].asArray;
+       for cnt2:= 0 to jsarr.count-1 do            
+         jsobj:= jsarr.items[cnt2].asobject;
+         for cnt3:= 0 to jsobj.count do 
+           writeln(jsobj['elements'].asarray[0].asobject.items[cnt3].name)
+          
+    end; 
+   
+  println('elements status: '+ajt['rows'].asarray[0].asObject['elements'].asarray[0].asobject['status'].asstring);
+  
+    //JObj.Free;
+    ajt.Free;   
+end;
+
+procedure jsontester2;
+var js:TlkJSON;  jsonObject: TlkJSONobject;
+   st: string;
+begin
+   st := '{"data":{"results":[{"Branch":"ACCT590003"}]}}';
+   js:= TlkJSON.create;
+    //jsonObject:= js.ParseText(StrJson) as TlkJSONobject;
+    //jsonObject:= js.ParseText(st) as TlkJSONobject;
+    jsonObject:= js.ParseText(st) as TlkJSONobject;
+  try
+    writeln('get message: '+
+     //vartostr(jsonObject.Field['data'].field['results'].field['Branch'].value));
+      vartostr(jsonObject.Field['data'].field['results'].Child[0].value));
+    writeln('from vartostr '+vartostr(jsonobject.Field['data'].field['results'].Child[0].field['Branch'].value));
+  except
+    writeln('errod-json')
+  end;
+   js.Free; 
+ end;  
+ 
+ function TJsonBaseAnalyzeJsonValueType(const S: String): TJsonValueType;
+var
+  Len: Integer;
+  Number: Extended;
+begin
+  Result := jvNone;
+  Len := Length(S);
+  if Len >= 2 then begin
+    if (S[1] = '{') and (S[Len] = '}') then Result := jvObject
+    else if (S[1] = '[') and (S[Len] = ']') then Result := jvArray
+    else if (S[1] = '"') and (S[Len] = '"') then Result := jvString
+    else if SameText(S, 'null') then Result := jvNull
+    else if SameText(S, 'true') or SameText(S, 'false') then Result := jvBoolean
+    else if FixedTryStrToFloat(S, Number) then Result := jvNumber;
+  end
+  else if FixedTryStrToFloat(S, Number) then Result := jvNumber;
+end;
+
+procedure TJsonBaseRaiseError(const Msg: String);
+var
+  S: String;
+begin
+  S := Format('<%s>%s', ['ClassName', Msg]);
+  raise Exception.Create(S);
+end;
+
+procedure TJsonBaseRaiseParseError(const JsonString: String);
+begin
+  TJsonBaseRaiseError(Format('"%s" parse error: %s',['GetOwnerName', JsonString]));
+end;
+ 
+ procedure TJsonValueParse(JsonString: String);
+var JSonValue:TJSonValue; jsarr: TJSonArray2;  jsobj, JOb: TJsonObject2;
+   ajt: TJson;
+   
+   FValueType: TJsonValueType;
+    FStringValue: String;
+    FNumberValue: Extended;
+    FBooleanValue: Boolean;
+    FObjectValue: TJsonObject2;
+    FArrayValue: TJsonArray2;
+begin
+  ajt.Clear;
+  JsonString := Trim(JsonString);
+  FValueType := TJsonBaseAnalyzeJsonValueType(JsonString);
+  case FValueType of
+    jvNone: TJsonbaseRaiseParseError(JsonString);
+    jvNull: ;
+    jvString: FStringValue:= ajt.Decode(Copy(JsonString, 2, Length(JsonString) - 2));
+    jvNumber: FNumberValue:= FixedStrToFloat(JsonString);
+    jvBoolean: FBooleanValue:= SameText(JsonString, 'true');
+    jvObject:
+      begin
+        //constructor Create(AOwner: TJsonBase = nil);
+        FObjectValue := TJsonObject2.Create(nil);
+        FObjectValue.Parse(JsonString);
+      end;
+    jvArray:
+      begin
+        //constructor Create(AOwner: TJsonBase = nil);
+        FArrayValue := TJsonArray2.Create(nil);
+        FArrayValue.Parse(JsonString);
+      end;
+  end;
+end;  
+
+procedure TJsonArrayParse(JsonString: String);
+var
+  I: Integer;
+  S: String;
+  List: TStringList;
+  Item: TJsonValue;
+  ajt: TJson;  jsarr: TJSonArray2;
+begin
+  ajt.Clear;
+  JsonString := Trim(JsonString);
+  if not ajt.IsJsonArray(JsonString) then TJsonBaseRaiseParseError(JsonString);
+  S := Trim(Copy(JsonString, 2, Length(JsonString) - 2));
+  List := TStringList.Create;
+  try
+    ajt.Split(S, ',', List);
+    for I := 0 to List.Count - 1 do begin
+      Item := jsarr.Add;
+      Item.Parse(List[I]);
+    end;
+  finally
+    List.Free;
+  end;
+end;   
+
+procedure TJsonPairParse(JsonString: String);
+var
+  List: TStringList;
+  StrName: String;
+  ajt: TJson;  jsp: TJSonPair;
+  //private
+    FName: String;
+    FValue: TJsonValue;
+
+begin
+  List := TStringList.Create;
+  try
+    ajt.Split(JsonString, ':', List);
+    if List.Count <> 2 then TJsonBaseRaiseParseError(JsonString);
+    StrName := List[0];
+    if not ajt.IsJsonString(StrName) then TJsonBaseRaiseParseError(StrName);
+    FName := ajt.Decode(Copy(StrName, 2, Length(StrName) - 2));
+    FValue.Parse(List[1]);
+  finally
+    List.Free;
+  end;
+end;   
+
+procedure TJsonObjectParse(JsonString: String);
+var
+  I: Integer;
+  S: String;
+  List: TStringList;
+  Item: TJsonPair;
+  ajt: TJson;  jsobj: TJSonObject2;
+begin
+  ajt.Clear;
+  JsonString := Trim(JsonString);
+  if not ajt.IsJsonObject(JsonString) then TJsonBaseRaiseParseError(JsonString);
+  S := Trim(Copy(JsonString, 2, Length(JsonString) - 2));
+  List := TStringList.Create;
+  try
+    Split(S, ',', List);
+    for I := 0 to List.Count - 1 do begin
+      Item := jsobj.Add('');
+      Item.Parse(List[I]);
+    end;
+  finally
+    List.Free;
+  end;
+end; 
+
+procedure TJsonCreateArrayIfNone;
+var FStructType: TJsonStructType;
+    FJsonArray: TJsonArray2;
+    FJsonObject: TJsonObject;
+
+begin
+  if FStructType = jsNone then
+  begin
+    FStructType := jsArray;
+    FJsonArray := TJsonArray2.Create(nil);
+  end;
+end;
+
+procedure TJsonCreateObjectIfNone;
+var FStructType: TJsonStructType;
+    FJsonArray: TJsonArray2;
+    FJsonObject: TJsonObject2;
+begin
+  if FStructType = jsNone then begin
+    FStructType := jsObject;
+    FJsonObject := TJsonObject2.Create(nil);
+  end;
+end;
+
+function TJsonBaseIsJsonObject(const S: String): Boolean;
+var
+  Len: Integer;
+begin
+  Len := Length(S);
+  Result := (Len >= 2) and (S[1] = '{') and (S[Len] = '}');
+end;
+
+procedure TJsonParse(JsonString: String);
+var  ajt: TJson;  jsobj: TJSonObject2;
+    FJsonArray: TJsonArray2;
+    FJsonObject: TJsonObject2;
+begin
+  ajt.Clear;
+  JsonString := Trim(JsonString);
+  if ajt.IsJsonArray(JsonString) then begin
+    TJsonCreateArrayIfNone;
+    FJsonArray.Parse(JsonString);
+  end
+  else if TJsonBaseIsJsonObject(JsonString) then begin
+    TJsonCreateObjectIfNone;
+    FJsonObject.Parse(JsonString);
+  end
+  else TJsonBaseRaiseParseError(JsonString);
+end;
+
+function GetPairEnd(C: Char): Char;
+  begin
+    case C of
+      '{': Result := '}';
+      '[': Result := ']';
+      '"': Result := '"';
+      else Result := #0;
+    end;
+  end;
+  
+function HexValue(C: Char): Byte;
+  begin
+    case C of
+      '0'..'9':  Result := ord(C) - ord('0');
+      'a'..'f':  Result := (ord(C) - ord('a')) + 10;
+      'A'..'F':  Result := (ord(C) - ord('A')) + 10;
+      else {raise} Exception.Create('Illegal hexadecimal characters "' + C + '"');
+    end;
+  end;  
+  
+function TJsonBaseDecode(const S: String): String;
+var
+  I      : Integer;
+  C      : Char;
+  ubuf   : integer;
+  Stream : TStringStream;
+begin
+  Stream := TStringStream.Create('');
+  I      := 1;
+  while I <= Length(S) do begin
+    C := S[I];
+    Inc(I);
+    if C = '\' then begin
+      C := S[I];
+      Inc(I);
+      case C of
+        'b': Stream.WriteString(#8);
+        't': Stream.WriteString(#9);
+        'n': Stream.WriteString(#10);
+        'f': Stream.WriteString(#12);
+        'r': Stream.WriteString(#13);
+        'u':
+        begin
+          if not TryStrToInt('$' + Copy(S, I, 4), ubuf) then
+            {raise} Exception.Create(format('Invalid unicode \u%s',[Copy(S, I, 4)]));
+          //Stream.WriteString(WideChar(ubuf));
+          Stream.WriteString(Chr(ubuf));
+          Inc2(I, 4);
+        end;
+        else Stream.WriteString(C);
+      end;
+    end
+    else Stream.WriteString(C);
+  end;
+  Result := Stream.DataString;
+  Stream.Free;
+end;
+
+
+function TJsonBaseEncode(const S: String): String;
+var
+  I            ,
+  UnicodeValue : Integer;
+  C            : Char;
+  Stream       : TStringStream;
+begin
+  Stream := TStringStream.Create('');
+  for I := 1 to Length(S) do begin
+    C := S[I];
+    case C of
+      '"': Stream.WriteString('\'+C);
+      '\': Stream.WriteString('\'+C);
+      '/': Stream.WriteString('\'+C);
+      #8: Stream.WriteString('\b');
+      #9: Stream.WriteString('\t');
+      #10: Stream.WriteString('\n');
+      #12: Stream.WriteString('\f');
+      #13: Stream.WriteString('\r');
+      else
+      //if (C < wideChr(32)) or (C > WideChar(127)) then
+       if (C < Chr(32)) or (C > Chr(127)) then begin
+        Stream.WriteString('\u');
+        UnicodeValue := Ord(C);
+        Stream.WriteString(lowercase(IntToHex((UnicodeValue and 61440) shr 12,1)));
+        Stream.WriteString(lowercase(IntToHex((UnicodeValue and 3840) shr 8,1)));
+        Stream.WriteString(lowercase(IntToHex((UnicodeValue and 240) shr 4,1)));
+        Stream.WriteString(lowercase(IntToHex((UnicodeValue and 15),1)));
+      end
+      else Stream.WriteString(C);
+    end;
+  end;
+  Result := Stream.DataString;
+  Stream.Free;
+end;  
+
+//https://stackoverflow.com/questions/56674535/decode-json-using-ujson-for-delphi
+//Decode json using uJson for delphi
+procedure jsonobjectTest_compare;
+// from 1243 unit uPSI_uJSON2;
+var
+  json: TJSONObject;   Jobj:  TJSONObject2;
+  Text: String;
+  i: Integer;
+begin
+  json := TJSONObject.create4(jsonnames);
+  for i:=0 to json.getJSONArray('Names').Length -1 do begin
+    Text := json.getJSONArray('Names').getJSONObject(i).optString('FirstName');
+    //...
+    writeln(text)
+  end;
+  
+  Jobj:= TJSONObject2.create(nil); 
+  jobj.parse(jsonnames);
+  for i:= 0 to Jobj.count+1 do          
+     writeln(jobj['Names'].asArray[i].asObject['FirstName'].asstring);    
+  jObj.Free; 
+  json.Free;
+ // writeln(text)
+end;
+
+procedure jsonobjecttest2;
+// from 1243 unit uPSI_uJSON2;
+//Exception: A TJSONObject must begin with "{" at character 3 of  [{   "FirstName": "Kim",
+var
+  json: TJSONArray;
+  Text: String;
+  i: Integer;
+begin
+  json := TJSONArray.create3(jsonnamesarray);
+  for i:=0 to json.Length -1 do begin
+    Text := json.getJSONObject(i).optString('FirstName');
+    //...
+    writeln(text)
+  end;
+  //writeln(__ObjectToJson( json));
+  json.Free;
+ // writeln(text)
+end;
+
+{===Helper routines==================================================}
+function GetRandomSeedX : integer;           
+var
+  Hash : integer;
+  SystemTime: TSystemTime;
+  G : integer;
+begin
+  {start with the tick count}
+  Hash := integer(GetTickCount);
+
+  {get the current time}
+  GetLocalTime(SystemTime);
+
+  {hash in the milliseconds}
+  Hash := (Hash shl 4) + SystemTime.wMilliseconds;
+  G := Hash and Integer($F0000000);
+  if (G <> 0) then
+    Hash := (Hash xor (G shr 24)) xor G;
+
+  {hash in the second}
+  Hash := (Hash shl 4) + SystemTime.wSecond;
+  G := Hash and Integer($F0000000);
+  if (G <> 0) then
+    Hash := (Hash xor (G shr 24)) xor G;
+
+  {hash in the minute}
+  Hash := (Hash shl 4) + SystemTime.wMinute;
+  G := Hash and Integer($F0000000);
+  if (G <> 0) then
+    Hash := (Hash xor (G shr 24)) xor G;
+
+  {hash in the hour}
+  Hash := (Hash shl 3) + SystemTime.wHour;
+  G := Hash and Integer($F0000000);
+  if (G <> 0) then
+    Hash := (Hash xor (G shr 24)) xor G;
+
+  {return the hash}
+  Result := Hash;
+end;
+{====================================================================}
+
+var aObject : TStrings;   atl: TLEDNumber;    //atd: TtdBasePRNG;
+    //AJsonDoc : TalJsonDocument;  info@hpu-law.ch -  <Robert@redcor.ch>
+    strand: TStRandomSystem;
+
+begin
+  RunJsonTest23;
+  //Function __ObjectToJson( aObject : TObject) : String');
+  aObject:= TStringlist.create;
+  aObject.add('first entry')
+  aObject.add('second remix of remax+ "{"x":5,"y":6}"')
+  aObject.add('{"x":5,"y":6}')
+  
+  writeln('obj2json'+__ObjectToJson( aObject));       
+  
+  aObject.free;
+  //jvNone, jvNull, jvString, jvNumber, jvBoolean, jvObject, jvArray )');
+  //ReadLn;
+  
+  ParseJSonValue;
+  
+  jsontester2;
+  
+  writeln(TJsonBaseEncode(stshort))
+  writeln(TJsonBasedEcode(TJsonBaseEncode(stshort)))
+  
+  writeln('jsonobjecttest {}:')
+  jsonobjectTest_compare;
+  writeln('jsonarraytest []:')
+  jsonobjecttest2;
+  
+  //MakeInt64( LowInt32, HiInt32 : Cardinal) : Int64')
+  
+  //EncodeURL
+  //DecodeEMailField AHeaderFieldArray chtmlSafeQuotedText /ctHTML MIMEContentTypeFromExtention
+   //flcDecodeEmptyLineTerminated (stshort)
+  
+  writeln(flcEncodeDotLineTerminated(stshort))
+  
+  //SelfTestInternetUtils;
+  
+  maxcalcF('1/(6^-1)');
+  
+  writeln(inttostr64(GetRandomSeedX));
+  
+  strand:= TStRandomSystem.create(42);     
+  writeln(floattostr(strand.asFloat))
+  writeln(floattostr(strand.asFloat))
+  writeln(itoa(strand.asInt(10000)))
+  writeln(itoa(strand.asInt(10000)))
+  
+  strand.Free;
+  
+  //AJsonDoc := TalJsonDocument.create;
+  //AjsonDoc.loadFromJsonString('{"data":{"results":[{"Branch":"ACCT590003"}]}}');
+  //writeln(AjsonDoc.childnode['data']['result'][0]['Branch'].text);
+  
+  //ALJSONToTStrings(const AJsonStr:AnsiString;aLst:TALStrings; const aNullStr:AnsiString;const aTrueStr:AnsiString; const aFalseStr: AnsiString)
+End.
+
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----
+
+Test Ref: //https://github.com/stievie/POAuth2/blob/master/uJson.pas
+
+https://github.com/TurboPack/SysTools/blob/master/source/StRandom.pas
+https://www.e-reading.life/bookreader.php/142043/Bucknall_-_The_Tomes_Of_Delphi_Algorithms_And_Data_Structures.pdf
+
+ref: TStRandomSystem = class(TStRandomBase)
+    private
+      FSeed : integer;
+    protected
+      procedure rsSetSeed(aValue : integer);
+    public
+      constructor Create(aSeed : integer);
+      function AsFloat : double; override;
+      property Seed : integer read FSeed write rsSetSeed;
+  end;
+
+(* === compile-time registration functions === *)
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJson(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJsonBase', 'TJson') do
+  with CL.AddClassN(CL.FindClass('TJsonBase'),'TJson') do begin
+    RegisterMethod('Constructor Create');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterMethod('Procedure Delete21( const Index : Integer);');
+    RegisterMethod('Procedure Delete22( const Name : String);');
+    RegisterMethod('Procedure Clear');
+    RegisterMethod('Function Get23( const Index : Integer) : TJsonValue;');
+    RegisterMethod('Function Get24( const Name : String) : TJsonValue;');
+    RegisterMethod('Function Put25( const Value : TJsonEmpty) : TJsonValue;');
+    RegisterMethod('Function Put26( const Value : TJsonNull) : TJsonValue;');
+    RegisterMethod('Function Put27( const Value : Boolean) : TJsonValue;');
+    RegisterMethod('Function Put28( const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Put29( const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Put30( const Value : String) : TJsonValue;');
+    RegisterMethod('Function Put31( const Value : TJsonArray2) : TJsonValue;');
+    RegisterMethod('Function Put32( const Value : TJsonObject2) : TJsonValue;');
+    RegisterMethod('Function Put33( const Value : TJsonValue) : TJsonValue;');
+    RegisterMethod('Function Put34( const Value : TJson) : TJsonValue;');
+    RegisterMethod('Function Putbool( const Value : Boolean) : TJsonValue;');
+    RegisterMethod('Function Putint( const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Putext( const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Putstr( const Value : String) : TJsonValue;');
+    RegisterMethod('Function Putarr( const Value : TJsonArray2) : TJsonValue;');
+    RegisterMethod('Function Putobj( const Value : TJsonObject2) : TJsonValue;');
+    RegisterMethod('Function Putval( const Value : TJsonValue) : TJsonValue;');
+    RegisterMethod('Function Putjson( const Value : TJson) : TJsonValue;');
+
+    RegisterMethod('Function Put35(const Name:String; const Value: TJsonEmpty) : TJsonValue;');
+    RegisterMethod('Function Put36(const Name: String; const Value : TJsonNull): TJsonValue;');
+    RegisterMethod('Function Put37( const Name : String; const Value : Boolean): TJsonValue;');
+    RegisterMethod('Function Put38( const Name : String; const Value : Integer): TJsonValue;');
+    RegisterMethod('Function Put39(const Name: String; const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Put40( const Name : String; const Value : String) : TJsonValue;');
+    RegisterMethod('Function Put41(const Name: String; const Value: TJsonArray2):TJsonValue;');
+    RegisterMethod('Function Put42(const Name:String;const Value:TJsonObject2) : TJsonValue;');
+    RegisterMethod('Function Put43(const Name: String; const Value: TJsonValue): TJsonValue;');
+    RegisterMethod('Function Put44( const Name : String; const Value : TJson) : TJsonValue;');
+    RegisterMethod('Function Put45( const Value : TJsonPair) : TJsonValue;');
+    RegisterProperty('StructType', 'TJsonStructType', iptr);
+    RegisterProperty('JsonObject', 'TJsonObject2', iptr);
+    RegisterProperty('JsonArray', 'TJsonArray2', iptr);
+    RegisterProperty('Count', 'Integer', iptr);
+    RegisterProperty('Values', 'TJsonValue String', iptr);
+    SetDefaultPropery('Values');
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJsonObject2(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJsonBase', 'TJsonObject') do
+  with CL.AddClassN(CL.FindClass('TJsonBase'),'TJsonObject2') do begin
+    RegisterMethod('Constructor Create( AOwner : TJsonBase)');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterMethod('Procedure Merge( Addition : TJsonObject2)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Function Add( const Name : String) : TJsonPair');
+    RegisterMethod('Function Insert( const Index : Integer; const Name : String) : TJsonPair');
+    RegisterMethod('Function Put9(const Name:String; const Value : TJsonEmpty) : TJsonValue;');
+    RegisterMethod('Function Put10(const Name:String; const Value : TJsonNull) : TJsonValue;');
+    RegisterMethod('Function Put11( const Name : String; const Value : Boolean) : TJsonValue;');
+    RegisterMethod('Function Put12( const Name : String; const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Put13(const Name: String; const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Put14( const Name : String; const Value : String) : TJsonValue;');
+    RegisterMethod('Function Put15(const Name: String;const Value: TJsonArray2) : TJsonValue;');
+    RegisterMethod('Function Put16(const Name:String;const Value: TJsonObject2): TJsonValue;');
+    RegisterMethod('Function Put17(const Name:String;const Value: TJsonValue): TJsonValue;');
+    RegisterMethod('Function Put18( const Value : TJsonPair) : TJsonValue;');
+    RegisterMethod('Function Putbool(const Name: String; const Value: Boolean) : TJsonValue;');
+    RegisterMethod('Function Putint(const Name: String; const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Putext(const Name:String; const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Putstr( const Name : String; const Value : String): TJsonValue;');
+    RegisterMethod('Function Putarr(const Name:String;const Value:TJsonArray2): TJsonValue;');
+    RegisterMethod('Function Putobj(const Name:String; const Value:TJsonObject2):TJsonValue;');
+    RegisterMethod('Function Putval(const Name:String; const Value:TJsonValue) : TJsonValue;');
+    RegisterMethod('Function Putpair( const Value : TJsonPair) : TJsonValue;');
+
+    RegisterMethod('Function Find( const Name : String) : Integer');
+    RegisterMethod('Procedure Delete19( const Index : Integer);');
+    RegisterMethod('Procedure Delete20( const Name : String);');
+    RegisterMethod('Procedure Clear');
+    RegisterProperty('Count', 'Integer', iptr);
+    RegisterProperty('Items', 'TJsonPair Integer', iptr);
+    RegisterProperty('Values', 'TJsonValue String', iptr);
+    SetDefaultPropery('Values');
+    RegisterProperty('AutoAdd', 'Boolean', iptrw);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJsonPair(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJsonBase', 'TJsonPair') do
+  with CL.AddClassN(CL.FindClass('TJsonBase'),'TJsonPair') do begin
+    RegisterMethod('Constructor Create( AOwner : TJsonBase; const AName : String)');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterProperty('Name', 'String', iptrw);
+    RegisterProperty('Value', 'TJsonValue', iptr);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJsonArray2(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJsonBase', 'TJsonArray2') do
+  with CL.AddClassN(CL.FindClass('TJsonBase'),'TJsonArray2') do begin
+    RegisterMethod('Constructor Create( AOwner : TJsonBase)');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterMethod('Procedure Merge( Addition : TJsonArray2)');
+    RegisterMethod('Function Add : TJsonValue');
+    RegisterMethod('Function Insert( const Index : Integer) : TJsonValue');
+    RegisterMethod('Function Put0( const Value : TJsonEmpty) : TJsonValue;');
+    RegisterMethod('Function Put1( const Value : TJsonNull) : TJsonValue;');
+    RegisterMethod('Function Put2( const Value : Boolean) : TJsonValue;');
+    RegisterMethod('Function Put3( const Value : Integer) : TJsonValue;');
+    RegisterMethod('Function Put4( const Value : Extended) : TJsonValue;');
+    RegisterMethod('Function Put5( const Value : String) : TJsonValue;');
+    RegisterMethod('Function Put6( const Value : TJsonArray2) : TJsonValue;');
+    RegisterMethod('Function Put7( const Value : TJsonObject2) : TJsonValue;');
+    RegisterMethod('Function Put8( const Value : TJsonValue) : TJsonValue;');
+    RegisterMethod('Procedure Delete( const Index : Integer)');
+    RegisterMethod('Procedure Clear');
+    RegisterProperty('Count', 'Integer', iptr);
+    RegisterProperty('Items', 'TJsonValue Integer', iptr);
+    SetDefaultPropery('Items');
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJsonValue(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJsonBase', 'TJsonValue') do
+  with CL.AddClassN(CL.FindClass('TJsonBase'),'TJsonValue') do begin
+    RegisterMethod('Constructor Create( AOwner : TJsonBase)');
+   RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterMethod('Procedure Clear');
+    RegisterProperty('ValueType', 'TJsonValueType', iptr);
+    RegisterProperty('AsString', 'String', iptrw);
+    RegisterProperty('AsNumber', 'Extended', iptrw);
+    RegisterProperty('AsInteger', 'Integer', iptrw);
+    RegisterProperty('AsBoolean', 'Boolean', iptrw);
+    RegisterProperty('AsObject', 'TJsonObject2', iptrw);
+    RegisterProperty('AsArray', 'TJsonArray2', iptrw);
+    RegisterProperty('IsNull', 'Boolean', iptrw);
+    RegisterProperty('IsEmpty', 'Boolean', iptrw);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJsonBase(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TObject', 'TJsonBase') do
+  with CL.AddClassN(CL.FindClass('TObject'),'TJsonBase') do  begin
+    RegisterMethod('Constructor Create( AOwner : TJsonBase)');
+    RegisterMethod('Procedure Free');
+    RegisterMethod('Procedure Parse( JsonString : String)');
+    RegisterMethod('Function Stringify : String');
+    RegisterMethod('Procedure Assign( Source : TJsonBase)');
+    RegisterMethod('Function Encode( const S : String) : String');
+    RegisterMethod('Function Decode( const S : String) : String');
+    RegisterMethod('Procedure Split(const S:String;const Delimiter:Char;Strings : TStrings)');
+    RegisterMethod('Function IsJsonObject( const S : String) : Boolean');
+    RegisterMethod('Function IsJsonArray( const S : String) : Boolean');
+    RegisterMethod('Function IsJsonString( const S : String) : Boolean');
+    RegisterMethod('Function IsJsonNumber( const S : String) : Boolean');
+    RegisterMethod('Function IsJsonBoolean( const S : String) : Boolean');
+    RegisterMethod('Function IsJsonNull( const S : String) : Boolean');
+    RegisterMethod('Function AnalyzeJsonValueType( const S : String) : TJsonValueType');
+    RegisterProperty('Owner', 'TJsonBase', iptr);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_Jsons(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('TJsonValueType','(jvNone,jvNull,jvString,jvNumber,jvBoolean,jvObject,jvArray )');
+  CL.AddTypeS('TJsonStructType', '( jsNone, jsArray, jsObject )');
+  CL.AddTypeS('TJsonNull', '( jsnull2 )');
+  CL.AddTypeS('TJsonEmpty', '( jsempty )');
+  SIRegister_TJsonBase(CL);
+  CL.AddClassN(CL.FindClass('TOBJECT'),'TJsonObject2');
+  CL.AddClassN(CL.FindClass('TOBJECT'),'TJsonArray2');
+  SIRegister_TJsonValue(CL);
+  SIRegister_TJsonArray2(CL);
+  SIRegister_TJsonPair(CL);
+  SIRegister_TJsonObject2(CL);
+  SIRegister_TJson(CL);
+end;
+
+Corrections: 
+
+page 1: change the title: BBC News Sentiment Analysis  or
+                          Sentiment of BBC News
+
+page 1: of the text and its categories, the classification   //instead lassification
+page 2: delphi4json library to parse the return.             //instead psear
+page 3: Trump's valse verkiezings fraude claims lopen dood     //more spaces 
+
+maXbox es una aplicación de motor de script todo en uno: impulsada por Delphi
+maXbox es un estudio de script de código abierto con un lenguaje de script Object Pascal. Según el desarrollador, “es un motor de herramientas de script de código abierto, un compilador y una biblioteca de código fuente, todo en uno. ¡Úselo para diseñar y codificar sus scripts! Código puro para Object Pascal Scripting. Los principios rectores son la simplicidad y la reducción de complejidad al máximo. La aplicación es autocontenida “lista para usar” sin necesidad de instalación o registro “.
+maXbox est une application de moteur de script tout-en-un: optimisée par Delphi
+maXbox est un studio de script open source avec un langage de script Object Pascal. Selon le développeur, « c’est un moteur d’outil de script open-source, un compilateur et une bibliothèque source, tout en un. Utilisez-le pour concevoir et coder vos scripts! Pure Code pour Object Pascal Scripting. Les principes directeurs sont la simplicité et la réduction de complexité au maximum. L’application est autonome « prête à l’emploi » sans besoin d’installation ou d’enregistrement. « 
+
+Marc Leisi
+
+ page 10: welche keine vertiefetn Kenntnisse in der Informatik haben
+      24: Model View Controller) werden von vom Framework voregegeben.
+ 
+ page 18: Abbildung 11: Use-Case Diagramm
+   Nimmst du das Löschprotokoll nun als extend UC auf?
+   
+  page 27: erfolgen mittels HTTP-POST [53]
+  
+  brauchst du den POST synchron oder asynchron?
+  
+  Using async = false in Open() is not always recommended, but for a few small requests this can be ok. Remember that the script will NOT continue to execute, until the server response is ready. If the server is busy or slow, the application will hang or stop.
+ 
+ Kannst du die main readme noch ergänzen
+ README.md
+README
+
+Schwerfällig zu lesen, du erwähnst zigfach Applikation Agathon LogAnalyzer , kannst du hier eine Abkürzung einführen wie Agathon LA, ALA  oder sowas?
+
+Brauchst du die polyfills für die verschiedenen Browser oder ist das keine Anforderung?
+
+polyfills.ts
+
+weekdays = ‘Sunday’, ‘Monday’, ‘Tuesday’, ‘Wednesday’, ‘Thursday’, ‘Friday’, ‘Saturday’
+
+Immutability offers a lot of useful applications to different sensitive tasks we do in a network centred environment where we allow for parallel processing. By creating immutable objects, you seal the values and ensure that no threads can invoke overwrite/update to your data. This is also useful in situations where you would like to write a piece of code that cannot be modified. For example, a debug code that attempts to find the value of an immutable object.
+
+Watch outs:  Non transitive nature of Immutability:
+https://www.mygreatlearning.com/blog/understanding-mutable-and-immutable-in-python/
+
+What is the sum of every positive integers ?
+
+https://plus.maths.org/content/infinity-or-just-112
+
+1+2+3+4+5+6+...=?
+inf
+S n+1=    -1/12
+n=0
+ it seems strange, because it's a negative number, and it's not an integer; but that result is absolutely true.
+ The Ramanujan Summation: 1 + 2 + 3 + ? + inf. = -1/12?
+ 
+ diverges to infinity. Or, to put it more loosely, that the sum is equal to infinity. 
+ 
+ >>> sum(i for i in range(100001))
+5000050000
+ 
+All the World's Coronavirus fits in a Coke Can. 
+ 
+ 
+The Golden Ratio (why it is so irrational) - Numberphile
+0:00 / 15:12
+The Golden Ratio (why it is so irrational) - Numberphile
+2,874,912 views 2 years ago
+Catch a more in-depth interview with Ben Sparks on our Numberphile Podcast: https://youtu.be/-tGni9ObJWk
+Check out Brilliant (and get 20% off) by clicking https://brilliant.org/numberphile
+More links & stuff in full description below ???
+
+Golden seeds limited edition T-Shirt: https://teespring.com/NP-Seeds
+
+More Golden Ratio stuff: http://bit.ly/Golden_Ratio
+More Ben Sparks Numberphile videos: http://bit.ly/Sparks_Playlist
+
+Ben's Twitter: https://twitter.com/SparksMaths
+Ben's website: www.bensparks.co.uk
+Geogebra file Ben used: https://www.geogebra.org/m/YThycjQK#m...
+
+Note on this video: Ben uses "one over a number" quite often during the video to make a fraction of a turn between 0 and 1, but the same effects apply if you turn more than a complete turn (e.g. sqrt(2) = approximately 1.414... of a turn, i.e. 1 whole turn and 0.414... of a further turn). 
+
+Numberphile is supported by the Mathematical Sciences Research Institute (MSRI): http://bit.ly/MSRINumberphile
+
+We are also supported by Science Sandbox, a Simons Foundation initiative dedicated to engaging everyone with the process of science. https://www.simonsfoundation.org/outr...
+
+And support from Math For America - https://www.mathforamerica.org/
+
+NUMBERPHILE
+Website: http://www.numberphile.com/
+
+ 
+

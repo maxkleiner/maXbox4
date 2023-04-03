@@ -1,0 +1,426 @@
+unit XMLUtils_mX4;      // not finished yet..
+
+interface
+
+{uses
+  System.Classes, Winapi.msxml;   }
+
+type
+  TStoreFormStruct = record
+    Width: Integer;
+    Height: Integer;
+    Left: Integer;
+    Top: Integer;
+    Maximized: Boolean;
+  end;
+
+function GetArrayIndexByName(const AName: string; const Arr: array of string): Integer;
+procedure StringsToXML(AStrings: TStrings; ANode: TXmlNodesimple);   // IDOMNode - TDOMNode
+procedure XMLToStrings(AStrings: TStrings; ANode: TXmlNodesimple);
+//procedure FormToXML(const AStore: TStoreFormStruct; ANode: TXmlNodesimple);
+//procedure XMLToForm(var AStore: TStoreFormStruct; ANode: TXmlNodesimple);
+//procedure SaveXMLToFile(const AFileName: string; ADomDoc: TXMLDocument);
+procedure AddCDataNodeName(const AName: string);
+
+implementation
+
+//uses
+  //SysUtils, JobConsts, Windows;
+
+const
+  CDataXMLFormat = '<xsl:output indent="yes" method="xml" encoding="UTF-8" cdata-section-elements="%s"/>';
+  XMLFormat = '<?xml version="1.0" encoding="UTF-8"?>' +
+              '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">' +
+              '  <xsl:output indent="yes" method="xml" encoding="UTF-8"/> %s ' +
+              '    <xsl:template match="/ | @* | node()">' +
+              '  <xsl:copy>' +
+              '  <xsl:apply-templates select="@* | node()"/>' +
+              '    </xsl:copy>' +
+              '  </xsl:template>' +
+              '</xsl:stylesheet>';
+              
+ PI1000=             
+              
+ '3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724587006606315588174881520920962829254091715364367892590360011330530548820466521384146951941511609433057270365759591953092186117381932611793105118548074462379962749567351885752724891227938183011949129833673362440656643086021394946395224737190702179860943702770539217176293176752384674818467669405132000568127145263560827785771342757789609173637178721468440901224953430146549585371050792279689258923542019956112129021960864034418159813629774771309960518707211349999998372978049951059731732816096318595024459455346908302642522308253344685035261931188171010003137838752886587533208381420617177669147303598253490428755468731159562863882353787593751957781857780532171226806613001927876611195909216420199';             
+
+var
+  CDataNodeNames: TStrings; // = nil;
+
+procedure AddCDataNodeName(const AName: string);
+begin
+  if (CDataNodeNames = nil) then
+  begin
+    CDataNodeNames := TStringList.Create();
+  end;
+  if (CDataNodeNames.IndexOf(AName) < 0) then
+  begin
+    CDataNodeNames.Add(AName);
+  end;
+end;
+
+(*              
+procedure SaveXMLToFile(const AFileName: string; ADomDoc: IXMLDOMDocument);
+  function GetXMLFormat: string;
+  var
+    i: Integer;
+  begin
+    Result := '';
+    if (CDataNodeNames <> nil) then
+    begin
+      for i := 0 to CDataNodeNames.Count - 1 do
+      begin
+        Result := Result + #32 + Format(CDataXMLFormat, [CDataNodeNames[i]]);
+      end;
+    end;
+    Result := Format(XMLFormat, [Result]);
+  end;
+  
+var
+  b: Boolean;
+  TransDoc, ResDoc: IXMLDOMDocument;
+begin
+  TransDoc := CoDOMDocument.Create();
+  ResDoc := CoDOMDocument.Create();
+  TransDoc.loadXML(GetXMLFormat());
+  try
+    ADomDoc.transformNodeToObject(TransDoc, ResDoc);
+    b := (ResDoc.xml <> '');
+  except
+    b := False;
+  end;
+  if b then
+  begin
+    ResDoc.save(AFileName);
+  end else
+  begin
+    ADomDoc.save(AFileName);
+  end;
+end; *)
+
+function GetArrayIndexByName(const AName: string; const Arr: array of string): Integer;
+begin
+  for Result := Low(Arr) to High(Arr) do
+  begin
+    if (CompareText(Arr[Result], AName) = 0) then Exit;
+  end;
+  Result := -1;
+end;
+
+procedure StringsToXML(AStrings: TStrings; ANode: TXmlNodesimple);
+var
+  ChildNode: TXmlNodesimple; //IXMLDOMNode;
+begin
+  //ChildNode := ANode.ownerDocument.createCDATASection(AStrings.Text);
+  //ANode.appendChild(ChildNode);
+end;
+
+procedure XMLToStrings(AStrings: TStrings; ANode: TXmlNodesimple);
+begin
+  AStrings.Text := ANode.text;
+end;
+
+(*
+procedure FormToXML(const AStore: TStoreFormStruct; ANode: TXmlNodesimple);
+var
+  ChildNode: IXMLDOMNode;
+begin
+  ChildNode := ANode.ownerDocument.createElement('Height');
+  ANode.appendChild(ChildNode);
+  ChildNode.text := IntToStr(AStore.Height);
+
+  ChildNode := ANode.ownerDocument.createElement('Width');
+  ANode.appendChild(ChildNode);
+  ChildNode.text := IntToStr(AStore.Width);
+
+  ChildNode := ANode.ownerDocument.createElement('Left');
+  ANode.appendChild(ChildNode);
+  ChildNode.text := IntToStr(AStore.Left);
+
+  ChildNode := ANode.ownerDocument.createElement('Top');
+  ANode.appendChild(ChildNode);
+  ChildNode.text := IntToStr(AStore.Top);
+
+  ChildNode := ANode.ownerDocument.createElement('Maximized');
+  ANode.appendChild(ChildNode);
+  ChildNode.text := cStoreBoolean[AStore.Maximized];
+end;  *)
+
+(*
+procedure XMLToForm(var AStore: TStoreFormStruct; ANode: IXMLDOMNode);
+var
+  v: Integer;
+  ChildNode: IXMLDOMNode;
+begin
+  ZeroMemory(@AStore, SizeOf(AStore));
+
+  ChildNode := ANode.selectSingleNode('Height');
+  if ChildNode <> nil then
+  begin
+    AStore.Height := StrToIntDef(ChildNode.text, 0);
+  end;
+
+  ChildNode := ANode.selectSingleNode('Width');
+  if ChildNode <> nil then
+  begin
+    AStore.Width := StrToIntDef(ChildNode.text, 0);
+  end;
+
+  ChildNode := ANode.selectSingleNode('Left');
+  if ChildNode <> nil then
+  begin
+    AStore.Left := StrToIntDef(ChildNode.text, 0);
+  end;
+
+  ChildNode := ANode.selectSingleNode('Top');
+  if ChildNode <> nil then
+  begin
+    AStore.Top := StrToIntDef(ChildNode.text, 0);
+  end;
+
+  ChildNode := ANode.selectSingleNode('Maximized');
+  if ChildNode <> nil then
+  begin
+    v := GetArrayIndexByName(ChildNode.text, cStoreBoolean);
+    if (v > -1) then AStore.Maximized := Boolean(v);
+  end;
+end;    *)
+
+function CreateCompactGuidStr2: string;
+var
+  LIndex: Integer;
+  LBytes: TBytes;
+  NewGUID: TGUID;
+begin
+  Result := '';
+  //LBytes := TGUID.NewGuid.ToByteArray();
+   NewGUID := StringToGUID(CreateClassID);
+   //LBytes:= TBytes(GuidtoString(NewGuid));
+   //StrToBytes(const Value:Str): TBytes;
+    LBytes:= StrToBytes(GuidtoString(NewGuid));
+  for LIndex := 0 to Length(LBytes)-1 do
+    Result := Result + IntToHex(LBytes[LIndex], 2);
+end;
+
+
+function CreateCompactGuidStr3: string;
+var
+  LIndex: Integer;
+  LBytes: TBytes;
+  NewGUID: TGUID;
+begin
+  Result := '';
+  //LBytes := TGUID.NewGuid.ToByteArray();
+   NewGUID := deltNewGUID;
+   //LBytes:= TBytes(GuidtoString(NewGuid));
+   //StrToBytes(const Value:Str): TBytes;
+    LBytes:= StrToBytes(GuidtoString(NewGuid));
+  for LIndex := 0 to Length(LBytes)-1 do
+    Result := Result + IntToHex(LBytes[LIndex], 2);
+end;
+
+function CreateCompactGuidStr4: string;
+var
+  LIndex: Integer;
+  LBytes: TBytes;
+  NewGUID: TGUID;
+begin
+  Result := '';
+  //LBytes := TGUID.NewGuid.ToByteArray();
+   NewGUID := deltNewGUID;
+   //LBytes:= TBytes(GuidtoString(NewGuid));
+   //StrToBytes(const Value:Str): TBytes;
+   result:= GuidtoString(NewGuid);
+ 
+end;
+
+function StreamToBytes2(const ASource: TStream): TBytes;
+begin
+  SetLength(Result, ASource.Size);
+  ASource.Position := 0;
+  //if ASource.Read(stringtostream(Result), ASource.Size) <> ASource.Size then
+    //raise Exception.Create('Unable to copy all content to TBytes');
+   // asource.readbytearray(result, ASource.Size);
+      //asource.readAB(result, ASource.Size);
+end;
+
+//BytesSetLengthAndZero( var V : TBytes; const NewLength : NativeInt)');
+
+Procedure SetArrayLength2Byte(var arr: TByteArray; asize1: Integer);
+var i: Integer;
+    ab: array of byte;
+begin setlength(arr, asize1);
+   //for i:= 0 to asize1-1 do SetLength(arr[i], asize2);
+end;
+
+function StreamToBytes3(const ASource: TStream): TBytes; //array of byte; //TByteArray;
+var buffstr:String;
+begin
+  writeln('len '+itoa(asource.size));
+  //SetLength(Result, ASource.Size);
+  //BytesSetLengthAndZero(Result, ASource.Size);
+  //SetArrayLength2Byte(Result, ASource.Size);
+  // for it:= 0 to  ASource.Size-1 do result[it]:= 0;
+  
+  ASource.Position := 0;
+  SetLength(buffstr,ASource.Size);
+  //for it:= 1 to ASource.Size-1 do buffstr[it]:= '0'; //(ord(buffstr[1])));
+  //if ASource.Read(stringtostream(Result), ASource.Size) <> ASource.Size then
+    //raise Exception.Create('Unable to copy all content to TBytes');
+   // asource.readbytearray(result, ASource.Size);
+      //asource.readbytearray(result, ASource.Size);
+      asource.read(buffstr, ASource.Size);
+    writeln(buffstr)  
+    result:= strtobytes(buffstr);
+end;
+
+ var Stream: TStringStream;   mybytes: TBytes;
+
+initialization
+
+ AddCDataNodeName('const AName: string');
+ writeln(CreateCompactGuidStr2);
+ writeln(CreateCompactGuidStr);
+ writeln(CreateCompactGuidStr3);
+ writeln(CreateCompactGuidStr4);
+ 
+  Stream:= TStringStream.Create('this is my streambox!');
+  writeln(Stream.DataString);
+ 
+ //Func StreamToByteArray(Stream: TStream): TBytes;
+   writeln(Bytestostr(streamToByteArray(Stream)));
+   writeln(Bytestostr(streamToByteArray(Stream)));
+    writeln((streamToByte(Stream)));
+ //Function StreamToBytes( const ASource : TStream) : TBytes');
+   writeln(chr(33))
+ 
+   Stream.Position := 0;
+   writeln(Bytestostr(StreamToBytes2(stream)));
+     writeln(Bytestostr(GetBytes('value:String thing')));
+     writeln('3back: '+Bytestostr(StreamToBytes3(stream)));
+      writeln('3len: '+itoa(length(Bytestostr(StreamToBytes3(stream)))));
+ 
+   //writeln(bytestostr(StreamToBytes(stream)));
+   
+   SetLength(mybytes, 400);
+   writeln(itoa(length(mybytes)));
+ 
+  //stream.free;
+  
+    maxCalcF('SqRT(5)');
+    //2.236067977499789696?,
+    writeln(Format('%.18f ',[sqrt(5)]));
+    
+    with TBigfloat.Create1(150) do begin
+      assign5(5);
+      sqrt;
+      writeln(tostring(normal)) ;
+      //https://www.wolframalpha.com/input/?i=pi+to+1000+digits
+      piconst(1000)
+      writeln(tostring(normal)) ;
+      writeln('sha test1: '+sha1tohex(synsha1(tostring(normal))));
+      writeln('sha test2: '+sha1tohex(synsha1(PI1000)));
+      writeln('zero count: '+ itoa(StrCharCount(tostring(normal), '0')));
+      for it:= 0 to 9 do 
+      writeln(itoa(it)+' count: '+ itoa(StrCount(tostring(normal),+itoa(it)[1])));
+      for it:= 0 to 9 do 
+        FormatF('%d count: %d',[it,StrCount(toString(normal),+itoa(it)[1])]);
+      
+      //StrCountChar(const ASource:str;const c:Char;const AStartIdx:Card):Card;
+      writeln('3 count: '+ itoa(StrCountChar(tostring(normal), '3',1)));
+      free;
+    end;  
+    
+    maXcalcF('((9/10)^30)*100')
+  
+
+
+finalization
+  CDataNodeNames.Free();
+  writeln(objtostr(stream));
+  stream.free;
+  //writeln(objtostr(stream));
+  stream:= Nil;
+  writeln(objtostr(stream));
+
+end.
+
+ref: zero count: 968
+0 count: 968
+1 count: 1026
+2 count: 1022
+3 count: 976
+4 count: 1012
+5 count: 1047
+6 count: 1023
+7 count: 971
+8 count: 948
+9 count: 1014
+3 count: 976
+TStringStream@08987660
+nil
+ mX4 executed: 07/01/2022 22:48:18  Runtime: 0:0:54.150  Memload: 48% use
+PascalScript maXbox4 - RemObjects & SynEdit
+
+
+
+function StreamToBytes(const ASource: TStream): TBytes;
+begin
+  SetLength(Result, ASource.Size);
+  ASource.Position := 0;
+  if ASource.Read(Result, ASource.Size) <> ASource.Size then
+    raise Exception.Create('Unable to copy all content to TBytes');
+end;
+
+    Why doesn't Pi have a 0 in its first 30 digits?
+
+For the same reason that e
+doesn't have a 6
+
+in its first 20 digits.
+
+Or that the golden ratio, ?
+, doesn't have a 5
+
+in its first 20 digits.
+
+Or that e
+repeats the same four digits (1828) in its first ten digits (something that, in some sense, is far more unlikely than no zero in the first thirty digits of p ).
+
+There is nothing particularly interesting in the digits of the decimal representation of irrational numbers. Or in the digits to any whole number base.
+
+There is even less of interest in the decimal digits of p
+
+as a particular transcendental number, except that so many people think there is something special about it.
+
+Brought to you by the Campaign to Demystify p
+: there is nothing mystical about p. 
+
+There is nothing particularly interesting in the digits of the decimal representation of irrational numbers. Or in the digits to any whole number base.
+
+especially
+
+
+Let’s assume (as seems likely but is not proven at present) that p is a Normal Number[1] . Amongst other things, this means that the frequency of occurrence of any digit in its decimal expansion is precisely 1/10. This assumption is in accord with statistical analysis of many trillions of decimal places of p
+
+and so is not an unreasonable one to take from a practical point of view.
+
+We can use this to calculate the probability that there are no zeros in the first thirty digits of p
+. In order for this to happen, zero cannot appear in the first place, a probability of 9/10 and also not in the second place, also a probability of 9/10
+
+and so on. We get the overall probability to be:
+
+(9/10)^30=9301030˜4.24%
+
+So it is unlikely that no zero appears in the first thirty digits, but not exactly astronomically unlikely. It is only slightly less likely than a human picked at random being a left handed man.
+
+
+    def is_prime(n): 
+    	if n>1: 
+    		divs=[k for k in range(2,n) if n%k==0] 
+    		return len(divs)==0  
+    	else: 
+    		return False 
+    		 
+    def nth_prime(n): 
+    	primes=[p for p in range(n*n+2) if is_prime(p)] 
+    	return primes[n-1] 

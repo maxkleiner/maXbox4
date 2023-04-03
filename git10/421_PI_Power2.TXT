@@ -1,0 +1,982 @@
+PROGRAM PI_Powertools;      //lab state - workaround
+// dont be a tool #locs:642
+//#sign breitsch: BREITSCH-BOX: 02/04/2023 18:10:25 
+//#tech>perf: 0:0:8.859 threads: 12 192.168.56.1 18:10:25 4.7.6.20
+//008.2013  008.2013 
+//C:\maxbook\maxbox3\mx39\maxbox3\maxbox3\
+
+//uses dws_logo2.pas
+
+CONST 
+//<Constant declarations> 
+  TEXTOUT = 'hi world of event stream stack';
+  anzahl=8;
+  myURL = 'http://www.kleiner.ch/kleiner/download/G9_japan.mp3';
+  mcalc= 45 div 6;
+  LEFTC= 500;
+  CUBIC = 3;
+ 
+{const 
+   dws_logo_bmp : array[0..21717] of byte = (
+   $42,$4D,$D6,$54,$00,$00,$00,$00,$00,$00,$76,$00,$00,$00,$28,$00,$00,$00,$F0,$00);}
+
+
+{TYPE <Type declarations> <lib} 
+VAR 
+//<Variable declarations>
+  i, speicher: integer;
+  //biglist: TStringList;
+  mp3song1: string;
+  mpt: TPerfTimer; 
+  //ab: TBitSet;
+  ap: TPort;
+
+type
+ TVInfo = record
+   serial: dword;
+   mlength: dword;
+   flags: dword;
+   vname: array[0..255] of char;
+   filesystem: array[0..255] of char;
+ end;
+
+
+function setColor(r,g,b: Byte): boolean;
+ begin
+   result:= false;
+   memo2.color:= RGB(r,g,b);
+   result:= true;
+ end; //return  
+ 
+function getProcessList2: TStrings;
+var
+  t  : THandle;
+  pe : TProcessEntry32;
+  HasProcess: boolean;
+  ProcessList : TIntegerList;
+  mylist: TStringlist;
+  i: integer;
+  tmps: string;
+begin
+  //LoadText;
+  mylist:= TStringlist.create;
+  ProcessList:= TIntegerList.Create;
+  t:= CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
+  try
+    pe.dwSize:= SizeOf(pe);
+    HasProcess := Process32First(t, pe);
+    while HasProcess do begin
+      //mylist.Add(pe.szExeFile);
+      //mylist.Add(pe.szExeFile[1]);
+      for i:= 0 to 15 do tmps:= tmps+ pe.szExeFile[i];  //overflow tester
+      //tmps:= pe.szExeFile[i];
+      mylist.Add(strpas(tmps));
+      tmps:='';
+      //ProcessCombo.Items.Add(pe.szExeFile);
+      ProcessList.Add((pe.th32ProcessId));
+      HasProcess:= Process32Next(t, pe);
+    end;
+    result:= mylist;
+    //ProcessCombo.ItemIndex:= 0;
+  finally
+    CloseHandle(t);
+    //mylist.free;
+    //bitaddr
+  end;
+end;
+
+ 
+function IconToBitmap(Ico: HICON): TBitmap;
+var
+  Pic: TPicture;
+begin
+  Pic:= TPicture.Create;
+  try
+    Pic.Icon.Handle:= Ico;
+    Result:= TBitmap.Create;
+    Result.Height:= Pic.Icon.Height;
+    Result.Width:= Pic.Icon.Width;
+    Result.Canvas.Draw(0,0, Pic.Icon);
+  finally
+    Pic.Free;
+  end;
+end;
+
+
+
+procedure TForm1_btnPicloadClick(Sender: TObject);
+var mybitmap: TBitmap;
+    bitStream: TStream;
+    image1: TImage;
+begin
+  //mybitmap.LoadFromFile('dws_logo.bmp'); for the mortals
+  mybitmap:= TBitmap.Create;
+  bitStream:= TMemoryStream.Create;
+  try
+    //bitStream.Writebuffer(dws_logo_bmp, sizeof(dws_logo_bmp));
+    bitStream.Position:= 0;
+    mybitmap.LoadFromStream(bitStream);
+    if assigned(mybitmap) then begin
+      image1.Picture.assign(mybitmap);
+      image1.update;
+    end;
+  finally
+    bitStream.Free;
+    mybitmap.Free;
+  end;
+end;
+
+{Pi is an irrational number (a number that repeats and never ends). While it has been calculated to trillions of decimal places, most of us only need a few decimal places. Pi can be found using many methods, including complex formulas discovered by mathematicians. One such formula is Leibniz's formula, which is Pi = 4/1 -- 4/3 + 4/5 -- 4/7 + 4/9 + 4/11 + ... . The simplest way of calculating pi is to divide a circle's circumference by its diameter.
+
+Read more: http://www.ehow.com/how_5157582_calculate-pi.html#ixzz2lJVPbnTm}
+
+function computePI: float;
+var i: integer;
+    switch: bool;
+begin
+  switch:= false;
+  for i:= 1 to $E1011 do begin
+    switch:= Not switch;
+    if switch then
+      result:= result + 4/i
+    else 
+      result:= result - 4/i; 
+    inc(i);
+  end;
+end;   
+
+function circleCircumference(diameter: double): double;
+begin
+  result:= diameter * PI;
+end;  
+
+function circleArea(diameter: double): double;
+begin
+  result:= power(circleCircumference(diameter)/2/PI,2) * PI;
+end;  
+
+function circleArea2(diameter: double): double;
+begin
+  result:= Power(circleCircumference(diameter)/(2*PI),2) * PI;
+end;  
+
+function circleArea1(diameter: double): double;
+begin
+  result:= Power(diameter/2,2) * PI;
+end;  
+
+ function SphereSurface(diameter: double): double;
+ begin
+   result:= 4 * circleArea(diameter);
+ end;
+
+ function SphereVolume(diameter: double): double;
+ begin
+   result:= 4/3 * circleArea(diameter)*(diameter/2);
+ end;
+ 
+ function SphereVolume2(diameter: double): double;
+ begin
+   result:= 4/3*PI * Power(diameter/2,3);
+ end;
+
+ function SphereVolumeR2(radius: double): double;
+ begin
+   result:= 4/CUBIC * PI*Power(radius,CUBIC);
+ end;
+
+
+//Refactor to Radius ***************************************
+
+function circleCircumR(radius: double): double;
+begin
+  result:= 2*radius * PI;
+end;  
+
+function circleAreaR(radius: double): double;
+begin
+  //Area: r^2*PI
+  result:= Power(circleCircumR(radius)/PI/2,2) * PI;
+end;  
+
+function SphereSurfaceR(radius: double): double;
+begin
+  result:= 4*circleAreaR(radius);
+end;
+
+function SphereVolumeR(radius: double): double;
+begin
+  result:= 4/CUBIC * circleAreaR(radius)*radius;
+end;
+
+//Refactor to Radius RND***********************************
+ 
+ 
+
+
+
+  var 
+    dbform: TForm;
+
+procedure picircleloop;
+var offbase, zi: integer;
+begin
+   offbase:= 100;
+   
+   for i:= 2 to 12 do 
+   with TShape.Create(dbForm) do begin
+      //offbase:= offbase -zi;
+      
+      //offbase:= offbase-round(sqrt(offbase)-SQRT(offbase))
+      offbase:= offbase-round(sqrt(offbase)-PI)
+    
+      writeln(inttostr(offbase))
+     // zi:= zi -5
+      parent:= dbForm;
+      setbounds(round(400+offbase),
+                 round(50+offbase),
+      round(400/i),round(400/i));
+      //sendToback;
+      //onmousedown
+      //boundsrect
+      shape:= stcircle;
+      brush.color:= random(clgreen);
+      pen.width:= 1;
+    //borderStyle:= bsNone;
+    end;
+end; 
+
+
+procedure DrawCirclesOnTopofIT_3(posx,posy, circsize, howmany, diff: integer;
+                                    penwidth: byte; aform: TForm);
+var icnt: smallint;
+begin
+  for icnt:= 1 to howmany do begin
+    circsize:= circsize-diff;
+    posx:= posx+diff div 2;
+    posy:= posy+diff div 2;
+    with TShape.Create(aform) do begin
+      Parent:= aform;
+      Setbounds(posx,posy, circsize,circsize);
+      Shape:= stCircle;
+      Pen.width:= penwidth;
+      Brush.color:= random(clblue);
+    end;
+  end;  
+end; 
+
+
+
+procedure DrawCirclesOnTopofIT_2(posx, posy, circlesize, howmany, delta: integer);
+begin
+   for i:= 1 to howmany do 
+   with TShape.Create(dbForm) do begin
+   circlesize:= circlesize-delta;
+   posx:= posx+delta div 2;
+   posy:= posy+delta div 2;
+      parent:= dbForm;
+      setbounds(posx, posy, circlesize,circlesize);
+      //sendToback;
+      shape:= stcircle;
+      brush.color:= random(clblue);
+      pen.width:= 3;
+    //borderStyle:= bsNone;
+    end;
+end; 
+
+
+procedure DrawCirclesOnTopofIT(posx, posy, circlesize, howmany: integer);
+begin
+   //circlesize:= 400; 
+   posx:= 50; posy:= 122; 
+   for i:= 1 to howmany do 
+   with TShape.Create(dbForm) do begin
+   circlesize:= circlesize-10;
+   posx:= posx+5;
+   posy:= posy+5;
+      parent:= dbForm;
+      setbounds(posx, posy, round(circlesize),round(circlesize));
+      //sendToback;
+      shape:= stcircle;
+      brush.color:= random(clblue);
+      pen.width:= 3;
+    //borderStyle:= bsNone;
+    end;
+end; 
+
+procedure SetCircles(sender: TObject);
+begin
+     DrawCirclesOnTopofIT(50,122,400,30);
+end;
+
+
+procedure CreateShapeForm;
+  var 
+    //dbform: TForm;
+    ard: TRadioGroup;
+    at,bt,ct: integer;
+  begin
+     dbform:= CreateMessageDialog('Area Calc SQRT(PI) FFP Proof',mtwarning,
+                                    [mball, mbyes, mbhelp, mbok]);
+     with dbform do begin
+       font.size:= 12;
+       caption:= 'FFP 3D PI Powert Demo';
+       setBounds(50,10,850,600)
+       FormStyle:= fsStayontop;
+       Color:= 12234;  //clWebGold;//12234;
+       autoScroll:= true;
+       ondblclick:= @setCircles;
+     with TLabel.Create(self) do begin
+       parent:= dbform;
+       SetBounds(400,20,500,600)
+       font.size:= 34;
+       //dblist.Add('All Converted to...XML')
+       caption:= '3D PI Power Demo...';
+     end;  
+    with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      setbounds(50,122,round(400),round(400));
+      //sendToback;
+      //align
+      //scaleby
+      //clienttoscreen
+      //onmousedown
+      //boundsrect
+      shape:= stcircle;
+      brush.color:= clblue;
+      pen.width:= 2;
+      //setfocus;
+    //borderStyle:= bsNone;
+    //scrollbars:= false;
+    end;
+    with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      setbounds(45,117,round(410),round(410));
+      sendToback;
+      //onmousedown
+      //boundsrect
+      shape:= stcircle;
+      brush.color:= clyellow;
+      pen.width:= 1;
+    //borderStyle:= bsNone;
+    //scrollbars:= false;
+    end;
+    {with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      setbounds(40,112,round(420),round(420));
+      sendToback;
+      //onmousedown
+      //boundsrect
+      shape:= stcircle;
+      brush.color:= clred;
+      pen.width:= 2;
+    //borderStyle:= bsNone;
+    //scrollbars:= false;
+    end; }
+  
+   {at:= 400; bt:= 50; ct:= 122; 
+   for i:= 1 to 30 do 
+   with TShape.Create(dbForm) do begin
+   at:= at-10;
+   bt:= bt+5;
+   ct:= ct+5;
+      parent:= dbForm;
+      setbounds(bt, ct, round(at),round(at));
+      //sendToback;
+      shape:= stcircle;
+      brush.color:= random(clblue);
+      pen.width:= 3;
+    //borderStyle:= bsNone;
+    end; }
+ 
+ 
+    
+    //rectangle table
+    with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      //setbounds(452,round(Sqrt(PI)*100),round(Sqrt(PI)*100));
+      setbounds(LEFTC,350,round(200),round(200));
+      //sendToback;
+      shape:= strectangle;
+      brush.color:= clblue;
+      pen.width:= 3;
+      //setfocus;
+    //borderStyle:= bsNone;
+    //scrollbars:= false;
+    end;
+    
+      //proof of concept this the circle
+      with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      setbounds(LEFTC,350,round(200),round(200));
+      //sendToback;
+      //onmousedown
+      //boundsrect
+      shape:= stcircle;
+      brush.color:= clyellow;
+      pen.width:= 1;
+    //borderStyle:= bsNone;
+    end;
+    //second rect inside
+    with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      //setbounds(452,352,round(Sqrt(PI)*100),round(Sqrt(PI)*100));
+      //setbounds(450+200 div 2,350+200 div 2,
+        //             round(SQRT(200)*10),round(SQRT(200)*10));
+        writeln('test '+floattostr((2-SQRT(2))/2))
+         setbounds(LEFTC+round(((2-SQRT(2))/2)*100),
+                  350+round(((2-SQRT(2))/2)*100),
+                  round(SQRT(2)*100),round(SQRT(2)*100));
+     shape:= strectangle;               
+      brush.color:= clred;
+      pen.width:= 1;
+    //borderStyle:= bsNone;
+    //scrollbars:= false;
+    end;
+    //third circle
+    with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      setbounds(LEFTC+round(((2-SQRT(2))/2)*100),
+                 350+round(((2-SQRT(2))/2)*100),
+      round(SQRT(2)*100),round(SQRT(2)*100));
+      //sendToback;
+      //onmousedown
+      //boundsrect
+      shape:= stcircle;
+      brush.color:= clgreen;
+      pen.width:= 1;
+    //borderStyle:= bsNone;
+    end;
+       with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      setbounds(LEFTC+50,400,round(100),round(100));
+      //sendToback;
+      //onmousedown
+      //boundsrect
+      shape:= strectangle;
+      brush.color:= clwhite;
+      pen.width:= 1;
+    //borderStyle:= bsNone;
+    //scrollbars:= false;
+    end;
+    with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+    //  setbounds(LEFTC+round(((2-SQRT(2))/2)*171),
+      //           350+round(((2-SQRT(2))/2)*171),
+      setbounds(LEFTC+50, 400,
+                round(100),round(100));
+      //sendToback;
+      //onmousedown
+      //boundsrect
+      shape:= stcircle;
+      brush.color:= clpurple;
+      pen.width:= 1;
+    //borderStyle:= bsNone;
+    end;
+       with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      setbounds(LEFTC+round(((2-SQRT(2))/2)*50)+50,400+round(((2-SQRT(2))/2)*50),
+                  round(SQRT(2)*50),round(SQRT(2)*50));
+      //sendToback;
+      //onmousedown
+      //boundsrect
+      shape:= strectangle;
+      brush.color:= clblack;
+      pen.width:= 1;
+    //borderStyle:= bsNone;
+    //scrollbars:= false;
+    end;
+  
+    
+    writeln('distance '+floattoStr(round(SQRT(1+SQRT(2)))));
+    writeln('distance 2 '+floattoStr(SQRT(2)));
+    writeln('distance 2/4 '+floattoStr(SQRT(2)/4));
+    writeln('distance 2/4 '+floattoStr(SQRT(2)/4));
+    writeln('distance 2-1 '+floattoStr((2-SQRT(2))/2));
+   
+    writeln('proof area '+floattostr(maxcalc('PI/2')));
+    writeln('proof umfang '+floattostr(maxcalc('2*PI/4')));
+    
+    
+     Show;
+     //Canvas.Draw(80,355,getBitMap(Exepath+'\examples\citymax.bmp'));
+    end; 
+     //SelectDirectory
+  end;
+  
+var aret: string;    
+ 
+BEGIN  //Main
+//<Executable statements>
+
+   //ShowmessageBig('You should press a key on output window to stop that loop!');
+   
+   //letStreamDataWork;
+   //letStreamDataWorkRefresh;
+   
+  // Ò
+ 
+   //mcmem:= TJvMemoryInfos.Create(self);
+   //for i:= 1 to biglist.count -1 do
+   //writeln(inttoStr(i)+' '+biglist[i]+' '+inttoStr(biglist.count));            
+   //Aufgabe 3.9
+   writeln(inttoStr(sizeof(anzahl)))  //type size
+   //writeln(inttoStr(sizeof(integer))) ist abhängig vom Betriebssystem
+   
+  // myURL:= 'http://www.kleiner.ch/kleiner/download/G9_japan.mp3';
+  //myURL:= 'http://www.kleiner.ch/kleiner/download/G9_lordofdarkness.mp3';
+  //myURL:= 'http://www.kleiner.ch/kleiner/download/G9_zeitraum.mp3';
+
+  mp3song1:= ExtractWord(5,myurl,['/']);
+  writeln('no regex extract test: '+mp3song1)
+  
+  //mp3song1:= ReplaceRegExpr('[\w]..$',myurl,'txt',true);  //replace
+  //mp3song1:= ReplaceRegExpr('[\w//:]...',myurl,'',true); //extension
+  //mp3song1:= ReplaceRegExpr('[^\w//:]*',myurl,'',true); //delete points find signs (.)
+  //mp3song1:= ReplaceRegExpr('[^\w]*',myurl,'',true); //delete all except words (.)
+  //mp3song1:= ReplaceRegExpr('[\w]*',myurl,'',true); //show structure (://..///.)
+  //mp3song1:= ReplaceRegExpr('[^/]+(=/$|$)',myurl,'',true); //show except last
+  ///directory.*/([^/]+)/?$          [^/]+)/?$
+ 
+  //mp3song1:= ReplaceRegExpr('([^/]+)/?$',myurl,'',true); //show all except last
+  
+  mp3song1:= ReplaceRegExpr('([^/]+)?/',myurl,'',true); //show only last extract
+
+  writeln('regex extract test: '+mp3song1)
+   strReplace(mp3song1,'jap','max');
+      writeln('str_replace '+mp3song1);
+   
+    //rand
+    //IncludeQuoteIfSpaces
+    //cCommaStrToStr
+    //cGetFileTyp
+    //cStrtoAttr
+    //readboolstr
+    
+    writeln(inttostr(mcalc))
+    //fast from inside
+    {for i:= 1 to getprocesslist.count -1 do
+      writeln(inttostr(i)+' '+getprocesslist[i]); 
+      getprocesslist.free; }
+      //replacestr
+      writeln(getASCIIline[49]);
+      writeln(booleanToString(ReadBoolStr('true')));
+     //internal func of the function
+    //for i:= 0 to getprocesslist2.count -1 do
+      //writeln(inttostr(i)+' '+getprocesslist2[i]); 
+      
+   //CommaStrToStr(s : string; formatstr : string) : string;
+ //IncludeQuoteIfSpaces(s : string) : string;
+ //IncludeQuoteIfNeeded(s : string) : string;
+   //loadfilefromresource
+   //getfiletyp
+//<Definitions>  
+   //AttrtoStr
+   //strtopoint
+   
+   //GetAssociatedProgram
+   //saveLn
+  writeln('GRIsPowerOf2  '+booleantoString(GRIsPowerOf2(128)));
+  
+  //PrevPowerOf2( Value : Integer) : Integer');
+  //NextPowerOf2( Value : Integer) : Integer');
+  //Average( A, B : Integer) : Integer');
+  //GRSign( Value : Integer) : Integer');
+  //FloatMod( x, y : Double) : Double');
+  CreateShapeForm;
+  { with debugout.output do begin
+     clear;
+     aret:= filetoString('C:\maXbox\sonar-3.4.1\bin\windows-x86-32\StartSonar.bat');
+     font.size:= 12;
+     lines.add('floater: '+floattostr(power(23.5,2.4)))
+     lines.add('add file to string: '+aret);
+     debugout.show;
+   end }
+   picircleloop;
+
+   //DrawCirclesOnTopofIT(50,122,400,30);
+   //DrawCirclesOnTopofIT_2(50,122,400,22,14);
+   
+   //procedure DrawCirclesOnTopofIT_3(posx,posy, circlesize, howmany, diff: integer;
+     //                               penwidth: byte; aform: TForm);
+   DrawCirclesOnTopofIT_3(50,122,400,22,14,3,dbform);
+
+   writeln('compute PI '+floattostr(computePI));
+//   writeln(getascii);
+
+ //function circleCircumference(Dia: double): double;
+   writeln('circumference '+floatToStr(circleCircumference(13.2)));
+   writeln('area1    '+floatToStr(circleArea(13.2)));
+   writeln('area2    '+floatToStr(circleArea2(13.2)));
+   writeln('area3    '+floatToStr(circleArea1(13.2)));
+   writeln('sphere   '+floatToStr(sphereSurface(13.2)));
+   writeln('volume   '+floatToStr(sphereVolume(13.2)));
+   writeln('volume2  '+floatToStr(sphereVolume2(13.2)));
+   writeln('volumeR  '+floatToStr(sphereVolumeR2(13.2/2)));
+   writeln('');
+   writeln('Refactor to Radius param instead of Diameter:');
+   writeln('');
+  //Refactor to Radius
+   writeln('circumR  '+floatToStr(circleCircumR(6.6)));
+   writeln('areaR    '+floatToStr(circleAreaR(6.6)));
+   writeln('sphereR  '+floatToStr(sphereSurfaceR(6.6)));
+   writeln('volumeR  '+floatToStr(sphereVolumeR(6.6)));
+
+
+   //Test Drive
+   writeln(floatToStr(circleCircumference(1)));
+   writeln(floatToStr(circleArea(2*1)));
+   writeln(floatToStr(circleArea2(2*1)));
+   writeln(floatToStr(circleArea1(2*1)));
+   PrintF('%.14f',[circleArea(2*1)]);
+  
+   writeln('Asserts to test function units:');
+   Assert(Format('%.14f',[circleArea(2*1)])=floatToStr(PI),'assert PI false');    
+   Assert(floatToStr(circleArea(2*1))=floatToStr(PI),'assert PI false');    
+   Assert(floatToStr(sphereSurface(2*1))=floatToStr(PI*4),'assert PI false');    
+   Assert(floatToStr(circleAreaR(1))=floatToStr(PI),'assert PI false');    
+   Assert(floatToStr(sphereSurfaceR(1))=floatToStr(PI*4),'assert PI false');    
+
+   //assert end
+
+END. 
+
+                              
+//ÔÒõÕ¦Ì¯ÓßÔÕþÞÛO¶ß§÷Ò     ã +
+
+
+
+
+http://bls.ch/100/unternehmen/100-jahre-loetschbergbahn/anlaesse/nordrampen-fest.html
+
+What is data stream?
+A: ( ?dad·? ?stre-m ) (communications) The continuous transmission of data from one location to another. Read More »
+Source: www.answers.com 
+
+
+Zufall ist nur der Ausdruck unserer Unfaehigkeit, den
+Dingen auf den Grund zu kommen
+A. Einstein (Ein grosser Skeptiker in Sachen Zufall)
+
+Random numbers should not be generated with a method
+chosen at random
+
+
+Donald E. Knuth                                        
+
+Funktionsparameter: TEXTOUT
+lokale Variable: newcolor;
+rücksprungadresse ist 120
+
+ 
+ Vortrags Beispiele:
+ 
+ USB Controller:    SerialCallResponseASCII
+ Binary Tree:       138_Sorting_Swap_Search2
+ Lotto Generator:   0pas_Lottosimulation
+ Datenkompression:  363_compress_services2
+ Video Port:        347_pictureview
+ 3D Printer:        356_3D_Printer
+ 
+
+type
+  TJvMemoryInfos = class(TJvComponent)
+  private
+    FTotalMemory: string;
+    FFreeMemory: string;
+    FTotalPages: string;
+    FDisponiblePages: string;
+    FNumberOfRegions: string;
+    FDisponibleRegions: string;
+    FMemoryLoad: string;
+    FTimer: TTimer;
+    FRefreshDelay: Integer;
+    FAutoRefresh: Boolean;
+    FDummy: string;
+    procedure SetAuto(Auto: Boolean);
+    procedure SetRefreshDelay(Speed: Integer);
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    procedure Refresh(Sender: TObject);
+    property AutoRefresh: Boolean read FAutoRefresh write SetAuto default False;
+    property RefreshDelay: Integer read FRefreshDelay write SetRefreshDelay;
+    property TotalMemory: string read FTotalMemory write FDummy stored False;
+    property FreeMemory: string read FfreeMemory write FDummy  stored False;
+    property NumberOfPages: string read FTotalPages write FDummy  stored False;
+    property DisponiblePages: string read FDisponiblePages write FDummy stored False;
+    property NumberOfRegions: string read FNumberOfRegions write FDummy stored False;
+    property DisponibleRegions: string read FDisponibleRegions write FDummy stored False;
+    property MemoryLoad: string read FMemoryLoad write FDummy stored False;
+  end;
+
+
+ 
+   TStrings  = class(TPersistent)
+    private
+      FDefined: TStringsDefined;
+      FDelimiter: Char;
+      FLineBreak: string;
+      FQuoteChar: Char;
+      FNameValueSeparator: Char;
+      FStrictDelimiter: Boolean;
+      FUpdateCount: Integer;
+      FAdapter: IStringsAdapter;
+      function GetCommaText: string;
+      function GetDelimitedText: string;
+      function GetName(Index: Integer): string;
+      function GetValue(const Name: string): string;
+      procedure ReadData(Reader: TReader);
+      procedure SetCommaText(const Value: string);
+      procedure SetDelimitedText(const Value: string);
+      procedure SetStringsAdapter(const Value: IStringsAdapter);
+      procedure SetValue(const Name, Value: string);
+      procedure WriteData(Writer: TWriter);
+      function GetDelimiter: Char;
+      procedure SetDelimiter(const Value: Char);
+      function GetLineBreak: string;
+      procedure SetLineBreak(const Value: string);
+      function GetQuoteChar: Char;
+      procedure SetQuoteChar(const Value: Char);
+      function GetNameValueSeparator: Char;
+      procedure SetNameValueSeparator(const Value: Char);
+      function GetStrictDelimiter: Boolean;
+      procedure SetStrictDelimiter(const Value: Boolean);
+      function GetValueFromIndex(Index: Integer): string;
+      procedure SetValueFromIndex(Index: Integer; const Value: string);
+    protected
+      procedure DefineProperties(Filer: TFiler); override;
+      procedure Error(const Msg: string; Data: Integer); overload;
+      procedure Error(Msg: PResStringRec; Data: Integer); overload;
+      function ExtractName(const S: string): string;
+      function Get(Index: Integer): string; virtual; abstract;
+      function GetCapacity: Integer; virtual;
+      function GetCount: Integer; virtual; abstract;
+      function GetObject(Index: Integer): TObject; virtual;
+      function GetTextStr: string; virtual;
+      procedure Put(Index: Integer; const S: string); virtual;
+      procedure PutObject(Index: Integer; AObject: TObject); virtual;
+      procedure SetCapacity(NewCapacity: Integer); virtual;
+      procedure SetTextStr(const Value: string); virtual;
+      procedure SetUpdateState(Updating: Boolean); virtual;
+      property UpdateCount: Integer read FUpdateCount;
+      function CompareStrings(const S1, S2: string): Integer; virtual;
+    public
+      destructor Destroy; override;
+      function Add(const S: string): Integer; virtual;
+      function AddObject(const S: string; AObject: TObject): Integer; virtual;
+      procedure Append(const S: string);
+      procedure AddStrings(Strings: TStrings); virtual;
+      procedure Assign(Source: TPersistent); override;
+      procedure BeginUpdate;
+      procedure Clear; virtual; abstract;
+      procedure Delete(Index: Integer); virtual; abstract;
+      procedure EndUpdate;
+      function Equals(Strings: TStrings): Boolean;
+      procedure Exchange(Index1, Index2: Integer); virtual;
+      function GetEnumerator: TStringsEnumerator;
+      function GetText: PChar; virtual;
+      function IndexOf(const S: string): Integer; virtual;
+      function IndexOfName(const Name: string): Integer; virtual;
+      function IndexOfObject(AObject: TObject): Integer; virtual;
+      procedure Insert(Index: Integer; const S: string); virtual; abstract;
+      procedure InsertObject(Index: Integer; const S: string;
+        AObject: TObject); virtual;
+      procedure LoadFromFile(const FileName: string); virtual;
+      procedure LoadFromStream(Stream: TStream); virtual;
+      procedure Move(CurIndex, NewIndex: Integer); virtual;
+      procedure SaveToFile(const FileName: string); virtual;
+      procedure SaveToStream(Stream: TStream); virtual;
+      procedure SetText(Text: PChar); virtual;
+      property Capacity: Integer read GetCapacity write SetCapacity;
+      property CommaText: string read GetCommaText write SetCommaText;
+      property Count: Integer read GetCount;
+      property Delimiter: Char read GetDelimiter write SetDelimiter;
+      property DelimitedText: string read GetDelimitedText write SetDelimitedText;
+      property LineBreak: string read GetLineBreak write SetLineBreak;
+      property Names[Index: Integer]: string read GetName;
+      property Objects[Index: Integer]: TObject read GetObject write PutObject;
+      property QuoteChar: Char read GetQuoteChar write SetQuoteChar;
+      property Values[const Name: string]: string read GetValue write SetValue;
+      property ValueFromIndex[Index: Integer]: string read GetValueFromIndex write SetValueFromIndex;
+      property NameValueSeparator: Char read GetNameValueSeparator write SetNameValueSeparator;
+     property StrictDelimiter: Boolean read GetStrictDelimiter write SetStrictDelimiter;
+     property Strings[Index: Integer]: string read Get write Put; default;
+      property Text: string read GetTextStr write SetTextStr;
+      property StringsAdapter: IStringsAdapter read FAdapter write SetStringsAdapter;
+    end;
+  
+    
+       
+ 
+ www.domain.com/first/second/last/
+
+How do I get the last term between slashes ie 'last' using regular expressions?
+
+PLEASE NOTE: The URL could just as easily be www.domain.com/last/ OR www.domain.com/first/second/third/fourth/last/
+
+I need to extract this last term for use in the Zeus Server's Request Rewrite module which uses PERL and REGEX.
+
+Thanks.
+
+EDIT: After implementing some answers, I have just realised that I need this match to be made only on URLs in a certain directory.
+
+
+Here's a simple regex:
+
+[^/]+(?=/$|$)
+
+Should match anything you throw at it.
+
+If you want to look in a particular directory, use this:
+
+/directory.*/([^/]+)/?$
+
+and your result will be in the first capture group.
+share|improve this answer
+	
+	
+	
+Thanks! This works. But I've just realised that I need to extract the last segment for URLS that are only in a particular directory. ie www.domain.com/directory/first/second/last/ Can you make a further suggestion? Thank you. – Matt Jan 10 '12 at 3:53
+	
+@Matt - I see now (in RegexBuddy) that PERL does not support variable repetition inside lookbehind. You'll have to check separately if it's inside that particular directory - unless you want to use a capture group. – Joseph Silber Jan 10 '12 at 4:13
+	
+/directory/.*([^/]+)/?$ is only returning the last character ie't'instead of 'last – Matt Jan 10 '12 at 5:41
+	
+@Matt - You're right. I changed it. – Joseph Silber Jan 10 '12 at 14:48
+	
+Brilliant! This works perfectly! Thank you very much. – Matt Jan 11 '12 at 6:17
+
+This should do the trick:
+
+[^/]+(?=/$|$)
+
+With a (?=lookahead) you won't get the last slash.
+
+[^/]+ Looks for at least one character that is not a slash (as many as possible). (?=/?^|^) makes sure that the next part of the string is a / and then the end of string or just end of string.
+
+Matches match in /one/two/match, '/one/two/match/'.
+share|improve this answer
+	
+answered Jan 10 '12 at 3:44
+agent-j
+12.3k
+	
+up vote 0 down vote
+	
+
+This regex (a slightly modified version of Joseph's answer), should give you the last segment, minus ending slash.
+
+([^/]+)/?$
+
+Your result will be the first capture group.
+share|improve this answer
+	
+answered Jan 10 '12 at 3:45
+Adam Wagner
+6,4566
+	
+up vote 0 down vote
+	
+
+The last slash might be optional. Right?
+
+How about something like this:
+
+$url =~ m|([^/]+)/?$|;
+my $end_of_url = $1;
+
+The $ on the end anchors the regular expression to the end of the string. The [^/] means anything that's not a slash and the + after means I want one or more things that are not slashes. Notice that this is in a capture group which are marked with parentheses.
+
+I end the regular expression with /? which means that there may or may not be a slash on the very end of the string. I've put my regular expression between m| and |, so I can use forward slashes without having to constantly escape them.
+
+The last part of the URL is now in $1 and I can set my own scalar variable to save this result.
+share|improve this answer
+
+777
+vienna buchhandlung von vorgestern bis übermorgen
+
+EKON 17
+makes new work build on old works
+you have to have a compelling reason to migrate vcl to firemonkey
+service locator
+temperature, humidity, pressure - wetterstation
+ 
+ 54FA-YTALH9-MKCM4L-A4LD
+ 
+ 
+ On Tuesday, 5 November 2013 01:00:42 UTC+11, paul wrote:
+
+    Did I mention my long-held belief elapsedMillis would be contraversial?ï¿½ There's a reason I've never brought it up here....
+
+
+I must reinforce Paul's assertion that it isn't him driving this - it's just me, a 'nobody' who thinks Arduino is an astonishing development (i'm an EE & 'ASM'-programming uC-geek from the 90s getting back into it, including wrapping my head around C/C++), who stumbled across his elapsedMillis/elapsedMicros datatype in Teensyduino, loved it for its "simple magic" that was entirely in keeping with all the other Simple Magic in Arduinoland, I asked the question on his forums "How do I get this in non-Teensy targets?" and which lead to my request here.  Paul was quite up front that he wasn't going to push it himself, that someone else would have to.  Having kept half an eye on this forum for 6 months I already understood why.
+
+    On 11/04/2013 05:31 AM, Tom Igoe wrote:
+
+>     Mikal makes a good point, building on Daveï¿½s point. One of the concepts I see students (other than those who are good at math) struggle with more than most are variables. "How do variables get their value?" is the usual question. My usual answer is ï¿½You give them value, using the = operator, like so: ï¿½variable = 5, or variable = analogRead(A0). In the latter case, you know that the function analogRead() is going to return a value when it runs, and youï¿½re putting the value in the variable.ï¿½  But this proposal makes a variable that changes its value automagically. Thatï¿½s confusing and inconsistent with the above explanation. ï¿½So if we did implement this, what would be a simpler explanation of variables thatï¿½s consistent with this new one that changes on its own?
+
+ 
+"Variables are a box.  You put something in there, and it stays there, unchanged, until you do something else with what's in that box.  When you refer to the box by its name, the contents of that box are used to do stuff: math, make decisions, communicate with something or someone, and so on.  There are several different types of box, for holding different kinds of data: boolean, bytes, integers , long integers, characters, floating-point numbers, and so on.  You decide what type of box you want when you declare the variable."
+
+Only on the (proposed) elapsedMillis/elpasedMicros data-type page would there be something like this:
+"elapsedMillis/elapsedMicros aren't like normal variables, they're actually a special variable type that gets automatically incremented by the CPU's timer every milli/micro-second.  So when you set it to 0 (zero), 1 millisecond later that box will contain 1, not 0.  1385 milliseconds later, that box will contain 1385.
+You can set/reset it to whatever value you want, when ever you want, and it will be incremented by 1 after each milli/micro-second of time has passed.  You can use it to easily decide in your program when to do stuff.
+But be careful!  Most of the time you will probably want to declare variables of the elapsedMillis/elpasedMicros data-type globally, at the top of your sketch.  If you define them inside a function() or in loop(), they will be reset to 0 (zero) each time the function() is called or loop() begins from the top."
+
+...and a million grey-beards all cried out in sphincter-clenching horror... ;)
+
+but we wouldn't be here if we were unwilling to accept a programming environment that went out of its way to soften the edges of sometimes difficult concepts, boilerplate code, & abstracting the technicalities of hardware, especially with such a lavish supply of examples of neophytes getting timing wrong.
+
+    [Paul] I've long intended to package elapsedMillis as a library (AFAIK just add keywords.txt) and publish it somewhere, maybe on the playground?ï¿½ But that's never been a priority.ï¿½ Perhaps if someone felt strongly enough about this, they could put in that relatively minor amount of work as a first step?ï¿½ A readme.txt file could be included, soliciting feedback.ï¿½ Maybe over time, such feedback might lead to a better sense of whether this feature belongs in the official core?
+
+
+Given that I made the astonishing discovery (that's not sarcasm, it's genuine) that I could add an entirely new datatype - elapsedMillis/elapsedMicros - simply by copying elapsedMillis.h into a folder of the same name in my user-defined Sketches/Libraries folder, just like it were a code library, I'll give it a go.
+
+Anthony.
+
+
+5333995 is your new Skype Number.
+dd8e7c267fccbd20520beebcaa862dd513891c9c  clx.ar
+
+
+
+----app_template_loaded_code----€€€
+
+There’s no gentle way to put this: in my experience .NET programmers are often weaker than Java and C++ programmers. Obviously, this is not always the case. However, after observing it over and over in my classes, I can come to no other conclusion: .NET programmers tend to be weaker in agile software practices, design patterns, design principles and so on.
+
+Now here comes the part that bothers me the most: he’s probably right! Being part of the .NET community, I strongly believe that we have a long way to go. I also believe that applying the principles, patterns and practices as laid out by this book will move us further on up the road.
+
+The fact that all code is written in Java makes no excuse of not reading this book. These principles, patterns and practices virtually apply to every programming language and development platform (which also includes .NET!). There a lot of design principles that I already know and apply rigorously throughout my software writing, but most importantly, I also learned a ton of new things.
+
+The author(s) of this book went to great lengths to offer the reader a good understanding of what clean code is all about. If you want to know the definition of good maintainable code and how it looks like, then this book is for you.
+
+The book is actually a prequel to Agile Principles, Patterns and Practices in C#. The first part describes the principles, patterns and practices of clean code. The second part consists of a number of case studies. In these case studies, the author tries to transform some problematic code into more maintainable code by applying a number of refactorings. The third part exists from a single chapter that contains a list of code smells and heuristics that are gathered from the cases studies in the second part.
+
+This quote from the book, coined by Michael Feathers (Working Effectively with Legacy Code), clearly describes its content:
+
+Clean code always looks like it was written by someone who cares.
+
+or
+
+How to Care for Code.
+
+But something that is discussed near the end of the first chapter really struck a nerve: The Boy Scout Rule. Originally, this states as "Leave the campground cleaner than you found it". This rule got rephrased and used several times throughout the book as "We should leave the code cleaner than we found it". This is something that I want to live by as a software engineer.
+
+This is probably the best book I’ve read so far about how to write good, readable and maintainable code. No catch :-) .
+
+https://unibe-ch.academia.edu/MaxKleiner/Papers
+
+While different from delphi both in philosophy and medium, smart tries to preserve some of the characteristics we all know and love from delphi. For example the way you create, attach and move a visual control is the same, as are the names of common properties and methods. The general layout of the component hierarchy is likewise heavily inspired by delphi and how pascal programmers think. But these similarities are essentially just cosmetic. There is no escaping that the document object model (DOM) is a very different landscape than we are used to. But that’s why we have the VJL in the first place, as leverage.
+
+As we all know, learning a new programming language or dialect is really not that hard, the hard part is gaining a deeper understanding of the framework and memorizing the class names and functions involved. Luckily the VJL was designed by a delphi developer – so anyone with a background in object pascal should feel at home with little effort.
+
+The IDE has a built-in class browser th
+
+most in clean code is about naming:
+If the idea of drivers sounds like overkill for something as trivial as a web app, we must remember that there are subtle but important differences between browsers. For instance webkit browsers favours “length” as a property in some javascript objects – but mozilla favours “size”. Through the drivers we are able to keep vendor specific clutter to a bare minimum.
+
+for i:= 1 to 32 do
+    printF('Bin exponent with SHL: 2^%d = %d',[i, i SHL i DIV i]);
+
+Syntax - Semantic - Sequence --> Specification

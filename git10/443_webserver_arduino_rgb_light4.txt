@@ -1,0 +1,1255 @@
+program Motion_HTTPServer_Arduino42_RGB_LED_Light;
+
+  // Fourth httpserver script & arduino control of webmax internet series
+  // Send RGB command LED and DEL to shine on a LED on Arduino Board, #locs=585
+  // #sign:breitsch: BREITSCH-BOX: 02/04/2023 19:14:22 
+  // update: just the RGB Color table, toogle web switch, analog write
+  // V4.4 RGB LED to switch 3 colors sketch: mXRGB_LED3Box.ino
+  // http://www.softwareschule.ch/examples/mXRGB_LED3Box.txt  -->.ino
+  // TODO: check the sleep or delay difference in loop! script-sketch below
+  
+Const
+  BACKMAP = 'examples\images\bmp37.bmp';
+  SIG ='<--------->';
+  APORT = 8080;
+  COMPORT ='COM3';
+  R_EXCEPTMESS = 'Comport not in use - Connect first^!';
+  
+  
+var  HTTPSrv: TIdCustomHTTPServer;
+     //ends: TOnSessionEndEvent;
+     cPort: TComPort;
+     webswitch: boolean;
+   
+Function getHTMLContentString(lastline: shortstring): string;
+begin   
+  result:= '<html><head><title>maXbox WebConnect Arduino</title></head><body><h1>Welcome to LED WebBox3 *** Shine on you Crazy Diamond ***</h1>'#13+
+   'Check script 443_webserver_arduino_  to discover:<br><ul><li>Search for '#13 +
+ '<b>a LED</b> to <b>light Event OnCommandGet and tag R/G/B or switch ON/OFF</b>!'+
+    '<br> Example: 192.168.48.126:8080/R'+
+    '<br><br><b>'+lastline+'</b>'+
+    '<p align="center"><a href="http://www.opensource.org/"target=""><img src="OSLogo.gif"></a>'+
+    '</ul></body></html>';
+end; 
+
+
+procedure AOpenBrowser;
+begin
+   S_ShellExecute('http:'+getHostIP+':'+IntToStr(APORT)+'/','',seCmdOpen)
+end;
+
+
+//******************************* HTTP Server *****************************//
+procedure HTTPServerGet(aThr: TIdPeerThread; reqInfo: TIdHTTPRequestInfo;
+                                       respInfo: TIdHTTPResponseInfo);
+var loccom: string;
+begin
+   PrintF('Cmd %s %s at %-10s received from %s:%d',[ReqInfo.Command, ReqInfo.Document, DateTimeToStr(Now), aThr.Connection.socket.binding.PeerIP,
+                           aThr.Connection.socket.binding.PeerPort]);
+   loccom:= ReqInfo.Document;
+   writeln('web debug: '+loccom)
+   if ReqInfo.Document = '/' then begin
+     RespInfo.ContentText:= 
+       getHTMLContentString('Switch LED ON with /LED or OFF with /DEL in URL')
+       respinfo.writeheader;
+   end else
+   if uppercase(loccom)=uppercase('/LED') then begin
+      cPort.WriteStr('1')
+      writeln(loccom+ ': LED on');
+      RespInfo.ContentText:=getHTMLContentString('LED is:  ON');
+   end else
+   if uppercase(loccom)=uppercase('/DEL') then begin
+      cPort.WriteStr('A');
+      writeln(loccom+ ': LED off');
+      RespInfo.ContentText:=getHTMLContentString('LED is:  OFF')
+   end else 
+    if (uppercase(loccom)=uppercase('/ON')) or 
+                       (uppercase(loccom)=uppercase('/R')) then begin
+      webswitch:= NOT webswitch;
+      if webswitch then begin
+        cPort.WriteStr('1')
+        RespInfo.ContentText:=getHTMLContentString('LED Red is: ON Switch');
+      end else begin
+        cPort.WriteStr('A');
+        RespInfo.ContentText:=getHTMLContentString('LED Red is: OFF Switch')
+      end
+     end else
+    if uppercase(loccom)=uppercase('/G') then begin
+      webswitch:= NOT webswitch;
+      if webswitch then begin
+        cPort.WriteStr('2')
+        RespInfo.ContentText:=getHTMLContentString('LED is: Green');
+      end else begin
+        cPort.WriteStr('B');
+        RespInfo.ContentText:=getHTMLContentString('LED is: Green OFF Switch')
+      end
+     end else
+    if uppercase(loccom)=uppercase('/B') then begin
+      webswitch:= NOT webswitch;
+      if webswitch then begin
+        cPort.WriteStr('3')
+        RespInfo.ContentText:=getHTMLContentString('LED is: Blue');
+      end else begin
+        cPort.WriteStr('C');
+        RespInfo.ContentText:=getHTMLContentString('LED is: Blue OFF Switch')
+      end
+     end else 
+    if uppercase(loccom)=uppercase('/RGB') then begin
+      webswitch:= NOT webswitch;
+      if webswitch then begin
+        cPort.WriteStr('1')
+        cPort.WriteStr('2')
+        cPort.WriteStr('3')
+        RespInfo.ContentText:=getHTMLContentString('LED is: RGB ON');
+      end else begin
+        cPort.WriteStr('A')
+        cPort.WriteStr('B')
+        cPort.WriteStr('C');
+        RespInfo.ContentText:=getHTMLContentString('LED is: RGB OFF')
+      end
+     end 
+  else begin
+      RespInfo.ResponseNo:= 404; //Not found round
+      RespInfo.ContentText:=
+        '<html><head><title>Sorry WebBox3 Error</title></head><body><h1>' +
+      RespInfo.ResponseText + '</h1></body></html>';
+   end; 
+end;
+    
+    
+procedure HTTPServerStartExecute(Sender: TObject);
+begin
+  HTTPSrv:= TIdCustomHTTPServer.Create(self)
+  with HTTPSrv do begin
+    if Active then Free;
+    if not Active then begin
+      Bindings.Clear;
+      bindings.Add;
+      bindings.items[0].Port:= APORT;
+      bindings.items[0].IP:= GetHostIP; //IPADDR; //'127.0.0.1';
+      Active:= true;
+      onCommandGet:= @HTTPServerGet;
+      PrintF('Listening HTTP on %s:%d.',[Bindings[0].IP,Bindings[0].Port]);
+    end;
+      PrintF('Server Started at %s ',[DateTimeToInternetStr(Now, true)])
+    //HTTPServer.Free; in close
+  end;
+end;
+
+//*******************************COM Port Arduino*****************************//
+ var
+  chk_led1, chk_led2, chk_led3, chk_led4, chk_led5: TCheckBox;
+  b_connect, b_Setup, b_loopsos, b_endloop: TBitBtn;
+  statBar: TStatusBar;
+  tB: TTrackBar;
+  proBar: TProgressBar;
+  comFrm: TForm;
+  img: TImage;
+
+ 
+procedure LED_Checker(ab: boolean; checker: boolean);
+begin
+  if checker then begin
+    chk_led1.Checked:= ab;
+    chk_led2.Checked:= ab;
+    chk_led3.Checked:= ab;
+    chk_led4.Checked:= ab;
+    chk_led5.Checked:= ab;
+  end else begin  
+    chk_led1.Enabled:= ab;
+    chk_led2.Enabled:= ab;
+    chk_led3.Enabled:= ab;
+    chk_led4.Enabled:= ab;
+    chk_led5.Enabled:= ab;
+  end;
+end;  
+
+procedure TF_connectClick(Sender: TObject);
+begin
+  if cPort.Connected then begin
+     b_connect.Caption:= 'Connect';  // Toggle caption of Connection Button !
+     b_Setup.Enabled:= True;         // If not connected, enable Setup Button
+     b_loopsos.Enabled:= false;
+     b_endloop.Enabled:= false;
+ 
+     //This block resets the state of all Leds to Off
+     //According to ArduinoC Chars A,B,C,D,E are used to set DigiPins(2-6) to LOW
+     with cPort do begin
+        WriteStr('A');
+        WriteStr('B');
+        WriteStr('C');
+        WriteStr('D');
+     end;  
+      LED_Checker(false, true);
+      cPort.Close;              
+      statBar.Panels[1].Text:='Disconnected';  
+      LED_Checker(false, false); //enabler
+      statBar.Panels[0].Text:=' Port closed '+ cPort.Port;
+    end else begin
+      b_connect.Caption:='Disconnect'; // Toggle caption of Connection Button
+      b_Setup.Enabled:=false;          // If not connected, disable Setup Button
+      b_loopsos.Enabled:=true;         // Now Rider demo button is enabled
+      b_endloop.Enabled:=true;
+
+      cPort.Open;                      // COM Port is finally opened
+      statBar.Panels[1].Text:='Connected and '  
+                        +Format('Listening on http %s:%d',
+                         [HTTPSrv.Bindings[0].IP,HTTPSrv.Bindings[0].Port]);
+      statBar.Panels[0].Text:= 'Port in use '+ cPort.Port; 
+      // This block enables check boxes
+      // so a user can change them to set LED states when COM Port is connected
+      LED_Checker(true, false);
+    end
+end;
+
+
+procedure TF_SetupClick(Sender: TObject);
+begin
+  cPort.ShowSetupDialog; //Opens predefined Setup Dialog (ComPort component)
+  statBar.Panels[0].Text:='COM Port in use '+ cPort.Port;  
+end;
+
+// Next are procedures to turning ON and OFF each led using the variables
+// Ports are turned ON by sending it corresponding var 1,2,3,4,5
+// and they are turned OFF by sending it corresponding var A,B,C,D,E
+
+procedure chk_led1Click(Sender: TObject);
+var strback: string;
+begin
+  if chk_led1.Checked=true then
+    cPort.WriteStr('1')
+  else
+    cPort.WriteStr('A');
+  if cPort.ReadStr(strback,1) > 0 then
+    writeln('debug: com back led 1 signal ' +strback);
+end;
+
+procedure chk_led2Click(Sender: TObject);
+begin
+  if chk_led2.Checked=true then
+    cPort.WriteStr('2')
+  else cPort.WriteStr('B');
+end;
+
+procedure chk_led3Click(Sender: TObject);
+begin
+  if chk_led3.Checked=true then
+    cPort.WriteStr('3')
+  else cPort.WriteStr('C')
+end;
+
+//special piezo sound  for oscilloscope
+procedure chk_led4Click(Sender: TObject);  
+var i: integer;
+begin
+  if chk_led4.Checked=true then
+    for i:= 1 to 200 do begin 
+      cPort.WriteStr('4')
+      sleep(random(5))           
+      cPort.WriteStr('D')
+      sleep(2)           
+    end
+  else cPort.WriteStr('D')
+end;
+
+procedure chk_led5Click(Sender: TObject);  
+var i: integer;
+begin
+  if chk_led5.Checked=true then begin
+      cPort.WriteStr(chr(255))  //('!')
+      cPort.writeStr(chr(tb.Position)); //last mem of pos
+      tb.SetFocus;
+    end  
+  else cPort.WriteStr(chr(254))  //'-')
+end;
+
+
+//**************** map of digitalWrite()************************
+ Const AHIGH = 1; ALOW = 0;
+ type cEnum =(red, green, blue);
+
+procedure digitalWrite(enum: cEnum; level: byte);
+begin
+  case enum of
+    red: if level=1 then 
+           cport.WriteStr('1')        //ON
+           else cport.WriteStr('A');  //OFF
+    green: if level=1 then
+             cport.WriteStr('2')
+             else cport.WriteStr('B');
+    blue: if level=1 then 
+            cport.WriteStr('3')
+            else cport.WriteStr('C');
+  end;
+end;    
+
+procedure TF_Rainbowloop(Sender: TObject);
+var mtime, multiple: integer;
+begin
+   LED_Checker(false, true);
+  {Color Spectrum from Red to White code (r,y,g,c,b,m,w...}
+   mtime:= 500; //1000; 
+   multiple:= 2;  
+   statBar.Panels[1].Text:='Rainbow - Click LED4 checkbox to end loop!';  
+   try
+     with cPort do begin   //using
+       repeat       
+        //WriteStr('1'); Sleep(mtime);
+         digitalWrite(red, AHIGH);    // red 
+         delay(mtime);                     
+         digitalWrite(green, AHIGH);  // yellow
+         delay(mtime);
+         digitalWrite(red, ALOW);     // green 
+         delay(mtime);
+         digitalWrite(blue, AHIGH);   // cyan
+         delay(mtime);
+         digitalWrite(green, ALOW);   // blue
+         delay(mtime);
+         digitalWrite(red, AHIGH);    // magenta 
+         delay(mtime);
+         digitalWrite(green, AHIGH);  // white 
+         mtime:= mtime * multiple;
+         delay(mtime);
+         digitalWrite(blue, ALOW);    // reset
+         digitalWrite(green, ALOW);
+         digitalWrite(red, ALOW);
+         mtime:= mtime div multiple;  //time/=multiple;  
+       until chk_led4.Checked=true;
+       chk_led4.Checked:= false;
+     end;
+   except
+      Showmessage(R_EXCEPTMESS); 
+   end;    
+end;
+
+procedure TF_endloopClick(Sender: TObject);
+begin
+   LED_Checker(false, true);
+   chk_led4.Checked:= true;
+  {Color Spectrum from Red to White code (r,y,g,c,b,m,w...}
+   statBar.Panels[1].Text:='Rainbow - Loop End Clicked!';  
+end;
+
+procedure TF_FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if cPort.Connected then begin
+    cPort.WriteStr('A');     // If the application is closed, its good to leave
+    cPort.WriteStr('B');     // everything as we found it at start.
+    cPort.WriteStr('C');     // So we reset all the leds to OFF
+    cPort.WriteStr('D');
+    cPort.Close;
+  end;
+  HTTPSrv.Free;
+  Writeln('Server Stopped at '+DateTimeToInternetStr(Now, true))
+end;
+
+procedure TF_trackSpeedChange(Sender: TObject);
+var aout: string;
+    aout2: char;
+begin
+  //mt.Interval:= 1000 div tB.Position;
+  if chk_led5.checked then begin
+    writeln(intToStr(tB.Position));  //! byte by byte
+    writeln(chr(tb.Position))
+    aout2:= chr(tb.Position);
+    //cPort.WriteStr(inttostr(tb.Position div 10));
+    cPort.WriteStr(aout2);
+    printF('RGB Led out %d', [tb.Position]);
+    //cport.readStr(aout,length(aout));
+    //cport.readStr(aout,3);
+    cport.readStr(aout,1);
+    //aout2:= aout[1];
+    writeln('analog back from ardu: '+aout);
+  end;
+  proBar.position:= tb.Position;
+  //procedure GrayBitmap(ABitmap: TBitmap; Value: integer);
+  //GrayBitmap(img.Canvas.brush.bitmap, tb.position*10);
+  //img.repaint;
+end;
+
+Procedure LabelFactory(a,b,c,d: byte; title: shortstring);
+begin
+  with TLabel.create(self) do begin
+    parent:= comfrm;
+    SetBounds(a,b+2,c,d);
+    Caption:= title
+  end;
+end;
+
+Procedure CheckBoxFactory(a,b,c,d: byte; title: shortstring;
+                          abox: TCheckbox; anevent: TNotifyEvent);
+begin
+  with abox do begin
+    parent:= comfrm;
+    SetBounds(a,b,c,d)
+    Caption:= title;
+    Enabled:= False;
+  end;
+end;
+
+Procedure BtnFactory(a,b,c,d: smallint; title: shortstring; apic: shortstring;
+                          abtn: TBitBtn; anevent: TNotifyEvent);
+begin
+ with abtn do begin
+   parent:= comfrm;
+   setBounds(a,b,c,d)
+   font.size:= 12;
+   glyph.LoadFromResourceName(HINSTANCE, apic); 
+   mXButton(05,05,width, height,12,12,handle);
+   caption:= title;
+   //onClick:= anevent;
+ end;
+end; 
+
+procedure ACreateComPort(Sender: TObject);
+begin
+  cPort:= TComPort.Create(self);
+  with cPort do begin
+    BaudRate:= br9600;
+    Port:= COMPORT; //'COM5';
+    Parity.Bits:= prNone;
+    StopBits:= sbOneStopBit;
+    DataBits:= dbEight;
+   {FlowControl.OutCTSFlow:= False;
+    FlowControl.OutDSRFlow:= False;
+    FlowControl.XonXoffOut:= False;
+    FlowControl.XonXoffIn:= False;}
+  end;
+  statBar.Panels[0].Text:='Pre Port in use '+ cPort.Port; //predef Port at start
+  if cPort.Connected=true then begin
+    statBar.Panels[1].Text:='Connected'   
+    statBar.Panels[0].Text:=' Port in use '+ cPort.Port;      
+  end else begin
+    statBar.Panels[1].Text:='Disconnected'
+    statBar.Panels[0].Text:=' Port closed '+ cPort.Port;
+  end;        
+end;
+
+   
+//******************************* Form Build********************************
+procedure AInitComPortForm;
+//var img: TImage;   
+ var  abitmap: TBitmap;
+begin
+ comFrm:= TForm.create(self);
+ img:= TImage.Create(comFrm);
+ with img do begin
+   parent:= comFrm;
+   setbounds(250,100,400,300)
+ end;
+ with comFrm do begin
+   FormStyle:= fsStayOnTop;
+   Position:= poScreenCenter;
+   caption:='COM & Arduino RGB LED BOX';
+   width:= 700; height:= 590;
+   //onCreate:= @TF_FormCreate;        
+   onClose:= @TF_FormClose;
+   Show;
+   abitmap:= TBitmap.create;
+      abitmap.loadfromresourcename(hinstance, 'BMP37');  
+   img.Canvas.brush.bitmap:= abitmap;
+   //getBitmapObject(Exepath+BACKMAP);
+   img.Canvas.FillRect(Rect(420,300,0,0))
+   abitmap.free;
+ end;
+
+ b_Setup:=TBitBtn.create(comfrm);   //Constructors
+ b_connect:=TBitBtn.create(comfrm);
+ b_loopsos:=TBitBtn.create(comfrm);
+ b_endloop:=TBitBtn.create(comfrm);
+ b_loopsos.Enabled:=false;  
+ b_endloop.Enabled:= false;
+ b_Setup.onClick:= @TF_SetupClick;
+ BtnFactory(20,440,150,55, '&COM Settings','LEDbulbon',b_Setup, NIL);
+ b_connect.onClick:= @TF_connectClick;
+ BtnFactory(180,440,150,55, 'C&onnect Node','CL_MPNEXT',b_connect,NIL);
+ b_endloop.onClick:= @TF_endloopClick;
+ BtnFactory(340,440,150,55, 'S&top Rainbow','EN_MPSTOP',b_endloop,NIL);
+ b_loopsos.onClick:= @TF_Rainbowloop;
+ BtnFactory(500,440,150,55, '&Rainbow Rising','CL_MPRECORD',b_loopsos,NIL);
+
+  chk_led1:= TCheckBox.create(self)
+  chk_led1.OnClick:= @chk_led1Click;
+  CheckBoxFactory(16,42,57,17, 'Led 1',chk_led1,NIL);
+  chk_led2:= TCheckBox.create(self)
+  chk_led2.OnClick:= @chk_led2Click;
+  CheckBoxFactory(16,66,57,17, 'Led 2',chk_led2,NIL);
+  chk_led3:= TCheckBox.create(self)
+  chk_led3.OnClick:= @chk_led3Click;
+  CheckBoxFactory(16,90,57,17, 'Led 3',chk_led3,NIL);
+  chk_led4:= TCheckBox.create(self)
+  chk_led4.OnClick:= @chk_led4Click;
+  CheckBoxFactory(16,114,57,17, 'Led 4',chk_led4,NIL);
+  chk_led5:= TCheckBox.create(self)
+  chk_led5.OnClick:= @chk_led5Click;
+  CheckBoxFactory(250,42,140,17, 'Analog Red  [1..252]',chk_led5,NIL);
+
+  with TLabel.create(self) do begin
+    parent:= comfrm;
+    setBounds(16,12,69,13)
+    Caption:= 'LED Control';
+    Font.Color:= clMaroon;
+    Font.Size:= 14;
+  end;
+  with TLabel.create(self) do begin
+    parent:= comfrm;
+    setBounds(155,12,69,13)
+    Caption:= 'Arduino PIN';
+    Font.Color:= clNavy;
+    Font.Size:= 14;
+  end;
+  LabelFactory(80,42,39,13, SIG)
+  LabelFactory(80,66,39,13, SIG)
+  LabelFactory(80,90,39,13, SIG)
+  LabelFactory(80,114,39,13, SIG)
+  LabelFactory(156,42,38,13, 'Dig 11 Red')
+  LabelFactory(156,66,38,13, 'Dig 12 Green')
+  LabelFactory(156,90,38,13, 'Dig 13 Int Blue')
+  LabelFactory(156,114,38,13, 'Dig 06 Extra')
+  LabelFactory(16,165,50,13, 'Real Time Clock Test:')
+ 
+  with TDateTimePicker.Create(self) do begin
+    parent:= comfrm;
+    Date; //datetime;
+    top:= 190; left:= 15;
+    calAlignment:= albottom;
+  end;
+  tB:= TTrackBar.create(comFrm);
+  with tB do begin
+    parent:= comFrm;
+    setBounds(400,35,230,50);
+    Min:= 1; Max:= 252;
+    Frequency:= 10;
+    Position:= 50;
+    linesize:= 5;
+    ThumbLength:= 35;
+    //SetFocus;
+    OnChange:= @TF_trackSpeedChange;
+  end;
+  proBar:= TProgressBar.create(comFrm);
+  with proBar do begin
+    parent:= comFrm;
+    align:= alBottom;
+    Smooth:= True;
+    TabOrder:= 4;
+    Min:= 0; Max:= 255;
+    //Position:= 12;
+    //OnChange:= @TFrm_trackSpeedChange;
+  end;
+ 
+  statBar:= TStatusBar.create(self);
+  with statBar do begin
+    parent:= comFrm;
+    Panels.add;
+    panels.items[0].width:= 200;
+    Panels.add;
+    panels.items[1].width:= 150;
+  end;
+  //TF_FormCreateCom(self); 
+end;  //***********************End Form Build************************
+
+function CheckComPort: boolean;
+var ComPorts: TStringlist;
+begin
+  result:= false;
+  ComPorts:= TStringlist.Create;
+  try
+    EnumComPorts(ComPorts);
+    PrintF('COM Port Check of Arduino %d COM: ',[ComPorts[0]]);  
+  except
+    PrintF('No COM Ports',[]);
+  end;    
+  ComPorts.Free;
+  result:= true;
+end;  
+
+
+Begin //Main Server App 
+   writeln('machine IP: '+GetIpAddress(getHostName))
+   writeln('Thread ID :'+intToStr(CurrentThreadID))
+   writeln('Process ID :'+intToStr(CurrentProcessID))
+   writeln('Machine name is: '+getHostName+ 'User name: '+getUserName)
+   if Not IsTCPPortOpen(APORT,getHostIP) then  //firewall?
+     HTTPServerStartExecute(self);
+
+   //CheckComPort 
+   Writeln('CheckComPort: '+boToStr(isCOMConnected))
+   AInitComPortForm; 
+   ACreateComPort(self); 
+   AOpenBrowser;
+  //GetTimeZoneInformation
+  writeln('the answer is: '+chr(42))
+    //TfrmMain
+    //maXform1.Oscilloscope1Click(Self);
+
+End.
+
+
+def Docu and Arduino Code below tested with Android seekBar and Chrome
+//***********************************Web Code Snippets******************
+ (*procedure AccessDenied;
+  begin
+    ResponseInfo.ContentText:=
+      '<html><head><title>Error</title></head><body><h1>Access denied</h1>'#13 +
+   'You do not have sufficient priviligies to access this document.</body></html>';
+    ResponseInfo.ResponseNo:= 403;
+  end;*)
+  
+   (*procedure AuthFailed;
+     begin
+      ResponseInfo.ContentText:=
+      '<html><head><title>Error</title></head><body><h1>Authentication failed</h1>'#13 +
+    'Check the file ip_a.ini to discover the demo password:<br><ul><li>Search for '#13 +
+      '<b>AuthUsername</b> in <b>maXboxMain.pas</b>!</ul></body></html>';
+    ResponseInfo.AuthRealm:= CAUTHENTICATIONREALM; *)
+
+    (*if not HTTPServer.Active then begin
+    HTTPServer.Bindings.Clear;
+    Binding := HTTPServer.Bindings.Add;
+    Binding.Port := StrToIntDef(edPort.text, 80);
+    Binding.IP := '127.0.0.1';
+  end;*)
+    //statusbar1.SimpleText:= 'http active on v1.9';
+     //+ [IdServerInterceptOpenSSL.SSLOptions.Method]
+    //DisplayMessage(Format('OpenSSLVersion is: %s', [getOpenSSLVersion]))
+     
+ procedure TfrmServer.pgpEHTMLHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+var
+  LTag: string;
+begin
+  LTag := LowerCase(TagString);
+  if LTag = 'date' then
+    ReplaceText := DateToStr(Now)
+  else if LTag = 'time' then
+    ReplaceText := TimeToStr(Now)
+  else if LTag = 'datetime' then
+    ReplaceText := DateTimeToStr(Now)
+  else if LTag = 'server' then
+    ReplaceText := httpServer.ServerSoftware;
+end;
+
+Port Not Open.Fault : Port Not Open. Date/time : 30.09.2012 17:53:52 Stack dump ---------- 0055632D 00556DB4 00556EFF 00556F71 0010EA73 0010FA01 0001A20A 00103D2F 000024DA 000055C5 00005608 000056E5 000FF62D 00101499 00111208 0070F174 00109E7E 0000BC4C 00108D45 00004489 00113E79 00113923 0046A014 0046A7B7 0046A90C 00308923 002228ED 0022293E 0022295B 00222985 0003644F 00005466 Fault : Port Not Open.Fault : Port Not Open. Date/time : 30.09.2012 17:53:52 Stack dump ---------- 0055632D 00556DB4 00556EFF 00556F71 0010EA73 0010FA01 0001A20A 00103D2F 000024DA 000055C5 00005608 000056E5 000FF62D 00101499 00111208 0070F174 00109E7E 0000BC4C 00108D45 00004489 00113E79 00113923 0046A014 0046A7B7 0046A90C 00308923 002228ED 0022293E 0022295B 00222985 0003644F 00005466 Date/time : 30.09.2012 17:53:52 Stack dump 
+
+//*******************************************Arduino Code**********************
+/*
+ * Delphi LEDs Control
+ * -----------------
+ * Turns on and off 5 light emitting diodes(LED) connected to digital  
+ * pins 2 thru 6. The LEDs will be controlled using check boxes on maXbox
+ * that sends serial data to Arduino Board.
+ *
+ * IMPORTANT!!: Don't forget to download the Example 305_webserver_arduino3.txt that controls the leds connected to arduino board.
+ *
+ * Created April 02 2009
+ * copyleft 2009 Roberto Ramirez <beta@thepenguincult.com>
+ * Full Source code at http://www.thepenguincult.com/proyectos/arduino-delphi-control/
+ * 
+ */
+
+int val = 0;       // variable to store the data from the serial port
+int ledPin1 = 2;   // LED connected to digital pin 2
+int ledPin2 = 3;   // LED connected to digital pin 3
+int ledPin3 = 4;   // LED connected to digital pin 4
+int ledPin4 = 5;   // LED connected to digital pin 5
+int ledPin5 = 6;   // LED connected to digital pin 6
+
+void setup() {
+
+  pinMode(ledPin1,OUTPUT);    // declare the LED's pin as output
+  pinMode(ledPin2,OUTPUT);    // declare the LED's pin as output
+  pinMode(ledPin3,OUTPUT);    // declare the LED's pin as output
+  pinMode(ledPin4,OUTPUT);    // declare the LED's pin as output
+  pinMode(ledPin5,OUTPUT);    // declare the LED's pin as output
+  Serial.begin(9600);        // connect to the serial port
+}
+
+void loop () {
+  val = Serial.read();      // read the serial port
+
+  if (val !=-1){
+
+    if (val=='1'){
+      digitalWrite(ledPin1,HIGH);
+    }
+    
+    else if (val=='A'){
+      digitalWrite(ledPin1,LOW);
+      }
+    if (val=='2'){
+      digitalWrite(ledPin2,HIGH);
+    }
+    else if (val=='B'){
+      digitalWrite(ledPin2,LOW);
+      }
+    if (val=='3'){
+      digitalWrite(ledPin3,HIGH);
+    }
+    else if (val=='C'){
+      digitalWrite(ledPin3,LOW);
+      }
+    if (val=='4'){
+      digitalWrite(ledPin4,HIGH);
+    }
+    else if (val=='D'){
+      digitalWrite(ledPin4,LOW);
+      }
+    if (val=='5'){
+      digitalWrite(ledPin5,HIGH);
+    }
+    else if (val=='E'){
+      digitalWrite(ledPin5,LOW);
+      }
+    //Serial.println();
+  }
+}
+******************************************************************
+Ref Sketch Code on Arduino UNO with this Script
+  mXRGB_LED3Box\mXRGB_LED3Box.ino
+//Third Edition RGB LED BOX***************************************
+//Binary sketch size: 1944 bytes (of a 32256 byte maximum)
+//Third Edition RGB LED BOX ***************************************
+//Sketch uses 3,162 bytes (9%) of program storage space. Maximum is 32,256 bytes.
+//Global variables use 195 bytes (9%) of dynamic memory, leaving 1,853 bytes for local variables. Maximum is 2,048 bytes.
+//Build options changed, rebuilding all
+
+/*
+  Blink Switch LEDMAX___WebofThings3
+  Turns on an RGB LED on for one second, then off for one second, repeatedly.
+  Switch on Analog and Digital Write
+ 
+  This example code of maXbox is in the public domain.
+ */
+ 
+  int ledPin11 = 11;
+  int ledPin12 = 12;
+  int ledPin13 = 13;
+  int ledPin6Spec = 6;
+  
+  int counter =0;
+  int change = 1;
+  int val = 0;       // variable to store the data from the serial port
+  bool analog = false;
+  int sensorValue = 0;        // value read from the pot
+  int outputValue = 0;        // value output to the PWM (analog out)
+   
+
+void setup() {                
+  // initialize the digital pin as an output.
+  // Pin 13 has an LED connected on most Arduino boards:
+ 
+ Serial.begin(9600);  
+  //pinMode(ledPin1, OUTPUT);     
+  pinMode(ledPin11, OUTPUT);     
+  pinMode(ledPin12, OUTPUT);     
+  pinMode(ledPin13, OUTPUT);     
+  pinMode(ledPin6Spec, OUTPUT);     
+}
+
+int changeCounter() {
+  if (counter ==255)
+       change=-1;
+  if (counter ==0)
+       change= 1;
+  counter = counter + change;
+return counter;
+}
+       
+void ledmax(){
+  digitalWrite(ledPin11, HIGH);   // set the LED on
+  delay(500);              // wait for a second
+  digitalWrite(ledPin11, LOW);    // set the LED off
+  delay(500);              // wait for a second
+  digitalWrite(ledPin11, HIGH);   // set the LED on
+  delay(500);              // wait for a second
+  digitalWrite(ledPin11, LOW);    // set the LED off
+  delay(500);              // wait for a second
+ }
+
+void loop() {
+  //digitalWrite(ledPin1, HIGH);   // set the LED on
+  //delay(4000);              // wait for a second
+  //digitalWrite(ledPin1, LOW);    // set the LED off
+  //delay(1000);              // wait for a second
+
+val = Serial.read();      // read the serial port
+   if (val==6) analog=true; 
+   if (val==7) {
+     analog=false; 
+     analogWrite(ledPin11, 0);
+     }
+  if (val !=-1){
+    if (analog) {
+    //outputValue = map(sensorValue, 0, 1023, 0, 255); //prepare poti
+     outputValue = map(val, 9, 255, 0, 255); //prepare test
+     analogWrite(ledPin11, outputValue);
+      //analogWrite(ledPin11, val);
+      //Serial.write(outputValue);
+      Serial.write(val);
+      // wait 2 milliseconds before the next loop for the 
+      //analog-to-digital converter to settle after the last reading:
+      delay(2);
+      }
+   if (not analog) {  
+    if (val=='1'){
+      digitalWrite(ledPin11,HIGH);
+    }
+    else if (val=='A'){
+      digitalWrite(ledPin11,LOW);
+      }
+    if (val=='2'){
+      digitalWrite(ledPin12,HIGH);
+    }
+    else if (val=='B'){
+      digitalWrite(ledPin12,LOW);
+      }
+    if (val=='3'){
+      digitalWrite(ledPin13,HIGH);
+    }
+    else if (val=='C'){
+      digitalWrite(ledPin13,LOW);
+      }
+    if (val=='4'){
+      digitalWrite(ledPin6Spec,HIGH);
+    }
+    else if (val=='D'){
+      digitalWrite(ledPin6Spec,LOW);
+      }
+     Serial.write(val);
+   }
+   //Serial.write('X');
+   //Serial.write(val);
+  }
+
+  //counter = changeCounter();
+  //analogWrite(ledPin2, counter);
+  //delay(10);
+  //ledmax();
+  // digitalWrite(13, HIGH);    // set the LED off
+  //delay(100);              // wait for a second
+ //digitalWrite(13, LOW);    // set the LED off
+  //delay(100);              // wait for a second
+  // digitalWrite(13, LOW);    // set the LED off
+  //delay(1000);              // wait for a second
+}
+
+//all colors test routine in Rainbow loop on client site!
+
+ UML Test Def
+
+*********************************************************************
+
+const int red = 9; const int green = 10; const int blue = 11;  
+int time = 1000; int multiple = 2;  
+void setup() 
+{pinMode(red, OUTPUT);   pinMode(green, OUTPUT);   pinMode(blue, OUTPUT); } 
+
+void loop() 
+{    digitalWrite(red, HIGH);     // red 
+     delay(time);   
+     digitalWrite(green, HIGH);   // yellow
+       delay(time);
+     digitalWrite(red, LOW);      // green 
+       delay(time);
+     digitalWrite(blue, HIGH);    // cyan
+     delay(time);
+     digitalWrite(green, LOW);    // blue
+     delay(time);
+     digitalWrite(red, HIGH);     // magenta 
+     delay(time);
+     digitalWrite(green, HIGH);   // white 
+     delay(time*=multiple);
+     digitalWrite(blue, LOW);     // reset
+        digitalWrite(green, LOW);
+           time/=multiple; } 
+
+ 
+ /val = Serial.read();
+  //Serial.print(val);
+ 
+ EKON 18 Proposals
+ 
+ 3D Druck mit Delphi
+ 
+ Bei 3D Druckern, die nur wenig mit normalen Druckern zu tun haben, werden Materialien, wie meistens Kunststoff, erhitzt und durch Düsen auf eine Platte gedrückt. Schicht für Schicht wird hierbei – bottom up – dann das gewünschte Objekt aufgebaut. Ohne Zweifel ein Trend mit vielen Einsatzmöglichkeiten, der viele von uns in naher Zukunft noch beschäftigen wird, doch welche Schnittstellen und APIs gibt es unter Delphi?
+ Gezeigt wird Technik und Funktion einer 3D Print Library.
+ 
+ Stories über 3D g
+e
+d
+r
+u
+c
+k
+t
+e
+M
+o
+d
+e
+l
+l
+e
+f
+ü
+l
+l
+e
+n
+Z
+e
+i
+t
+u
+n
+g
+e
+n
+u
+n
+d
+Z
+e
+i
+t
+s
+c
+h
+r
+i
+f
+t
+e
+n
+i
+n
+l
+e
+t
+z
+t
+e
+r
+Z
+e
+i
+t
+r
+e
+c
+h
+t
+h
+ä
+u
+f
+i
+g
+.
+M
+a
+l
+s
+c
+h
+r
+e
+i
+b
+t
+d
+i
+e
+N
+e
+w
+Y
+o
+r
+k
+T
+i
+m
+e
+s
+ü
+b
+e
+r
+d
+a
+s
+A
+u
+t
+o
+a
+u
+s
+d
+e
+m
+D
+r
+u
+c
+k
+e
+r
+,
+m
+a
+l
+d
+a
+s
+W
+i
+r
+e
+d
+-
+M
+a
+g
+a
+z
+i
+n
+ü
+b
+e
+r
+e
+i
+n
+e
+n
+a
+u
+s
+g
+e
+d
+r
+u
+c
+k
+t
+e
+n
+M
+o
+d
+e
+l
+l
+f
+l
+i
+e
+g
+e
+r
+.
+D
+i
+e
+G
+e
+r
+ä
+t
+e
+,
+d
+i
+e
+k
+l
+e
+i
+n
+e
+3
+D
+-
+M
+o
+d
+e
+l
+l
+e
+h
+e
+r
+s
+t
+e
+l
+l
+e
+n
+k
+ö
+n
+n
+e
+n
+,
+s
+i
+n
+d
+i
+n
+z
+w
+i
+s
+c
+h
+e
+n
+r
+e
+c
+h
+t
+e
+r
+s
+c
+h
+w
+i
+n
+g
+l
+i
+c
+h
+–
+
+ 
+ Remote Sessions mit Delphi
+ 
+ Delphi auf Android mit VNC oder TeamViewer
+ Wenn man trotz aller Technik die Ressourcen nicht hat, eine Delphi Anwendung auf Android zu portieren, kann die Idee eines Remote Zugriffes entstehen. 
+ Mit dem Freeware-Tool UltraVNC kann der Anwender auf entfernte Desktop-Rechner zugreifen, ohne selbst davor zu sitzen. Der Virtual Network Client greift über TCP/IP-Netzwerk-verbindung auf den Server beziehungsweise Remote-Computer zu. Zusätzlich bietet das Tool einen File-Transfer und Verschlüsselung.
+ Was gilt es bei einem Redesign zu beachten, damit die Minimalanforderungen bezüglich Touch-Screen, Auflösung oder Fenster-Fokus in einer VNC-Session erfüllt sind?
+ 
+ 
+ 
+ Ich hatte daher mal den Ansatz verfolgt, das GUI mit View und Controller
+komplett auf dem Client zu halten und nur das Modell auf dem Server zu
+belassen. Der Server schickt einen GUI-Bauplan (bei mir in Form einer
+speziellen Scriptsprache, damit auch der Controller funktioniert ohne
+das ich besondere Klassen brauche) und instantiiert die Modelle. Eine
+spezielle Kommunikationsschicht sollte dann dafür sorgen, dass die
+Übertragung der Daten möglichst am Stück erfolgt. Alle Widgets waren
+darauf vorbereitet, dass es den Zwischenzustand "hole gerade Daten" gibt
+was den "lag" verhindern sollte.
+
+Ein Prototyp war sehr vielversprechend, aber dann war kein Projekt da,
+das ganze fertigzubauen :(
+ 
+ DLL Bausteine mit Delphi
+ Totgesagte leben länger, so zeigt diese Session wieder mal, dass die DLL als Grundbaustein nicht wegzukriegen ist.
+ Nebst der Technik einer DLL zeigt die Session auch wie mit Hilfe des Android NDK (Native Development Kit) auch in C oder Pascal programmierter Binärcode in Android einzubetten ist. 
+ 
+ 
+ Wer anderen eine Grube gräbt, hat ein Gruben-Grab-Gerät! 
+
+ 
+ Object Scripting in Delphi
+ Gezeigt wird das Skripten von Objekten zur Laufzeit mit der maXbox.
+maXbox ist eine lizenzfreie Anwendung, die Programme als Skripte ausführt. Die App ist "out of the box" ohne Installation oder Konfiguration ab Stick oder Cloud startbar. Die Engine, die ObjectPascal Syntax zur Laufzeit im Projekt ausführt (Subset), hat Bsp. aus Industrie, Lehre und Forschung. Auch Delphi for Fun ist gerade in der Ausbildung zentral. Denn wer anderen eine Grube gräbt, hat ein Gruben-Grab-Gerät! 
+
+ 
+ Abstract Reflexion
+
+http://max.kleiner.com/download/aktuell.zip
+
+v_uml_matrix09.xls
+
+vmatrix05.pdf   
+
+3. Lösungsansatz
+Wie gesagt, hier noch eine Beschreibung der horizontalen Schicht, d.h. wie ist die Topologie und Verteilung der erwähnten neuen Technik sowie die angedachten Netzprotokolle und Schnittstellen.
+Bsp. gibt es Server, Middleware oder Clients im System.
+Ist ein API gefordert, auf das noch andere zugreifen können oder sogar ein Dienst, welcher das Produkt erweitert?
+Welche Sicherheit, Verfügbarkeit oder Redundanz ist angedacht?
+
+Bsp. 2
+Kernidee (Beispiel) ist, gesammelte Daten aus n-
+Clients mit einer Applikation oder einem Dienst
+via SOAP zentral an einen Server zu senden.
+• Die Umsetzung zeigt mit WebServices ein
+Framework zur entfernten Speicherung von Daten
+(Storage as Service) mit Hilfe eines Assistenten
+(Service Orchestration).
+• Warum SOA ein Konzept und keine Technik ist!
+
+http://www.softwareschule.ch/download/webservices.pdf
+
+Vorhandene EXCEL-Datei analysieren und portieren für die neue Technologie. Beispiele mit
+Javascripts für die Verwendung von Tabellen für das Problem adaptieren. Vorhandene Webseite
+übernehmen und weiter ausbauen.
+4. Vorgehensmethodik
+Kickoff-Meeting, DDR (Design und Requirementsspezifikation mit Review am Schluss), CDR (mit
+2 Reviews und FAI (Abgabe, Überprüfung der Anforderungen und Präsentation des Projektes), alle
+2 - 3 Wochen einen Statusbericht.  
+
+ >>>Da zur selben Zeit
+alle durchgeführten Schritte in einer Datei aufgezeichnet werden, kann der
+Kunde selbst seine Schritte reproduzieren oder seine durchgeführten Schritte der
+Service Abteilung zusenden.
+
+>>>Da er mehr selber Testen kann um das Problem zu lösen und durch
+die Konfiguration und Kalibration geführt wird.
+Noch kurz darauf eingehen:
+Wie: gibt es Standard Testprozeduren, Setup Routinen oder eine expertenorientierte Diagnosehilfe mit Fallunterscheidung, wobei der letzere Fall mit oder ohne Machine Learning aufwendig ist.
+2. Antrag, dies betriftt den Punkt 3 und 4, wie auch im Kick-Off Meeting schon besprochen
+digisens_eingabe_der_master_thesis.pdf  
+
+3. Lösungsansatz
+Hier  ist noch zu wenig Konkretes vorhanden:
+Wie gesagt, hier noch eine Beschreibung der horizontalen Schicht, d.h. wie ist die Topologie und Verteilung der erwähnten neuen Technik sowie die angedachten Netzprotokolle und Schnittstellen.
+- Bsp. gibt es Server, Middleware oder Clients im System.
+- Ist ein API gefordert, auf das noch andere zugreifen können oder sogar ein Dienst, welcher das Produkt erweitert?
+- Welche Sicherheit, Verfügbarkeit oder Redundanz ist angedacht?
+
+Als Bsp. 2
+Kernidee (Beispiel) ist, gesammelte Daten aus n-
+Clients mit einer Applikation oder einem Dienst
+via SOAP zentral an einen Server zu senden.
+•
+Die Umsetzung zeigt mit WebServices ein
+Framework zur entfernten Speicherung und Diagnose von Daten
+(Storage as Service) mit Hilfe eines Assistenten
+(Service Orchestration).
+•
+Warum SOA ein Konzept und keine Technik ist!
+
+http://www.softwareschule.ch/download/webservices.pdf
+4. Vorgehensmethodik
+
+Bei der Vorgehensmethodik noch den Namen der Projektabwicklung erwähnen, so dass ein Grundmuster für die nächsten Schritte erkennbar wird.
+http://max.kleiner.com/download/aktuell.zip
+
+v_uml_matrix09.xls
+
+vmatrix05.pdf   
+
+4. Vorgehensmethodik
+
+Bei der Vorgehensmethodik noch den Namen der Projektabwicklung erwähnen, so dass ein Grundmuster für die nächsten Schritte erkennbar wird.
+Entweder man bezieht sich auf ein bekanntes Phasenschema/Projektmethode (HERMES , V, RUP etc. ) oder man ergänzt die eigene mit den nötigen Phasen
+Es lässt sich auch kombinieren oder tailorisieren, siehe Bsp auf
+http://max.kleiner.com/download/aktuell.zip
+In dieser Matrix ist die Vorgehensmethodik auf einem Blatt ersichtlich, kann als Vorlage für DDR/CDR dienen:
+v_uml_matrix09.xls
+
+vmatrix05.pdf  

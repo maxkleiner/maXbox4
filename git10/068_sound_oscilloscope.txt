@@ -1,0 +1,420 @@
+//simple demo _68 to show soundscal of 440 HZ, #locs:370
+// see also by #83_pas_soundbox_tones.txt
+//to define is a beat for sleep for tutor 33 oscilloscope
+//http://max.kleiner.com/boxart.htm
+//http://www.softwareschule.ch/download/maxbox_starter33.pdf
+
+Program Soundbox3_tutor;
+
+type Tones = array[0..108] of single;
+type Notes = array[1..7] of char;
+
+var 
+  b, S, L,w,i : integer;
+  mton: Tones;
+  mnote: Notes;
+  tune: string;
+  Frequency: Int64;
+  Start1, Stop1: Int64;    // D4-D5
+  Time1: TDateTime;
+ 
+
+procedure SetTones;
+begin
+  mton[49]:= 261.6 //C
+  mton[50]:= 277.2 //C#
+  mton[51]:= 293.7 //D
+  mton[52]:= 311.1 //D#
+  mton[53]:= 329.6 //E
+  mton[54]:= 349.2 //F
+  mton[55]:= 370.0 //F#
+  mton[56]:= 392.0 //G
+  mton[57]:= 415.3 //G#
+  mton[58]:= 440.0 //A
+  mton[59]:= 466.2 //A#
+  mton[60]:= 493.9 //B
+end;    
+
+function getTone(vnote: char): single;
+begin
+  case vnote of 
+    'C': result:= mton[49]; 
+    'D': result:= mton[50]; 
+    'E': result:= mton[51]; 
+    'F': result:= mton[52]; 
+    'G': result:= mton[53]; 
+    'A': result:= mton[54]; 
+    'B': result:= mton[55]; 
+  end;
+end;
+  
+{procedure SetNotes;
+begin
+  mnote[1]:= 'C'
+  mnote[2]:= 'D'
+  mnote[3]:= 'E'
+  mnote[4]:= 'F'
+  mnote[5]:= 'G'
+  mnote[6]:= 'A'
+  mnote[7]:= 'B'
+end;}    
+
+procedure playNote(vtone: char; vduration: byte);
+begin
+  Beep2(round(getTone(vtone)),vduration)
+  sleep(100)
+end;   
+
+
+procedure playitAgainMom;
+var i: byte;
+begin
+  b:=200;
+  S:=600
+  L:=900
+  w:= 100;
+  for i:= 1 to 12 do begin
+    Beep2(round(mton[48+i]), b)
+    sleep(w)
+  end 
+   {Beep2(160,S) sleep(w)
+   Beep2(130,S) sleep(w)
+   Beep2(145,S) sleep(w)
+   Beep2(95,L)
+   Beep2(95,S) sleep(w)
+   Beep2(145,S) sleep(w)
+   Beep2(160,S) sleep(w)
+   Beep2(130,L) sleep(200)}
+end;
+
+procedure SoundCheck(octav: integer; slength: integer);
+begin
+(*<    switch(val){
+       case 'a' : tone(slength,220);
+       break; /* optional */
+    case 'b' :   *)
+    
+       tone(octav*220, slength);
+       tone(octav*247, slength);
+       tone(octav*262, slength);
+       tone(octav*294, slength);
+       tone(octav*330, slength);
+       tone(octav*349, slength);
+       tone(octav*392, slength);   //G
+       tone(octav*440, slength+200);
+       delay(500);
+end;
+
+procedure SoundCheck1(soundpin: integer);
+begin
+(*<    switch(val){
+       case 'a' : tone(soundpin,220);
+       break; /* optional */  case 'b' :   *)
+       tone(2*220, soundpin);
+       tone(2*247, soundpin);
+       tone(2*262, soundpin);
+       tone(2*294, soundpin);
+       tone(2*330, soundpin);
+       tone(2*349, soundpin);
+       tone(2*392, soundpin);
+       tone(2*440, soundpin+400);
+       delay(500);
+end;
+
+ var aint: integer;
+     abyt: byte;
+
+function testType(aa: byte; ab: integer): integer;
+begin
+  //result:= ab*aa;
+  result:= integer(aa*ab);
+  i := $2345;  // $2345 hex : $23 hi byte, $45 lo byte
+  ShowMessage(Format('Integer = $%x', [i]));
+  ShowMessage(Format('Hi byte = $%x', [Hi(i)]));
+  ShowMessage(Format('Lo byte = $%x', [Lo(i)]));
+   {Integer = $2345
+   Hi byte = $23
+   Lo byte = $45}
+end;  
+
+const
+ DelayTime = 500; // measure time in ms
+
+function CPUSpd2: String;
+var
+ TimerHi, TimerLo: DWORD;
+ PriorityClass, Priority: Integer;
+begin
+    PriorityClass:=GetPriorityClass(GetCurrentProcess);
+    Priority:= GetThreadPriority(GetCurrentThread);
+    SetPriorityClass(GetCurrentProcess,REALTIME_PRIORITY_CLASS);
+    SetThreadPriority(GetCurrentThread,THREAD_PRIORITY_TIME_CRITICAL);
+
+    Sleep(10);
+
+  {  asm
+       dw 310Fh // rdtsc
+       mov TimerLo, eax
+       mov TimerHi, edx
+    end; }
+
+    Sleep(DelayTime);
+
+  {  asm
+       dw 310Fh // rdtsc
+       sub eax, TimerLo
+       sbb edx, TimerHi
+       mov TimerLo, eax
+       mov TimerHi, edx
+    end;   }
+
+    SetThreadPriority(GetCurrentThread, Priority);
+    SetPriorityClass(GetCurrentProcess, PriorityClass);
+    Result:= IntToStr(Round(TimerLo / (1000.0 * DelayTime)));
+end;
+
+
+procedure makeSoundTest;
+var   freqlist: TStringlist;
+      sndpath: string;
+      cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7: string;
+      xs: integer;
+begin
+ {MakeSound(440, 2000, 60,'');
+ MakeSound(round(440+ 440/3), 2000, 60,'');
+ MakeSound(round(440+ 440/3+440/5), 2000, 60,'');
+ MakeSound(round(440+ 440/3+440/5+440/7), 2000, 60,'');
+ MakeSound(round(440+ 440/3+440/5+440/7+440/9), 2000, 60,'');
+  }
+ 
+ MakeSound(round(440+ 440/3+440/5+440/7+440/9), 2000, 60,'');
+
+ {xs:= 880;
+ writeln(floattostr(sin(xs)))
+ writeln(floattostr(sin(xs)+1/3*sin(3*xs)+1/5*sin(5*xs)+1/7*sin(7*xs)+
+                  1/9*Sin(9*xs)+1/11*Sin(11*xs)))
+ writeln(inttostr(round(sin(xs)+1/3*sin(3*xs)+1/5*sin(5*xs)+1/7*sin(7*xs)+
+                  1/9*Sin(9*xs)+1/11*Sin(11*xs))))}
+ //xs:= 880;
+ {makesound(round(sin(xs)+1/3*sin(3*xs)+1/5*sin(5*xs)+1/7*sin(7*xs)+
+                  1/9*Sin(9*xs)+1/11*Sin(11*xs)),4000,80,'');
+  }
+ 
+ sndpath:= Exepath+'examples\';
+ 
+ {MakeSound(440, 5000, 60,sndpath+'sin1.wav');
+ MakeSound(round(440+ 440/3), 5000, 60,sndpath+'sin3.wav');
+ MakeSound(round(440+ 440/3+440/5), 5000, 60,sndpath+'sin5.wav');
+ MakeSound(round(440+ 440/3+440/5+440/7), 5000, 60,sndpath+'sin7.wav');
+ MakeSound(round(440+ 440/3+440/5+440/7+440/9), 5000, 60,sndpath+'sin9.wav');}
+ //MakeSound(round(440+ 440/3+440/5+440/7+440/9+440/11),5000,60,sndpath+'sin11.wav');
+ //MakeSound(round(440+ 440/3+440/5+440/7+440/9+440/11+440+13),5000,60,sndpath+'sin13.wav');
+
+ //MakeSound(round(440+ 440/3+440/5+440/7+440/9), 5000, 60,'sin9long.wav');
+   writeln(inttostr(round(440+ 440/3+440/5+440/7+440/9)))
+   maxcalcF('(796+775)/2')
+   maxcalcF('(753+796+775+818)/4')
+ 
+ {FFT  
+ freq          amp         phase
+ 753.6621      10.51764     -23.8
+ 775.1953      37.73607       1.2
+ 796.7285      38.10993     204.7
+ 818.2617      10.36679     227.3 }
+ 
+                   
+ {PlaySound(pchar(ExePath+'sin9.wav'), 0, 1);
+ writeln('async...');
+ PlaySound(pchar(ExePath+'sin3.wav'), 0, 1);
+  }
+ 
+ //PlaySound(pchar(ExePath+'sin9.wav'), 0, snd_ASync or snd_Memory);
+ //PlaySound(pchar(ExePath+'sin3.wav'), 0, snd_ASync or snd_Memory);
+
+  //soundpath:= Exepath+'examples\';
+  //cmd1:= 'play "'+soundpath+'maxbox.wav"';
+  //cmd2:= 'play "'+soundpath+'moon.wav"';
+  
+  {cmd1:= 'play "'+sndpath+'sin1.wav"';
+  cmd2:= 'play "'+sndpath+'sin3.wav"';
+  cmd3:= 'play "'+sndpath+'sin5.wav"';
+  cmd4:= 'play "'+sndpath+'sin7.wav"';
+  cmd5:= 'play "'+sndpath+'sin9.wav"';
+  cmd6:= 'play "'+sndpath+'sin11.wav"';
+  cmd7:= 'play "'+sndpath+'sin13.wav"';
+
+  SendMCICommand('open waveaudio shareable');
+  SendMCICommand(cmd1);
+  SendMCICommand(cmd2);
+  SendMCICommand(cmd3);
+  SendMCICommand(cmd4);
+  SendMCICommand(cmd5);
+  SendMCICommand(cmd6);
+  SendMCICommand(cmd7);
+  
+  //SendMCICommand(command1);
+  SendMCICommand('close waveaudio'); 
+  }
+  
+   //deblank
+  //shuffle(srlist)
+   //IntToBinaryString
+   //  AdjustGridSize
+   //IgnoreSelectedDrawCell
+  // PlaySound(pchar(ExePath+'sin9long.wav'), 0, 1);
+ 
+  // MakeSound(440, 1000, 60,Exepath+'examples/kammertontest.wav');
+   
+   // procedure MakeComplexSound(N:integer {stream # to use}; freqlist:TStrings; Duration{mSec}: Integer;
+   //                         pinknoise: boolean; Volume: TVolumeLevel);
+
+  //procedure SetComplexSoundElements(freqedt,Phaseedt,AmpEdt,WaveGrp:integer);
+   SetComplexSoundElements(500,90,60,1);
+   //Procedure AddComplexSoundObjectToList(newf,newp,newa,news:integer; freqlist: TStrings);');
+ //if listbox1.items.count=0 then AddObjectToList(440,0,500,0); {no entry, make one}
+  
+   freqlist:=TStringlist.create;
+    AddComplexSoundObjectToList(392,0,500,0,freqlist);
+    AddComplexSoundObjectToList(440,0,500,0,freqlist);
+   
+     //nextstream:=(streaminuse+1) mod 2;
+    //MakeComplexSound(1, freqlist, 1000, true, 60); //just in progress!
+    freqlist.Free;
+    freqlist:= NIL;
+    //Voice(powerBig(2,50));     //Async with Voice2()
+end;
+
+begin
+  tune:= 'ccggaagffeeddc';
+  {for i:= 1 to length(tune) do 
+    playNote(tune[i],200); 
+  SetTones;
+  playitAgainMom }
+  
+    aint:= 220; abyt:= 2;
+    writeln(inttostr(aint*abyt))
+    //writeln(inttostr(testtype(abyt,aint)))
+  
+  //SoundCheck(2, 300);
+  //SoundCheck1(400);
+  
+  maxcalcf('1/0.002')
+  maxcalcf('20000*1000')
+ 
+  {memo2.setFocus;
+  repeat 
+    tone(500, 5000);
+  until isKeyPressed;    }
+   if QueryPerformanceFrequency(Frequency) then
+     QueryPerformanceCounter(Start1);
+   //Sleep(2000);                     //2000 milliseconds = 2 seconds
+   PerformanceDelayMS(2000000*10);      //2000 micro seconds = 2 milli secs
+                                      //2000*1000 = 2 seconds
+   QueryPerformanceCounter(Stop1);
+   Writeln('Delta: '+IntToStr(Stop1-Start1) + ' Freq: ' +
+                IntToStr(Frequency) +  ' ' +
+                Format('%.6f', [(Stop1-Start1)/Frequency ])+ ' seconds')
+
+   if GLQueryPerformanceFrequency(Frequency) then
+     GLQueryPerformanceCounter(Start1);
+   PerformanceDelayMS(500*10);       //micro seconds!
+   //Sleep(500)                        //milli seconds
+   QueryPerformanceCounter(Stop1);
+   Writeln('Delta: '+IntToStr(Stop1-Start1) + ' Freq: ' +
+                IntToStr(Frequency) +  ' of ' +
+                Format('%.6f',[(Stop1-Start1)/Frequency ])+' micro seconds!')
+   Writeln(Format('Delta: %d Freq: %d of %.6f',[Stop1-Start1, Frequency, 
+                              (Stop1-Start1)/Frequency ])+' micro seconds!')
+   PrintF('Delta: %d Freq: %d of %.6f micro secs!',[Stop1-Start1, Frequency, 
+                                            (Stop1-Start1)/Frequency ])
+
+   maxcalcf('0.000520*1000')     //millisecs
+   maxcalcf('0.000520*1000*1000')     //secs
+   
+   Time1:= Time;
+   PerformanceDelayMS(2000000*10);      //2000 micro seconds = 2 milli secs
+   PrintF('%d %s',[Trunc((Time-Time1)*24),
+                  FormatDateTime('"h runtime:" nn:ss:zzz',Time-Time1)])
+  
+   Time1:= Time;
+   PerformanceDelayMS(500000*10);      //500 micro seconds = 1/2 milli secs
+   PrintF('%d %s',[Trunc((Time-Time1)*24),
+                  FormatDateTime('"h runtime:" nn:ss:zzz',Time-Time1)])
+  
+  //shellexecute(0, '', '', 'D:\kleiner2005\TestApp\maxbox2\maxbox3.exe','',1 ) 
+  //shellexecute(0, 'open','rundll32.exe','diskcopy.dll,diskcopyrundll 0,0','',1)
+  //winexec('firstdemo.txt',2)
+  
+   maXcalcF('100000000*100000000') //enigma
+   
+   with TStopWatch.Create() do begin
+   try
+     Start;
+     //TimeOutThisFunction()
+     Sleep(2)
+     //PerformanceDelayMS(500000*10);      //500 micro seconds = 1/2 milli secs
+     Stop;
+   finally
+     Writeln('watchTime: ' +floattoStr(GetValueMSec/1000));
+     Writeln('watchTime: ' +GetTimeString);
+     Free;
+   end;
+   end;
+  
+  makeSoundTest;
+  
+  //tone(440, 3000);
+  
+  //MessageBox(0,PChar('CPU speed is '+CPUSpd2+' MHz'),'CPU Speed Check',MB_IconInformation+MB_OK);
+ 
+End.
+
+ref:
+
+Delta: 507 Freq: 974150 of 0.000520 micro seconds!
+Delta: 507 Freq: 974150 of 0.000520 micro seconds!
+Delta: 507 Freq: 974150 of 0.000520 micro secs!
+
+
+2048583 Freq: 974150 2.102944 seconds
+71 Freq: 974150 of 0.000073 micro seconds!
+Delta: 70 Freq: 974150 of 0.000072 micro seconds!
+
+
+http://delphi.about.com/od/windowsshellapi/a/delphi-high-performance-timer-tstopwatch.htm
+
+The second idea that comes to mind is using the GetTickCount Windows API function. GetTickCount retrieves the number of milliseconds that have elapsed since the system was started, but the function only has the precision of 1 ms and is not very accurate.
+
+The elapsed time is stored as a DWORD (32-bit) value. Therefore, the time will wrap around to zero if Windows is run continuously for 49.7 days.
+
+http://components.about.com/od/Products/a/Oscilloscope-Overview.htm?utm_term=oscilloscope%20manual&utm_content=p1-main-1-title&utm_medium=sem&utm_source=msn&utm_campaign=adid-37f8f120-e9d6-4882-9675-07396c9b58cb-0-ab_msb_ocode-4574&ad=semD&an=msn_s&am=broad&q=oscilloscope%20manual&dqi=&o=4574&l=sem&qsrc=999&askid=37f8f120-e9d6-4882-9675-07396c9b58cb-0-ab_msb
+
+http://www.radio-electronics.com/info/t_and_m/oscilloscope/oscilloscope-trigger.php
+
+doc:
+
+Oscilloscopes are one of the mainstays of an electronics lab and are essential for anyone designing electronics, troubleshooting, or working with high speed electronics. Oscilloscopes are one of the few pieces of electronics equipment that plays multiple roles and can be used in the place of other electronics equipment.
+
+Oscilloscopes include a rich complement of math and measurement capabilities that are often underutilized. Knowing how to effectively use these capabilities can enable you to solve complex test problems quicker and better.
+
+Oscilloscopes provide the most basic, yet critical information about how a circuit is actually behaving. Oscilloscopes display a signal in a graphical form, showing how the voltage at a point in a circuit changes over time. The vertical axis on an oscilloscope displays the voltage of the signal and the x axis represents the time. Both axis can be scaled to show large and small signals as well as nanosecond (or faster) to several second long signal responses.
+
+The voltage signals that an oscilloscope measures are generically called waves, which is any repeating pattern (sound waves, oceans waves, etc), and the signal displayed on the oscilloscope is called a waveform. Viewing the waveform on an oscilloscope can be used to determine several things about the signal including:
+
+    The voltage value of a signal
+    The frequency of a signal
+    The DC and AC components of a signal
+    The noise in the signal
+    If there is distortion in the signal
+    How the signal changes over time
+    If a component is malfunctioning or failing
+    See the timing between signals
+    
+    The oscilloscope trigger facility is one of the key functions within the oscilloscope.
+Triggering enables the scope, whether digital or analogue, to display a steady image on the screen that can be viewed by the user / engineer investigating a particular circuit.
+
+Without a trigger, or other form of synchronisation, it would not be possible to display a steady signal on the screen.
+
+This is an oscilloscope introduction that uses several sources for input. My hope is that it encourages a few future scientists to experiment and get into touch with new waves ~.
+
+<iframe src="//www.slideshare.net/slideshow/embed_code/44116573" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>   
