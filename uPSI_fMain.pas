@@ -1,14 +1,14 @@
 unit uPSI_fMain;
 {
-*******************Open Tools API Catalog***********************************
+*******************Open Tools API Catalog Dic***********************************
 code implementing the class wrapper
 as an OpenToolsAPI to modify the maXbox GUI - V3.5 -V3.8.6 , version check
    actual 3.9.8 , new ipport, comport, iphost, appname, open examples, intflist
    locs=   1624   , last is gotoline, intfnavlist, configfileclick
   DoEditorExecuteCommand(EditorCommand: word);
-  Updated to 3.9.9.85 /80/82/91/94/95/96/98/100/101/110/120/160/190/195 ,420 locs=3787,
-  MBVERIALL, ResetKeyPressed, arduino items, terminal;
-}
+  Updated to 3.9.9.85 /80/82/91/94/95/96/98/100/101/110/120/160/190/195 ,420 locs=3810,
+  MBVERIALL, ResetKeyPressed, arduino items, terminal;    4.2.2.90  /95  /98  42425 4.2.4.60  4.2.5.10 42610 42810
+        45810 46210 46310 47110 47120 47180 47182 47282 47360 47460 47462 47464 47520 47580 47590 47620 47650}
 
 interface
 
@@ -677,7 +677,7 @@ begin
     RegisterMethod('procedure WebCam1Click(Sender: TObject);');
     RegisterMethod('procedure Tutorial31Closure1Click(Sender: TObject);');
     RegisterMethod('procedure GEOMapView1Click(Sender: TObject);');
-    RegisterMethod('procedure Run1Click(Sender: TObject');
+    RegisterMethod('procedure Run1Click(Sender: TObject);');
     RegisterMethod('procedure GPSSatView1Click(Sender: TObject);');
     RegisterMethod('procedure N3DLab1Click(Sender: TObject);');
     RegisterMethod('procedure ExternalApp1Click(Sender: TObject);');
@@ -688,6 +688,15 @@ begin
     RegisterMethod('procedure TrainingArduino1Click(Sender: TObject);');
     RegisterMethod('procedure Chess41Click(Sender: TObject);');
     RegisterMethod('procedure OrangeStyle1Click(Sender: TObject);');
+    RegisterMethod('procedure Tutorial361Click(Sender: TObject);');
+    RegisterMethod('procedure Darkcolor1Click(Sender: TObject);');
+    RegisterMethod('procedure ShowIndent1Click(Sender: TObject);');
+    RegisterMethod('procedure InternetRadio1Click(Sender: TObject);');
+    RegisterMethod('procedure MyScript2Click(Sender: TObject);');
+    RegisterMethod('procedure ExternalApp22Click(Sender: TObject);');
+    RegisterMethod('procedure JumptoOutput1Click(Sender: TObject);');
+    //47650
+    RegisterMethod('procedure PacMan1Click(Sender: TObject);');
 
       //RegisterMethod('procedure defFilereadUpdate;');
       //  procedure defFilereadUpdate;
@@ -717,16 +726,17 @@ begin
 
  CL.AddConstantN('INCLUDEBOX','String').SetString('pas_includebox.inc');
  CL.AddConstantN('BOOTSCRIPT','String').SetString('maxbootscript.txt');
- CL.AddConstantN('MBVERSION','String').SetString('4.2.0.10');
- CL.AddConstantN('VERSION','String').SetString('4.2.0.10');
- CL.AddConstantN('MBVERIALL','Integer').SetInt(42010);
- CL.AddConstantN('MBVER2','String').SetString('42010');
- CL.AddConstantN('EXENAME','String').SetString( 'maXbox4.exe');
- CL.AddConstantN('MXINTERNETCHECK','String').SetString( 'www.ask.com');
- CL.AddConstantN('MBVER','String').SetString('420');
- CL.AddConstantN('MBVERI','Integer').SetInt(420);
+ CL.AddConstantN('MBVERSION','String').SetString('4.7.6.50');
+ CL.AddConstantN('VERSION','String').SetString('4.7.6.50');
+ CL.AddConstantN('MBVERIALL','Integer').SetInt(47650);
+ CL.AddConstantN('MBVER2','String').SetString('47650');
+ CL.AddConstantN('EXENAME','String').SetString('maXbox4.exe');
+ CL.AddConstantN('MXINTERNETCHECK','String').SetString('www.ask.com');
+ CL.AddConstantN('MBVER','String').SetString('476');
+ CL.AddConstantN('MBVERI','Integer').SetInt(476);
  CL.AddConstantN('MXVERSIONFILE','String').SetString('http://www.softwareschule.ch/maxvfile.txt');
  CL.AddConstantN('MXVERSIONFILE2','String').SetString('http://www.softwareschule.ch/maxvfile2.txt');
+
  // MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile.txt';
   // MXVERSIONFILE2 = 'http://www.softwareschule.ch/maxvfile2.txt';
   //CL.AddConstantN('MBVERIALL','Integer').SetInt(39996);
@@ -734,6 +744,10 @@ begin
  CL.AddConstantN('MXMAIL','String').SetString( 'max@kleiner.com');
  CL.AddConstantN('TAB','Char').SetString( #$09);
  CL.AddConstantN('CODECOMPLETION','String').SetString('bds_delphi.dci');
+ CL.AddConstantN('ASKBOX','String').SetString( 'maXbox is a powerful script engine which generates interactive apps on-the-fly.');
+ CL.AddConstantN('ASKBOX2','String').SetString( 'It allows you to dig as deep into your code files as you need to.');
+ CL.AddConstantN('IMPORTTHIS','String').SetString( 'Coding like ShellBoy with the best HellToy 4 You.');
+
   SIRegister_TMaxForm1(CL);
 end;
 
@@ -3758,8 +3772,17 @@ begin
     RegisterMethod(@TMaxForm1.SaveByteCode, 'SaveByteCode');
     RegisterMethod(@TMaxForm1.Chess41Click, 'Chess41Click');
     RegisterMethod(@TMaxForm1.OrangeStyle1Click, 'OrangeStyle1Click');
+    RegisterMethod(@TMaxForm1.Tutorial361Click, 'Tutorial361Click');
+    RegisterMethod(@TMaxForm1.Darkcolor1Click, 'Darkcolor1Click');
+     RegisterMethod(@TMaxForm1.ShowIndent1Click, 'ShowIndent1Click');
+     RegisterMethod(@TMaxForm1.InternetRadio1Click, 'InternetRadio1Click');
+     RegisterMethod(@TMaxForm1.MyScript2Click, 'MyScript2Click');
+     RegisterMethod(@TMaxForm1.ExternalApp22Click, 'ExternalApp22Click');
+     RegisterMethod(@TMaxForm1.JumptoOutput1Click, 'JumptoOutput1Click');
+    RegisterMethod(@TMaxForm1.PacMan1Click, 'PacMan1Click');
 
-    //procedure OrangeStyle1Click(Sender: TObject);
+     //procedure Darkcolor1Click(Sender: TObject);
+        //procedure OrangeStyle1Click(Sender: TObject);
      //RegisterMethod(@TMaxForm1.ExternalApp1, 'ExternalApp1');
              //  GetWebScript1Click
    end;

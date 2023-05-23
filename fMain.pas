@@ -194,6 +194,7 @@
           12312   4.7.6.20 V bugfixing teEngine, TChart , neuralfit, INet, elevated support, webpostdata2, synCrtSock;
           12316   4.7.6.20 VIII httpsender - uPSI_HttpConnection;, interface support RESt client
           12320   4.7.6.20 IX restclient, jsonconverter, jazzsound, superobject
+          12390   4.7.6.50 internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core
 
  ************************************************************************************* }
 
@@ -244,9 +245,9 @@ const
    ALLUNITLIST = 'docs\maxbox4_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '4.7.6.20';
+   MBVERSION = '4.7.6.50';
    MBVER = '476';              //for checking!
-   MBVER2 = '47620';              //for checking!
+   MBVER2 = '47650';              //for checking!
    EXENAME ='maXbox4.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile.txt';
@@ -631,6 +632,7 @@ type
     ShowIndent1: TMenuItem;
     JumptoTerminal1: TMenuItem;
     JumptoOutput1: TMenuItem;
+    PacMan1: TMenuItem;
     procedure IFPS3ClassesPlugin1CompImport(Sender: TObject; x: TPSPascalCompiler);
     procedure IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TPSExec; x: TPSRuntimeClassImporter);
     procedure PSScriptCompile(Sender: TPSScript);
@@ -909,6 +911,7 @@ type
     procedure ShowIndent1Click(Sender: TObject);
     procedure JumptoTerminal1Click(Sender: TObject);
     procedure JumptoOutput1Click(Sender: TObject);
+    procedure PacMan1Click(Sender: TObject);
     //procedure Memo1DropFiles(Sender: TObject; X,Y: Integer; AFiles: TStrings);
   private
     STATSavebefore: boolean;
@@ -2400,7 +2403,13 @@ uses
   uPSI_HttpConnectionWinInet,
   uPSI_HTTPSender,            //4.7.6.20 VIII
   uPSI_RestClient,
-
+  uPSI_dprocess,              //4.7.6.50
+  uPSI_uXmlStorage,
+  pacMAIN, pacscores,
+  uPSI_AsphyreTimer,
+  uPSI_Pas2JSUtils,
+  uPSI_pacMain,
+  
   uPSI_IdNNTPServer,        //4.2.4.25
   uPSI_UWANTUtils,
   uPSI_OverbyteIcsAsn1Utils,
@@ -3905,6 +3914,11 @@ begin
   SIRegister_HttpConnectionWinInet(X);  //4.7.6.20 V
   SIRegister_HTTPSender(X);
   SIRegister_RestClient(X);     //4.7.6.20 IX
+  SIRegister_dprocess(X);       ////4.7.6.50
+  SIRegister_uXmlStorage(X);
+  SIRegister_AsphyreTimer(X);
+  SIRegister_Pas2JSUtils(X);
+  SIRegister_pacMain(X);
 
   SIRegister_XMLIntf(X);
   SIRegister_XMLDoc(X);
@@ -5542,6 +5556,13 @@ begin
   RIRegister_HttpConnectionWinInet(X);
   RIRegister_HTTPSender(X);
   RIRegister_RestClient(X);
+  RIRegister_dprocess_Routines(Exec);
+  RIRegister_dprocess(X);              //4.7.6.50
+  RIRegister_uXmlStorage(X);
+  RIRegister_uXmlStorage_Routines(Exec);
+  RIRegister_AsphyreTimer(X);
+  RIRegister_Pas2JSUtils_Routines(Exec);
+  RIRegister_pacMain(X);
 
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
@@ -6147,12 +6168,27 @@ begin
               Nativewriteln(PSScript.CompilerMessages[lm].messagetostring);
 
            end;
-           if PSScript.Execute then begin
+         if PSScript.Execute then begin
                  NativeWriteLn('executed...');
               for lm:= 0 to PSScript.CompilerMessageCount - 1 do begin
              NativeWriteln('exec'+ psscript.CompilerMessages[lm].MessageToString);
             end;
             nativeWriteln(memo2.text);    //6100
+            //V 4.7.6.50
+            if ((ParamStr(3) = 's') or (ParamStr(3) = '-s')) then begin
+               maxform1.memo2.lines.add('CLI -c -s Console Call Show -read only!: ' +ParamStr(3));
+               maxform1.memo1.Lines.LoadFromFile(act_Filestring);
+               CB1SCList.Items.Add((Act_Filestring));   //3.9 wb  bugfix 3.9.3.6
+               CB1SCList.ItemIndex:= CB1SCList.Items.Count-1;
+               //to keep the save script file in sync!
+               act_Filename:= Act_Filestring;
+               maxform1.Showmodal;
+               NativeWriteln('Script '+act_Filestring+' finished: '+DateTimeToStr(Now)+' >>');
+               NativeWriteln(' >>>');
+               maxform1.free;
+               halt(10);
+               //maxform1.memo2.lines.add('CLI -c Console Call Show: ' +ParamStr(3));
+            end; //}
           {  for lm:= 0 to PSScript.CompilerMessageCount - 1 do begin
               m:= psscript.CompilerMessages[lm].MessageToString;
               nativeWriteln('PSXCompiler: '+PSScript.CompilerErrorToStr(lm)+#13#10 +m);
@@ -6166,6 +6202,19 @@ begin
             NativeWriteln(PSScript.ExecErrorToString +' at '+Inttostr(PSScript.ExecErrorProcNo)
                        +'.'+Inttostr(PSScript.ExecErrorByteCodePosition));
          end;
+         {if ((ParamStr(3) = 's') or (ParamStr(3) = '-s')) then begin
+               maxform1.memo2.lines.add('CLI -c -s Console Call Show -read only!: ' +ParamStr(3));
+               maxform1.memo1.Lines.LoadFromFile(act_Filestring);
+               CB1SCList.Items.Add((Act_Filestring));   //3.9 wb  bugfix 3.9.3.6
+               CB1SCList.ItemIndex:= CB1SCList.Items.Count-1;
+               act_Filename:= Act_Filestring;
+               maxform1.Showmodal;
+               NativeWriteln('Script '+act_Filestring+' finished: '+DateTimeToStr(Now)+' >>');
+               NativeWriteln(' >>>');
+               maxform1.free;
+               halt(10);
+               //maxform1.memo2.lines.add('CLI -c Console Call Show: ' +ParamStr(3));
+            end; }
        end;
        //NativeWriteln('mXShell: '+PSScript.CompilerErrorToStr(1)+#13#10);
        NativeWriteln('Script '+act_Filestring+' finished: '+DateTimeToStr(Now)+' >');
@@ -10390,7 +10439,28 @@ begin
 end;
 
 
-//----------------------- PlugIns---------------------------------------------
+//----------------------- PlugIns Game Core Box---------------------------------------------
+procedure TMaxForm1.PacMan1Click(Sender: TObject);
+begin
+  //this start of pacman    - pacman
+   Form1pac:= TForm1pac.Create(self);
+   Form2pac:= TForm2pac.create(form1pac);
+  try
+    memo2.Lines.Add('PacManX View started');
+    Form1pac.Cursor:= CRHandpoint;
+    {if fileExists(ExtractFilePath(ParamStr(0))+'\examples\sejour2048.jpg') then
+      panForm1.GLMaterialLibrary1.Materials[0].Material.Texture.Image.LoadFromFile(ExtractFilePath(ParamStr(0))+'\examples\sejour2048.jpg');
+    memo2.Lines.Add('OpenGL Panorama View start in single mode');  }
+     //Form1pac.ShowModal;
+     //modal to ensure free all 6 timers action:= cafree;
+      Form1pac.ShowModal;
+    memo2.Lines.Add('PacManX View ended');
+   finally
+    Form1pac.Cursor:= CRDefault;
+    Form1pac.Free;
+  end;
+end;
+
 procedure TMaxForm1.PANView1Click(Sender: TObject);
 begin
  //start the pan view
