@@ -194,7 +194,7 @@
           12312   4.7.6.20 V bugfixing teEngine, TChart , neuralfit, INet, elevated support, webpostdata2, synCrtSock;
           12316   4.7.6.20 VIII httpsender - uPSI_HttpConnection;, interface support RESt client
           12320   4.7.6.20 IX restclient, jsonconverter, jazzsound, superobject
-          12390   4.7.6.50 internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core
+          12410   4.7.6.50 I internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core  -superobject
 
  ************************************************************************************* }
 
@@ -2409,6 +2409,13 @@ uses
   uPSI_AsphyreTimer,
   uPSI_Pas2JSUtils,
   uPSI_pacMain,
+  uPSI_OldRttiMarshal,
+  uPSI_superxmlparser,
+  uPSI_superobject,
+  uPSI_NovusUtilities,
+  uPSI_NovusStringUtils,
+  uPSI_NovusWindows,
+  
   
   uPSI_IdNNTPServer,        //4.2.4.25
   uPSI_UWANTUtils,
@@ -3919,6 +3926,12 @@ begin
   SIRegister_AsphyreTimer(X);
   SIRegister_Pas2JSUtils(X);
   SIRegister_pacMain(X);
+  SIRegister_superobject(X);
+  SIRegister_OldRttiMarshal(X);
+  SIRegister_superxmlparser(X);
+  SIRegister_NovusUtilities(X);
+  SIRegister_NovusStringUtils(X);
+  SIRegister_NovusWindows(X);
 
   SIRegister_XMLIntf(X);
   SIRegister_XMLDoc(X);
@@ -5563,6 +5576,13 @@ begin
   RIRegister_AsphyreTimer(X);
   RIRegister_Pas2JSUtils_Routines(Exec);
   RIRegister_pacMain(X);
+  RIRegister_superobject(X);
+  RIRegister_superobject_Routines(Exec);
+  RIRegister_OldRttiMarshal(X);
+  RIRegister_superxmlparser_Routines(Exec);
+  RIRegister_NovusUtilities(X);
+  RIRegister_NovusStringUtils(X);
+  RIRegister_NovusWindows(X);
 
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
