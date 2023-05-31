@@ -194,7 +194,7 @@
           12312   4.7.6.20 V bugfixing teEngine, TChart , neuralfit, INet, elevated support, webpostdata2, synCrtSock;
           12316   4.7.6.20 VIII httpsender - uPSI_HttpConnection;, interface support RESt client
           12320   4.7.6.20 IX restclient, jsonconverter, jazzsound, superobject
-          12410   4.7.6.50 I internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core  -superobject
+          12414   4.7.6.50 II internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core  -superobject
 
  ************************************************************************************* }
 
@@ -2415,6 +2415,7 @@ uses
   uPSI_NovusUtilities,
   uPSI_NovusStringUtils,
   uPSI_NovusWindows,
+  uPSI_PJResFile,
   
   
   uPSI_IdNNTPServer,        //4.2.4.25
@@ -3932,6 +3933,7 @@ begin
   SIRegister_NovusUtilities(X);
   SIRegister_NovusStringUtils(X);
   SIRegister_NovusWindows(X);
+  SIRegister_PJResFile(X);
 
   SIRegister_XMLIntf(X);
   SIRegister_XMLDoc(X);
@@ -5583,6 +5585,8 @@ begin
   RIRegister_NovusUtilities(X);
   RIRegister_NovusStringUtils(X);
   RIRegister_NovusWindows(X);
+  RIRegister_PJResFile_Routines(Exec);
+  RIRegister_PJResFile(X);
 
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
