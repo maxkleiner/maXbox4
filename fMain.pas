@@ -195,6 +195,7 @@
           12316   4.7.6.20 VIII httpsender - uPSI_HttpConnection;, interface support RESt client
           12320   4.7.6.20 IX restclient, jsonconverter, jazzsound, superobject
           12414   4.7.6.50 II internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core  -superobject
+          12420   4.7.6.50 III internals  - TJvCreateProcess2 - syscomp  -  -superobject fix teebar jpeg res ocean330
 
  ************************************************************************************* }
 
@@ -2416,6 +2417,7 @@ uses
   uPSI_NovusStringUtils,
   uPSI_NovusWindows,
   uPSI_PJResFile,
+  uPSI_JVCLHelpUtils,
   
   
   uPSI_IdNNTPServer,        //4.2.4.25
@@ -3440,7 +3442,7 @@ begin
   SIRegister_cyGraphics(X);
   SIRegister_JvDateTimePicker(X);
   SIRegister_JvEasterEgg(X);
-  SIRegister_JvCreateProcess(X);
+  SIRegister_JvCreateProcess2(X);
   SIRegister_WinSvc(X);
   SIRegister_SvcMgr(X);
   SIRegister_WinSvc2(X);
@@ -3934,6 +3936,8 @@ begin
   SIRegister_NovusStringUtils(X);
   SIRegister_NovusWindows(X);
   SIRegister_PJResFile(X);
+  SIRegister_JVCLHelpUtils(X);
+  
 
   SIRegister_XMLIntf(X);
   SIRegister_XMLDoc(X);
@@ -5338,7 +5342,7 @@ begin
   RIRegister_cyGraphics_Routines(Exec);
   RIRegister_JvDateTimePicker(X);
   RIRegister_JvEasterEgg(X);
-  RIRegister_JvCreateProcess(X);
+  RIRegister_JvCreateProcess2(X);
   RIRegister_WinSvc_Routines(Exec);
   RIRegister_WinSvc2_Routines(Exec);
 
@@ -5587,6 +5591,8 @@ begin
   RIRegister_NovusWindows(X);
   RIRegister_PJResFile_Routines(Exec);
   RIRegister_PJResFile(X);
+  RIRegister_JVCLHelpUtils_Routines(Exec);
+  RIRegister_JVCLHelpUtils(X);
 
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
