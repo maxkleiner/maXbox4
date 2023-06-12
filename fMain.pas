@@ -196,6 +196,7 @@
           12320   4.7.6.20 IX restclient, jsonconverter, jazzsound, superobject
           12414   4.7.6.50 II internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core  -superobject
           12420   4.7.6.50 III internals  - TJvCreateProcess2 - syscomp  -  -superobject fix teebar jpeg res ocean330
+          12430   4.7.6.50 IV collusive outcome, TExporter , SIRegister_uExporterDestinationCSV, TRexporter
 
  ************************************************************************************* }
 
@@ -2418,8 +2419,12 @@ uses
   uPSI_NovusWindows,
   uPSI_PJResFile,
   uPSI_JVCLHelpUtils,
-  
-  
+  uPSI_uExporter,
+  uPSI_uOptionParser,
+  uPSI_GUIUtils,
+  uPSI_GUIAutomation,
+
+    
   uPSI_IdNNTPServer,        //4.2.4.25
   uPSI_UWANTUtils,
   uPSI_OverbyteIcsAsn1Utils,
@@ -3937,7 +3942,10 @@ begin
   SIRegister_NovusWindows(X);
   SIRegister_PJResFile(X);
   SIRegister_JVCLHelpUtils(X);
-  
+  SIRegister_uExporter(X);
+  SIRegister_uOptionParser(X);
+  SIRegister_GUIUtils(X);
+  SIRegister_GUIAutomation(X);
 
   SIRegister_XMLIntf(X);
   SIRegister_XMLDoc(X);
@@ -5593,6 +5601,10 @@ begin
   RIRegister_PJResFile(X);
   RIRegister_JVCLHelpUtils_Routines(Exec);
   RIRegister_JVCLHelpUtils(X);
+  RIRegister_uExporter(X);
+  RIRegister_uOptionParser(X);
+  RIRegister_GUIUtils_Routines(Exec);
+  RIRegister_GUIAutomation(X);
 
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
@@ -12158,7 +12170,6 @@ begin
   end;
 end;
 
-
 procedure TMaxForm1.toolbtnTutorialClick(Sender: TObject);
 var sOname, sEName: string;
 begin
@@ -12169,7 +12180,6 @@ begin
   end else
     showMessage('No Tutorials Directory found...');
 end;
-
 
 procedure TMaxForm1.CSyntax1Click(Sender: TObject);
 begin
