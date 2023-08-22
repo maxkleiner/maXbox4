@@ -1,0 +1,281 @@
+Build
+  [Pascal Hint] uPSI_PsAPI.pas(18): H2269 Overriding virtual method 'TPSImport_PsAPI.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [Pascal Hint] uPSI_PsAPI.pas(19): H2269 Overriding virtual method 'TPSImport_PsAPI.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [Pascal Error] uPSI_PsAPI.pas(57): E2089 Invalid typecast
+  [Pascal Fatal Error] maxbox3_9.dpr(46): F2063 Could not compile used unit 'uPSI_PsAPI.pas'
+Output
+  Der Buildvorgang wurde um 21.01.2014 01:15:41 gestartet.
+  __________________________________________________
+  Projekt D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\maxbox3_9.dproj (Make-Ziel(e)):
+  CoreCompile-Ziel:
+      d:\program files\borland\rad studio\5.0\bin\dcc32.exe -DDEBUG -ED:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4 -ID:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;"D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9";D:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\resXplor;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;"D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface";D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;"D:\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI";D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST;"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11" -LE"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Bpl" -LN"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp" -M -OD:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;"D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9";D:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\resXplor;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;"D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface";D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;"D:\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI";D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST;"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11" -RD:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;"D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9";D:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\resXplor;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;"D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface";D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;"D:\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI";D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST;"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11" -UD:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;"D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9";D:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\resXplor;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;"D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface";D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;"D:\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI";D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST;"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11" --doc --no-config -$C-   maxbox3_9.dpr   
+  Der Buildvorgang war erfolgreich.
+      0 Warnung(en)
+      0 Fehler
+  Vergangene Zeit 00:00:10.50
+Search for 'registervirtualconst...'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\20-Serial_4_3\uPSI_Serial.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\20-Serial_4_3\uPSI_Serial.pas(1000):     RegisterVirtualConstructor(@TMsgWindow.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse\uPSI_SynPdf.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse\uPSI_SynPdf.pas(2279):     RegisterVirtualConstructor(@TPdfPage.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse\uPSI_SynPdf.pas(2566):     RegisterVirtualConstructor(@TPdfObject.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse\uPSI_SynPdf.pas(2629):     //RegisterVirtualConstructor(@TPdfEncryption.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_Chart.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_Chart.pas(1588):     RegisterVirtualConstructor(@TChartThemeCreate_P, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_Chart_old.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_Chart_old.pas(1564):     RegisterVirtualConstructor(@TChartThemeCreate_P, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_DSUtil.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_DSUtil.pas(730):     RegisterVirtualConstructor(@TPersistentMemory.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_GR32.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_GR32.pas(1178):     RegisterVirtualConstructor(@TCustomResamplerCreate2_P, 'Create2');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_GR32.pas(1179):     RegisterVirtualConstructor(@TCustomResamplerCreate3_P, 'Create3');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_GR32.pas(1204):     RegisterVirtualConstructor(@TCustomBackendCreate1_P, 'Create1');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_IdMessageCoder.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_IdMessageCoder.pas(219):     RegisterVirtualConstructor(@TIdMessageEncoderInfo.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_IdMessageCoder.pas(254):     RegisterVirtualConstructor(@TIdMessageDecoderInfo.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_JclPeImage.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_JclPeImage.pas(1496):     RegisterVirtualConstructor(@TJclPeImage.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_JclPrint.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_JclPrint.pas(275):     RegisterVirtualConstructor(@TJclPrintSet.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_JvChart.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_JvChart.pas(1376):     RegisterVirtualConstructor(@TJvChartOptions.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_JvChart.pas(1446):     RegisterVirtualConstructor(@TJvChartYAxisOptions.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_JvSearchFiles.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_JvSearchFiles.pas(524):     RegisterVirtualConstructor(@TJvSearchParams.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_OleAuto.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_OleAuto.pas(306):     RegisterVirtualConstructor(@TAutoObject.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_StBarC.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_StBarC.pas(338):     RegisterVirtualConstructor(@TStBarCodeInfo.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_StBase.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_StBase.pas(407):     RegisterVirtualConstructor(@TStNode.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_StSort.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_StSort.pas(124):     RegisterVirtualConstructor(@TStSorter.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_SynEditMiscClasses.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_SynEditMiscClasses.pas(845):     RegisterVirtualConstructor(@TSynMethodChain.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_SynMacroRecorder.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_SynMacroRecorder.pas(401):     RegisterVirtualConstructor(@TSynMacroEvent.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_SynPdf.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_SynPdf.pas(2273):     RegisterVirtualConstructor(@TPdfPage.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_SynPdf.pas(2551):     RegisterVirtualConstructor(@TPdfObject.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_SynPdf.pas(2615):     //RegisterVirtualConstructor(@TPdfEncryption.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_TeCanvas.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_TeCanvas.pas(2124):     RegisterVirtualConstructor(@TCustomTeeGradient.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_TeCanvas.pas(2213):     RegisterVirtualConstructor(@TChartBrush.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_TeEngine.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_TeEngine.pas(4317):     RegisterVirtualConstructor(@TChartValueList.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_TeEngine_old.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_TeEngine_old.pas(4318):     RegisterVirtualConstructor(@TChartValueList.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_TeeProcs.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_TeeProcs.pas(1732):     RegisterVirtualConstructor(@TTeeEvent.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_IdFTP.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_IdFTP.pas(328):     RegisterVirtualConstructor(@TIdFTP.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_IdGlobalProtocols.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_IdGlobalProtocols.pas(310):     RegisterVirtualConstructor(@TIdMimeTable.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_IdHTTP.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_IdHTTP.pas(547):     RegisterVirtualConstructor(@EIdHTTPProtocolException.CreateError, 'CreateError');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_IdHTTP.pas(556):     RegisterVirtualConstructor(@TIdCustomHTTP.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_IdHTTP.pas(567):     RegisterVirtualConstructor(@TIdCustomHTTP.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_IdHTTP.pas(628):     RegisterVirtualConstructor(@TIdHTTPRequest.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_IdHTTP.pas(640):     RegisterVirtualConstructor(@TIdHTTPResponse.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Kopie von uPSRuntime.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Kopie von uPSRuntime.pas(1007):     procedure RegisterVirtualConstructor(ProcPtr: Pointer; const Name: tbtstring);
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Kopie von uPSRuntime.pas(11164): procedure TPSRuntimeClass.RegisterVirtualConstructor(ProcPtr: Pointer;
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_ADODB.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_ADODB.pas(1850):     RegisterVirtualConstructor(@TADOCommand.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_DBTables.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_DBTables.pas(1547):     RegisterVirtualConstructor(@TUpdateSQL.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_DBTables.pas(1567):     RegisterVirtualConstructor(@TQuery.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_DBTables.pas(1596):     RegisterVirtualConstructor(@TStoredProc.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_DBTables.pas(1619):     RegisterVirtualConstructor(@TBatchMove.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_DBTables.pas(1645):     RegisterVirtualConstructor(@TTable.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_DBTables.pas(1708):     RegisterVirtualConstructor(@TDBDataSet.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_DBTables.pas(1736):     RegisterVirtualConstructor(@TBDEDataSet.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_DBTables.pas(1783):     RegisterVirtualConstructor(@TDatabase.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_DBTables.pas(1834):     RegisterVirtualConstructor(@TSession.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_IdGlobal.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSI_IdGlobal.pas(600):     RegisterVirtualConstructor(@TIdMimeTable.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSRuntime.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSRuntime.pas(1007):     procedure RegisterVirtualConstructor(ProcPtr: Pointer; const Name: tbtstring);
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSRuntime.pas(11334): procedure TPSRuntimeClass.RegisterVirtualConstructor(ProcPtr: Pointer;
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSRuntime_4.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSRuntime_4.pas(1007):     procedure RegisterVirtualConstructor(ProcPtr: Pointer; const Name: tbtstring);
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSRuntime_4.pas(11334): procedure TPSRuntimeClass.RegisterVirtualConstructor(ProcPtr: Pointer;
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSR_classes.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSR_classes.pas(370):   RegisterVirtualConstructor(@TCOLLECTIONITEM.CREATE, 'CREATE');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSR_forms.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSR_forms.pas(102):     RegisterVirtualConstructor(@TFORM.CREATENEW, 'CREATENEW');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSR_graphics.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSR_graphics.pas(361):     RegisterVirtualConstructor(@TGraphic.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSR_std.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\mx4\uPSR_std.pas(55):     RegisterVirtualConstructor(@TComponent.Create, 'CREATE');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\d2009\common\uPSI_Classes.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\d2009\common\uPSI_Classes.pas(2490):     RegisterVirtualConstructor(@TDataModule.CreateNew, 'CreateNew');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\d2009\common\uPSI_Classes.pas(2522):     RegisterVirtualConstructor(@TBasicActionLink.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\d2009\common\uPSI_Classes.pas(2900):     RegisterVirtualConstructor(@TCollectionItem.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALAVLBinaryTree.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALAVLBinaryTree.pas(402):     RegisterVirtualConstructor(@TALBaseAVLBinaryTree.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALAVLBinaryTree.pas(427):     RegisterVirtualConstructor(@TALBaseAVLBinaryTreeNode.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALFBXClient.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALFBXClient.pas(828):     RegisterVirtualConstructor(@TALFBXEventThreadCreate_P, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALFBXClient.pas(829):     RegisterVirtualConstructor(@TALFBXEventThreadCreate1_P, 'Create1');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALFcnSQL.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALFcnSQL.pas(468):     RegisterVirtualConstructor(@TAlSelectSQLClause.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALFTPClient.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALFTPClient.pas(290):     RegisterVirtualConstructor(@TALFTPClient.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALFTPClient.pas(328):     RegisterVirtualConstructor(@TALFTPClientProxyParams.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALGSMComm.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALGSMComm.pas(131):     RegisterVirtualConstructor(@TAlGSMComm.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALHttpClient.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALHttpClient.pas(386):     RegisterVirtualConstructor(@TALHTTPClient.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALHttpClient.pas(431):     RegisterVirtualConstructor(@TALHTTPClientProxyParams.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALHttpCommon.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALHttpCommon.pas(836):     RegisterVirtualConstructor(@TALHTTPResponseHeader.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALHttpCommon.pas(905):     RegisterVirtualConstructor(@TALHTTPRequestHeader.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALInternetMessageCommon.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALInternetMessageCommon.pas(493):     RegisterVirtualConstructor(@TALNewsArticleHeader.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALInternetMessageCommon.pas(528):     RegisterVirtualConstructor(@TALEMailHeader.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALMemCachedClient.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALMemCachedClient.pas(396):     RegisterVirtualConstructor(@TAlBaseMemCachedClient.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALNNTPClient.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALNNTPClient.pas(408):     RegisterVirtualConstructor(@TAlNNTPClient.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALPhpRunner.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALPhpRunner.pas(318):     RegisterVirtualConstructor(@TALPhpCgiRunnerEngineCreate6_P, 'Create6');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALPhpRunner.pas(319):     RegisterVirtualConstructor(@TALPhpCgiRunnerEngineCreate7_P, 'Create7');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALPhpRunner.pas(329):     RegisterVirtualConstructor(@TALPhpNamedPipeFastCgiManagerCreate4_P, 'Create4');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALPhpRunner.pas(330):     RegisterVirtualConstructor(@TALPhpNamedPipeFastCgiManagerCreate5_P, 'Create5');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALPhpRunner.pas(343):     RegisterVirtualConstructor(@TALPhpNamedPipeFastCgiRunnerEngineCreate2_P, 'Create2');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALPhpRunner.pas(344):     RegisterVirtualConstructor(@TALPhpNamedPipeFastCgiRunnerEngineCreate3_P, 'Create3');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALPhpRunner.pas(357):     RegisterVirtualConstructor(@TALPhpSocketFastCgiRunnerEngineCreate_P, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALPhpRunner.pas(358):     RegisterVirtualConstructor(@TALPhpSocketFastCgiRunnerEngineCreate1_P, 'Create1');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALQuickSortList.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALQuickSortList.pas(432):     RegisterVirtualConstructor(@TALBaseAVLList.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALSMTPClient.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ALSMTPClient.pas(158):     RegisterVirtualConstructor(@TAlSmtpClient.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ApplicationFileIO.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_ApplicationFileIO.pas(133):     RegisterVirtualConstructor(@TDataFile.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_BoldFileHandler.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_BoldFileHandler.pas(185):     RegisterVirtualConstructor(@TBoldFileHandler.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_BoldQueue.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_BoldQueue.pas(154):     RegisterVirtualConstructor(@TBoldQueue.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_BoldXMLRequests.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_BoldXMLRequests.pas(130):     RegisterVirtualConstructor(@TBoldXMLRequest.CreateFromXML, 'CreateFromXML');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_IdExtHTTPServer.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_IdExtHTTPServer.pas(336):     RegisterVirtualConstructor(@TIdExtSession.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_JclGraphics.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_JclGraphics.pas(760):     RegisterVirtualConstructor(@TJclLinearTransformation.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_JclGraphics.pas(910):     RegisterVirtualConstructor(@TJclThreadPersistent.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_JclSynch.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_JclSynch.pas(351):     RegisterVirtualConstructor(@TJclMultiReadExclusiveWrite.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_JclSynch.pas(427):     RegisterVirtualConstructor(@TJclCriticalSectionEx.CreateEx, 'CreateEx');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_JclSynch.pas(440):     RegisterVirtualConstructor(@TJclCriticalSection.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_JclUnicode.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_JclUnicode.pas(1022):     RegisterVirtualConstructor(@TSearchEngine.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_O32BGSty.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_O32BGSty.pas(129):     RegisterVirtualConstructor(@TO32BackgroundStyle.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StList.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StList.pas(122):     RegisterVirtualConstructor(@TStList.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StMime.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StMime.pas(371):     RegisterVirtualConstructor(@TStMimeConverter.CreateInit, 'CreateInit');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StMime.pas(461):     RegisterVirtualConstructor(@TStConvertStream.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StRegIni.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StRegIni.pas(158):     RegisterVirtualConstructor(@TStRegIni.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StTree.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StTree.pas(95):     RegisterVirtualConstructor(@TStTree.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StVArr.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_StVArr.pas(116):     RegisterVirtualConstructor(@TStVMatrix.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_XmlVerySimple.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\uPSI_XmlVerySimple.pas(298):     RegisterVirtualConstructor(@TXmlNode.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\synedit\SynEdit2_0_6\SynEdit\SynGen\uPSI_ADODB.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\synedit\SynEdit2_0_6\SynEdit\SynGen\uPSI_ADODB.pas(1662):     RegisterVirtualConstructor(@TADOQuery.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\synedit\SynEdit2_0_6\SynEdit\SynGen\uPSI_ADODB.pas(1854):     RegisterVirtualConstructor(@TADOCommand.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_ADODB.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_ADODB.pas(1696):     RegisterVirtualConstructor(@TADOQuery.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_ADODB.pas(1709):     RegisterVirtualConstructor(@TADOTable.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_ADODB.pas(1723):     RegisterVirtualConstructor(@TADODataSet.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_ADODB.pas(1893):     RegisterVirtualConstructor(@TADOCommand.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Classes_draft.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Classes_draft.pas(2179):     RegisterVirtualConstructor(@TDataModule.CreateNew, 'CreateNew');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Classes_draft.pas(2211):     RegisterVirtualConstructor(@TBasicActionLink.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Classes_draft.pas(2224):     RegisterVirtualConstructor(@TComponent.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Classes_draft.pas(2675):     RegisterVirtualConstructor(@TCollectionItem.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_DBTables.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_DBTables.pas(1560):     RegisterVirtualConstructor(@TUpdateSQL.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_DBTables.pas(1580):     RegisterVirtualConstructor(@TQuery.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_DBTables.pas(1609):     RegisterVirtualConstructor(@TStoredProc.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_DBTables.pas(1632):     RegisterVirtualConstructor(@TBatchMove.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_DBTables.pas(1658):     RegisterVirtualConstructor(@TTable.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_DBTables.pas(1722):     RegisterVirtualConstructor(@TDBDataSet.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_DBTables.pas(1750):     RegisterVirtualConstructor(@TBDEDataSet.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_DBTables.pas(1797):     RegisterVirtualConstructor(@TDatabase.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_DBTables.pas(1848):     RegisterVirtualConstructor(@TSession.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Dialogs.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Dialogs.pas(2101):     RegisterVirtualConstructor(@TCustomFileDialog.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_HTTPApp.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_HTTPApp.pas(1576):     RegisterVirtualConstructor(@TAbstractContentParser.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdCustomHTTPServer.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdCustomHTTPServer.pas(704):     RegisterVirtualConstructor(@TIdHTTPSession.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdCustomHTTPServer.pas(706):     RegisterVirtualConstructor(@TIdHTTPSession.CreateInitialized, 'CreateInitialized');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdException.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdException.pas(143):     RegisterVirtualConstructor(@EIdSocketError.CreateError, 'CreateError');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdException.pas(153):     RegisterVirtualConstructor(@EIdProtocolReplyError.CreateError, 'CreateError');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdGlobal.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdGlobal.pas(603):     RegisterVirtualConstructor(@TIdMimeTable.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdHTTPHeaderInfo.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdHTTPHeaderInfo.pas(516):     RegisterVirtualConstructor(@TIdEntityHeaderInfo.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdLogFile.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdLogFile.pas(81):     RegisterVirtualConstructor(@TIdLogFile.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdSSLOpenSSL.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdSSLOpenSSL.pas(585):     RegisterVirtualConstructor(@TIdX509.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdStack.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdStack.pas(204):     RegisterVirtualConstructor(@TIdStack.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdTCPConnection.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdTCPConnection.pas(345):     RegisterVirtualConstructor(@TIdTCPConnection.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdTCPServer.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdTCPServer.pas(774):     RegisterVirtualConstructor(@TIdCommand.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdThread.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdThread.pas(164):     RegisterVirtualConstructor(@TIdThread.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JclSimpleXml.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JclSimpleXml.pas(1063):     RegisterVirtualConstructor(@TJclSimpleXMLElem.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JclSimpleXml_test.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JclSimpleXml_test.pas(1100):     RegisterVirtualConstructor(@TJclSimpleXMLElem.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JvFormToHtml.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JvFormToHtml.pas(76):    RegisterVirtualConstructor(@TJvFormToHtml.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JvgCommClasses.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JvgCommClasses.pas(916):     RegisterVirtualConstructor(@TJvgCustomListBoxItemStyle.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JvgCommClasses.pas(974):     RegisterVirtualConstructor(@TJvgCustomTextColors.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JvgCommClasses.pas(1024):     RegisterVirtualConstructor(@TJvgBevelOptions.Create, 'Create');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_JvgCommClasses.pas(1099):     RegisterVirtualConstructor(@TJvgTwainColors.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Provider.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Provider.pas(807):     RegisterVirtualConstructor(@TCustomPacketWriter.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Serial.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_Serial.pas(1003):     RegisterVirtualConstructor(@TMsgWindow.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_ShadowWnd.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_ShadowWnd.pas(97):     RegisterVirtualConstructor(@TShadowWindow.CreateShadow, 'CreateShadow');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_StDict.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_StDict.pas(152):     RegisterVirtualConstructor(@TStDictionary.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_StOStr.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_StOStr.pas(324):     RegisterVirtualConstructor(@TStString.CreateAlloc, 'CreateAlloc');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_StOStr.pas(325):     RegisterVirtualConstructor(@TStString.CreateS, 'CreateS');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_StOStr.pas(326):     RegisterVirtualConstructor(@TStString.CreateZ, 'CreateZ');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_StOStr.pas(327):     RegisterVirtualConstructor(@TStString.CreateV, 'CreateV');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_VCLScannerImpl.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_VCLScannerImpl.pas(107):     RegisterVirtualConstructor(@TVCLScanner.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSRuntime.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSRuntime.pas(1007):     procedure RegisterVirtualConstructor(ProcPtr: Pointer; const Name: tbtstring);
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSRuntime.pas(11166): procedure TPSRuntimeClass.RegisterVirtualConstructor(ProcPtr: Pointer;
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSRuntime_37.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSRuntime_37.pas(1015):     procedure RegisterVirtualConstructor(ProcPtr: Pointer; const Name: string);
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSRuntime_37.pas(10528): procedure TPSRuntimeClass.RegisterVirtualConstructor(ProcPtr: Pointer;
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_classes.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_classes.pas(335):     RegisterVirtualConstructor(@TDataModule.CreateNew, 'CreateNew');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_classes.pas(872):   RegisterVirtualConstructor(@TCOLLECTIONITEM.CREATE, 'CREATE');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_controls.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_controls.pas(64):     RegisterVirtualConstructor(@TControl.Create, 'CREATE');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_forms.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_forms.pas(166):     RegisterVirtualConstructor(@TFORM.CREATENEW, 'CREATENEW');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_forms_.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_forms_.pas(79):     RegisterVirtualConstructor(@TFORM.CREATENEW, 'CREATENEW');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_graphics.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_graphics.pas(370):     RegisterVirtualConstructor(@TGraphic.Create, 'Create');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_std.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSR_std.pas(59):     RegisterVirtualConstructor(@TComponent.Create, 'CREATE');

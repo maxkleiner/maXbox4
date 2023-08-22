@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{1068fa24-9048-4ddd-b6c9-cb3c05532074}</ProjectGuid>
+    <MainSource>maxbox3_9.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\maxbox3_9.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_AssertionsAtRuntime>False</DCC_AssertionsAtRuntime>
+    <DCC_UnitSearchPath>D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9;D:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\resXplor;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;D:\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST</DCC_UnitSearchPath>
+    <DCC_ResourcePath>D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9;D:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\resXplor;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;D:\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST</DCC_ResourcePath>
+    <DCC_ObjPath>D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9;D:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\resXplor;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;D:\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST</DCC_ObjPath>
+    <DCC_IncludePath>D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9;D:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\resXplor;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;D:\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST</DCC_IncludePath>
+    <DCC_ExeOutput>D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4</DCC_ExeOutput>
+    <DCC_OutputXMLDocumentation>True</DCC_OutputXMLDocumentation>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">3</VersionInfo><VersionInfo Name="MinorVer">9</VersionInfo><VersionInfo Name="Release">9</VersionInfo><VersionInfo Name="Build">88</VersionInfo><VersionInfo Name="Debug">True</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">True</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2055</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">kleiner kommunikation</VersionInfoKeys><VersionInfoKeys Name="FileDescription">maXbox Delphi VM</VersionInfoKeys><VersionInfoKeys Name="FileVersion">3.9.9.88</VersionInfoKeys><VersionInfoKeys Name="InternalName">SunSet mX4</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">Free Pascal Script</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks">maXbox</VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">maxbox3_9.exe</VersionInfoKeys><VersionInfoKeys Name="ProductName">maXbox</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">3.9 Solar mX4</VersionInfoKeys><VersionInfoKeys Name="Comments">reduce to the max</VersionInfoKeys><VersionInfoKeys Name="Spezielles Build">mX4 Compiler Engine</VersionInfoKeys><VersionInfoKeys Name="SpecialBuild">mX4</VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages><Source><Source Name="MainSource">maxbox3_9.dpr</Source></Source></Delphi.Personality><ModelSupport>False</ModelSupport></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="maxbox3_9.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="AESPassWordDlg.pas">
+      <Form>PasswordDlg</Form>
+    </DCCReference>
+    <DCCReference Include="ConfirmReplDlg.pas">
+      <Form>ConfirmReplDialog</Form>
+    </DCCReference>
+    <DCCReference Include="FindReplDlg.pas">
+      <Form>FindReplDialog</Form>
+    </DCCReference>
+    <DCCReference Include="fMain.pas">
+      <Form>MaxForm1</Form>
+    </DCCReference>
+    <DCCReference Include="ide_debugoutput.pas">
+      <Form>debugoutput</Form>
+    </DCCReference>
+    <DCCReference Include="IdHashCRC.pas" />
+    <DCCReference Include="IFSI_IdHTTP.pas" />
+    <DCCReference Include="IFSI_IdTCPClient.pas" />
+    <DCCReference Include="IFSI_SysUtils_max.pas" />
+    <DCCReference Include="IFSI_WinForm1puzzle.pas" />
+    <DCCReference Include="infobox1.pas">
+      <Form>AboutBox</Form>
+    </DCCReference>
+    <DCCReference Include="memorymax3.pas">
+      <Form>winmemory</Form>
+    </DCCReference>
+    <DCCReference Include="uPSCompiler.pas" />
+    <DCCReference Include="uPSC_dateutils.pas" />
+    <DCCReference Include="uPSC_DB.pas" />
+    <DCCReference Include="uPSC_forms.pas" />
+    <DCCReference Include="uPSC_graphics.pas" />
+    <DCCReference Include="uPSI_IdGlobal.pas" />
+    <DCCReference Include="uPSI_IdHashCRC.pas" />
+    <DCCReference Include="uPSI_IdHTTPHeaderInfo.pas" />
+    <DCCReference Include="uPSI_IdMessage.pas" />
+    <DCCReference Include="uPSI_IdSMTP.pas" />
+    <DCCReference Include="uPSI_IniFiles.pas" />
+    <DCCReference Include="uPSI_LinarBitmap.pas" />
+    <DCCReference Include="uPSI_MathMax.pas" />
+    <DCCReference Include="uPSI_PNGLoader.pas" />
+    <DCCReference Include="uPSI_StrUtils.pas" />
+    <DCCReference Include="uPSRuntime.pas" />
+    <DCCReference Include="uPSR_dateutils.pas" />
+    <DCCReference Include="uPSR_DB.pas" />
+    <DCCReference Include="uPSR_forms.pas" />
+    <DCCReference Include="uPSR_graphics.pas" />
+    <DCCReference Include="uPSUtils.pas" />
+    <DCCReference Include="usecase\CaptionEditForm.pas">
+      <Form>CaptionEditDlg</Form>
+    </DCCReference>
+    <DCCReference Include="usecase\JimShape.pas" />
+    <DCCReference Include="usecase\UCMainForm.pas">
+      <Form>UCMainDlg</Form>
+    </DCCReference>
+    <DCCReference Include="WinForm1.pas">
+      <Form>winFormp</Form>
+    </DCCReference>
+    <None Include="maxbox3_9.todo" />
+    <None Include="ModelSupport_maxbox3_7\CaptionEditForm\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\ConfirmReplDlg\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_7\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\FindReplDlg\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\fMain\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\ide_debugoutput\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\IdHashCRC\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\IFSI_IdHTTP\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\IFSI_IdTCPClient\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\IFSI_SysUtils_max\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_7\IFSI_SysUtils_max\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\IFSI_WinForm1puzzle\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\infobox1\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\JimShape\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\maxbox3_0\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\maxbox3_6\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_7\maxbox3_6\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\maxbox3_7\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_7\maxbox3_7\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\memorymax3\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_7\memorymax3\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\UCMainForm\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSCompiler\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSC_dateutils\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSC_DB\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSC_forms\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_7\uPSC_forms\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSC_graphics\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_IdGlobal\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_IdHashCRC\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_IdHTTPHeaderInfo\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_IdMessage\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_IdSMTP\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_IniFiles\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_LinarBitmap\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_LinarBitmap\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_MathMax\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_PNGLoader\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_PNGLoader\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSI_StrUtils\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSRuntime\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSR_dateutils\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSR_DB\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_7\uPSR_DB\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSR_forms\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_7\uPSR_forms\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\uPSR_graphics\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_7\WinForm1\default.txvpck" />
+  </ItemGroup>
+</Project>

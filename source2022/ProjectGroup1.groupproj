@@ -1,0 +1,34 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{b83c8ba7-6bfd-453b-b933-f567ac987657}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="maxbox3_9.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="maxbox3_9">
+    <MSBuild Projects="maxbox3_9.dproj" Targets="" />
+  </Target>
+  <Target Name="maxbox3_9:Clean">
+    <MSBuild Projects="maxbox3_9.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="maxbox3_9:Make">
+    <MSBuild Projects="maxbox3_9.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="maxbox3_9" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="maxbox3_9:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="maxbox3_9:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>
