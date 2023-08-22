@@ -1,0 +1,990 @@
+//Example of the memo load and save capabilities of the VCL
+//Task: Code the button with Open a Video!
+//Get the text and write your memo memories, #locs=677
+//#tech:4.25perf: 0:0:1.234 threads: 24 192.168.56.1 22:55:58 4.2.4.25
+//#sign>5:52 Max: MAXBOX10: 19/06/2016 22:55:58  PM 
+
+program Memo_Form_XMLDemo_Test_DRAFT;
+
+const LEFTBASE = 20;
+      TOPBASE = 25; 
+      BTNWIDTH = 140;
+      MEDIAPATH =  '..\maxbox3\examples\mymemomemoire.txt';
+      XMLFILE = '..\examples\xmlproparray.xml';
+      XMLSAVEPATH = '..\maxbox3\examples\xmlexample2.xml';
+      TESTPATH = '..\examples\treeview_300.txt';
+      rsMBLink='http://www.softwareschule.ch/maxbox.htm';
+      BITMAP2= '..\maxbox3\examples\citymax.bmp';
+      XMLLIB= '..\maxbox3\source\fundamentals_lib\uPSI_JvXMLTree.xml';
+ 
+
+var 
+  mymemo: TMemo;
+  mpanel: TPanel;
+  mPlayer: TMediaPlayer;
+  inFrm: TForm;  
+  mbtnSave, mBtnLoad, mBtnGet: TBitBtn;
+  mBtnModify, mBtnCompact, mBtnGenerate: TBitBtn;
+   
+  Lstbox: TListbox;
+  stat: TStatusbar;
+  cal: TCalendar;
+  tv1: TTreeview;
+  xmlt: TJvXMLTree;
+  selectedFile: string;
+  //aht: THttpConnectionType;
+  //adiffset: TDiff;
+  //axmldat: TDataToXML;
+  myobj: TObject;
+
+  
+Function getRandomText: string;
+var i, getback: integer;
+begin
+  for i:= 1 to 1400 do begin
+    getback:=  random(58)+65
+    if (getback < 91) OR (getback > 96) then
+      result:= result + Chr(getback) +Chr(32)
+  end;
+  //myobj.instancesize
+end; 
+
+function TRestRequest_getURLAsStr: string;
+var
+  aFullPath: string;
+  aFullParams: string;
+  i: integer;
+  FPaths: TStringList;
+  FParams: TStringList;
+  AFDomain: string;
+
+begin
+  for i := 0 to FPaths.Count - 1 do begin
+    aFullPath := aFullPath + '/' + FPaths.Strings[i];
+  end;
+  if FParams.Count > 0 then begin
+    aFullParams := '?';
+    for i := 0 to FParams.Count - 1 do begin
+      if i > 0 then aFullParams := aFullParams + '&';
+      aFullParams := aFullParams + FParams.Names[i] + '=' + FParams.ValueFromIndex[i];
+    end;
+  end;
+  Result := 'http://' + AFDomain + aFullPath + aFullParams;
+end;
+
+function TRestRequest_createStringStreamFromStringList(
+  strings: TStringList): TStringStream;
+var
+  i: Integer;
+  key, value: string;
+  strParam: string;
+begin
+  Result := TStringStream.Create('');
+  for i := 0 to strings.Count - 1 do begin
+    key := strings.Names[i];
+    value := strings.ValueFromIndex[i];
+    strParam := urlEncode(key) + '=' + urlEncode(value);
+    if not (i = strings.Count - 1) then strParam := strParam + '&';
+    Result.WriteString(strParam);
+  end;
+end;
+
+ 
+//Event Handler - Closure  
+procedure GetMediaData(self: TObject);
+begin
+  if PromptForFileName(selectedFile,
+                       'Text files (*.txt)|*.txt',
+                       '', 'Select your mX3 test file',
+                       ExePath+'examples\', False)  // Means not a Save dialog !
+   then begin
+     // Display this full file/path value
+     ShowMessage('Selected file = '+selectedFile);
+     Stat.simpletext:= selectedFile;
+     mymemo.lines.LoadFromFile(selectedFile);
+     // Split this full file/path value into its constituent parts
+     //writeln('PromptForFileName_28: Res of processpath '+tmp)
+   end;
+end;  
+
+procedure DomToTreeJ2(anXmlNode: TJvXMLTree; aTreeNode: TTreeNode; aTreeView: TTreeView);
+var
+  I: Integer;
+  NewTreeNode: TTreeNode;
+  NodeText: string;
+  AttrNode: TJVXMLNode;
+begin
+  // skip text nodes and other special cases
+  if anXmlNode.NodeCount = 0 then
+    Exit;
+  // add the node itself
+  NodeText := anXmlNode.Name;
+  if anXmlNode.ValueType = xvtString then
+    NodeText:= NodeText + ' = ' + anXmlNode.Value;
+  //NewTreeNode:= aTreeView.Items.AddChild(aTreeNode, NodeText);
+  //aTreeNode:= TTreeNode.create(aTreeView);
+  aTreeView.Items.AddChild(aTreeNode, NodeText);
+
+  // add attributes
+  //for I := 0 to anXmlNode.Attributes.Count - 1 do begin
+  for I := 0 to anXmlNode.nodeCount - 1 do begin
+     AttrNode:= anXmlNode.parentnode;
+    aTreeView.Items.AddChild(NewTreeNode,
+      '[' + AttrNode.Name + ' = "' + AttrNode.Value + '"]');
+  end; 
+  // add each child node
+  if anXmlNode.HasChildNodes then
+    //for I := 0 to anXmlNode.Nodes.Count - 1 do
+      //DomToTreeJ(anXmlNode.Nodes[I], NewTreeNode, aTreeView);
+   for I := 0 to anXmlNode.NodeCount - 1 do
+     DomToTreeJ2(anXmlNode, NewTreeNode, aTreeView);
+
+end;
+
+
+procedure DomToTreeSmart(anXmlNode: TXMLNode; aTreeNode: TTreeNode; aTreeView: TTreeView);
+var
+  I: Integer;
+  NewTreeNode: TTreeNode;
+  NodeText: string;
+  //AttrNode: TXMLAttribute;
+  AttrNode: TXMLAttribute;
+
+begin
+  // skip text nodes and other special cases
+  if anXmlNode.ChildNodes.count = 0 then
+    Exit;
+  // add the node itself
+  NodeText:= anXmlNode.NodeName;
+  //showmessage(nodetext)
+  //if anXmlNode.ValueType = xvtString then
+    //NodeText:= NodeText + ' = ' + anXmlNode.NodeName;
+    //atreeview.treenode
+    //for i:= 1 to atreeview.items.count - 1 do 
+  //atreenode:= atreeview.items.item[1];
+  
+  if assigned(atreeview) then begin
+       writeln(atreeview.name)
+     atreeview.color:= clmoneygreen;
+     atreeview.sortType;
+     atreeview.showlines:= true;
+     atreeview.align;
+     atreeview.multiselect:= true;
+     //atreeview.borderwidth:= 10;
+     //atreeview.visible:= false;
+      //atreeview.Constraints;
+      //atreeview.items.add(1,nodetext);
+      //ATreeView.Items.addchild(1,nodeText); 
+    
+     NewTreeNode:= aTreeView.Items.AddChild(aTreeNode, NodeText);
+   //aTreeNode:= TTreeNode.create(aTreeView);
+   //if assigned(atreeview) then 
+   //aTreeView.Items.AddChild(aTreeNode, NodeText);
+    end;
+  // add attributes
+  //for I := 0 to anXmlNode.Attributes.Count - 1 do begin
+  for I := 0 to anXmlNode.ChildNodes.Count - 1 do begin
+      //attrNode:= TXMLAttributelist(anXmlNode).find(nodetext);
+      //attrNode:= anXMLNode.Attribute[NodeText];
+      //attrNode:= TXMLAttribute(anXMLNode.Attributes[i]);
+
+      attrNode:= anXMLNode.Attributes.find(nodetext);
+      writeln(nodetext+': '+inttoStr(i));
+    //AttrNode:= TXMLAttribute(anXmlnode.Childnodes[i]);
+    //AttrNode:= anXmlnode.attributes[i];
+   
+   (* aTreeView.Items.AddChild(NewTreeNode,
+      //'[' + AttrNode.Name + ' = "' + AttrNode.Value + '"]');
+      '[' + anxmlnode.attributes.find(nodetext).Name + ' = "' 
+          + anxmlnode.attributes.find(nodetext).Value + '"]');*)
+  end; 
+  // add each child node
+  if anXmlNode.haschild(nodetext) then
+   // for I := 0 to anXmlNode.Nodes.Count - 1 do
+     // DomToTreeJ(anXmlNode.Nodes[I], NewTreeNode, aTreeView);
+   //writeln(inttostr(anxmlnode.childnodes.count));
+   for I := 0 to anXmlNode.ChildNodes.Count - 1 do
+      //anxMLNode:= TXMLNode(anxmlnode.childnodes[i]);
+     DomToTreeSmart(TXMLNode(anXmlNode.childnodes[i]), NewTreeNode, aTreeView);
+
+end;
+  
+
+procedure MemoToXml(Xml: TXmlVerySimple);
+begin
+  Xml.Text:= myMemo.Text;
+end;
+
+procedure ShowXml(Xml: TXmlVerySimple);
+var
+  Stream: TMemoryStream;
+begin
+  Stream:= TMemoryStream.Create;
+  try
+    Xml.SaveToStream(Stream);
+    Stream.Position:= 0;
+    myMemo.Lines.LoadFromStream(Stream);
+  finally  
+    Stream.Free;
+  end;  
+end;
+
+//Event Handler - Closure
+procedure BtnSaveClick(self: TObject);
+var
+  Xml: TXmlVerySimple;
+  //mymemo.lines.savetofile(ExePath+'\examples\mymemomemoire.txt');
+  {mymemo.lines.SaveToFile(selectedFile);
+  Stat.simpletext:= selectedFile+ ' has been saved';}
+begin
+  // Load XML from Memo1
+  Xml:= TXmlVerySimple.Create;
+  MemoToXml(Xml);
+  Xml.SaveToFile(EXEPATH+XMLSAVEPATH) ;  //'example.xml');
+  Xml.Free;
+
+  mBtnSave.Enabled := False;
+  mBtnLoad.Enabled := True;
+  mymemo.Text:= EXEPATH+XMLSAVEPATH+ ' saved.';
+end;
+
+
+procedure BtnCompactClick(Sender: TObject);
+var
+  Xml: TXmlVerySimple;
+begin
+  // Load Xml from myMemo1
+  Xml:= TXmlVerySimple.Create;
+  MemoToXml(Xml);
+  Xml.Ident := '';
+  ShowXml(Xml);
+  mymemo.wordwrap:= true;
+  Xml.Free;               
+  mBtnCompact.Enabled:= False;
+  mBtnSave.Enabled:= True;
+end;
+
+
+procedure BtnGenerateClick(Sender: TObject);
+var
+  Xml: TXmlVerySimple;
+  Node, Child, SubChild: TXmlNode;
+begin
+  Xml := TXmlVerySimple.Create;
+  Xml.Header.Attribute['encoding'] := 'utf-8';
+
+  Xml.Root.NodeName := 'catalog';
+  Xml.Root.AddChild('book').SetAttribute('id', 'bk101').
+    AddChild('author').SetText('Gambardella, Matthew').Parent.
+    AddChild('title').SetText('Xml Developer''s Guide').Parent.
+    AddChild('description').SetText('An in-depth look at creating Xml applications.');
+
+  Xml.Root.AddChild('book').SetAttribute('id', 'bk102').SetAttribute('lang','en').
+    AddChild('author').SetText('Ralls, Kim').Parent.
+    AddChild('title').SetText('Midnight Rain').Parent.
+    AddChild('description').SetText('A former architect battles corporate zombies, '+
+      'an evil sorceress, and her own childhood to become queen of the world.');
+
+  Node:= Xml.Root.AddChild('book');
+  Node.Attribute['id'] := 'bk103';
+
+  Child := Node.AddChild('author');
+  Child.Text := 'Corets, Eva';
+  Child := Node.AddChild('title');
+  Child.Text := 'Maeve Ascendant';
+  Child := Node.AddChild('description');
+  Child.Text := 'After the "collapse" of a <nanotechnology> society in England, ' +
+  'the young survivors lay the foundation for a new society.';
+
+  Child:= Node.AddChild('keywords');
+  SubChild := Child.AddChild('keyword');
+  SubChild.Text := 'fantasy';
+  SubChild := Child.AddChild('keyword');
+  SubChild.Text := 'technology';
+  SubChild := Child.AddChild('keyword');
+  SubChild.Text := 'england';
+   writeln('child notes: '+inttoStr(xml.root.childnodes.count))
+  ShowXml(Xml);
+  Xml.Free;
+  mBtnGenerate.Enabled := False;
+  mBtnModify.Enabled := True;
+end;
+
+
+procedure BtnGetClick(Sender: TObject);
+var
+  Xml1: TXmlVerySimple;
+begin
+  // Load Xml from Memo1
+  Xml1:= TXmlVerySimple.Create;
+  MemoToXml(Xml1);
+  writeln('child notes '+inttoStr(xml1.root.childnodes.count))
+  if mBtnGenerate.enabled = false then
+    ShowMessage(Xml1.Root.Find2('book', 'id', 'bk103').Find('description').Text);
+  DomToTreeSmart(xml1.root, NIL, tv1);
+  Xml1.Free;
+  //mBtnGet.Enabled:= False;
+end;
+
+procedure BtnModifyClick(Sender: TObject);
+var
+  Xml: TXmlVerySimple;
+  Node, BookNode: TXmlNode;
+  Nodes, AllNodes: TXmlNodeList;
+  Index, I: Integer;
+begin
+  // Load Xml from Memo1
+  Xml:= TXmlVerySimple.Create;
+  Index := myMemo.Lines.Count - 1;
+   // Add a new book
+  myMemo.Lines.Insert(Index,'<book id=bk104><author rate=">5">Corets, Eva</author><description/>' + '<keywords /></book>');
+
+  MemoToXml(Xml);
+
+  // Add a <keywords> section to every book if not exists
+  Nodes := Xml.Root.FindNodes('book');
+  
+    //for I:= 0 to TXMLNodeList(node.ChildNodes).count-1 do
+    for I:= 0 to TXMLNodeList(nodes).count-1 do begin
+     //for Node in Nodes do
+    //if not assigned(Node.Find('keywords')) then
+    Node:= TXMLNode(nodes.items[I]);
+    //Node:= TXMLNodeList(nodes[i]);
+    Node.AddChild('keywords');
+    end;
+  Nodes.Free;
+
+  // Add a new keyword to a certain book (id=bk102)
+  Xml.Root.Find2('book', 'id', 'bk102').Find('keywords').
+    AddChild('keyword').SetText('no-muerto').SetAttribute('lang', 'es').Parent.
+    AddChild('keyword').SetText('zombies').Parent.AddChild('keywrd').SetText('flombies');
+
+   // Add new keyword attribute (lang=en) to every book
+  AllNodes := Xml.Root.FindNodes('book');
+  for I:= 0 to TXMLNodeList(allnodes).count-1 do begin
+     //for I:= 0 to TXMLNodeList(booknode.ChildNodes).count-1 do
+   {  for BookNode in AllNodes do begin  }
+    booknode:= TXMLNode(allnodes.items[I]);
+    Nodes := BookNode.Find('keywords').FindNodes('keyword');
+    for I:= 0 to TXMLNodeList(nodes).count-1 do
+      //for Node in Nodes do
+      if not Node.HasAttribute('lang') then
+        Node.Attribute['lang'] := 'en';
+    Nodes.Free;
+  end;
+  AllNodes.Free;
+
+  // Delete a node
+  //Node := Xml.Root.Find2('book', 'id', 'bk102').Find('author');
+  // remove node from parent childnodes, the node itself will be freed then
+  if assigned(Node) then
+      Node.Parent.ChildNodes.Remove(Node);
+
+  ShowXml(Xml);
+  //XML.Clear;
+  Xml.Free;
+  mBtnModify.Enabled:= False;
+  mBtnCompact.Enabled:= True;
+end; 
+
+procedure BtnLoadClick(Sender: TObject);
+var
+  Xml: TXmlVerySimple;
+begin
+  // Load XML from File to Memo
+  Xml:= TXmlVerySimple.Create;
+  Xml.LoadFromFile(ExePath+XMLFILE);
+  ShowXml(Xml);
+  Xml.Free;
+  mBtnLoad.Enabled:= False;
+  mBtnGet.Enabled:= True;
+end;
+
+
+procedure ClickTestButton(Sender: TObject);
+begin
+  //tv1.SaveToFile(SAVEPATH);
+  //SaveCanvas2(bfrm.Canvas, Exepath+SAVEPATH);
+  //if sender then
+  writeln(objectToString(sender)+' has been hit at: '+TESTPATH);
+end;
+
+
+procedure SetXMLForm;
+var
+  mi, mi1, mi2, mi3: TMenuItem;
+  mt: TMainMenu;
+  mlbl, mlbl1: TLabel; 
+
+begin
+  inFrm:= TForm.Create(self);
+  mLbl:= TLabel.Create(inFrm);
+  mLbl1:= TLabel.Create(inFrm);
+  mPanel:= TPanel.Create(inFrm);
+  stat:= TStatusbar.Create(inFrm);
+  Lstbox:= TListbox.Create(inFrm);
+  mymemo:= TMemo.Create(inFrm);
+
+  with inFrm do begin
+    caption:= '********XMLMonster3************';  
+    height:= 610;
+    width:= 980;
+    //color:= clred;
+    Position:= poScreenCenter;
+    //onClose:= @CloseClick;
+    Show;
+  end;
+  with mPanel do begin
+     caption:= '*****maXboxTV*****';  
+     Parent:= inFrm;  
+     SetBounds(LEFTBASE+10,TOPBASE+40,460,400)
+     color:= clsilver;
+     font.color:= clyellow;
+     font.size:= 15;
+     Show;
+  end;
+  tv1:= TTreeView.Create(NIL);
+  with tv1 do begin
+    parent:= mpanel;
+    font.color:= clblue;
+    Loadfromfile(Exepath+TESTPATH);
+    //setbounds(5,170,160, 160);
+    setbounds(20,150,360, 240);
+    writeln('test treeview width '+inttostr(width));
+    FullExpand;
+    //Items[2].addchild('','');
+    onclick:= @clicktestbutton;
+    //images.getBitmap(0,getBitmap(Exepath+BITMAP2));
+   end;
+ 
+  with mymemo do begin
+    Parent:= inFrm;
+    SetBounds(LEFTBASE+490, TOPBASE+40, 420, 400)
+    font.size:= 14;
+    color:= clYellow;
+    wordwrap:= false;
+    //scrollbars:= ssvertical;
+    scrollbars:= ssboth;
+    //lines.loadfromfile(ExePath+'\examples\mymemomemoire.txt');
+    lines.loadfromfile(ExePath+XMLFILE);
+    //onClick:= @ChangeXMLSong;  
+  end;
+ 
+  mBtnLoad:= TBitBtn.Create(inFrm)
+  with mBtnLoad do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 10, TOPBASE+ 460,BTNWIDTH, 40);
+    caption:= 'Load XML';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TPSIMPORT_COMOBJ'); 
+    //event handler
+    onclick:= @BtnLoadClick;
+  end;
+  mBtnGet:= TBitBtn.Create(inFrm)
+  with mBtnGet do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 155, TOPBASE+ 460,BTNWIDTH, 40);
+    caption:= 'Get XML';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TPSIMPORT_DB'); 
+    onclick:= @BtnGetClick;
+  end;
+  mBtnCompact:= TBitBtn.Create(inFrm)
+  with mBtnCompact do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 300, TOPBASE+460,BTNWIDTH, 40);
+    caption:= 'Compact';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TPSIMPORT_DATEUTILS'); 
+    //onclick:= @GetVideoData;
+    onclick:= @BtnCompactClick;
+  end;
+  mBtnGenerate:= TBitBtn.Create(inFrm)
+  with mBtnGenerate do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 480, TOPBASE+ 460,BTNWIDTH, 40);
+    caption:= 'Generate';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TPSIMPORT_FORMS'); 
+    onclick:= @BtnGenerateClick;
+  end;
+  mBtnModify:= TBitBtn.Create(inFrm)
+  with mBtnModify do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 625, TOPBASE+460,BTNWIDTH, 40);
+    caption:= 'Modify XML';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TPSIMPORT_CLASSES'); 
+    onclick:= @BtnModifyClick;
+  end;
+  mBtnSave:= TBitBtn.Create(inFrm)
+  with mBtnSave do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 770, TOPBASE+460,BTNWIDTH, 40);
+    caption:= 'Save XML';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'TPSIMPORT_STDCTRLS'); 
+    onclick:= @BtnSaveClick;
+  end;
+
+  cal:= TCalendar.Create(self);
+  with cal do begin
+    enabled:= true;
+    updateCalendar
+    Parent:= inFrm;
+    top:= 80;
+    left:= 50;
+    CalendarDate:= Now;
+  end;
+  
+  with THyperlabel.create(inFrm) do begin
+    parent:= infrm;
+    setbounds(LEFTBASE+495,TOPBASE-30,180,20);
+    font.color:= clyellow;
+    font.size:= 14;
+    hyperlinkcolor:= clblue;
+    //hyperlinkstyle:= fsbold;
+    caption:= RSMBLink;
+    onclick:=  @ClickTestButton;
+  end;  
+
+  with mlbl do begin
+    parent:= inFrm;
+    setbounds(LEFTBASE+15,TOPBASE-15,180,20);
+    font.size:= 28;
+    font.color:= clred;
+    //font.style:= [fsunderline]
+    caption:= 'XMLMediaApp Workshop';
+  end;  
+  with mlbl1 do begin
+    parent:= inFrm;
+    setbounds(LEFTBASE+495,TOPBASE-1,180,20);
+    font.size:= 20;
+    font.color:= clred;
+    caption:= 'maXML File:';
+  end;  
+  mt:= TMainMenu.Create(infrm)
+  with mt do begin
+   //parent:= frmMon;
+  end;  
+  mi:= TMenuItem.Create(mt)
+  mi1:= TMenuItem.Create(mt)
+  mi2:= TMenuItem.Create(mt)
+  mi3:= TMenuItem.Create(mi)
+  with mi do begin
+    //parent:= frmMon;
+    Caption:='Play Media';
+    Name:='ITEM';
+    mt.Items.Add(mi);   
+    //OnClick:= @GetMediaData;
+  end;
+  with mi1 do begin
+    //parent:= frmMon;
+    Caption:='Show Video';
+    Name:='ITEM2';
+    mt.Items.Add(mi1) ;
+    //OnClick:= @GetVideoData
+  end;
+  with mi2 do begin
+    //parent:= frmMon;
+    Caption:='Open CD Player';
+    Name:='ITEM3';
+    mt.Items.Add(mi2);
+    //OnClick:= @OPenCD;
+  end;
+  with mi3 do begin
+    Caption:='Open maXbook';
+    Name:='ITEM4';
+    //mi.Items[0].add(mi3);
+  end;
+  with Stat do begin
+    parent:= inFrm;
+    stat.SimplePanel:= true;
+  end;
+  {MPlayer:= TMediaPlayer.Create(self);
+  with MPlayer do begin
+    parent:= inFrm; 
+    height:= 38;
+    top:= TOPBASE + 460;
+    left:= LEFTBASE+ 10;
+    Display:= mPanel;   //for video show
+  end;}
+end; 
+  
+var aval: variant;
+     axmlnode: TJvXMLNode;
+     xmlnodes: TStringlist;
+     i: integer;
+  
+begin
+  memo2.font.size:= 14;
+  SetXMLForm;
+  //mymemo.lines.text:= getRandomText;
+  //mymemo.lines.text:= ExePath+XMLPATH;
+  //SearchAndOpenDoc(ExePath+MEDIAPATH)
+  //mylistview:= TFormListView.Create(self);
+  //exit;
+  maxform1.color:= clsilver;
+  //Treeview1.Items.Clear;
+//  Procedure DomToTree(anXmlNode: IXMLNode; aTreeNode: TTreeNode; aTreeView: TTreeView);
+  //xmlt:= TJvXMLTree.Create('xmldocu',aval, NIL);
+  {of unit uPSI_JvXmlTree;}
+  xmlnodes:= TStringlist.Create;
+  axmlnode:= TJvXMLNode.create('xmlnode',aval,axmlnode)
+  xmlt:= TJvXMLTree.Create('xmldocu',aval, axmlnode);
+
+  xmlt.loadFromFile(ExePath+XMLFILE);
+  //xmlt.loadFromFile(ExePath+XMLLIB);
+ 
+  //xmlt.loadFromFile(ExePath+'\examples\IVCLSCanner.xml');
+
+  //xmlt.ParseXML;
+  //Procedure GetNodeNames( AList : TStrings)');
+  xmlt.GetNodeNames(xmlnodes);
+  //xmlt.GetAttributeNames(xmlnodes);
+
+  writeln('nodes count '+inttostr(xmlnodes.count));
+  for i:= 0 to xmlnodes.count -1 do 
+     PrintFW('node %s ',[xmlnodes[i]]);
+  writeln('name space: '+xmlt.GetNameSpace);
+  writeln('node path: '+xmlt.GetNodePath);
+  writeln('name value: '+xmlt.name);
+  writeln('node count '+intToStr(xmlt.nodeCount));
+  writeln('axmlnode value '+intToStr(axmlnode.value));
+  //writeln('test as text '+xmlt.text);
+  //writeln('document level text '+xmlt.document(6));
+   axmlnode.Free;
+  
+  //DomToTree (XMLDocument1.DocumentElement, nil, TreeView1);
+  //DomToTreeJ(xmlt, NIL, tv1);
+  //DomToTreeJ2(xmlt, NIL, tv1);
+
+  xmlnodes.Free;
+  xmlt.Free; 
+  
+  //DOMtoTree;
+  //CL.AddDelphiFunction('Procedure PreProcessXML( AList : TStrings)');
+  //PreProcessXML( AList : TStrings)');
+  //versioncheck;
+  writeln(GetwindowsversionJ)
+  writeln(GetwindowsversionString)
+  //readregistry
+  //EnumToJSString(TypeInfo : PTypeInfo; Value : integer) : string;
+
+         //keypress //interval
+    writeln(inttoStr(rand(100)));
+    //getenvironmentstring
+End.
+
+//-------------------------------------------------
+
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJvXMLTree(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TJvXMLNode', 'TJvXMLTree') do
+  with CL.AddClassN(CL.FindClass('TJvXMLNode'),'TJvXMLTree') do begin
+    Constructor Create( const AName : string; AValue : Variant; AParent : TJvXMLNode)');
+    Procedure Free');
+    Procedure ParseXML');
+    Procedure LoadFromFile( const FileName : string)');
+    Procedure LoadFromStream( Stream : TStream)');
+    Procedure SaveToFile( const FileName : string)');
+    Procedure SaveToStream( Stream : TStream)');
+    Function AsText : string');
+    RegisterProperty('Lines', 'TStrings', iptrw);
+    RegisterProperty('NodeCount', 'Integer', iptr);
+    RegisterProperty('Text', 'string', iptrw);
+  end;
+end;
+
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_TJvXMLNode(CL: TPSPascalCompiler);
+begin
+  //with RegClassS(CL,'TObject', 'TJvXMLNode') do
+  with CL.AddClassN(CL.FindClass('TObject'),'TJvXMLNode') do begin
+    Constructor Create( const AName : string; AValue : Variant; AParent : TJvXMLNode)');
+    Procedure Free');
+    Function GetNamePathNode( const APath : string) : TJvXMLNode');
+    Procedure DeleteNamePathNode( const APath : string)');
+    Function ForceNamePathNode( const APath : string) : TJvXMLNode');
+    Function GetNamePathNodeAttribute( const APath, AName : string) : TJvXMLAttribute');
+    Procedure DeleteNamePathNodeAttribute( const APath, AName : string)');
+    Function ForceNamePathNodeAttribute( const APath, AName : string; AValue : Variant) : TJvXMLAttribute');
+    Function AddNode( const AName : string; AValue : Variant) : TJvXMLNode');
+    Function AddNodeEx( const AName : string; AValue : Variant) : TJvXMLNode');
+    Procedure DeleteNode( Index : Integer)');
+    Procedure ClearNodes');
+    Function AddAttribute( const AName : string; AValue : Variant) : TJvXMLAttribute');
+    Function GetAttributeValue( const AName : string) : Variant');
+    Procedure DeleteAttribute( Index : Integer)');
+    Procedure ClearAttributes');
+    Function Document( ALevel : Integer) : string');
+    Function GetNodePath : string');
+    Function GetNamedNode( const AName : string) : TJvXMLNode');
+    Function SelectSingleNode( const APattern : string) : TJvXMLNode');
+    Procedure SelectNodes( APattern : string; AList : TList)');
+    Function TransformNode( AStyleSheet : TJvXMLNode) : string');
+    Function Process( ALevel : Integer; ANode : TJvXMLNode) : string');
+    Function FindNamedNode( const AName : string) : TJvXMLNode');
+    Procedure FindNamedNodes( const AName : string; AList : TList)');
+    Procedure GetAllNodes( AList : TList)');
+    Function GetNamedAttribute( const AName : string) : TJvXMLAttribute');
+    Procedure FindNamedAttributes( const AName : string; AList : TList)');
+    Function MatchFilter( AObjFilter : TJvXMLFilter) : Boolean');
+    Procedure MatchPattern( const APattern : string; AList : TList)');
+    Procedure GetNodeNames( AList : TStrings)');
+    Procedure GetAttributeNames( AList : TStrings)');
+    Function GetNameSpace : string');
+    Function HasChildNodes : Boolean');
+    Function CloneNode : TJvXMLNode');
+    Function FirstChild : TJvXMLNode');
+    Function LastChild : TJvXMLNode');
+    Function PreviousSibling : TJvXMLNode');
+    Function NextSibling : TJvXMLNode');
+    Function MoveAddNode( Dest : TJvXMLNode) : TJvXMLNode');
+    Function MoveInsertNode( Dest : TJvXMLNode) : TJvXMLNode');
+    Function RemoveChildNode( ANode : TJvXMLNode) : TJvXMLNode');
+    RegisterProperty('Name', 'string', iptrw);
+    RegisterProperty('Value', 'Variant', iptrw);
+    RegisterProperty('ValueType', 'TJvXMLValueType', iptrw);
+    RegisterProperty('Nodes', 'TList', iptrw);
+    RegisterProperty('ParentNode', 'TJvXMLNode', iptrw);
+    RegisterProperty('Attributes', 'TList', iptrw);
+  end;
+end;
+
+
+
+source is tlistview
+target is tform
+
+procedure TfMerit.SourceLVStartDrag(Sender: TObject;
+var DragObject: TDragObject);
+var TargetLV:TListView;
+begin
+// TargetLV:=nejak urcit dle potreby
+  TargetLV.BeginDrag(True)
+end;
+
+procedure TfMerit.SourceLVMouseDown(Sender: TObject;
+Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+MouseIsDown:=True;
+end;
+
+procedure TfMerit.SourceLVMouseUp(Sender: TObject; Button: TMouseButton;
+Shift: TShiftState; X, Y: Integer);
+begin
+MouseIsDown:=False;
+if (Sender as TListView).Dragging then
+(Sender as TListView).EndDrag(False);
+end;
+
+procedure TfMerit.SourceLVMouseMove(Sender: TObject; Shift: TShiftState;
+X, Y: Integer);
+begin
+if (Sender.ClassNameIs('TListView')) then
+begin
+if MouseIsDown and ((Sender as TListView).SelCount>0) then
+(Sender as TListView).BeginDrag(True);
+end;
+end;
+
+
+procedure TfMerit.TargetLVDragOver(Sender, Source: TObject; X,
+Y: Integer; State: TDragState; var Accept: Boolean);
+var T:TListView;
+begin
+T:=Sender as TListView;
+Accept:=Assigned(T.GetItemAt(X,Y));
+end;
+
+
+procedure TfMerit.TargetLVDragDrop(Sender, Source: TObject; X,
+Y: Integer);
+var It:TListItem;
+LV1,LV2:TListView;
+begin
+LV1:=Source as TListView;
+LV2:=Sender as TListview;
+
+It:=LV2.GetItemAt(X,Y);
+if Assigned(It) then
+begin
+// zpracuj polozku ze zdrojoveho listview
+end;
+end;
+
+
+procedure TControlParentR(Self: TControl; var T:TWinControl); begin T:= Self.Parent; end;
+procedure TControlParentW(Self: TControl; T: TWinControl); begin Self.Parent:= T; end;
+    RegisterPropertyHelper(@TControlParentR, @TControlParentW, 'PARENT');
+    RegisterProperty('Parent', 'TWinControl', iptRW);
+
+procedure TTXPTool.LVPFFDblClick(Sender: TObject);
+var
+tmpList : TListItem;
+fn ; string;
+ft : integer;
+fs : integer;
+begin
+tmpList := LVPFF.Selected;
+if tmplist<>nil then
+begin
+  fn := tmpList.Caption
+  ft := tmpList.SubItems.Strings[1];
+  fs := tmpList.SubItems.Strings[3];
+  if pos('Wave', ft)>0 then
+    PlayThisOne1Click(nil);
+  if pos('Jpg', ft)>0 then
+    ShowJpg1Click(nil);
+  if pos('Targa', ft)>0 then
+    ShowTga1Click(nil);
+  if pos('Pcx', ft)>0 then
+    ShowPcx1Click(nil);
+  if pos('Mission Sound Collection', ft)>0 then
+    ShowPwf1Click(nil);
+end;
+end;
+
+
+CSIDL_ADMINTOOLS              = 48    ; <user name>\Start Menu\Programs\Administrative Tools ; 0x0030
+CSIDL_ALTSTARTUP              = 29    ; non localized startup ; 0x001d
+CSIDL_APPDATA                 = 26    ; <user name>\Application Data, new for NT4 ; 0x001a
+CSIDL_BITBUCKET               = 10    ; <desktop>\Recycle Bin ; 0x000a
+CSIDL_CDBURN_AREA             = 59    ; USERPROFILE\Local Settings\Application Data\Microsoft\CD Burning ; 0x003b
+CSIDL_COMMON_ADMINTOOLS       = 47    ; All Users\Start Menu\Programs\Administrative Tools ; 0x002f
+CSIDL_COMMON_ALTSTARTUP       = 30    ; non localized common startup ; 0x001e
+CSIDL_COMMON_APPDATA          = 35    ; All Users\Application Data ; 0x0023
+CSIDL_COMMON_DESKTOPDIRECTORY = 25    ; All Users\Desktop ; 0x0019
+CSIDL_COMMON_DOCUMENTS        = 46    ; All Users\Documents ; 0x002e
+CSIDL_COMMON_FAVORITES        = 31    ; 0x001f
+CSIDL_COMMON_MUSIC            = 53    ; All Users\My Music ; 0x0035
+CSIDL_COMMON_OEM_LINKS        = 58    ; Links to All Users OEM specific apps ; 0x003a
+CSIDL_COMMON_PICTURES         = 54    ; All Users\My Pictures ; 0x0036
+CSIDL_COMMON_PROGRAMS         = 23    ; All Users\Start Menu\Programs ; 0X0017
+CSIDL_COMMON_STARTMENU        = 22    ; All Users\Start Menu ; 0x0016
+CSIDL_COMMON_STARTUP          = 24    ; All Users\Startup ; 0x0018
+CSIDL_COMMON_TEMPLATES        = 45    ; All Users\Templates ; 0x002d
+CSIDL_COMMON_VIDEO            = 55    ; All Users\My Video ; 0x0037
+CSIDL_COMPUTERSNEARME         = 61    ; Computers Near Me (computered from Workgroup membership) ; 0x003d
+CSIDL_CONNECTIONS             = 49    ; Network and Dial-up Connections ; 0x0031
+CSIDL_CONTROLS                = 3     ; My Computer\Control Panel ; 0x0003
+CSIDL_COOKIES                 = 33    ; 0x0021
+CSIDL_DESKTOP                 = 0     ; <desktop> ; 0x0000
+CSIDL_DESKTOPDIRECTORY        = 16    ; <user name>\Desktop ; 0x0010
+CSIDL_DRIVES                  = 17    ; My Computer ; 0x0011
+CSIDL_FAVORITES               = 6     ; <user name>\Favorites ; 0x0006
+CSIDL_FLAG_CREATE             = 32768 ; combine with CSIDL_ value to force folder creation in SHGetFolderPath() ; 0x8000
+CSIDL_FLAG_DONT_UNEXPAND      = 8192  ; combine with CSIDL_ value to avoid unexpanding environment variables ; 0x2000
+CSIDL_FLAG_DONT_VERIFY        = 16384 ; combine with CSIDL_ value to return an unverified folder path ; 0x4000
+CSIDL_FLAG_MASK               = 65280 ; mask for all possible flag values ; 0xFF00
+CSIDL_FLAG_NO_ALIAS           = 4096  ; combine with CSIDL_ value to insure non-alias versions of the pidl ; 0x1000
+CSIDL_FLAG_PER_USER_INIT      = 2048  ; combine with CSIDL_ value to indicate per-user init (eg. upgrade) ; 0x0800
+CSIDL_FONTS                   = 20    ; windows\fonts ; 0x0014
+CSIDL_HISTORY                 = 34    ; 0x0022
+CSIDL_INTERNET                = 1     ; Internet Explorer (icon on desktop) ; 0x0001
+CSIDL_INTERNET_CACHE          = 32    ; 0x0020
+CSIDL_LOCAL_APPDATA           = 28    ; <user name>\Local Settings\Application Data (non roaming) ; 0x001c
+CSIDL_MYDOCUMENTS             = 12    ; ??? = CSIDL_PERSONAL ; Personal was just a silly name for My Documents
+CSIDL_MYMUSIC                 = 13    ; "My Music" folder ; 0x000d
+CSIDL_MYPICTURES              = 39    ; C:\Program Files\My Pictures, new for Win2K ; 0x0027
+CSIDL_MYVIDEO                 = 14    ; "My Videos" folder ; 0x000e
+CSIDL_NETHOOD                 = 19    ; <user name>\nethood ; 0x0013
+CSIDL_NETWORK                 = 18    ; Network Neighborhood (My Network Places) ; 0x0012
+CSIDL_PERSONAL                = 5     ; My Documents ; 0x0005
+CSIDL_PRINTERS                = 4     ; My Computer\Printers ; 0x0004
+CSIDL_PRINTHOOD               = 27    ; <user name>\PrintHood ; 0x001b
+CSIDL_PROFILE                 = 40    ; USERPROFILE ; 0x0028
+CSIDL_PROGRAM_FILES           = 38    ; C:\Program Files ; 0x0026
+CSIDL_PROGRAM_FILES_COMMON    = 43    ; C:\Program Files\Common ; 0x002b
+CSIDL_PROGRAM_FILES_COMMONX86 = 44    ; x86 Program Files\Common on RISC ; 0x002c
+CSIDL_PROGRAM_FILESX86        = 42    ; x86 C:\Program Files on RISC ; 0x002a
+CSIDL_PROGRAMS                = 2     ; Start Menu\Programs ; 0x0002
+CSIDL_RECENT                  = 8     ; <user name>\Recent ; 0x0008
+CSIDL_RESOURCES               = 56    ; %windir%\Resources\, For theme and other windows resources. Resource Directory ; 0x0038
+CSIDL_RESOURCES_LOCALIZED     = 57    ; %windir%\Resources\<LangID>, for theme and other windows specific resources. Localized Resource Directory ; 0x0039
+CSIDL_SENDTO                  = 9     ; <user name>\SendTo ; 0x0009
+CSIDL_STARTMENU               = 11    ; <user name>\Start Menu ; 0x000b
+CSIDL_STARTUP                 = 7     ; Start Menu\Programs\Startup ; 0x0007
+CSIDL_SYSTEM                  = 37    ; GetSystemDirectory() ; 0x0025
+CSIDL_SYSTEMX86               = 41    ; x86 system directory on RISC ; 0x0029
+CSIDL_TEMPLATES               = 21    ; 0x0015
+CSIDL_WINDOWS                 = 36    ; GetWindowsDirectory() ; 0x0024
+
+
+ function TXmlNode.Find(Name, Attribute, Value: String): TXmlNode;
+var
+  Node: TXmlNode;
+  i: integer;
+begin
+  Result := NIL;
+  Name := lowercase(Name);
+  //node:= self;
+  for I := 0 to TXMLNodeList(childnodes).count-1 do begin
+  //for Node in ChildNodes do
+   Node:= TXMLNode(childnodes.items[I]);
+    if (lowercase(Node.NodeName) = Name) and (Node.HasAttribute(Attribute)) and
+      (Node.Attribute[Attribute] = Value) then begin
+      Result := Node;
+      Break;
+    end;
+  end;
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

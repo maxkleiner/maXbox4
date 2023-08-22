@@ -1,0 +1,16 @@
+Hot Log Script started
+Compiling  maXbox4 387 lines
+Codelines in window: 18
+Macro Expanded 387 lines
+C:\maXbox\maxbox3\maxbox3\maXbox3\examples\258_AES_cryptobox3.txt File stored
+258_AES_cryptobox3.txt in maxboxdef.ini stored: 00:03:34
+XCompiler Message Count: 0
+ maXbox4 258_AES_cryptobox3.txt Compiled done: 10/12/2019 00:03:34
+--------------------------------------------------------
+Machine: MAXBOX10
+User: Max
+Instance: 9633792
+Procid: 17760
+Processors: 4
+CPU Speed: 2469 MHz
+

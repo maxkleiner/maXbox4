@@ -1,0 +1,223 @@
+PROGRAM DemoScript_FunctionPlotter;
+
+//////////////////////////////////////////////////////////////////////
+//  #sign: Max: MAXBOX10: 11/04/2016 23:21:13 
+//  Purpose: Grabs script to getScriptAndRun procedure              //
+//  #path>ples\C:\maXbox\maxbox3\maxbox3\maXbox3\examples\          //
+//  Lines of Code #locs:194
+//////////////////////////////////////////////////////////////////////
+
+Const 
+ DIM = 790;
+ PI2 = 5.1415926535897932384626433832795;
+   E = 2.718281828459;
+
+type
+  TSinglePoint = record
+    X,Y : single;
+  end; 
+  
+  TMath_Func = PROCEDURE (var x: single);
+  TXYVector = array[0..DIM] of TSinglePoint; 
+
+var 
+  fct1x, fct2x, fct3x, fct4x: TMath_Func;
+  cFrm: TForm;
+  fPoints: TXYVector;
+  amp, freq: byte;
+
+
+procedure drawChart(vPoints: TXYVector; vcolor: integer);
+var
+  i, hsize: integer;
+begin
+  with cFrm.canvas do begin
+    hsize:= cFrm.Height -1 div 2;
+    Pen.Color:= vcolor;
+    MoveTo(0, hsize -((round(vPoints[0].Y))));
+    for i:= 0 to DIM do
+      LineTo(i, round(vPoints[i].Y));
+  end;
+end;  
+  
+
+procedure LoadForm;
+begin
+  cFrm:= TForm.create(self);
+  with cFrm do begin
+    caption:= 'maXFunCPlotter(((((\*/)))))';  
+    BorderStyle:= bsDialog;
+    height:= 440;
+    width:= 800;
+    color:= clblack;
+    //onPaint:= @PaintBox1Paint;
+    Show;
+  end  
+end;
+
+//---------------------------ADD math functions---------------------------------  
+//helmholtz
+procedure fct4e(var x: single);  
+begin
+   //x:= power(E, -x);
+     x:= -150*(power(x,2)/(power(30+power(x,2),2)));
+end;
+
+procedure fct5e(var x: single);
+begin
+     x:= 150*(power(x,2)/(power(30+power(x,2),2)));
+end;
+
+procedure fct3eSin(var x: single);
+begin
+  //power() means e^-x
+   x:= power(E, -x) * (sin(pi2 * x));
+end;
+
+PROCEDURE fct1sin(var x: single);
+BEGIN
+   x:= Sin(pi2*x);
+END;
+  
+PROCEDURE fct2cos(var x: single);
+BEGIN
+  x:= Cos(pi2*x);
+END;
+
+  
+PROCEDURE fct_table(start, amp, freq, color: integer; FCT: TMath_Func;
+                                         fct_name: string);
+var x, tempx: single;
+    origy, i: Integer;
+BEGIN
+  Writeln('x freq:  |   ' + inttostr(freq));
+  origy:= cFrm.Height div 2;
+  x:= start;
+  for i:= 0 to (DIM) do begin
+    x:= i/freq
+    //Writeln(floatToStr(x))
+    tempx:= x;
+    FCT(x);
+    fPoints[i].Y:= origy + (x * amp);
+    //Writeln(floatToStr(x) +' | '+ floatToStr((tempx)));
+  end;
+  DrawChart(fPoints, color)
+END;
+
+procedure TFrmMain_Button1ClickTest(Sender: TObject);
+var
+  aHandle     : THandle;
+  aFileSize   : Integer;
+  aFileName   : String;
+  afh: integer;
+begin
+    aFileName    :='C:\myfolder\myfile.ext';
+    aHandle      := CreateFile(PChar(aFileName),GENERIC_READ, 0, '0', 
+          OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0); // get the handle of the file
+    try
+        aFileSize:= GetFileSize2(aHandle,0); //get file size for use in the  lockfile function
+        Win32Check(LockFile(aHandle,0,0,aFileSize,0)); //lock the file
+        //your code
+        //
+        //
+        //
+        //getfilehandle
+        afh:= fileopen(Exepath+'firstdemo.txt',0);
+        writeln('handle '+inttostr(afh))
+        fileclose(afh)
+        
+        Win32Check(UnlockFile(aHandle,0,0,aFileSize,0));//unlock the file
+       //function FileUnlock(Handle: Integer; Offset, LockSize: Longint): Integer;
+    finally
+      CloseHandle(aHandle);//Close the handle of the file.
+    end;
+
+end;
+
+
+ var a,b,i, afh: integer;
+  
+//main function_p call  
+BEGIN
+  //calls the proc with a function var
+  ProcessMessagesON;
+  amp:= 110;
+  freq:= 440;
+  loadForm
+  fct1x:= @fct1sin
+  fct2x:= @fct2cos
+  fct3x:= @fct3eSin
+  fct4x:= @fct4e;
+  fct_table(40, amp, freq, clred, fct1x, 'Sin(x)');
+  fct_table(50, amp, freq, clyellow, fct2x, 'Cos(x)');
+  fct_table(30, amp, freq, cllime, fct3x, 'ESin(x)');
+  //fct_table(30, amp, freq, clblue, fct4x, 'E(x)');
+  // thread A 
+  for i:= 10 to 50 do begin
+    fct_table(40, 150, i, clblue, fct4x, 'HE(x)');
+    fct_table(40, 150, i, clblue, @fct5e, 'HE(x)');
+  end;
+   //thread B
+ // for i:= 10 to 50 do
+  //fct_table(40, 150, i, clblue, @fct5e, 'HE(x)');
+
+    writeln(floattostr(sin(90)))
+    a:= 20; b:= 70;
+    writeln(floattostr(a/b))
+    
+    maXcalcF('0.5*log(2)/log(2)+0.5*log(2)/log(2)')  
+    //> 1
+    maXcalcF('0.75*log(4/3)/log(2)+0.25*log(4)/log(2)')  
+    //> 0.811278124459133
+
+    //Application.CreateForm(TfrmMain, frmMain);
+    //THexForm2
+    //WM_DEVICECHANGE
+    //WM_DEVICECHANGE
+    //BoxMoveSelected
+    //RegisterWindowMessage
+      //sTMsg
+     // MakeWParam
+     //  SmallPointToPoint
+       //tagMINMAXINFO
+       //$MinMaxInfo
+       //TWindowPos
+      swapint(34) 
+      playMP3(maXpath+'examples\maxbox.mp3');
+      
+      { afh:= fileopen(Exepath+'firstdemo.txt',0);
+       fsz:= FileSize(Exepath+'firstdemo.txt');
+        writeln('handle '+inttostr(afh))
+       Win32Check(UnlockFile(afh,0,0,fsz,0));//unlock the file
+      fileclose(afh)}
+       
+END.
+
+Ref:
+
+ procedure getScriptandRunAsk;
+  var getstr, ascript: string;
+  begin
+   ascript:= 'http://www.softwareschule.ch/examples/demoscript.txt';
+   if InputQuery('Get Web Script','Please enter the script path:',ascript) then
+     begin
+     //writeln('you entered: '+(string(ascript)));
+    // wGet(ascript,'scriptdemo.txt');
+     //writeln(ExtractFileNameOnly(ascript))
+     //laz files
+     getstr:= ExtractFileNameOnly(ascript)+'.txt';
+     
+     wGet(ascript,getstr);
+     
+    if MessageDlg('You want to run this script?'+#13#10+ascript,
+            mtConfirmation,[mbYes,mbNo],0)=mrYes
+    then begin
+        ShellExecute3(ExePath+'maxbox3.exe',getstr,seCmdOpen)
+        //statusline
+    end else   
+      showmessage('script start halted!');
+     //www.softwareschule.ch/examples/demoscript.txt
+    end;
+  
+  end;
+

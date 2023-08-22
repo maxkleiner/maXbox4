@@ -1,0 +1,25 @@
+Hot Log Script started
+Compiling  maXbox4 317 lines
+Codelines in window: 18
+Macro Expanded 317 lines
+C:\maXbox\maxbox3\maxbox3\maXbox3\examples\258_AES_cryptobox2.txt File stored
+258_AES_cryptobox2.txt in maxboxdef.ini stored: 23:40:22
+XCompiler Message Count: 0
+ maXbox4 258_AES_cryptobox2.txt Compiled done: 09/12/2019 23:40:22
+--------------------------------------------------------
+Machine: MAXBOX10
+User: Max
+Instance: 9633792
+Procid: 3480
+Processors: 4
+
+Welcome to CryptoBox3 protect your Data 09/12/2019 23:40:22
+Keypath is: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\crypt\
+CryptoBox3 ready, Save or load a Password protected Cipher
+Password is set! at: 09/12/2019 23:40:31
+SHA256 Hash of: packages.txt
+is: $EBC61726 EB5258DF 8D90856 9A08C09E 25CCF707 5C3B757C 233ED885 8821BE3B
+File to Crypt: packages.txt
+Time consuming: 0:0:0.201 of: 182572 File Size
+Crypted file: packages.txt_encrypt
+

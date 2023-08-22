@@ -1,0 +1,60 @@
+>>>> Stop Script: 377_smartXMLWorkshop3_42test.txt          2017-11-03 22:22:38 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:1.600
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\mX425010\745_crypto_memory_RFC1123_newmX.txt  2017-11-03 22:22:59 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 745_crypto_memory_RFC1123_newmX.txt       2017-11-03 22:23:01 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:1.408
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\mX425010\745_crypto_memory_RFC1123_newmX.txt  2017-11-03 22:23:13 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 745_crypto_memory_RFC1123_newmX.txt       2017-11-03 22:23:15 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:1.359
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\mX425010\745_crypto_memory_RFC1123_newmX.txt  2017-11-03 22:23:17 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 745_crypto_memory_RFC1123_newmX.txt       2017-11-03 22:23:18 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:1.318
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\mX425010\745_crypto_memory_RFC1123_newmX.txt  2017-11-03 22:23:37 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 745_crypto_memory_RFC1123_newmX.txt       2017-11-03 22:23:38 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:1.366
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\231_DBGrid_XML_CDS_local.txt  2017-11-03 22:23:57 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 231_DBGrid_XML_CDS_local.txt              2017-11-03 22:24:02 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:4.615
+ 
+>>>> Start Script: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\examples\044_queens_performer3.txt  2017-11-03 22:24:24 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 044_queens_performer3.txt                 2017-11-03 22:24:30 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:5.689
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\044_queens_performer3.txt  2017-11-03 22:24:54 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 044_queens_performer3.txt                 2017-11-03 22:25:00 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:5.784
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\044_queens_performer3.txt  2017-11-03 22:25:23 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 044_queens_performer3.txt                 2017-11-03 22:25:29 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:5.786
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\044_queens_performer3.txt  2017-11-03 22:25:39 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 044_queens_performer3.txt                 2017-11-03 22:25:45 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:5.773
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\mX425010\745_crypto_memory_RFC1123_newmX42610.txt  2017-11-03 22:26:04 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 745_crypto_memory_RFC1123_newmX42610.txt  2017-11-03 22:26:07 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 22:26:4.316
+ 
+>>>> Start Script: C:\maXbox\maxbox3\maxbox3\maXbox3\examples\710_EnumRegKeys_TEstRSA_42810.txt  2017-11-03 22:26:38 
+           From Host: maXbox4.exe of C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\
+>>>> Stop Script: 710_EnumRegKeys_TEstRSA_42810.txt         2017-11-03 22:26:44 
+[RAM  monitor] : (2147483647, 2147483647, 27%) CompileRun Success! RT: 0:0:6.11
+ 
+Session Exe Stop! C:\maXbox\maxbox3\maxbox3\maXbox3\examples\710_EnumRegKeys_TEstRSA_42810.txt
+>>>> Stop Exe: maXbox4.exe v4.2.8.10                        2017-11-03 22:26:51 

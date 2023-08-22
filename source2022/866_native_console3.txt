@@ -1,0 +1,303 @@
+{***************************************************************
+ *            Native Console Shell APP
+ * Project  : p-education system Shellbox
+ * Unit Name: 866_native_console.txt
+ * Purpose  : Demonstrates a redirect to Shell-Console Output doing same task!
+ * Usage    : Start from console >>> maxbox4.exe ..\866_native_console.txt t
+ * Date     : 14/05/2019 -  14:38:5 
+ *          #sign:Max: MAXBOX10: 10/09/2019 10:59:41 
+ *          : 11/11/2015  - better process on/off  #locs:212
+ * https://stackoverflow.com/questions/18159741/how-do-i-write-to-stdout-from-a-gui-app-started-from-the-command-line
+ ****************************************************************}
+//compilerswitch $N- turns the coprocessor off, {$mode objfpc}{$H+} loc's =1
+
+PROGRAM Attach_Console;
+
+type
+  SHA_CTX2 = Record
+     Unknown: Array[0.. 5] of LongWord;
+     State: Array[0.. 4] of LongWord;
+     Count: UInt64;
+     Buffer: Array[0..63] of Byte;
+   End;
+   
+   function AttachConsole(dwProcessID: Integer): Boolean;
+               external 'AttachConsole@kernel32.dll stdcall';
+   function FreeConsole(): Boolean; 
+               external 'FreeConsole@kernel32.dll stdcall';
+               
+   procedure GetStartupInfo(_Out_LPSTARTUPINFO: TStartupInfo);
+              external 'GetStartupInfoA@kernel32.dll stdcall';
+   //https://msdn.microsoft.com/en-us/windows/desktop/ms683230
+           
+   //GetModuleFileNameEx(HandleParentProc,0,PChar(ParentProcPath),BufferSize); 
+   
+   // be careful with this.  In Win 7, it shows up in kernel32.dll, so you might want to code to check for this and load dynamically
+  {function GetModuleFileNameEx(inProcess: THandle; inModule: THandle;
+        Filename: PChar; size: DWord): DWord; stdcall;
+        external 'psapi.dll' name 'GetModuleFileNameExA';    }   
+   
+   function GetModuleFileNameEx(Handle: THandle; pid: THandle; ppath: Pchar; buffsize: DWORD): DWORD; 
+                  external 'GetModuleFileNameExA@psapi.dll stdcall';
+  
+   function getUserNameExAfromDLL(nameform: DWord; namebuffer: array of char; 
+                                               var nsize: DWord): boolean;
+                  external 'GetUserNameExA@secur32.dll stdcall';
+     
+(*function SHA256_CTX(nameform: DWord; namebuffer: array of char; 
+                                               var nsize: DWord): boolean;
+     external 'SHA256@libeay32.dll stdcall';
+   function libeay32version: pchar;
+        external 'SSLeay_version@libeay32.dll stdcall';
+   procedure SHA256Init(var Context: SHA_CTX2);
+        external 'SHA256_Init@libeay32.dll stdcall';     *)
+     
+   //-----------------advapi + stdcall!
+     
+   Procedure SHA_CTXInit(out Context: SHA_CTX2) ; 
+       External 'A_SHAInit@advapi32.dll stdcall'; //Name 'A_SHAInit';
+
+
+function GetNumbers(const Value: string): string;
+var ch: char;
+  Index, Count: integer;
+begin
+  SetLength(Result, Length(Value));
+  Count := 0;      
+  for Index := 1 to length(Value) do begin
+    ch := Value[Index];
+    if (ch >= '0') and (ch <='9') then  begin
+      inc(Count);
+      Result[Count]:= ch;
+    end;
+  end;
+  SetLength(Result, Count);
+end;
+
+  function IsPrimetime(n: Integer): Boolean;
+   var
+     i: Integer;
+   begin
+     Result:=False;
+     if n<2 then Exit;
+     Result:=True;
+     if n=2 then Exit;
+     i:=2;
+     while i<(n div i + 1) do begin
+       if (n mod i)=0 then begin
+         Result:=False;
+         Exit;
+       end;
+       Inc(i);
+     end;
+   end;
+   
+   function IsConsoleMode(): Boolean;
+   var SI: TStartupInfo;
+   begin
+     SI.cb := SizeOf(SI);
+     GetStartupInfo(SI);
+     Result := ((SI.dwFlags and STARTF_USESHOWWINDOW) = 0);
+   end; 
+  
+Const
+  aBufferSize = 4096;
+  
+function GetParentProcessName(): String;
+var
+  HandleSnapShot: THandle;
+  EntryParentProc: TProcessEntry32;
+  CurrentProcessId: THandle;
+  HandleParentProc: THandle;
+  ParentProcessId: THandle;
+  ParentProcessFound: Boolean;
+  ParentProcPath: String;
+begin
+  ParentProcessFound:=False;
+  HandleSnapShot:=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);
+  if HandleSnapShot<>INVALID_HANDLE_VALUE then
+  begin
+    EntryParentProc.dwSize:=SizeOf(EntryParentProc);
+    if Process32First(HandleSnapShot,EntryParentProc) then
+    begin
+      CurrentProcessId:=GetCurrentProcessId();
+      repeat
+        if EntryParentProc.th32ProcessID=CurrentProcessId then
+        begin
+          ParentProcessId:=EntryParentProc.th32ParentProcessID;
+          HandleParentProc:=OpenProcess(PROCESS_QUERY_INFORMATION or 
+                PROCESS_VM_READ,False,ParentProcessId);
+          if HandleParentProc<>0 then begin
+            ParentProcessFound:=True;
+            SetLength(ParentProcPath,BufferSize);
+            GetModuleFileNameEx(HandleParentProc,0,PChar(ParentProcPath),BufferSize);
+            ParentProcPath:=PChar(ParentProcPath);
+            CloseHandle(HandleParentProc);
+          end;
+          Break;
+        end;
+      until not Process32Next(HandleSnapShot,EntryParentProc);
+    end;
+    CloseHandle(HandleSnapShot);
+  end;
+  if ParentProcessFound then Result:= ParentProcPath
+  else Result:='';
+end;
+
+
+var vSHA256 : variant; //As Object
+  ParentName: string;
+  InputStream, OutputStream: THandleStream;
+
+                      
+ Begin //@main
+    //calls some test functions
+    printF('this is %.18f ',[maxCalc('sqr(cos(ln(2)^e))')]);
+    printF('this is Area of r=1  %.18f ',[maxCalc('PI*(1^2)')]);
+    printF('this is Area of d=2r %.18f ',[maxCalc('PI/4*(2^2)')]);
+    writeln(getVersionString(exepath+'maxbox4.exe'));
+    sr:= '123.456.789-00$p'
+    writeln(ReplaceRegExpr('\D',sr,'',true))
+    //\D is a non-digit, and \W is a non-word character, both should work)
+    Writeln(GetNumbers('123.456.789-00'));
+     
+    selfTestcFundamentutils;
+    //writeln('libeay32version: '+libeay32version)
+    //SHA256Init(shacon); -----------ADVAPI32.DLL------------------    
+    //sr:= filetoString(exepath+'maXbox4.exe');
+    
+  writeln(version)
+  if version = '4.5.8.10' then 
+       writeln('SHA256: '+deblank(getSHA256(sr)));
+ 
+  //JavaToDelphiDateTime
+  //DelphiToJavaDateTime
+   InputStream := THandleStream.Create(GetStdHandle(STD_INPUT_HANDLE));
+   OutputStream := THandleStream.Create(GetStdHandle(STD_OUTPUT_HANDLE));
+  
+   writeln('this parent: '+GetParentProcessName);
+   //function GetParentProcessID(const PID: Windows.DWORD): Windows.DWORD;
+    
+    ParentName:=PathExtractName(strlower(GetParentProcessName()));
+    //Delete(ParentName,1,ParentName.LastIndexOf('\')+1);
+    writeln('parentname: '+parentname)
+    //MEMORYREPORTOFF
+    Set_ReportMemoryLeaksOnShutdown(false)
+  //Function PathExtractName( const Filename : String) : String;
+  if (ParentName= 'cmd.exe') or (ParentName='powershell.exe') then begin
+    Set_ReportMemoryLeaksOnShutdown(false)
+    AttachConsole(-1);
+    NativeWriteln('');
+    NativeWriteln(ParamStr(2))
+    NativeWriteln('Start with maXbox4 Console Output ----------------------->');
+    NativeWriteln('');
+    for it:=1 to 50 do if IsPrime(it) then NativeWriteln(IntToStr(it)+' is prime');
+    NativeWriteln('IsConsoleMode(): '+botostr(IsConsoleMode)) 
+    NativeWriteln('-----end-----');
+    NativeWriteln('>>>');
+    //FreeConsole();
+    if ParamStr(2)= '-t' then begin
+       Application.Terminate;
+         nativewriteln('found -t')
+         NativeWriteln('>>>');
+       end;
+       FreeConsole();
+      end  else begin//}
+       {Application.Initialize;
+       Application.MainFormOnTaskbar:=True;
+       //Application.CreateForm(TfrmParentChecker, frmParentChecker);
+       frmParentChecker.Label1.Caption:='Executed from '+ParentName;
+       Application.Run;   }
+   end; 
+End.  
+
+
+Doc:
+
+Theres no reliable way for a GUI subsystem application to attach to the console of its parent process. If you try to do so you end up with two active processes sharing the same console. This leads to no end of trouble.
+
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+C:\Windows\SysWOW64\cmd.exe
+cmd.exe
+//--------------------------------------------------------------------
+//  This code assumes that the handle of a cryptographic context 
+//  has been acquired and that a hash object has been created 
+//  and its handle (hHash) is available.
+
+GetStartupInfo function
+
+Retrieves the contents of the STARTUPINFO structure that was specified when the calling process was created.
+
+CryptAcquireContext(hProv, nil, nil, PROV_RSA_AES, CRYPT_VERIFYCONTEXT);
+CryptCreateHash(hProv, CALG_SHA256, nil, 0, hHash); 
+
+cbHashDataLen := 32;    // sha256 = 32 bytes.                             
+
+Ref:
+    https://stackoverflow.com/questions/18159741/how-do-i-write-to-stdout-from-a-gui-app-started-from-the-command-line
+    https://en.bitcoin.it/wiki/Target
+    https://bitcoinwisdom.com/
+    http://www.delphipraxis.net/155688-mini-sha1.html
+    https://www.clubdelphi.com/foros/showthread.php?t=80799
+    
+    //Exception: OLE error 80131700.
+    
+    It's important to realize that block generation is not a long, set problem (like doing a million hashes), but more like a lottery. Each hash basically gives you a random number between 0 and the maximum value of a 256-bit number (which is huge). If your hash is below the target, then you win. If not, you increment the nonce (completely changing the hash) and try again.
+    Die Schwierigkeit wird alle 2016 Blöcke angepasst. Das Netzwerk versucht, die Schwierigkeit so anzupassen, dass es das mit der Leistung des gesamten Netzwerks ungefähr 14 Tage dauert um 2016 Blöcke herzustellen. Deshalb steigt wenn die Leistung des Netzwerks zunimmt, die Schwierigkeit ebenfalls.
+   
+Proposal for Abreviation Symbol:
+-----------------------------------------------
+  01 FALSE    //Contradiction
+
+  02 AND      //Conjunction x*y
+
+  03 INHIB    //Inhibition x*^y
+
+  04 PRAEP    //Praependence x
+
+  05 PRAE     //Praesection ^x*y
+
+  06 POST     //Postpendence y
+
+  07 XOR      //Exclusive OR x*^y+^x*y
+
+  08 OR       //Disjunction OR = x+y
+
+  09 NOR      //Rejection
+
+  10 AEQ      //Aequivalence x<-->y, ^x*^y+x*y
+
+  11 NEGY     //YNegation ^y
+
+  12 IMPY     //YImplication y-->x; x+^y
+
+  13 NEGX     //Xnegation ^x
+
+  14 IMPX     //XImplication x-->y; ^x+y
+
+  15 NAND     //Exclusion
+
+  16 TRUE     //TRUE Tautologic
+  
+ //ShellExecute in W64
+//ExecuteCommand('cmd','/k FC /L/N C:\maxbook\maxbox3\maxbox391.exe C:\maxbook\maxbox3\maxbox3.exe')
+ //ExecuteCommand('cmd','/k FC /L /N C:\maxbook\maxbox3\maxboxdef1.ini C:\maxbook\maxbox3\maxboxdef2.ini')
+   
+getRulesbyContract  
+  couple of slides i have but you got the point
+  one important things that i want to stress
+  difference between data and delta is the difference
+  units to add :
+  
+Function ToHexString(rabyt)
+  'Ref: http://stackoverflow.com/questions/1118947/converting-binary-file-to-base64-string
+  With CreateObject("MSXML2.DOMDocument")
+    .LoadXML "<root />"
+    .DocumentElement.DataType = "bin.Hex"
+    .DocumentElement.nodeTypedValue = rabyt
+    ToHexString = Replace(.DocumentElement.text, vbLf, "")
+  End With
+End Function
+
+ 
+//----code_cleared_checked_clean----

@@ -1,0 +1,10 @@
+
+---------- C:\MAXBOX\TESTAPP2\MAXBOX2\MAXBOX2\SOURCE_2007\MAXBOX29\MX4\MX4_V38\MX4\SOURCE\CODETESTER2.TXT
+  StartPos := Stream.Position;
+  while (Stream.Read( ch, 1) = 1) and (ch <> #13) do;
+  LineLen := Stream.Position - StartPos;
+  Stream.Position := StartPos;
+  Stream.ReadBuffer(Line[1], LineLen);
+    if (Stream.Read( ch, 1) = 1) and (ch <> #10) then
+      Stream.Seek(-1, 0) // unread it if not LF character.
+  ExecuteShell('cmd.exe', '/C find "Stream." '+Exepath+'codetester2.txt >                                                           codeout32.txt');

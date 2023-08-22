@@ -1,0 +1,409 @@
+Build
+  [DCC Warning] IdHeaderList.pas(137): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHeaderList.pas(228): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHeaderList.pas(343): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTPHeaderInfo.pas(139): H2365 Override method TIdRequestHeaderInfo.destroy should match case of ancestor TIdEntityHeaderInfo.Destroy
+  [DCC Warning] IdHTTPHeaderInfo.pas(431): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(519): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(633): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(642): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(667): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(675): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(782): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(785): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(804): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(1350): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(1363): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(1363): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(1369): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(1369): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IFSI_WinForm1puzzle.pas(101): H2269 Overriding virtual method 'TPSImport_WinForm1.CompOnUses' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] IFSI_WinForm1puzzle.pas(102): H2269 Overriding virtual method 'TPSImport_WinForm1.ExecOnUses' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] IFSI_WinForm1puzzle.pas(103): H2269 Overriding virtual method 'TPSImport_WinForm1.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] IFSI_WinForm1puzzle.pas(104): H2269 Overriding virtual method 'TPSImport_WinForm1.CompileImport2' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] IFSI_WinForm1puzzle.pas(105): H2269 Overriding virtual method 'TPSImport_WinForm1.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] IFSI_WinForm1puzzle.pas(106): H2269 Overriding virtual method 'TPSImport_WinForm1.ExecImport2' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] IFSI_WinForm1puzzle.pas(886): W1036 Variable 'C' might not have been initialized
+  [DCC Warning] IFSI_WinForm1puzzle.pas(892): H2164 Variable 'bufstr' is declared but never used in 'GetMapXGeoReverse'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(1086): H2164 Variable 'str3' is declared but never used in 'getScriptandRun'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(1109): H2164 Variable 'str3' is declared but never used in 'getBox'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(1315): H2164 Variable 'getStr' is declared but never used in 'TDBEventHandlers.ClickinListbox'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(1608): H2164 Variable 'x' is declared but never used in 'JavahashCode'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(1932): W1035 Return value of function 'PortTCPIsOpen2' might be undefined
+  [DCC Warning] IFSI_WinForm1puzzle.pas(2419): H2077 Value assigned to 'AmpEdt' never used
+  [DCC Warning] IFSI_WinForm1puzzle.pas(2830): H2164 Variable 'Row' is declared but never used in 'SaveAsExcelFile'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(2830): H2164 Variable 'Col' is declared but never used in 'SaveAsExcelFile'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(2831): H2164 Variable 'GridPrevFile' is declared but never used in 'SaveAsExcelFile'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(2918): W1035 Return value of function 'josephusG' might be undefined
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3087): W1036 Variable 'ApplicationHasPriority' might not have been initialized
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3118): H2077 Value assigned to 'Pagenum' never used
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3107): H2077 Value assigned to 'Pagenum' never used
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3208): W1035 Return value of function 'Sendln' might be undefined
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3383): H2164 Variable 'B2X' is declared but never used in 'UpTime'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3414): W1035 Return value of function 'mytimeGetSystemTime' might be undefined
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3590): W1035 Return value of function 'Constrain' might be undefined
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3674): H2077 Value assigned to 'wget' never used
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3693): H2077 Value assigned to 'wget2' never used
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3736): W1035 Return value of function 'FindComponent1' might be undefined
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3878): H2164 Variable 'z' is declared but never used in 'PowerBig'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(3896): H2164 Variable 'z' is declared but never used in 'GetMultiN'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4056): H2164 Variable 'ahi' is declared but never used in 'Lo1'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4201): W1036 Variable 'i' might not have been initialized
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4194): H2164 Variable 'fi' is declared but never used in 'DumpComponents'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4215): W1044 Suspicious typecast of WideString to PAnsiChar
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4216): W1044 Suspicious typecast of WideString to PAnsiChar
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4217): W1044 Suspicious typecast of WideString to PAnsiChar
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4301): W1044 Suspicious typecast of WideString to PAnsiChar
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4395): W1000 Symbol 'AllocMemCount' is deprecated
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4400): W1000 Symbol 'AllocMemSize' is deprecated
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4654): W1000 Symbol 'FileAge' is deprecated
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4697): H2164 Variable 'FileNamePath' is declared but never used in 'Debugln'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4941): H2077 Value assigned to 'BinType' never used
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4944): W1036 Variable 'BinType' might not have been initialized
+  [DCC Warning] IFSI_WinForm1puzzle.pas(4948): W1036 Variable 'SubSyst' might not have been initialized
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5229): W1013 Constant 0 converted to NIL
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5234): W1013 Constant 0 converted to NIL
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5256): W1036 Variable 'Ch' might not have been initialized
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5890): W1012 Constant expression violates subrange bounds
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5891): W1012 Constant expression violates subrange bounds
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5893): W1012 Constant expression violates subrange bounds
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5894): W1012 Constant expression violates subrange bounds
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5895): W1012 Constant expression violates subrange bounds
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5896): W1012 Constant expression violates subrange bounds
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5897): W1012 Constant expression violates subrange bounds
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5898): W1012 Constant expression violates subrange bounds
+  [DCC Warning] IFSI_WinForm1puzzle.pas(5899): W1012 Constant expression violates subrange bounds
+  [DCC Warning] uPSI_IdCoder.pas(19): H2269 Overriding virtual method 'TPSImport_IdCoder.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] uPSI_IdCoder.pas(20): H2269 Overriding virtual method 'TPSImport_IdCoder.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] uPSI_IdHTTPHeaderInfo.pas(21): H2269 Overriding virtual method 'TPSImport_IdHTTPHeaderInfo.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] uPSI_IdHTTPHeaderInfo.pas(22): H2269 Overriding virtual method 'TPSImport_IdHTTPHeaderInfo.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] MathsLib.pas(467): H2164 Variable 's' is declared but never used in 'isPalindrome'
+  [DCC Warning] MathsLib.pas(468): H2164 Variable 'i' is declared but never used in 'isPalindrome'
+  [DCC Warning] DIUtils.pas(19132): H2077 Value assigned to 'pIn' never used
+  [DCC Warning] DIUtils.pas(19121): H2077 Value assigned to 'pIn' never used
+  [DCC Warning] DIUtils.pas(19107): H2077 Value assigned to 'pIn' never used
+  [DCC Warning] DIUtils.pas(19096): H2077 Value assigned to 'pIn' never used
+  [DCC Warning] DIUtils.pas(20196): H2164 Variable 'b' is declared but never used in 'UpdateCrc32OfBuf'
+  [DCC Warning] DIUtils.pas(20197): H2164 Variable 'p' is declared but never used in 'UpdateCrc32OfBuf'
+  [DCC Warning] UtilsMax4.pas(1232): H2077 Value assigned to 'Ret' never used
+  [DCC Warning] UtilsMax4.pas(1231): H2077 Value assigned to 'Ret' never used
+  [DCC Warning] UtilsMax4.pas(1230): H2077 Value assigned to 'Ret' never used
+  [DCC Warning] UtilsMax4.pas(1222): H2077 Value assigned to 'Ret' never used
+  [DCC Warning] uPSI_IdAuthentication.pas(19): H2269 Overriding virtual method 'TPSImport_IdAuthentication.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] uPSI_IdAuthentication.pas(20): H2269 Overriding virtual method 'TPSImport_IdAuthentication.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] uPSI_IdRFCReply.pas(19): H2269 Overriding virtual method 'TPSImport_IdRFCReply.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] uPSI_IdRFCReply.pas(20): H2269 Overriding virtual method 'TPSImport_IdRFCReply.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [DCC Warning] fMain.pas(6532): H2164 Variable 'ClassImporter' is declared but never used in 'TMaxForm1.RunCompiledScript2'
+  [DCC Warning] fMain.pas(6592): H2164 Variable 'afilename' is declared but never used in 'TMaxForm1.LoadBytecode1Click'
+  [DCC Warning] fMain.pas(6904): H2164 Variable 'fx' is declared but never used in 'TMaxForm1.showandSaveBCode'
+  [DCC Warning] fMain.pas(7688): H2164 Variable 'p' is declared but never used in 'TMaxForm1.Memo1StatusChange'
+  [DCC Warning] fMain.pas(8246): H2164 Variable 'mstr' is declared but never used in 'TMaxForm1.SetInterfacesMarks'
+  [DCC Warning] fMain.pas(8357): H2077 Value assigned to 'itstr' never used
+  [DCC Warning] fMain.pas(8346): H2077 Value assigned to 'itstr' never used
+  [DCC Warning] fMain.pas(9278): H2164 Variable 'StrList' is declared but never used in 'TMaxForm1.ParseMacros'
+  [DCC Warning] fMain.pas(9466): H2164 Variable 'temp' is declared but never used in 'TMaxForm1.ClickinListbox2'
+  [DCC Warning] fMain.pas(9481): H2164 Variable 'temp' is declared but never used in 'TMaxForm1.ClickinListbox'
+  [DCC Warning] fMain.pas(9591): H2077 Value assigned to 'tstr' never used
+  [DCC Warning] fMain.pas(9580): H2077 Value assigned to 'tstr' never used
+  [DCC Warning] fMain.pas(9569): H2077 Value assigned to 'tstr' never used
+  [DCC Warning] fMain.pas(9551): H2077 Value assigned to 'tstr' never used
+  [DCC Warning] fMain.pas(9537): H2077 Value assigned to 'tstr' never used
+  [DCC Warning] fMain.pas(9526): H2164 Variable 'AFilename' is declared but never used in 'TMaxForm1.LoadInterfaceList'
+  [DCC Warning] fMain.pas(9825): H2164 Variable 't2' is declared but never used in 'TMaxForm1.ShowWords'
+  [DCC Warning] fMain.pas(9875): H2077 Value assigned to 'cfound' never used
+  [DCC Warning] fMain.pas(9861): H2164 Variable 's1' is declared but never used in 'TMaxForm1.Memo1DblClick'
+  [DCC Warning] fMain.pas(9862): H2164 Variable 't1' is declared but never used in 'TMaxForm1.Memo1DblClick'
+  [DCC Warning] fMain.pas(9966): H2164 Variable 'p' is declared but never used in 'TMaxForm1.Memo1GutterClick'
+  [DCC Warning] fMain.pas(9970): H2164 Variable 'marks' is declared but never used in 'TMaxForm1.Memo1GutterClick'
+  [DCC Warning] fMain.pas(9972): H2164 Variable 'mbuffer' is declared but never used in 'TMaxForm1.Memo1GutterClick'
+  [DCC Warning] fMain.pas(10071): H2164 Variable 'aline' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  [DCC Warning] fMain.pas(10071): H2164 Variable 'i' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  [DCC Warning] fMain.pas(10072): H2164 Variable 'amark' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  [DCC Warning] fMain.pas(10073): H2164 Variable 'p' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  [DCC Warning] fMain.pas(10074): H2164 Variable 'marks' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  [DCC Warning] fMain.pas(10075): H2164 Variable 'foundbm' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  [DCC Warning] fMain.pas(10523): H2164 Variable 'old' is declared but never used in 'TMaxForm1.CB1SCListChange'
+  [DCC Warning] fMain.pas(856): H2219 Private symbol 'STATShowBytecode' declared but never used
+  [DCC Warning] fMain.pas(902): H2219 Private symbol 'Mark' declared but never used
+  [DCC Warning] fMain.pas(910): H2219 Private symbol 'RunCompiledScript' declared but never used
+  [DCC Warning] fMain.pas(927): H2219 Private symbol 'FormMarkup' declared but never used
+  [DCC Warning] fMain.pas(929): H2219 Private symbol 'GetWidth' declared but never used
+  [DCC Warning] fMain.pas(932): H2219 Private symbol 'ParseMacros' declared but never used
+  [DCC Warning] fMain.pas(933): H2219 Private symbol 'SetInterfacesMarks' declared but never used
+  [DCC Warning] fMain.pas(935): H2219 Private symbol 'SetInterfacesMarksMemo3' declared but never used
+Output
+  Build started 03/06/2016 17:46:00.
+  __________________________________________________
+  Project "C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\maxbox4_2.dproj" (Make target(s)):
+  Target CoreCompile:
+      c:\program files (x86)\codegear\rad studio\5.0\bin\dcc32.exe -I"c:\program files (x86)\codegear\rad studio\5.0\lib";"c:\program files (x86)\codegear\rad studio\5.0\Imports";C:\maXbox\TestApp2\sonysavefeb2014\Indy9;"c:\program files (x86)\codegear\rad studio\5.0\Lib\Indy10";"C:\Users\Public\Documents\RAD Studio\5.0\Dcp";"c:\program files (x86)\codegear\rad studio\5.0\RaveReports\Lib";"C:\Program Files (x86)\RemObjects Software\Pascal Script for Delphi\Dcu\D11";"C:\Program Files (x86)\RemObjects Software\Pascal Script for Delphi\Source";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;C:\maXbox\TestApp2\sonysavefeb2014\maxboxfiles\jvcl\run\a;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;"C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;C:\maxbox\TestApp2\v21\SynEdit\Source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\JCL\jvcl\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\resXplor;C:\maxbox\testapp2\entwickler\gl\Source\base;C:\maxbox\testapp2\entwickler\gl\Source\Platform;C:\maxbox\testapp2\entwickler\gl\Source;C:\maXbox\TestApp2\entwickler\gl\Source\FileFormats;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;"C:\maXbox\TestApp2\sonysavefeb2014\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\extpascal;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\extpascal\zeos\src\component -LE"C:\Users\Public\Documents\RAD Studio\5.0\Bpl" -LN"C:\Users\Public\Documents\RAD Studio\5.0\Dcp" -M -O"c:\program files (x86)\codegear\rad studio\5.0\lib";"c:\program files (x86)\codegear\rad studio\5.0\Imports";C:\maXbox\TestApp2\sonysavefeb2014\Indy9;"c:\program files (x86)\codegear\rad studio\5.0\Lib\Indy10";"C:\Users\Public\Documents\RAD Studio\5.0\Dcp";"c:\program files (x86)\codegear\rad studio\5.0\RaveReports\Lib";"C:\Program Files (x86)\RemObjects Software\Pascal Script for Delphi\Dcu\D11";"C:\Program Files (x86)\RemObjects Software\Pascal Script for Delphi\Source";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;C:\maXbox\TestApp2\sonysavefeb2014\maxboxfiles\jvcl\run\a;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;"C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;C:\maxbox\TestApp2\v21\SynEdit\Source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\JCL\jvcl\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\resXplor;C:\maxbox\testapp2\entwickler\gl\Source\base;C:\maxbox\testapp2\entwickler\gl\Source\Platform;C:\maxbox\testapp2\entwickler\gl\Source;C:\maXbox\TestApp2\entwickler\gl\Source\FileFormats;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;"C:\maXbox\TestApp2\sonysavefeb2014\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\extpascal;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\extpascal\zeos\src\component -R"c:\program files (x86)\codegear\rad studio\5.0\lib";"c:\program files (x86)\codegear\rad studio\5.0\Imports";C:\maXbox\TestApp2\sonysavefeb2014\Indy9;"c:\program files (x86)\codegear\rad studio\5.0\Lib\Indy10";"C:\Users\Public\Documents\RAD Studio\5.0\Dcp";"c:\program files (x86)\codegear\rad studio\5.0\RaveReports\Lib";"C:\Program Files (x86)\RemObjects Software\Pascal Script for Delphi\Dcu\D11";"C:\Program Files (x86)\RemObjects Software\Pascal Script for Delphi\Source";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;C:\maXbox\TestApp2\sonysavefeb2014\maxboxfiles\jvcl\run\a;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;"C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;C:\maxbox\TestApp2\v21\SynEdit\Source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\JCL\jvcl\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\resXplor;C:\maxbox\testapp2\entwickler\gl\Source\base;C:\maxbox\testapp2\entwickler\gl\Source\Platform;C:\maxbox\testapp2\entwickler\gl\Source;C:\maXbox\TestApp2\entwickler\gl\Source\FileFormats;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;"C:\maXbox\TestApp2\sonysavefeb2014\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\extpascal;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\extpascal\zeos\src\component -U"c:\program files (x86)\codegear\rad studio\5.0\lib";"c:\program files (x86)\codegear\rad studio\5.0\Imports";C:\maXbox\TestApp2\sonysavefeb2014\Indy9;"c:\program files (x86)\codegear\rad studio\5.0\Lib\Indy10";"C:\Users\Public\Documents\RAD Studio\5.0\Dcp";"c:\program files (x86)\codegear\rad studio\5.0\RaveReports\Lib";"C:\Program Files (x86)\RemObjects Software\Pascal Script for Delphi\Dcu\D11";"C:\Program Files (x86)\RemObjects Software\Pascal Script for Delphi\Source";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\3_DependencyWalker;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib;C:\maXbox\TestApp2\sonysavefeb2014\maxboxfiles\jvcl\run\a;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\JCL\JCL\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\ciphers;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\cryptography;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\utilities;"C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\library surface";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\RSA;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\TPLockBoxrun\hashes;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\systools\source;C:\maxbox\TestApp2\v21\SynEdit\Source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\JCL\jvcl\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\resXplor;C:\maxbox\testapp2\entwickler\gl\Source\base;C:\maxbox\testapp2\entwickler\gl\Source\Platform;C:\maxbox\testapp2\entwickler\gl\Source;C:\maXbox\TestApp2\entwickler\gl\Source\FileFormats;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing;C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\synopse;"C:\maXbox\TestApp2\sonysavefeb2014\Program Files\Borland\RAD Studio\5.0\source\ToolsAPI";C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\extpascal;C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\extpascal\zeos\src\component --no-config   maxbox4_2.dpr   
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHeaderList.pas(137,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHeaderList.pas(228,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHeaderList.pas(343,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTPHeaderInfo.pas(139,1): Hint warning 2365: H2365 Override method TIdRequestHeaderInfo.destroy should match case of ancestor TIdEntityHeaderInfo.Destroy
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTPHeaderInfo.pas(431,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(519,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(633,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(642,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(667,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(675,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(782,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(785,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(804,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(1350,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(1363,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(1363,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(1369,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(1369,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(101,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.CompOnUses' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(102,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.ExecOnUses' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(103,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(104,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.CompileImport2' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(105,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(106,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.ExecImport2' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(886,1): Warning warning 1036: W1036 Variable 'C' might not have been initialized
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(892,1): Hint warning 2164: H2164 Variable 'bufstr' is declared but never used in 'GetMapXGeoReverse'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(1086,1): Hint warning 2164: H2164 Variable 'str3' is declared but never used in 'getScriptandRun'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(1109,1): Hint warning 2164: H2164 Variable 'str3' is declared but never used in 'getBox'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(1315,1): Hint warning 2164: H2164 Variable 'getStr' is declared but never used in 'TDBEventHandlers.ClickinListbox'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(1608,1): Hint warning 2164: H2164 Variable 'x' is declared but never used in 'JavahashCode'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(1932,1): Warning warning 1035: W1035 Return value of function 'PortTCPIsOpen2' might be undefined
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(2419,1): Hint warning 2077: H2077 Value assigned to 'AmpEdt' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(2830,1): Hint warning 2164: H2164 Variable 'Row' is declared but never used in 'SaveAsExcelFile'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(2830,1): Hint warning 2164: H2164 Variable 'Col' is declared but never used in 'SaveAsExcelFile'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(2831,1): Hint warning 2164: H2164 Variable 'GridPrevFile' is declared but never used in 'SaveAsExcelFile'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(2918,2): Warning warning 1035: W1035 Return value of function 'josephusG' might be undefined
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3087,1): Warning warning 1036: W1036 Variable 'ApplicationHasPriority' might not have been initialized
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3118,1): Hint warning 2077: H2077 Value assigned to 'Pagenum' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3107,1): Hint warning 2077: H2077 Value assigned to 'Pagenum' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3208,1): Warning warning 1035: W1035 Return value of function 'Sendln' might be undefined
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3383,1): Hint warning 2164: H2164 Variable 'B2X' is declared but never used in 'UpTime'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3414,1): Warning warning 1035: W1035 Return value of function 'mytimeGetSystemTime' might be undefined
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3590,1): Warning warning 1035: W1035 Return value of function 'Constrain' might be undefined
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3674,1): Hint warning 2077: H2077 Value assigned to 'wget' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3693,1): Hint warning 2077: H2077 Value assigned to 'wget2' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3736,1): Warning warning 1035: W1035 Return value of function 'FindComponent1' might be undefined
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3878,1): Hint warning 2164: H2164 Variable 'z' is declared but never used in 'PowerBig'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3896,1): Hint warning 2164: H2164 Variable 'z' is declared but never used in 'GetMultiN'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4056,1): Hint warning 2164: H2164 Variable 'ahi' is declared but never used in 'Lo1'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4201,1): Warning warning 1036: W1036 Variable 'i' might not have been initialized
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4194,1): Hint warning 2164: H2164 Variable 'fi' is declared but never used in 'DumpComponents'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4215,56): Warning warning 1044: W1044 Suspicious typecast of WideString to PAnsiChar
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4216,59): Warning warning 1044: W1044 Suspicious typecast of WideString to PAnsiChar
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4217,104): Warning warning 1044: W1044 Suspicious typecast of WideString to PAnsiChar
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4301,39): Warning warning 1044: W1044 Suspicious typecast of WideString to PAnsiChar
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4395,12): Warning warning 1000: W1000 Symbol 'AllocMemCount' is deprecated
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4400,11): Warning warning 1000: W1000 Symbol 'AllocMemSize' is deprecated
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4654,21): Warning warning 1000: W1000 Symbol 'FileAge' is deprecated
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4697,1): Hint warning 2164: H2164 Variable 'FileNamePath' is declared but never used in 'Debugln'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4941,1): Hint warning 2077: H2077 Value assigned to 'BinType' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4944,1): Warning warning 1036: W1036 Variable 'BinType' might not have been initialized
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4948,1): Warning warning 1036: W1036 Variable 'SubSyst' might not have been initialized
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5229,30): Warning warning 1013: W1013 Constant 0 converted to NIL
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5234,31): Warning warning 1013: W1013 Constant 0 converted to NIL
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5256,1): Warning warning 1036: W1036 Variable 'Ch' might not have been initialized
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5890,64): Warning warning 1012: W1012 Constant expression violates subrange bounds
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5891,66): Warning warning 1012: W1012 Constant expression violates subrange bounds
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5893,66): Warning warning 1012: W1012 Constant expression violates subrange bounds
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5894,66): Warning warning 1012: W1012 Constant expression violates subrange bounds
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5895,67): Warning warning 1012: W1012 Constant expression violates subrange bounds
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5896,59): Warning warning 1012: W1012 Constant expression violates subrange bounds
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5897,70): Warning warning 1012: W1012 Constant expression violates subrange bounds
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5898,68): Warning warning 1012: W1012 Constant expression violates subrange bounds
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5899,62): Warning warning 1012: W1012 Constant expression violates subrange bounds
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdCoder.pas(19,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdCoder.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdCoder.pas(20,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdCoder.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdHTTPHeaderInfo.pas(21,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdHTTPHeaderInfo.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdHTTPHeaderInfo.pas(22,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdHTTPHeaderInfo.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\MathsLib.pas(467,1): Hint warning 2164: H2164 Variable 's' is declared but never used in 'isPalindrome'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\MathsLib.pas(468,1): Hint warning 2164: H2164 Variable 'i' is declared but never used in 'isPalindrome'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(19132,1): Hint warning 2077: H2077 Value assigned to 'pIn' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(19121,1): Hint warning 2077: H2077 Value assigned to 'pIn' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(19107,1): Hint warning 2077: H2077 Value assigned to 'pIn' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(19096,1): Hint warning 2077: H2077 Value assigned to 'pIn' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(20196,1): Hint warning 2164: H2164 Variable 'b' is declared but never used in 'UpdateCrc32OfBuf'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(20197,1): Hint warning 2164: H2164 Variable 'p' is declared but never used in 'UpdateCrc32OfBuf'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\UtilsMax4.pas(1232,1): Hint warning 2077: H2077 Value assigned to 'Ret' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\UtilsMax4.pas(1231,1): Hint warning 2077: H2077 Value assigned to 'Ret' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\UtilsMax4.pas(1230,1): Hint warning 2077: H2077 Value assigned to 'Ret' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\UtilsMax4.pas(1222,1): Hint warning 2077: H2077 Value assigned to 'Ret' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdAuthentication.pas(19,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdAuthentication.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdAuthentication.pas(20,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdAuthentication.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_IdRFCReply.pas(19,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdRFCReply.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_IdRFCReply.pas(20,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdRFCReply.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(6532,1): Hint warning 2164: H2164 Variable 'ClassImporter' is declared but never used in 'TMaxForm1.RunCompiledScript2'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(6592,1): Hint warning 2164: H2164 Variable 'afilename' is declared but never used in 'TMaxForm1.LoadBytecode1Click'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(6904,1): Hint warning 2164: H2164 Variable 'fx' is declared but never used in 'TMaxForm1.showandSaveBCode'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(7688,1): Hint warning 2164: H2164 Variable 'p' is declared but never used in 'TMaxForm1.Memo1StatusChange'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(8246,1): Hint warning 2164: H2164 Variable 'mstr' is declared but never used in 'TMaxForm1.SetInterfacesMarks'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(8357,1): Hint warning 2077: H2077 Value assigned to 'itstr' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(8346,1): Hint warning 2077: H2077 Value assigned to 'itstr' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9278,1): Hint warning 2164: H2164 Variable 'StrList' is declared but never used in 'TMaxForm1.ParseMacros'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9466,1): Hint warning 2164: H2164 Variable 'temp' is declared but never used in 'TMaxForm1.ClickinListbox2'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9481,1): Hint warning 2164: H2164 Variable 'temp' is declared but never used in 'TMaxForm1.ClickinListbox'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9591,1): Hint warning 2077: H2077 Value assigned to 'tstr' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9580,1): Hint warning 2077: H2077 Value assigned to 'tstr' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9569,1): Hint warning 2077: H2077 Value assigned to 'tstr' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9551,1): Hint warning 2077: H2077 Value assigned to 'tstr' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9537,1): Hint warning 2077: H2077 Value assigned to 'tstr' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9526,1): Hint warning 2164: H2164 Variable 'AFilename' is declared but never used in 'TMaxForm1.LoadInterfaceList'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9825,1): Hint warning 2164: H2164 Variable 't2' is declared but never used in 'TMaxForm1.ShowWords'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9875,1): Hint warning 2077: H2077 Value assigned to 'cfound' never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9861,1): Hint warning 2164: H2164 Variable 's1' is declared but never used in 'TMaxForm1.Memo1DblClick'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9862,1): Hint warning 2164: H2164 Variable 't1' is declared but never used in 'TMaxForm1.Memo1DblClick'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9966,1): Hint warning 2164: H2164 Variable 'p' is declared but never used in 'TMaxForm1.Memo1GutterClick'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9970,1): Hint warning 2164: H2164 Variable 'marks' is declared but never used in 'TMaxForm1.Memo1GutterClick'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9972,1): Hint warning 2164: H2164 Variable 'mbuffer' is declared but never used in 'TMaxForm1.Memo1GutterClick'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10071,1): Hint warning 2164: H2164 Variable 'aline' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10071,1): Hint warning 2164: H2164 Variable 'i' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10072,1): Hint warning 2164: H2164 Variable 'amark' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10073,1): Hint warning 2164: H2164 Variable 'p' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10074,1): Hint warning 2164: H2164 Variable 'marks' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10075,1): Hint warning 2164: H2164 Variable 'foundbm' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10523,1): Hint warning 2164: H2164 Variable 'old' is declared but never used in 'TMaxForm1.CB1SCListChange'
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(856,1): Hint warning 2219: H2219 Private symbol 'STATShowBytecode' declared but never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(902,1): Hint warning 2219: H2219 Private symbol 'Mark' declared but never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(910,1): Hint warning 2219: H2219 Private symbol 'RunCompiledScript' declared but never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(927,1): Hint warning 2219: H2219 Private symbol 'FormMarkup' declared but never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(929,1): Hint warning 2219: H2219 Private symbol 'GetWidth' declared but never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(932,1): Hint warning 2219: H2219 Private symbol 'ParseMacros' declared but never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(933,1): Hint warning 2219: H2219 Private symbol 'SetInterfacesMarks' declared but never used
+      C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(935,1): Hint warning 2219: H2219 Private symbol 'SetInterfacesMarksMemo3' declared but never used
+  Done building target "CoreCompile" in project "maxbox4_2.dproj".
+  Done building project "maxbox4_2.dproj".
+  Build succeeded.
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHeaderList.pas(137,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHeaderList.pas(228,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHeaderList.pas(343,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTPHeaderInfo.pas(139,1): Hint warning 2365: H2365 Override method TIdRequestHeaderInfo.destroy should match case of ancestor TIdEntityHeaderInfo.Destroy
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTPHeaderInfo.pas(431,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(519,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(633,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(642,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(667,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(675,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(782,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(785,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(804,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(1350,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(1363,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(1363,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(1369,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\sonysavefeb2014\Indy9\IdHTTP.pas(1369,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(101,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.CompOnUses' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(102,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.ExecOnUses' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(103,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(104,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.CompileImport2' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(105,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(106,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_WinForm1.ExecImport2' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(886,1): Warning warning 1036: W1036 Variable 'C' might not have been initialized
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(892,1): Hint warning 2164: H2164 Variable 'bufstr' is declared but never used in 'GetMapXGeoReverse'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(1086,1): Hint warning 2164: H2164 Variable 'str3' is declared but never used in 'getScriptandRun'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(1109,1): Hint warning 2164: H2164 Variable 'str3' is declared but never used in 'getBox'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(1315,1): Hint warning 2164: H2164 Variable 'getStr' is declared but never used in 'TDBEventHandlers.ClickinListbox'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(1608,1): Hint warning 2164: H2164 Variable 'x' is declared but never used in 'JavahashCode'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(1932,1): Warning warning 1035: W1035 Return value of function 'PortTCPIsOpen2' might be undefined
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(2419,1): Hint warning 2077: H2077 Value assigned to 'AmpEdt' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(2830,1): Hint warning 2164: H2164 Variable 'Row' is declared but never used in 'SaveAsExcelFile'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(2830,1): Hint warning 2164: H2164 Variable 'Col' is declared but never used in 'SaveAsExcelFile'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(2831,1): Hint warning 2164: H2164 Variable 'GridPrevFile' is declared but never used in 'SaveAsExcelFile'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(2918,2): Warning warning 1035: W1035 Return value of function 'josephusG' might be undefined
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3087,1): Warning warning 1036: W1036 Variable 'ApplicationHasPriority' might not have been initialized
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3118,1): Hint warning 2077: H2077 Value assigned to 'Pagenum' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3107,1): Hint warning 2077: H2077 Value assigned to 'Pagenum' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3208,1): Warning warning 1035: W1035 Return value of function 'Sendln' might be undefined
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3383,1): Hint warning 2164: H2164 Variable 'B2X' is declared but never used in 'UpTime'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3414,1): Warning warning 1035: W1035 Return value of function 'mytimeGetSystemTime' might be undefined
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3590,1): Warning warning 1035: W1035 Return value of function 'Constrain' might be undefined
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3674,1): Hint warning 2077: H2077 Value assigned to 'wget' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3693,1): Hint warning 2077: H2077 Value assigned to 'wget2' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3736,1): Warning warning 1035: W1035 Return value of function 'FindComponent1' might be undefined
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3878,1): Hint warning 2164: H2164 Variable 'z' is declared but never used in 'PowerBig'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(3896,1): Hint warning 2164: H2164 Variable 'z' is declared but never used in 'GetMultiN'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4056,1): Hint warning 2164: H2164 Variable 'ahi' is declared but never used in 'Lo1'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4201,1): Warning warning 1036: W1036 Variable 'i' might not have been initialized
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4194,1): Hint warning 2164: H2164 Variable 'fi' is declared but never used in 'DumpComponents'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4215,56): Warning warning 1044: W1044 Suspicious typecast of WideString to PAnsiChar
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4216,59): Warning warning 1044: W1044 Suspicious typecast of WideString to PAnsiChar
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4217,104): Warning warning 1044: W1044 Suspicious typecast of WideString to PAnsiChar
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4301,39): Warning warning 1044: W1044 Suspicious typecast of WideString to PAnsiChar
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4395,12): Warning warning 1000: W1000 Symbol 'AllocMemCount' is deprecated
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4400,11): Warning warning 1000: W1000 Symbol 'AllocMemSize' is deprecated
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4654,21): Warning warning 1000: W1000 Symbol 'FileAge' is deprecated
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4697,1): Hint warning 2164: H2164 Variable 'FileNamePath' is declared but never used in 'Debugln'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4941,1): Hint warning 2077: H2077 Value assigned to 'BinType' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4944,1): Warning warning 1036: W1036 Variable 'BinType' might not have been initialized
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(4948,1): Warning warning 1036: W1036 Variable 'SubSyst' might not have been initialized
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5229,30): Warning warning 1013: W1013 Constant 0 converted to NIL
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5234,31): Warning warning 1013: W1013 Constant 0 converted to NIL
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5256,1): Warning warning 1036: W1036 Variable 'Ch' might not have been initialized
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5890,64): Warning warning 1012: W1012 Constant expression violates subrange bounds
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5891,66): Warning warning 1012: W1012 Constant expression violates subrange bounds
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5893,66): Warning warning 1012: W1012 Constant expression violates subrange bounds
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5894,66): Warning warning 1012: W1012 Constant expression violates subrange bounds
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5895,67): Warning warning 1012: W1012 Constant expression violates subrange bounds
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5896,59): Warning warning 1012: W1012 Constant expression violates subrange bounds
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5897,70): Warning warning 1012: W1012 Constant expression violates subrange bounds
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5898,68): Warning warning 1012: W1012 Constant expression violates subrange bounds
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\IFSI_WinForm1puzzle.pas(5899,62): Warning warning 1012: W1012 Constant expression violates subrange bounds
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdCoder.pas(19,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdCoder.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdCoder.pas(20,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdCoder.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdHTTPHeaderInfo.pas(21,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdHTTPHeaderInfo.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdHTTPHeaderInfo.pas(22,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdHTTPHeaderInfo.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\MathsLib.pas(467,1): Hint warning 2164: H2164 Variable 's' is declared but never used in 'isPalindrome'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\MathsLib.pas(468,1): Hint warning 2164: H2164 Variable 'i' is declared but never used in 'isPalindrome'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(19132,1): Hint warning 2077: H2077 Value assigned to 'pIn' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(19121,1): Hint warning 2077: H2077 Value assigned to 'pIn' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(19107,1): Hint warning 2077: H2077 Value assigned to 'pIn' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(19096,1): Hint warning 2077: H2077 Value assigned to 'pIn' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(20196,1): Hint warning 2164: H2164 Variable 'b' is declared but never used in 'UpdateCrc32OfBuf'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\DIUtils.pas(20197,1): Hint warning 2164: H2164 Variable 'p' is declared but never used in 'UpdateCrc32OfBuf'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\UtilsMax4.pas(1232,1): Hint warning 2077: H2077 Value assigned to 'Ret' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\UtilsMax4.pas(1231,1): Hint warning 2077: H2077 Value assigned to 'Ret' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\UtilsMax4.pas(1230,1): Hint warning 2077: H2077 Value assigned to 'Ret' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\unit-importing\UtilsMax4.pas(1222,1): Hint warning 2077: H2077 Value assigned to 'Ret' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdAuthentication.pas(19,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdAuthentication.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\uPSI_IdAuthentication.pas(20,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdAuthentication.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_IdRFCReply.pas(19,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdRFCReply.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maxbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\uPSI_IdRFCReply.pas(20,1): Hint warning 2269: H2269 Overriding virtual method 'TPSImport_IdRFCReply.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(6532,1): Hint warning 2164: H2164 Variable 'ClassImporter' is declared but never used in 'TMaxForm1.RunCompiledScript2'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(6592,1): Hint warning 2164: H2164 Variable 'afilename' is declared but never used in 'TMaxForm1.LoadBytecode1Click'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(6904,1): Hint warning 2164: H2164 Variable 'fx' is declared but never used in 'TMaxForm1.showandSaveBCode'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(7688,1): Hint warning 2164: H2164 Variable 'p' is declared but never used in 'TMaxForm1.Memo1StatusChange'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(8246,1): Hint warning 2164: H2164 Variable 'mstr' is declared but never used in 'TMaxForm1.SetInterfacesMarks'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(8357,1): Hint warning 2077: H2077 Value assigned to 'itstr' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(8346,1): Hint warning 2077: H2077 Value assigned to 'itstr' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9278,1): Hint warning 2164: H2164 Variable 'StrList' is declared but never used in 'TMaxForm1.ParseMacros'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9466,1): Hint warning 2164: H2164 Variable 'temp' is declared but never used in 'TMaxForm1.ClickinListbox2'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9481,1): Hint warning 2164: H2164 Variable 'temp' is declared but never used in 'TMaxForm1.ClickinListbox'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9591,1): Hint warning 2077: H2077 Value assigned to 'tstr' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9580,1): Hint warning 2077: H2077 Value assigned to 'tstr' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9569,1): Hint warning 2077: H2077 Value assigned to 'tstr' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9551,1): Hint warning 2077: H2077 Value assigned to 'tstr' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9537,1): Hint warning 2077: H2077 Value assigned to 'tstr' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9526,1): Hint warning 2164: H2164 Variable 'AFilename' is declared but never used in 'TMaxForm1.LoadInterfaceList'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9825,1): Hint warning 2164: H2164 Variable 't2' is declared but never used in 'TMaxForm1.ShowWords'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9875,1): Hint warning 2077: H2077 Value assigned to 'cfound' never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9861,1): Hint warning 2164: H2164 Variable 's1' is declared but never used in 'TMaxForm1.Memo1DblClick'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9862,1): Hint warning 2164: H2164 Variable 't1' is declared but never used in 'TMaxForm1.Memo1DblClick'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9966,1): Hint warning 2164: H2164 Variable 'p' is declared but never used in 'TMaxForm1.Memo1GutterClick'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9970,1): Hint warning 2164: H2164 Variable 'marks' is declared but never used in 'TMaxForm1.Memo1GutterClick'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(9972,1): Hint warning 2164: H2164 Variable 'mbuffer' is declared but never used in 'TMaxForm1.Memo1GutterClick'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10071,1): Hint warning 2164: H2164 Variable 'aline' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10071,1): Hint warning 2164: H2164 Variable 'i' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10072,1): Hint warning 2164: H2164 Variable 'amark' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10073,1): Hint warning 2164: H2164 Variable 'p' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10074,1): Hint warning 2164: H2164 Variable 'marks' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10075,1): Hint warning 2164: H2164 Variable 'foundbm' is declared but never used in 'TMaxForm1.Memo1PlaceBookmark'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(10523,1): Hint warning 2164: H2164 Variable 'old' is declared but never used in 'TMaxForm1.CB1SCListChange'
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(856,1): Hint warning 2219: H2219 Private symbol 'STATShowBytecode' declared but never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(902,1): Hint warning 2219: H2219 Private symbol 'Mark' declared but never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(910,1): Hint warning 2219: H2219 Private symbol 'RunCompiledScript' declared but never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(927,1): Hint warning 2219: H2219 Private symbol 'FormMarkup' declared but never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(929,1): Hint warning 2219: H2219 Private symbol 'GetWidth' declared but never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(932,1): Hint warning 2219: H2219 Private symbol 'ParseMacros' declared but never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(933,1): Hint warning 2219: H2219 Private symbol 'SetInterfacesMarks' declared but never used
+  C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fMain.pas(935,1): Hint warning 2219: H2219 Private symbol 'SetInterfacesMarksMemo3' declared but never used
+      132 Warning(s)
+      0 Error(s)
+  Time Elapsed 00:00:20.75

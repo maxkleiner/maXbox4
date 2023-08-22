@@ -1,0 +1,479 @@
+program filehistounit2forensic;
+
+//interface   // by maXbox4  shell version of GUI  , locs=707
+//purpose: analysis of a text file tokens with a histogram of char distribution
+
+{uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Menus, StdCtrls, ComCtrls, ExtCtrls, Grids, ImgList, ShellAPI;
+  A class is a blueprint, a model for its objects.
+  Some people should be allowed to stay young and live forever... just because they make a more beautiful and better world.
+  }
+
+
+     
+  //public
+    { Public declarations }
+    var CancelFlag, SaveToFile2 : Boolean;
+    
+  //end;
+
+var
+  Form1: TForm;
+
+//implementation
+
+//uses filehistU2;
+
+//{$R *.DFM}
+
+
+
+function ReadLine(Stream: TStream; var Line: string): boolean;
+var
+  ch: AnsiChar;
+  StartPos, LineLen: integer;
+begin
+  result := False;
+  StartPos := Stream.Position;
+  ch := #0;
+  while (Stream.Read( ch, 1) = 1) and (ch <> #13) do;
+  LineLen := Stream.Position - StartPos;
+  Stream.Position := StartPos;
+  SetString(Line, 'NIL', LineLen);
+  Stream.ReadBuffer(Line[1], LineLen);
+  if ch = #13 then begin
+    result := True;
+    if (Stream.Read( ch, 1) = 1) and (ch <> #10) then
+      Stream.Seek(-1, 0) // unread it if not LF character.
+    end
+end;
+
+procedure letShellInside(Sender: TObject);
+begin
+  //ShellExecuteX(0, nil, 'cmd.exe', '/C find "320" in.txt > out.txt', nil, SW_HIDE);
+  ExecuteShell('cmd.exe', '/C find "Stream." '+Exepath+'codetester2.txt >                                                           codeout32.txt');
+  //ExecuteShell('cmd.exe', '/C find "ShellInside" '+Exepath+'codetester2.txt > codeout3.txt');
+
+  Sleep(3000);
+  //Memo2.Lines.LoadFromFile('codeout.txt');   *)
+  writeln(LoadStringofFile(Exepath+'codeout32.txt'));
+  // writeln(FiletoString(Exepath+'codeout32u.txt'));
+  
+end;
+
+
+procedure TMainFormmmTextStatistic(Sender: TObject; amemo: TMemo; ast: string);
+var
+  AllText: String;
+   I, LDigits, LLetters, LNumber,
+   LLower, LUpper, LPuct, LSep, LSymbols, LWhites: Integer;
+   TextRect: TRect;
+  //tm: TEXTMETRIC;
+begin
+  { Calculate all all kinds of charcters in the memo }
+  if amemo = Nil then
+    Alltext:= ast else
+      AllText:= amemo.Text;
+  LDigits:= 0; LNumber:= 0;
+  LLetters:= 0;
+  LLower:= 0; LUpper:= 0;
+  LPuct:= 0;
+  LSep:= 0;
+  LSymbols:= 0;
+  LWhites:= 0;
+
+  for I := 1 to Length(AllText) do begin
+    { Check for digit }
+    if charIsDigit(AllText[I]) then Inc(LDigits);
+    { Check for number }
+    if charIsNumberchar(AllText[I]) then Inc(LNumber);
+    { Check for letter }
+    if charIsAlpha(AllText[I]) then Inc(LLetters);
+
+    { Check for lower-cased letter }
+    if charIsLower(AllText[I]) then Inc(LLower);
+    { Check for upper-cased letter }
+    if charIsUpper(AllText[I]) then Inc(LUpper);
+    { Check for punctuation }
+    if charIsPunctuation(AllText[I]) then Inc(LPuct);
+
+    { Check for separators }
+    if charIscontrol(AllText[I]) then Inc(LSep);
+    { Check for symbols }
+    //if IsSymbol(AllText[I]) then Inc(LSymbols);
+   // if charIsPrintable(AllText[I]) then Inc(LSymbols);
+    if charIsSymbolW(AllText[I]) then Inc(LSymbols);
+
+    { Check for symbols }
+    if charIsWhiteSpace(AllText[I]) then Inc(LWhites);
+  end;
+  Writeln( Format('%d digits; %d numbers; %d letters; ' +
+    '(%d lower and %d upper); %d punctuation; %d separators; ' +
+    '%d symbols; %d whitespaces',
+    [LDigits, LNumber, LLetters, LLower, LUpper, LPuct,
+     LSep, LSymbols, LWhites] )
+  );
+  {TextRect := Rect(100,20,400,50);
+  Form1.Canvas.TextRect(TextRect,100,20,'Hello, Statistic!');
+  Form1.Canvas.Brush.Color := clBlack;
+  Form1.Canvas.FrameRect(TextRect);   }
+  //form1.Canvas.TextRect(TextRect, 'some long long long text',
+    //[tfTop, tfLeft, tfEndEllipsis, tfWordBreak]);
+end;
+
+
+ var abt: boolean;
+     codestr: string;
+     var em_subject, em_body, em_mail : string;
+     ave: tprogressevent;
+     //ast: TProgressStage
+
+begin
+   //image1.align:= alClient;
+   //form1.show;
+   
+   //TelFile(ExePath+'examples/maxboxnews.htm');
+   if fileexists(ExePath+'examples/maxbox4_.jpg') then begin
+     // TelFile(ExePath+'examples/moon.wav',1,254, 2048);
+     // TelFile(ExePath+'examples/maxbox.mp3',0,254);
+     // TelFile(ExePath+'examples/uebung.zip',1,250, 2048);
+     //TelFile(ExePath+'examples/maxbox4.jpg',1,250, 4096);
+     // TelFile(ExePath+'examples/readmefirst_maxbox.txt',1,250, 4096);
+     // TelFile(ExePath+'examples/income.dll',10,255, 4096);
+     // TelFile(ExePath+'examples/fullmoon.png',10,255, 4096);
+     // TelFile('C:\maxbook\maxboxpython\mentor_xml\casra2018\cassandra\august2019\Scripts\4_twitter\Output\Zurichairport_tweettimelineutfsingle200_2search.txt',1,255, 4096);
+    
+      //TelFile(ExePath+'examples/maXbox_mp3files.txt',1,255);
+    //TelFile(ExePath+'maXbox4.exe',1,250,8192);
+      //form1.caption:= form1.caption +'  '+ ExePath+'examples/maxbox4.jpg';
+     
+      codestr:= LoadStringofFile(Exepath+'examples/maxboxnews.htm')
+      TMainFormmmTextStatistic(self, Nil, codestr)
+    end else begin
+       if savestrtofile(memo1.text, Exepath+'codetester2.txt') then
+         codestr:= LoadStringofFile(Exepath+'codetester2.txt');
+         writeln(itoa(length(codestr)))
+         //TMainFormmmTextStatistic(self, Nil, codestr)
+    end;
+    
+    //letShellInside(self);
+    //tintlist
+    //TCallback
+    
+    writeln(GetDosOutput('java -version','C:\'));
+    
+    //CaptureConsoleOutput('powershell /C dir *.* ',memo2); 
+    CaptureConsoleOutput('powershell /? ',memo2); 
+
+   //writeln(GetDosOutput('dir ','C:\'));
+   
+   //ShellExecute3('open ','http://delphi.about.com',secmdopen) ;
+    //ShellExecute(hinstance, 'open',
+      //                  'http://delphi.about.com','nil','nil', SW_SHOWNORMAL) ;
+  
+   //cyShellExecute('open',
+     //                   'http://delphi.about.com','nil','nil', SW_SHOWNORMAL) ;
+   
+   //ShellExecute(Handle, 'open',
+     //           'http://delphi.about.com',nil,nil, SW_SHOWNORMAL) ;
+   
+   em_mail := 'mailto:delphi@aboutguide.com?subject=' +
+                                      em_subject + '&body=' + em_body ;
+   
+    //ExecuteShell('cmd.exe', 'open '+PChar(em_mail));
+    
+   // cyShellExecute('open',
+                 //   PChar(em_mail), 'nil', 'nil', SW_SHOWNORMAL) ;
+
+    
+    (*
+    //srlist:= TStringlist.create;
+    if LoadDFMFile2Strings('C:\maXbox\EKON_BASTA\EKON23\examples\app0026s\filehistounit.dfm',
+                              srlist, abt)  = 0 
+    then writeln(srlist.text);
+    srlist.Free;
+    *)
+    
+    //application.brush.color:= clred;
+    
+    with maxform1 do begin
+       //DrawingStyle := dsGradient
+        //GradientStartColor := clwhite
+        //GradientEndColor := clred
+         //Transparent:= false;
+       //brush.color:= clred;
+       coolbar1.hide
+       coolbar1.bands[0].BITMAP.LoadFromResourceName(HINSTANCE,'shell');
+       coolbar1.show;
+    
+     end;
+     
+     // ExecuteShell('cmd.exe', '/C dir C:\maxbook\maxboxpython\mentor_xml\casra2018\cassandra\august2019\Scripts\*.* /s > '+Exepath+'casra_pythonscripts.txt');
+      
+      //writeln(LoadStringofFile(Exepath+'casra_pythonscripts.txt'));
+      
+         // psrunning
+         
+          TCPGetTick;
+ //TCPTickDelta, 'TCPTickDelta', cdRegister);
+ //TCPTickDeltaW, 'TCPTickDeltaW', cdRegister);
+
+ 
+End.
+
+Ref: https://stackoverflow.com/questions/1454501/how-do-i-run-a-command-line-program-in-delphi#1454537
+
+https://www.thoughtco.com/decompiling-delphi-1-3-1057974
+
+http://www.atug.com/andypatterns/pythonDelphiTalk.htm
+
+diff number versus digit:
+https://stackoverflow.com/questions/228532/difference-between-char-isdigit-and-char-isnumber-in-c-sharp
+
+Ref:  mX4 executed: 03/09/2019 20:43:20  Runtime: 0:21:57.748  Memload: 43% use
+PascalScript maXbox4 - RemObjects & SynEdit
+Ver: 4.7.1.5 (471). Workdir: C:\Program Files (x86)\maxbox3
+-----PS-BYTECODE (PSB) mX4-----21:46:42
+
+$01  Qty: 472684
+$33 3 Qty: 225826
+968998 digits; 1263623 numbers; 14577466 letters; (9510594 lower and 5066872 upper); 5113692 punctuation; 7534017 separators; 1104327 symbols; 712608 whitespaces
+ mX4 executed: 06/09/2019 21:59:03  Runtime: 0:24:7.829  Memload: 38% use
+PascalScript maXbox4 - RemObjects & SynEdit
+
+maXbox4.exe
+968997 digits; 1263622 numbers; 14577466 letters; (9510591 lower and 5066873 upper); 5113693 punctuation; 7534019 separators; 1104328 symbols; 712608 whitespaces
+ mX4 executed: 06/09/2019 21:28:36  Runtime: 0:17:54.579  Memload: 38% use
+
+In maXbox:
+
+function DOSCommand(const CommandLine: string; const CmdShow:Int;
+            const WaitUntilComplete: Boolean; const WorkingDir: string = ': Boolean;
+ function GetDosOutput(CommandLine: string; Work: string = 'C:\: string;
+ procedure CaptureConsoleOutput(DosApp : string;AMemo : TMemo); 
+ function ExecuteCommandDOS(CommandLine:string):string;
+ function DOSCommandRedirect(const CommandLine: string;
+           const OutStream: Classes.TStream): Boolean; overload;     //8
+
+  procedure SendKeysToWindow(const HWnd: Windows.HWND; const Text: string);
+
+function GetDosOutput(CommandLine: string; Work: string = 'C:\'): string;  { Run a DOS program and retrieve its output dynamically while it is running. }
+var
+  SecAtrrs: TSecurityAttributes;
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+  StdOutPipeRead, StdOutPipeWrite: THandle;
+  WasOK: Boolean;
+  pCommandLine: array[0..255] of AnsiChar;
+  BytesRead: Cardinal;
+  WorkDir: string;
+  Handle: Boolean;
+begin
+  Result := '';
+  with SecAtrrs do begin
+    nLength := SizeOf(SecAtrrs);
+    bInheritHandle := True;
+    lpSecurityDescriptor := nil;
+  end;
+  CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SecAtrrs, 0);
+  try
+    with StartupInfo do
+    begin
+      FillChar(StartupInfo, SizeOf(StartupInfo), 0);
+      cb := SizeOf(StartupInfo);
+      dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+      wShowWindow := SW_HIDE;
+      hStdInput := GetStdHandle(STD_INPUT_HANDLE); // don't redirect stdin
+      hStdOutput := StdOutPipeWrite;
+      hStdError := StdOutPipeWrite;
+    end;
+    WorkDir := Work;
+    Handle := CreateProcess(nil, PChar('cmd.exe /C ' + CommandLine),
+                            nil, nil, True, 0, nil,
+                            PChar(WorkDir), StartupInfo, ProcessInfo);
+    CloseHandle(StdOutPipeWrite);
+    if Handle then
+      try
+        repeat
+          WasOK := windows.ReadFile(StdOutPipeRead, pCommandLine, 255, BytesRead, nil);
+          if BytesRead > 0 then
+          begin
+            pCommandLine[BytesRead] := #0;
+            Result := Result + pCommandLine;
+          end;
+        until not WasOK or (BytesRead = 0);
+        WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+      finally
+        CloseHandle(ProcessInfo.hThread);
+        CloseHandle(ProcessInfo.hProcess);
+      end;
+  finally
+    CloseHandle(StdOutPipeRead);
+  end;
+end;
+
+procedure CaptureConsoleOutput(const ACommand, AParameters: String; AMemo: TMemo);
+ const
+   CReadBuffer = 2400;
+ var
+   saSecurity: TSecurityAttributes;
+   hRead: THandle;
+   hWrite: THandle;
+   suiStartup: TStartupInfo;
+   piProcess: TProcessInformation;
+   pBuffer: array[0..CReadBuffer] of AnsiChar;      <----- update
+   dRead: DWord;
+   dRunning: DWord;
+ begin
+   saSecurity.nLength := SizeOf(TSecurityAttributes);
+   saSecurity.bInheritHandle := True;  
+   saSecurity.lpSecurityDescriptor := nil; 
+
+   if CreatePipe(hRead, hWrite, @saSecurity, 0) then
+   begin    
+     FillChar(suiStartup, SizeOf(TStartupInfo), #0);
+     suiStartup.cb := SizeOf(TStartupInfo);
+     suiStartup.hStdInput := hRead;
+     suiStartup.hStdOutput := hWrite;
+     suiStartup.hStdError := hWrite;
+     suiStartup.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;    
+     suiStartup.wShowWindow := SW_HIDE; 
+
+     if CreateProcess(nil, PChar(ACommand + ' ' + AParameters), @saSecurity,
+       @saSecurity, True, NORMAL_PRIORITY_CLASS, nil, nil, suiStartup, piProcess)
+       then
+     begin
+       repeat
+         dRunning  := WaitForSingleObject(piProcess.hProcess, 100);        
+         Application.ProcessMessages(); 
+         repeat
+           dRead := 0;
+           ReadFile(hRead, pBuffer[0], CReadBuffer, dRead, nil);          
+           pBuffer[dRead] := #0; 
+
+           OemToAnsi(pBuffer, pBuffer);
+           AMemo.Lines.Add(String(pBuffer));
+         until (dRead < CReadBuffer);      
+       until (dRunning <> WAIT_TIMEOUT);
+       CloseHandle(piProcess.hProcess);
+       CloseHandle(piProcess.hThread);    
+     end; 
+
+     CloseHandle(hRead);
+     CloseHandle(hWrite);
+   end;
+end;
+
+Source: http://delphi.wikia.com
+
+
+with maxform1.toolbar1 do begin
+       DrawingStyle := dsGradient
+        GradientStartColor := clwhite
+        GradientEndColor := clred
+         //Transparent:= false;
+       //color:= clwhite;
+     end;
+
+        coolbar1.bands[0].BITMAP.LoadFromResourceName(HINSTANCE,'MODBUSSPLASH');
+  
+object Form1: TForm1
+  Left = 97
+  Top = 116
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = ' FileHistogram'
+  ClientHeight = 317
+  ClientWidth = 651
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  Menu = MainMenu1
+  OldCreateOrder = False
+  Position = poDesktopCenter
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Image1: TImage
+    Left = 0
+    Top = 0
+    Width = 651
+    Height = 294
+    Align = alClient
+    OnMouseMove = Image1MouseMove
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 294
+    Width = 651
+    Height = 23
+    Align = alBottom
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 8
+      Top = 4
+      Width = 19
+      Height = 13
+      Caption = 'File:'
+    end
+    object Label2: TLabel
+      Left = 502
+      Top = 5
+      Width = 31
+      Height = 13
+      Caption = 'Char : '
+    end
+    object Label3: TLabel
+      Left = 534
+      Top = 5
+      Width = 7
+      Height = 14
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Courier New'
+      Font.Style = []
+      ParentFont = False
+    end
+  end         
+  object StringGrid1: TStringGrid
+    Left = 0
+    Top = 0
+    Width = 651
+    Height = 294
+    Align = alClient
+    ColCount = 17
+    DefaultColWidth = 38
+    DefaultRowHeight = 16
+    RowCount = 17
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -9
+    Font.Name = 'MS Serif'
+    Font.Style = []
+    ParentFont = False
+    ScrollBars = ssNone
+    TabOrder = 1
+    OnDrawCell = StringGrid1DrawCell
+    OnSelectCell = StringGrid1SelectCell
+    ColWidths = (
+
+    object SaveDialog1: TSaveDialog
+    DefaultExt = 'fhd'
+    Filter = 'FH Data File (*.fhd)|*.fhd'
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
+    Left = 344
+ *)
+
+
+  mX4 executed: 14/11/2019 17:22:12  Runtime: 0:0:1.984  Memload: 37% use
+ mX4 executed: 04/12/2019 14:33:11  Runtime: 0:0:1.843  Memload: 48% use
+   
+   
+   
+   
