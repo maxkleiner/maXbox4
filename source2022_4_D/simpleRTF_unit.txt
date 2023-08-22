@@ -1,0 +1,200 @@
+(**********************************************************)
+(* einfache Textformatierungen mit RTF                    *)
+(* (c) 2000 Martin Kretzschmar & Toolbox                  *)
+(* Compiler: Borland Delphi, getestet mit v5.0            *)
+(**********************************************************)
+
+UNIT SimpleRTF;
+
+INTERFACE
+
+TYPE
+  TSimpleRTF = String;
+
+FUNCTION RTF_escape_string(aString : String) : TSimpleRTF;
+
+FUNCTION RTF_add_header(Document : TSimpleRTF) : TSimpleRTF;
+
+FUNCTION RTF_bold(aText : TSimpleRTF) : TSimpleRTF;
+FUNCTION RTF_italic(aText : TSimpleRTF) : TSimpleRTF;
+FUNCTION RTF_Underlined(aText : TSimpleRTF) : TSimpleRTF;
+FUNCTION RTF_Superscript(aText : TSimpleRTF) : TSimpleRTF;
+FUNCTION RTF_Subscript(aText : TSimpleRTF) : TSimpleRTF;
+FUNCTION RTF_SmallCaps(aText : TSimpleRTF) : TSimpleRTF;
+
+FUNCTION RTF_To_Plaintext(aText : TSimpleRTF) : String;
+
+IMPLEMENTATION
+
+//USES
+  //SysUtils;
+
+CONST
+  Version_Id          = '\rtf1';
+  Charset_Id          = '\ansi';
+  Codepage_Id         = '\ansicpg1252';
+  //RTF_Control_Symbols = ['|', '~', '-', '_', ':', '*'];
+  //Alphanumeric_Chars  = ['-', '0'..'9', 'a'..'z', 'A'..'Z'];
+  
+type   
+  TPasStyle = (a,b,c,d,e,f);
+  TRTF_Control_Symbols = set of char;
+  //RTF_Control_Symbols =  ('|', '~', '-', '_', ':', '*']
+  var 
+    RTF_Control_Symbols, Alphanumeric_Chars: set of char;  //TRTF_Control_Symbols;
+
+
+FUNCTION RTF_escape_string(aString : String) : TSimpleRTF;
+VAR
+  i, len : Cardinal;
+BEGIN
+  { echte DOS - Zeilenumbrueche erzeugen }
+  //aString := AdjustLineBreaksS(aString);
+
+  i := 1;
+  len := Length(aString);
+  WHILE i <= len DO
+    CASE aString[i] OF
+      '\', '{', '}' : BEGIN
+        Insert('\', aString, i);
+        Inc(len);
+        //Inc(i, 2)
+        i:= i+2;
+      END;
+      #9 : BEGIN
+        Delete(aString, i, 1);
+        Insert('\tab ', aString, i);
+        //7Inc(len, 4);
+        //Inc(i,5)
+        len:= len + 4;
+        i:= i+5;
+      
+      END;
+      #13 : BEGIN
+        { Wegen AdjustLineBreaks folgt auf #13 immer #10 }
+        Delete(aString, i, 2);
+        Insert('\par ', aString, i);
+        //Inc(len, 4);
+        //Inc(i, 5)
+        len:= len + 4;
+        i:= i+5;
+    
+      END
+      ELSE Inc(i)                   
+    END;
+  Result := aString
+END;
+
+FUNCTION RTF_add_header(Document : TSimpleRTF) : TSimpleRTF;
+BEGIN
+  Result := Format('{%s%s%s %s}', [Version_Id, Charset_Id,
+                                   Codepage_Id, Document])
+END;
+
+
+CONST
+  Format_String = '{\b %s}';
+
+FUNCTION RTF_bold(aText : TSimpleRTF) : TSimpleRTF;
+BEGIN
+  Result := Format(Format_String, [aText])
+END;
+
+CONST
+  Format_Stringi = '{\i %s}';
+
+FUNCTION RTF_italic(aText : TSimpleRTF) : TSimpleRTF;
+BEGIN
+  Result := Format(Format_Stringi, [aText])
+END;
+
+
+CONST
+  Format_Stringu = '{\ul %s}';
+
+FUNCTION RTF_Underlined(aText : TSimpleRTF) : TSimpleRTF;
+BEGIN
+  Result := Format(Format_Stringu, [aText])
+END;
+
+CONST
+  Format_Strings = '{\super %s}';
+
+FUNCTION RTF_Superscript(aText : TSimpleRTF) : TSimpleRTF;
+BEGIN
+  Result := Format(Format_Strings, [aText])
+END;
+
+CONST
+  Format_Stringss = '{\sub %s}';
+
+FUNCTION RTF_Subscript(aText : TSimpleRTF) : TSimpleRTF;
+BEGIN
+  Result := Format(Format_Stringss, [aText])
+END;
+
+CONST
+  Format_Stringc = '{\scaps %s}';
+FUNCTION RTF_SmallCaps(aText : TSimpleRTF) : TSimpleRTF;
+BEGIN
+  Result := Format(Format_Stringc, [aText])
+END;
+
+FUNCTION RTF_To_Plaintext(aText : TSimpleRTF) : String;
+VAR
+  Current_Pos, len, Control_Word_End : Cardinal;
+BEGIN
+  RTF_Control_Symbols:=  ['|', '~', '-', '_', ':', '*']
+  //Alphanumeric_Chars:= ['-', '0'..'9', 'a'..'z', 'A'..'Z'];
+
+  Current_Pos := 1;
+  len := Length(aText);
+  WHILE Current_Pos <= len DO
+    CASE aText[Current_Pos] OF
+      '\' : IF Current_Pos+1 <= len THEN BEGIN
+        Control_Word_End := Current_Pos;
+        IF aText[Current_Pos+1] IN ['\', '{', '}'] THEN BEGIN
+          Delete(aText, Current_Pos, 1);
+          Dec(len);
+          Inc(Current_Pos)
+        END ELSE IF aText[Current_Pos+1] in RTF_Control_Symbols THEN BEGIN
+          Delete(aText, Current_Pos, 2);
+          //Dec(len,2)
+          len:= len - 2
+          
+        END ELSE BEGIN
+          REPEAT
+            Inc(Control_Word_End);
+          UNTIL NOT(aText[Control_Word_End] IN Alphanumeric_Chars);
+          { ein Leerzeichen, das einen Befehl abschliesst,
+            gehoert zum Befehl, muss mit geloescht werden }
+          IF aText[Control_Word_End] = ' ' THEN BEGIN
+            Delete(aText, Control_Word_End, 1);
+            Dec(len);
+          END;
+          IF Control_Word_End - Current_Pos = 4 THEN { Laenge von '\par' }
+            IF Copy(aText, Current_Pos+1, 3) = 'par' THEN BEGIN
+              Insert(#13#10, aText, Current_Pos);
+              //Inc(len, 2);
+              //Inc(Current_Pos, 2);
+              //Inc(Control_Word_End, 2)
+            END
+            ELSE IF Copy(aText, Current_Pos+1, 3) = 'tab' THEN BEGIN
+              Insert(#9, aText, Current_Pos);
+              Inc(len);
+              Inc(Current_Pos);
+              Inc(Control_Word_End)
+            END;
+          Delete(aText, Current_Pos, Control_Word_End - Current_Pos);
+          //Dec(len, Control_Word_End - Current_Pos)
+        END;
+      END;
+      '{', '}' : BEGIN
+        Delete(aText, Current_Pos, 1);
+        Dec(len)
+      END ELSE Inc(Current_Pos)
+    END;
+  Result := aText
+END;
+
+END.

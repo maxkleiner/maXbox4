@@ -1,0 +1,693 @@
+//*************************************************************************
+//Example of the memo load and save capabilities of the VCL
+//Task: Code the button with Open a Video!
+//Get the text and write your sinmemo memories, #locs=202
+//#perf>.430:0:8.892
+//#head@max: APSN21: 11.10.2013 11:06:37 D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\REST\370_synedit2_mxtester.txt 
+//*************************************************************************
+
+program SynMemo_Form_Demo_bookmarktestert;
+
+const LEFTBASE = 20;
+      TOPBASE = 25; 
+      MEDIAPATH =  '..\maxbox3\examples\mymemomemoire.txt';
+      //ACTFILE = '370_synedit2_mxtester.txt';
+      ACTFILE = '003_pas_motion2.txt';
+var 
+  mymemo: TSynMemo;
+  mpanel: TPanel;
+  mPlayer: TMediaPlayer;
+  inFrm: TForm;  
+  mbtn3: TBitBtn;
+  Lstbox: TListbox;
+  stat: TStatusbar;
+  cal: TCalendar;
+  selectedFile: string;
+
+  
+function getRandomText: string;
+var i, getback: integer;
+begin
+  for i:= 1 to 1400 do begin
+    getback:=  random(58)+65;
+    if (getback < 91) OR (getback > 96) then
+      result:= result + Chr(getback) +Chr(32)
+  end;    
+end;  
+
+function ColorToIndex(AColor: TColor): integer;
+var
+  i: integer;
+begin
+  Result := 0;
+  {for i := Low(Colors) to High(Colors) do
+    if Colors[i] = AColor then begin
+      Result := i - 1;
+      break;
+    end;}
+end;
+
+function IndexToColor(AIndex: integer): TColor;
+begin
+  //Result := Colors[AIndex + 1];
+end;
+
+
+procedure PasToHTML_Export;
+var
+  ALines: TStringList;
+  Syn: TSynPasSyn;
+  Exp: TSynExporterHTML;
+begin
+  if Clipboard.HasFormat(CF_TEXT) then begin
+    ALines := TStringList.Create;
+    try
+      Syn := TSynPasSyn.Create(nil);
+      try
+        // get syntax highlighter settings
+        Syn.EnumUserSettings(ALines);
+        if ALines.Count > 0 then
+          Syn.UseUserSettings(ALines.Count - 1);
+        // load text from clipboard
+        ALines.Text := Clipboard.AsText;  
+        // export ALines to HTML, as HTML fragment in text format
+        Exp:= TSynExporterHTML.Create(nil);
+        try
+          Exp.Highlighter := Syn;
+          Exp.ExportAsText := TRUE;
+          Exp.CreateHTMLFragment := TRUE;
+          Exp.ExportAll(ALines);
+          Exp.CopyToClipboard;
+        finally
+          Exp.Free;
+        end;
+      finally
+        Syn.Free;
+      end;
+    finally
+      ALines.Free;
+    end;
+  end;
+end;
+
+procedure PasToHTML_Export_SynMemo;
+var
+  ALines: TStringList;
+  Syn: TSynPasSyn;
+  Exp: TSynExporterHTML;
+begin
+  if Clipboard.HasFormat(CF_TEXT) then begin
+    ALines := TStringList.Create;
+    Alines.LoadFromFile(exepath+'examples\003_pas_motion.txt');
+    try
+      Syn := TSynPasSyn.Create(nil);
+      try
+        // get syntax highlighter settings
+         Syn.EnumUserSettings(ALines);
+        if ALines.Count > 0 then
+          Syn.UseUserSettings(ALines.Count - 1);
+        // load text from clipboard
+        ALines.Text := Clipboard.AsText;  
+        // export ALines to HTML, as HTML fragment in text format
+        Exp:= TSynExporterHTML.Create(nil);
+        try
+          Exp.Highlighter := Syn;
+          Exp.ExportAsText := TRUE;
+          Exp.CreateHTMLFragment := TRUE;
+          Exp.ExportAll(ALines);
+          Exp.CopyToClipboard;
+        finally
+          Exp.Free;
+        end;
+      finally
+        Syn.Free;
+      end;
+    finally
+      ALines.Free;
+    end;
+  end;
+end;
+  
+//Event Handler - Closure  
+procedure GetMediaData(self: TObject);
+begin
+  if PromptForFileName(selectedFile,
+                       'Text files (*.txt)|*.txt',
+                       '',
+                       'Select your mX3 test file',
+                       ExePath+'examples\', False)  // Means not a Save dialog !
+   then begin
+     // Display this full file/path value
+     ShowMessage('Selected file = '+selectedFile);
+     Stat.simpletext:= selectedFile;
+     mymemo.lines.LoadFromFile(selectedFile);
+     // Split this full file/path value into its constituent parts
+     //writeln('PromptForFileName_28: Res of processpath '+tmp)
+   end;
+end;  
+  
+//Event Handler - Closure
+procedure BtnSaveClick(self: TObject);
+begin
+  //mymemo.lines.savetofile(ExePath+'\examples\mymemomemoire.txt');
+  mymemo.lines.SaveToFile(selectedFile);
+  Stat.simpletext:= selectedFile+ ' has been saved' ;
+end; 
+
+procedure test;
+begin
+end;
+
+
+procedure TCustomSynEdit_SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
+var
+  amark: TSynEditMark;
+begin
+  if (BookMark > 0 ) and (bookmark < 9) and (Y >= 1) and (Y <= Max(1, mymemo.lines.Count)) then begin
+    amark:= TSynEditMark.Create();
+    with amark do begin
+      Line := Y;
+      Char := X;
+      ImageIndex := Bookmark;
+      BookmarkNumber := Bookmark;
+      Visible := true;
+      //InternalImage := ni;
+    end;
+    //DoOnPlaceMark(Mark);
+    if (amark <> nil) then begin
+      //if assigned(fBookMarks[BookMark]) then
+        //ClearBookmark(BookMark);
+      //fBookMarks[BookMark] := mark;
+      //FMarkList.Add(fBookMarks[BookMark]);
+    end;
+  end;
+end;
+
+
+procedure SetInterfacesMarks2(myFile: string);
+var
+  i, it1, it2, itstr: integer;
+  s1: string;
+  aStrList: TStringList;
+begin
+  aStrList:= TStringList.create;
+  aStrList.loadFromfile(myFile);
+  itstr:= 0;
+  try
+    for i:= 0 to aStrList.Count -1 do begin
+      s1:= aStrList[i];
+      it1:= pos(uppercase('function '), uppercase(s1));
+      it2:= pos(uppercase('procedure '), uppercase(s1));
+     //t1:= mymemo.searchReplace(uppercase('function '),'',[]);
+      if pos(uppercase('end.'),uppercase(s1)) > 0 then break;  
+      if (it2 > 0) or (it1 > 0) and (itstr < 9) then begin
+        inc(itstr);
+        mymemo.SetBookmark(itstr,2,i+1);
+        //showmessage('bookmark found at ' +inttostr(i+1));
+      end;
+    end;
+  finally
+    mymemo.CaretY:= 8;  //test
+    aStrList.Free;
+  end;
+end;
+
+procedure SetInterfacesMarksMemo3;
+var
+  i, it1, it2, itstr: integer;
+  s1: string;
+begin
+  itstr:= 0;
+  try
+    for i:= 0 to mymemo.lines.Count -1 do begin
+      s1:= mymemo.lines[i];
+      it1:= pos(uppercase('function '), uppercase(s1));
+      it2:= pos(uppercase('procedure '), uppercase(s1));
+     //t1:= mymemo.searchReplace(uppercase('function '),'',[]);
+      if pos(uppercase('end.'),uppercase(s1)) > 0 then break;  
+      if (it2 > 0) or (it1 > 0) and (itstr < 9) then begin
+        inc(itstr);
+        mymemo.SetBookmark(itstr,2,i+1);
+        //showmessage('bookmark found at ' +inttostr(i+1));
+      end;
+    end;
+  finally
+    //aStrList.Free;
+    //mymemo.CaretY:= 10;
+  
+  end;
+end;
+
+
+procedure TMaxForm1_SetInterfacesMarks(myFile: string);
+var
+  i, t1, t2, tstr, actline: integer;
+  s1, mstr: string;
+  aStrList: TStringList;
+  mysearch: TSynEditSearchCustom;
+begin
+  aStrList:= TStringList.create;
+  aStrList.loadfromfile(myFile);
+  tstr:= 0;
+//  TSynSearchOption = (ssoMatchCase, ssoWholeWord, ssoBackwards,
+       //mymemo.SetBookmark(5,2,20);
+       //mymemo.SetBookmark(5,2,21);
+   
+  try
+    for i:= 0 to aStrList.Count -1 do begin
+      s1:= aStrList[i];
+      //t1:= pos(uppercase('function'), uppercase(s1));
+      //t2:= pos(uppercase('procedure'), uppercase(s1));
+   mysearch:= TSynEditSearch.create(self);
+   //mymemo.searchengine:= mysearch;
+   mymemo.searchengine:= maxform1.SynEditSearch1;
+ 
+   if pos(uppercase('end.'),uppercase(s1)) > 0 then break;  //bug 3.9.3
+
+   //t2:= mymemo.searchReplace(uppercase('procedure '),'',[]);
+               
+      actline:= mymemo.CaretY;
+      if ((t1 or t2) > 0) and (tstr < 9) then begin
+        inc(tstr);
+        //mymemo.activeline
+        //mymemo.SetBookmark(tstr,2,actline);
+        mymemo.SetBookmark(tstr,2,actline);
+        //showmessage('bookmark found at ' +inttostr(t2));
+      end;
+    end;
+  //ShowMessage(mstr+'----------------------'+#13+#10
+    //                       +inttoStr(tstr)+' Interface(s) Found');
+  finally
+    aStrList.Free;
+    mysearch.Free;
+  end;
+end;
+
+procedure letbookmarks(sender: TObject);
+begin
+    SetInterfacesMarksMemo3;
+end;
+
+
+procedure SetForm;
+var
+  mbtn, mbtn2: TBitBtn;
+  mi, mi1, mi2, mi3: TMenuItem;
+  mt: TMainMenu;
+  mlbl, mlbl1: TLabel; 
+  mspas: TSynPasSyn;
+  myattr: TSynHighlighterAttributes;
+  amark, amark2: TSyneditmark;
+
+begin
+  inFrm:= TForm.Create(self);
+  mLbl:= TLabel.create(inFrm);
+  mLbl1:= TLabel.create(inFrm);
+  mPanel:= TPanel.Create(inFrm);
+  stat:= TStatusbar.Create(inFrm);
+  Lstbox:= TListbox.create(inFrm);
+  mymemo:= TSynMemo.create(inFrm);
+  //mymemo2:= TSynEdit.create(inFrm);
+
+  with inFrm do begin
+    caption:= '********MediaMonster3************';  
+    height:= 810;
+    width:= 1000;
+    //color:= clred;
+    Position:= poScreenCenter;
+    //onClose:= @CloseClick;
+    Show;
+  end;
+  with mPanel do begin
+     caption:= '*****maXboxTV*****';  
+     Parent:= inFrm;  
+     SetBounds(LEFTBASE+10,TOPBASE+40,420,400)
+     color:= clsilver;
+     font.color:= clyellow;
+     font.size:= 30;
+     ondblclick:= @letbookmarks;
+     Show;
+  end; 
+  
+  mspas:= TSynPasSyn.create(self);
+  //mspas.StringAttri:= 1;//InternalSaveDefaultValues; ??
+  //mspas.CommentAttri:=1;
+  //NumberAttri:=2;
+  mspas.GetDefaultAttribute(1);
+  mspas.Enabled:= true;
+  //mspas.KeywordAttribute:= 4;
+  
+  writeln('highlander attrib count '+intToStr(mspas.AttrCount));
+  with mymemo do begin
+    Parent:= inFrm;
+    //readonly:= true;
+    SetBounds(LEFTBASE+470, TOPBASE+40, 600, 580)
+    font.size:= 13;
+    //color:= clYellow;
+    wordwrap:= true;
+    scrollbars:= ssvertical;
+    //scrollbars:= sshorizontal;
+    RightEdgeColor:= clred;
+    gutter.color:= clmoneygreen;
+    
+  //TMaxForm1_SetInterfacesMarks(ExePath+'\examples\003_pas_motion.txt');
+    gutter.digitcount:= 4;
+    //SetBookmark(5,1,1);
+    lines.loadfromfile(ExePath+'\examples\003_pas_motion.txt');
+ 
+    writeln('lines count '+inttostr(mymemo.lines.count));
+    //lines.count:= 30;
+    SetBookmark(9,2,12);
+     aMark:= TSynEditMark.Create;
+     with aMark do begin
+        Line:= 15;
+        ImageIndex:= 2;//(Sender as TSpeedButton).Tag;  10-13
+        Visible:= TRUE;
+      end;
+     aMark2:= TSynEditMark.Create;
+     with aMark2 do begin
+        Line:= 17;
+        char:=2;
+        ImageIndex:= 3;//(Sender as TSpeedButton).Tag;  10-13
+        Visible:= TRUE;
+      end;
+    //marks.add(amark);
+    //marks.add(amark2);
+  
+    //marks[3].line:=5;
+    //marks.clear;
+    
+    //SetBookmark(4,4,1);
+    //SetBookmark(1,1,1);
+    mspas.EnumUserSettings(mymemo.lines);
+     //if mymemo.Lines.Count > 0 then
+       //mspas.UseUserSettings(mymemo.Lines.Count - 1);
+
+    if extractFileName(maxform1.appname) = '370_synedit2.txt' then begin
+      Options:= +[eoShowSpecialChars];
+      ActiveLineColor:= clyellow;
+      maxform1.tbtnUseCase.caption:= 'SynScript'; 
+      maxform1.ShellStyle1Click(self)
+    end else   
+      ActiveLineColor:= clgreen;
+   
+    //WordWrapGlyph    
+    //selectedColor:= clyellow;
+    //borderStyle:= bsdialog;
+    //Options
+    Gutter.ShowLineNumbers:= true;
+    Gutter.BorderColor:= clred;
+    //Gutter.LineNumberStart:= 10;
+    Gutter.LineNumberStart:= 1;
+
+    //mymemo.BorderRightColor:= clred;
+    RightEdgeColor:= clpurple;
+    //RIRegister_SynEditKeyCmds(CL: TPSRuntimeClassImporter);
+    keystrokes.items[1].command:= ecLineSelect;
+    //MaxForm1.DoEditorExecuteCommand(ecBlockindent);
+    //MaxForm1.DoEditorExecuteCommand(ecSelectAll);
+     //mymemo.CommandProcessor(TSynEditorCommand(ecBlockindent),' ',0);
+    //mymemo.CommandProcessor(TSynEditorCommand(ecSelectAll),' ',0);
+    mymemo.CommandProcessor2(TSynEditorCommand(ecSelectAll),' ');
+
+    //memo1.Gutter.BorderStyle:=bsSingle;    //---> reflection to box!
+    //memo1.Gutter.BorderColor:= clred;      //---> reflection to box!
+    //memo1.Gutter.BorderColor:= clsilver;   //---> reflection to box!
+    //memo1.Gutter.ShowLineNumbers:= true;   //---> reflection to box!
+    
+    highlighter:= mspas;
+     //memo1.Options:= +[SYNEDIT_DEFAULT_OPTIONS];
+       //memo1.RightEdgeColor := clSilver;
+    //lines.loadfromfile(ExePath+'\examples\mymemomemoire.txt');
+//370_synedit2_mxtester.txt 
+   // lines.loadfromfile(ExePath+'\examples\003_pas_motion.txt');
+    
+    //mymemo.CommandProcessor2(TSynEditorCommand(ecSelectAll),' ');
+    //mymemo.CommandProcessor(TSynEditorCommand(ecSelectAll),' ',0);
+    lines.loadfromfile(ExePath+'examples\'+ACTFILE);
+  
+   // TMaxForm1_SetInterfacesMarks(ExePath+'examples\'+ACTFILE);
+    SetInterfacesMarks2(ExePath+'examples\'+ACTFILE);
+    
+    //onclick:= @ChangeSong;  
+  end;
+  //mspas.Free;
+  
+  mBtn:= TBitBtn.Create(inFrm)
+  with mBtn do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 690, TOPBASE+ 660,150, 40);
+    caption:= 'Open Text';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'OPENFOLDER'); 
+    //event handler
+    onclick:= @GetMediaData;
+  end;
+  mBtn2:= TBitBtn.Create(inFrm)
+  with mBtn2 do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 530, TOPBASE+660,150, 40);
+    caption:= 'Open Video';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'FLOPPY'); 
+    //event handler
+    //onclick:= @GetVideoData;
+  end;
+  mbtn3:= TBitBtn.Create(inFrm)
+  with mbtn3 do begin
+    Parent:= inFrm;
+    setbounds(LEFTBASE+ 850, TOPBASE+660,150, 40);
+    caption:= 'Save Text';
+    font.size:= 12;
+    glyph.LoadFromResourceName(getHINSTANCE,'PREVIEWGLYPH'); 
+    //event handler
+    onclick:= @BtnSaveClick;
+  end;
+  cal:= TCalendar.Create(self);
+  with cal do begin
+    enabled:= true;
+    updateCalendar
+    Parent:= inFrm;
+    top:= 100;
+    left:= 50;
+    CalendarDate:= Now;
+  end;
+
+  with mlbl do begin
+    parent:= inFrm;
+    setbounds(LEFTBASE+15,TOPBASE-15,180,20);
+    font.size:= 28;
+    font.color:= clred;
+    //font.style:= [fsunderline]
+    caption:= 'MediaMemoApp';
+  end;  
+  with mlbl1 do begin
+    parent:= inFrm;
+    setbounds(LEFTBASE+495,TOPBASE-1,180,20);
+    font.size:= 20;
+    font.color:= clred;
+    caption:= 'SynMemo Text File:';
+  end;  
+  mt:= TMainMenu.Create(inFrm)
+  with mt do begin
+   //parent:= frmMon;
+  end;  
+  mi:= TMenuItem.Create(mt)
+  mi1:= TMenuItem.Create(mt)
+  mi2:= TMenuItem.Create(mt)
+  mi3:= TMenuItem.Create(mi)
+  with mi do begin
+    //parent:= frmMon;
+    Caption:='Play Media';
+    Name:='ITEM';
+    mt.Items.Add(mi);   
+    //onclick:= @GetMediaData;
+  end;
+  with mi1 do begin
+    //parent:= frmMon;
+    Caption:='Show Video';
+    Name:='ITEM2';
+    mt.Items.Add(mi1) ;
+    //onclick:= @GetVideoData
+  end;
+  with mi2 do begin
+    //parent:= frmMon;
+    Caption:='Open CD Player';
+    Name:='ITEM3';
+    mt.Items.Add(mi2);
+    //onclick:= @OPenCD;
+  end;
+  with mi3 do begin
+    Caption:='Open maXbook';
+    Name:='ITEM4';
+    //mi.Items[0].add(mi3);
+  end;
+  with Stat do begin
+    parent:= inFrm;
+    stat.SimplePanel:= true;
+  end;
+  MPlayer:= TMediaPlayer.create(self);
+  with MPlayer do begin
+    parent:= inFrm; 
+    height:= 38;
+    top:= TOPBASE + 460;
+    left:= LEFTBASE+ 10;
+    Display:= mPanel;   //for video show
+  end;
+end; 
+  
+ 
+begin
+  memo2.font.size:= 11;
+  SetForm;
+  //mymemo.lines.text:= getRandomText;
+  //SearchAndOpenDoc(ExePath+MEDIAPATH)
+  //mylistview:= TFormListView.Create(self);
+  //exit;
+  maxform1.color:= clsilver;
+  //PasToHTML_Export_SynMemo;
+  //StrDec( S : String) : String');
+ //IsNumeric( var S : String; var X : Float) : Boolean');
+ //ReadNumFromEdit( Edit : TEdit) : Float');
+ //WriteNumToFile( var F : Text; X : Float)');
+//end;
+
+end.
+
+//-------------------------------------------------
+
+source is tlistview
+target is tform
+
+procedure TfMerit.SourceLVStartDrag(Sender: TObject;
+var DragObject: TDragObject);
+var TargetLV:TListView;
+begin
+// TargetLV:=nejak urcit dle potreby
+  TargetLV.BeginDrag(True)
+end;
+
+procedure TfMerit.SourceLVMouseDown(Sender: TObject;
+Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+begin
+MouseIsDown:=True;
+end;
+
+procedure TfMerit.SourceLVMouseUp(Sender: TObject; Button: TMouseButton;
+Shift: TShiftState; X, Y: integer);
+begin
+MouseIsDown:=False;
+if (Sender as TListView).Dragging then
+(Sender as TListView).EndDrag(False);
+end;
+
+procedure TfMerit.SourceLVMouseMove(Sender: TObject; Shift: TShiftState;
+X, Y: integer);
+begin
+if (Sender.ClassNameIs('TListView')) then
+begin
+if MouseIsDown and ((Sender as TListView).SelCount>0) then
+(Sender as TListView).BeginDrag(True);
+end;
+end;
+
+
+procedure TfMerit.TargetLVDragOver(Sender, Source: TObject; X,
+Y: integer; State: TDragState; var Accept: Boolean);
+var T:TListView;
+begin
+T:=Sender as TListView;
+Accept:=Assigned(T.GetItemAt(X,Y));
+end;
+
+
+procedure TfMerit.TargetLVDragDrop(Sender, Source: TObject; X,
+Y: integer);
+var It:TListItem;
+LV1,LV2:TListView;
+begin
+LV1:=Source as TListView;
+LV2:=Sender as TListview;
+
+It:=LV2.GetItemAt(X,Y);
+if Assigned(It) then
+begin
+// zpracuj polozku ze zdrojoveho listview
+end;
+end;
+
+
+procedure TControlParentR(Self: TControl; var T:TWinControl); begin T:= Self.Parent; end;
+procedure TControlParentW(Self: TControl; T: TWinControl); begin Self.Parent:= T; end;
+    RegisterPropertyHelper(@TControlParentR, @TControlParentW, 'PARENT');
+    RegisterProperty('Parent', 'TWinControl', iptRW);
+
+procedure TTXPTool.LVPFFDblClick(Sender: TObject);
+var
+tmpList : TListItem;
+fn ; string;
+ft : integer;
+fs : integer;
+begin
+tmpList := LVPFF.Selected;
+if tmplist<>nil then
+begin
+  fn := tmpList.Caption
+  ft := tmpList.SubItems.Strings[1];
+  fs := tmpList.SubItems.Strings[3];
+  if pos('Wave', ft)>0 then
+    PlayThisOne1Click(nil);
+  if pos('Jpg', ft)>0 then
+    ShowJpg1Click(nil);
+  if pos('Targa', ft)>0 then
+    ShowTga1Click(nil);
+  if pos('Pcx', ft)>0 then
+    ShowPcx1Click(nil);
+  if pos('Mission Sound Collection', ft)>0 then
+    ShowPwf1Click(nil);
+end;
+end;
+
+
+  #date-11.10.2013 11:06:37
+  date-01.06.2013 10:20:08
+  
+Topic:
+SynEdit change markers (yellow or green line on gutter)
+
+does anyone know how to add "change markers" functionality to SynEdit? I mean those lines, green for modified & saved, yellow for modified & unsaved parts of document... here is an example from other
+
+Yes, I've added it to my copy of SynEdit. I originally snagged the code from another project.
+
+It is broken across (at least) two different units IIRC.
+
+You need to modify SynEditTextBuffer.pas as well as SynEdit.pas.
+
+The code is rather complex because you need to modify several spots in SynEditTextBuffer.pas as well as 1 or 2 spots in SynEdit.pas.
+
+The original project I snagged the code from was being very ambitious in that they were trying to develop code folding and line blocking (as shown in your image) as well.
+
+I couldn't get the code folding to work reliably so I dropped that mod and just used the line change code. I believe that dropping the code folding also dropped the line blocking.
+
+The name of that project is SynEditSudio, it from a Chinese website, but I believe the Firefox translator plugins work pretty well in converting it.
+
+EDIT: contact me directly if you want to get a copy of my changes.
+
+HTH Ryan.
+
+I decided to have a concerted effort to get the excellent DWScript (Delph Web Script DWS) integrated into a simple IDE using SynEdit. DWScript is currently being agressively developed and has a number of advantages over other Pascal Script libraries, however it does not contain an editor or any IDE example beyond a simple memo control to prove execution capability. It does contain a number of hooks for editor / debugger integration and in fact when DWS was reawakened a while ago, releases did contain an example of a SynEdit / DWS2 (as it was then) integration. An example can be found in the file dws2src20-20030907.zip in the \dws2rel\dwstools\idedialog\source where there is a 'mini-IDE' with editor window, call stack, breakpoint window etc. Really nice. I did get this working some months ago using an old SynEdit and the DWS2 that was included in this file.
+
+So, I have now tried achieve this (or a similar) ide using the latest SynEdit (downloaded from SVN) and the latest DWScript (also from the SVN). Both libraries are installed fine into XE and their demos run fine. I then tried taking the ide example from the old "\dws2rel\dwstools\idedialog\source" and updating the code but much has changed. Frustratingly, not so much has changed that I gave up quickly - I tried searching for the various 'old' type definitions in old source and matching them up with 'new' definitions. Finally though, after several hours mired in code I decided that someone, somewhere must surely have been down this route?
+
+Has anyone got an example of a DWScript - SynEdit integration using recent DWScript code please? I'm very happy with something simple that I can learn / build upon. Thanks
+
+<pre>
+<code><span style="font: 10pt Courier New;"><span class="pas1-symbol">&lt;pre&gt;
+&lt;code&gt;&lt;span style=&quot;font: </span><span class="pas1-number">10</span><span class="pas1-identifier">pt Courier New;&quot;&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-symbol&quot;&gt;&amp;lt;pre&amp;gt;
+&amp;lt;code&amp;gt;&amp;lt;span style=&amp;quot;font: &lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-number&quot;&gt;</span><span class="pas1-number">10</span><span class="pas1-symbol">&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-identifier&quot;&gt;pt Courier New;&amp;quot;&amp;gt;&amp;lt;span &lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-reservedword&quot;&gt;</span><span class="pas1-reservedword">class</span><span class="pas1-symbol">&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-symbol&quot;&gt;=&amp;quot;pas1-space&amp;quot;&amp;gt;    Alines.LoadFromFile(exepath+&amp;lt;/span&amp;gt;&amp;lt;span &lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-reservedword&quot;&gt;</span><span class="pas1-reservedword">class</span><span class="pas1-symbol">&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-symbol&quot;&gt;=&amp;quot;pas1-&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-reservedword&quot;&gt;</span><span class="pas1-reservedword">string</span><span class="pas1-symbol">&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-symbol&quot;&gt;&amp;quot;&amp;gt;&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-</span><span class="pas1-reservedword">string</span><span class="pas1-symbol">&quot;&gt;</span><span class="pas1-string">'\examples\003_pas_motion.txt'
+</span><span class="pas1-symbol">&lt;/span&gt;&lt;span </span><span class="pas1-reservedword">class</span><span class="pas1-symbol">=&quot;pas1-symbol&quot;&gt;&amp;lt;/span&amp;gt;&amp;lt;/span&amp;gt;
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+</span></span>
+</code></pre>

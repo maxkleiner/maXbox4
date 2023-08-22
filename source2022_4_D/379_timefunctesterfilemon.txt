@@ -1,0 +1,816 @@
+program Realtime_Random_TimeFunc_DRAFT;
+
+//missing demo and example calls!
+//mX3 directory change, preparation for RealTime Tutorial 23
+//shows download with IndySockets on maXbox webbox ex. 109, #locs=522
+//G9 was the band of the Neukühl Epoch!
+//#sign>max: MAXBOX7: 09.08.2013 18:18:31 
+
+ {$Define AT}
+
+ {$Define ATA=512}
+
+ {$Define ATAT=time}
+
+
+type
+    TCoin = array[0..1] of shortstring;
+
+const mp3song = 'G9_vision.mp3';  //Default
+      NCoins = 10;
+      NDice = 8;
+      ATA=512;
+      const
+  {the following characters are meaningful in date Picture strings}
+  aMonthOnly = 'm';      {Formatting character for a date string picture mask}
+  aDayOnly = 'd';        {Formatting character for a date string picture mask}
+  aYearOnly = 'y';       {Formatting character for a date string picture mask}
+  aMonthOnlyU = 'M';     {Formatting character for a date string picture mask.
+  Uppercase means pad with ' ' rather than '0'}
+  aDayOnlyU = 'D';       {Formatting character for a date string picture mask.
+  Uppercase means pad with ' ' rather then '0'}
+  aDateSlash = '/';      {Formatting character for a date string picture mask}
+
+var mXpath: string;
+    idHTTP: TIDHTTP;
+    zipStream: TFileStream;
+    RandSeed: longint;
+    //int2: TLargeInteger;
+   // xmlIssue: TXMLDocument;
+   //mst: TStreamReader;    //System.Classes.TStreamReader.pas
+   //aca: TCharArray;
+   //ats: TService;
+   //atevent: TEventType;
+   atx: TTextStream;
+   
+   LongMonthNames: array[1..12] of string;
+  
+    
+
+Function MSecToTime(mSec: Int64): string;
+var dt: TDateTime;
+    //aft: cchar;
+    trec: TTimeStamp;
+    ts: TStreamOriginalFormat;
+    stst: TSTString;
+begin
+  dt:= (mSec/1000/86400);  //SecsPerDay;
+  Result:= FormatDateTime('" song length is:" nn:ss:zzz',dt) ;
+  //stuffString;
+  //extract
+  //explode
+  //isuppercase
+  //caseof
+  //countstr
+  //before
+  //NetAddrToStr
+  //HostAddrToStr
+  //XMLEncode
+   //checksynchronize
+   //WriteObjectResourceHeader
+    // TestStreamFormat
+      //bigpi
+     //getresourcename 
+     //StrTobytes
+      
+end; 
+
+
+procedure GlobalSetValue(var AText: string; const AName, AValue: string);
+var
+  P, P2, L: Integer;
+begin
+  L := Length(AName) + 2;
+  if AText = '' then
+  begin
+    AText := AName + '="' + AValue + '"';
+  end
+  else begin
+    P := PosText(AName + '="', AText,1);
+    if P = 0 then
+      AText := AText + ' ' + AName + '="' + AValue + '"'
+    else begin
+      P2 := PosStr('"', AText, P + L);
+      if P2 = 0 then
+        Exit;
+      Delete(AText, P + L, P2 - (P + L));
+      Insert(AValue, AText, P + L);
+    end;
+  end;
+end;
+
+Function GlobalGetValue(const AText, AName: string): string;
+var
+  P, P2, L: Integer;
+begin
+  Result := '';
+  L := Length(AName) + 2;
+  P := PosText(AName + '="', AText,1);
+  if P = 0 then
+    Exit;
+  P2 := PosStr('"', AText, P + L);
+  if P2 = 0 then
+    Exit;
+  Result := Copy(AText, P + L, P2 - (P + L));
+  //Result := StringReplace(Result, '~~', sLineBreak, [rfReplaceAll]);
+end;
+
+// returns the Index of Integer v in aList
+
+Function IndexOfInteger(AList: TStringList; Value: Variant): Integer;
+var
+  C, I, Index, P: Integer;
+  S, S1, S2: string;
+begin
+  Result := -1;
+  I := Value;
+  C := AList.Count;
+  if C = 0 then
+    Exit;
+  for Index := 0 to C - 1 do begin
+    try
+      S := AList[Index];
+      P := Pos('..', S);
+      if P = 0 then begin
+        if StrToInt(AList[Index]) = I then begin
+          Result := Index;
+          Exit;
+        end;
+      end
+      else
+      begin // have range
+        S1 := Trim(Copy(S, 1, P - 1));
+        S2 := Trim(Copy(S, P + 2, Length(S)));
+        if (I >= StrToInt(S1)) and (I <= StrToInt(S2)) then begin
+          Result := Index;
+          Exit;
+        end;
+      end;
+    except
+      Exit;
+    end;
+  end;
+end;
+
+// returns the Index of float Value (single or double) in AList
+
+Function IndexOfFloat(AList: TStringList; Value: Variant): Integer;
+var
+  C, Index, P: Integer;
+  F: Extended;
+  S, S1, S2: string;
+begin
+  Result := -1;
+  F := Value;
+  C := AList.Count;
+  if C = 0 then
+    Exit;
+  for Index := 0 to C - 1 do begin
+    try
+      S := AList[Index];
+      P := Pos('..', S);
+      if P = 0 then begin
+        if StrToFloat(S) = F then begin
+          Result := Index;
+          Exit;
+        end;
+      end
+      else
+      begin // have range
+        S1 := Trim(Copy(S, 1, P - 1));
+        S2 := Trim(Copy(S, P + 2, Length(S)));
+        if (F >= StrToFloat(S1)) and (F <= StrToFloat(S2)) then begin
+          Result := Index;
+          Exit;
+        end;
+      end;
+    except
+      //raise EJvJanScriptError.CreateResFmt(@RsEInvalidNumbers, [S]);
+      raise EJvJanScriptError.Create;
+
+    end;
+  end;
+end;
+
+
+
+procedure ParkMillerDemo;
+//http://home.comcast.net/~JamesMClark5/Pascal/Random.htm
+var C: boolean;
+    I, Tails, D1, D2: integer;
+    aCoin: TCoin;
+    Seed: longint;
+begin
+    write('Seed value = '+floattoStr(456.45));
+    Seed:= Round(time); //Readln(Seed);
+    PMrandomize(Seed);
+    aCoin[0]:= 'head';
+    aCoin[1]:= 'tail';
+  
+    writeln('');
+    writeln('Tossing ' +inttoStr(NCoins)+' coins:');
+    Tails:= 0;
+    for I:= 1 to NCoins do begin
+        C:= Brand(0.5);
+        write(aCoin[integer(C)]+ '  ');
+        if C then inc(Tails);
+    end;
+    writeln(' ');
+    //intToStr(NCoins-Tails)
+    writeln(inttoStr(Tails)+' tails and '+intToStr(NCoins-Tails)+ ' heads');
+    writeln('');
+    writeln('Tossing '+inttoStr(NDice)+ ' pairs of dice:');
+    for I:= 1 to NDice do begin
+        D1:= Irand(6)+1;
+        D2:= Irand(6)+1;      
+        write(' '+inttostr(D1)+ '+'+ inttostr(D2)+ '='+ inttoStr(D1+D2));
+    end;
+    writeln('');
+    writeln('');
+    writeln('Six random angles between 180 and 270 degrees:');
+    for I:= 1 to 6 do begin
+    //write(floattoStr(Rrand));
+      //write(floattoStr(180 + 90*Rrand)+'    ');
+      write(format('%.3f  ',[180+90*Rrand]));
+    end;
+    writeln('');
+    writeln('');
+    //readln;
+end;    
+
+
+procedure DelayLEDLoop;
+//http://www.arduino.cc
+var
+    ledValue: boolean;
+    ledSwitchTime, ledintervall, atime: longint;
+begin
+  ledintervall:= 1000;
+  ledswitchtime:= 0;
+  ledValue:= false;
+  //MillisecondsElapsed;
+  Repeat
+    atime:= MilliSecondOfTheDay(now)-ledSwitchTime;
+    if atime > ledintervall then begin
+    ledValue:= NOT ledValue;
+    if ledValue then begin
+      maxform1.imglogo.show;
+      writeln('LED is ON  at: '+timetoStr(time));
+    end else begin 
+      writeln('LED is OFF at: '+timetoStr(time));
+      maxform1.imglogo.hide;
+    end;
+    //digitalWrite(ledPin, ledValue);
+    ledswitchtime:= MilliSecondOfTheDay(now);
+    end;
+  until isKeyPressed;
+    //memo2.setFocus;
+    //readln;
+end;
+
+
+procedure DelayNoLoop;
+//http://www.arduino.cc
+var
+  ledValue: boolean;
+begin
+  ledValue:= false;
+  //MillisecondsElapsed;
+  Repeat
+    ledValue:= NOT ledValue;
+    if ledValue then begin
+      maxform1.imglogo.show;
+      maxform1.imglogobox.hide;
+      writeln('LED is ON  at: '+timetoStr(time));
+      delay(1000);
+    end else begin 
+      writeln('LED is OFF at: '+timetoStr(time));
+      maxform1.imglogo.hide;
+      maxform1.imglogobox.show;
+      delay(1000);
+    end;
+    //digitalWrite(ledPin, ledValue);
+  until isKeyPressed;
+  maxform1.imglogo.show;
+  maxform1.imglogobox.show;
+end;
+
+
+procedure Randmax2;
+//http://home.comcast.net/~JamesMClark5/Pascal/Random.htm
+var
+  R: byte;
+  I: integer;
+  sout: string;
+begin
+    writeln('');
+    R:= 71;
+    for I:= 1 to 272 do begin
+       R:= ((longint(628)*R + 157) AND $3FF) SHR 2;
+       sout:= sout + Format('%-*.3d',[5,R]);
+       if (I mod 16)=0 then sout:= sout+#13#10;
+    end;
+  writeln(sout)
+end;
+
+
+procedure LoopTest;
+begin
+ Randomize; 
+ REPEAT
+  //TextAttr:=Random(256);
+    Writeln(inttoStr(random(256*256)));
+ UNTIL isKEYPRESSED;  //on memo2 output
+ if isKeypressed then writeln('key has been pressed!');
+end;
+
+
+Function ConvertDate (strDate: string): string;
+	begin
+	  Result:= Copy (strDate, 1, Pos ('+', strDate));
+end;
+	
+	Function EntityDecode(const s: string): string;
+	var
+	  i: integer;
+	  entityStr: string;
+	  Entity: byte;
+	begin
+	  i := 1;
+	  Result := '';
+	  entityStr := '';
+	  Entity := 0;
+	  while i <= Length(s) do begin
+	    if (s[i] = '&') then begin
+	      Inc(i);
+	      if (s[i] = '#') then begin
+	        Inc(i);
+	        while (Ord(s[i]) > 47) and (Ord(s[i]) < 58) do begin
+	          entityStr := entityStr + s[i];
+	          Inc(i);
+	        end;
+	        if s[i] = ';' then begin
+	          Inc(i);
+	          Entity := StrToIntDef(entityStr, 32);
+	        end;
+	        Result := Result + Chr(Entity);
+	      end
+	      else // e' una entity non numerica!!
+	        Result := Result + '&';
+	    end
+	    else begin
+	      Result := Result + s[i];
+	      Inc(i);
+	    end;
+	  end;
+	end;
+	
+	Function XmlEncode (strXml: string): string;
+	begin
+	  Result := StringReplace(strXml, '&', '&amp;', [rfReplaceAll]);
+	  Result := StringReplace(Result, '<', '&lt;', [rfReplaceAll]);
+	  Result := StringReplace(Result, '>', '&gt;', [rfReplaceAll]);
+	end;
+	
+	
+  function MonthToString2(const Month : Integer) : string;
+  {-Return the month as a string. Will honor international names}
+  begin
+    if (Month >= 1) and (Month <= 12) then
+      Result := LongMonthNames[Month]
+    else
+       Result := '';
+//function GetLocaleStr(Locale, LocaleType: Integer; const Default: string): string; platform;
+//function GetLocaleChar(Locale, LocaleType: Integer; Default: Char): Char; platform;
+
+       Writeln(GetLocaleChar(8,10,'B'));
+       //GetLocaleStr
+
+       //GetLocaleMonthDayNames
+  end;
+
+	
+	
+procedure STDateDemo;
+begin
+	 //maxtime
+ //Function CurrentDate : TStDate');
+ //CurrentDate : TStDate');
+
+ //StValidDate( Day, Month, Year, Epoch : Integer) : Boolean');
+ //DMYtoStDate( Day, Month, Year, Epoch : Integer) : TStDate');
+ //StDateToDMY( Julian : TStDate; var Day, Month, Year : Integer)');
+  //StIncDate( Julian : TStDate; Days, Months, Years : Integer) : TStDate');
+  //IncDateTrunc( Julian : TStDate; Months, Years : Integer) : TStDate');
+  //StDateDiff( Date1, Date2 : TStDate; var Days, Months, Years : Integer)');
+  //BondDateDiff( Date1, Date2 : TStDate; DayBasis : TStBondDateType) : TStDate');
+  writeln('weak of the year '+intToStr(WeekOfYear(DateTimeToStDate(date))));
+  //AstJulianDate( Julian : TStDate) : Double');
+  //AstJulianDatetoStDate( AstJulian : Double; Truncate : Boolean) : TStDate');
+  //AstJulianDatePrim( Year, Month, Date : Integer; UT : TStTime) : Double');
+  //StDayOfWeek( Julian : TStDate) : TStDayType');
+  //DayOfWeekDMY( Day, Month, Year, Epoch : Integer) : TStDayType');
+  writeln('is leap year '+booleanToString(IsLeapYear(2013)));
+  //StDaysInMonth( Month : Integer; Year, Epoch : Integer) : Integer');
+  //ResolveEpoch( Year, Epoch : Integer) : Integer');
+  //ValidTime( Hours, Minutes, Seconds : Integer) : Boolean');
+  //StTimeToHMS( T : TStTime; var Hours, Minutes, Seconds : Byte)');
+  //HMStoStTime( Hours, Minutes, Seconds : Byte) : TStTime');
+  //CurrentTime : TStTime');
+  //TimeDiff( Time1, Time2 : TStTime; var Hours, Minutes, Seconds : Byte)');
+  //StIncTime( T : TStTime; Hours, Minutes, Seconds : Byte) : TStTime');
+  //DecTime( T : TStTime; Hours, Minutes, Seconds : Byte) : TStTime');
+  //RoundToNearestHour( T : TStTime; Truncate : Boolean) : TStTime');
+  //RoundToNearestMinute( const T : TStTime; Truncate : Boolean) : TStTime');
+  //DateTimeDiff( const DT1 : TStDateTimeRec; var DT2 : TStDateTimeRec; var Days : LongInt; var Secs : LongInt)');
+  //IncDateTime( const DT1 : TStDateTimeRec; var DT2 : TStDateTimeRec; Days : Integer; Secs : LongInt)');
+  //DateTimeToStDate( DT : TDateTime) : TStDate');
+  //DateTimeToStTime( DT : TDateTime) : TStTime');
+  //StDateToDateTime( D : TStDate) : TDateTime');
+  //StTimeToDateTime( T : TStTime) : TDateTime');
+  //Convert2ByteDate( TwoByteDate : Word) : TStDate');
+  //Convert4ByteDate( FourByteDate : TStDate) : Word');
+  
+ //DateStringHMStoAstJD( const Picture, DS : string; H, M, S, Epoch : integer) : Double');
+ writeln('MonthToString: '+MonthToString(8));
+ //DateStringToStDate( const Picture, S : string; Epoch : Integer) : TStDate');
+ //DateStringToDMY(const Picture, S : string; Epoch : Integer; var D, M, Y : Integer) : Boolean');
+ //StDateToDateString( const Picture : string; const Julian : TStDate; Pack : Boolean) : string');
+ //DayOfWeekToString( const WeekDay : TStDayType) : string');
+ //DMYtoDateString( const Picture : string; Day, Month, Year, Epoch : Integer; Pack : Boolean) : string');
+ //CurrentDateString( const Picture : string; Pack : Boolean) : string');
+ //CurrentTimeString( const Picture : string; Pack : Boolean) : string');
+ //TimeStringToHMS( const Picture, St : string; var H, M, S : Integer) : Boolean');
+ //TimeStringToStTime( const Picture, S : string) : TStTime');
+ //StTimeToAmPmString( const Picture : string; const T : TStTime; Pack : Boolean) : string');
+ //StTimeToTimeString( const Picture : string; const T : TStTime; Pack : Boolean) : string');
+ //DateStringIsBlank( const Picture, S : string) : Boolean');
+ //InternationalDate( ForceCentury : Boolean) : string');
+ //InternationalLongDate( ShortNames : Boolean; ExcludeDOW : Boolean) : string');
+ //InternationalTime( ShowSeconds : Boolean) : string');
+  //ResetInternationalInfo');
+   //Function Search( const Buffer, BufLength : Cardinal; const Match, MatLength : Cardinal; var Pos : Cardinal) : Boolean');
+    //upcase
+  //Search
+end; 
+
+
+procedure dofilemon(sender: TObject; cht: TdevMonitorChangeType;
+     fname: string);
+  begin
+    //if cht=mctchanged then
+    showmessage('writeln(fname +''has changed'')');   
+   end;  
+     
+      
+     var monfile: TStrings;
+  
+begin   {@main}
+  mXpath:= extractfilepath(application.exename)
+  //mp3song1:= ExtractWord(5,myurl,['/']);
+  Randmax2;
+  ParkMillerDemo;
+ { ShowmessageBig('You should press a key on the output window to stop it!');
+  memo2.setfocus;
+  //LoopTest;
+  Writeln('');
+  DelayLEDLoop; }
+  //DelayNoLoop;
+  //ShowMessage(adjustlineBreaks('You should press key CR on the output window to stop it!'));
+   //AddTerminateProc
+   //AnsiStrScan
+   //IsPathDelimiter
+    // Writeln('this is '+ATA=512);
+    
+    STDateDemo;
+
+   {$IFDEF ATA=512}
+    //then
+     Writeln('this is '+inttoStr(ATA));
+   {$EndIF}  
+   
+   {$IFDEF ATAT=time}
+    //then
+     //Writeln('this is '+timetoStr(ATAT));
+   {$EndIF}  
+    //I64ToCardinals
+    //CardinalsToI64
+    
+    Writeln(CCHARSET)
+
+    monfile:= TStringlist.create;
+    monfile.add(exepath+'maxboxdef.ini');
+    with TdevFileMonitor.create(self) do begin
+      //files[0]:= monfile[0];
+      //files.add(monfile[0]);
+      files.add(exepath+'maxboxdef.ini');
+  
+      writeln(files[0]+ '  started');
+      OnNotifyChange:= @dofilemon;
+      activate;
+      while not keypress do begin
+        writeln('do forever loop');
+        sleep(1000);
+        refresh(true);
+      end;
+      deactivate;      
+      writeln('do monitor stopped');
+      free;
+      monfile.Free;
+    end;  
+   
+End.
+
+
+http://www.atug.com/andypatterns/collections.htm
+
+
+
+more G9 songs:
+'http://max.kleiner.com/download/olemosbruja.mp3'
+'http://www.kleiner.ch/kleiner/download/G9_whitemagic.mp3'
+'http://www.kleiner.ch/kleiner/download/G9_japan.mp3'
+'http://www.kleiner.ch/kleiner/download/G9_lordofdarkness.mp3';
+'http://www.kleiner.ch/kleiner/download/G9_nowage.mp3';
+'http://www.kleiner.ch/kleiner/download/G9_olemosbruja.mp3';
+'http://www.kleiner.ch/kleiner/download/G9_playchess.mp3';
+'http://www.kleiner.ch/kleiner/download/G9_vision.mp3';
+'http://www.kleiner.ch/kleiner/download/G9_zeitraum.mp3';
+
+
+
+---code_cleared_checked---
+
+BEGIN
+ Randomize; 
+ REPEAT
+  TextAttr:=Random(256);
+  Write('Hilfe')
+ UNTIL KEYPRESSED
+END.
+
+Hallo,
+Post by Hilmar Bunjes
+Hallo,
+ich bin gerade am programmieren (Java, dürfte hierfür aber egal sein)
+und brauche einen Algorithmus für einen Zufallszahlengenerator, der
+reproduzierbare Zufallszahlen erzeugt. Also ich brauche eine vernünftige
+Verteilung der Zufallszahlen, muss aber die Möglichkeit haben, bei
+gleichem Startwert auch immer die gleich Folge an Zufallszahlen zu
+bekommen. Der Startwert sollte sich verändern lassen.
+von Steve Schafer, TeamB (Borland)
+
+var RandSeed: longint;
+Function Random: double;
+begin
+RandSeed := 134775813 * RandSeed + 1;
+result := (RandSeed xor $80000000) / 4294967296.0;
+if Result < 0 then
+Result := Result + 1;
+end;
+
+Grüße,
+Joachim
+
+
+http://www.pup.ethz.ch/et3.html
+
+Zufallszahlen
+
+Um in Pascal Zufallszahlen erzeugen zu können, steht die Funktion Random (von engl. random = zufällig) zur Verfügung. Damit Zufallszahlen erzeugt werden können, behilft sich Random der aktuellen Uhrzeit, die sich ja laufend ändert. Weiter existiert die Prozedur Randomize, die den Zufallsgenerator initialisiert. Diese muss vor der Verwendung von Random einmal aufgerufen werden. Die Initalisierung des Zufallsgenerators erfolgt durch einfachen Aufruf der Prozedur Randomize (ohne Parameter).
+
+Randomize;   (* Zufallszahlengenerator initialisieren *)
+
+Zufall, Ungewiheit, Gluck, Pech { sind das nicht ziemlich diuse Begrie? Eher
+aus dem Bereich der Wahrsager als dem der Wissenschaftler? Eine wissenschaftliche Untersuchung
+des Zufalls ist moglich, und sie begann mit der Analyse von Glucksspielen
+durch B. Pascal, C. Huygens, Jakob Bernoulli und P. Fermat4. Diese Analyse hat den
+Wahrscheinlichkeitskalkul hervorgebracht, der lange fur einen unbedeutenden Zweig der
+Mathematik gehalten wurde. Einen ersten Erfolg erzielte der Kalkul in der statistischen
+Mechanik durch Untersuchungen von L. Boltzmann und J.W. Gibbs5: Die  }
+"
+Menge von
+Zufall\, die in einem Liter Luft ist, wird durch den Begri der Entropie gemessen. Der
+nachste groe Erfolg ist mit der Entwicklung der Quantentheorie verknupft. Heutzutage
+ist der Zufall in wissenschaftlichen Theorien fast uberall prasent: Rauschen in der
+Signalubertragung, Ausbreitung von Epidemien, Entwicklung von Borsenkursen, chaotisches
+Verhalten von nichtlinearen Systemen, Spieltheorie, Wetterprognosen, : : : .
+
+
+Die Zufallszahlen, die ein Computersystem erstellen kann, sind natürlich keine echten Zufallszahlen.Sie werden aus der Systemzeit berechnet.Der Zufallsgenerator sollte beim Programmstart initialisiert werden:
+
+procedure TForm1.CreateForm(Sender: TObject);
+begin
+  Randomize;
+end;
+ 
+
+Jetzt können eigentlich recht problemlos Zufallszahlen erstellt werden und zwar mit dem Befehl Random:
+
+procedure TForm1.Button1Click(Sender: TObject);
+const
+  ZufallBereich = 5;
+begin
+  Caption:=IntToStr(Random(Zufallsbereich));
+end;
+ 
+http://www.math.uni-frankfurt.de/~numerik/lehre/Vorlesungen/pros-12/Zufallszahlen%20und%20Benford/ran-shell.pdf
+
+http://home.comcast.net/~JamesMClark5/Pascal/Random.htm
+
+
+Guten Tag Heini
+Ja richtig, die Funktion hat einen pseudo Zufalls Term, wobei die Initialisierung mit Randomize massgebend ist.
+Damit Zufallszahlen erzeugt werden können, behilft sich Random der aktuellen Uhrzeit in msec, die sich ja laufend ändert. Weiter existiert die Prozedur Randomize, die den Zufallsgenerator initialisiert. Diese muss vor der Verwendung von Random einmal aufgerufen werden. Die Initalisierung des Zufallsgenerators erfolgt durch einfachen Aufruf der Prozedur Randomize (ohne Parameter).
+Die Zufallszahlen, die ein Computersystem erstellen kann, sind natürlich keine echten Zufallszahlen. Sie lassen sich aus der Systemzeit berechnen. Der Zufallsgenerator sollte beim Programmstart eben initialisiert werden.
+Das ist wirklich ein spannendes Thema, wir haben bei den Kryptologen immer wieder über Rausch- oder eben Zufallsgeneratoren gesprochen.
+Heutzutage ist der Zufall in wissenschaftlichen Theorien fast überall präsent: Rauschen in der
+Signaluebertragung, Ausbreitung von Epidemien, Entwicklung von Börsenkursen, chaotisches
+Verhalten von nichtlinearen Systemen, Spieltheorie, Wetterprognosen und eben Kryptologie.
+Ich versuche noch den Source Code rauszufinden, leider ist er im System Unit nicht einsehbar, da er im Kernel steckt.
+Aber so ungefähr könnte er so aussehen:
+var RandSeed: longint;
+Function Random: double;
+begin
+RandSeed := 134775813 * RandSeed + 1;
+result := (RandSeed xor $80000000) / 4294967296.0;
+if Result < 0 then
+Result := Result + 1;
+end;
+Mehr über den Zufall findest du auf
+http://www.math.uni-frankfurt.de/~numerik/lehre/Vorlesungen/pros-12/Zufallszahlen%20und%20Benford/ran-shell.pdf
+es grüsst dich, Max
+
+Hello Arduino-Friends,
+
+as byproduct of a resuch project I have made a little driver for the arduino motorshield  modified from Stepper.cpp of Tom Igoe.
+Half and full step modus, endless run and a run for n steps both with the possebility of a hardware interrupt is possible,  driving DC motors, too.
+
+The methodes are:
+  
+initialisation:
+//DC-motors
+Motorshield myMotorshield(PWM_PIN_A,PWM_PIN_B,BRAKE_PIN_A,BRAKE_PIN_B,DIR_PIN_A,DIR_PIN_B,DC-Delay<0..2^16>ms,AD-Resolution (2^<x>));
+DC-Delay prevents short circuit bey changing dc-motor direction
+//stepper-motors
+Motorshield myMotorshield(stepsPerRevolution,PWM_PIN_A,PWM_PIN_B,BRAKE_PIN_A,BRAKE_PIN_B,DIR_PIN_A,DIR_PIN_B,MODUS <HALF><FULL>,AD-Resolution (2^<x>));
+
+setup:
+
+DC:
+  myMotorshield.setDC(MOTOR <MOTA><MOTB>,PWM<0..1023>); //sing of PWM codes direction
+
+stop/run:
+myMotorshield.setDCbrake(MOTOR <MOTA><MOTB>,<STOP><GOON>);
+
+Stepper:
+void myMotorshield.setSpeed(Speed in 1/s)
+
+void myMotorshield.step(Steps <+-><1..1023><0> 0 codes endless run, Interrupt pin ) setting interrupt pin to LOW for more than 1 step movement stops
+
+Examples for each mode are included.
+
+Best regards from Germany
+
+Tobi
+ 
+Here is a program that demonstrates how to use the PMrand unit:
+
+program Rand3;
+uses PMrand;
+
+type
+    TCoin = array[boolean] of string[4];
+
+const
+    Coin: TCoin = ('head', 'tail');
+    NCoins = 10;
+    NDice = 8;
+
+var
+    Seed: longint;
+    C: boolean;
+    I, Tails, D1, D2: integer;
+
+begin
+    write('Seed value = ');  Readln(Seed);
+    PMrandomize(Seed);
+
+    writeln;
+    writeln('Tossing ', NCoins, ' coins:');
+    Tails:= 0;
+    for I:= 1 to NCoins do begin
+        C:= Brand(0.5);
+        write(Coin[C]:5);
+        if C then inc(Tails);
+    end;
+    writeln;
+    writeln(Tails, ' tails and ', NCoins-Tails, ' heads');
+
+    writeln;
+    writeln('Tossing ', NDice, ' pairs of dice:');
+    for I:= 1 to NDice do begin
+        D1:= Irand(6)+1;
+        D2:= Irand(6)+1;
+        write(' ', D1, '+', D2, '=', D1+D2);
+    end;
+    writeln;
+
+    writeln;
+    writeln('Six random angles between 180 and 270 degrees:');
+    for I:= 1 to 6 do begin
+        write(180 + 90*Rrand :8:3);
+    end;
+    writeln;
+    
+    readln;
+end.
+
+Notice how the structured constant named 'Coin' is used to translate the boolean values false and true to the string values 'head' and 'tail'.  Notice also how we can use an expression to modify the range of a random variable by 'rescaling' the random Function.  For example, the expression "180 + 90*Rrand" obtains a range of 180 to 270; but Rrand by itself has a range of 0 to 1.  To determine the new range from the old range, substitute the old range limits 0 and 1 into the expression, like this:
+
+    180 + 90*0 = 180
+    180 + 90*1 = 270
+
+(Since Rrand returns a real value, 90*Rrand becomes a real value, even though 90 is an integer; and likewise the addition is real, even though 180 is an integer.) 
+
+A typical output of this demo program is:
+
+Seed value = 45
+
+Tossing 10 coins:
+ tail head tail head head head tail head head tail
+4 tails and 6 heads
+
+Tossing 8 pairs of dice:
+ 2+5=7 6+6=12 2+5=7 4+4=8 2+4=6 4+4=8 2+5=7 5+5=10
+
+Six random angles between 180 and 270 degrees:
+ 192.458 218.372 244.797 229.822 266.799 206.902
+
+If you enter a seed value of 45, you will always get this output; and if you enter a seed value of 91, you will always get some other output.  But if you enter a seed value of 0, the output will always be different, because the program will actually use a seed taken from the computer's clock time.
+
+Most programs that use the PMrand unit will not call the PMrandomize procedure, because the initialization section of PMrand calls PMrandomize to start the random sequence from the computer's clock -- and this is what most programs need.  
+
+
+EKON 14 Recap
+
+September 29, 2010 in Delphi, Mono, MonoDevelop, Prism
+
+Right now I’m on my way back home from the Entwickler-Konferenz (EKON) 14 in Darmstadt, Germany. Jim is still there, but I have other duties so I left a day before the conference ends officially.
+
+I had two sessions, the first yesterday was about Delphi Prism language specialties where I talked about cool features like class contracts and also interface delegation. Today I talked about multi platform development with Delphi Prism, concentrating on the apple platforms, both the Mac and iOS using Mono and MonoTouch for the iPhone/iPad.
+
+I also sneaked into other sessions. There was a ‘how do I hack VCL programs’ session that really showed some interesting debugging, dumping and assembler-modification to crack a dongle protected native Delphi application as well as Holger Klemt talking about his personal experience with guys cracking is IBExpert software and what he did against that. Also Ray Konopka had a very interesting session about the Ribbon UI in general.
+
+I especially enjoyed Max Kleiners talk about our PascalScript. Until today I didn’t knew he had built sort of a little IDE for it, called maxBox. It’s a scripting toolbox with a *lot* of scripatble functionality. He showed (beside other things) how to download a (free) mp3 file from the internet and directly played it from a little script – it was awesome (the demo, that is. Not the music, actually ;) ). maxBox, just like PascalScript that powers the IDE, is open source and you can get the sources from sourceforge. You can find more information about it here: Softwareschule.ch/Maxbox . So go and check it out, it also brings script debugging and syntax highlighting with it and really is a good start for a little scripting with pascal script. At this point I really like to say thanks to Max. Doing that for the purpose of teaching programming and open sourcing the tool is a nice gesture.
+
+Next speaking opportunity for me is at the Embarcadero CodeRage 5 online conference where I have two sessions on Thursday next week. One is about LINQ with Delphi Prism and the other about Hydra, so join me there if you like to. It’s totally online, so no shoes? No shirt? No problem! ;)
+
+
+
+PascalGUI (Pascal compiler)
+Description
+PascalGUI is a GUI/small-IDE for freepascal compiler. PascalGUI supports devices with ARM, x86 and MIPS processors (MIPS support is in beta).
+You can write your own applications on the Android phone, and run them. This app uses Freepascal compiler, so it is full-featured. PascalGUI can be used for educational purposes or to practice in Pascal language.
+Some components of PascalGUI are GPL-licensed, their source code hadn't been modified. You can download used source code of Freepascal on Freepascal SVN.
+
+(If you think that there is GPL violation in PascalGUI, email me at n0n3m4@gmail.com. I'll provide to you source code from Freepascal SVN, if you can't download it yourself)
+
+PascalGUI includes Android Terminal Emulator so you can to run your application as good as you running it on your Linux PC.
+
+Quick manual:
+If you have found a bug or app is not working, email me.
+You can export result of compilation (binary), long-click compile button for that.
+Long click save button to "save as", long click run to run with arguments, long click open for recent files menu.
+
+Report bugs at n0n3m4@gmail.com
+
+Android is a trademark of Google Inc.
+Some components of this app are licensed under (L)GPL, email me to get the source code.
+
+
+Introduction
+
+ExtPascal is an Ext JS wrapper/binding. ExtPascal lets you use the Ext JS from Object Pascal commands issued by the server. That brings the structure and strict syntax of the Object Pascal for programming the web browser.
+
+The main advantages are:
+
+    Use your preferred language (in this case Object Pascal) and where you are more productive instead of using JavaScript, PHP, HTML and/or CSS.
+    Use of native and compiled code with a strongly typed language. That is, many errors are directly appointed by the compiler, without waste time testing in the browser.
+    Use of Code Completion (Intellisense), available in moderns IDEs (Delphi/Lazarus) more productivity in the coding.
+    Centering the programming on the server, where JavaScript and HTML is generated dynamically, makes development easier and less dispersed.
+    The business rules can be encapsulated in the server, in Object Pascal, instead of being visible in JavaScript.
+    Direct and easy debugging using Delphi/Lazarus/MSEide/FPIDE debugger. 
+
+Prerequisites
+
+    Windows, Linux, Mac OS X or FreeBSD machine. It was tested using Intel/AMD 32/64 bits and PowerPC, but should work with other processors supported by Free Pascal.
+    A web browser: IE 6+, Firefox 3.6+, Chrome 10+, Safari 4+, Opera 11+ or compatibles. JavaScript and Cookies should be enabled.
+    Download and install Apache 2.4.4 64 bit for Windows or later, but Apache 1.3 and IIS works using CGIGateway included in ExtPascal package, see below.
+    For native FastCGI operation download and install FastCGI for Apache 2.2. See details below. For setting FastCGI thru CGIGateway on Apache or IIS see details below too.
+    Download ExtJS 3.2.1.
+    Install Ext JS below Apache's Document Root (usually htdocs) at folder ext
+    For Windows install Delphi (7..XE3) or FreePascal 2.6+ with Lazarus 1.0+ or MSEide 2.0+. I use DXE3 and Lazarus 1.1 64 bit (CodeTyphon edition).
+    For Posix systems (Linux, Mac OS X, BSDs, Solaris, etc) install FreePascal 2.6+ with Lazarus 1.0+.
+    Download ExtPascal 0.9.8 to a working directory, for example: C:\ExtPascal.
+    Copy codepress folder, which is in ExtPascal package, underneath the htdocs folder. 

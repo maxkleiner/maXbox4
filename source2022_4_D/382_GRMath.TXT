@@ -1,0 +1,721 @@
+PROGRAM GRMATH_Demo;
+// dont be a tool #locs:468
+//#sign max: MAXBOX7: 21.08.2013 22:27:12 
+//#tech>9.9.7perf: 0:0:3.541 threads: 5 127.0.0.1 22:27:12 3.9.9.77
+//05.08.2013  05.08.2013 
+//C:\maxbook\maxbox3\mx39\maxbox3\maxbox3\
+
+//uses dws_logo2.pas
+
+CONST 
+//<Constant declarations> 
+  TEXTOUT = 'hi world of event stream stack';
+  anzahl=8;
+  myURL = 'http://www.kleiner.ch/kleiner/download/G9_japan.mp3';
+  mcalc= 45 div 6;
+ 
+{const 
+   dws_logo_bmp : array[0..21717] of byte = (
+   $42,$4D,$D6,$54,$00,$00,$00,$00,$00,$00,$76,$00,$00,$00,$28,$00,$00,$00,$F0,$00);}
+
+
+{TYPE <Type declarations> <lib} 
+VAR 
+//<Variable declarations>
+  i, speicher: integer;
+  //biglist: TStringList;
+  mp3song1: string;
+  mpt: TPerfTimer; 
+
+type
+ TVInfo = record
+   serial: dword;
+   mlength: dword;
+   flags: dword;
+   vname: array[0..255] of char;
+   filesystem: array[0..255] of char;
+ end;
+
+
+function setColor(r,g,b: Byte): boolean;
+ var newcolor: TColor;
+ begin
+   result:= false;
+   memo2.color:= RGB(r,g,b);
+   result:= true;
+ end; //return  
+ 
+function getProcessList2: TStrings;
+var
+  t  : THandle;
+  pe : TProcessEntry32;
+  HasProcess: boolean;
+  ProcessList : TIntegerList;
+  mylist: TStringlist;
+  i: integer;
+  tmps: string;
+begin
+  //LoadText;
+  mylist:= TStringlist.create;
+  ProcessList:= TIntegerList.Create;
+  t := CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
+  try
+    pe.dwSize:= SizeOf(pe);
+    HasProcess := Process32First(t, pe);
+    while HasProcess do begin
+      //mylist.Add(pe.szExeFile);
+      //mylist.Add(pe.szExeFile[1]);
+      for i:= 0 to 15 do tmps:= tmps+ pe.szExeFile[i];  //overflow tester
+      mylist.Add(strpas(tmps));
+      tmps:='';
+      //ProcessCombo.Items.Add(pe.szExeFile);
+      ProcessList.Add((pe.th32ProcessId));
+      HasProcess:= Process32Next(t, pe);
+    end;
+    result:= mylist;
+    //ProcessCombo.ItemIndex:= 0;
+  finally
+    CloseHandle(t);
+    //mylist.free;
+  end;
+end;
+
+ 
+function IconToBitmap(Ico: HICON): TBitmap;
+var
+  Pic: TPicture;
+begin
+  Pic:= TPicture.Create;
+  try
+    Pic.Icon.Handle:= Ico;
+    Result:= TBitmap.Create;
+    Result.Height:= Pic.Icon.Height;
+    Result.Width:= Pic.Icon.Width;
+    Result.Canvas.Draw(0,0, Pic.Icon);
+  finally
+    Pic.Free;
+  end;
+end;
+
+
+procedure letStreamDataWork;
+var biglist: TStringList;
+begin
+  biglist:= TStringlist.create;
+  memo2.setfocus;
+  writeln(getbigPI)
+  repeat 
+    biglist.add('Value for mem[%d] enter : '
+                   +inttoStr(RandomRange(500,100000000)));
+    biglist.add(getbigPI+getbigPI+getbigPI+getbigPI)
+    with TJvMemoryInfos.Create(self) do begin
+      writeln('Available Mem '+FreeMemory);
+      Free;
+    end;   
+  until isKeypressed;
+  writeln('elements of biglist '+intToStr(biglist.count))
+  writeln('capacity of biglist '+intToStr(biglist.capacity))
+  biglist.Free; //destruct
+  //mcmem.Free;
+end; 
+ 
+procedure letStreamDataWorkRefresh;
+var biglist: TStringList;
+  jvmem: TJvMemoryInfos;
+begin
+  biglist:= TStringlist.create;
+  memo2.setfocus;
+  writeln(getbigPI)
+  jvmem:= TJvMemoryInfos.Create(self);
+  repeat 
+    biglist.add('Value for mem[%d] enter : '
+                   +inttoStr(RandomRange(500,100000000)));
+    biglist.add(getbigPI+getbigPI+getbigPI+getbigPI)
+    jvmem.Refresh(self);
+    writeln('Available Mem: '+jvmem.FreeMemory);
+  until isKeypressed;
+  writeln('elements of biglist '+intToStr(biglist.count))
+  writeln('capacity of biglist '+intToStr(biglist.capacity))
+  biglist.Free; //destruct
+  jvmem.Free;
+end; 
+
+
+procedure TProcessListForm_FormCreate(Sender: TObject);
+var
+  t: THandle;
+  //pe : TProcessEntry32;
+  HasProcess: boolean;
+begin
+  //LoadText;
+  //ProcessList := TList.Create;
+  //t := CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
+  try
+    //pe.dwSize:= SizeOf(pe);
+    //HasProcess:= Process32First(t, pe);
+    {while HasProcess do begin
+      ProcessCombo.Items.Add(pe.szExeFile);
+      ProcessList.Add(pointer(pe.th32ProcessId));
+      HasProcess := Process32Next(t, pe);
+    end;}
+  finally
+    CloseHandle(t);
+  end;
+end;
+
+procedure GR32_MathDemo;
+var itmp: TFixed;
+begin
+  //FastSqrt
+  ///hypot
+  // oneover
+  //FixedFloor( A : TFixed) : Integer');
+  //FixedCeil( A : TFixed) : Integer');
+  //FixedMul( A, B : TFixed) : TFixed');
+  //FixedDiv( A, B : TFixed) : TFixed');
+  //OneOver( Value : TFixed) : TFixed');
+  //FixedRound( A : TFixed) : Integer');
+  writeln('FixedRound '+intToStr(FixedRound(1234)));
+  //FixedSqr( Value : TFixed) : TFixed');
+  writeln('FixedSQR '+intToStr(FixedSQR(1234)));
+
+  //FixedSqrtLP( Value : TFixed) : TFixed');
+  //FixedSqrtHP( Value : TFixed) : TFixed');
+  //FixedCombine( W, X, Y : TFixed) : TFixed');
+  //GRSinCos( const Theta : TFloat; out Sin, Cos : TFloat);');
+ //SinCos1( const Theta, Radius : Single; out Sin, Cos : Single);');
+  //Hypot( const X, Y : TFloat) : TFloat;');
+  //Hypot1( const X, Y : Integer) : Integer;');
+  //FastSqrt( const Value : TFloat) : TFloat');
+    writeln('FastSqrt '+floatToStr(FastSqrt(1234.56)));
+
+  //FastSqrtBab1( const Value : TFloat) : TFloat');
+  //FastSqrtBab2( const Value : TFloat) : TFloat');
+  //FastInvSqrt( const Value : Single) : Single;');
+  //MulDiv( Multiplicand, Multiplier, Divisor : Integer) : Integer');
+ 
+ end;
+ 
+function ConstrainASM(const Value, Lo, Hi: Integer): Integer;
+{$IFDEF USENATIVECODE}
+begin
+  if Value < Lo then
+    Result := Lo
+  else if Value > Hi then
+    Result := Hi
+  else
+    Result := Value;
+{$ELSE}
+//asm
+begin
+  writeln('ASM...');
+{$IFDEF TARGET_x64}
+        MOV       EAX,ECX
+        MOV       ECX,R8D
+  {$ENDIF}
+        {CMP       EDX,EAX
+        CMOVG     EAX,EDX
+        CMP       ECX,EAX
+        CMOVL     EAX,ECX }
+{$ENDIF}
+end;
+
+ 
+procedure GR32_LowlevelFunc;
+begin
+ //Clamp( const Value : Integer) : Integer;');
+ //GRFillWord( var X, Count : Cardinal; Value : Longword)');
+ //StackAlloc( Size : Integer) : Pointer');
+ //StackFree( P : Pointer)');
+ //GRSwap( var A, B : Pointer);');
+ //Swap1( var A, B : Integer);');
+ //Swap2( var A, B : TFixed);');
+ //Swap3( var A, B : TColor32);');
+ //TestSwap( var A, B : Integer);');
+ //TestSwap1( var A, B : TFixed);');
+ //TestClip( var A, B : Integer; const Size : Integer) : Boolean;');
+ //TestClip1( var A, B : Integer; const Start, Stop : Integer) : Boolean;');
+ //GRConstrain( const Value, Lo, Hi : Integer) : Integer;');
+   writeln('GRConstrain  '+intToStr(GRConstrain(1234,1000,2000)));
+   writeln('GRConstrain  '+intToStr(GRConstrain(500,1000,2000)));
+   writeln('GRConstrain  '+intToStr(GRConstrain(2500,1000,2000)));
+
+   writeln('Constrain  '+intToStr(Constrain(1234,1000,2000)));
+   writeln('Constrain  '+intToStr(Constrain(500,1000,2000)));
+   writeln('Constrain  '+intToStr(Constrain(2500,1000,2000)));
+   Assert(Constrain(2500,1000,2000)=2000, ' to be 2000')
+
+ //Constrain1( const Value, Lo, Hi : Single) : Single;');
+ //SwapConstrain( const Value : Integer; Constrain1, Constrain2 : Integer) : Integer');
+ //GRMin( const A, B, C : Integer) : Integer;');
+ //GRMax( const A, B, C : Integer) : Integer;');
+ //Clamp( Value, Max : Integer) : Integer;');
+ //Clamp1( Value, Min, Max : Integer) : Integer;');
+ //Wrap( Value, Max : Integer) : Integer;');
+ //Wrap1( Value, Min, Max : Integer) : Integer;');
+ //Wrap3( Value, Max : Single) : Single;;');
+ //WrapPow2( Value, Max : Integer) : Integer;');
+ //WrapPow21( Value, Min, Max : Integer) : Integer;');
+ //Mirror( Value, Max : Integer) : Integer;');
+   writeln('Mirror  '+intToStr(Mirror(25678,3100)));
+
+ //Mirror1( Value, Min, Max : Integer) : Integer;');
+ //MirrorPow2( Value, Max : Integer) : Integer;');
+ //MirrorPow21( Value, Min, Max : Integer) : Integer;');
+ //GetOptimalWrap( Max : Integer) : TWrapProc;');
+ //GetOptimalWrap1( Min, Max : Integer) : TWrapProcEx;');
+ //GetOptimalMirror( Max : Integer) : TWrapProc;');
+ //GetOptimalMirror1( Min, Max : Integer) : TWrapProcEx;');
+ //GetWrapProc( WrapMode : TWrapMode) : TWrapProc;');
+ //GetWrapProc1( WrapMode : TWrapMode; Max : Integer) : TWrapProc;');
+ //GetWrapProcEx( WrapMode : TWrapMode) : TWrapProcEx;');
+ //GetWrapProcEx1( WrapMode : TWrapMode; Min, Max : Integer) : TWrapProcEx;');
+ //Div255( Value : Cardinal) : Cardinal');
+ {SAR_4( Value : Integer) : Integer');
+ SAR_8( Value : Integer) : Integer');
+ SAR_9( Value : Integer) : Integer');
+ SAR_11( Value : Integer) : Integer');
+ SAR_12( Value : Integer) : Integer');
+ SAR_13( Value : Integer) : Integer');
+ SAR_14( Value : Integer) : Integer');
+ SAR_15( Value : Integer) : Integer');
+ SAR_16( Value : Integer) : Integer');}
+   writeln('SAR_16  '+intToStr(SAR_16(round(Pow(2,18)))));
+
+ //ColorSwap( WinColor : TColor) : TColor32');
+enD;
+
+procedure TForm1_btnPicloadClick(Sender: TObject);
+var mybitmap: TBitmap;
+    bitStream: TStream;
+    image1: TImage;
+begin
+  //mybitmap.LoadFromFile('dws_logo.bmp'); for the mortals
+  mybitmap:= TBitmap.Create;
+  bitStream:= TMemoryStream.Create;
+  try
+    //bitStream.Writebuffer(dws_logo_bmp, sizeof(dws_logo_bmp));
+    bitStream.Position:= 0;
+    mybitmap.LoadFromStream(bitStream);
+    if assigned(mybitmap) then begin
+      image1.Picture.assign(mybitmap);
+      image1.update;
+    end;
+  finally
+    bitStream.Free;
+    mybitmap.Free;
+  end;
+end;
+
+
+procedure CreateShapeForm;
+  var 
+    dbform: TForm;
+    ard: TRadioGroup;
+  begin
+     dbform:= CreateMessageDialog('Area Calc SQRT(PI) FFP',mtwarning,
+                                    [mball, mbyes, mbhelp, mbok]);
+     with dbform do begin
+       font.size:= 12;
+       caption:= 'FFP 3D Shape Demo';
+       setBounds(50,50,800,500)
+       FormStyle:= fsStayontop;
+       Color:= 12234;  //clWebGold;//12234;
+       autoScroll:= true;
+     with TLabel.Create(self) do begin
+       parent:= dbform;
+       SetBounds(400,60,500,600)
+       font.size:= 18;
+       //dblist.Add('All Converted to...XML')
+       caption:= 'entry a 3D PI Shape Background...';
+     end;  
+    with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      setbounds(112,212,round(Sqrt(PI)*100),round(Sqrt(PI)*100));
+      sendToback;
+      //align
+      //scaleby
+      //clienttoscreen
+      //onmousedown
+      //boundsrect
+      shape:= strectangle;
+      brush.color:= clblue;
+      pen.width:= 2;
+    //borderStyle:= bsNone;
+    //scrollbars:= false;
+    end;
+    with TShape.Create(dbForm) do begin
+      parent:= dbForm;
+      setbounds(252,252,round(200),round(200));
+      sendToback;
+      //onmousedown
+      //boundsrect
+      shape:= stcircle;
+      brush.color:= clyellow;
+      pen.width:= 2;
+    //borderStyle:= bsNone;
+    //scrollbars:= false;
+    end;
+
+     with TRadioGroup.Create(self) do begin
+       parent:= dbform;
+       top:= 135; //130
+       left:= 60;
+       items.add('first entry on');
+       items.add('second entry off');
+       items.add('third entry off');
+       ItemIndex:= 2; 
+       //writeln(Items.Strings[ItemIndex]); 
+     end;
+     Show;
+     Canvas.Draw(400,200,getBitMap(Exepath+'\examples\citymax.bmp'));
+    end; 
+     //SelectDirectory
+  end;
+    
+ 
+BEGIN  //Main
+//<Executable statements>
+  for i:= 1 to 3 do 
+    writeln(TEXTOUT);
+    
+    //if setColor(0,150,0) then writeln('color has changed');
+
+    i:=0;
+    for i:= 1 to anzahl do begin
+     //while (i<anzahl) do begin
+      speicher:= length('Wert fuer speicher[%d] eingeben : ')
+      printf('Wert fuer speicher[%d] eingeben : ',[i]);
+     //scanf('%d',[i]);
+    end; 
+   writeln('Speicher gesamt: '+inttoStr(speicher*anzahl)); 
+   //ShowmessageBig('You should press a key on output window to stop that loop!');
+   
+   //letStreamDataWork;
+   //letStreamDataWorkRefresh;
+ 
+   //mcmem:= TJvMemoryInfos.Create(self);
+   //for i:= 1 to biglist.count -1 do
+   //writeln(inttoStr(i)+' '+biglist[i]+' '+inttoStr(biglist.count));            
+   //Aufgabe 3.9
+   writeln(inttoStr(sizeof(anzahl)))  //type size
+   //writeln(inttoStr(sizeof(integer))) ist abhängig vom Betriebssystem
+   
+  // myURL:= 'http://www.kleiner.ch/kleiner/download/G9_japan.mp3';
+  //myURL:= 'http://www.kleiner.ch/kleiner/download/G9_lordofdarkness.mp3';
+  //myURL:= 'http://www.kleiner.ch/kleiner/download/G9_zeitraum.mp3';
+
+  mp3song1:= ExtractWord(5,myurl,['/']);
+  writeln('no regex extract test: '+mp3song1)
+  
+  //mp3song1:= ReplaceRegExpr('[\w]..$',myurl,'txt',true);  //replace
+  //mp3song1:= ReplaceRegExpr('[\w//:]...',myurl,'',true); //extension
+  //mp3song1:= ReplaceRegExpr('^(\w)....',myurl,'',true); //präfix
+  //mp3song1:= ReplaceRegExpr('[^\w//:]*',myurl,'',true); //delete points find signs (.)
+  //mp3song1:= ReplaceRegExpr('[^\w]*',myurl,'',true); //delete all except words (.)
+  //mp3song1:= ReplaceRegExpr('[\w]*',myurl,'',true); //show structure (://..///.)
+  //mp3song1:= ReplaceRegExpr('[^/]+(=/$|$)',myurl,'',true); //show except last
+  ///directory.*/([^/]+)/?$          [^/]+)/?$
+ 
+  //mp3song1:= ReplaceRegExpr('([^/]+)/?$',myurl,'',true); //show all except last
+  
+  mp3song1:= ReplaceRegExpr('([^/]+)?/',myurl,'',true); //show only last extract
+
+  writeln('regex extract test: '+mp3song1)
+   strReplace(mp3song1,'jap','max');
+      writeln('strreplace '+mp3song1);
+   
+    //rand
+    //IncludeQuoteIfSpaces
+    //cCommaStrToStr
+    //cGetFileTyp
+    //cStrtoAttr
+    //readboolstr
+    
+    writeln(inttostr(mcalc))
+    for i:= 1 to getprocesslist.count -1 do
+      writeln(getprocesslist[i]); 
+      //getprocesslist.free;
+      //replacestr
+      writeln(getASCIIline[49]);
+      writeln(booleanToString(ReadBoolStr('true')));
+     //internal func
+    //for i:= 1 to getprocesslist2.count -1 do
+      //writeln(getprocesslist2[i]); 
+      
+   //CommaStrToStr(s : string; formatstr : string) : string;
+ //IncludeQuoteIfSpaces(s : string) : string;
+ //IncludeQuoteIfNeeded(s : string) : string;
+   //loadfilefromresource
+   //getfiletyp
+//<Definitions>  
+   //AttrtoStr
+   //strtopoint
+   
+   //GetAssociatedProgram
+   //saveLn
+  writeln('GRIsPowerOf2  '+booleantoString(GRIsPowerOf2(128)));
+  GR32_MathDemo;
+  GR32_LowlevelFunc;
+  
+  //PrevPowerOf2( Value : Integer) : Integer');
+  //NextPowerOf2( Value : Integer) : Integer');
+  //Average( A, B : Integer) : Integer');
+  //GRSign( Value : Integer) : Integer');
+  //FloatMod( x, y : Double) : Double');
+  CreateShapeForm;
+   
+END. 
+
+
+
+http://bls.ch/100/unternehmen/100-jahre-loetschbergbahn/anlaesse/nordrampen-fest.html
+
+What is data stream?
+A: ( ?dad·? ?stre-m ) (communications) The continuous transmission of data from one location to another. Read More »
+Source: www.answers.com 
+
+
+Zufall ist nur der Ausdruck unserer Unfaehigkeit, den
+Dingen auf den Grund zu kommen
+A. Einstein (Ein grosser Skeptiker in Sachen Zufall)
+
+Random numbers should not be generated with a method
+chosen at random
+
+
+Donald E. Knuth                                        
+
+Funktionsparameter: TEXTOUT
+lokale Variable: newcolor;
+rücksprungadresse ist 120
+
+ 
+ Vortrags Beispiele:
+ 
+ USB Controller:    SerialCallResponseASCII
+ Binary Tree:       138_Sorting_Swap_Search2
+ Lotto Generator:   0pas_Lottosimulation
+ Datenkompression:  363_compress_services2
+ Video Port:        347_pictureview
+ 3D Printer:        356_3D_Printer
+ 
+
+type
+  TJvMemoryInfos = class(TJvComponent)
+  private
+    FTotalMemory: string;
+    FFreeMemory: string;
+    FTotalPages: string;
+    FDisponiblePages: string;
+    FNumberOfRegions: string;
+    FDisponibleRegions: string;
+    FMemoryLoad: string;
+    FTimer: TTimer;
+    FRefreshDelay: Integer;
+    FAutoRefresh: Boolean;
+    FDummy: string;
+    procedure SetAuto(Auto: Boolean);
+    procedure SetRefreshDelay(Speed: Integer);
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    procedure Refresh(Sender: TObject);
+    property AutoRefresh: Boolean read FAutoRefresh write SetAuto default False;
+    property RefreshDelay: Integer read FRefreshDelay write SetRefreshDelay;
+    property TotalMemory: string read FTotalMemory write FDummy stored False;
+    property FreeMemory: string read FfreeMemory write FDummy  stored False;
+    property NumberOfPages: string read FTotalPages write FDummy  stored False;
+    property DisponiblePages: string read FDisponiblePages write FDummy stored False;
+    property NumberOfRegions: string read FNumberOfRegions write FDummy stored False;
+    property DisponibleRegions: string read FDisponibleRegions write FDummy stored False;
+    property MemoryLoad: string read FMemoryLoad write FDummy stored False;
+  end;
+
+
+ 
+   TStrings  = class(TPersistent)
+    private
+      FDefined: TStringsDefined;
+      FDelimiter: Char;
+      FLineBreak: string;
+      FQuoteChar: Char;
+      FNameValueSeparator: Char;
+      FStrictDelimiter: Boolean;
+      FUpdateCount: Integer;
+      FAdapter: IStringsAdapter;
+      function GetCommaText: string;
+      function GetDelimitedText: string;
+      function GetName(Index: Integer): string;
+      function GetValue(const Name: string): string;
+      procedure ReadData(Reader: TReader);
+      procedure SetCommaText(const Value: string);
+      procedure SetDelimitedText(const Value: string);
+      procedure SetStringsAdapter(const Value: IStringsAdapter);
+      procedure SetValue(const Name, Value: string);
+      procedure WriteData(Writer: TWriter);
+      function GetDelimiter: Char;
+      procedure SetDelimiter(const Value: Char);
+      function GetLineBreak: string;
+      procedure SetLineBreak(const Value: string);
+      function GetQuoteChar: Char;
+      procedure SetQuoteChar(const Value: Char);
+      function GetNameValueSeparator: Char;
+      procedure SetNameValueSeparator(const Value: Char);
+      function GetStrictDelimiter: Boolean;
+      procedure SetStrictDelimiter(const Value: Boolean);
+      function GetValueFromIndex(Index: Integer): string;
+      procedure SetValueFromIndex(Index: Integer; const Value: string);
+    protected
+      procedure DefineProperties(Filer: TFiler); override;
+      procedure Error(const Msg: string; Data: Integer); overload;
+      procedure Error(Msg: PResStringRec; Data: Integer); overload;
+      function ExtractName(const S: string): string;
+      function Get(Index: Integer): string; virtual; abstract;
+      function GetCapacity: Integer; virtual;
+      function GetCount: Integer; virtual; abstract;
+      function GetObject(Index: Integer): TObject; virtual;
+      function GetTextStr: string; virtual;
+      procedure Put(Index: Integer; const S: string); virtual;
+      procedure PutObject(Index: Integer; AObject: TObject); virtual;
+      procedure SetCapacity(NewCapacity: Integer); virtual;
+      procedure SetTextStr(const Value: string); virtual;
+      procedure SetUpdateState(Updating: Boolean); virtual;
+      property UpdateCount: Integer read FUpdateCount;
+      function CompareStrings(const S1, S2: string): Integer; virtual;
+    public
+      destructor Destroy; override;
+      function Add(const S: string): Integer; virtual;
+      function AddObject(const S: string; AObject: TObject): Integer; virtual;
+      procedure Append(const S: string);
+      procedure AddStrings(Strings: TStrings); virtual;
+      procedure Assign(Source: TPersistent); override;
+      procedure BeginUpdate;
+      procedure Clear; virtual; abstract;
+      procedure Delete(Index: Integer); virtual; abstract;
+      procedure EndUpdate;
+      function Equals(Strings: TStrings): Boolean;
+      procedure Exchange(Index1, Index2: Integer); virtual;
+      function GetEnumerator: TStringsEnumerator;
+      function GetText: PChar; virtual;
+      function IndexOf(const S: string): Integer; virtual;
+      function IndexOfName(const Name: string): Integer; virtual;
+      function IndexOfObject(AObject: TObject): Integer; virtual;
+      procedure Insert(Index: Integer; const S: string); virtual; abstract;
+      procedure InsertObject(Index: Integer; const S: string;
+        AObject: TObject); virtual;
+      procedure LoadFromFile(const FileName: string); virtual;
+      procedure LoadFromStream(Stream: TStream); virtual;
+      procedure Move(CurIndex, NewIndex: Integer); virtual;
+      procedure SaveToFile(const FileName: string); virtual;
+      procedure SaveToStream(Stream: TStream); virtual;
+      procedure SetText(Text: PChar); virtual;
+      property Capacity: Integer read GetCapacity write SetCapacity;
+      property CommaText: string read GetCommaText write SetCommaText;
+      property Count: Integer read GetCount;
+      property Delimiter: Char read GetDelimiter write SetDelimiter;
+      property DelimitedText: string read GetDelimitedText write SetDelimitedText;
+      property LineBreak: string read GetLineBreak write SetLineBreak;
+      property Names[Index: Integer]: string read GetName;
+      property Objects[Index: Integer]: TObject read GetObject write PutObject;
+      property QuoteChar: Char read GetQuoteChar write SetQuoteChar;
+      property Values[const Name: string]: string read GetValue write SetValue;
+      property ValueFromIndex[Index: Integer]: string read GetValueFromIndex write SetValueFromIndex;
+      property NameValueSeparator: Char read GetNameValueSeparator write SetNameValueSeparator;
+      property StrictDelimiter: Boolean read GetStrictDelimiter write SetStrictDelimiter;
+      property Strings[Index: Integer]: string read Get write Put; default;
+      property Text: string read GetTextStr write SetTextStr;
+      property StringsAdapter: IStringsAdapter read FAdapter write SetStringsAdapter;
+    end;
+  
+    
+       
+ 
+ www.domain.com/first/second/last/
+
+How do I get the last term between slashes ie 'last' using regular expressions?
+
+PLEASE NOTE: The URL could just as easily be www.domain.com/last/ OR www.domain.com/first/second/third/fourth/last/
+
+I need to extract this last term for use in the Zeus Server's Request Rewrite module which uses PERL and REGEX.
+
+Thanks.
+
+EDIT: After implementing some answers, I have just realised that I need this match to be made only on URLs in a certain directory.
+
+
+Here's a simple regex:
+
+[^/]+(?=/$|$)
+
+Should match anything you throw at it.
+
+If you want to look in a particular directory, use this:
+
+/directory.*/([^/]+)/?$
+
+and your result will be in the first capture group.
+share|improve this answer
+	
+	
+	
+Thanks! This works. But I've just realised that I need to extract the last segment for URLS that are only in a particular directory. ie www.domain.com/directory/first/second/last/ Can you make a further suggestion? Thank you. – Matt Jan 10 '12 at 3:53
+	
+@Matt - I see now (in RegexBuddy) that PERL does not support variable repetition inside lookbehind. You'll have to check separately if it's inside that particular directory - unless you want to use a capture group. – Joseph Silber Jan 10 '12 at 4:13
+	
+/directory/.*([^/]+)/?$ is only returning the last character ie't'instead of 'last – Matt Jan 10 '12 at 5:41
+	
+@Matt - You're right. I changed it. – Joseph Silber Jan 10 '12 at 14:48
+	
+Brilliant! This works perfectly! Thank you very much. – Matt Jan 11 '12 at 6:17
+
+This should do the trick:
+
+[^/]+(?=/$|$)
+
+With a (?=lookahead) you won't get the last slash.
+
+[^/]+ Looks for at least one character that is not a slash (as many as possible). (?=/?^|^) makes sure that the next part of the string is a / and then the end of string or just end of string.
+
+Matches match in /one/two/match, '/one/two/match/'.
+share|improve this answer
+	
+answered Jan 10 '12 at 3:44
+agent-j
+12.3k737
+	
+up vote 0 down vote
+	
+
+This regex (a slightly modified version of Joseph's answer), should give you the last segment, minus ending slash.
+
+([^/]+)/?$
+
+Your result will be the first capture group.
+share|improve this answer
+	
+answered Jan 10 '12 at 3:45
+Adam Wagner
+6,4566
+	
+up vote 0 down vote
+	
+
+The last slash might be optional. Right?
+
+How about something like this:
+
+$url =~ m|([^/]+)/?$|;
+my $end_of_url = $1;
+
+The $ on the end anchors the regular expression to the end of the string. The [^/] means anything that's not a slash and the + after means I want one or more things that are not slashes. Notice that this is in a capture group which are marked with parentheses.
+
+I end the regular expression with /? which means that there may or may not be a slash on the very end of the string. I've put my regular expression between m| and |, so I can use forward slashes without having to constantly escape them.
+
+The last part of the URL is now in $1 and I can set my own scalar variable to save this result.
+share|improve this answer
+
+vienna buchhandlung 777 von vorgestern bis übermorgen
+ 
+
+----app_template_loaded_code----

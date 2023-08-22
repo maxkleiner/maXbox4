@@ -1,0 +1,706 @@
+{***************************************************************
+ *
+ * Project  : System Information Series
+ * App Name: 191_componentcount.txt, loc's = 99 
+ * Purpose  : Demonstrates the functions of TApplication and components
+ * Date  : 16/02/2011  -  14:56
+ * History  : add classname to TComponent
+ *          : show index# in case of no-name
+ ****************************************************************}
+Program ComponentCount;
+{BOOL WINAPI MessageBeep(
+  __in  UINT uType
+);}
+
+function  MessageBeep(para: integer): byte;
+  external 'MessageBeep@user32.dll stdcall';  
+
+type
+TWaveHeader = record
+   // RIFF file header
+   RIFF: array [0..3] of Char; // = 'RIFF'
+   FileSize: Integer; // = FileSize - 8
+   RIFFType: array [0..3] of Char; // = 'WAVE'
+   // Format chunk
+   FmtChunkId: array [0..3] of Char; // = 'fmt'
+   FmtChunkSize: Integer; // = 16
+   FormatTag: Word; // One of WAVE_FORMAT_XXX constants
+   Channels: Word; // = 1 - mono = 2 - stereo
+   SampleRate: Integer;
+   BytesPerSecond: Integer;
+   BlockAlign: Word;
+   BitsPerSample: Word; // = 8, 16 or 32 Bits/sample
+   // Data Chunk
+   DataChunkId: array [0..3] of Char; // = 'data'
+   DataSize: Integer; // Data size in bytes
+end;
+
+var
+  count: integer;
+    awin: TWaveIn;
+    //wh: TWaveHeader;
+    
+    //aco: TComServerObject;
+
+procedure signal_Sounds;
+var sound: integer;
+begin
+for sound:= 1 to 100 do
+  if sound mod 10 = 0 then begin
+    MessageBeep(sound)
+    sleep(1500)
+  end  
+end;
+
+
+procedure Apploop_Tester;
+var i,j: integer;
+    c: TComponent;
+begin
+  for i:= 0 to Application.ComponentCount - 1 do begin
+    // all components of a Form
+    for j:= 0 to Application.Components[i].ComponentCount - 1 do begin
+      c:= Application.Components[i].Components[j];
+      if c is TComponent then
+        writeln(inttostr64(j)+ ' '+c.name +' '+ c.classname)
+    end;
+  end; 
+end;  
+
+
+function ComponentFullName(comp: TComponent): string;
+var
+  mycomp: TComponent;
+begin
+  result:= comp.Name;
+   //if no component name then at least an index
+  if result = '' then
+    result:= '#'+IntToStr64(comp.ComponentIndex);
+  mycomp:= comp;
+  //to the top of the owner
+  while mycomp.Owner <> NIL do begin
+    mycomp:= mycomp.Owner;
+    if Length(mycomp.Name) > 0 then
+      result:= mycomp.Name+'.'+result;
+  end;
+end;
+
+function ComponentFullNameAndClass(comp: TComponent): string;
+begin
+  Result:= ComponentFullName(comp)+': '+comp.Classname;
+end;
+
+procedure DumpComponents(comp: TComponent; list: TStrings);
+var
+  i: Integer;
+begin
+  if Assigned(comp) then begin
+    list.Add('id: '+ inttostr64(count)+ ' '+ComponentFullNameAndClass(comp));
+    inc(count)
+    for i:= 0 to comp.ComponentCount-1 do begin
+      //recursion!
+      DumpComponents(comp.Components[i], list);
+    end;
+  end;
+end; 
+
+function GetAudioFormat(FormatTag: Word): String;
+begin
+  case FormatTag of
+    WAVE_FORMAT_PCM: Result := 'PCM';
+    $0002: Result := 'Microsoft ADPCM';
+    $0003: Result := 'PCM IEEE';
+    $0004: Result := 'VSELP';
+    $0005: Result := 'CSVD';
+    $0006: Result := 'A-Law';
+    $0007: Result := 'u-Law';
+    $0008: Result := 'DTS';
+    $0011: Result := 'IMA ADPCM';
+    $0031: Result := 'GSM 6.10';
+    $0043: Result := 'Microsoft G.723.1';
+    $0050: Result := 'MPEG';
+    $0055: Result := 'MPEG Layer-3';
+  else
+    Result := '';
+  end;
+end;
+
+
+// Converts milliseconds to string
+function MS2Str(Milliseconds: DWORD; Fmt: TMS2StrFormat): String;
+var
+  HSecs, Secs, Mins, Hours: DWORD;
+begin
+  HSecs := Milliseconds div 10;
+  Secs := HSecs div 100;
+  Mins := Secs div 60;
+  Hours := Mins div 60;
+ { if Fmt > msAh then begin
+    if Hours <> 0 then
+      if Fmt = msAh then Fmt := msHMSh  else Fmt := msHMS
+    else if Mins <> 0 then
+      if Fmt = msAh then Fmt := msMSh else Fmt := msMS
+    else
+      if Fmt = msAh then Fmt := msSh else Fmt := msS
+  end; }
+  case Fmt of
+  {  msHMSh:
+      Result := Format('%u%s%2.2u%s%2.2u%s%2.2u',
+        [Hours, TimeSeparator, Mins mod 60, TimeSeparator, Secs mod 60, DecimalSeparator, HSecs mod 100]); }
+    msHMS:
+      Result := Format('%u%s%2.2u%s%2.2u',
+        [Hours, TimeSeparator, Mins mod 60, TimeSeparator, Secs mod 60]);
+   
+    msMSh:
+      Result := Format('%u%s%2.2u%s%2.2u',
+        [Mins, TimeSeparator, Secs mod 60, DecimalSeparator, HSecs mod 100]);
+   
+    msMS:
+      Result := Format('%u%s%2.2u',
+        [Mins, TimeSeparator, Secs mod 60]);
+    msSh:
+      Result := Format('%u%s%2.2u',
+        [Secs, DecimalSeparator, HSecs mod 100]);
+    msS:
+      Result := Format('%u', [Secs]); 
+  else
+    Result := IntToStr(Milliseconds);
+  end;
+end;
+ 
+   
+
+
+procedure FindComponents(comp: TComponent; list: TStrings);
+var
+  i: Integer;
+begin
+  if Assigned(comp) then begin
+    list.Add('id: '+ inttostr64(count)+ ' '+ComponentFullNameAndClass(comp));
+    inc(count)
+    for i:= 0 to comp.ComponentCount-1 do begin
+      //recursion!
+         comp.FindComponent(list[i]);
+    end;
+  end;
+end;    
+
+// To save a file to BLOB:
+procedure TForm1_Button1Click(Sender: TObject);
+var
+  blob: TBlobStream;
+  yourDataset: TDataset;
+  fs: TFilestream;
+begin
+  //blob:= yourDataset.CreateBlobStream(yourDataset.FieldByName('YOUR_BLOB'), bmWrite);
+  try
+    blob.Seek(0, soFromBeginning);
+    fs:= TFileStream.Create('c:\your_name.doc', fmOpenRead or fmShareDenyWrite);
+    try
+      blob.CopyFrom(fs, fs.Size)
+    finally
+      fs.Free
+    end;
+  finally
+    //blob.Free
+  end;
+end;
+  // To load from BLOB:
+
+
+function ExtractFieldName3(const Fields: WideString; var Pos: Integer): WideString;
+var
+  I: Integer;
+begin
+  I := Pos;
+  while (I <= Length(Fields)) and (Fields[I] <> ';') do Inc(I);
+  Result := Copy(Fields, Pos, I - Pos);
+  if (I <= Length(Fields)) and (Fields[I] = ';') then Inc(I);
+  Pos := I;
+end;
+
+function ExtractFieldName2(const Fields: WideString; var Pos: Integer): WideString;
+var
+  I: Integer;
+begin
+  I := Pos;
+  while (I <= Length(Fields)) and (Fields[I] <> ';') do Inc(I);
+  Result := Copy(Fields, Pos, I - Pos);
+  if (I <= Length(Fields)) and (Fields[I] = ';') then Inc(I);
+  Pos := I;
+end;
+
+
+
+
+function ExecuteOptionsToOrd(ExecuteOptions: TExecuteOptions): Integer;
+var
+  Eo: TExecuteOption;
+begin
+  Result := 0;
+  if ExecuteOptions <> [] then
+    //for it{Eo} := Low(TExecuteOption) to High(TExecuteOption) do
+      //if Eo in ExecuteOptions then
+        //Inc2(Result, ExecuteOptionValues[Eo]);
+end;
+
+function StringToVarArray(const Value: string): OleVariant;
+var
+  PData: ___Pointer;
+  Size: Integer;
+begin
+  Size := Length(Value);
+  Result := VarArrayCreate([0, Size-1], varByte);
+  PData := VarArrayLock(Result);
+  try
+    //Move(Pointer(Value)^, PData^, Size);
+  finally
+    VarArrayUnlock(Result);
+  end;
+end;
+
+function VarDataSize(const Value: OleVariant): Integer;
+begin
+  if VarIsNull(Value) then
+    Result := -1
+  else if VarIsArray(Value) then
+    Result := VarArrayHighBound(Value, 1) + 1
+  {else if TVarData(Value).VType = varOleStr then
+  begin
+    Result := Length(PWideString(@TVarData(Value).VOleStr)^);
+    if Result = 0 then
+      Result := -1;
+  end }
+  else
+    Result := SizeOf(value);
+end;
+
+
+
+ const adEmpty =  $00000000;
+        adTinyInt = $00000010;
+ {CL.AddConstantN('adSmallInt','LongWord').SetUInt( $00000002);
+ CL.AddConstantN('adInteger','LongWord').SetUInt( $00000003);
+ CL.AddConstantN('adBigInt','LongWord').SetUInt( $00000014);
+ CL.AddConstantN('adUnsignedTinyInt','LongWord').SetUInt( $00000011);
+ CL.AddConstantN('adUnsignedSmallInt','LongWord').SetUInt( $00000012);
+ CL.AddConstantN('adUnsignedInt','LongWord').SetUInt( $00000013);
+ CL.AddConstantN('adUnsignedBigInt','LongWord').SetUInt( $00000015);
+ CL.AddConstantN('adSingle','LongWord').SetUInt( $00000004);
+ CL.AddConstantN('adDouble','LongWord').SetUInt( $00000005);
+ CL.AddConstantN('adCurrency','LongWord').SetUInt( $00000006);
+ CL.AddConstantN('adDecimal','LongWord').SetUInt( $0000000E);
+ CL.AddConstantN('adNumeric','LongWord').SetUInt( $00000083);
+ CL.AddConstantN('adBoolean','LongWord').SetUInt( $0000000B);
+ CL.AddConstantN('adError','LongWord').SetUInt( $0000000A);
+ CL.AddConstantN('adUserDefined','LongWord').SetUInt( $00000084);
+ CL.AddConstantN('adVariant','LongWord').SetUInt( $0000000C);
+ CL.AddConstantN('adIDispatch','LongWord').SetUInt( $00000009);
+ CL.AddConstantN('adIUnknown','LongWord').SetUInt( $0000000D);
+ CL.AddConstantN('adGUID','LongWord').SetUInt( $00000048);
+ CL.AddConstantN('adDate','LongWord').SetUInt( $00000007);
+ CL.AddConstantN('adDBDate','LongWord').SetUInt( $00000085);
+ CL.AddConstantN('adDBTime','LongWord').SetUInt( $00000086);
+ CL.AddConstantN('adDBTimeStamp','LongWord').SetUInt( $00000087);
+ CL.AddConstantN('adBSTR','LongWord').SetUInt( $00000008);}
+ adVarChar = $000000C8;
+  adGUID = $00000048; 
+  SNoMatchingADOType = 'No matching ADO data type for %s';
+  //SSkip
+  
+  var FieldTypeNames : array[0..41] of string;
+ 
+                      //   0..41
+// FieldTypeNames: array[TFieldType] of string = ( 'Unknown', 'String', 'SmallInt', 'Integer', 'Word', 'Boolean', 'Float', 'Currency', 'BCD', 'Date', 'Time', 'DateTime', 'Bytes', 'VarBytes', 'AutoInc', 'Blob', 'Memo', 'Graphic', 'FmtMemo', 'ParadoxOle', 'dBaseOle', 'TypedBinary', 'Cursor', 'FixedChar', 'WideString', 'LargeInt', 'ADT', 'Array', 'Reference', 'DataSet', 'HugeBlob', 'HugeClob', 'Variant', 'Interface', 'Dispatch', 'Guid', 'SQLTimeStamp', 'FMTBcdField', 'FixedWideChar', 'WideMemo', 'SQLTimeStamp', 'String', 'LongWord', 'ShortInt', 'Byte', 'Extended', 'Connection', 'Params', 'Stream');
+
+       // TFieldType
+{    TFieldType = (ftUnknown, ftString, ftSmallint, ftInteger, ftWord, // 0..4
+    ftBoolean, ftFloat, ftCurrency, ftBCD, ftDate, ftTime, ftDateTime, // 5..11
+    ftBytes, ftVarBytes, ftAutoInc, ftBlob, ftMemo, ftGraphic, ftFmtMemo, // 12..18
+    ftParadoxOle, ftDBaseOle, ftTypedBinary, ftCursor, ftFixedChar, ftWideString, // 19..24
+    ftLargeint, ftADT, ftArray, ftReference, ftDataSet, ftOraBlob, ftOraClob, // 25..31
+    ftVariant, ftInterface, ftIDispatch, ftGuid, ftTimeStamp, ftFMTBcd, // 32..37
+    ftFixedWideChar, ftWideMemo, ftOraTimeStamp, ftOraInterval); // 38..41
+ }
+ 
+  {DataTypeValues: array[TDataType] of TOleEnum = (
+    adEmpty, adVarChar, adSmallint, adInteger, adUnsignedSmallint, // 0..4
+    adBoolean, adDouble, adDouble, adCurrency, adDate, adDate, // 5..10
+    adDate, adBinary, adVarBinary, adInteger, adLongVarBinary, // 11..15
+    adLongVarChar, adLongVarBinary, adLongVarBinary, adLongVarBinary, //16..19
+    adLongVarBinary, adLongVarBinary, adEmpty, adChar, adVarWChar, adBigInt, // 20..25
+    adEmpty, adEmpty, adEmpty, adEmpty, adEmpty, adEmpty, adVariant, // 26..32
+    adIUnknown, adIDispatch, adGuid, adEmpty, adEmpty, // 33..37
+    adWChar, adLongVarWChar, adEmpty, adEmpty // 38..41
+    );
+
+
+    type
+  DataTypeEnum = TOleEnum;    !!
+
+       }
+ 
+ type
+  DataTypeEnum2 = longWord;  //  !!
+
+ 
+
+function FieldTypeToADOType(const FieldType: TFieldType): DataTypeEnum2;
+var ft: TFieldType;
+  //fieldtypename: 
+
+begin
+
+//  DatabaseErrorFmt
+  // VarTypeToDataType
+  //GetFieldProperty
+  //ExtractFieldName
+  
+  case FieldType of
+    ftUnknown: Result := adEmpty;
+    ftString: Result := adVarChar;
+    {ftWideString: Result := adVarWChar;
+    ftSmallint: Result := adSmallint;
+    ftInteger, ftAutoInc: Result := adInteger;
+    ftWord: Result := adUnsignedSmallInt;
+    ftBoolean: Result := adBoolean;
+    ftFloat: Result := adDouble;
+    ftCurrency, ftBCD: Result := adCurrency;
+    ftDate: Result := adDBDate;
+    ftTime: Result := adDBTime;
+    ftDateTime: Result := adDBTimeStamp;
+    ftBytes: Result := adBinary;
+    ftVarBytes: Result := adVarBinary;
+    ftMemo: Result := adLongVarChar;
+    ftWideMemo: Result := adLongVarWChar;
+    ftBlob, ftGraphic..ftTypedBinary: Result := adLongVarBinary;
+    ftFixedChar: Result := adChar;
+    ftFixedWideChar: Result := adWChar;
+    ftLargeint: Result := adBigInt;
+    ftVariant: Result := adVariant;
+    ftInterface: Result := adIUnknown;
+    ftIDispatch: Result := adIDispatch;}
+    ftGuid: Result := adGUID;
+    //FieldTypeNames[ord(FieldType)]
+  else begin
+    DatabaseErrorFmt(SNoMatchingADOType, [FieldTypeNames[ord(FieldType)]],NIL);
+    Result := adEmpty;
+    end;
+  end; 
+end;
+
+//procedure DatabaseErrorFmt(const Message: string; const Args: array of const; Component: TComponent = nil);
+
+
+function GetFilterStr(Field: TField; Value: Variant; Partial:Boolean): WideString;
+var
+  Operator,
+  FieldName,
+  QuoteCh: WideString;
+begin
+  QuoteCh := '';
+  Operator := '=';
+  FieldName := Field.FieldName;
+  if Pos(' ', FieldName) > 0 then
+    FieldName:= WideFormat('[%s]', [FieldName]);
+  if VarIsNull(Value) or VarIsClear(Value) then
+    Value := 'Null'
+  else
+    case Field.DataType of
+      ftDate, ftTime, ftDateTime:
+        QuoteCh := '#';
+      ftString, ftFixedChar, ftWideString, ftFixedWideChar:
+        begin
+          if Partial and (Value <> '') then begin
+            Value := Value + '*';
+            Operator := ' like ';     { Do not localize }
+          end;
+          if Pos('''', Value) > 0 then
+            QuoteCh := '#' else
+            QuoteCh := '''';
+        end;
+    end;
+  Result:= WideFormat('(%s%s%s%s%2:s)',[FieldName,Operator,QuoteCh,VarToWideStr(Value)]);
+end;
+
+function FieldListCheckSum(DataSet: TDataset): Integer;
+var
+  I: Integer;
+begin
+  Result:= 0;
+  for I:= 0 to DataSet.Fields.Count - 1 do
+    Result:= Result + (Integer(Dataset.Fields[I]) shr (I mod 16));
+end;
+
+
+  {RegisterMethod('Constructor Create(AOwner: TComponent)');
+  RegisterConstructor(@TJvMail.Create, 'Create');
+ 
+   RegisterMethod('Procedure Free');
+   RegisterMethod(@TJvMail.Destroy, 'Free');
+   }
+
+procedure ADOCOMUtils_test;
+var atp: TParameterAttributes;
+   //dte: DataTypeEnum;   add
+   //acs: TComServerObject;
+   // ccm: ComClassManager;
+   asti: TSchemaInfo;
+   //aex: TExcepInfo;
+   
+begin
+
+ 
+//     RegisterMethod('Constructor Create( const Message : string; ErrorCode : HRESULT; const Source, HelpFile : string; HelpContext : Integer)');
+
+  {with EOleException.create(345) do begin    // from oleauto
+    source
+    Free
+  end;  
+   }
+  
+  //TCallingConvention
+  //CreateClassID
+  //TComClassManager
+  with EOleSysError.create(23) do begin    //from oleauto !
+    Free
+  end; 
+
+  
+
+//procedure CreateUDLFile(const FileName, ProviderName, DataSourceName: WideString);
+ //CreateUDLFile(const FileName, ProviderName, DataSourceName: WideString);
+
+//function DataLinkDir: string;
+ //DataLinkDir: string;
+
+//   procedure GetProviderNames(Names: TWideStrings); overload;
+   //GetProviderNames(Names: TWideStrings); overload;
+
+   //procedure GetProviderNames(Names: TStrings); overload;
+
+//function PromptDataSource(ParentHandle:THandle; InitialString: WideString): WideString;
+  //PromptDataSource(ParentHandle: THandle; InitialString: WideString): WideString;
+
+//function PromptDataLinkFile(ParentHandle:THandle; InitialFile: WideString): WideString;
+ //PromptDataLinkFile(ParentHandle:THandle; InitialFile: WideString): WideString;
+
+//   function GetDataLinkFiles(FileNames: TWideStrings; Directory: string = ''): Integer; overload;
+   //GetDataLinkFiles(FileNames: TStrings; Directory: string = ''): Integer; overload;
+   
+  
+   //function CreateADOObject(const ClassID: TGUID): IUnknown;
+   //CreateADOObject(const ClassID: TGUID): IUnknown;
+   
+ //ADOTypeToFieldType(const ADOType: DataTypeEnum; EnableBCD: Boolean = True): TFieldType;
+   
+    //FieldTypeToADOType(const FieldType: TFieldType): DataTypeEnum;
+   
+    //StringToVarArray(const Value: string): OleVariant;
+   
+    //VarDataSize(const Value: OleVariant): Integer;
+   
+   //OleEnumToOrd(OleEnumArray: array of TOleEnum; Value: TOleEnum): Integer;
+   
+    //GetStates(State: Integer): TObjectStates;
+   
+   // ExecuteOptionsToOrd(ExecuteOptions: TExecuteOptions): Integer;
+   
+    //OrdToExecuteOptions(Options: Integer): TExecuteOptions;
+                              
+   //rename because a seconsd is there
+   //ExtractFieldNameWide(const Fields: WideString; var Pos: Integer): WideString;
+   
+   //GetFilterStr(Field: TField; Value: Variant; Partial:Boolean): WideString;
+   
+   //PropertyExists(const PropList: ADOInt.Properties; const PropName: WideString): Boolean;
+   //FieldListCheckSum(DataSet: TDataset): Integer;
+
+
+(*   CL.AddDelphiFunction('Function CreateADOObject( const ClassID : TGUID) : IUnknown');
+ CL.AddDelphiFunction('Function ADOTypeToFieldType( const ADOType : DataTypeEnum; EnableBCD : Boolean) : TFieldType');
+ CL.AddDelphiFunction('Function FieldTypeToADOType( const FieldType : TFieldType) : DataTypeEnum');
+ CL.AddDelphiFunction('Function StringToVarArray( const Value : string) : OleVariant');
+ CL.AddDelphiFunction('Function VarDataSize( const Value : OleVariant) : Integer');
+ CL.AddDelphiFunction('Function OleEnumToOrd( OleEnumArray : array of TOleEnum; Value : TOleEnum) : Integer');
+ CL.AddDelphiFunction('Function GetStates( State : Integer) : TObjectStates');
+ CL.AddDelphiFunction('Function ExecuteOptionsToOrd( ExecuteOptions : TExecuteOptions) : Integer');
+ CL.AddDelphiFunction('Function OrdToExecuteOptions( Options : Integer) : TExecuteOptions');
+ CL.AddDelphiFunction('Function ExtractFieldName( const Fields : WideString; var Pos : Integer) : WideString');
+ CL.AddDelphiFunction('Function GetFilterStr( Field : TField; Value : Variant; Partial : Boolean) : WideString');
+ CL.AddDelphiFunction('Function FieldListCheckSum( DataSet : TDataset) : Integer');
+
+ S.RegisterDelphiFunction(@CreateADOObject, 'CreateADOObject', cdRegister);
+ S.RegisterDelphiFunction(@ADOTypeToFieldType, 'ADOTypeToFieldType', cdRegister);
+ S.RegisterDelphiFunction(@FieldTypeToADOType, 'FieldTypeToADOType', cdRegister);
+ S.RegisterDelphiFunction(@StringToVarArray, 'StringToVarArray', cdRegister);
+ S.RegisterDelphiFunction(@VarDataSize, 'VarDataSize', cdRegister);
+ S.RegisterDelphiFunction(@OleEnumToOrd, 'OleEnumToOrd', cdRegister);
+ S.RegisterDelphiFunction(@GetStates, 'GetStates', cdRegister);
+ S.RegisterDelphiFunction(@ExecuteOptionsToOrd, 'ExecuteOptionsToOrd', cdRegister);
+ S.RegisterDelphiFunction(@OrdToExecuteOptions, 'OrdToExecuteOptions', cdRegister);
+ S.RegisterDelphiFunction(@ExtractFieldName, 'ExtractFieldName', cdRegister);
+ S.RegisterDelphiFunction(@GetFilterStr, 'GetFilterStr', cdRegister);
+ S.RegisterDelphiFunction(@FieldListCheckSum, 'FieldListCheckSum', cdRegister);
+
+
+  *)
+  
+  //CreateComObject
+  //CreateRemoteComObject
+  //CreateOleObject
+  //OleError
+  //OleCheck
+  //GUIDToString2
+  //StringToGUID2
+  //RegisterComServer
+  
+  //CreateComObject( const ClassID : TGUID) : IUnknown');
+ //CreateRemoteComObject(const MachineName:WideString;const ClassID:TGUID): IUnknown');
+
+ //HandleSafeCallException
+   //DispatchInvokeError
+  //TPersistFormat
+  //TIsolationLevel
+  
+  //TTypedComObject
+  //TCursorOption
+  
+  //TComObjectFactory');
+  //TComServerObject(CL);
+  //TFactoryProc', 'Procedure (Factory : TComObjectFactory)');
+  //TComClassManager(CL);
+  //7IServerExceptionHandler(CL);
+  //TComObject(CL);
+  //CL.AddTypeS('TComClass', 'class of TComObject');
+  //TClassInstancing', '(ciInternal,ciSingleInstance,ciMultiInstance )');
+  //TThreadingModel', '(tmSingle, tmApartment, tmFree, tmBoth, tmNeutral )');
+  //SIRegister_TComObjectFactory(CL);
+  //SIRegister_TTypedComObject(CL);
+  //CL.AddTypeS('TTypedComClass', 'class of TTypedComObject');
+  //SIRegister_TTypedComObjectFactory(CL);
+  //TConnectEvent2','Procedure(const Sink : IUnknown; Connecting : Boolean)');
+  //CL.AddClassN(CL.FindClass('TOBJECT'),'TAutoObjectFactory');
+  //TAutoObject(CL);
+  //CL.AddTypeS('TAutoClass', 'class of TAutoObject');
+  //TAutoObjectFactory(CL);
+  //SIRegister_TAutoIntfObject(CL);
+  //EOleError');
+  //EOleSysError(CL);
+  //EOleException(CL);
+    //EOleRegistrationError
+
+ //    ClassIDToString
+ 
+(*CL.AddDelphiFunction('Function CreateOleObject2( const ClassName : string) : IDispatch');
+ CL.AddDelphiFunction('Function GetActiveOleObject2(const ClassName: string): IDispatch');
+ 
+ CL.AddDelphiFunction('Procedure OleError2( ErrorCode : HResult)');
+ CL.AddDelphiFunction('Procedure OleCheck2( Result : HResult)');
+ CL.AddDelphiFunction('Function StringToGUID2( const S : string) : TGUID');
+ CL.AddDelphiFunction('Function GUIDToString2( const ClassID : TGUID) : string');
+ CL.AddDelphiFunction('Function ProgIDToClassID2( const ProgID : string) : TGUID');
+ CL.AddDelphiFunction('Function ClassIDToProgID2( const ClassID : TGUID) : string');
+
+ CL.AddDelphiFunction('Procedure CreateRegKey( const Key, ValueName, Value : string; RootKey : DWord)');
+ CL.AddDelphiFunction('Procedure DeleteRegKey( const Key : string; RootKey : DWord)');
+ CL.AddDelphiFunction('Function GetRegStringValue( const Key, ValueName : string; RootKey : DWord) : string');
+ CL.AddDelphiFunction('Function StringToLPOLESTR( const Source : string) : POleStr');
+ CL.AddDelphiFunction('Procedure RegisterComServer( const DLLName : string)');
+ CL.AddDelphiFunction('Procedure RegisterAsService( const ClassID, ServiceName : string)');
+ CL.AddDelphiFunction('Function CreateClassID2 : string');
+ CL.AddDelphiFunction('Procedure InterfaceConnect( const Source : IUnknown; const IID : TIID; const Sink : IUnknown; var Connection : Longint)');
+ CL.AddDelphiFunction('Procedure InterfaceDisconnect( const Source : IUnknown; const IID : TIID; var Connection : Longint)');
+ CL.AddDelphiFunction('Function GetDispatchPropValue( Disp : IDispatch; DispID : Integer) : OleVariant;');
+ CL.AddDelphiFunction('Function GetDispatchPropValue1( Disp : IDispatch; Name : WideString) : OleVariant;');
+ CL.AddDelphiFunction('Procedure SetDispatchPropValue2( Disp : IDispatch; DispID : Integer; const Value : OleVariant);');
+ CL.AddDelphiFunction('Procedure SetDispatchPropValue3( Disp : IDispatch; Name : WideString; const Value : OleVariant);');
+
+   *)
+
+
+end;
+
+var
+  complist: TStringList;
+  
+  mmtimer: TMultimediaTimer;
+  
+  aformat: TACMWaveFormat;
+  af2: TWaveFormatEx;
+  mysound: string;
+  act: TDataType; // TXactAttribute;
+
+begin
+  count:= 0;
+  Apploop_tester;
+  complist:= TStringList.create;
+  dumpComponents(application, complist) 
+  for count:= 0 to complist.count -1 do
+     writeln(complist.strings[count]);
+  complist.Free;
+  //writeln('machine name is: '+getHostName)
+  writeln('user name is: '+getUserName)
+  //writeln('proc id is: '+inttostr(currentprocessid))
+  //signal_Sounds;
+  //memo2.font.name:= 'Terminal';
+  
+  //OpenStreamWaveAudio
+  
+  //ConvertWaveFormat
+  
+  //http://read.pudn.com/downloads78/sourcecode/delphi_control/299843/WaveStorage.pas__.htm
+  
+   aformat.format:= af2;
+  
+  with TWaveConverter.create do begin
+    currentformat:= aformat;
+    NewFormat:= aformat;
+    //LoadStream
+    //SaveWavToStream
+    free
+    end;
+    
+    //getmp3length
+   // mysound:= exepath+'maxbox.mp3'
+    mysound:= exepath+'examples\maxbox.wav'
+    
+  //  mciSendString("play \"mysound.mp3\"", NULL, 0, 0);
+    
+    mciSendString('play '+mysound+'','0',0,0);
+    //TWaveFileConverter
+    
+    //DataLinkDir
+//    PromptDataSource
+  
+  
+  
+  
+end.   
+
+
+ ref:  TACMWaveFormat = packed record
++    case integer of
++      0 : (Format : TWaveFormatEx);
++      1 : (RawData : Array[0..128] of byte);
++  end;
++
++  TWaveConverter = class(TMemoryStream)
++  private
++    FMaxFmtSize: DWord;
++  public
++    CurrentFormat: TACMWaveFormat;
++    NewFormat: TACMWaveFormat;
++    function LoadStream(Stream : TStream): integer;
++    function Convert: integer;
++    function SaveWavToStream(MS: TStream): Integer;
++    constructor Create;
++    destructor Destroy; override;
++  end;
+
+There is no place like 127.0.0.1 
+
+//----------------------------------------------
+ DiskSize returns -1 if the drive number is invalid. Drive parameter can be set to: 0 = Current drive, 1 = A, 2 = B, 3 = C and so on. 
+
+

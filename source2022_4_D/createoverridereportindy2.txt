@@ -1,0 +1,545 @@
+
+********** File 1: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdAntiFreezeBase.pas--OK
+  public
+35:     constructor Create(AOwner: TComponent); override;
+    class procedure DoProcess(const AIdle: boolean = true; const AOverride: boolean = false);
+
+
+********** File 2: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdAuthenticationManager.pas--OK
+  public
+52:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 3: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdBlockCipherIntercept.pas --OK
+  public
+57:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 4: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdChargenServer.pas  --OK
+  public
+35:     constructor Create(AOwner: TComponent); override;
+  published
+
+
+********** File 5: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCoderMIME.pas --OK
+  public
+24:     constructor Create(AOwner: TComponent); override;
+  end;
+  public
+29:     constructor Create(AOwner: TComponent); override;
+  end;
+
+
+********** File 6: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCoderUUE.pas --OK
+29:     constructor Create(AOwner: TComponent); override;
+    procedure DecodeToStream(AIn: string; ADest: TStream); override;
+  public
+40:     constructor Create(AOwner: TComponent); override;
+  end;
+
+
+********** File 7: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCoderXXE.pas --OK
+
+35:     constructor Create(AOwner: TComponent); override;
+
+
+45:     constructor Create(AOwner: TComponent); override;
+
+
+
+********** File 8: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookieManager.pas --OK
+  public
+71:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 9: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCustomHTTPServer.pas  --OK
+  public
+264:     constructor Create(AOwner: TComponent); Override;
+    function CreateSession(AThread: TIdPeerThread;
+  public
+309:     Constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 10: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdDayTime.pas --OKI
+  public
+39:     constructor Create(AOwner: TComponent); override;
+    Property DayTimeStr : String read GetDayTimeStr;
+
+
+********** File 11: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdDayTimeServer.pas --OK
+  public
+39:     constructor Create(AOwner: TComponent); override;
+  published
+
+
+********** File 12: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdDayTimeUDP.pas --OK
+  public
+22:     constructor Create(AOwner: TComponent); override;
+    Property DayTimeStr : String read GetDayTimeStr;
+
+
+********** File 13: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdDICTServer.pas  --OK
+  public
+70:     constructor Create(AOwner: TComponent); override;
+  published
+
+
+********** File 14: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdDiscardServer.pas --OK
+  public
+37:     constructor Create(AOwner: TComponent); override;
+  published
+
+
+********** File 15: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdDiscardUDPServer.pas --OK
+   public
+24:      constructor Create(AOwner: TComponent); override;
+   published
+
+
+********** File 16: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdDNSResolver.pas --OK
+  public
+289:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 17: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdDsnPropEdBinding.pas  ----
+  public
+64:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 18: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdEcho.pas  --OK
+  public
+36:     constructor Create(AOwner: TComponent); override;
+    {This sends Text to the peer and returns the reply from the peer}
+
+
+********** File 19: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdEchoUDP.pas --OK
+  public
+22:     constructor Create(AOwner: TComponent); override;
+    {This sends Text to the peer and returns the reply from the peer}
+
+
+********** File 20: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdFinger.pas --OK
+  public
+46:     constructor Create(AOwner: TComponent); override;
+    {This connects to a server, does the finger querry specified in the Query
+
+
+********** File 21: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdFingerServer.pas --OK
+  public
+44:     constructor Create(AOwner: TComponent); override;
+  published
+
+
+********** File 22: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdFTP.pas --OK
+f    procedure Connect(AAutoLogin: boolean = True; const ATimeout: Integer = IdTimeoutDefault); reintroduce;
+171:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 23: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdFTPServer.pas  --OK
+  public
+239:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 24: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHostnameServer.pas --OK
+  public
+66:     constructor Create(AOwner: TComponent); override;
+  published
+
+
+********** File 25: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas --OK
+  public
+280:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 26: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTPWebBrokerBridge.pas
+  public
+100:     constructor Create(AOwner: TComponent); override;
+    procedure RegisterWebModuleClass(AClass: TComponentClass);
+
+
+********** File 27: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIcmpClient.pas --OK
+  public
+86:     constructor Create(AOwner: TComponent); override;
+    procedure Ping(ABuffer: String = ''; SequenceID: word = 0);    {Do not Localize}
+
+
+********** File 28: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIMAP4.pas
+    function  CloseMailBox: Boolean;
+538:     constructor Create(AOwner: TComponent); override;
+    //Creates a new mailbox with the specified name in the account.    {Do not Localize}
+
+
+********** File 29: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIMAP4Server.pas
+  public
+126:     Constructor Create(AOwner: TComponent); Override;
+  published
+
+
+********** File 30: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIntercept.pas --OK
+    procedure Connect(AConnection: TComponent); virtual;
+54:     constructor Create(AOwner: TComponent); override;
+    procedure Disconnect; virtual;
+
+
+********** File 31: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIOHandlerSocket.pas  --OK
+    function Connected: Boolean; override;
+60:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 32: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIOHandlerStream.pas --OK
+    procedure Close; override;
+43:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 33: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIOHandlerThrottle.pas
+    function Connected: Boolean; override;
+38:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 34: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIPMCastBase.pas --OK
+  public
+53:     constructor Create(AOwner: TComponent); override;
+    function IsValidMulticastGroup(Value: string): Boolean;
+
+
+********** File 35: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIPMCastClient.pas  --OK
+  public
+64:   	constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 36: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIPMCastServer.pas --OK
+  public
+55:     constructor Create(AOwner: TComponent); override;
+    procedure Send(AData: string);
+
+
+********** File 37: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIPWatch.pas --OK
+  public
+90:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 38: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdIRC.pas - to big
+
+827:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 39: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdLogBase.pas -OK
+    procedure Connect(AConnection: TComponent); override;
+39:     constructor Create(AOwner: TComponent); override;
+    procedure Receive(ABuffer: TStream); override;
+
+
+********** File 40: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdLPR.pas -NOK  --OK
+  public
+134:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 41: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMailBox.pas --OK
+    procedure Clear; virtual;
+78:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 42: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMappedFTP.pas --OK
+  public
+101:     constructor Create(AOwner: TComponent); override;
+  published
+
+
+********** File 43: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMappedPortTCP.pas --OK
+  public
+80:     constructor Create(AOwner: TComponent); override;
+  published
+  public
+119:     constructor Create(AOwner: TComponent); override;
+    //
+  public
+151:     constructor Create(AOwner: TComponent); override;
+  published
+
+
+********** File 44: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMappedPortUDP.pas --OK
+  public
+39:     constructor Create(AOwner: TComponent); override;
+    procedure DoUDPRead(AData: TStream; ABinding: TIdSocketHandle); override;
+
+
+********** File 45: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessage.pas
+  public
+353:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 46: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageClient.pas --NOK --OK
+  public
+99:     constructor Create(AOwner: TComponent); override;
+    function Readable(AMSec: integer = IdTimeoutDefault): boolean; override;
+
+
+********** File 47: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoder.pas --OK
+    function ReadLn: string;
+39:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  public
+72:     constructor Create(AOwner: TComponent); override;
+    procedure Encode(const AFilename: string; ADest: TStream); overload;
+
+
+********** File 48: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderUUE.pas
+  public
+41:     constructor Create(AOwner: TComponent); override;
+  end;
+
+
+********** File 49: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderXXE.pas
+  public
+26:     constructor Create(AOwner: TComponent); override;
+  end;
+
+
+********** File 50: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdNetworkCalculator.pas --OK
+    procedure FillIPList;
+107:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 51: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdNNTP.pas --OK
+    procedure Connect(const ATimeout: Integer = IdTimeoutDefault); override;
+102:     constructor Create(AOwner: TComponent); override;
+    procedure Disconnect; override;
+
+
+********** File 52: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdNNTPServer.pas  - to big 
+  public
+321:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 53: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdPOP3.pas --OK
+    procedure Connect(const ATimeout: Integer = IdTimeoutDefault); override;
+64:     constructor Create(AOwner: TComponent); override;
+    function Delete(const MsgNum: Integer): Boolean;
+
+
+********** File 54: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdPOP3Server.pas
+  public
+134:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 55: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdQotd.pas --OK
+  public
+36:     constructor Create(AOwner: TComponent); override;
+    { This is the quote from the server }
+
+
+********** File 56: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdQOTDUDP.pas --OK
+  public
+22:     constructor Create(AOwner: TComponent); override;
+    { This is the quote from the server }
+
+
+********** File 57: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdRawBase.pas -- NOK missing --OK
+  public
+43:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 58: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdRemoteCMDClient.pas  --OK
+  public
+56:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 59: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdRexec.pas --OK
+  public
+50:     constructor Create(AOwner: TComponent); override;
+    Function Execute(ACommand: String): String; override;
+
+
+********** File 60: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdRSH.pas --OK
+  public
+42:     Constructor Create(AOwner: TComponent); override;
+    Function Execute(ACommand: String): String; override;
+
+
+********** File 61: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSimpleServer.pas --OK
+    procedure Bind; virtual;
+50:     constructor Create(AOwner: TComponent); override;
+    procedure CreateBinding;
+
+
+********** File 62: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSMTPServer.pas 
+  public
+314:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 63: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSNPP.pas --OKM
+  public
+52:     constructor Create(AOwner: TComponent); override;
+    procedure Connect(const ATimeout: Integer = IdTimeoutDefault); override;
+
+
+********** File 64: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSNTP.pas --ok
+  public
+106:     constructor Create(AOwner: TComponent); override;
+    function SyncTime: Boolean;        // get datetime and adjust if needed
+
+
+********** File 65: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSocks.pas --OK
+  public
+57:     constructor Create(AOwner: TComponent); override;
+    procedure MakeSocksConnection(const AHost: string; const APort: Integer);
+
+
+********** File 66: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSSLOpenSSL.pas
+  public
+207:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function Accept(ASocket: TIdStackSocketHandle; AThread: TIdThread = nil): TIdIOHandler; override;
+250:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 67: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSysLog.pas --OK
+  public
+39:     constructor Create(AOwner: TComponent); override;
+    procedure SendMessage(const AMsg: TIdSysLogMessage;
+
+
+********** File 68: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSysLogMessage.pas  --OK
+    property TimeStamp: TDateTime read FTimeStamp write SetTimeStamp;
+145:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 69: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSysLogServer.pas --OK
+  public
+51:     constructor Create(AOwner: TComponent); override;
+  published
+
+
+********** File 70: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPClient.pas NOK! -OK
+    function ConnectAndGetAll: string; virtual;
+46:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 71: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPConnection.pas --OK
+    function Connected: Boolean; virtual;
+196:     constructor Create(AOwner: TComponent); override;
+    function CurrentReadBuffer: string;
+
+
+********** File 72: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPServer.pas  --OK but Destroy! --OK
+  public
+274:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 73: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTelnet.pas --OK
+    //
+218:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 74: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTelnetServer.pas --OK
+  public
+57:     constructor Create(AOwner: TComponent); override;
+    function DoAuthenticate(AThread: TIdPeerThread; const AUsername, APassword: string)
+
+
+********** File 75: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdThreadComponent.pas 
+  public
+120:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 76: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdThreadMgr.pas
+  public
+35:     constructor Create(AOwner: TComponent); override;
+    function CreateNewThread: TIdThread; virtual;
+
+
+********** File 77: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdThreadMgrPool.pas
+  public
+32:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 78: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTime.pas --OK
+  public
+66:     constructor Create(AOwner: TComponent); override;
+    {This synchronizes the local clock with the Time Server}
+
+
+********** File 79: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTimeServer.pas   --OK
+  public
+58:     constructor Create(AOwner: TComponent); override;
+  published
+
+
+********** File 80: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTimeUDP.pas --OK
+  public
+32:     constructor Create(AOwner: TComponent); override;
+    {This synchronizes the local clock with the Time Server}
+
+
+********** File 81: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTunnelMaster.pas  --OK
+  public
+106:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 82: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTunnelSlave.pas --OK
+    procedure GetStatistics(Module: Integer; var Value: Integer);
+136:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 83: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdUDPBase.pas --OK
+  public
+44:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 84: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdUserAccounts.pas --OK
+    function AuthenticateUser(const AUsername, APassword: String): Boolean;
+93:     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+
+********** File 85: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdWhois.pas --OK
+  public
+42:     constructor Create(AOwner: TComponent); override;
+    function WhoIs(const ADomain: string): string;
+
+
+********** File 86: D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdWhoIsServer.pas --OK
+  public
+58:     constructor Create(AOwner: TComponent); override;
+  published
+
+Found 86 files of: 30:10:2013
+"Search and Found for Create(AOwner: TComponent); override;
+"Search Total Count of Files/Words: 176
+"Found of Words: 94
+"Found of Files: 86
+0 h run time is: 00:00:282
