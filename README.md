@@ -1,12 +1,12 @@
 # maXbox4
 byte-code compiler script studio
 *****************************************************************
-Release Notes maXbox 4.7.6.50 June 2023 mX476
+Release Notes maXbox 4.7.6.50 June 2023 mX476 Latest
 Add 54 Units + 14 Tutorials
 https://github.com/maxkleiner/maXbox4/releases/tag/V4.2.4.80
 *****************************************************************
 
-The Source is organised in _R for Runtime (native Units) and _D for Design Units (script mapping) like the following Package Neuralvolume of CAI NeuralNetwork as 4 files:
+The Source is organised in _C for Components and _R for Runtime (native Units) and _D for Design Units (script mapping) like the following Package Neuralvolume of CAI NeuralNetwork as 4 files:
 
 ![githuborg](https://github.com/maxkleiner/maXbox4/assets/3393121/651a6618-5df5-45ef-bf8c-fcd31c43ea95)
 
