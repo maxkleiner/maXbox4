@@ -1,0 +1,114 @@
+TGraph3D
+
+1. What is this?
+A component for displaying arrays of values as a net. Version 1.1.
+Written in Delphi 3.01, but should work in the other versions (2/4/5) too.
+
+2. Author
+Written 1999 by Hannes Breuer (Hannes@BreuerOnline.com)
+
+3. Summary of the functionality
+Supports hidden lines, 10 isodoses-colours, rotate/pan/zoom by mouse. All colours, frame, caption, font, etc...  customizable. Can create a bitmap image of itself, which will also replace the background-colour with white (if you want), useful for printouts. While zooming and rotating, the picture gets centered such that the average value of all datapoints appears in the middle of the canvas.
+The accomanying test-project demonstrates all these features. It creates the component at runtime, so you don't have to install anything to test it.
+
+4. Known issues:
+4.1. Any bugreports/suggestions are welcome. Please write to me.
+4.2. All drawing is done directly onto the visible Canvas. This was done because I use this component for relatively large arrays (+- 100x100) and the user should see that something is happening. Drawing on a background Canvas is faster (not thaaat much), but also took about a second during which users were worried that something stopped. Disadvantage: Every repaint redraws the full graph, but that's not too annoying...
+
+5. Legal stuff
+This component comes as is. I assume no responsibility whatsoever for any damages caused by the use/misuse of this component. Use at your own risk.
+
+5. Licensing:
+Use however you want.
+Please tell me where you use it (location and use of program).
+If you fix bugs or add nifty features, please let me know.
+If you earn money with it, please mention me.
+If you distribute copies of it, please include this file as well. 
+
+Hope this helps you.
+
+hannes
+17.1.2000
+
+
+List of all important public/published methods and properties:
+
+      Procedure AddLine(L : TGraphLine); //add more data
+      Procedure Clear;        //clears everything, frees mem of lines and trapezes
+      property NoOfLines : LongInt; //returns no. of lines
+Use these functions to populate your dataset.
+
+      property ShowFrame : Boolean;
+      property DrawHiddenLines : Boolean;
+      property DrawAxes : Boolean;
+      property Color : TColor;
+      property DataColor : TColor; //when UseColors=False
+      property AxesColor : TColor;
+      property UseColors : Boolean;
+      property LabelX : String;
+      property LabelY : String;
+      property LabelZ : String;
+      property Caption : String;
+      property Font : TFont;
+Customize the appearance.
+
+      property MouseControl : TMouseControl; {(mcNone, mcMove, mcRotate, mcZoom)}		
+      property Theta : LongInt; //horizontal view-angle deg
+      property Phi : LongInt;   //vertical dito
+      property Offset : TPoint; //for panning
+      property ZoomX : Single;  //valid: 0.1 .. 3
+      property ZoomY : Single;  //dito
+You can set the view-properties directly or (easier) use the MouseControl.
+
+      property ViewPercentage : ShortInt;
+Allows you to show only the furthest xx percent of the data, so you can look at otherwise
+hidden data.
+
+      property FirstLine : LongInt;
+      property LastLine  : LongInt;
+You can decide to show only some of the lines.
+
+      function GetIsodoseValue(i : ShortInt) : Single;
+      function GetIsodoseColor(i : ShortInt) : TColor;
+      Procedure SetIsodose(Ind : Byte; Percent : Single; col : TColor);
+      Procedure ResetColors; //back to red-shades
+Are responsible for setting/getting the isodoses and their colours.
+
+      property WaterlevelType : TWaterLevel;
+      property Waterlevel     : Single;
+      procedure SetWaterLevel(Kind : TWaterLevel; Percent : Single);
+You can blank out unimportant parts by means of a 'waterlevel', which sets all
+values smaller/bigger than the given percentage to that percentage. Try it out...
+
+      property isScrolling : Boolean;
+      property ScrollIndex : LongInt;
+      Procedure ScrollLines;  //shows them one-by-one, stops when mouse leaves client-area
+      Procedure StopScrolling;
+      property ScrollSpeed : Byte; //the bigger, the slower
+      property IncrementalScroll : Boolean;
+Allows you to scroll through the lines. If IncrementalScroll, then all previous lines remain, and the picture is repeatedly built up. If false, you always just see one line. Try this in the test-app.
+
+      property Align;
+      property ParentColor;
+      property ParentFont;
+      property ParentShowHint;
+      property PopupMenu;
+      property ShowHint;
+      property Visible;
+      property OnClick;
+      property OnDblClick;
+      property OnDragDrop;
+      property OnDragOver;
+      property OnEndDrag;
+Inherited properties.
+
+Events:
+      property AfterDraw : TNotifyEvent;
+      property OnStopScrolling : TNotifyEvent;
+      property OnScroll : TNotifyEvent;
+
+Other functions:
+      Procedure ClearPicture; //paints it in BackColor
+      Procedure CenterPlot;   //shifts FPlotOrigin such that avg-value of plot is at the centre of the canvas
+      Function AsBitmap(inWhite : Boolean) : TBitmap; //copies current Canvas to a bitmap
+               //background will be white regardless of Color, if inWhite=True
