@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="VCLScannerIntf">
+  <const name="SintfDocScan" type="string" resourcestring="true">
+    <value>
+      Scans Clients for TechStates
+    </value>
+  </const>
+  <const name="SintfDocOrch" type="string" resourcestring="true">
+    <value>
+      Sets the Sequence for Services
+    </value>
+  </const>
+  <interface name="IVCLScanner">
+    <function name="PostData" visibility="public" procflags="abstract virtual" callconv="stdcall">
+      <parameters>
+        <parameter name="UserData" type="WideString" paramflags="const" />
+        <parameter name="CheckSum" type="Integer" paramflags="const" />
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="PostUser" visibility="public" procflags="abstract virtual" callconv="stdcall">
+      <parameters>
+        <parameter name="Email" type="WideString" paramflags="const" />
+        <parameter name="FirstName" type="WideString" paramflags="const" />
+        <parameter name="LastName" type="WideString" paramflags="const" />
+      </parameters>
+    </procedure>
+    <function name="GetTicketNr" visibility="public" procflags="abstract virtual" callconv="stdcall">
+      <parameters>
+        <retval type="Integer" />
+      </parameters>
+    </function>
+  </interface>
+  <interface name="IVCLOrchestrator">
+    <function name="SetSequence" visibility="public" procflags="abstract virtual" callconv="stdcall">
+      <parameters>
+        <parameter name="S" type="ShortString" />
+        <parameter name="Localizar" type="ShortString" />
+        <parameter name="Substituir" type="ShortString" />
+        <retval type="ShortString" />
+      </parameters>
+    </function>
+    <procedure name="lineToNumber" visibility="public" procflags="abstract virtual" callconv="stdcall">
+      <parameters>
+        <parameter name="xmemo" type="string" />
+        <parameter name="met" type="Boolean" />
+      </parameters>
+    </procedure>
+  </interface>
+</namespace>

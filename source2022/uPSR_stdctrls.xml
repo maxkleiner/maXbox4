@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uPSR_stdctrls">
+  <procedure name="RIRegisterTCUSTOMGROUPBOX" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TCustomComboBoxStrings" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TStaticText" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TCustomStaticText" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTGROUPBOX" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCUSTOMLABEL" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTLABEL" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCUSTOMEDIT" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTEDIT" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCUSTOMMEMO" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTMEMO" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCUSTOMCOMBOBOX" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCOMBOBOX" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTBUTTONCONTROL" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTBUTTON" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCUSTOMCHECKBOX" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCHECKBOX" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTRADIOBUTTON" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCUSTOMLISTBOX" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTLISTBOX" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTSCROLLBAR" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_stdctrls" visibility="public">
+    <parameters>
+      <parameter name="cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+</namespace>

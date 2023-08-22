@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uPSR_DB">
+  <procedure name="RIRegister_TDataSource" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TCheckConstraints" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TCheckConstraint" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTDATASET" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTPARAMS" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTPARAM" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTGUIDFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTVARIANTFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTREFERENCEFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTDATASETFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTARRAYFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTADTFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTOBJECTFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTGRAPHICFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTMEMOFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTBLOBFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTFMTBCDFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTBCDFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTVARBYTESFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTBYTESFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTBINARYFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTTIMEFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTDATEFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTDATETIMEFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTBOOLEANFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCURRENCYFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTFLOATFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTAUTOINCFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTWORDFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTLARGEINTFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTSMALLINTFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTINTEGERFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTNUMERICFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTWIDESTRINGFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTSTRINGFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTFIELD" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTLOOKUPLIST" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTFIELDS" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTFIELDLIST" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTFIELDDEFLIST" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTFLATLIST" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTINDEXDEFS" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTINDEXDEF" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTFIELDDEFS" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTFIELDDEF" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTDEFCOLLECTION" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTNAMEDITEM" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TCustomConnection" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_EUpdateError" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_DB_Routines" visibility="public">
+    <parameters>
+      <parameter name="S" type="TPSExec" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_DB" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+</namespace>

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uPSR_forms">
+  <procedure name="RIRegisterTCONTROLSCROLLBAR" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TMonitor" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTSCROLLINGWINCONTROL" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTSCROLLBOX" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTFORM" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTAPPLICATION" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TScreen" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TStatusBar" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TCustomStatusBar" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TStatusPanels" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TStatusPanel" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TGlassFrame" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TFrame" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TCustomFrame" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_Forms" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+</namespace>

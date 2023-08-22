@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uPSR_buttons">
+  <procedure name="RIRegisterTSPEEDBUTTON" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTBITBTN" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_TBitBtnActionLink" visibility="public">
+    <parameters>
+      <parameter name="CL" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_Buttons" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_Buttons_Routines" visibility="public">
+    <parameters>
+      <parameter name="S" type="TPSExec" />
+    </parameters>
+  </procedure>
+</namespace>

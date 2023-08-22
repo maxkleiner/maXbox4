@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uPSR_comobj">
+  <procedure name="RIRegister_ComObj" visibility="public">
+    <parameters>
+      <parameter name="cl" type="TPSExec" />
+    </parameters>
+  </procedure>
+</namespace>

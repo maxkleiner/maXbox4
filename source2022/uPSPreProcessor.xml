@@ -1,0 +1,654 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uPSPreProcessor">
+  <class name="EPSPreProcessor">
+    <ancestor name="Exception" namespace="SysUtils">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="CreateFmt" visibility="public">
+      </methodref>
+      <methodref name="CreateRes" visibility="public">
+      </methodref>
+      <methodref name="CreateRes" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmt" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmt" visibility="public">
+      </methodref>
+      <methodref name="CreateHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateFmtHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmtHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmtHelp" visibility="public">
+      </methodref>
+      <propertyref name="HelpContext" visibility="public">
+      </propertyref>
+      <propertyref name="Message" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+  </class>
+  <class name="TPSLineInfo">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <function name="GetLineOffset" visibility="private">
+        <parameters>
+          <parameter name="I" type="Integer" />
+          <retval type="Cardinal" />
+        </parameters>
+      </function>
+      <function name="GetLineOffsetCount" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <field name="FEndPos" type="Cardinal" visibility="protected" />
+      <field name="FStartPos" type="Cardinal" visibility="protected" />
+      <field name="FFileName" type="string" visibility="protected" />
+      <field name="FLineOffsets" type="TPSList" visibility="protected" />
+      <property name="FileName" visibility="public" read="FFileName" type="string" />
+      <property name="StartPos" visibility="public" read="FStartPos" type="Cardinal" />
+      <property name="EndPos" visibility="public" read="FEndPos" type="Cardinal" />
+      <property name="LineOffsetCount" visibility="public" read="GetLineOffsetCount" type="Integer" />
+      <property name="LineOffset" visibility="public" read="GetLineOffset" type="Cardinal" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+    </members>
+  </class>
+  <struct name="TPSLineInfoResults">
+    <field name="Row" type="Cardinal" visibility="public" />
+    <field name="Col" type="Cardinal" visibility="public" />
+    <field name="Pos" type="Cardinal" visibility="public" />
+    <field name="Name" type="string" visibility="public" />
+  </struct>
+  <class name="TPSLineInfoList">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FItems" type="TPSList" visibility="private" />
+      <field name="FCurrent" type="Integer" visibility="private" />
+      <function name="GetCount" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetItem" visibility="private">
+        <parameters>
+          <parameter name="I" type="Integer" />
+          <retval type="TPSLineInfo" />
+        </parameters>
+      </function>
+      <function name="Add" visibility="protected">
+        <parameters>
+          <retval type="TPSLineInfo" />
+        </parameters>
+      </function>
+      <property name="Count" visibility="public" read="GetCount" type="Integer" />
+      <property name="Items" visibility="public" read="GetItem" type="TPSLineInfo" />
+      <procedure name="Clear" visibility="public">
+      </procedure>
+      <function name="GetLineInfo" visibility="public">
+        <parameters>
+          <parameter name="ModuleName" type="string" paramflags="const" />
+          <parameter name="Pos" type="Cardinal" />
+          <parameter name="Res" type="TPSLineInfoResults" paramflags="var" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <property name="Current" visibility="public" read="FCurrent" write="FCurrent" type="Integer" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+    </members>
+  </class>
+  <class name="TPSPreProcessor">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FID" type="Pointer" visibility="private" />
+      <field name="FCurrentDefines" type="TStringList" visibility="private" />
+      <field name="FDefines" type="TStringList" visibility="private" />
+      <field name="FCurrentLineInfo" type="TPSLineInfoList" visibility="private" />
+      <field name="FOnNeedFile" type="TPSOnNeedFile" visibility="private" />
+      <field name="FAddedPosition" type="Cardinal" visibility="private" />
+      <field name="FDefineState" type="TPSDefineStates" visibility="private" />
+      <field name="FMaxLevel" type="Integer" visibility="private" />
+      <field name="FMainFileName" type="string" visibility="private" />
+      <field name="FMainFile" type="string" visibility="private" />
+      <field name="FOnProcessDirective" type="TPSOnProcessDirective" visibility="private" />
+      <field name="FOnProcessUnknowDirective" type="TPSOnProcessDirective" visibility="private" />
+      <procedure name="ParserNewLine" visibility="private">
+        <parameters>
+          <parameter name="Sender" type="TPSPascalPreProcessorParser" />
+          <parameter name="Row" type="Cardinal" />
+          <parameter name="Col" type="Cardinal" />
+          <parameter name="Pos" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="IntPreProcess" visibility="private">
+        <parameters>
+          <parameter name="Level" type="Integer" />
+          <parameter name="OrgFileName" type="string" paramflags="const" />
+          <parameter name="FileName" type="string" />
+          <parameter name="Dest" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="doAddStdPredefines" visibility="public" procflags="virtual">
+      </procedure>
+      <property name="MaxLevel" visibility="public" read="FMaxLevel" write="FMaxLevel" type="Integer" />
+      <property name="CurrentLineInfo" visibility="public" read="FCurrentLineInfo" type="TPSLineInfoList" />
+      <property name="OnNeedFile" visibility="public" read="FOnNeedFile" write="FOnNeedFile" type="Boolean" />
+      <property name="Defines" visibility="public" read="FDefines" write="FDefines" type="TStringList" />
+      <property name="MainFile" visibility="public" read="FMainFile" write="FMainFile" type="string" />
+      <property name="MainFileName" visibility="public" read="FMainFileName" write="FMainFileName" type="string" />
+      <property name="ID" visibility="public" read="FID" write="FID" type="Pointer" />
+      <procedure name="AdjustMessages" visibility="public">
+        <parameters>
+          <parameter name="Comp" type="TPSPascalCompiler" />
+        </parameters>
+      </procedure>
+      <procedure name="AdjustMessage" visibility="public">
+        <parameters>
+          <parameter name="Msg" type="TPSPascalCompilerMessage" />
+        </parameters>
+      </procedure>
+      <procedure name="PreProcess" visibility="public">
+        <parameters>
+          <parameter name="Filename" type="string" paramflags="const" />
+          <parameter name="Output" type="string" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="Clear" visibility="public">
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <property name="OnProcessDirective" visibility="public" read="FOnProcessDirective" write="FOnProcessDirective" type="TPSOnProcessDirective" />
+      <property name="OnProcessUnknowDirective" visibility="public" read="FOnProcessUnknowDirective" write="FOnProcessUnknowDirective" type="TPSOnProcessDirective" />
+    </members>
+  </class>
+  <const name="ptEOF" type="TPSPascalPreProcessorType">
+    <value>
+      ptEOF
+    </value>
+  </const>
+  <const name="ptOther" type="TPSPascalPreProcessorType">
+    <value>
+      ptOther
+    </value>
+  </const>
+  <const name="ptDefine" type="TPSPascalPreProcessorType">
+    <value>
+      ptDefine
+    </value>
+  </const>
+  <enum name="TPSPascalPreProcessorType">
+    <element name="ptEOF" />
+    <element name="ptOther" />
+    <element name="ptDefine" />
+  </enum>
+  <class name="TPSPascalPreProcessorParser">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FData" type="string" visibility="private" />
+      <field name="FText" type="PAnsiChar" visibility="private" />
+      <field name="FToken" type="string" visibility="private" />
+      <field name="FTokenId" type="TPSPascalPreProcessorType" visibility="private" />
+      <field name="FLastEnterPos" type="Cardinal" visibility="private" />
+      <field name="FLen" type="Cardinal" visibility="private" />
+      <field name="FRow" type="Cardinal" visibility="private" />
+      <field name="FCol" type="Cardinal" visibility="private" />
+      <field name="FPos" type="Cardinal" visibility="private" />
+      <field name="FOnNewLine" type="TPSOnNewLine" visibility="private" />
+      <procedure name="SetText" visibility="public">
+        <parameters>
+          <parameter name="dta" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="Next" visibility="public">
+      </procedure>
+      <property name="Token" visibility="public" read="FToken" type="string" />
+      <property name="TokenId" visibility="public" read="FTokenId" type="TPSPascalPreProcessorType" />
+      <property name="Row" visibility="public" read="FRow" type="Cardinal" />
+      <property name="Col" visibility="public" read="FCol" type="Cardinal" />
+      <property name="Pos" visibility="public" read="FPos" type="Cardinal" />
+      <event name="OnNewLine" visibility="public" read="FOnNewLine" write="FOnNewLine" type="TPSOnNewLine" />
+    </members>
+  </class>
+  <class name="TPSDefineState">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FInElse" type="Boolean" visibility="private" />
+      <field name="FDoWrite" type="Boolean" visibility="private" />
+      <property name="InElse" visibility="public" read="FInElse" write="FInElse" type="Boolean" />
+      <property name="DoWrite" visibility="public" read="FDoWrite" write="FDoWrite" type="Boolean" />
+    </members>
+  </class>
+  <class name="TPSDefineStates">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FItems" type="TPSList" visibility="private" />
+      <function name="GetCount" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetItem" visibility="private">
+        <parameters>
+          <parameter name="I" type="Integer" />
+          <retval type="TPSDefineState" />
+        </parameters>
+      </function>
+      <function name="GetWrite" visibility="private">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="GetPrevWrite" visibility="private">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <property name="Count" visibility="public" read="GetCount" type="Integer" />
+      <property name="Item" visibility="public" read="GetItem" type="TPSDefineState" />
+      <function name="Add" visibility="public">
+        <parameters>
+          <retval type="TPSDefineState" />
+        </parameters>
+      </function>
+      <procedure name="Delete" visibility="public">
+        <parameters>
+          <parameter name="I" type="Integer" />
+        </parameters>
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="Clear" visibility="public">
+      </procedure>
+      <property name="DoWrite" visibility="public" read="GetWrite" type="Boolean" />
+      <property name="DoPrevWrite" visibility="public" read="GetPrevWrite" type="Boolean" />
+    </members>
+  </class>
+</namespace>

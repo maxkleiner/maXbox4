@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uPSR_extctrls">
+  <procedure name="RIRegisterTSHAPE" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTIMAGE" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTPAINTBOX" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTBEVEL" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTTIMER" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCUSTOMPANEL" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTPANEL" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTPAGE" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTNOTEBOOK" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTHEADER" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTCUSTOMRADIOGROUP" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegisterTRADIOGROUP" visibility="public">
+    <parameters>
+      <parameter name="Cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+  <procedure name="RIRegister_ExtCtrls" visibility="public">
+    <parameters>
+      <parameter name="cl" type="TPSRuntimeClassImporter" />
+    </parameters>
+  </procedure>
+</namespace>

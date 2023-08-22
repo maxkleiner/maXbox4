@@ -1,0 +1,385 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="xmlutil_max">
+  <const name="SMissingSourceFile" type="string" resourcestring="true">
+    <value>
+      XMLDataFile must be specified
+    </value>
+  </const>
+  <const name="SMissingTransform" type="string" resourcestring="true">
+    <value>
+      TransformationFile must be specified
+    </value>
+  </const>
+  <const name="SOldVersion" type="string" resourcestring="true">
+    <value>
+      Version of Transformation File not supported
+    </value>
+  </const>
+  <const name="sFileSaveError" type="string" resourcestring="true">
+    <value>
+      Error saving file
+    </value>
+  </const>
+  <const name="sFileOpenError" type="string" resourcestring="true">
+    <value>
+      Error opening file
+    </value>
+  </const>
+  <const name="sXMLFileOpenError" type="string" resourcestring="true">
+    <value>
+      Could not open file 
+    </value>
+  </const>
+  <const name="sXMLLoadError" type="string" resourcestring="true">
+    <value>
+      Error Loading XML
+    </value>
+  </const>
+  <const name="sLinePosError" type="string" resourcestring="true">
+    <value>
+      Error on line %%d, position %%d
+    </value>
+  </const>
+  <const name="sReason" type="string" resourcestring="true">
+    <value>
+      Reason: %%s
+
+    </value>
+  </const>
+  <const name="sParseError" type="string" resourcestring="true">
+    <value>
+      XML Parse Error:
+
+    </value>
+  </const>
+  <class name="DomException">
+    <ancestor name="Exception" namespace="SysUtils">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="CreateFmt" visibility="public">
+      </methodref>
+      <methodref name="CreateRes" visibility="public">
+      </methodref>
+      <methodref name="CreateRes" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmt" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmt" visibility="public">
+      </methodref>
+      <methodref name="CreateHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateFmtHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmtHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmtHelp" visibility="public">
+      </methodref>
+      <propertyref name="HelpContext" visibility="public">
+      </propertyref>
+      <propertyref name="Message" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+  </class>
+  <const name="mx_Root" type="string">
+    <value>
+      XmlTransformation
+    </value>
+  </const>
+  <const name="mx_Transform" type="string">
+    <value>
+      Transform
+    </value>
+  </const>
+  <const name="mx_Skeleton" type="string">
+    <value>
+      Skeleton
+    </value>
+  </const>
+  <const name="mx_TranslateEach" type="string">
+    <value>
+      SelectEach
+    </value>
+  </const>
+  <const name="mx_Translate" type="string">
+    <value>
+      Select
+    </value>
+  </const>
+  <const name="mx_XmlSchema" type="string">
+    <value>
+      XmlSchema
+    </value>
+  </const>
+  <const name="mx_CdsSkeleton" type="string">
+    <value>
+      CdsSkeleton
+    </value>
+  </const>
+  <const name="mx_XmlSkeleton" type="string">
+    <value>
+      XmlSkeleton
+    </value>
+  </const>
+  <const name="mx_XSLTransform" type="string">
+    <value>
+      XslTransform
+    </value>
+  </const>
+  <const name="mx_Version" type="string">
+    <value>
+      Version
+    </value>
+  </const>
+  <const name="mx_CurrVersion" type="string">
+    <value>
+      1.0
+    </value>
+  </const>
+  <const name="mx_RootName" type="string">
+    <value>
+      RootName
+    </value>
+  </const>
+  <const name="mx_DataEncoding" type="string">
+    <value>
+      DataEncoding
+    </value>
+  </const>
+  <const name="mx_Direction" type="string">
+    <value>
+      Direction
+    </value>
+  </const>
+  <const name="mx_ToXml" type="string">
+    <value>
+      ToXml
+    </value>
+  </const>
+  <const name="mx_ToCds" type="string">
+    <value>
+      ToCds
+    </value>
+  </const>
+  <const name="mx_ID" type="string">
+    <value>
+      id
+    </value>
+  </const>
+  <const name="mx_DEFAULT" type="string">
+    <value>
+      Default
+    </value>
+  </const>
+  <const name="mx_VALUE" type="string">
+    <value>
+      value
+    </value>
+  </const>
+  <const name="mx_OPTIONS" type="string">
+    <value>
+      Options
+    </value>
+  </const>
+  <const name="mx_MAPVALUES" type="string">
+    <value>
+      Map_Values
+    </value>
+  </const>
+  <const name="mx_BOOLFORMAT" type="string">
+    <value>
+      Format_Bool
+    </value>
+  </const>
+  <const name="mx_OPTIONAL" type="string">
+    <value>
+      Optional
+    </value>
+  </const>
+  <const name="mx_DEST" type="string">
+    <value>
+      dest
+    </value>
+  </const>
+  <const name="mx_FROM" type="string">
+    <value>
+      from
+    </value>
+  </const>
+  <const name="mx_DATETIMEFORMAT" type="string">
+    <value>
+      Format_DateTime
+    </value>
+  </const>
+  <const name="mx_DATEFORMAT" type="string">
+    <value>
+      Format_Date
+    </value>
+  </const>
+  <const name="mx_TIMEFORMAT" type="string">
+    <value>
+      Format_Time
+    </value>
+  </const>
+  <const name="mx_Datapacket" type="string">
+    <value>
+      DATAPACKET
+    </value>
+  </const>
+  <const name="mx_ROWDATA" type="string">
+    <value>
+      ROWDATA
+    </value>
+  </const>
+  <const name="mx_ROW" type="string">
+    <value>
+      ROW
+    </value>
+  </const>
+  <const name="mx_RowState" type="string">
+    <value>
+      RowState
+    </value>
+  </const>
+  <const name="val_DateTimeDefault" type="string">
+    <value>
+      Default Format
+    </value>
+  </const>
+  <function name="getIndex_Attrs" visibility="public">
+    <parameters>
+      <parameter name="tag" type="string" />
+      <parameter name="idx" type="Integer" paramflags="var" />
+      <parameter name="Attrs" type="string" paramflags="var" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="Split0" visibility="public">
+    <parameters>
+      <parameter name="Str" type="string" />
+      <parameter name="substr" type="string" paramflags="const" />
+      <retval type="TStringList" />
+    </parameters>
+  </function>
+  <function name="Head" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" />
+      <parameter name="subs" type="string" paramflags="const" />
+      <parameter name="tail" type="string" paramflags="var" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StrToXmlDate" visibility="public">
+    <parameters>
+      <parameter name="DateStr" type="string" paramflags="const" />
+      <parameter name="Format" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StrToXmlDateTime" visibility="public">
+    <parameters>
+      <parameter name="DateStr" type="string" paramflags="const" />
+      <parameter name="Format" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StrToXmlTime" visibility="public">
+    <parameters>
+      <parameter name="TimeStr" type="string" paramflags="const" />
+      <parameter name="Format" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="XmlDateTimeToStr" visibility="public">
+    <parameters>
+      <parameter name="XmlDateTime" type="string" paramflags="const" />
+      <parameter name="Format" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="XmlTimeToStr" visibility="public">
+    <parameters>
+      <parameter name="XmlTime" type="string" paramflags="const" />
+      <parameter name="Format" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="MapDateTime" visibility="public">
+    <parameters>
+      <parameter name="DateFormatType" type="string" paramflags="const" />
+      <parameter name="DateFormat" type="string" />
+      <parameter name="Value" type="string" />
+      <parameter name="ToCds" type="Boolean" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="MakeValueMap" visibility="public">
+    <parameters>
+      <parameter name="Enumeration" type="string" />
+      <parameter name="ToCds" type="Boolean" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="MapValues" visibility="public">
+    <parameters>
+      <parameter name="Mapping" type="string" />
+      <parameter name="Value" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+</namespace>

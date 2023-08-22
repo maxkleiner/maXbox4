@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="VarRecUtils">
+  <array name="TConstArray">
+    <element type="TVarRec" />
+  </array>
+  <function name="CopyVarRec" visibility="public">
+    <parameters>
+      <parameter name="Item" type="TVarRec" paramflags="const" />
+      <retval type="TVarRec" />
+    </parameters>
+  </function>
+  <function name="CreateConstArray" visibility="public">
+    <parameters>
+      <parameter name="Elements" paramflags="const">
+        <array name="Elements">
+          <element type="TVarRec" />
+        </array>
+      </parameter>
+      <retval type="TConstArray" />
+    </parameters>
+  </function>
+  <procedure name="FinalizeVarRec" visibility="public">
+    <parameters>
+      <parameter name="Item" type="TVarRec" paramflags="var" />
+    </parameters>
+  </procedure>
+  <procedure name="FinalizeConstArray" visibility="public">
+    <parameters>
+      <parameter name="Arr" type="TConstArray" paramflags="var" />
+    </parameters>
+  </procedure>
+</namespace>

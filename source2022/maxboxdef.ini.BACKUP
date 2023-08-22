@@ -1,0 +1,51 @@
+//*** Definitions for maXbox3  ***
+[FORM]
+LAST_FILE=C:\maXbox\works2021\maxbox4\examples\436_teetest_screen21.TXT
+FONTSIZE=13
+EXTENSION=txt
+SCREENX=1337
+SCREENY=793
+MEMHEIGHT=300
+PRINTFONT=Courier New
+LINENUMBERS=Y
+EXCEPTIONLOG=Y
+EXECUTESHELL=Y
+BOOTSCRIPT=Y
+MEMORYREPORT=Y
+MACRO=Y
+NAVIGATOR=Y
+NAVWIDTH=260
+COMPORT=3
+DEP=Y
+INDENT=Y
+PRELAST_FILE=C:\maXbox\works2021\maxbox4\examples\942_gaussen_data_science3.txt
+PRELAST_FILE1=C:\maXbox\works2021\maxbox4\examples\1154_energy_api_agsi_plot14.txt
+PRELAST_FILE2=C:\maXbox\EKON_BASTA\EKON23\820_U_ProbabilityDist2ekon23_2.pas
+PRELAST_FILE3=C:\maXbox\works2021\maxbox4\examples\1159_uvisualgan_mX4.pas
+PRELAST_FILE4=C:\maXbox\works2021\maxbox4\examples\1154_energy_api_agsi_plot13.txt
+PRELAST_FILE5=C:\maXbox\works2021\maxbox4\examples\1071_Newadds_V47610_Modules49.pas
+PRELAST_FILE6=C:\maXbox\works2021\maxbox4\examples\942_gaussen_data_science31.txt
+PRELAST_FILE7=C:\maXbox\works2021\maxbox4\examples\1155_census_data_graphtester.txt
+PRELAST_FILE8=C:\maXbox\works2021\maxbox4\examples\1151_sentiment_api4simple1.txt
+PRELAST_FILE9=examples\100_weather_australia.txt
+PRELAST_FILE10=C:\maXbox\works2021\maxbox4\examples\1071_Newadds_V47610_Modules50.pas
+[WEB]
+IPPORT=8080
+IPHOST=127.0.0.1
+REM 192.168.56.1
+VERSIONCHECK=Y
+APP=C:\WINDOWS\System32\Calc.exe
+APP2=C:\maXbox\maxbox3\work2015\IBZ2016\maxbox4\151_8__iso9001.png
+MYSCRIPT=..\maxbox3\examples\330_myclock.txt
+MYSCRIPT2=..\maxbox3\examples\330_myclock.txt
+
+
+//250_tipsandtricks3.txt
+//038_pas_box_demonstrator.txt
+//189_newfunctions35.txt
+//303_webserver_simple.txt
+//305_webserver_arduino3.txt
+//362_maxonmotor2.TXT
+//356_3D_printer.txt
+//241_db3_sql_tutorial3.txt
+FONTNAME=Courier New

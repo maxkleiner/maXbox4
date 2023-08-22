@@ -1,0 +1,60 @@
+
+*************** File 1: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Examples\250_tipsandtricks3.txt
+    //GetStringFromResource(h,  
+986:   {  with TResourceStream.Create(h, '4092', '10') do
+  try
+
+
+*************** File 2: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Examples\250_tipsandtricks3api.txt
+    //GetStringFromResource(h,  
+981:   {  with TResourceStream.Create(h, '4092', '10') do
+  try
+
+
+*************** File 3: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Examples\250_tipsandtricks3_admin_elevation.txt
+    //GetStringFromResource(h,  
+977:   {  with TResourceStream.Create(h, '4092', '10') do
+  try
+
+
+*************** File 4: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Examples\250_tipsandtricks3_tester.txt
+begin
+988:   with TResourceStream.Create(HInstance, Name, 'RT_RCDATA') do
+  try
+    //GetStringFromResource(h,  
+1061:   {  with TResourceStream.Create(h, '4092', '10') do
+  try
+
+
+*************** File 5: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Examples\250_tipsandtricks4_tester.txt
+    //GetStringFromResource(h,  
+981:   {  with TResourceStream.Create(h, '4092', '10') do
+  try
+
+
+*************** File 6: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Examples\250_tipsandtricks4_tester2.txt
+    //GetStringFromResource(h,  
+999:   {  with TResourceStream.Create(h, '4092', '10') do
+  try
+
+
+*************** File 7: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Examples\260_sendmessage_2.TXT
+    //GetStringFromResource(h,  
+160:   {  with TResourceStream.Create(h, '4092', '10') do
+  try
+
+
+*************** File 8: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Examples\260_sendmessage_beta.TXT
+    //GetStringFromResource(h,  
+157:   {  with TResourceStream.Create(h, '4092', '10') do
+  try
+
+
+*************** File 9: C:\maXbox\TestApp2\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\Examples\383_MDAC_DCOM.txt
+    //GetStringFromResource(h,  
+1102:   {  with TResourceStream.Create(h, '4092', '10') do
+  try
+
+Found 9 Finder files of: 28:07:2022
+"Search and Found for with TResourceStream.create(
+0 h run time is: 00:35:641

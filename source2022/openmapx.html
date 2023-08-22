@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>OpenStreetMap Nominatim: Search</title>
+    <meta content="IE=edge" http-equiv="x-ua-compatible" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <base href="http://ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net/nominatim/" />
+    <link href="nominatim.xml" rel="search" title="Nominatim Search" type="application/opensearchdescription+xml" />
+    <link href="css/leaflet.css" rel="stylesheet" />
+    <link href="css/Control.Minimap.min.css" rel="stylesheet" />
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/common.css" rel="stylesheet" type="text/css" />
+    <link href="css/search.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body id="search-page">
+
+    <header class="container-fluid">
+    <div class="row">
+        <div class="col-xs-4">
+            <div class="brand">
+                <a href="http://ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net/nominatim/">
+                <img alt="logo" src="images/osm_logo.120px.png" width="30" height="30"/>
+                <h1>Nominatim</h1>
+                </a>
+            </div>
+        </div>
+        <div id="last-updated" class="col-xs-4 text-center">
+                            Data last updated:
+                <br>
+                2018/03/17 12:51 GMT                    </div>
+        <div class="col-xs-4 text-right">
+            <div class="btn-group">
+                <button class="dropdown-toggle btn btn-sm btn-default" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    About &amp; Help <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="https://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Documentation</a></li>
+                    <li><a href="https://wiki.openstreetmap.org/wiki/Nominatim/FAQ" target="_blank">FAQ</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#" class="" data-toggle="modal" data-target="#report-modal">Report problem with results</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="modal fade" id="report-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Report a problem</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+    Before reporting problems please read the <a target="_blank" href="https://wiki.openstreetmap.org/wiki/Nominatim">user documentation</a>
+    and
+    <a target="_blank" href="https://wiki.openstreetmap.org/wiki/Nominatim/FAQ">FAQ</a>.
+
+    If your problem relates to the address of a particular search result please use the 'details' link 
+    to check how the address was generated before reporting a problem.
+</p>
+<p>
+    Use <a target="_blank" href="https://github.com/openstreetmap/nominatim/issues">Nominatim issues on github</a>
+    to report problems.
+<!-- You can search for existing bug reports
+    <a href="https://trac.openstreetmap.org/query?status=new&amp;status=assigned&amp;status=reopened&amp;component=nominatim&amp;order=priority">here</a>.</p>
+ -->
+</p>
+<p>
+    Please ensure that you include a full description of the problem, including the search
+    query that you used, the problem with the result and, if the problem relates to missing data,
+    the osm type (node, way, relation) and id of the item that is missing.
+</p>
+<p>
+    Problems that contain enough detail are likely to get looked at before ones that require
+    significant research.
+</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <form class="form-inline" role="search" accept-charset="UTF-8" action="http://ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net/nominatim/search.php">
+        <div class="form-group">
+            <input id="q" name="q" type="text" class="form-control input-sm" placeholder="Search" value="church trier" >
+        </div>
+        <div class="form-group search-button-group">
+            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+                            <input type="hidden" value="1" name="polygon_geojson" />
+                        <input type="hidden" name="viewbox" value="" />
+            <div class="checkbox-inline">
+                <input type="checkbox" id="use_viewbox" >
+                <label for="use_viewbox">apply viewbox</label>
+            </div>
+        </div>
+        <div class="search-type-link">
+            <a id="switch-to-reverse" href="http://ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net/nominatim/reverse.php?format=html">reverse search</a>
+        </div>
+    </form>
+
+
+    <div id="content">
+
+
+        <div id="searchresults" class="sidebar">
+        <div class="result" data-position=0><img alt="icon" src="http://ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net/nominatim/images/mapicons/poi_place_city.p.20.png"/> <span class="name">Trier, Rheinland-Pfalz, 54290, Deutschland</span> <span class="type">(City)</span> <a class="btn btn-default btn-xs details" href="details.php?place_id=196920">details</a></div><div class="result" data-position=1><img alt="icon" src="http://ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net/nominatim/images/mapicons/poi_boundary_administrative.p.20.png"/> <span class="name">Trier, Rheinland-Pfalz, Deutschland</span> <span class="type">(County)</span> <a class="btn btn-default btn-xs details" href="details.php?place_id=187422202">details</a></div><div class="result" data-position=2> <span class="name">Trier, Zur Burg, Sommerau, Ruwer, Landkreis Trier-Saarburg, Rheinland-Pfalz, 54317, Deutschland</span> <span class="type">(Political)</span> <a class="btn btn-default btn-xs details" href="details.php?place_id=187736847">details</a></div><div class="result" data-position=3> <span class="name">Le Trier, Villexavier, Jonzac, Charente-Maritime, Nouvelle-Aquitaine, France métropolitaine, 17500, France</span> <span class="type">(Isolated Dwelling)</span> <a class="btn btn-default btn-xs details" href="details.php?place_id=182235496">details</a></div><div class="result" data-position=4> <span class="name">Trier, Poppel, Ravels, Turnhout, Antwerpen, Vlaanderen, 2382, België / Belgique / Belgien</span> <span class="type">(Residential)</span> <a class="btn btn-default btn-xs details" href="details.php?place_id=106615683">details</a></div><div class="result" data-position=5> <span class="name">Trier, Poppel, Ravels, Turnhout, Antwerpen, Vlaanderen, 2382, België / Belgique / Belgien</span> <span class="type">(Unclassified)</span> <a class="btn btn-default btn-xs details" href="details.php?place_id=90991538">details</a></div><div class="result" data-position=6> <span class="name">Trier, A 64, Pallien, West-Pallien, Trier, Rheinland-Pfalz, 54293, Deutschland</span> <span class="type">(Motorway Junction)</span> <a class="btn btn-default btn-xs details" href="details.php?place_id=316117">details</a></div><div class="result" data-position=7> <span class="name">Trier, A 64, Sirzenich, West-Pallien, Trierweiler, Trier-Land, Trier, Rheinland-Pfalz, 54311, Deutschland</span> <span class="type">(Motorway Junction)</span> <a class="btn btn-default btn-xs details" href="details.php?place_id=666118">details</a></div><div class="result" data-position=8><img alt="icon" src="http://ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net/nominatim/images/mapicons/transport_bus_stop2.p.20.png"/> <span class="name">Trèves - Trier, Rue de Trèves - Trierstraat, Quartier européen - Europese Wijk, Quartier Européen - Europese Wijk, BXL, Ville de Bruxelles - Stad Brussel, Brussel-Hoofdstad - Bruxelles-Capitale, Région de Bruxelles-Capitale - Brussels Hoofdstedelijk Gewest, 1000, België / Belgique / Belgien</span> <span class="type">(Bus Stop)</span> <a class="btn btn-default btn-xs details" href="details.php?place_id=52006994">details</a></div><div class="result" data-position=9> <span class="name">ТриР, улица Гиганта, Воскресенск, Воскресенский район, Московская область, ЦФО, 140200, РФ</span> <span class="type">(Car Parts)</span> <a class="btn btn-default btn-xs details" href="details.php?place_id=18385475">details</a></div><div class="more"><a class="btn btn-primary" href="http://ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net/nominatim/search.php?q=church+trier&amp;exclude_place_ids=196920%2C187422202%2C187736847%2C182235496%2C106615683%2C165840325%2C90991538%2C102121014%2C90741041%2C90681781%2C316117%2C666118%2C52006994%2C4631429%2C18385475">Search for more results</a></div>        </div>
+
+
+        <div id="map-wrapper">
+            <div id="map-position">
+                <div id="map-position-inner"></div>
+                <div id="map-position-close"><a href="#">hide</a></div>
+            </div>
+            <div id="map"></div>
+        </div>
+
+    </div> <!-- /content -->
+
+
+
+
+
+
+
+    <script type="text/javascript">
+    var nominatim_map_init = {
+    "zoom": 2,
+    "lat": 20,
+    "lon": 0,
+    "tile_url": "https:\/\/{s}.tile.openstreetmap.org\/{z}\/{x}\/{y}.png",
+    "tile_attribution": ""
+};var nominatim_results = [
+    {
+        "osm_type": "N",
+        "osm_id": "31941291",
+        "class": "place",
+        "type": "city",
+        "admin_level": "15",
+        "rank_search": "16",
+        "rank_address": "16",
+        "place_id": "196920",
+        "parent_place_id": "187422202",
+        "housenumber": "-1",
+        "country_code": "de",
+        "langaddress": "Trier, Rheinland-Pfalz, 54290, Deutschland",
+        "placename": "Trier",
+        "ref": "Trier",
+        "lon": "6.6441878",
+        "lat": "49.7596208",
+        "importance": 0.25744964542259,
+        "addressimportance": "11.3363744704262",
+        "extra_place": null,
+        "addresstype": "place",
+        "aBoundingBox": [
+            "49.5996208",
+            "49.9196208",
+            "6.4841878",
+            "6.8041878"
+        ],
+        "icon": "http:\/\/ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net\/nominatim\/images\/mapicons\/poi_place_city.p.20.png",
+        "label": "City",
+        "name": "Trier, Rheinland-Pfalz, 54290, Deutschland",
+        "foundorder": -1.1324374470426
+    },
+    {
+        "osm_type": "R",
+        "osm_id": "172679",
+        "class": "boundary",
+        "type": "administrative",
+        "admin_level": "6",
+        "rank_search": "12",
+        "rank_address": "12",
+        "place_id": "187422202",
+        "parent_place_id": "186780406",
+        "housenumber": "-1",
+        "country_code": "de",
+        "langaddress": "Trier, Rheinland-Pfalz, Deutschland",
+        "placename": "Trier",
+        "ref": "Trier",
+        "lon": "6.66826514194889",
+        "lat": "49.778033",
+        "importance": 0.25744964542259,
+        "addressimportance": "8.8171801436648",
+        "extra_place": null,
+        "addresstype": "boundary",
+        "aBoundingBox": [
+            "49.6986005",
+            "49.8571173",
+            "6.551792",
+            "6.7471503"
+        ],
+        "icon": "http:\/\/ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net\/nominatim\/images\/mapicons\/poi_boundary_administrative.p.20.png",
+        "label": "County",
+        "name": "Trier, Rheinland-Pfalz, Deutschland",
+        "foundorder": -0.87991801436648
+    },
+    {
+        "osm_type": "R",
+        "osm_id": "3146310",
+        "class": "boundary",
+        "type": "political",
+        "admin_level": "15",
+        "rank_search": "30",
+        "rank_address": "0",
+        "place_id": "187736847",
+        "parent_place_id": "65799422",
+        "housenumber": "-1",
+        "country_code": "de",
+        "langaddress": "Trier, Zur Burg, Sommerau, Ruwer, Landkreis Trier-Saarburg, Rheinland-Pfalz, 54317, Deutschland",
+        "placename": "Trier",
+        "ref": "204",
+        "lon": "6.73936779743564",
+        "lat": "49.7172227",
+        "importance": 0.16842640121551,
+        "addressimportance": "8.06913350914369",
+        "extra_place": null,
+        "addresstype": "boundary",
+        "aBoundingBox": [
+            "49.5167005",
+            "49.9177099",
+            "6.3583622",
+            "7.0652015"
+        ],
+        "name": "Trier, Zur Burg, Sommerau, Ruwer, Landkreis Trier-Saarburg, Rheinland-Pfalz, 54317, Deutschland",
+        "foundorder": -0.79691335091437
+    },
+    {
+        "osm_type": "W",
+        "osm_id": "536761259",
+        "class": "place",
+        "type": "isolated_dwelling",
+        "admin_level": "15",
+        "rank_search": "20",
+        "rank_address": "20",
+        "place_id": "182235496",
+        "parent_place_id": "187454618",
+        "housenumber": "-1",
+        "country_code": "fr",
+        "langaddress": "Le Trier, Villexavier, Jonzac, Charente-Maritime, Nouvelle-Aquitaine, France m\u00e9tropolitaine, 17500, France",
+        "placename": "Le Trier",
+        "ref": "Le Trier",
+        "lon": "-0.443099580593443",
+        "lat": "45.3773782",
+        "importance": 0.1625,
+        "addressimportance": "10.0110045180295",
+        "extra_place": null,
+        "addresstype": "place",
+        "aBoundingBox": [
+            "45.3771533",
+            "45.3778871",
+            "-0.4438053",
+            "-0.4425426"
+        ],
+        "name": "Le Trier, Villexavier, Jonzac, Charente-Maritime, Nouvelle-Aquitaine, France m\u00e9tropolitaine, 17500, France",
+        "foundorder": -0.99110045180295
+    },
+    {
+        "osm_type": "W",
+        "osm_id": "151621834",
+        "class": "highway",
+        "type": "residential",
+        "admin_level": "15",
+        "rank_search": "26",
+        "rank_address": "26",
+        "place_id": "106615683",
+        "parent_place_id": "188031413",
+        "housenumber": "-1",
+        "country_code": "be",
+        "langaddress": "Trier, Poppel, Ravels, Turnhout, Antwerpen, Vlaanderen, 2382, Belgi\u00eb \/ Belgique \/ Belgien",
+        "placename": "Trier",
+        "ref": "Trier",
+        "lon": "5.0387959",
+        "lat": "51.4470802",
+        "importance": 0.125,
+        "addressimportance": "8.46257969920278",
+        "extra_place": null,
+        "addresstype": "Road",
+        "aBoundingBox": [
+            "51.4468612",
+            "51.4474286",
+            "5.0375386",
+            "5.0399217"
+        ],
+        "label": "Residential",
+        "name": "Trier, Poppel, Ravels, Turnhout, Antwerpen, Vlaanderen, 2382, Belgi\u00eb \/ Belgique \/ Belgien",
+        "foundorder": -0.84295796992028
+    },
+    {
+        "osm_type": "W",
+        "osm_id": "88209922",
+        "class": "highway",
+        "type": "unclassified",
+        "admin_level": "15",
+        "rank_search": "26",
+        "rank_address": "26",
+        "place_id": "90991538",
+        "parent_place_id": "188031413",
+        "housenumber": "-1",
+        "country_code": "be",
+        "langaddress": "Trier, Poppel, Ravels, Turnhout, Antwerpen, Vlaanderen, 2382, Belgi\u00eb \/ Belgique \/ Belgien",
+        "placename": "Trier",
+        "ref": "Trier",
+        "lon": "5.0392857",
+        "lat": "51.4488374",
+        "importance": 0.125,
+        "addressimportance": "8.46257969920278",
+        "extra_place": null,
+        "addresstype": "Road",
+        "aBoundingBox": [
+            "51.4487744",
+            "51.4488421",
+            "5.0391016",
+            "5.0393772"
+        ],
+        "label": "Unclassified",
+        "name": "Trier, Poppel, Ravels, Turnhout, Antwerpen, Vlaanderen, 2382, Belgi\u00eb \/ Belgique \/ Belgien",
+        "foundorder": -0.84285796992028
+    },
+    {
+        "osm_type": "N",
+        "osm_id": "101454147",
+        "class": "highway",
+        "type": "motorway_junction",
+        "admin_level": "15",
+        "rank_search": "30",
+        "rank_address": "30",
+        "place_id": "316117",
+        "parent_place_id": "186844633",
+        "housenumber": "-1",
+        "country_code": "de",
+        "langaddress": "Trier, A 64, Pallien, West-Pallien, Trier, Rheinland-Pfalz, 54293, Deutschland",
+        "placename": "Trier",
+        "ref": "3",
+        "lon": "6.604891",
+        "lat": "49.7735207",
+        "importance": 0.101,
+        "addressimportance": "11.3363744704262",
+        "extra_place": null,
+        "addresstype": "Junction",
+        "aBoundingBox": [
+            "49.7734707",
+            "49.7735707",
+            "6.604841",
+            "6.604941"
+        ],
+        "label": "Motorway Junction",
+        "name": "Trier, A 64, Pallien, West-Pallien, Trier, Rheinland-Pfalz, 54293, Deutschland",
+        "foundorder": -1.1309374470426
+    },
+    {
+        "osm_type": "N",
+        "osm_id": "249282362",
+        "class": "highway",
+        "type": "motorway_junction",
+        "admin_level": "15",
+        "rank_search": "30",
+        "rank_address": "30",
+        "place_id": "666118",
+        "parent_place_id": "101064008",
+        "housenumber": "-1",
+        "country_code": "de",
+        "langaddress": "Trier, A 64, Sirzenich, West-Pallien, Trierweiler, Trier-Land, Trier, Rheinland-Pfalz, 54311, Deutschland",
+        "placename": "Trier",
+        "ref": "3",
+        "lon": "6.5991848",
+        "lat": "49.7713714",
+        "importance": 0.101,
+        "addressimportance": "8.8171801436648",
+        "extra_place": null,
+        "addresstype": "Junction",
+        "aBoundingBox": [
+            "49.7713214",
+            "49.7714214",
+            "6.5991348",
+            "6.5992348"
+        ],
+        "label": "Motorway Junction",
+        "name": "Trier, A 64, Sirzenich, West-Pallien, Trierweiler, Trier-Land, Trier, Rheinland-Pfalz, 54311, Deutschland",
+        "foundorder": -0.87901801436648
+    },
+    {
+        "osm_type": "N",
+        "osm_id": "4102390244",
+        "class": "highway",
+        "type": "bus_stop",
+        "admin_level": "15",
+        "rank_search": "30",
+        "rank_address": "30",
+        "place_id": "52006994",
+        "parent_place_id": "81398043",
+        "housenumber": "-1",
+        "country_code": "be",
+        "langaddress": "Tr\u00e8ves - Trier, Rue de Tr\u00e8ves - Trierstraat, Quartier europ\u00e9en - Europese Wijk, Quartier Europ\u00e9en - Europese Wijk, BXL, Ville de Bruxelles - Stad Brussel, Brussel-Hoofdstad - Bruxelles-Capitale, R\u00e9gion de Bruxelles-Capitale - Brussels Hoofdstedelijk Gewest, 1000, Belgi\u00eb \/ Belgique \/ Belgien",
+        "placename": "Tr\u00e8ves - Trier",
+        "ref": "Tr\u00e8ves - Trier",
+        "lon": "4.3746512",
+        "lat": "50.8419961",
+        "importance": 0.101,
+        "addressimportance": "8.39837216750976",
+        "extra_place": null,
+        "addresstype": "highway",
+        "aBoundingBox": [
+            "50.8419461",
+            "50.8420461",
+            "4.3746012",
+            "4.3747012"
+        ],
+        "icon": "http:\/\/ip-10-98-170-216.mq-us-east-1.ec2.aolcloud.net\/nominatim\/images\/mapicons\/transport_bus_stop2.p.20.png",
+        "label": "Bus Stop",
+        "name": "Tr\u00e8ves - Trier, Rue de Tr\u00e8ves - Trierstraat, Quartier europ\u00e9en - Europese Wijk, Quartier Europ\u00e9en - Europese Wijk, BXL, Ville de Bruxelles - Stad Brussel, Brussel-Hoofdstad - Bruxelles-Capitale, R\u00e9gion de Bruxelles-Capitale - Brussels Hoofdstedelijk Gewest, 1000, Belgi\u00eb \/ Belgique \/ Belgien",
+        "foundorder": -0.81153721675098
+    },
+    {
+        "osm_type": "N",
+        "osm_id": "1781879389",
+        "class": "shop",
+        "type": "car_parts",
+        "admin_level": "15",
+        "rank_search": "30",
+        "rank_address": "30",
+        "place_id": "18385475",
+        "parent_place_id": "80029100",
+        "housenumber": "-1",
+        "country_code": "ru",
+        "langaddress": "\u0422\u0440\u0438\u0420, \u0443\u043b\u0438\u0446\u0430 \u0413\u0438\u0433\u0430\u043d\u0442\u0430, \u0412\u043e\u0441\u043a\u0440\u0435\u0441\u0435\u043d\u0441\u043a, \u0412\u043e\u0441\u043a\u0440\u0435\u0441\u0435\u043d\u0441\u043a\u0438\u0439 \u0440\u0430\u0439\u043e\u043d, \u041c\u043e\u0441\u043a\u043e\u0432\u0441\u043a\u0430\u044f \u043e\u0431\u043b\u0430\u0441\u0442\u044c, \u0426\u0424\u041e, 140200, \u0420\u0424",
+        "placename": "\u0422\u0440\u0438\u0420",
+        "ref": "\u0422\u0440\u0438\u0420",
+        "lon": "38.7416086",
+        "lat": "55.260281",
+        "importance": 0.001,
+        "addressimportance": "8.73372919061946",
+        "extra_place": null,
+        "addresstype": "shop",
+        "aBoundingBox": [
+            "55.260231",
+            "55.260331",
+            "38.7415586",
+            "38.7416586"
+        ],
+        "name": "\u0422\u0440\u0438\u0420, \u0443\u043b\u0438\u0446\u0430 \u0413\u0438\u0433\u0430\u043d\u0442\u0430, \u0412\u043e\u0441\u043a\u0440\u0435\u0441\u0435\u043d\u0441\u043a, \u0412\u043e\u0441\u043a\u0440\u0435\u0441\u0435\u043d\u0441\u043a\u0438\u0439 \u0440\u0430\u0439\u043e\u043d, \u041c\u043e\u0441\u043a\u043e\u0432\u0441\u043a\u0430\u044f \u043e\u0431\u043b\u0430\u0441\u0442\u044c, \u0426\u0424\u041e, 140200, \u0420\u0424",
+        "foundorder": -0.86337291906195
+    }
+];    </script>
+    <footer>
+    <p class="disclaimer">
+        Addresses and postcodes are approximate
+    </p>
+    <p class="copyright">
+        &copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors
+    </p>
+</footer>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/leaflet.min.js"></script>
+<script src="js/Control.Minimap.min.js"></script>
+<script src="js/nominatim-ui.js"></script>
+
+</body>
+</html>

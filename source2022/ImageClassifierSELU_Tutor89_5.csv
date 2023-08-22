@@ -1,0 +1,4 @@
+epoch,training accuracy,training loss,training error,validation accuracy,validation loss,validation error,learning rate,time,test accuracy,test loss,test error
+1,0.0899,2.3035,1.8002,0.0977,2.3026,1.8000,0.0004000,100,,,
+2,0.0950,2.3022,1.7999,0.0952,2.3027,1.8000,0.0004000,197,,,
+3,0.0874,2.3039,1.8003,0.0952,2.3028,1.8000,0.0004000,293,,,

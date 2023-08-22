@@ -1,0 +1,1802 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uPSUtils">
+  <const name="mx4vers" type="string">
+    <value>
+      mX47610
+    </value>
+  </const>
+  <const name="PSMainProcName" type="string">
+    <value>
+      !MAIN
+    </value>
+  </const>
+  <const name="PSMainProcNameOrg" type="string">
+    <value>
+      Main Proc
+    </value>
+  </const>
+  <const name="PSLowBuildSupport" type="Integer">
+    <value>
+      $C
+    </value>
+  </const>
+  <const name="PSCurrentBuildNo" type="Integer">
+    <value>
+      $17
+    </value>
+  </const>
+  <const name="PSCurrentversion" type="string">
+    <value>
+      1.31
+    </value>
+  </const>
+  <const name="PSValidHeader" type="Integer">
+    <value>
+      $53504649
+    </value>
+  </const>
+  <const name="PSAddrStackStart" type="Integer">
+    <value>
+      $60000000
+    </value>
+  </const>
+  <const name="PSAddrNegativeStackStart" type="Integer">
+    <value>
+      $40000000
+    </value>
+  </const>
+  <type name="TbtString" type="AnsiString" />
+  <const name="ivtGlobal" type="TPSVariableType">
+    <value>
+      ivtGlobal
+    </value>
+  </const>
+  <const name="ivtParam" type="TPSVariableType">
+    <value>
+      ivtParam
+    </value>
+  </const>
+  <const name="ivtVariable" type="TPSVariableType">
+    <value>
+      ivtVariable
+    </value>
+  </const>
+  <enum name="TPSVariableType">
+    <element name="ivtGlobal" />
+    <element name="ivtParam" />
+    <element name="ivtVariable" />
+  </enum>
+  <const name="btReturnAddress" type="Integer">
+    <value>
+      $0
+    </value>
+  </const>
+  <const name="btU8" type="Integer">
+    <value>
+      $1
+    </value>
+  </const>
+  <const name="btS8" type="Integer">
+    <value>
+      $2
+    </value>
+  </const>
+  <const name="btU16" type="Integer">
+    <value>
+      $3
+    </value>
+  </const>
+  <const name="btS16" type="Integer">
+    <value>
+      $4
+    </value>
+  </const>
+  <const name="btU32" type="Integer">
+    <value>
+      $5
+    </value>
+  </const>
+  <const name="btS32" type="Integer">
+    <value>
+      $6
+    </value>
+  </const>
+  <const name="btSingle" type="Integer">
+    <value>
+      $7
+    </value>
+  </const>
+  <const name="btDouble" type="Integer">
+    <value>
+      $8
+    </value>
+  </const>
+  <const name="btExtended" type="Integer">
+    <value>
+      $9
+    </value>
+  </const>
+  <const name="btString" type="Integer">
+    <value>
+      $A
+    </value>
+  </const>
+  <const name="btRecord" type="Integer">
+    <value>
+      $B
+    </value>
+  </const>
+  <const name="btArray" type="Integer">
+    <value>
+      $C
+    </value>
+  </const>
+  <const name="btPointer" type="Integer">
+    <value>
+      $D
+    </value>
+  </const>
+  <const name="btPChar" type="Integer">
+    <value>
+      $E
+    </value>
+  </const>
+  <const name="btResourcePointer" type="Integer">
+    <value>
+      $F
+    </value>
+  </const>
+  <const name="btVariant" type="Integer">
+    <value>
+      $10
+    </value>
+  </const>
+  <const name="btS64" type="Integer">
+    <value>
+      $11
+    </value>
+  </const>
+  <const name="btU64" type="Integer">
+    <value>
+      $1E
+    </value>
+  </const>
+  <const name="btChar" type="Integer">
+    <value>
+      $12
+    </value>
+  </const>
+  <const name="btWideString" type="Integer">
+    <value>
+      $13
+    </value>
+  </const>
+  <const name="btWideChar" type="Integer">
+    <value>
+      $14
+    </value>
+  </const>
+  <const name="btProcPtr" type="Integer">
+    <value>
+      $15
+    </value>
+  </const>
+  <const name="btStaticArray" type="Integer">
+    <value>
+      $16
+    </value>
+  </const>
+  <const name="btSet" type="Integer">
+    <value>
+      $17
+    </value>
+  </const>
+  <const name="btCurrency" type="Integer">
+    <value>
+      $18
+    </value>
+  </const>
+  <const name="btClass" type="Integer">
+    <value>
+      $19
+    </value>
+  </const>
+  <const name="btInterface" type="Integer">
+    <value>
+      $1A
+    </value>
+  </const>
+  <const name="btNotificationVariant" type="Integer">
+    <value>
+      $1B
+    </value>
+  </const>
+  <const name="btUnicodeString" type="Integer">
+    <value>
+      $1C
+    </value>
+  </const>
+  <const name="btbigintmax" type="Integer">
+    <value>
+      $1E
+    </value>
+  </const>
+  <const name="btType" type="Integer">
+    <value>
+      $82
+    </value>
+  </const>
+  <const name="btEnum" type="Integer">
+    <value>
+      $81
+    </value>
+  </const>
+  <const name="btExtClass" type="Integer">
+    <value>
+      $83
+    </value>
+  </const>
+  <const name="CM_A" type="Integer">
+    <value>
+      $0
+    </value>
+  </const>
+  <const name="CM_CA" type="Integer">
+    <value>
+      $1
+    </value>
+  </const>
+  <const name="CM_P" type="Integer">
+    <value>
+      $2
+    </value>
+  </const>
+  <const name="CM_PV" type="Integer">
+    <value>
+      $3
+    </value>
+  </const>
+  <const name="CM_PO" type="Integer">
+    <value>
+      $4
+    </value>
+  </const>
+  <const name="Cm_C" type="Integer">
+    <value>
+      $5
+    </value>
+  </const>
+  <const name="Cm_G" type="Integer">
+    <value>
+      $6
+    </value>
+  </const>
+  <const name="Cm_CG" type="Integer">
+    <value>
+      $7
+    </value>
+  </const>
+  <const name="Cm_CNG" type="Integer">
+    <value>
+      $8
+    </value>
+  </const>
+  <const name="Cm_R" type="Integer">
+    <value>
+      $9
+    </value>
+  </const>
+  <const name="Cm_ST" type="Integer">
+    <value>
+      $A
+    </value>
+  </const>
+  <const name="Cm_Pt" type="Integer">
+    <value>
+      $B
+    </value>
+  </const>
+  <const name="CM_CO" type="Integer">
+    <value>
+      $C
+    </value>
+  </const>
+  <const name="Cm_cv" type="Integer">
+    <value>
+      $D
+    </value>
+  </const>
+  <const name="cm_sp" type="Integer">
+    <value>
+      $E
+    </value>
+  </const>
+  <const name="cm_bn" type="Integer">
+    <value>
+      $F
+    </value>
+  </const>
+  <const name="cm_vm" type="Integer">
+    <value>
+      $10
+    </value>
+  </const>
+  <const name="cm_sf" type="Integer">
+    <value>
+      $11
+    </value>
+  </const>
+  <const name="cm_fg" type="Integer">
+    <value>
+      $12
+    </value>
+  </const>
+  <const name="cm_puexh" type="Integer">
+    <value>
+      $13
+    </value>
+  </const>
+  <const name="cm_poexh" type="Integer">
+    <value>
+      $14
+    </value>
+  </const>
+  <const name="cm_in" type="Integer">
+    <value>
+      $15
+    </value>
+  </const>
+  <const name="cm_spc" type="Integer">
+    <value>
+      $16
+    </value>
+  </const>
+  <const name="cm_inc" type="Integer">
+    <value>
+      $17
+    </value>
+  </const>
+  <const name="cm_dec" type="Integer">
+    <value>
+      $18
+    </value>
+  </const>
+  <const name="cm_nop" type="Integer">
+    <value>
+      $FF
+    </value>
+  </const>
+  <const name="Cm_PG" type="Integer">
+    <value>
+      $19
+    </value>
+  </const>
+  <const name="Cm_P2G" type="Integer">
+    <value>
+      $1A
+    </value>
+  </const>
+  <type name="TbtSingle" type="Float" />
+  <type name="TbtDouble" type="Double" />
+  <type name="TbtExtended" type="Extended" />
+  <type name="tbtCurrency" type="Currency" />
+  <type name="tbts64" type="Int64" />
+  <type name="Tbtu64" type="Int64" />
+  <type name="tbtchar" type="Char" />
+  <type name="tbtwidestring" type="WideString" />
+  <type name="tbtunicodestring" type="WideString" />
+  <type name="tbtwidechar" type="WideChar" />
+  <type name="tbtNativeString" type="AnsiString" />
+  <const name="cdRegister" type="TPSCallingConvention">
+    <value>
+      cdRegister
+    </value>
+  </const>
+  <const name="cdPascal" type="TPSCallingConvention">
+    <value>
+      cdPascal
+    </value>
+  </const>
+  <const name="cdCdecl" type="TPSCallingConvention">
+    <value>
+      cdCdecl
+    </value>
+  </const>
+  <const name="cdStdCall" type="TPSCallingConvention">
+    <value>
+      cdStdCall
+    </value>
+  </const>
+  <const name="cdSafeCall" type="TPSCallingConvention">
+    <value>
+      cdSafeCall
+    </value>
+  </const>
+  <enum name="TPSCallingConvention">
+    <element name="cdRegister" />
+    <element name="cdPascal" />
+    <element name="cdCdecl" />
+    <element name="cdStdCall" />
+    <element name="cdSafeCall" />
+  </enum>
+  <const name="PointerSize" type="Cardinal">
+    <value>
+      $4
+    </value>
+  </const>
+  <const name="PointerSize2" type="Cardinal">
+    <value>
+      $8
+    </value>
+  </const>
+  <const name="MaxListSize" type="Integer">
+    <value>
+      $7FFFFFF
+    </value>
+  </const>
+  <pointer name="PPointerList" type="TPointerList" indircnt="1" />
+  <array name="TPointerList" low="0" high="134217726">
+    <element type="Pointer" />
+  </array>
+  <class name="TPSList">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FData" type="PPointerList" visibility="protected" />
+      <field name="FCapacity" type="Cardinal" visibility="protected" />
+      <field name="FCount" type="Cardinal" visibility="protected" />
+      <field name="FCheckCount" type="Cardinal" visibility="protected" />
+      <function name="GetItem" visibility="private">
+        <parameters>
+          <parameter name="Nr" type="Cardinal" />
+          <retval type="Pointer" />
+        </parameters>
+      </function>
+      <procedure name="SetItem" visibility="private">
+        <parameters>
+          <parameter name="Nr" type="Cardinal" />
+          <parameter name="P" type="Pointer" />
+        </parameters>
+      </procedure>
+      <procedure name="Recreate" visibility="public">
+      </procedure>
+      <property name="Data" visibility="public" read="FData" type="PPointerList" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <function name="IndexOf" visibility="public">
+        <parameters>
+          <parameter name="P" type="Pointer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <property name="Count" visibility="public" read="FCount" type="Cardinal" />
+      <property name="Items" visibility="public" read="GetItem" write="SetItem" type="Pointer" />
+      <function name="Add" visibility="public">
+        <parameters>
+          <parameter name="P" type="Pointer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="AddBlock" visibility="public">
+        <parameters>
+          <parameter name="List" type="PPointerList" />
+          <parameter name="Count" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Remove" visibility="public">
+        <parameters>
+          <parameter name="P" type="Pointer" />
+        </parameters>
+      </procedure>
+      <procedure name="Delete" visibility="public">
+        <parameters>
+          <parameter name="Nr" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="DeleteLast" visibility="public">
+      </procedure>
+      <procedure name="Clear" visibility="public" procflags="virtual">
+      </procedure>
+    </members>
+  </class>
+  <class name="TIFList" alias="TPSList" namespace="uPSUtils">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FData" type="PPointerList" visibility="protected" />
+      <field name="FCapacity" type="Cardinal" visibility="protected" />
+      <field name="FCount" type="Cardinal" visibility="protected" />
+      <field name="FCheckCount" type="Cardinal" visibility="protected" />
+      <function name="GetItem" visibility="private">
+        <parameters>
+          <parameter name="Nr" type="Cardinal" />
+          <retval type="Pointer" />
+        </parameters>
+      </function>
+      <procedure name="SetItem" visibility="private">
+        <parameters>
+          <parameter name="Nr" type="Cardinal" />
+          <parameter name="P" type="Pointer" />
+        </parameters>
+      </procedure>
+      <procedure name="Recreate" visibility="public">
+      </procedure>
+      <property name="Data" visibility="public" read="FData" type="PPointerList" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <function name="IndexOf" visibility="public">
+        <parameters>
+          <parameter name="P" type="Pointer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <property name="Count" visibility="public" read="FCount" type="Cardinal" />
+      <property name="Items" visibility="public" read="GetItem" write="SetItem" type="Pointer" />
+      <function name="Add" visibility="public">
+        <parameters>
+          <parameter name="P" type="Pointer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="AddBlock" visibility="public">
+        <parameters>
+          <parameter name="List" type="PPointerList" />
+          <parameter name="Count" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Remove" visibility="public">
+        <parameters>
+          <parameter name="P" type="Pointer" />
+        </parameters>
+      </procedure>
+      <procedure name="Delete" visibility="public">
+        <parameters>
+          <parameter name="Nr" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="DeleteLast" visibility="public">
+      </procedure>
+      <procedure name="Clear" visibility="public" procflags="virtual">
+      </procedure>
+    </members>
+  </class>
+  <class name="TPSStringList">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="List" type="TPSList" visibility="private" />
+      <function name="GetItem" visibility="private">
+        <parameters>
+          <parameter name="Nr" type="Integer" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetItem" visibility="private">
+        <parameters>
+          <parameter name="Nr" type="Integer" />
+          <parameter name="s" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="Count" visibility="public">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <property name="Items" visibility="public" read="GetItem" write="SetItem" type="string" />
+      <procedure name="Add" visibility="public">
+        <parameters>
+          <parameter name="P" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="Delete" visibility="public">
+        <parameters>
+          <parameter name="NR" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Clear" visibility="public">
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+    </members>
+  </class>
+  <class name="TIFStringList" alias="TPSStringList" namespace="uPSUtils">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="List" type="TPSList" visibility="private" />
+      <function name="GetItem" visibility="private">
+        <parameters>
+          <parameter name="Nr" type="Integer" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetItem" visibility="private">
+        <parameters>
+          <parameter name="Nr" type="Integer" />
+          <parameter name="s" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="Count" visibility="public">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <property name="Items" visibility="public" read="GetItem" write="SetItem" type="string" />
+      <procedure name="Add" visibility="public">
+        <parameters>
+          <parameter name="P" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="Delete" visibility="public">
+        <parameters>
+          <parameter name="NR" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Clear" visibility="public">
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+    </members>
+  </class>
+  <class name="TPSUnit">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="fList" type="TPSUnitList" visibility="private" />
+      <field name="fUnits" type="TPSList" visibility="private" />
+      <field name="fUnitName" type="string" visibility="private" />
+      <procedure name="SetUnitName" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="List" type="TPSUnitList" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="AddUses" visibility="public">
+        <parameters>
+          <parameter name="pUnitName" type="string" />
+        </parameters>
+      </procedure>
+      <function name="HasUses" visibility="public">
+        <parameters>
+          <parameter name="pUnitName" type="string" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <property name="UnitName" visibility="public" read="fUnitName" write="SetUnitName" type="string" />
+    </members>
+  </class>
+  <class name="TPSUnitList">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="fList" type="TPSList" visibility="private" />
+      <function name="Add" visibility="private">
+        <parameters>
+          <retval type="TPSUnit" />
+        </parameters>
+      </function>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <function name="GetUnit" visibility="public">
+        <parameters>
+          <parameter name="UnitName" type="string" />
+          <retval type="TPSUnit" />
+        </parameters>
+      </function>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+    </members>
+  </class>
+  <const name="CSTI_EOF" type="TPSPasToken">
+    <value>
+      CSTI_EOF
+    </value>
+  </const>
+  <const name="CSTIINT_Comment" type="TPSPasToken">
+    <value>
+      CSTIINT_Comment
+    </value>
+  </const>
+  <const name="CSTIINT_WhiteSpace" type="TPSPasToken">
+    <value>
+      CSTIINT_WhiteSpace
+    </value>
+  </const>
+  <const name="CSTI_Identifier" type="TPSPasToken">
+    <value>
+      CSTI_Identifier
+    </value>
+  </const>
+  <const name="CSTI_SemiColon" type="TPSPasToken">
+    <value>
+      CSTI_SemiColon
+    </value>
+  </const>
+  <const name="CSTI_Comma" type="TPSPasToken">
+    <value>
+      CSTI_Comma
+    </value>
+  </const>
+  <const name="CSTI_Period" type="TPSPasToken">
+    <value>
+      CSTI_Period
+    </value>
+  </const>
+  <const name="CSTI_Colon" type="TPSPasToken">
+    <value>
+      CSTI_Colon
+    </value>
+  </const>
+  <const name="CSTI_OpenRound" type="TPSPasToken">
+    <value>
+      CSTI_OpenRound
+    </value>
+  </const>
+  <const name="CSTI_CloseRound" type="TPSPasToken">
+    <value>
+      CSTI_CloseRound
+    </value>
+  </const>
+  <const name="CSTI_OpenBlock" type="TPSPasToken">
+    <value>
+      CSTI_OpenBlock
+    </value>
+  </const>
+  <const name="CSTI_CloseBlock" type="TPSPasToken">
+    <value>
+      CSTI_CloseBlock
+    </value>
+  </const>
+  <const name="CSTI_Assignment" type="TPSPasToken">
+    <value>
+      CSTI_Assignment
+    </value>
+  </const>
+  <const name="CSTI_Equal" type="TPSPasToken">
+    <value>
+      CSTI_Equal
+    </value>
+  </const>
+  <const name="CSTI_NotEqual" type="TPSPasToken">
+    <value>
+      CSTI_NotEqual
+    </value>
+  </const>
+  <const name="CSTI_Greater" type="TPSPasToken">
+    <value>
+      CSTI_Greater
+    </value>
+  </const>
+  <const name="CSTI_GreaterEqual" type="TPSPasToken">
+    <value>
+      CSTI_GreaterEqual
+    </value>
+  </const>
+  <const name="CSTI_Less" type="TPSPasToken">
+    <value>
+      CSTI_Less
+    </value>
+  </const>
+  <const name="CSTI_LessEqual" type="TPSPasToken">
+    <value>
+      CSTI_LessEqual
+    </value>
+  </const>
+  <const name="CSTI_Plus" type="TPSPasToken">
+    <value>
+      CSTI_Plus
+    </value>
+  </const>
+  <const name="CSTI_Minus" type="TPSPasToken">
+    <value>
+      CSTI_Minus
+    </value>
+  </const>
+  <const name="CSTI_Divide" type="TPSPasToken">
+    <value>
+      CSTI_Divide
+    </value>
+  </const>
+  <const name="CSTI_Multiply" type="TPSPasToken">
+    <value>
+      CSTI_Multiply
+    </value>
+  </const>
+  <const name="CSTI_Integer" type="TPSPasToken">
+    <value>
+      CSTI_Integer
+    </value>
+  </const>
+  <const name="CSTI_Real" type="TPSPasToken">
+    <value>
+      CSTI_Real
+    </value>
+  </const>
+  <const name="CSTI_String" type="TPSPasToken">
+    <value>
+      CSTI_String
+    </value>
+  </const>
+  <const name="CSTI_Char" type="TPSPasToken">
+    <value>
+      CSTI_Char
+    </value>
+  </const>
+  <const name="CSTI_HexInt" type="TPSPasToken">
+    <value>
+      CSTI_HexInt
+    </value>
+  </const>
+  <const name="CSTI_AddressOf" type="TPSPasToken">
+    <value>
+      CSTI_AddressOf
+    </value>
+  </const>
+  <const name="CSTI_Dereference" type="TPSPasToken">
+    <value>
+      CSTI_Dereference
+    </value>
+  </const>
+  <const name="CSTI_TwoDots" type="TPSPasToken">
+    <value>
+      CSTI_TwoDots
+    </value>
+  </const>
+  <const name="CSTII_and" type="TPSPasToken">
+    <value>
+      CSTII_and
+    </value>
+  </const>
+  <const name="CSTII_array" type="TPSPasToken">
+    <value>
+      CSTII_array
+    </value>
+  </const>
+  <const name="CSTII_begin" type="TPSPasToken">
+    <value>
+      CSTII_begin
+    </value>
+  </const>
+  <const name="CSTII_case" type="TPSPasToken">
+    <value>
+      CSTII_case
+    </value>
+  </const>
+  <const name="CSTII_const" type="TPSPasToken">
+    <value>
+      CSTII_const
+    </value>
+  </const>
+  <const name="CSTII_div" type="TPSPasToken">
+    <value>
+      CSTII_div
+    </value>
+  </const>
+  <const name="CSTII_do" type="TPSPasToken">
+    <value>
+      CSTII_do
+    </value>
+  </const>
+  <const name="CSTII_downto" type="TPSPasToken">
+    <value>
+      CSTII_downto
+    </value>
+  </const>
+  <const name="CSTII_else" type="TPSPasToken">
+    <value>
+      CSTII_else
+    </value>
+  </const>
+  <const name="CSTII_end" type="TPSPasToken">
+    <value>
+      CSTII_end
+    </value>
+  </const>
+  <const name="CSTII_for" type="TPSPasToken">
+    <value>
+      CSTII_for
+    </value>
+  </const>
+  <const name="CSTII_function" type="TPSPasToken">
+    <value>
+      CSTII_function
+    </value>
+  </const>
+  <const name="CSTII_if" type="TPSPasToken">
+    <value>
+      CSTII_if
+    </value>
+  </const>
+  <const name="CSTII_in" type="TPSPasToken">
+    <value>
+      CSTII_in
+    </value>
+  </const>
+  <const name="CSTII_mod" type="TPSPasToken">
+    <value>
+      CSTII_mod
+    </value>
+  </const>
+  <const name="CSTII_not" type="TPSPasToken">
+    <value>
+      CSTII_not
+    </value>
+  </const>
+  <const name="CSTII_of" type="TPSPasToken">
+    <value>
+      CSTII_of
+    </value>
+  </const>
+  <const name="CSTII_or" type="TPSPasToken">
+    <value>
+      CSTII_or
+    </value>
+  </const>
+  <const name="CSTII_procedure" type="TPSPasToken">
+    <value>
+      CSTII_procedure
+    </value>
+  </const>
+  <const name="CSTII_program" type="TPSPasToken">
+    <value>
+      CSTII_program
+    </value>
+  </const>
+  <const name="CSTII_repeat" type="TPSPasToken">
+    <value>
+      CSTII_repeat
+    </value>
+  </const>
+  <const name="CSTII_record" type="TPSPasToken">
+    <value>
+      CSTII_record
+    </value>
+  </const>
+  <const name="CSTII_set" type="TPSPasToken">
+    <value>
+      CSTII_set
+    </value>
+  </const>
+  <const name="CSTII_shl" type="TPSPasToken">
+    <value>
+      CSTII_shl
+    </value>
+  </const>
+  <const name="CSTII_shr" type="TPSPasToken">
+    <value>
+      CSTII_shr
+    </value>
+  </const>
+  <const name="CSTII_then" type="TPSPasToken">
+    <value>
+      CSTII_then
+    </value>
+  </const>
+  <const name="CSTII_to" type="TPSPasToken">
+    <value>
+      CSTII_to
+    </value>
+  </const>
+  <const name="CSTII_type" type="TPSPasToken">
+    <value>
+      CSTII_type
+    </value>
+  </const>
+  <const name="CSTII_until" type="TPSPasToken">
+    <value>
+      CSTII_until
+    </value>
+  </const>
+  <const name="CSTII_uses" type="TPSPasToken">
+    <value>
+      CSTII_uses
+    </value>
+  </const>
+  <const name="CSTII_var" type="TPSPasToken">
+    <value>
+      CSTII_var
+    </value>
+  </const>
+  <const name="CSTII_while" type="TPSPasToken">
+    <value>
+      CSTII_while
+    </value>
+  </const>
+  <const name="CSTII_with" type="TPSPasToken">
+    <value>
+      CSTII_with
+    </value>
+  </const>
+  <const name="CSTII_xor" type="TPSPasToken">
+    <value>
+      CSTII_xor
+    </value>
+  </const>
+  <const name="CSTII_exit" type="TPSPasToken">
+    <value>
+      CSTII_exit
+    </value>
+  </const>
+  <const name="CSTII_class" type="TPSPasToken">
+    <value>
+      CSTII_class
+    </value>
+  </const>
+  <const name="CSTII_constructor" type="TPSPasToken">
+    <value>
+      CSTII_constructor
+    </value>
+  </const>
+  <const name="CSTII_destructor" type="TPSPasToken">
+    <value>
+      CSTII_destructor
+    </value>
+  </const>
+  <const name="CSTII_inherited" type="TPSPasToken">
+    <value>
+      CSTII_inherited
+    </value>
+  </const>
+  <const name="CSTII_private" type="TPSPasToken">
+    <value>
+      CSTII_private
+    </value>
+  </const>
+  <const name="CSTII_public" type="TPSPasToken">
+    <value>
+      CSTII_public
+    </value>
+  </const>
+  <const name="CSTII_published" type="TPSPasToken">
+    <value>
+      CSTII_published
+    </value>
+  </const>
+  <const name="CSTII_protected" type="TPSPasToken">
+    <value>
+      CSTII_protected
+    </value>
+  </const>
+  <const name="CSTII_property" type="TPSPasToken">
+    <value>
+      CSTII_property
+    </value>
+  </const>
+  <const name="CSTII_virtual" type="TPSPasToken">
+    <value>
+      CSTII_virtual
+    </value>
+  </const>
+  <const name="CSTII_override" type="TPSPasToken">
+    <value>
+      CSTII_override
+    </value>
+  </const>
+  <const name="CSTII_As" type="TPSPasToken">
+    <value>
+      CSTII_As
+    </value>
+  </const>
+  <const name="CSTII_Is" type="TPSPasToken">
+    <value>
+      CSTII_Is
+    </value>
+  </const>
+  <const name="CSTII_Unit" type="TPSPasToken">
+    <value>
+      CSTII_Unit
+    </value>
+  </const>
+  <const name="CSTII_Try" type="TPSPasToken">
+    <value>
+      CSTII_Try
+    </value>
+  </const>
+  <const name="CSTII_Except" type="TPSPasToken">
+    <value>
+      CSTII_Except
+    </value>
+  </const>
+  <const name="CSTII_Finally" type="TPSPasToken">
+    <value>
+      CSTII_Finally
+    </value>
+  </const>
+  <const name="CSTII_External" type="TPSPasToken">
+    <value>
+      CSTII_External
+    </value>
+  </const>
+  <const name="CSTII_Forward" type="TPSPasToken">
+    <value>
+      CSTII_Forward
+    </value>
+  </const>
+  <const name="CSTII_Export" type="TPSPasToken">
+    <value>
+      CSTII_Export
+    </value>
+  </const>
+  <const name="CSTII_Label" type="TPSPasToken">
+    <value>
+      CSTII_Label
+    </value>
+  </const>
+  <const name="CSTII_Goto" type="TPSPasToken">
+    <value>
+      CSTII_Goto
+    </value>
+  </const>
+  <const name="CSTII_Chr" type="TPSPasToken">
+    <value>
+      CSTII_Chr
+    </value>
+  </const>
+  <const name="CSTII_Ord" type="TPSPasToken">
+    <value>
+      CSTII_Ord
+    </value>
+  </const>
+  <const name="CSTII_Interface" type="TPSPasToken">
+    <value>
+      CSTII_Interface
+    </value>
+  </const>
+  <const name="CSTII_Implementation" type="TPSPasToken">
+    <value>
+      CSTII_Implementation
+    </value>
+  </const>
+  <const name="CSTII_initialization" type="TPSPasToken">
+    <value>
+      CSTII_initialization
+    </value>
+  </const>
+  <const name="CSTII_finalization" type="TPSPasToken">
+    <value>
+      CSTII_finalization
+    </value>
+  </const>
+  <const name="CSTII_out" type="TPSPasToken">
+    <value>
+      CSTII_out
+    </value>
+  </const>
+  <const name="CSTII_nil" type="TPSPasToken">
+    <value>
+      CSTII_nil
+    </value>
+  </const>
+  <enum name="TPSPasToken">
+    <element name="CSTI_EOF" />
+    <element name="CSTIINT_Comment" />
+    <element name="CSTIINT_WhiteSpace" />
+    <element name="CSTI_Identifier" />
+    <element name="CSTI_SemiColon" />
+    <element name="CSTI_Comma" />
+    <element name="CSTI_Period" />
+    <element name="CSTI_Colon" />
+    <element name="CSTI_OpenRound" />
+    <element name="CSTI_CloseRound" />
+    <element name="CSTI_OpenBlock" />
+    <element name="CSTI_CloseBlock" />
+    <element name="CSTI_Assignment" />
+    <element name="CSTI_Equal" />
+    <element name="CSTI_NotEqual" />
+    <element name="CSTI_Greater" />
+    <element name="CSTI_GreaterEqual" />
+    <element name="CSTI_Less" />
+    <element name="CSTI_LessEqual" />
+    <element name="CSTI_Plus" />
+    <element name="CSTI_Minus" />
+    <element name="CSTI_Divide" />
+    <element name="CSTI_Multiply" />
+    <element name="CSTI_Integer" />
+    <element name="CSTI_Real" />
+    <element name="CSTI_String" />
+    <element name="CSTI_Char" />
+    <element name="CSTI_HexInt" />
+    <element name="CSTI_AddressOf" />
+    <element name="CSTI_Dereference" />
+    <element name="CSTI_TwoDots" />
+    <element name="CSTII_and" />
+    <element name="CSTII_array" />
+    <element name="CSTII_begin" />
+    <element name="CSTII_case" />
+    <element name="CSTII_const" />
+    <element name="CSTII_div" />
+    <element name="CSTII_do" />
+    <element name="CSTII_downto" />
+    <element name="CSTII_else" />
+    <element name="CSTII_end" />
+    <element name="CSTII_for" />
+    <element name="CSTII_function" />
+    <element name="CSTII_if" />
+    <element name="CSTII_in" />
+    <element name="CSTII_mod" />
+    <element name="CSTII_not" />
+    <element name="CSTII_of" />
+    <element name="CSTII_or" />
+    <element name="CSTII_procedure" />
+    <element name="CSTII_program" />
+    <element name="CSTII_repeat" />
+    <element name="CSTII_record" />
+    <element name="CSTII_set" />
+    <element name="CSTII_shl" />
+    <element name="CSTII_shr" />
+    <element name="CSTII_then" />
+    <element name="CSTII_to" />
+    <element name="CSTII_type" />
+    <element name="CSTII_until" />
+    <element name="CSTII_uses" />
+    <element name="CSTII_var" />
+    <element name="CSTII_while" />
+    <element name="CSTII_with" />
+    <element name="CSTII_xor" />
+    <element name="CSTII_exit" />
+    <element name="CSTII_class" />
+    <element name="CSTII_constructor" />
+    <element name="CSTII_destructor" />
+    <element name="CSTII_inherited" />
+    <element name="CSTII_private" />
+    <element name="CSTII_public" />
+    <element name="CSTII_published" />
+    <element name="CSTII_protected" />
+    <element name="CSTII_property" />
+    <element name="CSTII_virtual" />
+    <element name="CSTII_override" />
+    <element name="CSTII_As" />
+    <element name="CSTII_Is" />
+    <element name="CSTII_Unit" />
+    <element name="CSTII_Try" />
+    <element name="CSTII_Except" />
+    <element name="CSTII_Finally" />
+    <element name="CSTII_External" />
+    <element name="CSTII_Forward" />
+    <element name="CSTII_Export" />
+    <element name="CSTII_Label" />
+    <element name="CSTII_Goto" />
+    <element name="CSTII_Chr" />
+    <element name="CSTII_Ord" />
+    <element name="CSTII_Interface" />
+    <element name="CSTII_Implementation" />
+    <element name="CSTII_initialization" />
+    <element name="CSTII_finalization" />
+    <element name="CSTII_out" />
+    <element name="CSTII_nil" />
+  </enum>
+  <const name="iNoError" type="TPSParserErrorKind">
+    <value>
+      iNoError
+    </value>
+  </const>
+  <const name="iCommentError" type="TPSParserErrorKind">
+    <value>
+      iCommentError
+    </value>
+  </const>
+  <const name="iStringError" type="TPSParserErrorKind">
+    <value>
+      iStringError
+    </value>
+  </const>
+  <const name="iCharError" type="TPSParserErrorKind">
+    <value>
+      iCharError
+    </value>
+  </const>
+  <const name="iSyntaxError" type="TPSParserErrorKind">
+    <value>
+      iSyntaxError
+    </value>
+  </const>
+  <enum name="TPSParserErrorKind">
+    <element name="iNoError" />
+    <element name="iCommentError" />
+    <element name="iStringError" />
+    <element name="iCharError" />
+    <element name="iSyntaxError" />
+  </enum>
+  <class name="TPSPascalParser">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FData" type="string" visibility="protected" />
+      <field name="FText" type="PAnsiChar" visibility="protected" />
+      <field name="FLastEnterPos" type="Cardinal" visibility="protected" />
+      <field name="FRow" type="Cardinal" visibility="protected" />
+      <field name="FRealPosition" type="Cardinal" visibility="protected" />
+      <field name="FTokenLength" type="Cardinal" visibility="protected" />
+      <field name="FTokenId" type="TPSPasToken" visibility="protected" />
+      <field name="FToken" type="string" visibility="protected" />
+      <field name="FOriginalToken" type="string" visibility="protected" />
+      <field name="FParserError" type="TPSParserErrorEvent" visibility="protected" />
+      <field name="FEnableComments" type="Boolean" visibility="protected" />
+      <field name="FEnableWhitespaces" type="Boolean" visibility="protected" />
+      <function name="GetCol" visibility="protected">
+        <parameters>
+          <retval type="Cardinal" />
+        </parameters>
+      </function>
+      <property name="EnableComments" visibility="public" read="FEnableComments" write="FEnableComments" type="Boolean" />
+      <property name="EnableWhitespaces" visibility="public" read="FEnableWhitespaces" write="FEnableWhitespaces" type="Boolean" />
+      <procedure name="Next" visibility="public" procflags="virtual">
+      </procedure>
+      <property name="GetToken" visibility="public" read="FToken" type="string" />
+      <property name="OriginalToken" visibility="public" read="FOriginalToken" type="string" />
+      <property name="CurrTokenPos" visibility="public" read="FRealPosition" type="Cardinal" />
+      <property name="CurrTokenID" visibility="public" read="FTokenId" type="TPSPasToken" />
+      <property name="Row" visibility="public" read="FRow" type="Cardinal" />
+      <property name="Col" visibility="public" read="GetCol" type="Cardinal" />
+      <procedure name="SetText" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Data" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <event name="OnParserError" visibility="public" read="FParserError" write="FParserError" type="TPSParserErrorEvent" />
+    </members>
+  </class>
+  <const name="FCapacityInc" type="Integer">
+    <value>
+      $20
+    </value>
+  </const>
+  <const name="FMaxCheckCount" type="Integer">
+    <value>
+      $200
+    </value>
+  </const>
+  <function name="MakeHash" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="const" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="GRFW" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="var" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="GRLW" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="var" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StrToFloat" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="const" />
+      <retval type="Extended" />
+    </parameters>
+  </function>
+  <function name="IntToStr" visibility="public">
+    <parameters>
+      <parameter name="I" type="Integer" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="FloatToStr" visibility="public">
+    <parameters>
+      <parameter name="E" type="Extended" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StrToInt" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="StrToIntDef" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <parameter name="Def" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="Fw" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="FastUpperCase" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="FastLowerCase" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+</namespace>

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uPSR_dateutils">
+  <procedure name="RegisterDateTimeLibrary_R" visibility="public">
+    <parameters>
+      <parameter name="S" type="TPSExec" />
+    </parameters>
+  </procedure>
+</namespace>
