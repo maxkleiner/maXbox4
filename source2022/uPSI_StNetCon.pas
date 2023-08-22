@@ -1,7 +1,6 @@
 unit uPSI_StNetCon;
 {
-    SysTools4     adapted by mX
-
+   add free
 }
 interface
  
@@ -54,7 +53,8 @@ begin
   //with RegClassS(CL,'TStComponent', 'TStNetConnection') do
   with CL.AddClassN(CL.FindClass('TStComponent'),'TStNetConnection') do begin
     RegisterMethod('Constructor Create( AOwner : TComponent)');
-    RegisterMethod('Function Connect : DWord');
+     RegisterMethod('Procedure Free');
+       RegisterMethod('Function Connect : DWord');
     RegisterMethod('Function Disconnect : DWord');
     RegisterProperty('Password', 'String', iptrw);
     RegisterProperty('UserName', 'String', iptrw);
@@ -82,8 +82,8 @@ begin
    +'ile, doForceFilesClosed, doPromptToForceFilesClosed )');
   CL.AddTypeS('TStNetConnectOptionsSet', 'set of TStNetConnectOptions');
   CL.AddTypeS('TStNetDisconnectOptionsSet', 'set of TStNetDisconnectOptions');
-  CL.AddTypeS('TOnConnectFailEvent', 'Procedure ( Sender : TObject; ErrorCode: DWord)');
-  CL.AddTypeS('TOnConnectCancelEvent', 'Procedure ( Sender : TObject; ErrorCode: DWord)');
+  CL.AddTypeS('TOnConnectFailEvent', 'Procedure ( Sender : TObject; ErrorCode : DWord)');
+  CL.AddTypeS('TOnConnectCancelEvent', 'Procedure ( Sender : TObject; ErrorCode : DWord)');
   CL.AddTypeS('TOnDisconnectFailEvent', 'Procedure ( Sender : TObject; ErrorCode : DWord)');
   CL.AddTypeS('TOnDisconnectCancelEvent', 'Procedure ( Sender : TObject; ErrorCode : DWord)');
   SIRegister_TStNetConnection(CL);
@@ -197,10 +197,10 @@ begin T := Self.Password; end;
 (*----------------------------------------------------------------------------*)
 procedure RIRegister_TStNetConnection(CL: TPSRuntimeClassImporter);
 begin
-  with CL.Add(TStNetConnection) do
-  begin
+  with CL.Add(TStNetConnection) do begin
     RegisterConstructor(@TStNetConnection.Create, 'Create');
-    RegisterMethod(@TStNetConnection.Connect, 'Connect');
+      RegisterMethod(@TStNetConnection.Destroy, 'Free');
+      RegisterMethod(@TStNetConnection.Connect, 'Connect');
     RegisterMethod(@TStNetConnection.Disconnect, 'Disconnect');
     RegisterPropertyHelper(@TStNetConnectionPassword_R,@TStNetConnectionPassword_W,'Password');
     RegisterPropertyHelper(@TStNetConnectionUserName_R,@TStNetConnectionUserName_W,'UserName');

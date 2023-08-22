@@ -1,6 +1,6 @@
 unit uPSI_StDecMth;
 {
-  SysTools4 another big decimal
+   math for decimals
 }
 interface
  
@@ -49,9 +49,9 @@ end;
 procedure SIRegister_TStDecimal(CL: TPSPascalCompiler);
 begin
   //with RegClassS(CL,'TOBJECT', 'TStDecimal') do
-  with CL.AddClassN(CL.FindClass('TOBJECT'),'TStDecimal') do begin
+  with CL.AddClassN(CL.FindClass('TOBJECT'),'TStDecimal') do
+  begin
     RegisterMethod('Constructor Create');
-    RegisterMethod('Procedure Free');
     RegisterMethod('Function Compare( X : TStDecimal) : integer');
     RegisterMethod('Function IsNegative : boolean');
     RegisterMethod('Function IsOne : boolean');
@@ -97,9 +97,9 @@ begin T := Self.AsString; end;
 (*----------------------------------------------------------------------------*)
 procedure RIRegister_TStDecimal(CL: TPSRuntimeClassImporter);
 begin
-  with CL.Add(TStDecimal) do begin
+  with CL.Add(TStDecimal) do
+  begin
     RegisterConstructor(@TStDecimal.Create, 'Create');
-    RegisterMethod(@TStDecimal.Destroy, 'Free');
     RegisterMethod(@TStDecimal.Compare, 'Compare');
     RegisterMethod(@TStDecimal.IsNegative, 'IsNegative');
     RegisterMethod(@TStDecimal.IsOne, 'IsOne');

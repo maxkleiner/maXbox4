@@ -1,0 +1,7 @@
+[Main]
+OutputDir=D:\Program Files\RemObjects Software\Pascal Script for Delphi\Bin\Import\
+SingleUnit=1
+UseUnitAtDT=0
+FilePrefix=uPSImport
+[Files]
+File0=D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\mx4\mx4_v38\mx4\source\fundamentals_lib\TeeProcs.pas
