@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="ZSysUtils">
+  <class name="TZSortedList">
+    <ancestor name="TList" namespace="Classes">
+      <methodref name="Get" visibility="protected">
+      </methodref>
+      <methodref name="Grow" visibility="public">
+      </methodref>
+      <methodref name="Put" visibility="protected">
+      </methodref>
+      <methodref name="Notify" visibility="public">
+      </methodref>
+      <methodref name="SetCapacity" visibility="protected">
+      </methodref>
+      <methodref name="SetCount" visibility="protected">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+      <methodref name="Add" visibility="public">
+      </methodref>
+      <methodref name="Clear" visibility="public">
+      </methodref>
+      <methodref name="Delete" visibility="public">
+      </methodref>
+      <methodref name="Error" visibility="public">
+      </methodref>
+      <methodref name="Error" visibility="public">
+      </methodref>
+      <methodref name="Exchange" visibility="public">
+      </methodref>
+      <methodref name="Expand" visibility="public">
+      </methodref>
+      <methodref name="Extract" visibility="public">
+      </methodref>
+      <methodref name="First" visibility="public">
+      </methodref>
+      <methodref name="GetEnumerator" visibility="public">
+      </methodref>
+      <methodref name="IndexOf" visibility="public">
+      </methodref>
+      <methodref name="Insert" visibility="public">
+      </methodref>
+      <methodref name="Last" visibility="public">
+      </methodref>
+      <methodref name="Move" visibility="public">
+      </methodref>
+      <methodref name="Remove" visibility="public">
+      </methodref>
+      <methodref name="Pack" visibility="public">
+      </methodref>
+      <methodref name="Sort" visibility="public">
+      </methodref>
+      <methodref name="Assign" visibility="public">
+      </methodref>
+      <propertyref name="Capacity" visibility="public">
+      </propertyref>
+      <propertyref name="Count" visibility="public">
+      </propertyref>
+      <propertyref name="Items" visibility="public">
+      </propertyref>
+      <propertyref name="List" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <procedure name="QuickSort" visibility="protected">
+        <parameters>
+          <parameter name="SortList" type="PPointerList" />
+          <parameter name="L" type="Integer" />
+          <parameter name="R" type="Integer" />
+          <parameter name="SCompare" type="TZListSortCompare" />
+        </parameters>
+      </procedure>
+      <procedure name="Sort" visibility="public">
+        <parameters>
+          <parameter name="Compare" type="TZListSortCompare" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <function name="FirstDelimiter" visibility="public">
+    <parameters>
+      <parameter name="Delimiters" type="string" paramflags="const" />
+      <parameter name="Str" type="string" paramflags="const" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="LastDelimiter" visibility="public">
+    <parameters>
+      <parameter name="Delimiters" type="string" paramflags="const" />
+      <parameter name="Str" type="string" paramflags="const" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="MemLCompUnicode" visibility="public">
+    <parameters>
+      <parameter name="P1" type="PWideChar" />
+      <parameter name="P2" type="PWideChar" />
+      <parameter name="Len" type="Integer" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="MemLCompAnsi" visibility="public">
+    <parameters>
+      <parameter name="P1" type="PAnsiChar" />
+      <parameter name="P2" type="PAnsiChar" />
+      <parameter name="Len" type="Integer" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="StartsWith" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Str" type="WideString" paramflags="const" />
+      <parameter name="SubStr" type="WideString" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="StartsWith" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Str" type="string" paramflags="const" />
+      <parameter name="SubStr" type="string" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="EndsWith" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Str" type="WideString" paramflags="const" />
+      <parameter name="SubStr" type="WideString" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="EndsWith" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Str" type="string" paramflags="const" />
+      <parameter name="SubStr" type="string" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="SQLStrToFloatDef" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Str" type="string" />
+      <parameter name="Def" type="Extended" />
+      <retval type="Extended" />
+    </parameters>
+  </function>
+  <function name="SQLStrToFloat" visibility="public">
+    <parameters>
+      <parameter name="Str" type="string" paramflags="const" />
+      <retval type="Extended" />
+    </parameters>
+  </function>
+  <function name="BufferToStr" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Buffer" type="PWideChar" />
+      <parameter name="Length" type="Integer" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="BufferToStr" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Buffer" type="PAnsiChar" />
+      <parameter name="Length" type="Integer" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="BufferToBytes" visibility="public">
+    <parameters>
+      <parameter name="Buffer" type="Pointer" />
+      <parameter name="Length" type="Integer" />
+      <retval type="TByteDynArray" />
+    </parameters>
+  </function>
+  <function name="StrToBoolEx" visibility="public">
+    <parameters>
+      <parameter name="Str" type="string" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="BoolToStrEx" visibility="public">
+    <parameters>
+      <parameter name="Bool" type="Boolean" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="IsIpAddr" visibility="public">
+    <parameters>
+      <parameter name="Str" type="string" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="SplitString" visibility="public">
+    <parameters>
+      <parameter name="Str" type="string" paramflags="const" />
+      <parameter name="Delimiters" type="string" paramflags="const" />
+      <retval type="TStrings" />
+    </parameters>
+  </function>
+  <procedure name="PutSplitString" visibility="public">
+    <parameters>
+      <parameter name="List" type="TStrings" />
+      <parameter name="Str" type="string" paramflags="const" />
+      <parameter name="Delimiters" type="string" paramflags="const" />
+    </parameters>
+  </procedure>
+  <procedure name="AppendSplitString" visibility="public">
+    <parameters>
+      <parameter name="List" type="TStrings" />
+      <parameter name="Str" type="string" paramflags="const" />
+      <parameter name="Delimiters" type="string" paramflags="const" />
+    </parameters>
+  </procedure>
+  <function name="ComposeString" visibility="public">
+    <parameters>
+      <parameter name="List" type="TStrings" />
+      <parameter name="Delimiter" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="FloatToSQLStr" visibility="public">
+    <parameters>
+      <parameter name="Value" type="Extended" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <procedure name="PutSplitStringEx" visibility="public">
+    <parameters>
+      <parameter name="List" type="TStrings" />
+      <parameter name="Str" type="string" paramflags="const" />
+      <parameter name="Delimiter" type="string" paramflags="const" />
+    </parameters>
+  </procedure>
+  <function name="SplitStringEx" visibility="public">
+    <parameters>
+      <parameter name="Str" type="string" paramflags="const" />
+      <parameter name="Delimiter" type="string" paramflags="const" />
+      <retval type="TStrings" />
+    </parameters>
+  </function>
+  <procedure name="AppendSplitStringEx" visibility="public">
+    <parameters>
+      <parameter name="List" type="TStrings" />
+      <parameter name="Str" type="string" paramflags="const" />
+      <parameter name="Delimiter" type="string" paramflags="const" />
+    </parameters>
+  </procedure>
+  <function name="BytesToStr" visibility="public">
+    <parameters>
+      <parameter name="Value" type="TByteDynArray" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StrToBytes" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Value" type="string" paramflags="const" />
+      <retval type="TByteDynArray" />
+    </parameters>
+  </function>
+  <function name="StrToBytes" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Value" type="WideString" paramflags="const" />
+      <retval type="TByteDynArray" />
+    </parameters>
+  </function>
+  <function name="BytesToVar" visibility="public">
+    <parameters>
+      <parameter name="Value" type="TByteDynArray" paramflags="const" />
+      <retval type="Variant" />
+    </parameters>
+  </function>
+  <function name="VarToBytes" visibility="public">
+    <parameters>
+      <parameter name="Value" type="Variant" paramflags="const" />
+      <retval type="TByteDynArray" />
+    </parameters>
+  </function>
+  <function name="AnsiSQLDateToDateTime" visibility="public">
+    <parameters>
+      <parameter name="Value" type="string" paramflags="const" />
+      <retval type="TDateTime" />
+    </parameters>
+  </function>
+  <function name="TimestampStrToDateTime" visibility="public">
+    <parameters>
+      <parameter name="Value" type="string" paramflags="const" />
+      <retval type="TDateTime" />
+    </parameters>
+  </function>
+  <function name="DateTimeToAnsiSQLDate" visibility="public">
+    <parameters>
+      <parameter name="Value" type="TDateTime" />
+      <parameter name="WithMMSec" type="Boolean">
+        <value>
+          False
+        </value>
+      </parameter>
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="EncodeCString" visibility="public">
+    <parameters>
+      <parameter name="Value" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="DecodeCString" visibility="public">
+    <parameters>
+      <parameter name="Value" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="ReplaceChar" visibility="public">
+    <parameters>
+      <parameter name="Source" type="Char" paramflags="const" />
+      <parameter name="Target" type="Char" paramflags="const" />
+      <parameter name="Str" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="MemPas" visibility="public">
+    <parameters>
+      <parameter name="Buffer" type="PAnsiChar" />
+      <parameter name="Length" type="Integer" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <procedure name="DecodeSQLVersioning" visibility="public">
+    <parameters>
+      <parameter name="FullVersion" type="Integer" paramflags="const" />
+      <parameter name="MajorVersion" type="Integer" paramflags="out" />
+      <parameter name="MinorVersion" type="Integer" paramflags="out" />
+      <parameter name="SubVersion" type="Integer" paramflags="out" />
+    </parameters>
+  </procedure>
+  <function name="EncodeSQLVersioning" visibility="public">
+    <parameters>
+      <parameter name="MajorVersion" type="Integer" paramflags="const" />
+      <parameter name="MinorVersion" type="Integer" paramflags="const" />
+      <parameter name="SubVersion" type="Integer" paramflags="const" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="FormatSQLVersion" visibility="public">
+    <parameters>
+      <parameter name="SQLVersion" type="Integer" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="ZStrToFloat" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Value" type="PAnsiChar" />
+      <retval type="Extended" />
+    </parameters>
+  </function>
+  <function name="ZStrToFloat" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Value" type="string" />
+      <retval type="Extended" />
+    </parameters>
+  </function>
+  <procedure name="ZSetString" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Src" type="PAnsiChar" paramflags="const" />
+      <parameter name="Dest" type="string" paramflags="var" />
+    </parameters>
+  </procedure>
+  <procedure name="ZSetString" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Src" type="PAnsiChar" paramflags="const" />
+      <parameter name="Len" type="Cardinal" paramflags="const" />
+      <parameter name="Dest" type="string" paramflags="var" />
+    </parameters>
+  </procedure>
+  <procedure name="ZSetString" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Src" type="PAnsiChar" paramflags="const" />
+      <parameter name="Dest" type="UTF8String" paramflags="var" />
+    </parameters>
+  </procedure>
+  <procedure name="ZSetString" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Src" type="PAnsiChar" paramflags="const" />
+      <parameter name="Len" type="Cardinal" paramflags="const" />
+      <parameter name="Dest" type="UTF8String" paramflags="var" />
+    </parameters>
+  </procedure>
+  <procedure name="ZSetString" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Src" type="PAnsiChar" paramflags="const" />
+      <parameter name="Len" type="Cardinal" paramflags="const" />
+      <parameter name="Dest" type="WideString" paramflags="var" />
+    </parameters>
+  </procedure>
+</namespace>

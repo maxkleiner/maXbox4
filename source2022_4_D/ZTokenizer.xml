@@ -1,0 +1,1439 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="ZTokenizer">
+  <const name="ttUnknown" type="TZTokenType">
+    <value>
+      ttUnknown
+    </value>
+  </const>
+  <const name="ttEOF" type="TZTokenType">
+    <value>
+      ttEOF
+    </value>
+  </const>
+  <const name="ttFloat" type="TZTokenType">
+    <value>
+      ttFloat
+    </value>
+  </const>
+  <const name="ttInteger" type="TZTokenType">
+    <value>
+      ttInteger
+    </value>
+  </const>
+  <const name="ttHexDecimal" type="TZTokenType">
+    <value>
+      ttHexDecimal
+    </value>
+  </const>
+  <const name="ttNumber" type="TZTokenType">
+    <value>
+      ttNumber
+    </value>
+  </const>
+  <const name="ttSymbol" type="TZTokenType">
+    <value>
+      ttSymbol
+    </value>
+  </const>
+  <const name="ttQuoted" type="TZTokenType">
+    <value>
+      ttQuoted
+    </value>
+  </const>
+  <const name="ttQuotedIdentifier" type="TZTokenType">
+    <value>
+      ttQuotedIdentifier
+    </value>
+  </const>
+  <const name="ttWord" type="TZTokenType">
+    <value>
+      ttWord
+    </value>
+  </const>
+  <const name="ttKeyword" type="TZTokenType">
+    <value>
+      ttKeyword
+    </value>
+  </const>
+  <const name="ttWhitespace" type="TZTokenType">
+    <value>
+      ttWhitespace
+    </value>
+  </const>
+  <const name="ttComment" type="TZTokenType">
+    <value>
+      ttComment
+    </value>
+  </const>
+  <const name="ttSpecial" type="TZTokenType">
+    <value>
+      ttSpecial
+    </value>
+  </const>
+  <const name="ttTime" type="TZTokenType">
+    <value>
+      ttTime
+    </value>
+  </const>
+  <const name="ttDate" type="TZTokenType">
+    <value>
+      ttDate
+    </value>
+  </const>
+  <const name="ttDateTime" type="TZTokenType">
+    <value>
+      ttDateTime
+    </value>
+  </const>
+  <const name="ttEscape" type="TZTokenType">
+    <value>
+      ttEscape
+    </value>
+  </const>
+  <enum name="TZTokenType">
+    <element name="ttUnknown" />
+    <element name="ttEOF" />
+    <element name="ttFloat" />
+    <element name="ttInteger" />
+    <element name="ttHexDecimal" />
+    <element name="ttNumber" />
+    <element name="ttSymbol" />
+    <element name="ttQuoted" />
+    <element name="ttQuotedIdentifier" />
+    <element name="ttWord" />
+    <element name="ttKeyword" />
+    <element name="ttWhitespace" />
+    <element name="ttComment" />
+    <element name="ttSpecial" />
+    <element name="ttTime" />
+    <element name="ttDate" />
+    <element name="ttDateTime" />
+    <element name="ttEscape" />
+  </enum>
+  <const name="toSkipUnknown" type="TZTokenOption">
+    <value>
+      toSkipUnknown
+    </value>
+  </const>
+  <const name="toSkipWhitespaces" type="TZTokenOption">
+    <value>
+      toSkipWhitespaces
+    </value>
+  </const>
+  <const name="toSkipComments" type="TZTokenOption">
+    <value>
+      toSkipComments
+    </value>
+  </const>
+  <const name="toSkipEOF" type="TZTokenOption">
+    <value>
+      toSkipEOF
+    </value>
+  </const>
+  <const name="toUnifyWhitespaces" type="TZTokenOption">
+    <value>
+      toUnifyWhitespaces
+    </value>
+  </const>
+  <const name="toUnifyNumbers" type="TZTokenOption">
+    <value>
+      toUnifyNumbers
+    </value>
+  </const>
+  <const name="toDecodeStrings" type="TZTokenOption">
+    <value>
+      toDecodeStrings
+    </value>
+  </const>
+  <enum name="TZTokenOption">
+    <element name="toSkipUnknown" />
+    <element name="toSkipWhitespaces" />
+    <element name="toSkipComments" />
+    <element name="toSkipEOF" />
+    <element name="toUnifyWhitespaces" />
+    <element name="toUnifyNumbers" />
+    <element name="toDecodeStrings" />
+  </enum>
+  <set name="TZTokenOptions" type="TZTokenOption">
+    <element name="toSkipUnknown" />
+    <element name="toSkipWhitespaces" />
+    <element name="toSkipComments" />
+    <element name="toSkipEOF" />
+    <element name="toUnifyWhitespaces" />
+    <element name="toUnifyNumbers" />
+    <element name="toDecodeStrings" />
+  </set>
+  <struct name="TZToken" packed="true">
+    <field name="Value" type="string" visibility="public" />
+    <field name="TokenType" type="TZTokenType" visibility="public" />
+  </struct>
+  <array name="TZTokenDynArray">
+    <element type="TZToken" />
+  </array>
+  <class name="TZTokenizerState">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <function name="NextToken" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <parameter name="Tokenizer" type="TZTokenizer" />
+          <retval type="TZToken" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <class name="TZEscapeState">
+    <ancestor name="TZTokenizerState" namespace="ZTokenizer">
+      <methodref name="NextToken" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="NextToken" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <parameter name="Tokenizer" type="TZTokenizer" />
+          <retval type="TZToken" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <class name="TZNumberState">
+    <ancestor name="TZTokenizerState" namespace="ZTokenizer">
+      <methodref name="NextToken" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="NextToken" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <parameter name="Tokenizer" type="TZTokenizer" />
+          <retval type="TZToken" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <class name="TZQuoteState">
+    <ancestor name="TZTokenizerState" namespace="ZTokenizer">
+      <methodref name="NextToken" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="NextToken" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <parameter name="Tokenizer" type="TZTokenizer" />
+          <retval type="TZToken" />
+        </parameters>
+      </function>
+      <function name="EncodeString" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+          <parameter name="QuoteChar" type="Char" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="DecodeString" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+          <parameter name="QuoteChar" type="Char" />
+          <retval type="string" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <class name="TZCommentState">
+    <ancestor name="TZTokenizerState" namespace="ZTokenizer">
+      <methodref name="NextToken" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="NextToken" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <parameter name="Tokenizer" type="TZTokenizer" />
+          <retval type="TZToken" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <class name="TZCppCommentState">
+    <ancestor name="TZCommentState" namespace="ZTokenizer">
+      <methodref name="NextToken" visibility="public" />
+      <ancestor name="TZTokenizerState" namespace="ZTokenizer">
+        <methodref name="NextToken" visibility="public" />
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="GetMultiLineComment" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="GetSingleLineComment" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="NextToken" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <parameter name="Tokenizer" type="TZTokenizer" />
+          <retval type="TZToken" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <class name="TZCCommentState">
+    <ancestor name="TZCppCommentState" namespace="ZTokenizer">
+      <methodref name="GetMultiLineComment" visibility="public" />
+      <methodref name="GetSingleLineComment" visibility="public" />
+      <methodref name="NextToken" visibility="public" />
+      <ancestor name="TZCommentState" namespace="ZTokenizer">
+        <methodref name="NextToken" visibility="public" />
+        <ancestor name="TZTokenizerState" namespace="ZTokenizer">
+          <methodref name="NextToken" visibility="public" />
+          <ancestor name="TObject" namespace="System">
+            <methodref name="Create" visibility="public">
+            </methodref>
+            <methodref name="Free" visibility="public">
+            </methodref>
+            <methodref name="InitInstance" visibility="public">
+            </methodref>
+            <methodref name="CleanupInstance" visibility="public">
+            </methodref>
+            <methodref name="ClassType" visibility="public">
+            </methodref>
+            <methodref name="ClassName" visibility="public">
+            </methodref>
+            <methodref name="ClassNameIs" visibility="public">
+            </methodref>
+            <methodref name="ClassParent" visibility="public">
+            </methodref>
+            <methodref name="ClassInfo" visibility="public">
+            </methodref>
+            <methodref name="InstanceSize" visibility="public">
+            </methodref>
+            <methodref name="InheritsFrom" visibility="public">
+            </methodref>
+            <methodref name="MethodAddress" visibility="public">
+            </methodref>
+            <methodref name="MethodName" visibility="public">
+            </methodref>
+            <methodref name="FieldAddress" visibility="public">
+            </methodref>
+            <methodref name="GetInterface" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceEntry" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceTable" visibility="public">
+            </methodref>
+            <methodref name="SafeCallException" visibility="public">
+            </methodref>
+            <methodref name="AfterConstruction" visibility="public">
+            </methodref>
+            <methodref name="BeforeDestruction" visibility="public">
+            </methodref>
+            <methodref name="Dispatch" visibility="public">
+            </methodref>
+            <methodref name="DefaultHandler" visibility="public">
+            </methodref>
+            <methodref name="NewInstance" visibility="public">
+            </methodref>
+            <methodref name="FreeInstance" visibility="public">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="NextToken" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <parameter name="Tokenizer" type="TZTokenizer" />
+          <retval type="TZToken" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <array name="TZSymbolNodeArray">
+    <element type="TZSymbolNode" />
+  </array>
+  <class name="TZSymbolNode">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FCharacter" type="Char" visibility="private" />
+      <field name="FChildren" type="TZSymbolNodeArray" visibility="private" />
+      <field name="FValid" type="Boolean" visibility="private" />
+      <field name="FParent" type="TZSymbolNode" visibility="private" />
+      <procedure name="AddDescendantLine" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="DeepestRead" visibility="protected">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <retval type="TZSymbolNode" />
+        </parameters>
+      </function>
+      <function name="EnsureChildWithChar" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Char" />
+          <retval type="TZSymbolNode" />
+        </parameters>
+      </function>
+      <function name="FindChildWithChar" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Value" type="Char" />
+          <retval type="TZSymbolNode" />
+        </parameters>
+      </function>
+      <function name="FindDescendant" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+          <retval type="TZSymbolNode" />
+        </parameters>
+      </function>
+      <function name="UnreadToValid" visibility="protected">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <retval type="TZSymbolNode" />
+        </parameters>
+      </function>
+      <property name="Children" visibility="protected" read="FChildren" write="FChildren" type="TZSymbolNodeArray" />
+      <property name="Character" visibility="protected" read="FCharacter" write="FCharacter" type="Char" />
+      <property name="Valid" visibility="protected" read="FValid" write="FValid" type="Boolean" />
+      <property name="Parent" visibility="protected" read="FParent" write="FParent" type="TZSymbolNode" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="Parent" type="TZSymbolNode" />
+          <parameter name="Character" type="Char" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <function name="Ancestry" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <class name="TZSymbolRootNode">
+    <ancestor name="TZSymbolNode" namespace="ZTokenizer">
+      <methodref name="AddDescendantLine" visibility="protected" />
+      <methodref name="DeepestRead" visibility="protected" />
+      <methodref name="EnsureChildWithChar" visibility="protected" />
+      <methodref name="FindChildWithChar" visibility="public" />
+      <methodref name="FindDescendant" visibility="protected" />
+      <methodref name="UnreadToValid" visibility="protected" />
+      <propertyref name="Children" visibility="protected" />
+      <propertyref name="Character" visibility="protected" />
+      <propertyref name="Valid" visibility="protected" />
+      <propertyref name="Parent" visibility="protected" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Destroy" visibility="public" />
+      <methodref name="Ancestry" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="FindChildWithChar" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Value" type="Char" />
+          <retval type="TZSymbolNode" />
+        </parameters>
+      </function>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <procedure name="Add" visibility="public">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="Ancestry" visibility="public" procflags="override">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="NextSymbol" visibility="public">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <retval type="string" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <class name="TZSymbolState">
+    <ancestor name="TZTokenizerState" namespace="ZTokenizer">
+      <methodref name="NextToken" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="FSymbols" type="TZSymbolRootNode" visibility="private" />
+      <property name="Symbols" visibility="protected" read="FSymbols" write="FSymbols" type="TZSymbolRootNode" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <function name="NextToken" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <parameter name="Tokenizer" type="TZTokenizer" />
+          <retval type="TZToken" />
+        </parameters>
+      </function>
+      <procedure name="Add" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <class name="TZWhitespaceState">
+    <ancestor name="TZTokenizerState" namespace="ZTokenizer">
+      <methodref name="NextToken" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="FWhitespaceChars" visibility="private">
+        <array name="FWhitespaceChars" low="0" high="255">
+          <element type="Boolean" />
+        </array>
+      </field>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <function name="NextToken" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <parameter name="Tokenizer" type="TZTokenizer" />
+          <retval type="TZToken" />
+        </parameters>
+      </function>
+      <procedure name="SetWhitespaceChars" visibility="public">
+        <parameters>
+          <parameter name="FromChar" type="Char" />
+          <parameter name="ToChar" type="Char" />
+          <parameter name="Enable" type="Boolean" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <class name="TZWordState">
+    <ancestor name="TZTokenizerState" namespace="ZTokenizer">
+      <methodref name="NextToken" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="FWordChars" visibility="private">
+        <array name="FWordChars" low="0" high="255">
+          <element type="Boolean" />
+        </array>
+      </field>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <function name="NextToken" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" />
+          <parameter name="Tokenizer" type="TZTokenizer" />
+          <retval type="TZToken" />
+        </parameters>
+      </function>
+      <procedure name="SetWordChars" visibility="public">
+        <parameters>
+          <parameter name="FromChar" type="Char" />
+          <parameter name="ToChar" type="Char" />
+          <parameter name="Enable" type="Boolean" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <interface name="IZTokenizer">
+    <function name="TokenizeBufferToList" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Buffer" type="string" paramflags="const" />
+        <parameter name="Options" type="TZTokenOptions" />
+        <retval type="TStrings" />
+      </parameters>
+    </function>
+    <function name="TokenizeStreamToList" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Stream" type="TStream" />
+        <parameter name="Options" type="TZTokenOptions" />
+        <retval type="TStrings" />
+      </parameters>
+    </function>
+    <function name="TokenizeBuffer" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Buffer" type="string" paramflags="const" />
+        <parameter name="Options" type="TZTokenOptions" />
+        <retval type="TZTokenDynArray" />
+      </parameters>
+    </function>
+    <function name="TokenizeStream" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Stream" type="TStream" />
+        <parameter name="Options" type="TZTokenOptions" />
+        <retval type="TZTokenDynArray" />
+      </parameters>
+    </function>
+    <function name="GetCommentState" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TZCommentState" />
+      </parameters>
+    </function>
+    <function name="GetNumberState" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TZNumberState" />
+      </parameters>
+    </function>
+    <function name="GetQuoteState" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TZQuoteState" />
+      </parameters>
+    </function>
+    <function name="GetSymbolState" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TZSymbolState" />
+      </parameters>
+    </function>
+    <function name="GetWhitespaceState" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TZWhitespaceState" />
+      </parameters>
+    </function>
+    <function name="GetWordState" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TZWordState" />
+      </parameters>
+    </function>
+    <function name="GetCharacterState" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="StartChar" type="Char" />
+        <retval type="TZTokenizerState" />
+      </parameters>
+    </function>
+    <function name="AnsiGetEscapeString" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Ansi" type="string" paramflags="const" />
+        <retval type="string" />
+      </parameters>
+    </function>
+    <function name="GetEscapeString" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="EscapeString" type="string" paramflags="const" />
+        <retval type="string" />
+      </parameters>
+    </function>
+    <function name="TokenizeEscapeBufferToList" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="SQL" type="string" paramflags="const" />
+        <retval type="TZTokenDynArray" />
+      </parameters>
+    </function>
+  </interface>
+  <class name="TZTokenizer">
+    <ancestor name="TZAbstractObject" namespace="ZClasses">
+      <methodref name="Equals" visibility="public" />
+      <methodref name="GetHashCode" visibility="public" />
+      <methodref name="Clone" visibility="public" />
+      <methodref name="ToString" visibility="public" />
+      <methodref name="InstanceOf" visibility="public" />
+      <ancestor name="TInterfacedObject" namespace="System">
+        <methodref name="QueryInterface" visibility="protected">
+        </methodref>
+        <methodref name="_AddRef" visibility="protected">
+        </methodref>
+        <methodref name="_Release" visibility="protected">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <propertyref name="RefCount" visibility="public">
+        </propertyref>
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="IZTokenizer" />
+    </interfaces>
+    <members>
+      <field name="FCharacterStates" visibility="private">
+        <array name="FCharacterStates" low="0" high="255">
+          <element type="TZTokenizerState" />
+        </array>
+      </field>
+      <field name="FCommentState" type="TZCommentState" visibility="private" />
+      <field name="FNumberState" type="TZNumberState" visibility="private" />
+      <field name="FQuoteState" type="TZQuoteState" visibility="private" />
+      <field name="FSymbolState" type="TZSymbolState" visibility="private" />
+      <field name="FWhitespaceState" type="TZWhitespaceState" visibility="private" />
+      <field name="FWordState" type="TZWordState" visibility="private" />
+      <field name="FEscapeState" type="TZEscapeState" visibility="private" />
+      <function name="CheckEscapeState" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="ActualState" type="TZTokenizerState" paramflags="const" />
+          <parameter name="Stream" type="TStream" />
+          <parameter name="FirstChar" type="Char" paramflags="const" />
+          <retval type="TZTokenizerState" />
+        </parameters>
+      </function>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <function name="AnsiGetEscapeString" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="EscapeString" type="string" paramflags="const" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="GetEscapeString" visibility="public">
+        <parameters>
+          <parameter name="EscapeString" type="string" paramflags="const" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="TokenizeEscapeBufferToList" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="SQL" type="string" paramflags="const" />
+          <retval type="TZTokenDynArray" />
+        </parameters>
+      </function>
+      <function name="TokenizeBufferToList" visibility="public">
+        <parameters>
+          <parameter name="Buffer" type="string" paramflags="const" />
+          <parameter name="Options" type="TZTokenOptions" />
+          <retval type="TStrings" />
+        </parameters>
+      </function>
+      <function name="TokenizeStreamToList" visibility="public">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="Options" type="TZTokenOptions" />
+          <retval type="TStrings" />
+        </parameters>
+      </function>
+      <function name="TokenizeBuffer" visibility="public">
+        <parameters>
+          <parameter name="Buffer" type="string" paramflags="const" />
+          <parameter name="Options" type="TZTokenOptions" />
+          <retval type="TZTokenDynArray" />
+        </parameters>
+      </function>
+      <function name="TokenizeStream" visibility="public">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="Options" type="TZTokenOptions" />
+          <retval type="TZTokenDynArray" />
+        </parameters>
+      </function>
+      <function name="GetCharacterState" visibility="public">
+        <parameters>
+          <parameter name="StartChar" type="Char" />
+          <retval type="TZTokenizerState" />
+        </parameters>
+      </function>
+      <procedure name="SetCharacterState" visibility="public">
+        <parameters>
+          <parameter name="FromChar" type="Char" />
+          <parameter name="ToChar" type="Char" />
+          <parameter name="State" type="TZTokenizerState" />
+        </parameters>
+      </procedure>
+      <function name="GetEscapeState" visibility="public">
+        <parameters>
+          <retval type="TZEscapeState" />
+        </parameters>
+      </function>
+      <function name="GetCommentState" visibility="public">
+        <parameters>
+          <retval type="TZCommentState" />
+        </parameters>
+      </function>
+      <function name="GetNumberState" visibility="public">
+        <parameters>
+          <retval type="TZNumberState" />
+        </parameters>
+      </function>
+      <function name="GetQuoteState" visibility="public">
+        <parameters>
+          <retval type="TZQuoteState" />
+        </parameters>
+      </function>
+      <function name="GetSymbolState" visibility="public">
+        <parameters>
+          <retval type="TZSymbolState" />
+        </parameters>
+      </function>
+      <function name="GetWhitespaceState" visibility="public">
+        <parameters>
+          <retval type="TZWhitespaceState" />
+        </parameters>
+      </function>
+      <function name="GetWordState" visibility="public">
+        <parameters>
+          <retval type="TZWordState" />
+        </parameters>
+      </function>
+      <property name="EscapeState" visibility="public" read="FEscapeState" write="FEscapeState" type="TZEscapeState" />
+      <property name="CommentState" visibility="public" read="FCommentState" write="FCommentState" type="TZCommentState" />
+      <property name="NumberState" visibility="public" read="FNumberState" write="FNumberState" type="TZNumberState" />
+      <property name="QuoteState" visibility="public" read="FQuoteState" write="FQuoteState" type="TZQuoteState" />
+      <property name="SymbolState" visibility="public" read="FSymbolState" write="FSymbolState" type="TZSymbolState" />
+      <property name="WhitespaceState" visibility="public" read="FWhitespaceState" write="FWhitespaceState" type="TZWhitespaceState" />
+      <property name="WordState" visibility="public" read="FWordState" write="FWordState" type="TZWordState" />
+    </members>
+  </class>
+  <const name="EscapeMarkSequence" type="string">
+    <value>
+      ~&lt;|
+    </value>
+  </const>
+</namespace>

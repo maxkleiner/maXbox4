@@ -1,0 +1,521 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="ZURL">
+  <class name="TZURLStringList">
+    <ancestor name="TStringList" namespace="Classes">
+      <methodref name="ExchangeItems" visibility="private">
+      </methodref>
+      <methodref name="Grow" visibility="private">
+      </methodref>
+      <methodref name="QuickSort" visibility="private">
+      </methodref>
+      <methodref name="SetSorted" visibility="private">
+      </methodref>
+      <methodref name="SetCaseSensitive" visibility="private">
+      </methodref>
+      <methodref name="Changed" visibility="public">
+      </methodref>
+      <methodref name="Changing" visibility="public">
+      </methodref>
+      <methodref name="Get" visibility="public">
+      </methodref>
+      <methodref name="GetCapacity" visibility="public">
+      </methodref>
+      <methodref name="GetCount" visibility="public">
+      </methodref>
+      <methodref name="GetObject" visibility="public">
+      </methodref>
+      <methodref name="Put" visibility="public">
+      </methodref>
+      <methodref name="PutObject" visibility="public">
+      </methodref>
+      <methodref name="SetCapacity" visibility="public">
+      </methodref>
+      <methodref name="SetUpdateState" visibility="public">
+      </methodref>
+      <methodref name="CompareStrings" visibility="public">
+      </methodref>
+      <methodref name="InsertItem" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+      <methodref name="Add" visibility="public">
+      </methodref>
+      <methodref name="AddObject" visibility="public">
+      </methodref>
+      <methodref name="Clear" visibility="public">
+      </methodref>
+      <methodref name="Delete" visibility="public">
+      </methodref>
+      <methodref name="Exchange" visibility="public">
+      </methodref>
+      <methodref name="Find" visibility="public">
+      </methodref>
+      <methodref name="IndexOf" visibility="public">
+      </methodref>
+      <methodref name="Insert" visibility="public">
+      </methodref>
+      <methodref name="InsertObject" visibility="public">
+      </methodref>
+      <methodref name="Sort" visibility="public">
+      </methodref>
+      <methodref name="CustomSort" visibility="public">
+      </methodref>
+      <propertyref name="Duplicates" visibility="public">
+      </propertyref>
+      <propertyref name="Sorted" visibility="public">
+      </propertyref>
+      <propertyref name="CaseSensitive" visibility="public">
+      </propertyref>
+      <eventref name="OnChange" visibility="public">
+      </eventref>
+      <eventref name="OnChanging" visibility="public">
+      </eventref>
+      <ancestor name="TStrings" namespace="Classes">
+        <methodref name="GetCommaText" visibility="private">
+        </methodref>
+        <methodref name="GetDelimitedText" visibility="private">
+        </methodref>
+        <methodref name="GetName" visibility="private">
+        </methodref>
+        <methodref name="GetValue" visibility="private">
+        </methodref>
+        <methodref name="ReadData" visibility="private">
+        </methodref>
+        <methodref name="SetCommaText" visibility="private">
+        </methodref>
+        <methodref name="SetDelimitedText" visibility="private">
+        </methodref>
+        <methodref name="SetStringsAdapter" visibility="private">
+        </methodref>
+        <methodref name="SetValue" visibility="private">
+        </methodref>
+        <methodref name="WriteData" visibility="private">
+        </methodref>
+        <methodref name="GetDelimiter" visibility="private">
+        </methodref>
+        <methodref name="SetDelimiter" visibility="private">
+        </methodref>
+        <methodref name="GetLineBreak" visibility="private">
+        </methodref>
+        <methodref name="SetLineBreak" visibility="private">
+        </methodref>
+        <methodref name="GetQuoteChar" visibility="private">
+        </methodref>
+        <methodref name="SetQuoteChar" visibility="private">
+        </methodref>
+        <methodref name="GetNameValueSeparator" visibility="private">
+        </methodref>
+        <methodref name="SetNameValueSeparator" visibility="private">
+        </methodref>
+        <methodref name="GetStrictDelimiter" visibility="private">
+        </methodref>
+        <methodref name="SetStrictDelimiter" visibility="private">
+        </methodref>
+        <methodref name="GetValueFromIndex" visibility="private">
+        </methodref>
+        <methodref name="SetValueFromIndex" visibility="private">
+        </methodref>
+        <methodref name="DefineProperties" visibility="public">
+        </methodref>
+        <methodref name="Error" visibility="protected">
+        </methodref>
+        <methodref name="Error" visibility="protected">
+        </methodref>
+        <methodref name="ExtractName" visibility="protected">
+        </methodref>
+        <methodref name="Get" visibility="public">
+        </methodref>
+        <methodref name="GetCapacity" visibility="public">
+        </methodref>
+        <methodref name="GetCount" visibility="public">
+        </methodref>
+        <methodref name="GetObject" visibility="public">
+        </methodref>
+        <methodref name="GetTextStr" visibility="public">
+        </methodref>
+        <methodref name="Put" visibility="public">
+        </methodref>
+        <methodref name="PutObject" visibility="public">
+        </methodref>
+        <methodref name="SetCapacity" visibility="public">
+        </methodref>
+        <methodref name="SetTextStr" visibility="public">
+        </methodref>
+        <methodref name="SetUpdateState" visibility="public">
+        </methodref>
+        <propertyref name="UpdateCount" visibility="protected">
+        </propertyref>
+        <methodref name="CompareStrings" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+        <methodref name="Add" visibility="public">
+        </methodref>
+        <methodref name="AddObject" visibility="public">
+        </methodref>
+        <methodref name="Append" visibility="public">
+        </methodref>
+        <methodref name="AddStrings" visibility="public">
+        </methodref>
+        <methodref name="Assign" visibility="public">
+        </methodref>
+        <methodref name="BeginUpdate" visibility="public">
+        </methodref>
+        <methodref name="Clear" visibility="public">
+        </methodref>
+        <methodref name="Delete" visibility="public">
+        </methodref>
+        <methodref name="EndUpdate" visibility="public">
+        </methodref>
+        <methodref name="Equals" visibility="public">
+        </methodref>
+        <methodref name="Exchange" visibility="public">
+        </methodref>
+        <methodref name="GetEnumerator" visibility="public">
+        </methodref>
+        <methodref name="GetText" visibility="public">
+        </methodref>
+        <methodref name="IndexOf" visibility="public">
+        </methodref>
+        <methodref name="IndexOfName" visibility="public">
+        </methodref>
+        <methodref name="IndexOfObject" visibility="public">
+        </methodref>
+        <methodref name="Insert" visibility="public">
+        </methodref>
+        <methodref name="InsertObject" visibility="public">
+        </methodref>
+        <methodref name="LoadFromFile" visibility="public">
+        </methodref>
+        <methodref name="LoadFromStream" visibility="public">
+        </methodref>
+        <methodref name="Move" visibility="public">
+        </methodref>
+        <methodref name="SaveToFile" visibility="public">
+        </methodref>
+        <methodref name="SaveToStream" visibility="public">
+        </methodref>
+        <methodref name="SetText" visibility="public">
+        </methodref>
+        <propertyref name="Capacity" visibility="public">
+        </propertyref>
+        <propertyref name="CommaText" visibility="public">
+        </propertyref>
+        <propertyref name="Count" visibility="public">
+        </propertyref>
+        <propertyref name="Delimiter" visibility="public">
+        </propertyref>
+        <propertyref name="DelimitedText" visibility="public">
+        </propertyref>
+        <propertyref name="LineBreak" visibility="public">
+        </propertyref>
+        <propertyref name="Names" visibility="public">
+        </propertyref>
+        <propertyref name="Objects" visibility="public">
+        </propertyref>
+        <propertyref name="QuoteChar" visibility="public">
+        </propertyref>
+        <propertyref name="Values" visibility="public">
+        </propertyref>
+        <propertyref name="ValueFromIndex" visibility="public">
+        </propertyref>
+        <propertyref name="NameValueSeparator" visibility="public">
+        </propertyref>
+        <propertyref name="StrictDelimiter" visibility="public">
+        </propertyref>
+        <propertyref name="Strings" visibility="public">
+        </propertyref>
+        <propertyref name="Text" visibility="public">
+        </propertyref>
+        <propertyref name="StringsAdapter" visibility="public">
+        </propertyref>
+        <ancestor name="TPersistent" namespace="Classes">
+          <methodref name="AssignError" visibility="private">
+          </methodref>
+          <methodref name="AssignTo" visibility="public">
+          </methodref>
+          <methodref name="DefineProperties" visibility="public">
+          </methodref>
+          <methodref name="GetOwner" visibility="protected">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+          <methodref name="Assign" visibility="public">
+          </methodref>
+          <methodref name="GetNamePath" visibility="public">
+          </methodref>
+          <ancestor name="TObject" namespace="System">
+            <methodref name="Create" visibility="public">
+            </methodref>
+            <methodref name="Free" visibility="public">
+            </methodref>
+            <methodref name="InitInstance" visibility="public">
+            </methodref>
+            <methodref name="CleanupInstance" visibility="public">
+            </methodref>
+            <methodref name="ClassType" visibility="public">
+            </methodref>
+            <methodref name="ClassName" visibility="public">
+            </methodref>
+            <methodref name="ClassNameIs" visibility="public">
+            </methodref>
+            <methodref name="ClassParent" visibility="public">
+            </methodref>
+            <methodref name="ClassInfo" visibility="public">
+            </methodref>
+            <methodref name="InstanceSize" visibility="public">
+            </methodref>
+            <methodref name="InheritsFrom" visibility="public">
+            </methodref>
+            <methodref name="MethodAddress" visibility="public">
+            </methodref>
+            <methodref name="MethodName" visibility="public">
+            </methodref>
+            <methodref name="FieldAddress" visibility="public">
+            </methodref>
+            <methodref name="GetInterface" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceEntry" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceTable" visibility="public">
+            </methodref>
+            <methodref name="SafeCallException" visibility="public">
+            </methodref>
+            <methodref name="AfterConstruction" visibility="public">
+            </methodref>
+            <methodref name="BeforeDestruction" visibility="public">
+            </methodref>
+            <methodref name="Dispatch" visibility="public">
+            </methodref>
+            <methodref name="DefaultHandler" visibility="public">
+            </methodref>
+            <methodref name="NewInstance" visibility="public">
+            </methodref>
+            <methodref name="FreeInstance" visibility="public">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="GetTextStr" visibility="public" procflags="override">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetTextStr" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="GetURLText" visibility="protected">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <property name="URLText" visibility="public" read="GetURLText" type="string" />
+    </members>
+  </class>
+  <class name="TZURL">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FPrefix" type="string" visibility="private" />
+      <field name="FProtocol" type="string" visibility="private" />
+      <field name="FHostName" type="string" visibility="private" />
+      <field name="FPort" type="Integer" visibility="private" />
+      <field name="FDatabase" type="string" visibility="private" />
+      <field name="FUserName" type="string" visibility="private" />
+      <field name="FPassword" type="string" visibility="private" />
+      <field name="FLibLocation" type="string" visibility="private" />
+      <field name="FProperties" type="TZURLStringList" visibility="private" />
+      <field name="FOnPropertiesChange" type="TNotifyEvent" visibility="private" />
+      <procedure name="SetPrefix" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetProtocol" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetHostName" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetConnPort" visibility="private">
+        <parameters>
+          <parameter name="Value" type="Integer" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="GetDatabase" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetDatabase" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="GetUserName" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetUserName" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="GetPassword" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetPassword" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="GetLibLocation" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetLibLocation" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="GetURL" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetURL" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="DoOnPropertiesChange" visibility="private">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <function name="GetParamAndValue" visibility="private">
+        <parameters>
+          <parameter name="AString" type="string" />
+          <parameter name="Param" type="string" paramflags="var" />
+          <parameter name="Value" type="string" paramflags="var" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="AddValues" visibility="private">
+        <parameters>
+          <parameter name="Values" type="TStrings" />
+        </parameters>
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="AURL" type="string" paramflags="const" />
+        </parameters>
+      </constructor>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="AURL" type="string" paramflags="const" />
+          <parameter name="Info" type="TStrings" />
+        </parameters>
+      </constructor>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="AURL" type="TZURL" paramflags="const" />
+        </parameters>
+      </constructor>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="AURL" type="string" paramflags="const" />
+          <parameter name="AHostName" type="string" paramflags="const" />
+          <parameter name="APort" type="Integer" paramflags="const" />
+          <parameter name="ADatabase" type="string" paramflags="const" />
+          <parameter name="AUser" type="string" paramflags="const" />
+          <parameter name="APassword" type="string" paramflags="const" />
+          <parameter name="Info" type="TStrings" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <property name="Prefix" visibility="public" read="FPrefix" write="SetPrefix" type="string" />
+      <property name="Protocol" visibility="public" read="FProtocol" write="SetProtocol" type="string" />
+      <property name="HostName" visibility="public" read="FHostName" write="SetHostName" type="string" />
+      <property name="Port" visibility="public" read="FPort" write="SetConnPort" type="Integer" />
+      <property name="Database" visibility="public" read="GetDatabase" write="SetDatabase" type="string" />
+      <property name="UserName" visibility="public" read="GetUserName" write="SetUserName" type="string" />
+      <property name="Password" visibility="public" read="GetPassword" write="SetPassword" type="string" />
+      <property name="LibLocation" visibility="public" read="GetLibLocation" write="SetLibLocation" type="string" />
+      <property name="Properties" visibility="public" read="FProperties" type="TZURLStringList" />
+      <property name="URL" visibility="public" read="GetURL" write="SetURL" type="string" />
+      <event name="OnPropertiesChange" visibility="public" read="FOnPropertiesChange" write="FOnPropertiesChange" type="TNotifyEvent" />
+    </members>
+  </class>
+</namespace>

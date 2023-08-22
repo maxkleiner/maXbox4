@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="ZScriptParser">
+  <const name="dtDefault" type="TZDelimiterType">
+    <value>
+      dtDefault
+    </value>
+  </const>
+  <const name="dtDelimiter" type="TZDelimiterType">
+    <value>
+      dtDelimiter
+    </value>
+  </const>
+  <const name="dtGo" type="TZDelimiterType">
+    <value>
+      dtGo
+    </value>
+  </const>
+  <const name="dtSetTerm" type="TZDelimiterType">
+    <value>
+      dtSetTerm
+    </value>
+  </const>
+  <const name="dtEmptyLine" type="TZDelimiterType">
+    <value>
+      dtEmptyLine
+    </value>
+  </const>
+  <enum name="TZDelimiterType">
+    <element name="dtDefault" />
+    <element name="dtDelimiter" />
+    <element name="dtGo" />
+    <element name="dtSetTerm" />
+    <element name="dtEmptyLine" />
+  </enum>
+  <class name="TZSQLScriptParser">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FDelimiter" type="string" visibility="private" />
+      <field name="FDelimiterType" type="TZDelimiterType" visibility="private" />
+      <field name="FCleanupStatements" type="Boolean" visibility="private" />
+      <field name="FTokenizer" type="IZTokenizer" visibility="private" />
+      <field name="FUncompletedStatement" type="string" visibility="private" />
+      <field name="FStatements" type="TStrings" visibility="private" />
+      <function name="GetStatementCount" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetStatement" visibility="private">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <constructor name="CreateWithTokenizer" visibility="public">
+        <parameters>
+          <parameter name="Tokenizer" type="IZTokenizer" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="Clear" visibility="public">
+      </procedure>
+      <procedure name="ClearCompleted" visibility="public">
+      </procedure>
+      <procedure name="ClearUncompleted" visibility="public">
+      </procedure>
+      <procedure name="ParseText" visibility="public">
+        <parameters>
+          <parameter name="Text" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="ParseLine" visibility="public">
+        <parameters>
+          <parameter name="Line" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <property name="Delimiter" visibility="public" read="FDelimiter" write="FDelimiter" type="string" />
+      <property name="DelimiterType" visibility="public" read="FDelimiterType" write="FDelimiterType" type="TZDelimiterType" default="0" />
+      <property name="CleanupStatements" visibility="public" read="FCleanupStatements" write="FCleanupStatements" type="Boolean" default="1" />
+      <property name="Tokenizer" visibility="public" read="FTokenizer" write="FTokenizer" type="IZTokenizer" />
+      <property name="UncompletedStatement" visibility="public" read="FUncompletedStatement" type="string" />
+      <property name="StatementCount" visibility="public" read="GetStatementCount" type="Integer" />
+      <property name="Statements" visibility="public" read="GetStatement" type="string" />
+    </members>
+  </class>
+</namespace>
