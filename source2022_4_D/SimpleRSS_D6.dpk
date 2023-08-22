@@ -1,0 +1,70 @@
+{
+--------------------------------------------------------------------------------
+SimpleRSS Version 0.x.x (Knowledge)
+
+http://sourceforge.net/projects/simplerss
+Provides a simple methods for accessing, importing, exporting and working with RSS, RDF & Atom Feeds
+
+Originally Created By Robert MacLean 2003
+(C) Copyright 2003-2005 Robert MacLean
+Email: dfantom@gmail.com
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+--------------------------------------------------------------------------------
+}
+package SimpleRSS_D6;
+
+{$R *.res}
+{$R 'SimpleRSS.dcr'}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'SimpleRSS version 0.4 (BlueHippo) Release 1'}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  xmlrtl,
+  Indy60;
+
+contains
+  SimpleRSSUtils in 'SimpleRSSUtils.pas',
+  SimpleParserAtom in 'SimpleParserAtom.pas',
+  SimpleParserBase in 'SimpleParserBase.pas',
+  SimpleParserRDF in 'SimpleParserRDF.pas',
+  SimpleParserRSS in 'SimpleParserRSS.pas',
+  SimpleRSS in 'SimpleRSS.pas',
+  SimpleRSSConst in 'SimpleRSSConst.pas',
+  SimpleRSSTypes in 'SimpleRSSTypes.pas',
+  SimpleParseriTunes in 'SimpleParseriTunes.pas',
+  iTunesTypes in 'iTunesTypes.pas';
+
+end.

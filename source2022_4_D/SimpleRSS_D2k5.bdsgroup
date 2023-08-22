@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality">Default.Personality</Option>
+			<Option Name="ProjectType"></Option>
+			<Option Name="Version">1.0</Option>
+			<Option Name="GUID">{EAC8129C-C61C-4E06-AFCC-BD277D1985D0}</Option>
+		</Option>
+	</PersonalityInfo>
+	<Default.Personality>  <Projects>
+      <Projects Name="SimpleRSS_D2k5_Win32.bpl">SimpleRSS_D2k5_Win32.bdsproj</Projects>
+      <Projects Name="SimpleRSS_NET.dll">SimpleRSS_NET.bdsproj</Projects>
+      <Projects Name="Targets">SimpleRSS_D2k5_Win32.bpl SimpleRSS_NET.dll</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>
