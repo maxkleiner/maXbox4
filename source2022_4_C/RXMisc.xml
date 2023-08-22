@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="RXMisc">
+  <class name="TSplitControl">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FForm" type="TForm" visibility="private" />
+      <field name="FSplitControl" type="TControl" visibility="private" />
+      <field name="FSizeTarget" type="TControl" visibility="private" />
+      <field name="FVertical" type="Boolean" visibility="private" />
+      <field name="FSplit" type="TPoint" visibility="private" />
+      <function name="GetSizing" visibility="private">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="DrawSizingLine" visibility="private">
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="AForm" type="TForm" />
+        </parameters>
+      </constructor>
+      <procedure name="BeginSizing" visibility="public">
+        <parameters>
+          <parameter name="ASplitControl" type="TControl" />
+          <parameter name="ATargetControl" type="TControl" />
+        </parameters>
+      </procedure>
+      <procedure name="ChangeSizing" visibility="public">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="EndSizing" visibility="public">
+      </procedure>
+      <property name="Sizing" visibility="public" read="GetSizing" type="Boolean" />
+    </members>
+  </class>
+</namespace>

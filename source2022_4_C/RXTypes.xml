@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="rxtypes">
+  <const name="IMAGE_DOS_SIGNATURE" type="Integer">
+    <value>
+      $5A4D
+    </value>
+  </const>
+  <const name="IMAGE_OS2_SIGNATURE" type="Integer">
+    <value>
+      $454E
+    </value>
+  </const>
+  <const name="IMAGE_OS2_SIGNATURE_LE" type="Integer">
+    <value>
+      $454C
+    </value>
+  </const>
+  <const name="IMAGE_VXD_SIGNATURE" type="Integer">
+    <value>
+      $454C
+    </value>
+  </const>
+  <const name="IMAGE_NT_SIGNATURE" type="Integer">
+    <value>
+      $4550
+    </value>
+  </const>
+  <const name="IMAGE_SIZEOF_SHORT_NAME" type="Integer">
+    <value>
+      $8
+    </value>
+  </const>
+  <const name="IMAGE_SIZEOF_SECTION_HEADER" type="Integer">
+    <value>
+      $28
+    </value>
+  </const>
+  <const name="IMAGE_NUMBEROF_DIRECTORY_ENTRIES" type="Integer">
+    <value>
+      $10
+    </value>
+  </const>
+  <const name="IMAGE_RESOURCE_NAME_IS_STRING" type="Integer">
+    <value>
+      $80000000
+    </value>
+  </const>
+  <const name="IMAGE_RESOURCE_DATA_IS_DIRECTORY" type="Integer">
+    <value>
+      $80000000
+    </value>
+  </const>
+  <const name="IMAGE_OFFSET_STRIP_HIGH" type="Integer">
+    <value>
+      $7FFFFFFF
+    </value>
+  </const>
+  <pointer name="PIMAGE_DOS_HEADER" type="IMAGE_DOS_HEADER" indircnt="1" />
+  <struct name="IMAGE_DOS_HEADER" packed="true">
+    <field name="e_magic" type="Word" visibility="public" />
+    <field name="e_cblp" type="Word" visibility="public" />
+    <field name="e_cp" type="Word" visibility="public" />
+    <field name="e_crlc" type="Word" visibility="public" />
+    <field name="e_cparhdr" type="Word" visibility="public" />
+    <field name="e_minalloc" type="Word" visibility="public" />
+    <field name="e_maxalloc" type="Word" visibility="public" />
+    <field name="e_ss" type="Word" visibility="public" />
+    <field name="e_sp" type="Word" visibility="public" />
+    <field name="e_csum" type="Word" visibility="public" />
+    <field name="e_ip" type="Word" visibility="public" />
+    <field name="e_cs" type="Word" visibility="public" />
+    <field name="e_lfarlc" type="Word" visibility="public" />
+    <field name="e_ovno" type="Word" visibility="public" />
+    <field name="e_res" visibility="public">
+      <array name="e_res" low="0" high="3">
+        <element type="Word" />
+      </array>
+    </field>
+    <field name="e_oemid" type="Word" visibility="public" />
+    <field name="e_oeminfo" type="Word" visibility="public" />
+    <field name="e_res2" visibility="public">
+      <array name="e_res2" low="0" high="9">
+        <element type="Word" />
+      </array>
+    </field>
+    <field name="e_lfanew" type="Integer" visibility="public" />
+  </struct>
+  <pointer name="PIMAGE_FILE_HEADER" type="IMAGE_FILE_HEADER" indircnt="1" />
+  <struct name="IMAGE_FILE_HEADER" packed="true">
+    <field name="Machine" type="Word" visibility="public" />
+    <field name="NumberOfSections" type="Word" visibility="public" />
+    <field name="TimeDateStamp" type="Cardinal" visibility="public" />
+    <field name="PointerToSymbolTable" type="Cardinal" visibility="public" />
+    <field name="NumberOfSymbols" type="Cardinal" visibility="public" />
+    <field name="SizeOfOptionalHeader" type="Word" visibility="public" />
+    <field name="Characteristics" type="Word" visibility="public" />
+  </struct>
+  <pointer name="PIMAGE_DATA_DIRECTORY" type="IMAGE_DATA_DIRECTORY" indircnt="1" />
+  <struct name="IMAGE_DATA_DIRECTORY" packed="true">
+    <field name="VirtualAddress" type="Cardinal" visibility="public" />
+    <field name="Size" type="Cardinal" visibility="public" />
+  </struct>
+  <pointer name="PIMAGE_OPTIONAL_HEADER" type="IMAGE_OPTIONAL_HEADER" indircnt="1" />
+  <struct name="IMAGE_OPTIONAL_HEADER" packed="true">
+    <field name="Magic" type="Word" visibility="public" />
+    <field name="MajorLinkerVersion" type="Byte" visibility="public" />
+    <field name="MinorLinkerVersion" type="Byte" visibility="public" />
+    <field name="SizeOfCode" type="Cardinal" visibility="public" />
+    <field name="SizeOfInitializedData" type="Cardinal" visibility="public" />
+    <field name="SizeOfUninitializedData" type="Cardinal" visibility="public" />
+    <field name="AddressOfEntryPoint" type="Cardinal" visibility="public" />
+    <field name="BaseOfCode" type="Cardinal" visibility="public" />
+    <field name="BaseOfData" type="Cardinal" visibility="public" />
+    <field name="ImageBase" type="Cardinal" visibility="public" />
+    <field name="SectionAlignment" type="Cardinal" visibility="public" />
+    <field name="FileAlignment" type="Cardinal" visibility="public" />
+    <field name="MajorOperatingSystemVersion" type="Word" visibility="public" />
+    <field name="MinorOperatingSystemVersion" type="Word" visibility="public" />
+    <field name="MajorImageVersion" type="Word" visibility="public" />
+    <field name="MinorImageVersion" type="Word" visibility="public" />
+    <field name="MajorSubsystemVersion" type="Word" visibility="public" />
+    <field name="MinorSubsystemVersion" type="Word" visibility="public" />
+    <field name="Reserved1" type="Cardinal" visibility="public" />
+    <field name="SizeOfImage" type="Cardinal" visibility="public" />
+    <field name="SizeOfHeaders" type="Cardinal" visibility="public" />
+    <field name="CheckSum" type="Cardinal" visibility="public" />
+    <field name="Subsystem" type="Word" visibility="public" />
+    <field name="DllCharacteristics" type="Word" visibility="public" />
+    <field name="SizeOfStackReserve" type="Cardinal" visibility="public" />
+    <field name="SizeOfStackCommit" type="Cardinal" visibility="public" />
+    <field name="SizeOfHeapReserve" type="Cardinal" visibility="public" />
+    <field name="SizeOfHeapCommit" type="Cardinal" visibility="public" />
+    <field name="LoaderFlags" type="Cardinal" visibility="public" />
+    <field name="NumberOfRvaAndSizes" type="Cardinal" visibility="public" />
+    <field name="DataDirectory" visibility="public">
+      <array name="DataDirectory" low="0" high="15">
+        <element type="IMAGE_DATA_DIRECTORY" />
+      </array>
+    </field>
+  </struct>
+  <pointer name="PIMAGE_SECTION_HEADER" type="IMAGE_SECTION_HEADER" indircnt="1" />
+  <struct name="IMAGE_SECTION_HEADER" packed="true">
+    <field name="Name" visibility="public">
+      <array name="Name" low="0" high="7">
+        <element type="Char" />
+      </array>
+    </field>
+    <field name="PhysicalAddress" type="Cardinal" visibility="public" />
+    <field name="VirtualAddress" type="Cardinal" visibility="public" />
+    <field name="SizeOfRawData" type="Cardinal" visibility="public" />
+    <field name="PointerToRawData" type="Cardinal" visibility="public" />
+    <field name="PointerToRelocations" type="Cardinal" visibility="public" />
+    <field name="PointerToLinenumbers" type="Cardinal" visibility="public" />
+    <field name="NumberOfRelocations" type="Word" visibility="public" />
+    <field name="NumberOfLinenumbers" type="Word" visibility="public" />
+    <field name="Characteristics" type="Cardinal" visibility="public" />
+  </struct>
+  <pointer name="PIMAGE_NT_HEADERS" type="IMAGE_NT_HEADERS" indircnt="1" />
+  <struct name="IMAGE_NT_HEADERS" packed="true">
+    <field name="Signature" type="Cardinal" visibility="public" />
+    <field name="FileHeader" type="IMAGE_FILE_HEADER" visibility="public" />
+    <field name="OptionalHeader" type="IMAGE_OPTIONAL_HEADER" visibility="public" />
+  </struct>
+  <pointer name="PIMAGE_RESOURCE_DIRECTORY" type="IMAGE_RESOURCE_DIRECTORY" indircnt="1" />
+  <struct name="IMAGE_RESOURCE_DIRECTORY" packed="true">
+    <field name="Characteristics" type="Cardinal" visibility="public" />
+    <field name="TimeDateStamp" type="Cardinal" visibility="public" />
+    <field name="MajorVersion" type="Word" visibility="public" />
+    <field name="MinorVersion" type="Word" visibility="public" />
+    <field name="NumberOfNamedEntries" type="Word" visibility="public" />
+    <field name="NumberOfIdEntries" type="Word" visibility="public" />
+  </struct>
+  <pointer name="PIMAGE_RESOURCE_DIRECTORY_ENTRY" type="IMAGE_RESOURCE_DIRECTORY_ENTRY" indircnt="1" />
+  <struct name="IMAGE_RESOURCE_DIRECTORY_ENTRY" packed="true">
+    <field name="Name" type="Cardinal" visibility="public" />
+    <field name="OffsetToData" type="Cardinal" visibility="public" />
+  </struct>
+  <pointer name="PIMAGE_RESOURCE_DATA_ENTRY" type="IMAGE_RESOURCE_DATA_ENTRY" indircnt="1" />
+  <struct name="IMAGE_RESOURCE_DATA_ENTRY" packed="true">
+    <field name="OffsetToData" type="Cardinal" visibility="public" />
+    <field name="Size" type="Cardinal" visibility="public" />
+    <field name="CodePage" type="Cardinal" visibility="public" />
+    <field name="Reserved" type="Cardinal" visibility="public" />
+  </struct>
+  <pointer name="PIMAGE_RESOURCE_DIR_STRING_U" type="IMAGE_RESOURCE_DIR_STRING_U" indircnt="1" />
+  <struct name="IMAGE_RESOURCE_DIR_STRING_U" packed="true">
+    <field name="Length" type="Word" visibility="public" />
+    <field name="NameString" visibility="public">
+      <array name="NameString" low="0" high="0">
+        <element type="WideChar" />
+      </array>
+    </field>
+  </struct>
+  <const name="rtUnknown0" type="TResourceType">
+    <value>
+      rtUnknown0
+    </value>
+  </const>
+  <const name="rtCursorEntry" type="TResourceType">
+    <value>
+      rtCursorEntry
+    </value>
+  </const>
+  <const name="rtBitmap" type="TResourceType">
+    <value>
+      rtBitmap
+    </value>
+  </const>
+  <const name="rtIconEntry" type="TResourceType">
+    <value>
+      rtIconEntry
+    </value>
+  </const>
+  <const name="rtMenu" type="TResourceType">
+    <value>
+      rtMenu
+    </value>
+  </const>
+  <const name="rtDialog" type="TResourceType">
+    <value>
+      rtDialog
+    </value>
+  </const>
+  <const name="rtString" type="TResourceType">
+    <value>
+      rtString
+    </value>
+  </const>
+  <const name="rtFontDir" type="TResourceType">
+    <value>
+      rtFontDir
+    </value>
+  </const>
+  <const name="rtFont" type="TResourceType">
+    <value>
+      rtFont
+    </value>
+  </const>
+  <const name="rtAccelerators" type="TResourceType">
+    <value>
+      rtAccelerators
+    </value>
+  </const>
+  <const name="rtRCData" type="TResourceType">
+    <value>
+      rtRCData
+    </value>
+  </const>
+  <const name="rtMessageTable" type="TResourceType">
+    <value>
+      rtMessageTable
+    </value>
+  </const>
+  <const name="rtCursor" type="TResourceType">
+    <value>
+      rtCursor
+    </value>
+  </const>
+  <const name="rtUnknown13" type="TResourceType">
+    <value>
+      rtUnknown13
+    </value>
+  </const>
+  <const name="rtIcon" type="TResourceType">
+    <value>
+      rtIcon
+    </value>
+  </const>
+  <const name="rtUnknown15" type="TResourceType">
+    <value>
+      rtUnknown15
+    </value>
+  </const>
+  <const name="rtVersion" type="TResourceType">
+    <value>
+      rtVersion
+    </value>
+  </const>
+  <enum name="TResourceType">
+    <element name="rtUnknown0" />
+    <element name="rtCursorEntry" />
+    <element name="rtBitmap" />
+    <element name="rtIconEntry" />
+    <element name="rtMenu" />
+    <element name="rtDialog" />
+    <element name="rtString" />
+    <element name="rtFontDir" />
+    <element name="rtFont" />
+    <element name="rtAccelerators" />
+    <element name="rtRCData" />
+    <element name="rtMessageTable" />
+    <element name="rtCursor" />
+    <element name="rtUnknown13" />
+    <element name="rtIcon" />
+    <element name="rtUnknown15" />
+    <element name="rtVersion" />
+  </enum>
+  <const name="StringsPerBlock" type="Integer">
+    <value>
+      $10
+    </value>
+  </const>
+  <pointer name="PIconHeader" type="TIconHeader" indircnt="1" />
+  <struct name="TIconHeader" packed="true">
+    <field name="wReserved" type="Word" visibility="public" />
+    <field name="wType" type="Word" visibility="public" />
+    <field name="wCount" type="Word" visibility="public" />
+  </struct>
+  <pointer name="PIconResInfo" type="TIconResInfo" indircnt="1" />
+  <struct name="TIconResInfo" packed="true">
+    <field name="bWidth" type="Byte" visibility="public" />
+    <field name="bHeight" type="Byte" visibility="public" />
+    <field name="bColorCount" type="Byte" visibility="public" />
+    <field name="bReserved" type="Byte" visibility="public" />
+    <field name="wPlanes" type="Word" visibility="public" />
+    <field name="wBitCount" type="Word" visibility="public" />
+    <field name="lBytesInRes" type="Cardinal" visibility="public" />
+    <field name="wNameOrdinal" type="Word" visibility="public" />
+  </struct>
+  <pointer name="PCursorResInfo" type="TCursorResInfo" indircnt="1" />
+  <struct name="TCursorResInfo" packed="true">
+    <field name="wWidth" type="Word" visibility="public" />
+    <field name="wHeight" type="Word" visibility="public" />
+    <field name="wPlanes" type="Word" visibility="public" />
+    <field name="wBitCount" type="Word" visibility="public" />
+    <field name="lBytesInRes" type="Cardinal" visibility="public" />
+    <field name="wNameOrdinal" type="Word" visibility="public" />
+  </struct>
+</namespace>
