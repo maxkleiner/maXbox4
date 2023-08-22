@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_RSA_Primitives">
+  <const name="opPass" type="TLongOpResult">
+    <value>
+      opPass
+    </value>
+  </const>
+  <const name="opFail" type="TLongOpResult">
+    <value>
+      opFail
+    </value>
+  </const>
+  <const name="opAbort" type="TLongOpResult">
+    <value>
+      opAbort
+    </value>
+  </const>
+  <enum name="TLongOpResult">
+    <element name="opPass" />
+    <element name="opFail" />
+    <element name="opAbort" />
+  </enum>
+  <function name="I2OSP" visibility="public">
+    <parameters>
+      <parameter name="x" type="THugeCardinal" />
+      <parameter name="xLen" type="Integer" />
+      <parameter name="XStream" type="TStream" />
+      <parameter name="Pool" type="TMemoryStreamPool" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="OS2IP" visibility="public">
+    <parameters>
+      <parameter name="XStream" type="TStream" />
+      <parameter name="xLen" type="Integer" />
+      <parameter name="x" type="THugeCardinal" paramflags="var" />
+      <parameter name="Pool" type="TMemoryStreamPool" />
+      <parameter name="MaxBits" type="Integer" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <procedure name="MGF1" visibility="public">
+    <parameters>
+      <parameter name="mgfSeed" type="TStream" />
+      <parameter name="maskLen" type="Cardinal" />
+      <parameter name="mask" type="TStream" />
+    </parameters>
+  </procedure>
+  <function name="RSAES_OAEP_ENCRYPT_MaxByteLen" visibility="public">
+    <parameters>
+      <parameter name="n" type="THugeCardinal" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="RSAES_OAEP_ENCRYPT" visibility="public">
+    <parameters>
+      <parameter name="n" type="THugeCardinal" />
+      <parameter name="e" type="THugeCardinal" />
+      <parameter name="M" type="TMemoryStream" />
+      <parameter name="C" type="TMemoryStream" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="RSAES_OAEP_DECRYPT" visibility="public">
+    <parameters>
+      <parameter name="d" type="THugeCardinal" />
+      <parameter name="n" type="THugeCardinal" />
+      <parameter name="C" type="TStream" />
+      <parameter name="M" type="TStream" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="Generate_RSA_SymetricKey" visibility="public">
+    <parameters>
+      <parameter name="n" type="THugeCardinal" />
+      <parameter name="e" type="THugeCardinal" />
+      <parameter name="CipherStream" type="TStream" />
+      <parameter name="SymetricCipher" type="IBlockCipher" paramflags="const" />
+      <retval type="TSymetricKey" />
+    </parameters>
+  </function>
+  <function name="Extract_RSA_SymetricKey" visibility="public">
+    <parameters>
+      <parameter name="d" type="THugeCardinal" />
+      <parameter name="n" type="THugeCardinal" />
+      <parameter name="CipherStream" type="TStream" />
+      <parameter name="SymetricCipher" type="IBlockCipher" paramflags="const" />
+      <retval type="TSymetricKey" />
+    </parameters>
+  </function>
+  <function name="EMSA_PSS_ENCODE" visibility="public">
+    <parameters>
+      <parameter name="M" type="TStream" />
+      <parameter name="emBits" type="Integer" />
+      <parameter name="sLen" type="Integer" />
+      <parameter name="EM" type="TStream" />
+      <parameter name="CheckAbortFunc" type="TOnHashProgress" />
+      <retval type="TLongOpResult" />
+    </parameters>
+  </function>
+  <function name="EMSA_PSS_VERIFY" visibility="public">
+    <parameters>
+      <parameter name="M" type="TStream" />
+      <parameter name="emBits" type="Integer" />
+      <parameter name="sLen" type="Integer" />
+      <parameter name="EM" type="TStream" />
+      <parameter name="CheckAbortFunc" type="TOnHashProgress" />
+      <retval type="TLongOpResult" />
+    </parameters>
+  </function>
+  <function name="RSASSA_PSS_SIGN" visibility="public">
+    <parameters>
+      <parameter name="d" type="THugeCardinal" />
+      <parameter name="n" type="THugeCardinal" />
+      <parameter name="M" type="TStream" />
+      <parameter name="S" type="TStream" />
+      <parameter name="CheckAbortFunc" type="TOnHashProgress" />
+      <retval type="TLongOpResult" />
+    </parameters>
+  </function>
+  <function name="RSASSA_PSS_VERIFY" visibility="public">
+    <parameters>
+      <parameter name="n" type="THugeCardinal" />
+      <parameter name="e" type="THugeCardinal" />
+      <parameter name="M" type="TStream" />
+      <parameter name="S" type="TStream" />
+      <parameter name="CheckAbortFunc" type="TOnHashProgress" />
+      <retval type="TLongOpResult" />
+    </parameters>
+  </function>
+</namespace>

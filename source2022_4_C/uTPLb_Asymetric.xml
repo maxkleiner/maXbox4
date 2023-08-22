@@ -1,0 +1,752 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_Asymetric">
+  <const name="partPublic" type="TKeyStoragePart">
+    <value>
+      partPublic
+    </value>
+  </const>
+  <const name="partPrivate" type="TKeyStoragePart">
+    <value>
+      partPrivate
+    </value>
+  </const>
+  <enum name="TKeyStoragePart">
+    <element name="partPublic" />
+    <element name="partPrivate" />
+  </enum>
+  <set name="TKeyStoragePartSet" type="TKeyStoragePart">
+    <element name="partPublic" />
+    <element name="partPrivate" />
+  </set>
+  <class name="TAsymtricKeyPart">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <function name="NominalKeyBitLength" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="Cardinal" />
+        </parameters>
+      </function>
+      <procedure name="SaveToStream" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadFromStream" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+        </parameters>
+      </procedure>
+      <function name="isEmpty" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="Burn" visibility="public" procflags="abstract virtual">
+      </procedure>
+    </members>
+  </class>
+  <class name="TAsymetricKeyPair">
+    <ancestor name="TSymetricKey" namespace="uTPLb_StreamCipher">
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="Burn" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="FPublicPart" type="TAsymtricKeyPart" visibility="public" />
+      <field name="FPrivatePart" type="TAsymtricKeyPart" visibility="public" />
+      <constructor name="CreateEmpty" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <function name="HasParts" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="TKeyStoragePartSet" />
+        </parameters>
+      </function>
+      <procedure name="SaveToStream" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="StoreToStream" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+          <parameter name="Parts" type="TKeyStoragePartSet" />
+        </parameters>
+      </procedure>
+      <function name="Can_StoreToStream" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Parts" type="TKeyStoragePartSet" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="LoadFromStream" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+          <parameter name="Parts" type="TKeyStoragePartSet" />
+        </parameters>
+      </procedure>
+      <function name="NominalKeyBitLength" visibility="public">
+        <parameters>
+          <retval type="Cardinal" />
+        </parameters>
+      </function>
+      <procedure name="Burn" visibility="public" procflags="override">
+      </procedure>
+      <function name="Clone" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="TAsymetricKeyPair" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <classref name="TAsymetricKeyPairClass" ref="TAsymetricKeyPair" />
+  <class name="TAsymetricEncDec">
+    <ancestor name="TInterfacedObject" namespace="System">
+      <methodref name="QueryInterface" visibility="protected">
+      </methodref>
+      <methodref name="_AddRef" visibility="protected">
+      </methodref>
+      <methodref name="_Release" visibility="protected">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <propertyref name="RefCount" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="FBytesProcessed" type="UInt64" visibility="protected" />
+      <field name="FSymetricCodec" type="ICodec" visibility="protected" />
+      <field name="FSymetricCodecObj" type="TObject" visibility="protected" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <procedure name="Reset" visibility="public" procflags="virtual">
+      </procedure>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+    </members>
+  </class>
+  <class name="TAsymetricEncryptor">
+    <ancestor name="TAsymetricEncDec" namespace="uTPLb_Asymetric">
+      <methodref name="Create" visibility="public" />
+      <methodref name="Reset" visibility="public" />
+      <methodref name="Destroy" visibility="public" />
+      <ancestor name="TInterfacedObject" namespace="System">
+        <methodref name="QueryInterface" visibility="protected">
+        </methodref>
+        <methodref name="_AddRef" visibility="protected">
+        </methodref>
+        <methodref name="_Release" visibility="protected">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <propertyref name="RefCount" visibility="public">
+        </propertyref>
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="IStreamEncryptor" />
+    </interfaces>
+    <members>
+      <field name="FPublicKey" type="TAsymtricKeyPart" visibility="protected" />
+      <field name="FCipherText" type="TStream" visibility="protected" />
+      <constructor name="Start_Encrypt" visibility="public">
+        <parameters>
+          <parameter name="PublicKey1" type="TAsymtricKeyPart" />
+          <parameter name="CipherText1" type="TStream" />
+        </parameters>
+      </constructor>
+      <procedure name="Encrypt" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Plaintext" type="TStream" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="End_Encrypt" visibility="public" procflags="virtual">
+      </procedure>
+      <function name="GenerateSymetricKey" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <function name="VerifySignature" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Document" type="TStream" />
+          <parameter name="ProgressSender" type="TObject" />
+          <parameter name="ProgressEvent" type="TOnEncDecProgress" />
+          <parameter name="wasAborted" type="Boolean" paramflags="var" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <classref name="TAsymetricEncryptorClass" ref="TAsymetricEncryptor" />
+  <class name="TAsymetricDecryptor">
+    <ancestor name="TAsymetricEncDec" namespace="uTPLb_Asymetric">
+      <methodref name="Create" visibility="public" />
+      <methodref name="Reset" visibility="public" />
+      <methodref name="Destroy" visibility="public" />
+      <ancestor name="TInterfacedObject" namespace="System">
+        <methodref name="QueryInterface" visibility="protected">
+        </methodref>
+        <methodref name="_AddRef" visibility="protected">
+        </methodref>
+        <methodref name="_Release" visibility="protected">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <propertyref name="RefCount" visibility="public">
+        </propertyref>
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="IStreamDecryptor" />
+    </interfaces>
+    <members>
+      <field name="FPrivateKey" type="TAsymtricKeyPart" visibility="protected" />
+      <field name="FPlainText" type="TStream" visibility="protected" />
+      <constructor name="Start_Decrypt" visibility="public">
+        <parameters>
+          <parameter name="PrivateKey1" type="TAsymtricKeyPart" />
+          <parameter name="PlainText1" type="TStream" />
+        </parameters>
+      </constructor>
+      <procedure name="Decrypt" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Ciphertext" type="TStream" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="End_Decrypt" visibility="public" procflags="virtual">
+      </procedure>
+      <function name="LoadSymetricKey" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Ciphertext" type="TStream" />
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <procedure name="Sign" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Signature" type="TStream" />
+          <parameter name="ProgressSender" type="TObject" />
+          <parameter name="ProgressEvent" type="TOnEncDecProgress" />
+          <parameter name="wasAborted" type="Boolean" paramflags="var" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <classref name="TAsymetricDecryptorClass" ref="TAsymetricDecryptor" />
+  <interface name="IAsymetric_Engine">
+    <procedure name="GenerateAsymetricKeyPair" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="KeySizeInBits" type="Cardinal" />
+        <parameter name="ProgressSender" type="TObject" />
+        <parameter name="ProgressEvent" type="TGenerateAsymetricKeyPairProgress" />
+        <parameter name="KeyPair" type="TAsymetricKeyPair" paramflags="var" />
+        <parameter name="wasAborted" type="Boolean" paramflags="var" />
+      </parameters>
+    </procedure>
+    <procedure name="Sign" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Document" type="TStream" />
+        <parameter name="Signature" type="TStream" />
+        <parameter name="PrivatePart" type="TAsymtricKeyPart" />
+        <parameter name="ProgressSender" type="TObject" />
+        <parameter name="ProgressEvent" type="TOnEncDecProgress" />
+        <parameter name="wasAborted" type="Boolean" paramflags="var" />
+      </parameters>
+    </procedure>
+    <function name="VerifySignature" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Document" type="TStream" />
+        <parameter name="Signature" type="TStream" />
+        <parameter name="PublicPart" type="TAsymtricKeyPart" />
+        <parameter name="ProgressSender" type="TObject" />
+        <parameter name="ProgressEvent" type="TOnEncDecProgress" />
+        <parameter name="wasAborted" type="Boolean" paramflags="var" />
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <function name="CreateFromStream" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Store" type="TStream" />
+        <parameter name="Parts" type="TKeyStoragePartSet" />
+        <retval type="TAsymetricKeyPair" />
+      </parameters>
+    </function>
+  </interface>
+  <interface name="ICodec_WithAsymetricSupport">
+    <function name="Asymetric_Engine" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="IAsymetric_Engine" />
+      </parameters>
+    </function>
+  </interface>
+  <class name="TAsymetric_Engine">
+    <ancestor name="TInterfacedObject" namespace="System">
+      <methodref name="QueryInterface" visibility="protected">
+      </methodref>
+      <methodref name="_AddRef" visibility="protected">
+      </methodref>
+      <methodref name="_Release" visibility="protected">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <propertyref name="RefCount" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="IAsymetric_Engine" />
+      <implements name="ICryptoGraphicAlgorithm" />
+      <implements name="IStreamCipher" />
+    </interfaces>
+    <members>
+      <function name="DisplayName" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="ProgId" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="Features" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="TAlgorithmicFeatureSet" />
+        </parameters>
+      </function>
+      <function name="DefinitionURL" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="WikipediaReference" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="GenerateKey" visibility="protected">
+        <parameters>
+          <parameter name="Seed" type="TStream" />
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <function name="LoadKeyFromStream" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <function name="SeedByteSize" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Parameterize" visibility="protected">
+        <parameters>
+          <parameter name="Params" type="IInterface" paramflags="const" />
+          <retval type="IStreamCipher" />
+        </parameters>
+      </function>
+      <function name="Start_Encrypt" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Key" type="TSymetricKey" />
+          <parameter name="CipherText" type="TStream" />
+          <retval type="IStreamEncryptor" />
+        </parameters>
+      </function>
+      <function name="Start_Decrypt" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Key" type="TSymetricKey" />
+          <parameter name="PlainText" type="TStream" />
+          <retval type="IStreamDecryptor" />
+        </parameters>
+      </function>
+      <function name="AsymetricKeyPairClass" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="TAsymetricKeyPairClass" />
+        </parameters>
+      </function>
+      <function name="EncClass" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="TAsymetricEncryptorClass" />
+        </parameters>
+      </function>
+      <function name="DecClass" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="TAsymetricDecryptorClass" />
+        </parameters>
+      </function>
+      <procedure name="GenerateAsymetricKeyPair" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="KeySizeInBits" type="Cardinal" />
+          <parameter name="ProgressSender" type="TObject" />
+          <parameter name="ProgressEvent" type="TGenerateAsymetricKeyPairProgress" />
+          <parameter name="KeyPair" type="TAsymetricKeyPair" paramflags="var" />
+          <parameter name="wasAborted" type="Boolean" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="Sign" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Document" type="TStream" />
+          <parameter name="Signature" type="TStream" />
+          <parameter name="PrivatePart" type="TAsymtricKeyPart" />
+          <parameter name="ProgressSender" type="TObject" />
+          <parameter name="ProgressEvent" type="TOnEncDecProgress" />
+          <parameter name="wasAborted" type="Boolean" paramflags="var" />
+        </parameters>
+      </procedure>
+      <function name="VerifySignature" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Document" type="TStream" />
+          <parameter name="Signature" type="TStream" />
+          <parameter name="PublicPart" type="TAsymtricKeyPart" />
+          <parameter name="ProgressSender" type="TObject" />
+          <parameter name="ProgressEvent" type="TOnEncDecProgress" />
+          <parameter name="wasAborted" type="Boolean" paramflags="var" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="CreateFromStream" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+          <parameter name="Parts" type="TKeyStoragePartSet" />
+          <retval type="TAsymetricKeyPair" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+</namespace>
