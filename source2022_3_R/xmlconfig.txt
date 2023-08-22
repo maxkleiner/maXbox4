@@ -1,0 +1,126 @@
+unit uCiaXml;
+
+interface
+
+uses
+  Forms, SysUtils, Windows, XmlIntf, XMLDoc;
+
+type
+  TXMLConfig = class
+  private
+    FModified: Boolean;
+    FFileName: string;
+    FXMLDoc: TXMLDocument;
+    FBackup: Boolean;
+    function GetVersion: string;
+  public
+    constructor Create(const FileName: string); overload;
+    constructor Create; overload;
+    destructor Destroy; override;
+    procedure Save;
+    function ReadString(const Section, Key, default: string): string;
+    procedure WriteString(const Section, Key, Value: string);
+    function ReadInteger(const Section, Key: string; default: Integer): Integer;
+    procedure WriteInteger(const Section, Key: string; Value: Integer);
+    function ReadBoolean(const Section, Key: string; default: Boolean): Boolean;
+    procedure WriteBoolean(const Section, Key: string; Value: Boolean);
+    property Backup: Boolean read FBackup write FBackup;
+    property Version: string read GetVersion;
+  end;
+
+implementation
+
+{ TXMLConfig }
+
+constructor TXMLConfig.Create(const FileName: string);
+begin
+  inherited Create;
+  FBackup         := True;
+  FFileName       := FileName;
+  FXMLDoc         := TXMLDocument.Create(Application);
+  FXMLDoc.Options := [doNodeAutoIndent];
+  if FileExists(FFileName) then
+    FXMLDoc.LoadFromFile(FFileName)
+  else 
+  begin
+    FXMLDoc.Active := True;
+    FXMLDoc.AddChild('Configuration');
+  end;
+end;
+
+constructor TXMLConfig.Create;
+begin
+  Create(ChangeFileExt(Application.Exename, '_cfg.xml'));
+end;
+
+destructor TXMLConfig.Destroy;
+begin
+  Save;
+  FXMLDoc.Destroy;
+  inherited;
+end;
+
+function TXMLConfig.GetVersion: string;
+begin
+  Result := '1.00';
+end;
+
+function TXMLConfig.ReadBoolean(const Section, Key: string; default: Boolean): Boolean;
+begin
+  Result := Boolean(ReadInteger(Section, Key, Integer(default)));
+end;
+
+function TXMLConfig.ReadInteger(const Section, Key: string; default: Integer): Integer;
+begin
+  Result := StrToInt(ReadString(Section, Key, IntToStr(default)));
+end;
+
+function TXMLConfig.ReadString(const Section, Key, default: string): string;
+var
+  Node: IXMLNode;
+begin
+  Node := FXMLDoc.DocumentElement.ChildNodes.FindNode(Section);
+  if Assigned(Node) and Node.HasAttribute(Key) then
+    Result := Node.Attributes[Key]
+  else
+    Result := default;
+end;
+
+procedure TXMLConfig.Save;
+begin
+  if not FModified then
+    Exit;
+  if FBackup then
+
+    CopyFile(PChar(FFileName), PChar(FFileName + '.bak'), False);
+  FXMLDoc.SaveToFile(FFileName);
+  FModified := False;
+end;
+
+procedure TXMLConfig.WriteBoolean(const Section, Key: string; Value: Boolean);
+begin
+  WriteInteger(Section, Key, Integer(Value));
+end;
+
+procedure TXMLConfig.WriteInteger(const Section, Key: string; Value: Integer);
+begin
+  WriteString(Section, Key, IntToStr(Value));
+end;
+
+procedure TXMLConfig.WriteString(const Section, Key, Value: string);
+var
+  Node: IXMLNode;
+begin
+  if ReadString(Section, Key, '') = Value then
+    Exit;
+  Node := FXMLDoc.DocumentElement.ChildNodes.FindNode(Section);
+  if not Assigned(Node) then
+    Node := FXMLDoc.DocumentElement.AddChild(Section);
+  Node.Attributes[Key] := Value;
+  FModified := True;
+end;
+
+end.
+
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----
