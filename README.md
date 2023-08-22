@@ -1,9 +1,10 @@
 # maXbox4
-code compiler script studio
+byte-code compiler script studio
 *****************************************************************
 Release Notes maXbox 4.7.6.50 June 2023 mX476
 Add 54 Units + 14 Tutorials
 https://github.com/maxkleiner/maXbox4/releases/tag/V4.2.4.80
+*****************************************************************
 
 The Source is organised in _R for Runtime (native Units) and _D for Design Units (script mapping) like the following Package Neuralvolume of CAI NeuralNetwork as 4 files:
 
