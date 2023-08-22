@@ -1,0 +1,84 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{064c856d-c2d8-4c03-9183-d7ca73c9c584}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="maxbox3_9.dproj" />
+    <Projects Include="REST\GPSLib.dproj" />
+    <Projects Include="synedit\SynEdit2_0_6\SynEdit\Packages\SynEdit_D2006.dproj" />
+    <Projects Include="synedit\SynEdit2_0_6\SynEdit\Packages\SynEdit_R2006.dproj" />
+    <Projects Include="VM_Detect\Source\CPortLibD2007.dproj" />
+    <Projects Include="VM_Detect\Source\DsgnCPortD2007.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="maxbox3_9">
+    <MSBuild Projects="maxbox3_9.dproj" Targets="" />
+  </Target>
+  <Target Name="maxbox3_9:Clean">
+    <MSBuild Projects="maxbox3_9.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="maxbox3_9:Make">
+    <MSBuild Projects="maxbox3_9.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SynEdit_D2006">
+    <MSBuild Projects="synedit\SynEdit2_0_6\SynEdit\Packages\SynEdit_D2006.dproj" Targets="" />
+  </Target>
+  <Target Name="SynEdit_D2006:Clean">
+    <MSBuild Projects="synedit\SynEdit2_0_6\SynEdit\Packages\SynEdit_D2006.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SynEdit_D2006:Make">
+    <MSBuild Projects="synedit\SynEdit2_0_6\SynEdit\Packages\SynEdit_D2006.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SynEdit_R2006">
+    <MSBuild Projects="synedit\SynEdit2_0_6\SynEdit\Packages\SynEdit_R2006.dproj" Targets="" />
+  </Target>
+  <Target Name="SynEdit_R2006:Clean">
+    <MSBuild Projects="synedit\SynEdit2_0_6\SynEdit\Packages\SynEdit_R2006.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SynEdit_R2006:Make">
+    <MSBuild Projects="synedit\SynEdit2_0_6\SynEdit\Packages\SynEdit_R2006.dproj" Targets="Make" />
+  </Target>
+  <Target Name="CPortLibD2007">
+    <MSBuild Projects="VM_Detect\Source\CPortLibD2007.dproj" Targets="" />
+  </Target>
+  <Target Name="CPortLibD2007:Clean">
+    <MSBuild Projects="VM_Detect\Source\CPortLibD2007.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="CPortLibD2007:Make">
+    <MSBuild Projects="VM_Detect\Source\CPortLibD2007.dproj" Targets="Make" />
+  </Target>
+  <Target Name="GPSLib">
+    <MSBuild Projects="REST\GPSLib.dproj" Targets="" />
+  </Target>
+  <Target Name="GPSLib:Clean">
+    <MSBuild Projects="REST\GPSLib.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="GPSLib:Make">
+    <MSBuild Projects="REST\GPSLib.dproj" Targets="Make" />
+  </Target>
+  <Target Name="DsgnCPortD2007">
+    <MSBuild Projects="VM_Detect\Source\DsgnCPortD2007.dproj" Targets="" />
+  </Target>
+  <Target Name="DsgnCPortD2007:Clean">
+    <MSBuild Projects="VM_Detect\Source\DsgnCPortD2007.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DsgnCPortD2007:Make">
+    <MSBuild Projects="VM_Detect\Source\DsgnCPortD2007.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="maxbox3_9;SynEdit_D2006;SynEdit_R2006;CPortLibD2007;GPSLib;DsgnCPortD2007" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="maxbox3_9:Clean;SynEdit_D2006:Clean;SynEdit_R2006:Clean;CPortLibD2007:Clean;GPSLib:Clean;DsgnCPortD2007:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="maxbox3_9:Make;SynEdit_D2006:Make;SynEdit_R2006:Make;CPortLibD2007:Make;GPSLib:Make;DsgnCPortD2007:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>
