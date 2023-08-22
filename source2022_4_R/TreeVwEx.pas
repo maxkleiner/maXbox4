@@ -1,0 +1,1302 @@
+unit TreeVwEx;
+
+{ TTreeViewEx component: Extended TTreeView component.
+  Version 0.85  May-17-1998  (C) 1997,98 Christoph R. Kirchner
+}
+{ Users of this unit must accept this disclaimer of warranty:
+    "This unit is supplied as is. The author disclaims all warranties,
+    expressed or implied, including, without limitation, the warranties
+    of merchantability and of fitness for any purpose.
+    The author assumes no liability for damages, direct or
+    consequential, which may result from the use of this unit."
+
+  This Unit is donated to the public as public domain.
+
+  This Unit can be freely used and distributed in commercial and
+  private environments provided this notice is not modified in any way.
+
+  If you do find this Unit handy and you feel guilty for using such a
+  great product without paying someone - sorry :-)
+
+  Please forward any comments or suggestions to Christoph Kirchner at:
+  ckirchner@geocities.com
+
+  Maybe you can find an update of this component at my
+  "Delphi Component Building Site":
+  http://www.geocities.com/SiliconValley/Heights/7874/delphi.htm
+
+}
+
+
+interface
+
+uses
+  SysUtils, Windows, Messages, Classes, Graphics, Controls,
+  CommCtrl, Dialogs, StdCtrls, ComCtrls, ImgList;
+
+type
+
+  TCustomTreeViewEx = class;
+
+  TTreeViewExOption = (
+    tveAllowDelete, tveAllowInsert, tveAutoDragMove, tveConfirmDelete,
+    tveInsertAsChild, tveLabelsReadOnly, tveMouseMoveSelect,
+    tveMultipleRootsAllowed, tveRootItemReadOnly);
+  TTreeViewExOptions = set of TTreeViewExOption;
+
+{ Options:
+
+  tveAllowDelete:
+    The user can delete items by pressing the <Del> key.
+
+  tveAllowInsert:
+    If tveAllowInsert is true, a new item gets created and inserted if
+    the user presses the <Insert> key.
+
+  tveAutoDragMove:
+    The user can move items by dragging them in the DBTreeView.
+
+  tveConfirmDelete:
+    The user get asked if he really want to delete the current record
+    after he pressed the Del-key. If the current node has children, the
+    user get asked for each of them.
+
+  tveInsertAsChild:
+    The new item that is created by pressing the insert key gets
+    inserted after the selected node if tveInsertAsChild is false or
+    it gets inserted as a child of the selected node if tveInsertAsChild
+    is true.
+
+  tveLabelsReadOnly:
+    The user cannot edit the lables of the nodes. Please do not use this
+    option together with tveAllowInsert - the user could insert only
+    empty nodes then.
+
+  tveMouseMoveSelect:
+    If the user moves the mouse, the nearest node gets selected.
+    If the user moves the mouse to the upper or lower border of the
+    TreeView while left button pressed, the TreeView will scroll.
+    This scrolling happens anyway if the user drags a node.
+    The option tveMouseMoveSelect makes sense if the TreeView is shown
+    in a dropdown-panel.
+
+  tveMultipleRootsAllowed:
+    If true, the user can insert more than one root and drag a child
+    to the root position.
+
+  tveRootItemReadOnly:
+    To set the root of the tree to read-only.
+
+  }
+
+  TTVDragImageShow = (tvdisDefault, tvdisAlways, tvdisNever);
+
+  TTreeViewExState = (
+    tvesIgnoreNextWMChar, tvesMouseStillDownAfterDoubleClick,
+    tvesRightButtonPressed, tvesWaitingForPopupMenu);
+  TTreeViewExStates = set of TTreeViewExState;
+
+  TIgnoreWMChars = set of AnsiChar;
+
+  TTVDraggingEvent =
+    procedure(Sender: TObject; Node: TTreeNode;
+              var AllowDrag: Boolean) of object;
+  TTVDeletingEvent =
+    procedure(Sender: TObject; Node: TTreeNode;
+              var AllowDelete: Boolean) of object;
+
+  TCustomTreeViewEx = class(TCustomTreeView)
+  private
+    FDelRootID: LongInt;
+    FOptions: TTreeViewExOptions;
+    FDragImageShow: TTVDragImageShow;
+    FState: TTreeViewExStates;
+    FLastPossibleDropTarget: TTreeNode;
+    FDontAcceptLastPossibleDropTarget: Boolean;
+    FDragImage: TImageList;
+    FIgnoreWMChars: TIgnoreWMChars;
+    FDragScrollTickCount: Integer;
+    FLMouseDownTickCount: Integer;
+    FScrollTimer: Longint;
+    FMouseSelectTimer: Longint;
+    FOnMouseSelect: TNotifyEvent;
+    FOnDragging: TTVDraggingEvent;
+    FOnDeleting: TTVDeletingEvent;
+    function MultipleRootsAllowed: Boolean;
+    procedure DoScroll(Node: TTreeNode; MouseX, MouseY: Integer);
+    procedure DoDragOver(Source: TDragObject; X, Y: Integer;
+                         PossibleDrop: Boolean);
+    procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
+    procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
+    procedure WMChar(var Message: TWMKeyDown); message WM_CHAR;
+    procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
+    procedure WMRButtonUp(var Message: TWMRButtonUp); message WM_RBUTTONUP;
+  protected
+    FRSelected: TTreeNode;
+    FDisableCount: Integer;
+    procedure WndProc(var Message: TMessage); override;
+    procedure DoStartDrag(var DragObject: TDragObject); override;
+    procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
+      var Accept: Boolean); override;
+    procedure DragCanceled; override;
+    procedure DragDrop(Source: TObject; X, Y: Integer); override;
+//    function GetDragImages: TCustomImageList; override;
+    function CanEdit(Node: TTreeNode): Boolean; override;
+    function CanDelete(Node: TTreeNode): Boolean; virtual;
+    procedure Expand(Node: TTreeNode); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KillAllTimer; virtual;
+    function DragAllowed(Node: TTreeNode): Boolean; virtual;
+    function GetDeleteQuestion(Node: TTreeNode): string; virtual;
+    function ShowDeletePrompt(Node: TTreeNode;
+      var DeleteAll: Boolean; ShowDeleteAllButton: Boolean): Boolean;
+    procedure InternalDeleteNode(Node: TTreeNode;
+      AskForDeleteAll: Boolean; var DeleteAll, Canceled: Boolean;
+      IsRecursiveCall: Boolean);
+    function DoDelete(Node: TTreeNode): Boolean; virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Insert(AsChild: Boolean); virtual;
+    procedure Delete; virtual;
+    procedure DeleteNode(Node: TTreeNode);
+    function MoveNode(Source, Destination: TTreeNode;
+                      Mode: TNodeAttachMode): Boolean; virtual;
+  { IsRootNode is true if the node has no parent: }
+    function IsRootNode(Node: TTreeNode): Boolean;
+  { IsSingleRootNode is true if the node is the only one without parent: }
+    function IsSingleRootNode(Node: TTreeNode): Boolean;
+    property IgnoreWMChars: TIgnoreWMChars
+      read FIgnoreWMChars write FIgnoreWMChars;
+  { The last node that was clicked with the right mouse-button: }
+    property RSelected: TTreeNode read FRSelected;
+  { possible published: }
+    property Options: TTreeViewExOptions read FOptions write FOptions;
+  { DragImageShow:
+      tvdisDefault: Show a dragimage if the Images property is not nil
+      tvdisAlways: Show a dragimage even if Images is nil (text only)
+      tvdisNever: No dragimage anyway }
+    property DragImageShow: TTVDragImageShow
+      read FDragImageShow write FDragImageShow;
+    property OnMouseSelect: TNotifyEvent
+      read FOnMouseSelect write FOnMouseSelect;
+  public
+  { possible published: }
+  { Called before the dragging of a node starts: }
+    property OnDragging: TTVDraggingEvent
+      read FOnDragging write FOnDragging;
+  { Called before the deleting of a node starts: }
+    property OnDeleting: TTVDeletingEvent
+      read FOnDeleting write FOnDeleting;
+  { possible published, inherited from TCustomTreeView: }
+    property ShowButtons;
+    property BorderStyle;
+    property DragCursor;
+    property ShowLines;
+    property ShowRoot;
+    property ReadOnly;
+    property DragMode;
+    property HideSelection;
+    property Indent;
+    property OnEditing;
+    property OnEdited;
+    property OnExpanding;
+    property OnExpanded;
+    property OnCollapsing;
+    property OnCompare;
+    property OnCollapsed;
+    property OnChanging;
+    property OnChange;
+    property OnDeletion;
+    property OnGetImageIndex;
+    property OnGetSelectedIndex;
+    property Align;
+    property Enabled;
+    property Font;
+    property Color;
+    property Items;
+    property ParentColor;
+    property ParentCtl3D;
+    property Ctl3D;
+    property SortType;
+    property TabOrder;
+    property TabStop default True;
+    property Visible;
+    property OnClick;
+    property OnEnter;
+    property OnExit;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnStartDrag;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnDblClick;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property PopupMenu;
+    property ParentFont;
+    property ParentShowHint;
+    property ShowHint;
+    property Images;
+    property StateImages;
+  end;
+
+
+  TTreeViewEx = class(TCustomTreeViewEx)
+  published
+    property ShowButtons;
+    property BorderStyle;
+    property DragCursor;
+    property ShowLines;
+    property ShowRoot;
+    property ReadOnly;
+    property DragMode;
+    property HideSelection;
+    property Indent;
+    property OnEditing;
+    property OnEdited;
+    property OnExpanding;
+    property OnExpanded;
+    property OnCollapsing;
+    property OnCompare;
+    property OnCollapsed;
+    property OnChanging;
+    property OnChange;
+    property OnDeleting;
+    property OnDeletion;
+    property OnGetImageIndex;
+    property OnGetSelectedIndex;
+    property Align;
+    property Enabled;
+    property Font;
+    property Color;
+    property ParentColor;
+    property ParentCtl3D;
+    property Ctl3D;
+    property SortType;
+    property TabOrder;
+    property TabStop default True;
+    property Visible;
+    property OnClick;
+    property OnEnter;
+    property OnExit;
+    property OnDragDrop;
+    property OnDragging;
+    property OnDragOver;
+    property OnStartDrag;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnDblClick;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property PopupMenu;
+    property ParentFont;
+    property ParentShowHint;
+    property ShowHint;
+    property Images;
+    property StateImages;
+    property Items;
+    property DragImageShow default tvdisDefault;
+    property Options
+      default [tveAllowDelete, tveAllowInsert, tveAutoDragMove,
+               tveRootItemReadOnly, tveConfirmDelete];
+    property OnMouseSelect;
+  end;
+
+var
+  stveDefaultDeleteQuestion: string = 'Delete item ?';
+
+implementation
+
+const
+  TimerIDScroll = 1001;
+  TimerIDMouseSelect = 1003;
+  DoNextScrollTickCount = 200;
+  DragScrollBorder = 16;
+
+
+
+{ TCustomTreeViewEx ---------------------------------------------------------- }
+
+constructor TCustomTreeViewEx.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := [csClickEvents, csSetCaption, csDoubleClicks,
+                   csDisplayDragImage, csCaptureMouse];
+  FDisableCount := 0;
+  FOptions := [tveAllowDelete, tveAllowInsert, tveAutoDragMove,
+               tveRootItemReadOnly, tveConfirmDelete];
+  FState := [];
+  FLastPossibleDropTarget := nil;
+  FIgnoreWMChars := [];
+  FScrollTimer := 0;
+  FMouseSelectTimer := 0;
+  FRSelected := nil;
+  FOnMouseSelect := nil;
+  FOnDragging := nil;
+  FOnDeleting := nil;
+  FDragImage := TImageList.CreateSize(32, 32);
+  FDragImageShow := tvdisDefault;
+end;
+
+destructor TCustomTreeViewEx.Destroy;
+begin
+  KillAllTimer;
+  Items.Clear;
+  FDragImage.Free;
+  inherited Destroy;
+end;
+
+procedure TCustomTreeViewEx.KillAllTimer;
+begin
+  if (FScrollTimer <> 0) then
+    KillTimer(Handle, TimerIDScroll);
+  if (FMouseSelectTimer <> 0) then
+    KillTimer(Handle, TimerIDMouseSelect);
+  FScrollTimer := 0;
+  FMouseSelectTimer := 0;
+end;
+
+procedure TCustomTreeViewEx.Expand(Node: TTreeNode);
+begin
+  inherited Expand(Node);
+{
+  if (FDisableCount = 0) and (Selected <> nil) then
+    Selected.MakeVisible;
+}
+end;
+
+function TCustomTreeViewEx.IsRootNode(Node: TTreeNode): Boolean;
+begin
+  if (Node = nil) then
+    Result := false
+  else
+    Result := (Node.Parent = nil);
+end;
+
+{ This function was improved by Zlatko Ivankovic: THANKS! }
+function TCustomTreeViewEx.IsSingleRootNode(Node: TTreeNode): Boolean;
+var
+  hItem: HTreeItem;
+  hItemPrev: HTreeItem;
+  hItemNext: HTreeItem;
+begin
+  Result := false;
+  if not IsRootNode(Node) then
+    exit;
+  hItem := TreeView_GetRoot(Handle);
+  if hItem <> nil then begin
+    hItemNext := TreeView_GetNextSibling(Handle, hItem);
+    hItemPrev :=  TreeView_GetPrevSibling(Handle, hItem);
+    if (hItemNext = nil) and (hItemPrev = nil) then
+      Result := true;
+  end;
+end;
+(*
+Original IsSingleRootNode:
+Look at this, and you will see how elegant the above
+solution from Zlatko Ivankovic is:
+function TCustomTreeViewEx.IsSingleRootNode(Node: TTreeNode): Boolean;
+var
+  i: Integer;
+begin
+  Result := false;
+  if not IsRootNode(Node) then
+    exit;
+  for i := 0 to Items.Count - 1 do
+    if (Items[i] <> Node) and IsRootNode(Items[i]) then
+      exit; { found another root }
+  Result := true;
+end;
+*)
+function TCustomTreeViewEx.CanDelete(Node: TTreeNode): Boolean;
+var
+  i: Integer;
+  AllowDelete: Boolean;
+begin
+  if (Node = nil) then
+    result := false
+  else
+    result :=
+      not ReadOnly and (tveAllowDelete in Options) and
+      (not (tveRootItemReadOnly in Options) or not IsRootNode(Node));
+  if result and Assigned(FOnDeleting) then
+  begin
+    AllowDelete := true;
+    FOnDeleting(self, Node, AllowDelete);
+    result := AllowDelete;
+  end;
+  if result and Node.HasChildren then
+  begin
+    for i := 0 to Node.Count - 1 do
+    begin
+      result := CanDelete(Node.Item[i]);
+      if not result then
+        break;
+    end;
+  end;
+end;
+
+function TCustomTreeViewEx.DoDelete(Node: TTreeNode): Boolean;
+begin
+  Items.Delete(Node);
+  result := true;
+end;
+
+function TCustomTreeViewEx.GetDeleteQuestion(Node: TTreeNode): string;
+begin
+  if (Node <> nil) and (Pos('%s', stveDefaultDeleteQuestion) > 0) then
+    result := Format(stveDefaultDeleteQuestion, [Node.Text])
+  else
+    result := stveDefaultDeleteQuestion;
+end;
+
+function TCustomTreeViewEx.ShowDeletePrompt(Node: TTreeNode;
+  var DeleteAll: Boolean; ShowDeleteAllButton: Boolean): Boolean;
+const
+  mb: array[boolean] of TMsgDlgButtons =
+    ([mbOK, mbCancel], [mbOK, mbCancel, mbAll]);
+var
+  Msg: Integer;
+begin
+  Result := DeleteAll or not (tveConfirmDelete in Options);
+  if Result then
+    DeleteAll := true
+  else
+  begin
+    Msg := MessageDlg(GetDeleteQuestion(Node),
+                      mtConfirmation, mb[ShowDeleteAllButton], 0);
+    if (Msg = mrOk) then
+      Result := true
+    else
+      if (Msg = mrAll) then
+      begin
+        Result := true;
+        DeleteAll := true;
+      end;
+  end;
+end;
+
+procedure TCustomTreeViewEx.InternalDeleteNode(Node: TTreeNode;
+  AskForDeleteAll: Boolean; var DeleteAll, Canceled: Boolean;
+  IsRecursiveCall: Boolean);
+var
+  i: Integer;
+  OldSelected: TTreeNode;
+  NewSelected: TTreeNode;
+begin
+  if Canceled or (Node = nil) then
+    exit;
+  if Node.HasChildren then
+    for i := Node.Count - 1 downto 0 do
+    begin
+      InternalDeleteNode(
+        Node.Item[i], AskForDeleteAll, DeleteAll, Canceled, true);
+      if Canceled then
+        exit;
+    end;
+  if IsRecursiveCall then
+  begin
+    NewSelected := nil;
+    OldSelected := nil;
+  end
+  else
+  begin
+    if (Node = Selected) then
+    begin
+      NewSelected := Node.GetNextSibling;
+      if (NewSelected = nil) then
+      begin
+        NewSelected := Node.GetPrevSibling;
+        if (NewSelected = nil) then
+        begin
+          NewSelected := Node.Parent;
+        end;
+      end;
+    end
+    else
+      NewSelected := Selected;
+    OldSelected := Selected;
+  end;
+  Selected := Node;
+  Canceled := not ShowDeletePrompt(Node, DeleteAll, AskForDeleteAll);
+  if not Canceled then
+  begin
+    DoDelete(Node);
+    if (NewSelected <> nil) then
+      Selected := NewSelected;
+  end
+  else
+    if (OldSelected <> nil) then
+      Selected := OldSelected;
+end;
+
+procedure TCustomTreeViewEx.DeleteNode(Node: TTreeNode);
+var
+  AskForDeleteAll: Boolean;
+  DeleteAll: Boolean;
+  Canceled: Boolean;
+begin
+  if not CanDelete(Node) then
+    exit;
+  AskForDeleteAll := Node.HasChildren;
+  DeleteAll := false;
+  Canceled := false;
+  InternalDeleteNode(Node, AskForDeleteAll, DeleteAll, Canceled, false);
+end;
+
+function TCustomTreeViewEx.CanEdit(Node: TTreeNode): Boolean;
+begin
+  KillAllTimer;
+  if ReadOnly or (tveLabelsReadOnly in Options) or
+     ((tveRootItemReadOnly in Options) and IsRootNode(Node)) then
+    Result := false
+  else
+    Result := inherited CanEdit(Node);
+end;
+
+function TCustomTreeViewEx.DragAllowed(Node: TTreeNode): Boolean;
+var
+  AllowDrag: Boolean;
+begin
+  Inc(FDisableCount);
+  try
+    result :=
+      not ReadOnly and
+      (not (tveRootItemReadOnly in Options) or not IsRootNode(Node)) and
+      not IsSingleRootNode(Node);
+    if result and Assigned(FOnDragging) then
+    begin
+      AllowDrag := true;
+      FOnDragging(self, Node, AllowDrag);
+      result := AllowDrag;
+    end;
+  finally
+    Dec(FDisableCount);
+  end;
+end;
+
+{$HINTS OFF}
+procedure TCustomTreeViewEx.Insert(AsChild: Boolean);
+var
+  NewNode: TTreeNode;
+begin
+  KillAllTimer;
+  Inc(FDisableCount);
+  try
+    if AsChild and (Selected <> nil) then
+      NewNode := Items.AddChild(Selected, '')
+    else
+      NewNode := Items.Insert(Selected, '');
+    if (NewNode <> nil) then
+    begin
+      if Focused then
+        NewNode.EditText;
+    end;
+  finally
+    Dec(FDisableCount);
+  end;
+end;
+{$HINTS ON}
+
+procedure TCustomTreeViewEx.Delete;
+begin
+  KillAllTimer;
+  DeleteNode(Selected);
+end;
+
+procedure TCustomTreeViewEx.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  KillAllTimer;
+  inherited KeyDown(Key, Shift);
+  case Key of
+    VK_INSERT:
+      if (tveAllowInsert in Options) and (not IsEditing) and
+         (not ReadOnly) then
+      begin
+        if (tveInsertAsChild in Options) then
+          Insert(true)
+        else
+          Insert((ssShift in Shift) or (ssCtrl in Shift));
+        Key := 0;
+      end;
+    VK_DELETE:
+      if (tveAllowDelete in Options) and (not IsEditing) and
+         (not ReadOnly) then
+      begin
+        Delete;
+        Key := 0;
+      end;
+  end;
+end;
+
+procedure TCustomTreeViewEx.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  HT: THitTests;
+begin
+  if (ssDouble in Shift) then
+  begin
+    if (FMouseSelectTimer <> 0) then
+    begin
+      KillTimer(Handle, TimerIDMouseSelect);
+      FMouseSelectTimer := 0;
+    end;
+    Include(FState, tvesMouseStillDownAfterDoubleClick);
+    inherited;
+    exit;
+  end;
+  if (Button = mbLeft) then
+    FLMouseDownTickCount := GetTickCount;
+  inherited;
+  if (Button = mbLeft) then
+  begin
+    if (not Dragging) and (Selected <> nil) and
+       (GetNodeAt(X, Y) = Selected) then
+    begin
+      if (DragMode = dmManual) and (tveAutoDragMove in Options) and
+         DragAllowed(Selected) then
+      begin
+        BeginDrag(false);
+      end;
+      if Assigned(FOnMouseSelect) and
+         (not (tveMouseMoveSelect in FOptions)) and
+         (not (ssDouble in Shift)) then
+      begin
+        HT := GetHitTestInfoAt(X, Y);
+        if (HT - [htOnItem {, htOnIcon, htOnIndent, htOnRight}] <> HT) then
+        begin
+          if not Selected.HasChildren then
+            FOnMouseSelect(self)
+          else
+          { maybe it becomes a doubleclick, wait a little bit: }
+            if (FMouseSelectTimer = 0) then
+              FMouseSelectTimer :=
+                SetTimer(Handle, TimerIDMouseSelect,
+                  GetDoubleClickTime - (GetTickCount - FLMouseDownTickCount),
+                  nil);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TCustomTreeViewEx.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  Node: TTreeNode;
+  XInClientRect, YInClientRect: Integer;
+function NodeLineFullVisible(Node: TTreeNode): Boolean;
+var
+  NodeRect: TRect;
+begin
+  NodeRect := Node.DisplayRect(false);
+  result := (NodeRect.Top >= 0) and (NodeRect.Bottom <= ClientHeight);
+end;
+begin
+  inherited MouseMove(Shift, X, Y);
+  if (tveMouseMoveSelect in FOptions) or Dragging then
+  begin
+    if (ssLeft in Shift) then
+    begin
+      if (Y < 1) then
+        YInClientRect := 1
+      else
+        if (Y >= ClientHeight) then
+          YInClientRect := ClientHeight - 1
+        else
+          YInClientRect := Y;
+      if (X < 1) then
+        XInClientRect := 1
+      else
+        if (X >= ClientWidth) then
+          XInClientRect := ClientWidth - 1
+        else
+          XInClientRect := X;
+      Node := GetNodeAt(XInClientRect, YInClientRect);
+      if (Node <> nil) then
+      begin
+        DoScroll(Node, X, Y);
+        try
+          Node := GetNodeAt(XInClientRect, YInClientRect);
+        except
+          Node := nil;
+        end;
+      end;
+    end
+    else
+      Node := GetNodeAt(X, Y);
+    if (Node <> nil) and NodeLineFullVisible(Node) then
+    begin
+      Node.MakeVisible;
+      if not Dragging then
+        Selected := Node;
+    end;
+  end;
+end;
+
+procedure TCustomTreeViewEx.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  HT: THitTests;
+  DeltaMouseDownTickCount: Integer;
+
+procedure StartMouseSelect;
+begin
+  if not Selected.HasChildren then
+    FOnMouseSelect(self)
+  else
+  { maybe it becomes a doubleclick, wait a little bit: }
+    if (FMouseSelectTimer = 0) then
+      FMouseSelectTimer :=
+        SetTimer(Handle, TimerIDMouseSelect,
+                 GetDoubleClickTime - DeltaMouseDownTickCount, nil);
+end;
+
+begin { MouseUp }
+  if (FScrollTimer <> 0) then
+  begin
+    KillTimer(Handle, TimerIDScroll);
+    FScrollTimer := 0;
+  end;
+  inherited MouseUp(Button, Shift, X, Y);
+  if (tvesMouseStillDownAfterDoubleClick in FState) then
+    Exclude(FState, tvesMouseStillDownAfterDoubleClick)
+  else
+  begin
+    if (Button = mbLeft) then
+    begin
+      if (not Dragging) and (Selected <> nil) and
+         (GetNodeAt(X, Y) = Selected) then
+      begin
+        DeltaMouseDownTickCount := (GetTickCount - FLMouseDownTickCount);
+        if (DeltaMouseDownTickCount < GetDoubleClickTime) and
+           Assigned(FOnMouseSelect) then
+        begin
+          HT := GetHitTestInfoAt(X, Y);
+          if (tveMouseMoveSelect in FOptions) then
+          begin
+          { MouseSelect if not hit on Icon or Indent: }
+            if (HT - [htOnItem {, htOnIcon, htOnIndent}, htOnRight] <>
+                HT) then
+              StartMouseSelect;
+          end
+          else
+          begin
+          { MouseSelect on direct hit only: }
+            if (HT - [htOnItem {, htOnIcon, htOnIndent, htOnRight}] <>
+                HT) then
+              StartMouseSelect;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+var
+  LastDragSource: TDragObject = nil;
+
+procedure TCustomTreeViewEx.WMTimer(var Msg: TWMTimer);
+var
+  Node: TTreeNode;
+  P: TPoint;
+begin
+  case Msg.TimerID of
+    TimerIDScroll:
+      begin
+        KillTimer(Handle, TimerIDScroll);
+        FScrollTimer := 0;
+        GetCursorPos(P);
+        with ScreenToClient(P) do
+        begin
+          if (Y < 1) then
+            Y := 1
+          else
+            if (Y >= ClientHeight) then
+              Y := ClientHeight - 1;
+          if (X < 1) then
+            X := 1
+          else
+            if (X >= ClientWidth) then
+              X := ClientWidth - 1;
+          Node := GetNodeAt(X, Y);
+          if (Node <> nil) then
+          begin
+            with ScreenToClient(P) do
+              DoScroll(Node, X, Y);
+            if (tveMouseMoveSelect in FOptions) or Dragging then
+            begin
+              Node := GetNodeAt(X, Y);
+              if (Node <> nil) then
+              begin
+                if (LastDragSource <> nil) then
+                  LastDragSource.HideDragImage;
+                Node.MakeVisible;
+                if (LastDragSource <> nil) then
+                begin
+                  LastDragSource.ShowDragImage;
+                  Windows.GetCursorPos(P);
+                  Windows.SetCursorPos(P.X, P.Y);
+                end;
+                if (tveMouseMoveSelect in FOptions) then
+                  Selected := Node;
+              end;
+            end;
+          end;
+        end;
+      end;
+    TimerIDMouseSelect:
+      begin
+        KillTimer(Handle, TimerIDMouseSelect);
+        FMouseSelectTimer := 0;
+        FOnMouseSelect(self);
+      end;
+    else
+      inherited;
+  end; { case }
+end;
+
+procedure TCustomTreeViewEx.DoScroll(Node: TTreeNode; MouseX, MouseY: Integer);
+var
+  TickCount: Integer;
+  P: TPoint;
+begin
+  if (Node <> nil) then
+  begin
+  { UP: }
+    if {(not Dragging and (MouseY < 0)) or}
+       ((MouseY < DragScrollBorder) and
+        ((MouseY >= 0) or
+         ((LastDragSource = nil) and (MouseY > -DragScrollBorder)))) then
+    begin
+      TickCount := GetTickCount;
+      if ((TickCount - FDragScrollTickCount) >= DoNextScrollTickCount) then
+      begin
+        Node := Node.GetPrevVisible;
+        if (Node <> nil) then
+        begin
+          FDragScrollTickCount := TickCount;
+          if (LastDragSource <> nil) then
+            LastDragSource.HideDragImage;
+          Node.MakeVisible;
+          if (LastDragSource <> nil) then
+          begin
+            LastDragSource.ShowDragImage;
+            Windows.GetCursorPos(P);
+            Windows.SetCursorPos(P.X, P.Y);
+            Invalidate; // temp., must be optimized
+          end;
+          if (FScrollTimer = 0) then
+            FScrollTimer := SetTimer(Handle, TimerIDScroll,
+                                     DoNextScrollTickCount, nil);
+        end;
+      end;
+      exit;
+    end;
+  { Down: }
+    if {(not Dragging and (MouseY > ClientHeight)) or}
+       ((MouseY > (ClientHeight - DragScrollBorder)) and
+        ((MouseY <= ClientHeight) or
+         ((LastDragSource = nil) and
+          (MouseY < (ClientHeight + DragScrollBorder))))) then
+    begin
+      TickCount := GetTickCount;
+      if ((TickCount - FDragScrollTickCount) >= DoNextScrollTickCount) then
+      begin
+        Node := Node.GetNextVisible;
+        if (Node <> nil) then
+        begin
+          FDragScrollTickCount := TickCount;
+          if (LastDragSource <> nil) then
+            LastDragSource.HideDragImage;
+          Node.MakeVisible;
+          if (LastDragSource <> nil) then
+          begin
+            LastDragSource.ShowDragImage;
+            (*
+            with WMMouse do
+            begin
+              Msg := WM_MOUSEMOVE;
+              Keys := 0;
+              Result := 0;
+              Pos.X := MouseX;
+              Pos.Y := MouseY;
+            end;
+            LastDragSource.MouseMsg(WMMouse); private >:-(
+            *)
+            Windows.GetCursorPos(P);
+            Windows.SetCursorPos(P.X, P.Y);
+          end;
+          if (FScrollTimer = 0) then
+            FScrollTimer := SetTimer(Handle, TimerIDScroll,
+                                     DoNextScrollTickCount, nil);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TCustomTreeViewEx.CMDrag(var Message: TCMDrag);
+var
+  PossibleDrop: Boolean;
+begin
+  inherited;
+  with Message, DragRec^ do
+  begin
+    PossibleDrop := (Result <> 0);
+    if (DragMessage = dmDragMove) then
+      with ScreenToClient(Pos) do
+        DoDragOver(Source, X, Y, PossibleDrop);
+    if FDontAcceptLastPossibleDropTarget or
+       (DragMessage = dmDragDrop) or (DragMessage = dmDragLeave) or
+       ((DragMessage = dmDragMove) and not PossibleDrop) then
+    begin
+      if (FLastPossibleDropTarget <> nil) then
+      begin
+        Source.HideDragImage; // Maybe Window under Image changes
+        try
+          FLastPossibleDropTarget.DropTarget := false;
+        finally
+          FLastPossibleDropTarget := nil;
+          Source.ShowDragImage;
+        end;
+      end;
+//    if PossibleDrop and FDontAcceptLastPossibleDropTarget then
+//      Selected.DropTarget := true;
+    end;
+    if (DragMessage = dmDragDrop) or (DragMessage = dmDragLeave) then
+      LastDragSource := nil
+    else
+      LastDragSource := Source;
+  end;
+end;
+
+procedure TCustomTreeViewEx.DoDragOver(Source: TDragObject; X, Y: Integer;
+  PossibleDrop: Boolean);
+var
+  Node: TTreeNode;
+begin
+  Node := GetNodeAt(X, Y);
+  if (Node <> nil) then
+  begin
+    if PossibleDrop then
+      if (Node.DropTarget) then
+        FLastPossibleDropTarget := Node
+      else
+        FLastPossibleDropTarget := nil;
+    DoScroll(Node, X, Y);
+  end;
+end;
+
+function TCustomTreeViewEx.MultipleRootsAllowed: Boolean;
+begin
+  result := (tveMultipleRootsAllowed in Options);
+end;
+
+procedure TCustomTreeViewEx.DragOver(Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+var
+  DestinationNode: TTreeNode;
+  HT: THitTests;
+begin
+  FDontAcceptLastPossibleDropTarget := false;
+  inherited;
+  DestinationNode := GetNodeAt(X, Y);
+(*
+  if (DestinationNode <> nil) then
+  { do little scrolling if half-shown: }
+    DestinationNode.MakeVisible;
+*)
+  if Assigned(OnDragOver) and not Accept then
+  { Accept was set to false on event OnDragOver }
+    exit;
+  if not (tveAutoDragMove in Options) then
+  { we are not responible for dragging-things }
+    exit;
+  if (Source <> self) then
+  { that has to be done by decentant.DragOver or by OnDragOver. }
+    exit;
+{ At this point, we know that Selected is the node that gets dragged.
+  Maybe DestinationNode is the target:
+  We will test this with GetHitTestInfoAt(X, Y). }
+  Accept := false;
+  if (Selected = nil) then
+  { error: should not happen here }
+    exit;
+  if ReadOnly then
+  { error: should not happen here }
+    exit;
+  if MultipleRootsAllowed and not IsRootNode(Selected) then
+  begin
+  { Node could become another root:
+    Accept if the dragged node does not touch another node: }
+    if (DestinationNode = nil) then
+    begin
+      FDontAcceptLastPossibleDropTarget := true;
+      Accept := true;
+      exit;
+    end;
+    HT := GetHitTestInfoAt(X, Y);
+    if (HT - [htOnIndent] <> HT) then
+    begin
+      FDontAcceptLastPossibleDropTarget := true;
+      Accept := true;
+      exit;
+    end;
+  end;
+  if (DestinationNode <> nil) and (DestinationNode <> Selected) and
+     (Selected.Parent <> DestinationNode) and
+     (not DestinationNode.HasAsParent(Selected)) then
+  begin
+    HT := GetHitTestInfoAt(X, Y);
+    if (HT - [htOnItem, htOnIcon, {htOnIndent,} htOnRight] <> HT) then
+    { DestinationNode is a candidate to get the new parent of the dragged node }
+      Accept := true;
+  end;
+end;
+
+procedure TCustomTreeViewEx.DragCanceled;
+begin
+  KillAllTimer;
+  inherited;
+  if (FLastPossibleDropTarget <> nil) then
+  begin
+    FLastPossibleDropTarget.DropTarget := false;
+    FLastPossibleDropTarget := nil;
+  end;
+  if (Selected <> nil) then
+    Selected.MakeVisible;
+end;
+
+procedure TCustomTreeViewEx.DragDrop(Source: TObject; X, Y: Integer);
+var
+  DestinationNode: TTreeNode;
+  HT: THitTests;
+begin
+  KillAllTimer;
+  if (Source <> self) or (Selected = nil) or
+     not (tveAutoDragMove in Options) then
+  begin
+    inherited;
+    exit;
+  end;
+  HT := GetHitTestInfoAt(X, Y);
+  DestinationNode := GetNodeAt(X, Y);
+  if (DestinationNode = nil) then
+  begin
+    if MultipleRootsAllowed and not IsRootNode(Selected) then
+      MoveNode(Selected, nil, naAdd)
+    else
+      inherited;
+    exit;
+  end;
+  if MultipleRootsAllowed and (htOnIndent in HT) and
+     not IsRootNode(Selected) then
+  begin
+    MoveNode(Selected, nil, naAdd);
+    exit;
+  end;
+  if (HT - [htOnItem, htOnIcon, {htNowhere, htOnIndent,} htOnRight] <> HT) then
+  begin
+    MoveNode(Selected, DestinationNode, naAddChild);
+    exit;
+  end;
+  inherited;
+end;
+
+function TCustomTreeViewEx.MoveNode(Source, Destination: TTreeNode;
+  Mode: TNodeAttachMode): Boolean;
+begin
+  Result := false;
+  if (Source = nil) then
+    exit;
+{ if not CanEdit(Source) then exit; Please test before! }
+  Source.MoveTo(Destination, Mode);
+{ Delphi 2.0: sometimes Source is vanished: }
+{ bugfix part 1: }
+  if (Destination <> nil) then
+    Destination.HasChildren := true;
+{ bugfix part 2: }
+  Source.MakeVisible;
+  Result := true;
+end;
+
+procedure TCustomTreeViewEx.WMChar(var Message: TWMKeyDown);
+begin
+  if (Char(Message.CharCode) in IgnoreWMChars) or
+     (tvesIgnoreNextWMChar in FState) then
+  begin
+  { Message.Result := 1; }
+    Message.CharCode := 0;
+    Exclude(FState, tvesIgnoreNextWMChar);
+  end
+  else
+    inherited;
+end;
+
+procedure TCustomTreeViewEx.WndProc(var Message: TMessage);
+begin
+  case Message.Msg of
+    WM_KEYDOWN:
+      if (TWMKeyDown(Message).CharCode = 27) and Dragging then
+      begin
+        CancelDrag;
+        Include(FState, tvesIgnoreNextWMChar); { avoid beep }
+        TWMKeyDown(Message).CharCode := 0;
+      { Message.Result := 1; }
+        exit;
+      end;
+    WM_RBUTTONDOWN:
+      Include(FState, tvesRightButtonPressed);
+    WM_KILLFOCUS:
+      begin
+        Exclude(FState, tvesRightButtonPressed); { no PopupMenu }
+        if (tvesWaitingForPopupMenu in FState) then
+        begin
+          Exclude(FState, tvesWaitingForPopupMenu); { no PopupMenu anyway }
+          Items.EndUpdate;
+        end;
+      end;
+  end;
+  inherited WndProc(Message);
+end;
+
+procedure TCustomTreeViewEx.CNNotify(var Message: TWMNotify);
+var
+  MousePos: TPoint;
+  ClientMousePos: TPoint;
+  NodeRect: TRect;
+begin
+  with Message.NMHdr^ do
+    case code of
+      TVN_BEGINRDRAG:
+        begin
+          Exclude(FState, tvesRightButtonPressed); { no PopupMenu }
+          if (tvesWaitingForPopupMenu in FState) then
+          begin
+            Exclude(FState, tvesWaitingForPopupMenu); { no PopupMenu anyway }
+            Items.EndUpdate;
+          end;
+        end;
+      NM_RCLICK:
+        begin
+        { A Node received a WM_RBUTTONUP-message: }
+          if (tvesWaitingForPopupMenu in FState) or
+             (tvesRightButtonPressed in FState) then
+          begin
+          { Initialize start of PopupMenu: }
+            GetCursorPos(MousePos);
+            ClientMousePos := ScreenToClient(MousePos);
+            with ClientMousePos do
+              FRSelected := GetNodeAt(X, Y);
+            if (FRSelected <> nil) then
+            begin
+            { Don't show PopupMenu at the middle of the node: }
+              NodeRect := FRSelected.DisplayRect(false);
+              ClientMousePos.Y := NodeRect.Bottom;
+            end;
+            with PointToSmallPoint(ClientMousePos) do
+              Perform(WM_RBUTTONUP, 0, MakeLong(X, Y));
+          end;
+          exit; { don't give message to TTreeView.CNNotify }
+        end;
+      -12: { NM_??? (please send me a mail if you know what it is) }
+        if (tvesRightButtonPressed in FState) then
+        begin
+        { A Node received a WM_RBUTTONUP-message and got the focus: }
+          Exclude(FState, tvesRightButtonPressed); { do it only once }
+          Include(FState, tvesWaitingForPopupMenu);
+        { Now, maybe  the focused and the selected node are not the same.
+          We will show this until the PopupMenu is visible: }
+          Items.BeginUpdate; { make changes of the tree invisible }
+        end;
+    end;
+  inherited;
+end;
+
+procedure TCustomTreeViewEx.WMRButtonUp(var Message: TWMRButtonUp);
+begin
+{ Calling inherited will show PopupMenu }
+  if (tvesWaitingForPopupMenu in FState) then
+  begin
+  { Allow PopupMenu if initialized at CNNotify: }
+    Exclude(FState, tvesWaitingForPopupMenu);
+    Items.EndUpdate;
+    inherited;
+  end
+  else
+    if (tvesRightButtonPressed in FState) then
+    { Allow PopupMenu if CNNotify was called with NM_RCLICK: }
+      inherited;
+  Exclude(FState, tvesRightButtonPressed);
+end;
+
+procedure TCustomTreeViewEx.DoStartDrag(var DragObject: TDragObject);
+var
+  ImageHandle: HImageList;
+  DragNode: TTreeNode;
+  P: TPoint;
+begin
+  inherited DoStartDrag(DragObject);
+  FDragImage.Handle := 0;
+  if (DragImageShow = tvdisNever) then
+    exit;
+  GetCursorPos(P);
+  with ScreenToClient(P) do
+    DragNode := GetNodeAt(X, Y);
+  if (DragNode <> nil) then
+  begin
+    ImageHandle := TreeView_CreateDragImage(Handle, DragNode.ItemId);
+    if (ImageHandle = 0) and (Images = nil) and
+       (DragImageShow = tvdisAlways) then
+    begin
+      with TImageList.Create(self) do
+      try
+        TreeView_SetImageList(self.Handle, Handle, TVSIL_NORMAL);
+      finally
+        free;
+      end;
+      ImageHandle := TreeView_CreateDragImage(Handle, DragNode.ItemId);
+      TreeView_SetImageList(Handle, 0, TVSIL_NORMAL);
+    end;
+    if (ImageHandle <> 0) then
+    begin
+      with FDragImage do
+      begin
+        Handle := ImageHandle;
+{ This is why I have copied this part from TCustomTreeView:
+    //  SetDragImage(0, 2, 2);
+  By calling SetDragImage, the original procedure sets the
+  ImageList.Dragging property to true. If no real drag happens
+  (no mouse move), the ImageList will call ShowCursor(True)
+  without a call of ShowCursor(False) before - so the cursor
+  remains visible while dragging. This is a bug of TCustomImageList
+  (in Delphi 2.0, I don't know if in D3 too), but it is not
+  possible to overwrite TCustomImageList to make it bugfree. }
+      end;
+    end;
+  end;
+end;
+
+{function TCustomTreeViewEx.GetDragImages: TCustomImageList;
+begin
+  if (FDragImage.Count > 0) then
+    Result := FDragImage
+  else
+    Result := nil;
+end;}
+
+
+
+end.
