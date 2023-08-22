@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_SHA2">
+  <const name="SHA_224" type="TSHA2FamilyMember">
+    <value>
+      SHA_224
+    </value>
+  </const>
+  <const name="SHA_256" type="TSHA2FamilyMember">
+    <value>
+      SHA_256
+    </value>
+  </const>
+  <const name="SHA_348" type="TSHA2FamilyMember">
+    <value>
+      SHA_348
+    </value>
+  </const>
+  <const name="SHA_512" type="TSHA2FamilyMember">
+    <value>
+      SHA_512
+    </value>
+  </const>
+  <const name="SHA_512_224" type="TSHA2FamilyMember">
+    <value>
+      SHA_512_224
+    </value>
+  </const>
+  <const name="SHA_512_256" type="TSHA2FamilyMember">
+    <value>
+      SHA_512_256
+    </value>
+  </const>
+  <enum name="TSHA2FamilyMember">
+    <element name="SHA_224" />
+    <element name="SHA_256" />
+    <element name="SHA_348" />
+    <element name="SHA_512" />
+    <element name="SHA_512_224" />
+    <element name="SHA_512_256" />
+  </enum>
+  <class name="TSHA2">
+    <ancestor name="TInterfacedObject" namespace="System">
+      <methodref name="QueryInterface" visibility="protected">
+      </methodref>
+      <methodref name="_AddRef" visibility="protected">
+      </methodref>
+      <methodref name="_Release" visibility="protected">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <propertyref name="RefCount" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="IControlObject" />
+      <implements name="ICryptoGraphicAlgorithm" />
+      <implements name="IHashDsc" />
+    </interfaces>
+    <members>
+      <field name="FAlgorithm" type="TSHA2FamilyMember" visibility="private" />
+      <function name="DisplayName" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="ProgId" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="Features" visibility="private">
+        <parameters>
+          <retval type="TAlgorithmicFeatureSet" />
+        </parameters>
+      </function>
+      <function name="DigestSize" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="UpdateSize" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="MakeHasher" visibility="private">
+        <parameters>
+          <parameter name="Params" type="IInterface" paramflags="const" />
+          <retval type="IHasher" />
+        </parameters>
+      </function>
+      <function name="DefinitionURL" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="WikipediaReference" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="ControlObject" visibility="private">
+        <devnotes>
+          ////////////////////////////////////
+        </devnotes>
+        <parameters>
+          <retval type="TObject" />
+        </parameters>
+      </function>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="Algorithm1" type="TSHA2FamilyMember" />
+        </parameters>
+      </constructor>
+    </members>
+  </class>
+</namespace>
