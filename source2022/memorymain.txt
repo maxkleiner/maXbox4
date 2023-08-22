@@ -1,0 +1,577 @@
+program memorymain;
+
+
+//{$DEFINE MEMSOUND}
+//{$UNDEF MEMSOUND}
+
+{uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Menus, Grids, About, StdCtrls, ExtCtrls, ComCtrls, QHelp, Stats, IniFiles,
+  BPUnit, BPInsert, WWInsert, MMSystem, Names, MultiEnd;}
+
+{type
+  TMainForm = class(TForm)
+    MainMenu1: TMainMenu;
+    DrawGrid1: TDrawGrid;
+    Help1: TMenuItem;
+    About1: TMenuItem;
+    Exit1: TMenuItem;
+    N2: TMenuItem;
+    New1: TMenuItem;
+    Options1: TMenuItem;
+    Sound1: TMenuItem;
+    Bevel1: TBevel;
+    TimeLabel: TLabel;
+    ImaginesLabel: TLabel;
+    ProgBar: TProgressBar;
+    Bevel2: TBevel;
+    Timer1: TTimer;
+    ShotsLabel: TLabel;
+    ShowAllCards1: TMenuItem;
+    N1: TMenuItem;
+    Statistics1: TMenuItem;
+    BestPlayers1: TMenuItem;
+    N3: TMenuItem;
+    Game1: TMenuItem;
+    QuickHelp1: TMenuItem;
+    N4: TMenuItem;
+    Deck1: TMenuItem;
+    Blue1: TMenuItem;
+    Green1: TMenuItem;
+    Red1: TMenuItem;
+    Yellow1: TMenuItem;
+    ScoreLabel: TLabel;
+    Bevel3: TBevel;
+    N5: TMenuItem;
+    Players1: TMenuItem;
+    One1: TMenuItem;
+    Two1: TMenuItem;
+    Four1: TMenuItem;
+    Three1: TMenuItem;
+    MultiPanel: TPanel;
+    lbPlayer1: TLabel;
+    lbPlayer3: TLabel;
+    lbPlayer2: TLabel;
+    lbPlayer4: TLabel;
+    ProgBar1: TProgressBar;
+    ProgBar2: TProgressBar;
+    ProgBar3: TProgressBar;
+    ProgBar4: TProgressBar;
+    PausePanel: TPanel;
+    Pause1: TMenuItem;
+    procedure Exit1Click(Sender: TObject);
+    procedure About1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure DrawGrid1DrawCell(Sender: TObject; Col, Row: Integer;
+      Rect: TRect; State: TGridDrawState);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Timer1Timer(Sender: TObject);
+    procedure DrawGrid1MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Sound1Click(Sender: TObject);
+    procedure ShowAllCards1Click(Sender: TObject);
+    procedure QuickHelp1Click(Sender: TObject);
+    procedure Statistics1Click(Sender: TObject);
+    procedure New1Click(Sender: TObject);
+    procedure Blue1Click(Sender: TObject);
+    procedure BestPlayers1Click(Sender: TObject);
+    procedure One1Click(Sender: TObject);
+    procedure Pause1Click(Sender: TObject);
+    procedure FormClick(Sender: TObject);
+  private
+  public }
+  
+  
+// *********************************
+// array is 5 * 8 = 40  (0..4)*(0..7)
+// sounds are 45 files
+// pictures are 35 files
+
+const TotalPictures = 35;
+      CROW = 4;
+      CCOL = 7;
+      MAXFOUND = 20;
+      MAXMEM = 40;
+      FILE_NAME = 'memory.ini';
+      
+      
+      
+type  TMap = array[0..CROW] of integer;     
+      TDisplay = array[0..CROW] of integer;     
+      TShowCard = array[0..CROW] of integer;     
+  
+  
+var  
+    Bmp: TBitmap;
+    Map: array[0..CCOL] of TMap;
+    Display: array[0..CCOL] of TDisplay;
+    ShowCard: array[0..CCOL] of TShowCard;
+    FirstShot, Playing, AllCards, InPause: Boolean;
+    Imagefile, mSound, SelectedDeck: PChar;
+
+
+  mForm: TForm;
+  DrawGrid1: TDrawGrid;
+  Timer1: TTimer;
+  
+  
+  StGames, StShots, StSeconds, StScore,
+  Seconds, Shots, Score, Founds, FSValue,
+  Col1, Row1, Col2, Row2, Players, Turn,
+  Score1, Score2, Score3, Score4: Integer;
+  WinDir: PChar;
+  //MemoryIni: Text;
+  MIni: TIniFile;
+  DeckColor, Wow,
+  Name1, Name2, Name3, Name4, blue1, green1, red1: String;
+  TopName, TopScore, TopSeconds, TopShots: Array[1..5] of String;
+
+
+{procedure TMainForm.Exit1Click(Sender: TObject);
+begin
+  Close;
+end;}
+
+
+procedure Blue1Click(vcolor: string);
+begin
+  if vcolor = Blue1 then begin
+    SelectedDeck := 'DECK1';
+    DeckColor := 'Blue';
+  end
+  else if vcolor = Green1 then begin
+    SelectedDeck := 'DECK2';
+    DeckColor := 'Green';
+  end
+  else if vcolor = Red1 then begin
+    SelectedDeck := 'DECK3';
+    DeckColor := 'Red';
+  end
+  DrawGrid1.Repaint;
+end;
+
+
+procedure ShowAllCards1Click(Sender: TObject);
+var i,j : integer;
+begin
+  for i:= 0 to CCOL do
+   for j:= 0 to CROW do
+    ShowCard[i][j]:= 1;
+  //Pause1.Enabled:= False;
+  //Timer1.Enabled:= False;
+  Playing:= False;
+  AllCards:= True;
+  DrawGrid1.Repaint;
+end;
+
+
+procedure New1Click(Sender: TObject);
+var i,j,k,num,maxc,r: Integer;
+    CanProceed: Boolean;
+    a: array [1..MAXFOUND] of Integer;
+    c,d: array [1..MAXMEM] of Integer;
+begin
+  // various graphic/var settings
+  if Players = 1 then begin
+    Seconds:= 0;
+    Shots:= 0;
+    Founds:= 0;
+    Score:= 0;
+    {TimeLabel.Caption:= 'Seconds: 0';
+    ShotsLabel.Caption:= 'Total shots: 0';
+    ScoreLabel.Caption:= 'Score: 0';
+    ImaginesLabel.Caption:= 'Imagines found: 0/20';}
+    //Pause1.Enabled:= True;
+    Timer1:= TTimer.create(self);
+    Timer1.Enabled:= True;
+  end
+  else begin
+    //Pause1.Enabled:= False;
+    Turn:= 1;
+    Score1:= 0;
+    Score2:= 0;
+    Score3:= 0;
+    Score4:= 0;
+    {lbPlayer1.Color:= clYellow;
+    lbPlayer2.Color:= clBtnFace;
+   { if Players > 2 then
+      lbPlayer3.Caption:= Name3+': 0'
+    else lbPlayer3.Caption:= 'Not playing';
+    if Players = 4 then
+      lbPlayer4.Caption:= Name4+': 0'
+    else lbPlayer4.Caption:= 'Not playing';
+  end; }
+  FirstShot:= True;
+  AllCards:= False;
+  Playing:= True;
+  //Pause1.Checked:= False;
+  InPause:= False;
+  //PausePanel.Hide;
+  for i:= 0 to CCOL do
+  for j:= 0 to CROW do begin
+    Display[i][j]:= 1;
+    ShowCard[i][j]:= 0;
+  end;
+  DrawGrid1.Repaint;
+  // creation of array of cards:
+  // step 1 - random selection of 25 cards from the total
+  for j:= 1 to MAXFOUND do begin
+    repeat
+      num:= random(TotalPictures)+1;
+      CanProceed:= True;
+      for i:= 1 to j do
+        if a[i]= num then begin
+          CanProceed:= False;
+          Break; //exit the for loop
+        end;
+    until CanProceed;
+   a[j]:= num;
+  end;
+  // step 2 - creation of a 40 cards array
+  for i:= 1 to MAXFOUND do begin
+    c[i]:= a[i];
+    c[i+MAXFOUND]:= a[i];
+  end;
+  // step 3 - random sort of the array
+  maxc:= MAXMEM;
+  for i:= 1 to MAXMEM do begin
+    r:= random(maxc)+1;
+    d[i]:= c[r];
+    for k:= r to (maxc-1)  // moving back c[] elements
+      do c[k]:= c[k+1];
+    Dec(maxc);
+  end;
+  // step 4 - creation of a two-dimension array (Map)
+  // d[k] has each number from two same number pair
+  k:= 1;
+  for i:= 0 to CCOL do
+    for j:= 0 to CROW do begin
+      Map[i][j]:= d[k];
+      Inc(k);
+    end;
+
+end;
+end;
+
+procedure DrawGrid1MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var Col, Row: Integer;
+
+begin
+  DrawGrid1.MouseToCell(X, Y, Col, Row);
+   writeln(inttostr(col)+inttostr(row))
+ 
+  // if left button is pressed on an active card
+  if (Button = mbLeft) and (Display[Col][Row] = 1) and Playing then begin
+    ShowCard[Col][Row]:= 1;
+    // second shot
+    if (not FirstShot) and ((Col<>Col1) or (Row<>Row1))then begin
+      Playing:= False;
+      Row2:= Row;
+      Col2:= Col;
+      FirstShot:= True;
+      // same cards
+      if Map[Col][Row] = FSValue then begin
+        // one player
+        if Players = 1 then begin
+        Inc(Founds);
+        //ImaginesLabel.Caption:= 'Imagines found: '
+          //                +IntToStr(Founds)+ '/' + inttostr(MAXFOUND);
+        // end of game
+        if Founds = MAXFOUND then begin
+          //Pause1.Enabled := False;
+          Playing := True;
+          Inc(Shots);
+          //ShotsLabel.Caption:= 'Total shots: '+IntToStr(Shots);
+          Timer1.Enabled:= False;
+          Score:= Trunc(10000000/(Seconds*Shots));
+          //ScoreLabel.Caption:= 'Score: '+IntToStr(Score);
+          ShowMessage('End of game!'+#13+'Score: '+IntToStr(Score));
+          // statistics
+          Inc(StGames);
+          StSeconds:= StSeconds+Seconds;
+          StScore:= StScore+Score;
+          StShots:= StShots+Shots;
+          // other instructions...
+          Display[Col1][Row1]:= 0;
+          Display[Col2][Row2]:= 0;
+          // input name if score is good
+          end
+          // more than one player
+          else begin
+          case Turn of
+            1: begin
+                 Inc(Score1);
+                 //lbPlayer1.Caption:= Name1+': '+IntToStr(Score1);
+               end;
+            2: begin
+                 Inc(Score2);
+                 //lbPlayer2.Caption:= Name2+': '+IntToStr(Score2);
+               end;
+          end;
+          Dec(Turn);
+          // if end of game
+          if Score1+Score2+Score3+Score4 = MAXFOUND then begin
+            //Pause1.Enabled := False;
+            Playing := True;
+            Display[Col1][Row1]:= 0;
+            Display[Col2][Row2]:= 0;
+            DrawGrid1.Repaint;
+          end
+          PlaySound('C:\SC254_Test\maxbox3\source\tick.wav',0,1);
+          end;
+      end;
+    end
+    // first shot
+    else begin
+    // fsvalue to check a hit
+      FSValue:= Map[Col][Row];
+      Col1:= Col;
+      Row1:= Row;
+      FirstShot:= False;
+    end;
+  end
+  // if right button is pressed after 2nd shot
+  else if (Button = mbRight) and FirstShot
+       and (not Playing) and (not AllCards) then begin
+    Playing:= True;
+    if Players = 1 then begin
+      Inc(Shots);
+      //ShotsLabel.Caption:= 'Total shots: '+IntToStr(Shots);
+    end
+    else begin
+      Inc(Turn);
+      if Turn > Players then Turn := 1;
+      //case Turn of
+        {1: lbPlayer1.Color:= clYellow;
+        2: lbPlayer2.Color:= clYellow;
+        3: lbPlayer3.Color:= clYellow;
+        4: lbPlayer4.Color:= clYellow;}
+      //end;
+    end;
+    //test of all cards
+    ShowCard[Col1][Row1]:= 0;
+    ShowCard[Col2][Row2]:= 0;
+    // when hit then dont show the two cards
+    if Map[Col1][Row1]=Map[Col2][Row2] then begin
+      Display[Col1][Row1]:= 0;
+      Display[Col2][Row2]:= 0;
+    end;
+  end;
+  DrawGrid1.Repaint;
+end;
+end;
+
+
+procedure DrawGrid1DrawCell(Sender: TObject; Col, Row: Integer;
+  Rect: TRect; State: TGridDrawState);
+begin
+writeln(inttostr(col)+inttostr(row))
+  // drawing the correct card...
+  if Display[Col][Row] = 1 then begin
+    if ShowCard[Col][Row] = 1 then begin
+      //{$ELSE}
+        Imagefile:= PChar('bmp' + IntToStr(Map[Col][Row])+'.bmp');
+        //Bmp.Handle:= LoadBitmap(HInstance, Image);
+         bmp.loadfromFile('C:\SC254_Test\maxbox3\source\'+Imagefile)
+    end
+  // ...or the deck...
+    else
+    //Bmp.Handle:= LoadBitmap(HInstance, SelectedDeck);
+  end
+  // ...or no card.
+  else //Bmp.Handle:= LoadBitmap(HInstance, 'EMPTY');
+    //Bmp.Handle:= LoadBitmap(HInstance, SelectedDeck);
+        Imagefile:= PChar('bmp' + IntToStr(Map[Col][Row])+'.bmp');
+        bmp.loadfromFile('C:\SC254_Test\maxbox3\source\'+Imagefile)
+
+   //DrawGrid1.Canvas.Draw(Rect.Left, Rect.Top, Bmp);
+end;
+
+
+procedure FormCreate(Sender: TObject);
+var i: integer;
+    file_path: string;
+begin
+  // INI file
+  //GetMem(WinDir, 144);
+  //GetWindowsDirectory(WinDir, 144);
+  //StrCat(WinDir, '\Memory.ini');
+  //Result:= ExpandFileName(filename);
+  if not FileExists(FILE_NAME) then begin
+    //AssignFile(MemoryIni, FILE_NAME);
+    //Rewrite(MemoryIni);
+    //CloseFile(MemoryIni);
+  end;
+  file_path:= extractFilePath(application.ExeName) +FILE_NAME;
+  MIni:= TIniFile.Create(file_path);
+  with MIni do begin
+    // statistics vars
+    StGames:= StrToInt(ReadString('Statistics','StGames','0'));
+    StScore:= StrToInt(ReadString('Statistics','StScore','0'));
+    StShots:= StrToInt(ReadString('Statistics','StShots','0'));
+    StSeconds:= StrToInt(ReadString('Statistics','StSeconds','0'));
+    DeckColor:= ReadString('Deck','Current','Blue');
+    for i:= 1 to 5 do begin
+      TopName[i]:= ReadString('Best players','TopName'+IntToStr(i),'Noname');
+      TopScore[i]:= ReadString('Best players','TopScore'+IntToStr(i),'0');
+      TopSeconds[i]:= ReadString('Best players','TopSeconds'+IntToStr(i),'0');
+      TopShots[i]:= ReadString('Best players','TopShots'+IntToStr(i),'0');
+    end;
+    Wow:= ReadString('Best players','Wow','I like Super Memory!');
+  end;
+  //FreeMem(WinDir, 144);
+  // startup initializations
+  Randomize;
+  Bmp:= TBitmap.Create;
+   mForm:= TForm.create(self);
+ with mForm do begin
+   //FormStyle:= fsStayOnTop;
+   Position:= poScreenCenter;
+   //caption:= LOGO;
+   color:= clred;
+   width:= 1000;
+   height:= 800;
+   //onKeyPress:= @FormKeyPress;
+   //onClose:= @CloseClick;
+   //onPaint:= @Repaint;
+   Show
+ end;
+
+  drawGrid1:= TDrawGrid.Create(self);
+  drawGrid1.parent:= mForm;
+  Players:= 1;
+  //MultiPanel.Hide;
+  //PausePanel.Hide;
+  if DeckColor = 'Green' then Blue1Click(Green1)
+  else if DeckColor = 'Blue' then Blue1Click(Blue1)
+  else if DeckColor = 'Red' then Blue1Click(Red1)
+  mForm.Caption:= 'MaxMemory';
+  mform.Width:= 884;
+  mForm.Height:= 655;
+  //self.ClientHeight:= 620;
+  // 100 / 20 cards = 5
+  with drawgrid1 do begin
+    defaultcolwidth:= 108;
+    defaultrowheight:= 108;
+    height:= 540;
+    width:= 1082;
+    colcount:= 8;
+    rowcount:= 5;
+    top:= 8;
+    ondrawcell:= @DrawGrid1DrawCell;
+    onMouseUp:= @DrawGrid1MouseUp;
+  end;
+  //showAllcards1.enabled:= false;
+  New1Click(Self);
+end;
+
+
+
+procedure FormClose(Sender: TObject; var Action: TCloseAction);
+var i: integer;
+begin
+  Bmp.Free;
+  with MIni do begin
+    WriteString('Statistics', 'StGames', IntToStr(StGames));
+    WriteString('Statistics', 'StShots', IntToStr(StShots));
+    WriteString('Statistics', 'StSeconds', IntToStr(StSeconds));
+    WriteString('Statistics', 'StScore', IntToStr(StScore));
+    WriteString('Deck','Current', DeckColor);
+    for i:= 1 to 5 do begin
+      WriteString('Best players','TopName'+IntToStr(i),TopName[i]);
+      WriteString('Best players','TopScore'+IntToStr(i),TopScore[i]);
+      WriteString('Best players','TopSeconds'+IntToStr(i),TopSeconds[i]);
+      WriteString('Best players','TopShots'+IntToStr(i),TopShots[i]);
+    end;
+    WriteString('Best players','Wow',Wow);
+    //WriteBool('Sound','Active',Sound1.Checked);
+    Free;
+  end;
+end;
+
+procedure Timer1Timer(Sender: TObject);
+begin
+  Inc(Seconds);
+  if (Seconds<>0) and (Shots<>0) then
+  Score:= Trunc(400000*Founds/(Seconds*Shots));
+  //TimeLabel.Caption:= 'Seconds: '+IntToStr(Seconds);
+  //ScoreLabel.Caption:= 'Score: '+IntToStr(Score);
+end;
+
+
+
+
+
+procedure One1Click(Sender: TObject);
+begin
+if MessageDlg('This will start a new game. Sure?',mtConfirmation,[mbYes,mbNo],0)
+= mrYes then
+    Players:= 1
+  else begin
+    //MultiPanel.Show;
+  end;
+  New1Click(Self);
+end;
+
+
+begin
+ //
+ FormCreate(self)
+
+end.
+---------------------------------------
+
+new in 3.1:
+
+  DrawGrid1.Repaint;
+    GetWindowsDirectory(WinDir, 144);
+    
+    newtemplate.txt  --> ask if file exists !
+
+  function traingifSetup()
+{
+  createScene("SC01");
+  createConsist("CST1", "I_FS_VT_ALn460-448a.gif");
+  placeStaticStretch("up_bl.gif", 15, Top, 1);
+  createTrack("TRK1", 15, 3);
+  createTrain("TRN1", "CST1", Left, 20, 10);
+
+  createScene("SC02");
+  createConsist("CST2", "I_FS_VT_ALn460-448br.gif");
+  placeStaticStretch("up_bl.gif", 15, Top, 1);
+  createTrack("TRK2", 15, 3);
+  createTrain("TRN2", "CST2", Right, 20, 10);
+
+  createScene("SC03");
+  createConsist("CST3", "I_FS_VT_TEE442-60-448r.gif");
+  placeStaticStretch("up_bl.gif", 15, Top, 1);
+  placeStaticRepeat("FS_Cat3F.gif", 1, Bottom, 4);
+  createTrack("TRK3", 15, 3);
+  createTrain("TRN3", "CST3", Left, 40, 10);
+
+  createScene("SC04");
+  createConsist("CST4", "I_FS_VT_TEE442-448b+ETR220.gif");
+  placeStaticStretch("up_bl.gif", 15, Top, 1);
+  placeStaticRepeat("FS_Cat2N.gif", 1, Bottom, 4);
+  createTrack("TRK4", 15, 3);
+  createTrain("TRN4", "CST4", Right, 50, 10);
+
+  createScene("SC05");
+  createConsist("CST5", "I_FS_ET_ALe840+Ln602+ALe840.gif");
+  placeStaticStretch("up_bl.gif", 15, Top, 1);
+  placeStaticRepeat("FS_Cat2N.gif", 1, Bottom, 4);
+  createTrack("TRK5", 15, 3);
+  createTrain("TRN5", "CST5", Left, 20, 10);
+
+  createScene("SC06");
+  createConsist("CST6", "I_FS_VT_TEE442-448+2xALn990.gif");
+  placeStaticStretch("up_bl.gif", 15, Top, 1);
+  createTrack("TRK6", 15, 3);
+  createTrain("TRN6", "CST6", Left, 20, 10);
+
+}
+
+
+
+

@@ -1,0 +1,337 @@
+Build
+  [DCC Warning] SynHighlighterPas.pas(1614): H2077 Value assigned to 'ReadDelphiSettings' never used
+  [DCC Warning] uPSC_dateutils.pas(27): H2164 Variable 'm' is declared but never used in 'uPSC_dateutils'
+  [DCC Warning] hyperLabel.pas(23): H2365 Override method THyperLabel.create should match case of ancestor TCustomLabel.Create
+  [DCC Warning] WinForm1.pas(13): W1005 Unit 'FileCtrl' is specific to a platform
+  [DCC Warning] WinForm1.pas(65): H2219 Private symbol 'BtnChoice' declared but never used
+  [DCC Warning] IFSI_WinForm1puzzle.pas(148): H2164 Variable 'StartInString' is declared but never used in 'ExecuteCommand'
+  [DCC Warning] IFSI_WinForm1puzzle.pas(256): H2077 Value assigned to 'BinType' never used
+  [DCC Warning] IFSI_WinForm1puzzle.pas(259): W1036 Variable 'BinType' might not have been initialized
+  [DCC Warning] IFSI_WinForm1puzzle.pas(263): W1036 Variable 'SubSyst' might not have been initialized
+  [DCC Warning] IFSI_WinForm1puzzle.pas(522): W1013 Constant 0 converted to NIL
+  [DCC Warning] IFSI_WinForm1puzzle.pas(527): W1013 Constant 0 converted to NIL
+  [DCC Warning] IFSI_WinForm1puzzle.pas(549): W1036 Variable 'Ch' might not have been initialized
+  [DCC Warning] JimShape.pas(119): W1010 Method 'SetAutoSize' hides virtual method of base type 'TControl'
+  [DCC Warning] JimShape.pas(208): W1045 Property declaration references ancestor private 'TmStandardShape.SetShapeType'
+  [DCC Warning] JimShape.pas(1385): H2164 Variable 'I' is declared but never used in 'TmStandardShape.Create'
+  [DCC Warning] JimShape.pas(1386): H2164 Variable 'tempControl' is declared but never used in 'TmStandardShape.Create'
+  [DCC Warning] JimShape.pas(2049): H2164 Variable 'struc' is declared but never used in 'TMoveableChart.MouseUp'
+  [DCC Warning] JimShape.pas(2081): H2164 Variable 'y1' is declared but never used in 'TMoveableChart.StartMove'
+  [DCC Warning] JimShape.pas(195): H2219 Private symbol 'FMoving' declared but never used
+  [DCC Warning] Streams.pas(351): W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  [DCC Warning] Streams.pas(484): W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  [DCC Warning] Streams.pas(489): W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  [DCC Warning] LinarBitmap.pas(1558): W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  [DCC Warning] LinarBitmap.pas(1583): W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  [DCC Warning] LinarBitmap.pas(1587): W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  [DCC Warning] FileUtils.pas(23): W1002 Symbol 'faReadOnly' is specific to a platform
+  [DCC Warning] FileUtils.pas(23): W1002 Symbol 'faHidden' is specific to a platform
+  [DCC Warning] FileUtils.pas(23): W1002 Symbol 'faSysFile' is specific to a platform
+  [DCC Warning] FileUtils.pas(23): W1002 Symbol 'faArchive' is specific to a platform
+  [DCC Warning] FileUtils.pas(330): W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  [DCC Warning] FileUtils.pas(346): W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  [DCC Warning] ImageDLLLoader.pas(121): W1000 Symbol 'faVolumeID' is deprecated
+  [DCC Warning] ImageDLLLoader.pas(121): W1002 Symbol 'faVolumeID' is specific to a platform
+  [DCC Warning] uPSI_StrUtils.pas(425): W1002 Symbol 'FileGetAttr' is specific to a platform
+  [DCC Warning] uPSI_StrUtils.pas(428): W1002 Symbol 'FileSetAttr' is specific to a platform
+  [DCC Warning] uPSI_StrUtils.pas(442): W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  [DCC Warning] uPSI_StrUtils.pas(443): W1002 Symbol 'Win32Check' is specific to a platform
+  [DCC Warning] uPSI_StrUtils.pas(465): W1002 Symbol 'ExcludeTrailingBackslash' is specific to a platform
+  [DCC Warning] uPSI_StrUtils.pas(466): W1002 Symbol 'IncludeTrailingBackslash' is specific to a platform
+  [DCC Warning] IdGlobal_max.pas(169): W1010 Method 'WaitFor' hides virtual method of base type 'THandleObject'
+  [DCC Warning] IdGlobal.pas(158): W1010 Method 'WaitFor' hides virtual method of base type 'THandleObject'
+  [DCC Warning] IdStack.pas(272): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdStack.pas(506): W1035 Return value of function 'TIdStack.HostToNetwork' might be undefined
+  [DCC Warning] IdStack.pas(514): W1035 Return value of function 'TIdStack.NetworkToHost' might be undefined
+  [DCC Warning] IdGlobal_max.pas(2777): H2077 Value assigned to 'LCard' never used
+  [DCC Warning] IdHeaderList.pas(137): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHeaderList.pas(228): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHeaderList.pas(343): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTPHeaderInfo.pas(139): H2365 Override method TIdRequestHeaderInfo.destroy should match case of ancestor TIdEntityHeaderInfo.Destroy
+  [DCC Warning] IdHTTPHeaderInfo.pas(431): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdTCPServer.pas(967): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdTCPServer.pas(970): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdTCPServer.pas(975): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdTCPServer.pas(1079): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdSSLOpenSSL.pas(143): W1055 PUBLISHED caused RTTI ($M+) to be added to type 'TIdSSLContext'
+  [DCC Warning] IdSSLOpenSSL.pas(307): W1055 PUBLISHED caused RTTI ($M+) to be added to type 'TIdSSLCipher'
+  [DCC Warning] IdCookie.pas(701): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdCookie.pas(701): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdCookie.pas(798): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdCookie.pas(798): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdCookie.pas(813): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(519): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(633): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(642): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(667): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(675): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(782): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(785): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(804): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(1350): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(1363): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(1363): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(1369): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHTTP.pas(1369): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdFTPList.pas(587): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdFTPList.pas(768): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdHashCRC.pas(31): W1010 Method 'HashValue' hides virtual method of base type 'TIdHash16'
+  [DCC Warning] IdHashCRC.pas(36): W1010 Method 'HashValue' hides virtual method of base type 'TIdHash32'
+  [DCC Warning] IdCoderHeader.pas(261): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdCoderHeader.pas(298): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdCoderHeader.pas(624): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(112): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(114): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(114): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(132): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(132): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(132): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(162): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(164): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(183): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(188): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderMIME.pas(231): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageCoderUUE.pas(64): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessageClient.pas(460): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessage.pas(496): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessage.pas(614): H2443 Inline function 'DeleteFile' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdMessage.pas(1104): H2443 Inline function 'DeleteFile' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdSMTP.pas(180): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdSMTP.pas(180): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdPOP3.pas(299): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdPOP3.pas(301): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  [DCC Warning] IdNetworkCalculator.pas(424): H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+Output
+  Build started 22.09.2010 23:01:15.
+  __________________________________________________
+  Project "D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\maxbox3_0.dproj" (Build target(s)):
+  Target CoreCompile:
+      d:\program files\borland\rad studio\5.0\bin\dcc32.exe -B -DDEBUG -ID:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;"D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9";"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";"D:\Program Files\RemObjects\Pascal Script for Delphi\Dcu\D11";"D:\Program Files\RemObjects\Pascal Script for Delphi\Source";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source" -LE"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Bpl" -LN"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp" -OD:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;"D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9";"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";"D:\Program Files\RemObjects\Pascal Script for Delphi\Dcu\D11";"D:\Program Files\RemObjects\Pascal Script for Delphi\Source";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source" -RD:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;"D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9";"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";"D:\Program Files\RemObjects\Pascal Script for Delphi\Dcu\D11";"D:\Program Files\RemObjects\Pascal Script for Delphi\Source";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source" -UD:\kleiner2005\TestApp\v21\SynEdit\Source;D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;"D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9";"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";"D:\Program Files\RemObjects\Pascal Script for Delphi\Dcu\D11";"D:\Program Files\RemObjects\Pascal Script for Delphi\Source";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source" --doc --no-config   maxbox3_0.dpr   
+      D:\kleiner2005\TestApp\v21\SynEdit\Source\SynHighlighterPas.pas(1614,1): Hint warning 2077: H2077 Value assigned to 'ReadDelphiSettings' never used
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSC_dateutils.pas(27,1): Hint warning 2164: H2164 Variable 'm' is declared but never used in 'uPSC_dateutils'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\hyperLabel.pas(23,1): Hint warning 2365: H2365 Override method THyperLabel.create should match case of ancestor TCustomLabel.Create
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\WinForm1.pas(13,59): Warning warning 1005: W1005 Unit 'FileCtrl' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\WinForm1.pas(65,1): Hint warning 2219: H2219 Private symbol 'BtnChoice' declared but never used
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(148,1): Hint warning 2164: H2164 Variable 'StartInString' is declared but never used in 'ExecuteCommand'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(256,1): Hint warning 2077: H2077 Value assigned to 'BinType' never used
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(259,1): Warning warning 1036: W1036 Variable 'BinType' might not have been initialized
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(263,1): Warning warning 1036: W1036 Variable 'SubSyst' might not have been initialized
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(522,30): Warning warning 1013: W1013 Constant 0 converted to NIL
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(527,31): Warning warning 1013: W1013 Constant 0 converted to NIL
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(549,1): Warning warning 1036: W1036 Variable 'Ch' might not have been initialized
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(119,1): Warning warning 1010: W1010 Method 'SetAutoSize' hides virtual method of base type 'TControl'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(208,58): Warning warning 1045: W1045 Property declaration references ancestor private 'TmStandardShape.SetShapeType'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(1385,1): Hint warning 2164: H2164 Variable 'I' is declared but never used in 'TmStandardShape.Create'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(1386,1): Hint warning 2164: H2164 Variable 'tempControl' is declared but never used in 'TmStandardShape.Create'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(2049,1): Hint warning 2164: H2164 Variable 'struc' is declared but never used in 'TMoveableChart.MouseUp'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(2081,1): Hint warning 2164: H2164 Variable 'y1' is declared but never used in 'TMoveableChart.StartMove'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(195,1): Hint warning 2219: H2219 Private symbol 'FMoving' declared but never used
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\Streams.pas(351,39): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\Streams.pas(484,51): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\Streams.pas(489,49): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\LinarBitmap.pas(1558,52): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\LinarBitmap.pas(1583,52): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\LinarBitmap.pas(1587,39): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(23,17): Warning warning 1002: W1002 Symbol 'faReadOnly' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(23,31): Warning warning 1002: W1002 Symbol 'faHidden' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(23,43): Warning warning 1002: W1002 Symbol 'faSysFile' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(23,56): Warning warning 1002: W1002 Symbol 'faArchive' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(330,36): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(346,36): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\ImageDLLLoader.pas(121,45): Warning warning 1000: W1000 Symbol 'faVolumeID' is deprecated
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\ImageDLLLoader.pas(121,45): Warning warning 1002: W1002 Symbol 'faVolumeID' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(425,28): Warning warning 1002: W1002 Symbol 'FileGetAttr' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(428,28): Warning warning 1002: W1002 Symbol 'FileSetAttr' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(442,28): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(443,28): Warning warning 1002: W1002 Symbol 'Win32Check' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(465,28): Warning warning 1002: W1002 Symbol 'ExcludeTrailingBackslash' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(466,28): Warning warning 1002: W1002 Symbol 'IncludeTrailingBackslash' is specific to a platform
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IdGlobal_max.pas(169,1): Warning warning 1010: W1010 Method 'WaitFor' hides virtual method of base type 'THandleObject'
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdGlobal.pas(158,1): Warning warning 1010: W1010 Method 'WaitFor' hides virtual method of base type 'THandleObject'
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdStack.pas(272,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdStack.pas(506,1): Warning warning 1035: W1035 Return value of function 'TIdStack.HostToNetwork' might be undefined
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdStack.pas(514,1): Warning warning 1035: W1035 Return value of function 'TIdStack.NetworkToHost' might be undefined
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IdGlobal_max.pas(2777,1): Hint warning 2077: H2077 Value assigned to 'LCard' never used
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHeaderList.pas(137,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHeaderList.pas(228,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHeaderList.pas(343,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTPHeaderInfo.pas(139,1): Hint warning 2365: H2365 Override method TIdRequestHeaderInfo.destroy should match case of ancestor TIdEntityHeaderInfo.Destroy
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTPHeaderInfo.pas(431,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPServer.pas(967,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPServer.pas(970,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPServer.pas(975,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPServer.pas(1079,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSSLOpenSSL.pas(143,3): Warning warning 1055: W1055 PUBLISHED caused RTTI ($M+) to be added to type 'TIdSSLContext'
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSSLOpenSSL.pas(307,3): Warning warning 1055: W1055 PUBLISHED caused RTTI ($M+) to be added to type 'TIdSSLCipher'
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookie.pas(701,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookie.pas(701,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookie.pas(798,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookie.pas(798,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookie.pas(813,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(519,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(633,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(642,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(667,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(675,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(782,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(785,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(804,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(1350,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(1363,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(1363,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(1369,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(1369,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdFTPList.pas(587,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdFTPList.pas(768,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IdHashCRC.pas(31,1): Warning warning 1010: W1010 Method 'HashValue' hides virtual method of base type 'TIdHash16'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IdHashCRC.pas(36,1): Warning warning 1010: W1010 Method 'HashValue' hides virtual method of base type 'TIdHash32'
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCoderHeader.pas(261,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCoderHeader.pas(298,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCoderHeader.pas(624,3): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(112,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(114,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(114,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(132,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(132,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(132,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(162,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(164,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(183,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(188,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(231,3): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderUUE.pas(64,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageClient.pas(460,3): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessage.pas(496,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessage.pas(614,1): Hint warning 2443: H2443 Inline function 'DeleteFile' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessage.pas(1104,1): Hint warning 2443: H2443 Inline function 'DeleteFile' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSMTP.pas(180,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSMTP.pas(180,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdPOP3.pas(299,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdPOP3.pas(301,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdNetworkCalculator.pas(424,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  Done building target "CoreCompile" in project "maxbox3_0.dproj".
+  Done building project "maxbox3_0.dproj".
+  Build succeeded.
+  D:\kleiner2005\TestApp\v21\SynEdit\Source\SynHighlighterPas.pas(1614,1): Hint warning 2077: H2077 Value assigned to 'ReadDelphiSettings' never used
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSC_dateutils.pas(27,1): Hint warning 2164: H2164 Variable 'm' is declared but never used in 'uPSC_dateutils'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\hyperLabel.pas(23,1): Hint warning 2365: H2365 Override method THyperLabel.create should match case of ancestor TCustomLabel.Create
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\WinForm1.pas(13,59): Warning warning 1005: W1005 Unit 'FileCtrl' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\WinForm1.pas(65,1): Hint warning 2219: H2219 Private symbol 'BtnChoice' declared but never used
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(148,1): Hint warning 2164: H2164 Variable 'StartInString' is declared but never used in 'ExecuteCommand'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(256,1): Hint warning 2077: H2077 Value assigned to 'BinType' never used
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(259,1): Warning warning 1036: W1036 Variable 'BinType' might not have been initialized
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(263,1): Warning warning 1036: W1036 Variable 'SubSyst' might not have been initialized
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(522,30): Warning warning 1013: W1013 Constant 0 converted to NIL
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(527,31): Warning warning 1013: W1013 Constant 0 converted to NIL
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(549,1): Warning warning 1036: W1036 Variable 'Ch' might not have been initialized
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(119,1): Warning warning 1010: W1010 Method 'SetAutoSize' hides virtual method of base type 'TControl'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(208,58): Warning warning 1045: W1045 Property declaration references ancestor private 'TmStandardShape.SetShapeType'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(1385,1): Hint warning 2164: H2164 Variable 'I' is declared but never used in 'TmStandardShape.Create'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(1386,1): Hint warning 2164: H2164 Variable 'tempControl' is declared but never used in 'TmStandardShape.Create'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(2049,1): Hint warning 2164: H2164 Variable 'struc' is declared but never used in 'TMoveableChart.MouseUp'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(2081,1): Hint warning 2164: H2164 Variable 'y1' is declared but never used in 'TMoveableChart.StartMove'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(195,1): Hint warning 2219: H2219 Private symbol 'FMoving' declared but never used
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\Streams.pas(351,39): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\Streams.pas(484,51): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\Streams.pas(489,49): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\LinarBitmap.pas(1558,52): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\LinarBitmap.pas(1583,52): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\LinarBitmap.pas(1587,39): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(23,17): Warning warning 1002: W1002 Symbol 'faReadOnly' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(23,31): Warning warning 1002: W1002 Symbol 'faHidden' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(23,43): Warning warning 1002: W1002 Symbol 'faSysFile' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(23,56): Warning warning 1002: W1002 Symbol 'faArchive' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(330,36): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\FileUtils.pas(346,36): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\ImageDLLLoader.pas(121,45): Warning warning 1000: W1000 Symbol 'faVolumeID' is deprecated
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource\ImageDLLLoader.pas(121,45): Warning warning 1002: W1002 Symbol 'faVolumeID' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(425,28): Warning warning 1002: W1002 Symbol 'FileGetAttr' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(428,28): Warning warning 1002: W1002 Symbol 'FileSetAttr' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(442,28): Warning warning 1000: W1000 Symbol 'RaiseLastWin32Error' is deprecated
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(443,28): Warning warning 1002: W1002 Symbol 'Win32Check' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(465,28): Warning warning 1002: W1002 Symbol 'ExcludeTrailingBackslash' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(466,28): Warning warning 1002: W1002 Symbol 'IncludeTrailingBackslash' is specific to a platform
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IdGlobal_max.pas(169,1): Warning warning 1010: W1010 Method 'WaitFor' hides virtual method of base type 'THandleObject'
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdGlobal.pas(158,1): Warning warning 1010: W1010 Method 'WaitFor' hides virtual method of base type 'THandleObject'
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdStack.pas(272,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdStack.pas(506,1): Warning warning 1035: W1035 Return value of function 'TIdStack.HostToNetwork' might be undefined
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdStack.pas(514,1): Warning warning 1035: W1035 Return value of function 'TIdStack.NetworkToHost' might be undefined
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IdGlobal_max.pas(2777,1): Hint warning 2077: H2077 Value assigned to 'LCard' never used
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHeaderList.pas(137,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHeaderList.pas(228,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHeaderList.pas(343,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTPHeaderInfo.pas(139,1): Hint warning 2365: H2365 Override method TIdRequestHeaderInfo.destroy should match case of ancestor TIdEntityHeaderInfo.Destroy
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTPHeaderInfo.pas(431,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPServer.pas(967,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPServer.pas(970,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPServer.pas(975,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdTCPServer.pas(1079,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSSLOpenSSL.pas(143,3): Warning warning 1055: W1055 PUBLISHED caused RTTI ($M+) to be added to type 'TIdSSLContext'
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSSLOpenSSL.pas(307,3): Warning warning 1055: W1055 PUBLISHED caused RTTI ($M+) to be added to type 'TIdSSLCipher'
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookie.pas(701,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookie.pas(701,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookie.pas(798,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookie.pas(798,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCookie.pas(813,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(519,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(633,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(642,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(667,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(675,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(782,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(785,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(804,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(1350,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(1363,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(1363,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(1369,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdHTTP.pas(1369,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdFTPList.pas(587,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdFTPList.pas(768,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IdHashCRC.pas(31,1): Warning warning 1010: W1010 Method 'HashValue' hides virtual method of base type 'TIdHash16'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IdHashCRC.pas(36,1): Warning warning 1010: W1010 Method 'HashValue' hides virtual method of base type 'TIdHash32'
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCoderHeader.pas(261,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCoderHeader.pas(298,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdCoderHeader.pas(624,3): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(112,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(114,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(114,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(132,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(132,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(132,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(162,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(164,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(183,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(188,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderMIME.pas(231,3): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageCoderUUE.pas(64,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessageClient.pas(460,3): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessage.pas(496,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessage.pas(614,1): Hint warning 2443: H2443 Inline function 'DeleteFile' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdMessage.pas(1104,1): Hint warning 2443: H2443 Inline function 'DeleteFile' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSMTP.pas(180,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdSMTP.pas(180,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdPOP3.pas(299,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdPOP3.pas(301,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdNetworkCalculator.pas(424,1): Hint warning 2443: H2443 Inline function 'AnsiSameText' has not been expanded because unit 'Windows' is not specified in USES list
+      102 Warning(s)
+      0 Error(s)
+  Time Elapsed 00:00:07.23
+Search for 'bintohex'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSCompiler.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSCompiler.pas(10765):   //AddFunction('procedure BinToHex(Buffer: PChar; Text: PChar; BufSize: Integer);');
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(164):  CL.AddDelphiFunction('procedure BinToHex(Buffer: PChar; Text: PChar; BufSize: Integer);');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(459):  S.RegisterDelphiFunction(@BinToHex, 'BinToHex', cdRegister); //overload
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_StrUtils.pas(459):  S.RegisterDelphiFunction(@BinToHex, 'BinToHex', cdRegister); //overload
+  D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdStrings.pas
+    D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdStrings.pas(25):  - StrHTMLEnc/Dec,BinToHexStr,SplitColumns,IsWhiteString
+    D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdStrings.pas(36): function  BinToHexStr  (AData: Pointer; ADataLen: Integer): String;
+    D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9\IdStrings.pas(148): function BinToHexStr (AData: Pointer; ADataLen: Integer): String;
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_IdGlobal.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_IdGlobal.pas(285):  CL.AddDelphiFunction('Function BinToHexStr( AData : Pointer; ADataLen : Integer) : String');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_IdGlobal.pas(446):  S.RegisterDelphiFunction(@BinToHexStr, 'BinToHexStr', cdRegister);
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_IdGlobal.pas(446):  S.RegisterDelphiFunction(@BinToHexStr, 'BinToHexStr', cdRegister);
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\fMain.pas
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\fMain.pas(849):   Sender.AddFunction(@BinToHex2, 'function BinToHex2(Binary: String): string;');
+    D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\fMain.pas(849):   Sender.AddFunction(@BinToHex2, 'function BinToHex2(Binary: String): string;');

@@ -1,0 +1,52 @@
+Build
+  [DCC Warning] uPSRuntime.pas(18): W1006 Unit 'OleAuto' is deprecated
+  [DCC Warning] SynHighlighterPas.pas(1614): H2077 Value assigned to 'ReadDelphiSettings' never used
+  [DCC Warning] hyperLabel.pas(23): H2365 Override method THyperLabel.create should match case of ancestor TCustomLabel.Create
+  [DCC Warning] IFSI_WinForm1puzzle.pas(122): W1013 Constant 0 converted to NIL
+  [DCC Warning] IFSI_WinForm1puzzle.pas(127): W1013 Constant 0 converted to NIL
+  [DCC Warning] IFSI_WinForm1puzzle.pas(144): W1036 Variable 'Ch' might not have been initialized
+  [DCC Warning] JimShape.pas(119): W1010 Method 'SetAutoSize' hides virtual method of base type 'TControl'
+  [DCC Warning] JimShape.pas(208): W1045 Property declaration references ancestor private 'TmStandardShape.SetShapeType'
+  [DCC Warning] JimShape.pas(1386): H2164 Variable 'I' is declared but never used in 'TmStandardShape.Create'
+  [DCC Warning] JimShape.pas(1387): H2164 Variable 'tempControl' is declared but never used in 'TmStandardShape.Create'
+  [DCC Warning] JimShape.pas(2050): H2164 Variable 'struc' is declared but never used in 'TMoveableChart.MouseUp'
+  [DCC Warning] JimShape.pas(2082): H2164 Variable 'y1' is declared but never used in 'TMoveableChart.StartMove'
+  [DCC Warning] JimShape.pas(195): H2219 Private symbol 'FMoving' declared but never used
+Output
+  Build started 03.08.2010 22:46:00.
+  __________________________________________________
+  Project "D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\maxbox3_0.dproj" (Build target(s)):
+  Target CoreCompile:
+      d:\program files\borland\rad studio\5.0\bin\dcc32.exe -B -DDEBUG -ID:\kleiner2005\TestApp\v21\SynEdit\Source;"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";"D:\Program Files\RemObjects\Pascal Script for Delphi\Dcu\D11";"D:\Program Files\RemObjects\Pascal Script for Delphi\Source";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source" -LE"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Bpl" -LN"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp" -OD:\kleiner2005\TestApp\v21\SynEdit\Source;"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";"D:\Program Files\RemObjects\Pascal Script for Delphi\Dcu\D11";"D:\Program Files\RemObjects\Pascal Script for Delphi\Source";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source" -RD:\kleiner2005\TestApp\v21\SynEdit\Source;"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";"D:\Program Files\RemObjects\Pascal Script for Delphi\Dcu\D11";"D:\Program Files\RemObjects\Pascal Script for Delphi\Source";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source" -UD:\kleiner2005\TestApp\v21\SynEdit\Source;"d:\program files\borland\rad studio\5.0\lib";"C:\Documents and Settings\Administrator.APSN21\My Documents\RAD Studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Imports";"d:\program files\borland\rad studio\5.0\Lib\Indy9";"C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Dcp";"D:\Program Files\RemObjects\Pascal Script for Delphi\Dcu\D11";"D:\Program Files\RemObjects\Pascal Script for Delphi\Source";D:\kleiner2005\entwickler\gl\Source;D:\kleiner2005\entwickler\gl\Source\base;D:\kleiner2005\entwickler\gl\Source\fileformats;D:\kleiner2005\entwickler\gl\Source\platform;D:\kleiner2005\entwickler\gl\Source\shaders;"D:\Program Files\RemObjects Software\Pascal Script for Delphi\DCU\D11";"D:\Program Files\RemObjects Software\Pascal Script for Delphi\Source" --no-config   maxbox3_0.dpr   
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSRuntime.pas(18,32): Warning warning 1006: W1006 Unit 'OleAuto' is deprecated
+      D:\kleiner2005\TestApp\v21\SynEdit\Source\SynHighlighterPas.pas(1614,1): Hint warning 2077: H2077 Value assigned to 'ReadDelphiSettings' never used
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\hyperLabel.pas(23,1): Hint warning 2365: H2365 Override method THyperLabel.create should match case of ancestor TCustomLabel.Create
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(122,30): Warning warning 1013: W1013 Constant 0 converted to NIL
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(127,31): Warning warning 1013: W1013 Constant 0 converted to NIL
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(144,1): Warning warning 1036: W1036 Variable 'Ch' might not have been initialized
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(119,1): Warning warning 1010: W1010 Method 'SetAutoSize' hides virtual method of base type 'TControl'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(208,58): Warning warning 1045: W1045 Property declaration references ancestor private 'TmStandardShape.SetShapeType'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(1386,1): Hint warning 2164: H2164 Variable 'I' is declared but never used in 'TmStandardShape.Create'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(1387,1): Hint warning 2164: H2164 Variable 'tempControl' is declared but never used in 'TmStandardShape.Create'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(2050,1): Hint warning 2164: H2164 Variable 'struc' is declared but never used in 'TMoveableChart.MouseUp'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(2082,1): Hint warning 2164: H2164 Variable 'y1' is declared but never used in 'TMoveableChart.StartMove'
+      D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(195,1): Hint warning 2219: H2219 Private symbol 'FMoving' declared but never used
+  Done building target "CoreCompile" in project "maxbox3_0.dproj".
+  Done building project "maxbox3_0.dproj".
+  Build succeeded.
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSRuntime.pas(18,32): Warning warning 1006: W1006 Unit 'OleAuto' is deprecated
+  D:\kleiner2005\TestApp\v21\SynEdit\Source\SynHighlighterPas.pas(1614,1): Hint warning 2077: H2077 Value assigned to 'ReadDelphiSettings' never used
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\hyperLabel.pas(23,1): Hint warning 2365: H2365 Override method THyperLabel.create should match case of ancestor TCustomLabel.Create
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(122,30): Warning warning 1013: W1013 Constant 0 converted to NIL
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(127,31): Warning warning 1013: W1013 Constant 0 converted to NIL
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\IFSI_WinForm1puzzle.pas(144,1): Warning warning 1036: W1036 Variable 'Ch' might not have been initialized
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(119,1): Warning warning 1010: W1010 Method 'SetAutoSize' hides virtual method of base type 'TControl'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(208,58): Warning warning 1045: W1045 Property declaration references ancestor private 'TmStandardShape.SetShapeType'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(1386,1): Hint warning 2164: H2164 Variable 'I' is declared but never used in 'TmStandardShape.Create'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(1387,1): Hint warning 2164: H2164 Variable 'tempControl' is declared but never used in 'TmStandardShape.Create'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(2050,1): Hint warning 2164: H2164 Variable 'struc' is declared but never used in 'TMoveableChart.MouseUp'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(2082,1): Hint warning 2164: H2164 Variable 'y1' is declared but never used in 'TMoveableChart.StartMove'
+  D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\usecase\JimShape.pas(195,1): Hint warning 2219: H2219 Private symbol 'FMoving' declared but never used
+      13 Warning(s)
+      0 Error(s)
+  Time Elapsed 00:00:02.87

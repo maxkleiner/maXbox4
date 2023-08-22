@@ -1,0 +1,31 @@
+Build
+  [Pascal Hint] IFSI_SysUtils_max.pas(21): H2269 Overriding virtual method 'TPSImport_SysUtils.CompOnUses' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [Pascal Hint] IFSI_SysUtils_max.pas(22): H2269 Overriding virtual method 'TPSImport_SysUtils.ExecOnUses' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [Pascal Hint] IFSI_SysUtils_max.pas(23): H2269 Overriding virtual method 'TPSImport_SysUtils.CompileImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [Pascal Hint] IFSI_SysUtils_max.pas(24): H2269 Overriding virtual method 'TPSImport_SysUtils.CompileImport2' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [Pascal Hint] IFSI_SysUtils_max.pas(25): H2269 Overriding virtual method 'TPSImport_SysUtils.ExecImport1' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [Pascal Hint] IFSI_SysUtils_max.pas(26): H2269 Overriding virtual method 'TPSImport_SysUtils.ExecImport2' has lower visibility (protected) than base class 'TPSPlugin' (public)
+  [Pascal Warning] IFSI_SysUtils_max.pas(556): W1002 Symbol 'TLanguages' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(560): W1002 Symbol 'TLanguages' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(564): W1002 Symbol 'TLanguages' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(568): W1002 Symbol 'TLanguages' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(572): W1002 Symbol 'TLanguages' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(576): W1002 Symbol 'TLanguages' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(580): W1002 Symbol 'TLanguages' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(591): W1000 Symbol 'NewStr' is deprecated
+  [Pascal Warning] IFSI_SysUtils_max.pas(592): W1000 Symbol 'DisposeStr' is deprecated
+  [Pascal Warning] IFSI_SysUtils_max.pas(593): W1000 Symbol 'AssignStr' is deprecated
+  [Pascal Warning] IFSI_SysUtils_max.pas(594): W1000 Symbol 'AppendStr' is deprecated
+  [Pascal Warning] IFSI_SysUtils_max.pas(659): W1002 Symbol 'FileGetAttr' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(660): W1002 Symbol 'FileSetAttr' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(781): W1002 Symbol 'GetLocaleStr' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(782): W1002 Symbol 'GetLocaleChar' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(821): W1002 Symbol 'IncludeTrailingBackslash' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(823): W1002 Symbol 'ExcludeTrailingBackslash' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(843): W1000 Symbol 'EWin32Error' is deprecated
+  [Pascal Warning] IFSI_SysUtils_max.pas(860): W1000 Symbol 'EStackOverflow' is deprecated
+  [Pascal Warning] IFSI_SysUtils_max.pas(908): W1002 Symbol 'TLanguages' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(910): W1002 Symbol 'TLanguages' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(910): W1002 Symbol 'Create' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(911): W1002 Symbol 'TLanguages' is specific to a platform
+  [Pascal Warning] IFSI_SysUtils_max.pas(911): W1002 Symbol 'IndexOf' is specific to a platform
