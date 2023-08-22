@@ -1,0 +1,2016 @@
+program Code_Reviews_Snippets2019;
+//*************************************
+
+{Metrics / Code Revies deal with
+Bad Structure
+• General Code Size (in module)
+• Cohesion (in classes and inheritance)
+• Complexity
+• Coupling (between classes or units)
+• Cyclic Dependency, Declare+Definition, ACD-Metric
+• Interfaces or Packages (design & runtime)
+• Static, Public, Private (inheritance or delegate)}
+
+{Code Quality Metrics
+
+The following table shows problems we want to avoid in our coding efforts.
+No. Metric
+
+1 Variable names that are too short and provide no usage context
+2 Code that provides no context or obvious purpose
+3 Inconsistent spacing
+4 Inconsistent parameter-type definition
+5 Incomprehensible code
+6 Code that’s too long
+7 No exception handling
+8 No automatic resource management
+9 External calls that are not contained in separate methods
+10 Inadequate abstraction (need for higher-level code)
+11 Code that’s difficult or impossible to change
+
+Did you notice that all these metrics are negative? They all describe what to avoid when coding. How often have you trudged through some virtually indecipherable code written by a predecessor? Wouldn’t it be nice if code was written to be relatively simple and understandable? This need for simplicity is a key element of metrics use. }
+
+{What is ASN.1?
+ASN.1 is a language with the sole purpose of defining data formats. It
+is useful when you stream data from one application to another or just
+save data to a file.
+StreamSec ASN.1 is based on the ASN.1 1988 syntax with extensions for
+type identifiers and open type declarations. The language guide is
+distributed with the trial and also available as a separate download. }
+
+//uses IdASN1Util,
+type
+    TVinfo = record
+      a,b: integer;
+    end;
+
+var 
+  Idcmp: TIdIcmpClient;
+  RoundTripTime: Double;
+  Host, Enterprise: string;
+  Port: TIdPort;
+  MIBOID, MIBValue: TStringList;
+    aVersion, PDUType: integer;
+    TimeTicks, ID: integer;
+    ErrorStatus, ErrorIndex: integer;
+    E: Exception;
+    acl: TClientSocket;
+    serversocket1: TServerSocket;
+    socket: TCustomWinSocket;
+    
+    
+ //cheack Headers
+(*----------------------------------------------------------------------------*
+ | procedure TSNMPInfo.DecodeBuf                                              |
+ |                                                                            |
+ | Decode an ASN buffer into version, community, MIB OID/Value pairs, etc.    |
+ |                                                                            |
+ | Parameters:                                                                |
+ |     Buffer:string           The ASN buffer to decode                       |
+ *----------------------------------------------------------------------------*)
+
+//DD – use small procedures
+//Dependency Dispersion (Code too much Distributed):
+Procedure CopyRecord(const SourceTable, DestTable: TTable);
+var i: Word;
+begin
+  DestTable.Append;
+  For i:= 0 to SourceTable.FieldCount - 1 do
+    DestTable.Fields[i].Assign(SourceTable.Fields[i]);
+  DestTable.Post;
+end;
+
+//• Check Complexity
+function IsInteger(TestThis: String): Boolean;
+begin
+  try
+    StrToInt(TestThis);
+  except
+    E.Create('EConvertError')
+    Showmessage(E.Message+ 'not an Integer');
+  end
+  result:= True;
+end;
+
+
+{function IsDate(source: TEdit): Boolean;
+begin
+try
+StrToDate(TEdit(source).Text);
+except
+on EConvertError do
+result:= False;
+else
+result:= True;
+end;
+end;}
+
+
+//Configuration /Deployment Check
+Procedure ConfigDB;
+var connection: TSQLConnection;
+      dbPath: string;
+begin
+  Connection:= TSQLConnection.Create(NIL);
+  with Connection do begin
+    ConnectionName:= 'VCLScanner';
+    DriverName:= 'INTERBASE';
+    LibraryName:= 'dbexpint.dll';
+    VendorLib:= 'GDS32.DLL';
+    GetDriverFunc:= 'getSQLDriverINTERBASE';
+    Params.Add('user_name=SYSDBA');
+    Params.Add('Password=masterkey');
+    Params.Add(dbPath);
+  end;
+end;
+
+//from unit IBCustomDataSet;
+//class
+procedure
+   TIBStringField_CheckTypeSize(Value: Integer);
+begin
+{ don't check string size. all sizes valid }
+end;
+
+//Testable Check, the mainForm para isn't used!
+function letAllowInstances(const mainForm, cmdLine:
+                                      string): boolean;
+var keyWindow: HWND;
+    chars: TSysCharSet;
+    Handle: THandle;
+begin
+  result:= false;
+  //to test 'TForm1'
+  MessageDlg('are you sure to instance?', mtConfirmation, [mbOk], 0);
+  keyWindow:= FindWindow('TForm1','');
+  if (keyWindow <> 0) and not
+    FindCmdLineSwitch(cmdLine, chars, true) then
+    //set existing instance
+    //ShowWindow(keyWindow, SW_SHOWNORMAL)
+  else
+    result:= true;
+end;
+
+
+//Testing Code Logger
+//• Exception handling
+procedure TestTesting;
+begin
+{$IFDEF DEBUG}
+  Application.OnException:= AppOnException;
+{$ENDIF}
+//• Assert function
+//accObj:= TAccount.createAccount(FCustNo,
+//std_account);
+//assert(aTrans.checkOBJ(accObj), 'bad OBJ cond.');
+//• Logger
+//LogEvent('OnDataChange', Sender as TComponent);
+//LogEvent('BeforeOpen', DataSet);
+end;
+
+
+//• Check against Buffer overflow or TryIntToStr
+//The Delphi compiler hides the fact that the string variable is a heap pointer
+//to the structure but setting the memory in advance is advisable:
+{All allocated memory needs to be freed when no longer needed.
+Make sure memory is released in all code paths, especially in
+error code paths.
+• Are all objects (Database connections, Sockets, Files, etc.) freed
+even when an error occurs?  procexp.exe}
+
+procedure bufferCheck;
+var Buffer, FData: PChar; //not a buffer before you use getMem
+    Source, Dest: PChar;
+    size, bufferwriteSize, count: integer;
+    F: string;
+    path: string;
+begin
+  setLength(path, 1025);
+  Size:= GetFileSize(F);
+  //GetMem(Buffer, Size); //allocates n-Bytes on the heap
+  //Dest:= @FData[FBufferEnd];
+  if BufferWriteSize < Count then
+    //raise EFIFOStream.Create('Buffer over-run.');
+end;
+
+//Portability
+//Does the code re-write functionality that could
+//be achieved by using an existing API?
+function MakeTempFilename: string;
+begin
+  {$IFDEF LINUX}
+    Result:= tempnam(nil, 'Indy'); {do not localize}
+  {$ELSE}
+    SetLength(Result, MAX_PATH + 1);
+    //GetTempFileName(PChar(ATempPath), 'Indy', 0, PChar(result));
+    Result:= PChar(Result);
+  {$ENDIF}
+end;
+
+
+//Avoid pointers as you can (unsafe code !?)
+//• Ex. of win32API to change:
+//pVinfo = ^TVinfo;
+  //function getvolInfo(const aDrive: pchar; info: pVinfo): boolean;
+//refactoring from pointer to reference (const pointer with automatic deref)
+  function getvolInfo(const aDrive: pchar; var info: TVinfo): boolean;
+  begin
+  end;
+//“Each pointer or reference should be checked to see if it is null. An error or an
+//exception should occur if a parameter is invalid.”
+
+procedure TSNMPInfoDecodeBuf(Buffer: string);
+var
+  Poss: integer;
+  endpos,vt: integer;
+  sm,sv, community: string;
+begin
+  Poss:= 2;
+  Endpos:= ASNDecLen(Poss,buffer);
+  aversion:= StrToInt(ASNItem(Poss,buffer,vt));
+  community:= ASNItem(Poss,buffer,vt);
+  PDUType:= StrToInt(ASNItem(Poss,buffer,vt));
+  ID:= StrToInt(ASNItem(Poss,buffer,vt));
+  ErrorStatus:= StrToInt(ASNItem(Poss,buffer,vt));
+  ErrorIndex:= StrToInt(ASNItem(Poss,buffer,vt));
+  ASNItem(Poss,buffer,vt);
+  while Poss < Endpos do begin   // Decode MIB/Value pairs
+      ASNItem(Poss,buffer,vt);
+      Sm:= ASNItem(Poss,buffer,vt);
+      Sv:= ASNItem(Poss,buffer,vt);
+      //MIBadd(sm,sv, vt);
+  end;
+end;
+
+//Use Objects to encapsulate for functions
+function FileSizeByName2(const AFilename: string): longint;
+begin
+  with TFileStream.Create(AFilename, fmOpenRead or fmShareDenyWrite) do
+  try
+    Result:= Size;
+  finally
+    Free;
+  end;
+end;
+
+function IPToID(Host: string): string;
+var
+  s, t: string;
+  i, x: integer;
+begin
+  Result:= '';    {Do not Localize}
+  for x:= 1 to 3 do begin
+      t:= '';    {Do not Localize}
+      s:= Copy(Host, Pos('.', host),Length(Host));    {Do not Localize}
+      t:= Copy(Host, 1, (Length(Host) - Length(s)));
+      Delete(Host, 1, (Length(Host) - Length(s) + 1));
+      //writeln('n '+t)
+      i:= StrToint(t);
+      Result:= Result + Chr(i);
+    end;
+  i:= StrToint(Host);
+  Result:= Result + Chr(i);
+end;
+
+function IsFormOpen(const FormName: string): Boolean; 
+var 
+  i: Integer; 
+begin 
+  Result:= False; 
+  for i:= Screen.FormCount - 1 DownTo 0 do 
+    if (Screen.Forms[i].Name = FormName) then begin 
+      Result:= True; 
+      Break; 
+    end; 
+end; 
+
+function MPing2(const AHost: string;const ATimes:integer; out AvgMS:Double):Boolean;
+var
+R : array of Cardinal;
+i : integer;
+AQuote: string;
+begin
+  Result := True;
+  AvgMS := 0;
+  if ATimes > 0 then
+  with TIdIcmpClient.Create(Self) do
+  try
+    Host:= AHost;
+    SetLength(R, ATimes);
+    {Pinguer le client}
+    for i:= 0 to Pred(ATimes) do begin
+      try
+       Ping(AQuote,1);
+       R[i]:= ReplyStatus.MsRoundTripTime;
+      except
+        Result := False;
+        Exit;
+      end;
+    end;
+  {Faire une moyenne}
+    for i:= Low(R) to High(R) do
+      AvgMS := AvgMS + R[i];
+      AvgMS := AvgMS / i;
+  finally
+    Free;
+  end;
+end;
+
+function FindRootNode(ACaption: String; ATreeView: TTreeView): TTreeNode; 
+var LCount: Integer; 
+begin 
+  result:= Nil; 
+  LCount:= 0; 
+  while (LCount < ATreeView.Items.Count) and (result = nil) do begin 
+    if (ATreeView.Items.Item[LCount].Text = ACaption) and 
+       (ATreeView.Items.Item[LCount].Parent = nil) then 
+      result := ATreeView.Items.Item[LCount]; 
+    inc(LCount); 
+  end; 
+end;
+
+procedure TForm3_Button1Click(Sender: TObject);
+var
+  myStream : TMemoryStream;
+  I : Cardinal;
+  userValue : Integer;
+  Edit1: TEdit;
+  abyte: byte;
+  TcpClient1:   TidTCPClient; //TTcpClient;
+   //acmd: TIdCmdTCPClient; //Server;
+begin
+  //Creating a stream
+  myStream := TMemoryStream.Create();
+  for I := 0 to 8 do
+  begin
+    myStream.WriteBufferInt(I,1);
+  end;
+  userValue := StrToIntDef(Edit1.Text, 0);
+  myStream.WriteBufferInt(userValue,1);
+ 
+  //Resetting the stream position
+  myStream.Seek(0,0);
+ 
+  //Sending the stream
+  //TcpClient1.Active := true;
+  TcpClient1.connected;
+
+  //TcpClient1.SendStream(myStream);
+  //TCPClient1.IOHandler.Write1(AByte);
+  TCPClient1.Write('AByte');
+
+  //TcpClient1.Active := false;
+ 
+  //Free the stream
+  myStream.Free;
+ 
+end;
+
+function TForm3_NextByte: Byte;
+var fcharbuffer: string; //array of char;
+begin
+  Application.ProcessMessages;
+  while FCharBuffer = '' do  //if there is no input pending, just waint until the user adds input
+  begin
+    Sleep(10);
+    //this will allow the user to write the next char and the application to notice that
+    Application.ProcessMessages;
+  end;  
+  //Result := byte(AnsiString(FCharBuffer[1])[1]);  //just a byte, no UnicodeChars support
+  Delete(FCharBuffer, 1, 1);
+  //SetErrorProc
+end;
+
+procedure TForm1_ReceiveFile(Socket: TCustomWinSocket);
+var
+  Ptr: ___Pointer;
+  Strm: TMemoryStream;
+  Sz: integer;
+begin
+  Strm := TMemoryStream.Create;
+//  Strm.Position := 0;
+  Sz := Socket.ReceiveLength;
+  //GetMem(Ptr, Sz);
+  {Socket.ReceiveBuf(Ptr^, Sz);
+  Strm.WriteBuffer(Ptr^, Sz);
+  FreeMem(Ptr, Sz); }
+  Strm.SaveToFile('C:\Temp.zip');
+  Strm.Free;
+end;
+
+procedure TForm1_ServerClientRead(Sender: TObject;
+  Socket: TCustomWinSocket);
+begin
+  TForm1_ReceiveFile(Socket);
+end;
+
+procedure TCPClientTest;
+var tClient: TClientSocket;
+    ServerSocket1 : TServerSocket;
+    anssev: TSocketNotifyEvent;
+    anse: TSocketEvent;  
+begin
+tclient:= TClientSocket.create(self);
+  with tClient do begin
+    //socket.remoteHost := '192.168.1.43';
+    //Host := 'http://www.kleiner.ch';
+    Host := '192.168.1.40';
+    port:= 80;
+    //Port := 8080;
+    clienttype:=  ctnonblocking;
+    Address:= '192.168.1.40';
+    Active := True;
+    //Open;
+    writeln(name)
+    Socket.Close;
+    Free; 
+  end;  
+  
+  ServerSocket1 := TServerSocket.Create(nil);
+ {if ServerSocket1.Active then
+   ServerSocket1.Close;
+ ServerSocket1.Port := 7770;
+ ServerSocket1.ServerType := stThreadBlocking;
+ ServerSocket1.ThreadCacheSize := 4;
+ ServerSocket1.Socket.Listen('??? ???????', '10.10.100.24', '', 7770, 4, true);
+   //ServerSocket1.Socket.Listen('10.10.100.24', 7770, 4);
+  ServerSocket1.Close;
+  ServerSocket1.Free;}
+  ServerSocket1.Close;
+  ServerSocket1.Free;
+  
+ //T := Now;
+end;   
+
+function ChangeAlphaTo(input: string; aoffset: byte): string;
+var
+  a: byte;//Char;
+begin
+  Result:= input;
+  for a:= ord('A') to ord('Z') do begin
+    Result:= StringReplace(Result,Chr(a), 
+               IntToStr(Ord(a)- aoffset),[rfReplaceAll]);
+  end;
+end;
+
+
+
+function ChangeAlpha(input: string): string;
+var
+  a: byte;//Char;
+begin
+  Result:= input;
+  for a:= ord('A') to ord('Z') do begin
+    Result:= StringReplace(Result,Chr(a), IntToStr(Ord(a)- 55),[rfReplaceAll]);
+  end;
+end;
+
+
+function CalculateDigits(iban: string): Integer;
+var
+  v, l: Integer;
+  alpha: string;
+  number: Longint;
+  rest: Integer;
+begin
+  iban := UpperCase(iban);
+  if Pos('IBAN', iban) > 0 then
+    Delete(iban, Pos('IBAN', iban), 4);
+  iban := iban + Copy(iban, 1, 4);
+  Delete(iban, 1, 4);
+  iban := ChangeAlpha(iban);
+  v := 1;
+  l := 9;
+  rest := 0;
+  alpha := '';
+  try
+    while v <= Length(iban) do begin
+      if l > Length(iban) then
+        l := Length(iban);
+      alpha := alpha + Copy(iban, v, l);
+      number := StrToInt(alpha);
+      rest := number mod 97;
+      v := v + l;
+      alpha := IntToStr(rest);
+      l := 9 - Length(alpha);
+    end;
+  except
+    rest := 0;
+  end;
+  Result := rest;
+end;
+
+
+function CheckIBAN2(iban: string): Boolean;
+begin
+  iban := StringReplace(iban, ' ', '', [rfReplaceAll]);
+  if CalculateDigits(iban) = 1 then
+    Result := True
+  else
+    Result := False;
+end;
+
+type 
+ WordRec = record
+    //case Integer of
+      Lo, Hi: Byte;
+      //1: (Bytes: array [0..1] of Byte);
+  end;
+
+function CalculateLRC2(const Buffer: array of Byte): Byte;
+var
+  i: Integer;
+  CheckSum: Word;
+  awordrec: wordrec;
+begin
+  CheckSum := 0;
+  for i := Low(Buffer) to High(Buffer) do
+    //CheckSum := WordRec(CheckSum).Lo + Buffer[i];
+    CheckSum := aWordRec.Lo + Buffer[i];
+  Result:= - aWordRec.Lo;
+end;
+
+
+function Swap16(const DataToSwap: Word): Word;
+begin
+  Result := (DataToSwap div 256) + ((DataToSwap mod 256)*256);
+end;
+
+function BufferToHex2(const Buffer: array of Byte): String;
+var
+  i: Integer;
+begin
+  Result:= '';
+  for i:= Low(Buffer) to High(Buffer) do
+    Result:= Result + IntToHex(Buffer[i], 2);
+end;
+
+type
+  TBreed = (Akita, Beagle, Chihuahua, Dachshund);
+TDog = record
+  Weight: Double;
+  Breed: TBreed;
+  Born: TDatetime;
+  Owner: TStrings;
+end;
+
+//http://caryjensen.blogspot.ch/2012/01/for-record.html
+ 
+
+procedure anonymtest(sdf: string);
+begin
+with maxform1.memo1 do
+     with TColorDialog.create(self) do
+     try 
+       Execute 
+       gutter.color:= color;
+     finally
+       Free
+     end;
+end;
+
+function LastChar(const Str:string):Char;
+var l:integer;
+begin
+ Result:=#0;
+ l:=Length(Str);
+ if l>0 then
+  Result:=Str[l];
+end;
+
+function IsObjectActive(ClassName: string): Boolean;
+var
+  ClassID: TCLSID;
+  Unknown: IUnknown;
+begin
+  try
+    ClassID := ProgIDToClassID(ClassName);
+    Result  := GetActiveObject(ClassID, nil, Unknown) = S_OK;
+  except
+    // raise;
+    Result := False;
+  end;
+end;
+
+function OpenIEX(aURL: string): boolean;
+var
+  IE:        Variant;
+  WinHanlde: HWnd;
+begin
+  result:= true;
+  if (VarIsEmpty(IE)) then begin
+    IE         := CreateOleObject('InternetExplorer.Application');
+    IE.Visible := True;
+    IE.Navigate(aURL);
+    result:= true;
+  end
+  else
+  begin
+    WinHanlde := FindWindow('IEFrame','nil');
+    if (0 <> WinHanlde) then begin
+      IE.Navigate(aURL);
+      SetForegroundWindow(WinHanlde);
+    end
+    else
+      result:= false; //wMessage('Can''t open IE !');
+  end;
+end;
+
+function TForm1AnsiStrTo8bitUnicodeString(s: AnsiString): String;
+var i: integer;
+begin
+  Setlength(Result, length(s));
+  for I := 1 to length(s) do
+    result[I] := Char(s[i]);
+end;
+
+type Int64Rec = record
+     //begin
+       hi: integer;
+       lo: integer;
+     end;  
+
+procedure ALIPv6SplitParts(const aIPv6: TALIPv6Binary;
+                           var aLowestPart: UInt64;
+                           var aHigestPart: UInt64);
+var aIntRec: Int64Rec;
+    i: integer;
+begin
+  // get the Lowest Part
+  aIntRec.Lo := 0;
+  aIntRec.Hi := 0;
+  for i := 8 downto 1 do begin
+    //aIntRec.Bytes[8 - i] := Ord(aIPv6[i]);
+  end;
+  //aLowestPart := UInt64(aIntRec);
+
+  // get the Higest Part
+  aIntRec.Lo := 0;
+  aIntRec.Hi := 0;
+  for i := 16 downto 9 do begin
+    //aIntRec.Bytes[16 - i] := Ord(aIPv6[i]);
+  end;
+  //aHigestPart := UInt64(aIntRec);
+end;
+
+{****************************************************}
+procedure TALWinHttpClientCheckError(Error: Boolean);
+var ErrCode: DWORD;
+    ln: DWORD;
+    S, URL: AnsiString;
+begin
+  if Error then begin
+    ErrCode := GetLastError;
+    if ErrCode <> 0 then begin
+      SetLength(S, 256);
+     { ln := FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_FROM_HMODULE, //  _In_     DWORD   dwFlags,
+                           Pointer(GetModuleHandle('winhttp.dll')), // _In_opt_ LPCVOID lpSource,
+                           ErrCode, // _In_     DWORD   dwMessageId,
+                           0, // _In_     DWORD   dwLanguageId,
+                           PAnsiChar(S), // _Out_    LPTSTR  lpBuffer,
+                           Length(S), // _In_     DWORD   nSize,
+                           nil); // _In_opt_ va_list *Arguments    }
+      if ln = 0 then raiseLastOsError;
+      SetLength(S, ln);
+      raise EALHTTPClientException.CreateFmt('%s - URL:%s', [Trim(S), URL], 0); 
+                   { Do not localize }
+    end;
+  end;
+end;
+
+function In_carpet(a, b: longint): boolean;
+  var
+    x, y: longint;
+  begin 
+    x := a;
+    y := b;
+    while true do
+    begin
+      if (x = 0) or (y = 0) then begin
+        result := true;
+        break;
+      end
+      else 
+        if ( (x mod 3) = 1 ) and ((y mod 3) = 1) then begin
+          result := false;
+          break;
+        end;
+      x := x div 3;
+      y := y div 3;
+    end;
+  end;
+ 
+procedure Carpet(n: integer);
+  var
+    i, j: longint;
+  begin
+   memo2.font.name:= 'Courier';
+    for i := 0 to round(pow(3,n)-1) do begin
+      for j := 0 to round(pow(3,n)-1) do
+        if In_carpet(i, j) then
+          write('* '{+tab})
+        else
+          write('  '{+tab});
+      writeln('');
+    end;
+  end;
+
+
+
+var
+  mystrings: TStrings;
+  LDestNode: TTreeNode; 
+  TreeView1: tTreeview;
+  TCPClient: TIdTCPClient;
+  //aTCPClient: TTCPClient;
+  //TcpServer1: TTcpServer;
+  //acst: TCustomIpClient;
+  acust: TCustomWinSocket;
+  StreamSocket  : TWinSocketStream;
+  ServerSocket2: TServerSocket;
+  ASocket: TSocket;
+   acsock: TClientSocket; //TCustomSocket; // TClientSocket;
+  acustc: TClientWinSocket;
+  buffer : array [0..200] of byte;
+  atcmpm: TCMSocketMessage;
+  mem_ste : TMemoryStream;
+  aidstack: TIDStack;
+   
+
+begin
+   mystrings:= TStringlist.Create;
+   getVisibleWindows(mystrings)
+   showmessage(mystrings.text)
+   mystrings.Free;
+   if IsFormOpen('MaxForm1') then writeln('TMainForm TMaxForm1 is open');
+   //if IsFormOpen('maxform1') then writeln('true')
+   Writeln(IPtoID('192.148.065.056'))
+  //PutPing;
+  writeln('ping test '+inttostr(pinghost('www.google.com')))
+  if MPing('www.google.com', 4, RoundTripTime) then
+    MessageDlg(Format('Ping moyen : %s',[FormatFloat('0.00',RoundTripTime)]),
+     mtInformation, [mbOK], 0)
+  else
+    MessageDlg('Erreur. L''hôte est injoignable.', mtInformation, [mbOK], 0);
+    
+   { srlist:= TStringlist.create;
+      //ConsoleCapture('C:\', 'cmd.exe', '/c dir *.* /s',srlist);
+      if ConsoleCapture('C:\', 'cmd.exe', '/c ping www.ibm.com',srlist) then
+         writeln(srlist.text);
+      srlist.Free;
+    }  
+    
+    //http://maxkleiner.users.sourceforge.net/
+    
+  {LDestNode := FindRootNode('category', TreeView1); 
+  if LDestNode <> nil then begin 
+    TreeView1.Items.AddChild(LDestNode, 'node1'); 
+    TreeView1.Items.AddChild(LDestNode, 'node2'); 
+  end; }
+  
+  writeln(itoa(strlen('TreeView1.Items.AddChild(LDestNode, ''node2')));
+  writeln(strend('TreeView1.Items.AddChild(LDestNode, ''node2'));
+  //writeln(strend('TreeView1.Items.AddChild(LDestNode, ''node2'));
+
+  //writeln(strend('TreeView1.Items.AddChild(LDestNode, ''node2 max max2'));
+      //acl.active:= true;
+      //serversocket1.active : TServerSocket;
+    //socket.receivelength;  
+    //socket.sendstream(Tfilestream.create('c:\temp\test.html',fmcreate or fmopenread or fmSharedenywrite))
+    // TCustomWinSocket;
+    //TCPClient.sendln();
+    
+    {with acsock do begin
+       //active:= false;
+       open;
+       host:= '192.168.1.43';
+       port:= 9001;
+       //socket:= acustc;
+       //socket.write(1234,5);
+       Socket.SendStream(mem_ste);
+       socket.sendtext('a text for rest');
+       //address
+       //sendln
+       clienttype:=  ctnonblocking;
+       //onread
+       //onconnect
+       //lookup;
+       //service;
+     //remotehost:= 
+       //remoteport
+        //port
+        //connected;
+        //sendln('those from MODBus');
+        //onsend;
+        //onconnect;
+       Free; 
+     end;}
+     
+     //IBAN 2800790042293782657  ---29 to 92
+            //CH2800790042293782657 
+            //CH2800790042923782657
+            
+       writeln('IBAN is : '+botostr(CheckIBAN('CH2800790042293782657')))     
+       writeln('IBAN is : '+botostr(CheckIBAN('CH2800790042923782657')))  
+       writeln('IBAN is : '+botostr(CheckIBAN('FR8220041010020625930J02333')))  
+       
+     writeln(changealpha('FR822004'))    
+     writeln(changealpha('ABCD'))  
+    
+     writeln(changealphato('ABCDEFGHIJKLMNOP',65))
+     //writeln(getasciiline)  
+     
+     //buffertoHEX  
+     
+    with TIdTCPClient.create(self) do begin
+      //remotehost:= 
+       //remoteport
+        //port
+        connected;
+        //sendln('those from MODBus');
+        //onsend;
+        //onconnected;
+        //Close;
+       Free; 
+   end;    
+   
+   TCPClientTest;
+   
+   aidstack:= CreateIDStack;
+   //aidstack:= TIdStack.create;
+   writeln('is IP: '+botostr(aidstack.isIP('192.168.1.43')));
+   
+   //aidstack.isPing
+   //aidstack.name;
+   aidstack.Free;
+   writeln('is IP: '+botostr(isIP('192.168.1.43')));
+   
+   //http://www.rosettacode.org/wiki/Sierpinski_carpet#Pascal
+   //carpet(3)
+   //entropy
+   
+   //https://www.cs.cmu.edu/~tom/mlbook.html
+   
+   writeln(floattostr(-(3/7*log2(3/7))-(4/7*log2(4/7))))
+   writeln(floattostr(-(4/7*log2(4/7))-(3/7*log2(3/7))))
+   writeln(floattostr(-(9/14*log2(9/14))-(5/14*log2(5/14))))
+   writeln(floattostr(-(3.5/7*log2(3.5/7))-(3.5/7*log2(3.5/7))))
+
+
+end.
+
+//lectureslidesfortextbookMachineLearning,cTomM.Mitchell,McGr
+
+Which collection in Python and Pascal is ordered, changeable, and allows duplicate members?
+DICTIONARY      
+TUPLE
+LIST         Correct answer  
+SET
+
+test ref:
+
+Iban: FR82 2004 1010 0206 2593 0J02 333
+Bic: PSSTFRPPCHA
+
+---------------------------------------------------------------
+
+http://maxkleiner.users.sourceforge.net/
+
+http://stackoverflow.com/questions/5530038/how-to-handle-received-data-in-the-tcpclient-delphi-indy
+
+//comp unit ScktComp;
+http://www.bvbcode.com/cn/se0wpt1j-1661501
+
+http://www.44342.com/cpp-builder-f1276-t4699-p1.htm
+
+Tübingen ist geprägt von einer Vielzahl bedeutender Geistes- und Naturwissenschaftler, die im Laufe der Stadtgeschichte hier gelebt und gewirkt haben. So wurde zum Beispiel in der Schlossküche zu Hohentübingen 1869 das Nuklein in menschlichen Zellkernen entdeckt und damit der Grundstein für die moderne molekulare Biologie und Medizin gelegt. In Tübingen beschrieb 1906 Alois Alzheimer erstmals die später nach ihm benannte Demenzform. 
+
+ROCO BB 9329 réservé aux profils 100/100 et coli expédié après validation de la crédibilité du chèque "trop de chèques en bois". 
+
+the sockets.pas uunit are VERY badly designed components. Theey are VERY
+limited in functionality, because Borland is programming to a very common
+demoninator for multiple platforms, which does not offer very much
+flexibility or functionallity at all. If you are looking for cross-platform
+socket components then I STRONGLY advise you to use Indy or ICS instead.
+They are both cross-platform (Indy even supports non-Borland platforms
+includding .NET, Mono, and Unix/BSD via the FreePascal project), and are
+hundreds of times more feature-rich than the components in even the
+scktcomp.pas unit.
+
+QS Review Checklist
+**********************************************************
+1. Standards - are the Pascal or C software standards for
+                                name conventions being followed?
+2. Bugs - Are the changes generally correct?
+3. Are the Requirements Well Understood (Multilang)?
+4. Are all program headers completed?
+5. Are code changes commented appropriately?
+6. Does documentation use Correct Grammar?
+7. Are release notes Clear? Complete?
+8. Installation Issues, Licenses, Certs. Are there any?
+9. Version Control, Are output products clear?
+10.Test Instructions - Are they any? Complete?
+
+What are Metrics?
+Metrics are for
+• Evaluate Object Complexity
+• Quantify your code
+• Highlight Redesign Needs
+• Change Impact Analysis
+
+
+Metrics Code Revies deal with
+Bad Structure
+• General Code Size (in module)
+• Cohesion (in classes and inheritance)
+• Complexity
+• Coupling (between classes or units)
+• Cyclic Dependency, Declare+Definition, ACD-Metric
+• Interfaces or Packages (design & runtime)
+• Static, Public, Private (inheritance or delegate)
+
+Metric based Refactoring
+:ExtractMethod(EM)-MoveMethod(MM)-DataObject(DO)-ExtractClass(EC)
+EM MM DO EC
+• Normalized Cohesion          W B B B
+• Non-normalized Cohesion      W B B B
+• General Coupling             E B N S
+• Export Coupling              E B E E
+• Aggregated import coupling   B W W W
+•----------------------------- Best, Worst, Expected, Suboptimal
+
+Top Ten Metrics
+-------------------------------------------------------
+1. VOD Violation of Law of Demeter
+2. Halstead NOpmd (Operands/Operators)
+3. DAC (Data Abstraction Coupling)(Too many responsibilities/ references in the field)
+4. CC (Complexity Report), McCabe cyclomatic complexity, Decision Points)
+5. CBO (Coupling between Objects) Modularity
+6. PUR (Package Usage Ratio) access information in a package from outside
+7. DD Dependency Dispersion (aka SS, Shotgun Surgery 
+                 (Little changes distributed over too many objects (patterns missed))
+8. CR Comment Relation
+9. MDC (Module Design Complexity (Class with too many delegating methods)
+10. NORM (remote methods called (Missing polymorphism))
+
+
+Refactoring Process
+-----------------------------------------------------
+The act of serialize the process:
+P Build unit test
+P Refactor and test the code (iterative!)
+P Check with Pascal Analyzer or another tool
+P Building the code
+P Running all unit tests
+P Generating the documentation
+P Deploying to a target machine
+P Performing a “smoke test” (just compile)
+************************************************************************/
+/* INDY EXPORTS - GREGOR IBIC, INTELICOM d.o.o. END                     */
+/************************************************************************/
+
+Add the following content to the end of ssleay.num file in util folder.
+Check if the function numbers are sequential.
+
+SSL_set_app_data_indy                   278    EXIST::FUNCTION:
+SSL_get_app_data_indy                   279    EXIST::FUNCTION:
+SSL_CTX_set_info_callback_indy          280    EXIST::FUNCTION:
+X509_STORE_CTX_get_app_data_indy        281    EXIST::FUNCTION:
+X509_get_notBefore_indy                 282    EXIST::FUNCTION:
+X509_get_notAfter_indy                  283    EXIST::FUNCTION:
+UCTTimeDecode_indy                      284    EXIST::FUNCTION:
+SSL_SESSION_get_id_indy                 285    EXIST::FUNCTION:
+SSL_SESSION_get_id_ctx_indy             286    EXIST::FUNCTION:
+SSL_CTX_get_version_indy                287    EXIST::FUNCTION:
+SSL_CTX_set_options_indy                288    EXIST::FUNCTION:
+
+Finally, start compiling OpenSSL by double clicking the mingw32.bat. After compiling the OpenSSL libraries can be found in the main directory, the other programs are in the newly created subdirectory out.
+
+the OpenSSL library containts two dll: Libeay32.dll and libssl32.dll
+The last, modify Indy Source code when needed. 
+
+---------------------------------------------------------
+
+//**************************************************program HTTP_PNG_Streamer;
+//**************************************************
+
+Here's the constant that is used to build the HTML…
+  WEB_PAGE = '<html>' + #13#10 +
+            '<head>' + #13#10 +
+            '<title>The Amazing HTTP Server</title>' + #13#10 +
+            '</head>' + #13#10 +
+            '<body>' + #13#10 +
+            '<p align="center"><font face="Arial" size="5"><i><b>' +
+            'The color of your magnificent Indy based HTTP ' +
+            'Server is...</b></i></font></p>' + #13#10 +
+            '<p align="center"><i><b><font face="Arial" ' +
+            'color="%s" size="6">%s</font></b></i></p>' + #13#10 +
+            '<p align="center"><font face="Arial" size="5"><i><b>' +
+            'Please pick a color for the HTTP Server:</b></i>' +
+            '</font></p>' + #13#10 + '<p align="center"><i><b>' +
+            '<a href="http://127.0.0.1/blue.htm"><font ' +
+            'face="Arial" size="5" color="#0000FF">BLUE</font>' +
+            '</a></b></i></p>' + #13#10 + '<p align="center">' +
+            '<i><b><a href="http://127.0.0.1/red.htm">' +
+            '<font face="Arial" size="5" color="#FF0000">RED' +
+            '</font></a></b></i></p>' + #13#10 + '<p align="center">' +
+            '<i><b><a href="http://127.0.0.1/yellow.htm">' +
+            '<font face="Arial" size="5" color="#FFFF00">YELLOW' +
+            '</font></a></b></i></p>' + #13#10 + '</body>' + #13#10 +
+            '</html>' + #13#10;
+
+
+
+            http://www.codeproject.com/Articles/78599/How-to-Use-FxCop
+            
+ The tool FxCop is a rule based engine which helps the development and test team to follow best practices of the .NET platform and development standards (based on every company standards and style guides too). As it runs on compiled IL code, it can be used for C#, VB.NET, in short any language which compiles to IL code.
+I cover how you can apply these rules to any assembly which have been created using any language that target Microsoft.NET managed environment.
+
+Further an integration to SONAR will be demonstrated with a predefined set of rules to generate a formatted XML Analysis Report. 
+
+http://www.uvnc.com/install/installation.html
+http://www.dbuggr.com/milly/vnc-viewer-comparison-tightvnc-ultravnc-realvnc/
+
+You should refer to the inner TreeView control and call its FullExpand method:
+
+[Delphi]Open in popup window
+  <cxShellTreeView>.InnerTreeView.FullExpand;
+
+In the meantime, please note that this operation may be very time consuming when working with deep folder structures. So, I also recommend that you lock the inner TreeView:
+
+[Delphi]Open in popup window
+  with <cxShellTreeView>.InnerTreeView do
+  begin
+    Items.BeginUpdate;
+    try
+      FullExpand;
+    finally
+      Items.EndUpdate;
+    end;
+  end;
+
+Thanks,
+
+http://conftool.sandsmedia.com/node/add/session?og_group_ref=7804
+
+ The Power of Regular Expressions
+Primary tabs
+
+    View(active tab)
+    Edit
+
+Conference: 
+BASTA! 2015
+Language: 
+English
+Level: 
+Intermediate
+Abstract (max 150 words): 
+
+Regular expressions are the main way many tools matches patterns within strings. For example,finding pieces of text within a larger doc, or finding a restriction site within a larger sequence. Thistutorial illustrates what a RegEx is and what you can do to find, match, compare or replace text ofdocuments or code.
+
+Regular expressions occur in many places and masks, not alone in code or languagesenvironments and I show my best experiences with it.
+
+ 
+Conference: 
+BASTA! 2015
+Language: 
+English
+Level: 
+For All
+Abstract (max 150 words): 
+
+To find a street nowadays is easy; open a browser and search for.One of the questions that comes up when encoding those coordinates ishow they can be useful in a script or code for example:OpenMapX('cathedral cologne');OpenMapX('50.94134 6.95813'); With a GPS or navigation: The Global Positioning System (GPS) is a spacebasedsatellite navigation system that provides location and timeinformation in all weather conditions. But you need a map to visualize.
+
+We introduce the OpenStreetMap API and the REST Interface to use and visualize GEO Maps.
+Session type: 
+Session
+Speakers: 
+Max Kleiner
+
+
+Conference: 
+Internet of Things Conference Herbst 2015
+Language: 
+English
+Level: 
+For All
+Abstract (max 150 words): 
+
+In this session we step through the use of an virtual Oscilloscope and his visualrepresentation in time and spectrum.Oscilloscopes are one of the must of an electronic lab and are essential foranyone designing electronics, troubleshooting, or working with high speedelectronics. Oscilloscopes are one of the few pieces of electronic equipmentthat plays multiple roles and can be used in the place of otherelectronics equipment.
+
+Oscilloscopes include a rich set of math and measurement capabilitiesthat are often underutilized. Knowing how to effectively use thesecapabilities can enable you to solve complex test problems quicker andbetter.
+Session type: 
+Session
+Speakers: 
+Max Kleiner
+Session tracks: 
+IoT Infrastructure & Architecture
+IoT Programming & Tools
+IoT Hardware, Electronics & Devices
+
+
+Conference: 
+Internet of Things Conference Herbst 2015
+Language: 
+English
+Level: 
+Intermediate
+Abstract (max 150 words): 
+
+With the Arduino you can use many 3D Print APIs. G-Code is a commonly use language to control CNC machines.
+
+G-Code is a light-weight, simple to parse format, designed to be able to run on modesthardware, such as the Arduino loaded with this firmware (in this case). It is aformat that is prepared in advance and created from the digital design files(CAD files).The G-Code firmware source is available from SourceForge as part of theRepRap Arduino firmware package.
+Session type: 
+Session
+Speakers: 
+Max Kleiner
+Session tracks: 
+IoT Programming & Tools
+IoT Hardware, Electronics & Devices
+
+
+Conference: 
+BASTA! 2015
+Language: 
+English
+Level: 
+Intermediate
+Abstract (max 150 words): 
+
+The tool FxCop is a rule based engine which helps the development and test team to follow best practices of the .NET platform and development standards (based on every company standards and style guides too). As it runs on compiled IL code, it can be used for C#, VB.NET, in short any language which compiles to IL code.I cover how you can apply these rules to any assembly which have been created using any language that target Microsoft.NET managed environment.
+
+Further an integration to SONAR will be demonstrated with a predefined set of rules to generate a formatted XML Analysis Report.
+Session type: 
+Session
+Speakers: 
+Max Kleiner
+Session tracks: 
+Testing
+TFS & Continuous Delivery, DevOps
+Visual Studio
+ALM
+Cross-Plattform
+Agile Methoden & Soft Skills
+Code better & Software Craftmannship
+
+http://conftool.sandsmedia.com/
+
+
+I'm interested in contributing to the Arduino's IDE (Java front end), I have spent the past 3 years as the lead open source developer for the RPGToolkit. As is the nature with open source development I want to move on to new and exciting projects. The Arduino project seems fitting as I have used various versions (MEGA and Uno) across multiple degree level projects. I am skilled in both C/C++ and Java.
+
+One idea that I have considered is a class and function level browser like those found at the top of Visual Studio's Code Editor (drop down combo boxes), when writing sketches in excess of 500+ lines I find it difficult to locate function declarations without having to either use find or scroll up and down several times. I implemented this functionality for the RPGToolkit's custom code editor using regular expressions etc.
+
+Committing to open source projects has the advantage of keeping my programming skills sharp, so I enjoy it.
+
+Thanks in advance for any comments.
+
+Anbei noch ein paar Stichworte zu Anforderungen:
+
+Unsere Code Reviews Anforderungen:
+genügen den Compliance-Anforderungen von PCI-DSS
+sind wiederholbar, akkurat und von False Positives bereinigt
+können für Java, C#, C++, C, Pascal, Python, PHP, PL/SQL und andere Sprachen durchgeführt werden
+verwenden modernste Tools, gehen aber durch menschliche Untersuchung deutlich über die Leistung eines Tools hinaus
+werden von Spezialisten mit einem tiefen Verständnis für Code-Sicherheit durchgeführt
+werden passend zu Ihren Anforderungen organisiert: Vor-Ort, im Labor, als Managed Service, usw. 
+
+es grüsst dich, Max
+
+Anforderungen Code Review III
+  
+  "And all this shall some day come to pass." 20,000 Leagues Under the
+Sea, Jules Verne
+
+Baltic or Hudson, Canadian Pacific 2816, named the Empress, is a 4-6-4 H1b Hudson used by the Canadian Pacific Railway in occasional excursion service. The 2816 is the only non-streamlined H1 Hudson remaining (the other four remaining are the semi-streamlined Royal Hudsons).
+
+
+unit TcpConnection;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes,
+  Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
+  Sockets;
+
+type
+  ...Host1: TEdit;
+  RPort: TEdit;
+  LPort: TEdit;
+  Lines1: TEdit;
+  ChatWnd: TMemo;
+  ......TcpClient1: TTcpClient;
+  TcpServer1: TTcpServer;
+procedure Connect1Click(Sender: TObject);
+procedure Send1Click(Sender: TObject);
+procedure TcpServer1Accept(Sender: TObject;
+  ClientSocket: TCustomIpClient);
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+//{$R *.dfm}
+
+procedure TForm1.Connect1Click(Sender: TObject);
+begin
+  TcpServer1.Active    := False; {Disconnect First}
+  TcpServer1.LocalPort := LPort.Text;
+  TcpServer1.Active    := True; {Then Connect}
+end;
+
+procedure TForm1.Send1Click(Sender: TObject);
+begin
+  TcpClient1.RemoteHost := Host1.Text;
+  {To connect  to Server you must know his IP address, like 255.255.255.255}
+  TcpClient1.RemotePort := RPort.Text;
+
+  try
+    if TcpClient1.Connect then
+      TcpClient1.Sendln(Lines1.Text);
+  finally
+    TcpClient1.Disconnect;
+  end;
+end;
+
+{OnAccept Event}
+
+procedure TForm1.TcpServer1Accept(Sender: TObject;
+  ClientSocket: TCustomIpClient);
+var
+  s: string;
+begin
+  ChatWnd.Lines.Add('Start Sending Data');
+  ChatWnd.Lines.Add('Rem Host: ' +
+    ClientSocket.LookupHostName(ClientSocket.RemoteHost) + ' (' + ClientSocket.RemoteHost + ')');
+  s := ClientSocket.Receiveln;
+  while s <> '' do
+  begin
+    ChatWnd.Lines.Add(s);
+    s := ClientSocket.Receiveln;
+  end;
+  ChatWnd.Lines.Add('End Sending Data');
+end;
+Most Delphi books which are not mentioned in the various socket communication component of Delphi model and the model, some books only on the socket model and windows model, and did not induce various components of the model, so we programmers don't know how to choose, only know that a component is good, so good, how to use do not know the.
+
+The author makes a summary of these components, as follows:
+
+Assembly Unit  Dependence Pattern  Model 
+WebApp/CGI
+
+sockapp.pas
+
+Indy Blocking or non blocking
+
+select Indy
+Blocking or non blocking
+	
+select ICS verbyteIcsWSocket.pas
+
+Non blocking
+
+WMAsyncSelect TTcpServer/TTcpClient
+	
+sockets.pas
+Blocking or non blocking
+
+Select RealThinClient
+
+The ICS variant
+
+Non blocking wsaasyncselect
+synapse blckSock.pas
+	
+Blocking or non blocking
+Select TServerSocket
+TClientSocket
+
+ScktComp.pas
+Blocking or non blocking
+
+WSAAsyncSelect FastNet psock.pas
+
+WSAAsyncselect  TSocketConnection
+TServerSocket  TClientSocket
+
+From the table above can be seen, not a component using the following 4 models:
+
+Blocking mode  Overlap port
+Event selection The completion port
+
+Only to: Select  WSAAsyncselect
+
+These two kinds of models, and the use of WSAAsyncselect model, the inevitable need window, components used as service is not much. 
+handful of functions calls. How complicated does that need to be?
+All I need is to shift data across a localhost. No http or other
+higher level stuff. Just good old fashioned blocks of data. I need to
+talk to another app (a java app) at the socket - it was made by others.
+I distribute both a compiled app, and source for other developers. The
+socket either works, or upon an error, its broken and reset - that is
+the nature of this stream.
+Why do I need to use Indy for this? Its messy, its bloated, it handles
+all kinds of problems I don't have or need. What about those with
+earlier Delphi versions? And it compiles to the very same system calls
+as all other components do.
+I only use the Indy when I need a http component, because it has all the
+extras a http connection requires. But for plain blocks of data between
+two clients, I find that simple is best.
+Regards rossH
+ 
+   var 
+   buffer : array [0..200] of byte;
+   begin
+   ClientSocket1.Socket.SendBuf(buffer[0],length(buffer));
+   end;
+
+but when i use this it works fine:
+
+   var 
+   buffer : array [0..200] of byte;
+   mem_ste : TMemoryStream;
+   begin
+   mem_ste := TMemoryStream.Create;
+   mem_ste.Write(buffer[0],length(buffer));
+   ClientSocket1.Socket.SendStream(mem_ste);
+   end;
+
+Is there any logical reason please tell me. Thanks.
+In the first code, you're sending 201 bytes of uninitialized garbage, so it's no wonder the server kicks you off.
+
+In the second code, you're writing 201 bytes of uninitialized garbage into a stream, but then sending nothing through the socket because the current Position property of the stream is still at the end of the stream — there's nothing to send. SendStream starts at the current stream position and reads until it reaches the end.
+
+
+http://www.ibancalculator.com/iban_validieren.html
+
+
+{ *********************************************************************** }
+{                                                                         }
+{ Delphi Runtime Library                                                  }
+{                                                                         }
+{ Copyright (c) 1997-2001 Borland Software Corporation                    }
+{                                                                         }
+{ *********************************************************************** }
+ 
+{*******************************************************}
+{       Windows socket components                       }
+{*******************************************************}
+ 
+unit ScktComp;
+ 
+interface
+ 
+uses SysUtils, Windows, Messages, Classes, WinSock, SyncObjs;
+ 
+const
+  CM_SOCKETMESSAGE = WM_USER + $0001;
+  CM_DEFERFREE = WM_USER + $0002;
+  CM_LOOKUPCOMPLETE = WM_USER + $0003;
+ 
+type
+  ESocketError = class(Exception);
+ 
+  TCMSocketMessage = record
+    Msg: Cardinal;
+    Socket: TSocket;
+    SelectEvent: Word;
+    SelectError: Word;
+    Result: Longint;
+  end;
+ 
+  TCMLookupComplete = record
+    Msg: Cardinal;
+    LookupHandle: THandle;
+    AsyncBufLen: Word;
+    AsyncError: Word;
+    Result: Longint;
+  end;
+ 
+  TCustomWinSocket = class;
+  TCustomSocket = class;
+  TServerAcceptThread = class;
+  TServerClientThread = class;
+  TServerWinSocket = class;
+  TServerClientWinSocket = class;
+ 
+  TServerType = (stNonBlocking, stThreadBlocking);
+  TClientType = (ctNonBlocking, ctBlocking);
+  TAsyncStyle = (asRead, asWrite, asOOB, asAccept, asConnect, asClose);
+  TAsyncStyles = set of TAsyncStyle;
+  TSocketEvent = (seLookup, seConnecting, seConnect, seDisconnect, seListen,
+    seAccept, seWrite, seRead);
+  TLookupState = (lsIdle, lsLookupAddress, lsLookupService);
+  TErrorEvent = (eeGeneral, eeSend, eeReceive, eeConnect, eeDisconnect, eeAccept, eeLookup);
+ 
+  TSocketEventEvent = procedure (Sender: TObject; Socket: TCustomWinSocket;
+    SocketEvent: TSocketEvent) of object;
+  TSocketErrorEvent = procedure (Sender: TObject; Socket: TCustomWinSocket;
+    ErrorEvent: TErrorEvent; var ErrorCode: Integer) of object;
+  TGetSocketEvent = procedure (Sender: TObject; Socket: TSocket;
+    var ClientSocket: TServerClientWinSocket) of object;
+  TGetThreadEvent = procedure (Sender: TObject; ClientSocket: TServerClientWinSocket;
+    var SocketThread: TServerClientThread) of object;
+  TSocketNotifyEvent = procedure (Sender: TObject; Socket: TCustomWinSocket) of object;
+ 
+  TCustomWinSocket = class
+  private
+    FSocket: TSocket;
+    FConnected: Boolean;
+    FSendStream: TStream;
+    FDropAfterSend: Boolean;
+    FHandle: HWnd;
+    FAddr: TSockAddrIn;
+    FAsyncStyles: TASyncStyles;
+    FLookupState: TLookupState;
+    FLookupHandle: THandle;
+    FOnSocketEvent: TSocketEventEvent;
+    FOnErrorEvent: TSocketErrorEvent;
+    FSocketLock: TCriticalSection;
+    FGetHostData: Pointer;
+    FData: Pointer;
+    // Used during non-blocking host and service lookups
+    FService: string;
+    FPort: Word;
+    FClient: Boolean;
+    FQueueSize: Integer;
+    FUserName:String;
+    Fmx:Integer;
+    Fmy:Integer; //??
+    function SendStreamPiece: Boolean;
+    procedure WndProc(var Message: TMessage);
+    procedure CMLookupComplete(var Message: TCMLookupComplete); message CM_LOOKUPCOMPLETE;
+    procedure CMSocketMessage(var Message: TCMSocketMessage); message CM_SOCKETMESSAGE;
+    procedure CMDeferFree(var Message); message CM_DEFERFREE;
+    procedure DeferFree;
+    procedure DoSetAsyncStyles;
+    function GetHandle: HWnd;
+    function GetLocalHost: string;
+    function GetLocalAddress: string;
+    function GetLocalPort: Integer;
+    function GetRemoteHost: string;
+    function GetRemoteAddress: string;
+    function GetRemotePort: Integer;
+    function GetRemoteAddr: TSockAddrIn;
+  protected
+    procedure AsyncInitSocket(const Name, Address, Service: string; Port: Word;
+      QueueSize: Integer; Client: Boolean);
+    procedure DoOpen;
+    procedure DoListen(QueueSize: Integer);
+    function InitSocket(const Name, Address, Service: string; Port: Word;
+      Client: Boolean): TSockAddrIn;
+    procedure Event(Socket: TCustomWinSocket; SocketEvent: TSocketEvent); dynamic;
+    procedure Error(Socket: TCustomWinSocket; ErrorEvent: TErrorEvent;
+      var ErrorCode: Integer); dynamic;
+    procedure SetAsyncStyles(Value: TASyncStyles);
+  public
+    constructor Create(ASocket: TSocket);
+    destructor Destroy; override;
+    procedure Close;
+    procedure DefaultHandler(var Message); override;
+    procedure Lock;
+    procedure Unlock;
+    procedure Listen(const Name, Address, Service: string; Port: Word;
+      QueueSize: Integer; Block: Boolean = True);
+    procedure Open(const Name, Address, Service: string; Port: Word; Block: Boolean = True);
+    procedure Accept(Socket: TSocket); virtual;
+    procedure Connect(Socket: TSocket); virtual;
+    procedure Disconnect(Socket: TSocket); virtual;
+    procedure Read(Socket: TSocket); virtual;
+    procedure Write(Socket: TSocket); virtual;
+    function LookupName(const name: string): TInAddr;
+    function LookupService(const service: string): Integer;
+ 
+    function ReceiveLength: Integer;
+    function ReceiveBuf(var Buf; Count: Integer): Integer;
+    function ReceiveText: string;
+    function SendBuf(var Buf; Count: Integer): Integer;
+    function SendStream(AStream: TStream): Boolean;
+    function SendStreamThenDrop(AStream: TStream): Boolean;
+    function SendText(const S: string): Integer;
+ 
+    property LocalHost: string read GetLocalHost;
+    property LocalAddress: string read GetLocalAddress;
+    property LocalPort: Integer read GetLocalPort;
+ 
+    property RemoteHost: string read GetRemoteHost;
+    property RemoteAddress: string read GetRemoteAddress;
+    property RemotePort: Integer read GetRemotePort;
+    property RemoteAddr: TSockAddrIn read GetRemoteAddr;
+ 
+    property Connected: Boolean read FConnected;
+    property Addr: TSockAddrIn read FAddr;
+    property ASyncStyles: TAsyncStyles read FAsyncStyles write SetAsyncStyles;
+    property Handle: HWnd read GetHandle;
+    property SocketHandle: TSocket read FSocket;
+    property LookupState: TLookupState read FLookupState;
+ 
+    property OnSocketEvent: TSocketEventEvent read FOnSocketEvent write FOnSocketEvent;
+    property OnErrorEvent: TSocketErrorEvent read FOnErrorEvent write FOnErrorEvent;
+    property Data: Pointer read FData write FData;
+ 
+    property UserName:String read FUserName write FUserName;
+    property mx:Integer read Fmx write Fmx;
+    property my:Integer read Fmy write Fmy;
+  end;
+ 
+  TClientWinSocket = class(TCustomWinSocket)
+  private
+    FClientType: TClientType;
+  protected
+    procedure SetClientType(Value: TClientType);
+  public
+    procedure Connect(Socket: TSocket); override;
+    property ClientType: TClientType read FClientType write SetClientType;
+  end;
+ 
+  TServerClientWinSocket = class(TCustomWinSocket)
+  private
+    FServerWinSocket: TServerWinSocket;
+  public
+    constructor Create(Socket: TSocket; ServerWinSocket: TServerWinSocket);
+    destructor Destroy; override;
+ 
+    property ServerWinSocket: TServerWinSocket read FServerWinSocket;
+  end;
+ 
+  TThreadNotifyEvent = procedure (Sender: TObject;
+    Thread: TServerClientThread) of object;
+ 
+  TServerWinSocket = class(TCustomWinSocket)
+  private
+    FServerType: TServerType;
+    FThreadCacheSize: Integer;
+    FConnections: TList;
+    FActiveThreads: TList;
+    FListLock: TCriticalSection;
+    FServerAcceptThread: TServerAcceptThread;
+    FOnGetSocket: TGetSocketEvent;
+    FOnGetThread: TGetThreadEvent;
+    FOnThreadStart: TThreadNotifyEvent;
+    FOnThreadEnd: TThreadNotifyEvent;
+    FOnClientConnect: TSocketNotifyEvent;
+    FOnClientDisconnect: TSocketNotifyEvent;
+    FOnClientRead: TSocketNotifyEvent;
+    FOnClientWrite: TSocketNotifyEvent;
+    FOnClientError: TSocketErrorEvent;
+    procedure AddClient(AClient: TServerClientWinSocket);
+    procedure RemoveClient(AClient: TServerClientWinSocket);
+    procedure AddThread(AThread: TServerClientThread);
+    procedure RemoveThread(AThread: TServerClientThread);
+    procedure ClientEvent(Sender: TObject; Socket: TCustomWinSocket;
+      SocketEvent: TSocketEvent);
+    procedure ClientError(Sender: TObject; Socket: TCustomWinSocket;
+      ErrorEvent: TErrorEvent; var ErrorCode: Integer);
+    function GetActiveConnections: Integer;
+    function GetActiveThreads: Integer;
+    function GetConnections(Index: Integer): TCustomWinSocket;
+    function GetIdleThreads: Integer;
+  protected
+    function DoCreateThread(ClientSocket: TServerClientWinSocket): TServerClientThread; virtual;
+    procedure Listen(var Name, Address, Service: string; Port: Word;
+      QueueSize: Integer);
+    procedure SetServerType(Value: TServerType);
+    procedure SetThreadCacheSize(Value: Integer);
+    procedure ThreadEnd(AThread: TServerClientThread); dynamic;
+    procedure ThreadStart(AThread: TServerClientThread); dynamic;
+    function GetClientSocket(Socket: TSocket): TServerClientWinSocket; dynamic;
+    function GetServerThread(ClientSocket: TServerClientWinSocket): TServerClientThread; dynamic;
+    procedure ClientRead(Socket: TCustomWinSocket); dynamic;
+    procedure ClientWrite(Socket: TCustomWinSOcket); dynamic;
+    procedure ClientConnect(Socket: TCustomWinSOcket); dynamic;
+    procedure ClientDisconnect(Socket: TCustomWinSOcket); dynamic;
+    procedure ClientErrorEvent(Socket: TCustomWinSocket; ErrorEvent: TErrorEvent;
+      var ErrorCode: Integer); dynamic;
+  public
+    constructor Create(ASocket: TSocket);
+    destructor Destroy; override;
+    procedure Accept(Socket: TSocket); override;
+    procedure Disconnect(Socket: TSocket); override;
+    function GetClientThread(ClientSocket: TServerClientWinSocket): TServerClientThread;
+    property ActiveConnections: Integer read GetActiveConnections;
+    property ActiveThreads: Integer read GetActiveThreads;
+    property Connections[Index: Integer]: TCustomWinSocket read GetConnections;
+    property IdleThreads: Integer read GetIdleThreads;
+    property ServerType: TServerType read FServerType write SetServerType;
+    property ThreadCacheSize: Integer read FThreadCacheSize write SetThreadCacheSize;
+    property OnGetSocket: TGetSocketEvent read FOnGetSocket write FOnGetSocket;
+    property OnGetThread: TGetThreadEvent read FOnGetThread write FOnGetThread;
+    property OnThreadStart: TThreadNotifyEvent read FOnThreadStart write FOnThreadStart;
+    property OnThreadEnd: TThreadNotifyEvent read FOnThreadEnd write FOnThreadEnd;
+    property OnClientConnect: TSocketNotifyEvent read FOnClientConnect write FOnClientConnect;
+    property OnClientDisconnect: TSocketNotifyEvent read FOnClientDisconnect write FOnClientDisconnect;
+    property OnClientRead: TSocketNotifyEvent read FOnClientRead write FOnClientRead;
+    property OnClientWrite: TSocketNotifyEvent read FOnClientWrite write FOnClientWrite;
+    property OnClientError: TSocketErrorEvent read FOnClientError write FOnClientError;
+  end;
+ 
+  TServerAcceptThread = class(TThread)
+  private
+    FServerSocket: TServerWinSocket;
+  public
+    constructor Create(CreateSuspended: Boolean; ASocket: TServerWinSocket);
+    procedure Execute; override;
+ 
+    property ServerSocket: TServerWinSocket read FServerSocket;
+  end;
+ 
+  TServerClientThread = class(TThread)
+  private
+    FClientSocket: TServerClientWinSocket;
+    FServerSocket: TServerWinSocket;
+    FException: Exception;
+    FEvent: TSimpleEvent;
+    FKeepInCache: Boolean;
+    FData: Pointer;
+    procedure HandleEvent(Sender: TObject; Socket: TCustomWinSocket;
+      SocketEvent: TSocketEvent);
+    procedure HandleError(Sender: TObject; Socket: TCustomWinSocket;
+      ErrorEvent: TErrorEvent; var ErrorCode: Integer);
+    procedure DoHandleException;
+    procedure DoRead;
+    procedure DoWrite;
+  protected
+    procedure DoTerminate; override;
+    procedure Execute; override;
+    procedure ClientExecute; virtual;
+    procedure Event(SocketEvent: TSocketEvent); virtual;
+    procedure Error(ErrorEvent: TErrorEvent; var ErrorCode: Integer); virtual;
+    procedure HandleException; virtual;
+    procedure ReActivate(ASocket: TServerClientWinSocket);
+    function StartConnect: Boolean;
+    function EndConnect: Boolean;
+  public
+    constructor Create(CreateSuspended: Boolean; ASocket: TServerClientWinSocket);
+    destructor Destroy; override;
+ 
+    property ClientSocket: TServerClientWinSocket read FClientSocket;
+    property ServerSocket: TServerWinSocket read FServerSocket;
+    property KeepInCache: Boolean read FKeepInCache write FKeepInCache;
+    property Data: Pointer read FData write FData;
+  end;
+ 
+  TAbstractSocket = class(TComponent)
+  private
+    FActive: Boolean;
+    FPort: Integer;
+    FAddress: string;
+    FHost: string;
+    FService: string;
+    procedure DoEvent(Sender: TObject; Socket: TCustomWinSocket;
+      SocketEvent: TSocketEvent);
+    procedure DoError(Sender: TObject; Socket: TCustomWinSocket;
+      ErrorEvent: TErrorEvent; var ErrorCode: Integer);
+  protected
+    procedure Event(Socket: TCustomWinSocket; SocketEvent: TSocketEvent);
+      virtual; abstract;
+    procedure Error(Socket: TCustomWinSocket; ErrorEvent: TErrorEvent;
+      var ErrorCode: Integer); virtual; abstract;
+    procedure DoActivate(Value: Boolean); virtual; abstract;
+    procedure InitSocket(Socket: TCustomWinSocket);
+    procedure Loaded; override;
+    procedure SetActive(Value: Boolean);
+    procedure SetAddress(Value: string);
+    procedure SetHost(Value: string);
+    procedure SetPort(Value: Integer);
+    procedure SetService(Value: string);
+    property Active: Boolean read FActive write SetActive;
+    property Address: string read FAddress write SetAddress;
+    property Host: string read FHost write SetHost;
+    property Port: Integer read FPort write SetPort;
+    property Service: string read FService write SetService;
+  public
+    procedure Open;
+    procedure Close;
+  end;
+ 
+  TCustomSocket = class(TAbstractSocket)
+  private
+    FOnLookup: TSocketNotifyEvent;
+    FOnConnect: TSocketNotifyEvent;
+    FOnConnecting: TSocketNotifyEvent;
+    FOnDisconnect: TSocketNotifyEvent;
+    FOnListen: TSocketNotifyEvent;
+    FOnAccept: TSocketNotifyEvent;
+    FOnRead: TSocketNotifyEvent;
+    FOnWrite: TSocketNotifyEvent;
+    FOnError: TSocketErrorEvent;
+  protected
+    procedure Event(Socket: TCustomWinSocket; SocketEvent: TSocketEvent); override;
+    procedure Error(Socket: TCustomWinSocket; ErrorEvent: TErrorEvent;
+      var ErrorCode: Integer); override;
+    property OnLookup: TSocketNotifyEvent read FOnLookup write FOnLookup;
+    property OnConnecting: TSocketNotifyEvent read FOnConnecting write FOnConnecting;
+    property OnConnect: TSocketNotifyEvent read FOnConnect write FOnConnect;
+    property OnDisconnect: TSocketNotifyEvent read FOnDisconnect write FOnDisconnect;
+    property OnListen: TSocketNotifyEvent read FOnListen write FOnListen;
+    property OnAccept: TSocketNotifyEvent read FOnAccept write FOnAccept;
+    property OnRead: TSocketNotifyEvent read FOnRead write FOnRead;
+    property OnWrite: TSocketNotifyEvent read FOnWrite write FOnWrite;
+    property OnError: TSocketErrorEvent read FOnError write FOnError;
+  end;
+ 
+  TWinSocketStream = class(TStream)
+  private
+    FSocket: TCustomWinSocket;
+    FTimeout: Longint;
+    FEvent: TSimpleEvent;
+  public
+    constructor Create(ASocket: TCustomWinSocket; TimeOut: Longint);
+    destructor Destroy; override;
+    function WaitForData(Timeout: Longint): Boolean;
+    function Read(var Buffer; Count: Longint): Longint; override;
+    function Write(const Buffer; Count: Longint): Longint; override;
+    function Seek(Offset: Longint; Origin: Word): Longint; override;
+    property TimeOut: Longint read FTimeout write FTimeout;
+  end;
+ 
+  TClientSocket = class(TCustomSocket)
+  private
+    FClientSocket: TClientWinSocket;
+  protected
+    procedure DoActivate(Value: Boolean); override;
+    function GetClientType: TClientType;
+    procedure SetClientType(Value: TClientType);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Socket: TClientWinSocket read FClientSocket;
+  published
+    property Active;
+    property Address;
+    property ClientType: TClientType read GetClientType write SetClientType;
+    property Host;
+    property Port;
+    property Service;
+    property OnLookup;
+    property OnConnecting;
+    property OnConnect;
+    property OnDisconnect;
+    property OnRead;
+    property OnWrite;
+    property OnError;
+  end;
+ 
+  TCustomServerSocket = class(TCustomSocket)
+  protected
+    FServerSocket: TServerWinSocket;
+    procedure DoActivate(Value: Boolean); override;
+    function GetServerType: TServerType;
+    function GetGetThreadEvent: TGetThreadEvent;
+    function GetGetSocketEvent: TGetSocketEvent;
+    function GetThreadCacheSize: Integer;
+    function GetOnThreadStart: TThreadNotifyEvent;
+    function GetOnThreadEnd: TThreadNotifyEvent;
+    function GetOnClientEvent(Index: Integer): TSocketNotifyEvent;
+    function GetOnClientError: TSocketErrorEvent;
+    procedure SetServerType(Value: TServerType);
+    procedure SetGetThreadEvent(Value: TGetThreadEvent);
+    procedure SetGetSocketEvent(Value: TGetSocketEvent);
+    procedure SetThreadCacheSize(Value: Integer);
+    procedure SetOnThreadStart(Value: TThreadNotifyEvent);
+    procedure SetOnThreadEnd(Value: TThreadNotifyEvent);
+    procedure SetOnClientEvent(Index: Integer; Value: TSocketNotifyEvent);
+    procedure SetOnClientError(Value: TSocketErrorEvent);
+    property ServerType: TServerType read GetServerType write SetServerType;
+    property ThreadCacheSize: Integer read GetThreadCacheSize
+      write SetThreadCacheSize;
+    property OnGetThread: TGetThreadEvent read GetGetThreadEvent
+      write SetGetThreadEvent;
+    property OnGetSocket: TGetSocketEvent read GetGetSocketEvent
+      write SetGetSocketEvent;
+    property OnThreadStart: TThreadNotifyEvent read GetOnThreadStart
+      write SetOnThreadStart;
+    property OnThreadEnd: TThreadNotifyEvent read GetOnThreadEnd
+      write SetOnThreadEnd;
+    property OnClientConnect: TSocketNotifyEvent index 2 read GetOnClientEvent
+      write SetOnClientEvent;
+    property OnClientDisconnect: TSocketNotifyEvent index 3 read GetOnClientEvent
+      write SetOnClientEvent;
+    property OnClientRead: TSocketNotifyEvent index 0 read GetOnClientEvent
+      write SetOnClientEvent;
+    property OnClientWrite: TSocketNotifyEvent index 1 read GetOnClientEvent
+      write SetOnClientEvent;
+    property OnClientError: TSocketErrorEvent read GetOnClientError write SetOnClientError;
+  public
+    destructor Destroy; override;
+  end;
+ 
+  TServerSocket = class(TCustomServerSocket)
+  public
+    constructor Create(AOwner: TComponent); override;
+    property Socket: TServerWinSocket read FServerSocket;
+  published
+    property Active;
+    property Port;
+    property Service;
+    property ServerType;
+    property ThreadCacheSize default 10;
+    property OnListen;
+    property OnAccept;
+    property OnGetThread;
+    property OnGetSocket;
+    property OnThreadStart;
+    property OnThreadEnd;
+    property OnClientConnect;
+    property OnClientDisconnect;
+    property OnClientRead;
+    property OnClientWrite;
+    property OnClientError;
+  end;
+ 
+  TSocketErrorProc = procedure (ErrorCode: Integer);
+ 
+function SetErrorProc(ErrorProc: TSocketErrorProc): TSocketErrorProc;
+ 
+implementation
+ 
+uses RTLConsts;
+ 
+threadvar
+  SocketErrorProc: TSocketErrorProc;
+ 
+var
+  WSAData: TWSAData;
+ 
+function SetErrorProc(ErrorProc: TSocketErrorProc): TSocketErrorProc;
+begin
+  Result := SocketErrorProc;
+  SocketErrorProc := ErrorProc;
+end;
+ 
+function CheckSocketResult(ResultCode: Integer; const Op: string): Integer;
+begin
+  if ResultCode <> 0 then
+  begin
+    Result := WSAGetLastError;
+    if Result <> WSAEWOULDBLOCK then
+      if Assigned(SocketErrorProc) then
+        SocketErrorProc(Result)
+      else raise ESocketError.CreateResFmt(@sWindowsSocketError,
+        [SysErrorMessage(Result), Result, Op]);
+  end else Result := 0;
+end;
+ 
+procedure Startup;
+var
+  ErrorCode: Integer;
+begin
+  ErrorCode := WSAStartup($0101, WSAData);
+  if ErrorCode <> 0 then
+    raise ESocketError.CreateResFmt(@sWindowsSocketError,
+      [SysErrorMessage(ErrorCode), ErrorCode, 'WSAStartup']);
+end;
+ 
+procedure Cleanup;
+var
+  ErrorCode: Integer;
+begin
+  ErrorCode := WSACleanup;
+  if ErrorCode <> 0 then
+    raise ESocketError.CreateResFmt(@sWindowsSocketError,
+      [SysErrorMessage(ErrorCode), ErrorCode, 'WSACleanup']);
+end;
+ 
+{ TCustomWinSocket }
+ 
+constructor TCustomWinSocket.Create(ASocket: TSocket);
+begin
+  inherited Create;
+  Startup;
+  FSocketLock := TCriticalSection.Create;
+  FASyncStyles := [asRead, asWrite, asConnect, asClose];
+  FSocket := ASocket;
+  FAddr.sin_family := PF_INET;
+  FAddr.sin_addr.s_addr := INADDR_ANY;
+  FAddr.sin_port := 0;
+  FConnected := FSocket <> INVALID_SOCKET;
+end;
+ 
+destructor TCustomWinSocket.Destroy;
+begin
+  FOnSocketEvent := nil;  { disable events }
+  if FConnected and (FSocket <> INVALID_SOCKET) then
+    Disconnect(FSocket);
+  if FHandle <> 0 then DeallocateHWnd(FHandle);
+  FSocketLock.Free;
+  Cleanup;
+  FreeMem(FGetHostData);
+  FGetHostData := nil;
+  inherited Destroy;
+end;
+ 
+procedure TCustomWinSocket.Accept(Socket: TSocket);
+begin
+end;
+ 
+procedure TCustomWinSocket.AsyncInitSocket(const Name, Address,
+  Service: string; Port: Word; QueueSize: Integer; Client: Boolean);
+var
+  ErrorCode: Integer;
+begin
+  try
+    case FLookupState of
+      lsIdle:
+        begin
+          if not Client then
+          begin
+            FLookupState := lsLookupAddress;
+            FAddr.sin_addr.S_addr := INADDR_ANY;
+          end else if Name <> '' then
+          begin
+            if FGetHostData = nil then
+              FGetHostData := AllocMem(MAXGETHOSTSTRUCT);
+            FLookupHandle := WSAAsyncGetHostByName(Handle, CM_LOOKUPCOMPLETE,
+              PChar(Name), FGetHostData, MAXGETHOSTSTRUCT);
+            CheckSocketResult(Ord(FLookupHandle = 0), 'WSAASyncGetHostByName');
+            FService := Service;
+            FPort := Port;
+            FQueueSize := QueueSize;
+            FClient := Client;
+            FLookupState := lsLookupAddress;
+            Exit;
+          end else if Address <> '' then
+          begin
+            FLookupState := lsLookupAddress;
+            FAddr.sin_addr.S_addr := inet_addr(PChar(Address));
+          end else
+          begin
+            ErrorCode := 1110;
+            Error(Self, eeLookup, ErrorCode);
+            Disconnect(FSocket);
+            if ErrorCode <> 0 then
+              raise ESocketError.CreateRes(@sNoAddress);
+            Exit;
+          end;
+        end;
+      lsLookupAddress:
+        begin
+          if Service <> '' then
+          begin
+            if FGetHostData = nil then
+              FGetHostData := AllocMem(MAXGETHOSTSTRUCT);
+            FLookupHandle := WSAASyncGetServByName(Handle, CM_LOOKUPCOMPLETE,
+              PChar(Service), 'tcp' , FGetHostData, MAXGETHOSTSTRUCT);
+            CheckSocketResult(Ord(FLookupHandle = 0), 'WSAASyncGetServByName');
+            FLookupState := lsLookupService;
+            Exit;
+          end else
+          begin
+            FLookupState := lsLookupService;
+            FAddr.sin_port := htons(Port);
+          end;
+        end;
+      lsLookupService:
+ 
+ Just as SSL Certificates were starting to become really inexpensive, they figured out a way to start charging more money again. Enter the Green Address Bar, Green Certs, or officially known as an Extended Validation Certificate (EV Cert)
+
+The latest browsers will display these certificates differently than regular certificates. For example here's PayPal Extended Validation Certificate shows up green in FireFox 3.5:
+example extended validation certificate green
+
+A regular SSL certificate would look like this:
+SSL Certificate without EV
+
+The following browsers display extended validation certs green: Internet Explorer 8, Firefox 3.5, Safari 3.2, Opera 9.5, and Google Chrome.
+
+The Extended Validation Certificates do require you to provide more information in order to obtain one.
+
+    You must be a valid and verifiable legal entity (Government agencies, Corporations, General partnerships, Unincorporated associations, Sole proprietorship's).
+    The employment and authority of the person placing the certificate order must be verifiable.
+    A legal opinion letter (from an Attorney, or Accountant) may be required to confirm that the requester has the authority to obtain SSL Certificate(s) on behalf of the company
+    The entities must have a conformable physical existence and business presence.
+    
+    Unsecured content on a page served by HTTPS is a possible explanation for this problem (at least with Google Chrome it is).
+
+You can check your SSL configuration using https://www.ssllabs.com/ssltest/index.html
+
+
+type  
+  TFruit = record
+    name : string[20];
+    case isRound : Boolean of // Choose how to map the next section
+      True  :
+        (diameter : Single);  // Maps to same storage as length
+      False :
+        (length   : Single;   // Maps to same storage as diameter
+         width    : Single);
+  end;
+  
+  You could use an explicit struct layout to replicate this Delphi variant record. However, I would not bother since it seems pretty unlikely that you really want assignment to diameter to assign also to length, and vice versa. That Delphi record declaration looks like it dates from mid-1990s style of Delphi coding. Modern Delphi code would seldom be written that way.
+
+I would just do it like this:
+
+struct Fruit
+{
+    string name;
+    bool isRound;
+    float diameter; // only valid when isRound is true
+    float length;   // only valid when isRound is false
+    float width;    // only valid when isRound is false
+}
