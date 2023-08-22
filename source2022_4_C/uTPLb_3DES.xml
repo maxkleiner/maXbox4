@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_3DES">
+  <class name="T3DES">
+    <ancestor name="TInterfacedObject" namespace="System">
+      <methodref name="QueryInterface" visibility="protected">
+      </methodref>
+      <methodref name="_AddRef" visibility="protected">
+      </methodref>
+      <methodref name="_Release" visibility="protected">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <propertyref name="RefCount" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="ICryptoGraphicAlgorithm" />
+      <implements name="IBlockCipher" />
+    </interfaces>
+    <members>
+      <function name="DisplayName" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="ProgId" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="Features" visibility="private">
+        <parameters>
+          <retval type="TAlgorithmicFeatureSet" />
+        </parameters>
+      </function>
+      <function name="DefinitionURL" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="WikipediaReference" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="GenerateKey" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Seed" type="TStream" />
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <function name="LoadKeyFromStream" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <function name="BlockSize" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="KeySize" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="SeedByteSize" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="MakeBlockCodec" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Key" type="TSymetricKey" />
+          <retval type="IBlockCodec" />
+        </parameters>
+      </function>
+      <function name="SelfTest_Key" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="SelfTest_Plaintext" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="SelfTest_Ciphertext" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+    </members>
+  </class>
+  <class name="T3DES_KO1">
+    <ancestor name="T3DES" namespace="uTPLb_3DES">
+      <methodref name="DisplayName" visibility="public" />
+      <methodref name="ProgId" visibility="public" />
+      <methodref name="Features" visibility="private" />
+      <methodref name="DefinitionURL" visibility="private" />
+      <methodref name="WikipediaReference" visibility="private" />
+      <methodref name="GenerateKey" visibility="public" />
+      <methodref name="LoadKeyFromStream" visibility="public" />
+      <methodref name="BlockSize" visibility="public" />
+      <methodref name="KeySize" visibility="public" />
+      <methodref name="SeedByteSize" visibility="public" />
+      <methodref name="MakeBlockCodec" visibility="public" />
+      <methodref name="SelfTest_Key" visibility="public" />
+      <methodref name="SelfTest_Plaintext" visibility="public" />
+      <methodref name="SelfTest_Ciphertext" visibility="public" />
+      <methodref name="Create" visibility="public" />
+      <ancestor name="TInterfacedObject" namespace="System">
+        <methodref name="QueryInterface" visibility="protected">
+        </methodref>
+        <methodref name="_AddRef" visibility="protected">
+        </methodref>
+        <methodref name="_Release" visibility="protected">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <propertyref name="RefCount" visibility="public">
+        </propertyref>
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="DisplayName" visibility="public" procflags="override">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="ProgId" visibility="public" procflags="override">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="GenerateKey" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Seed" type="TStream" />
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <function name="LoadKeyFromStream" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <function name="KeySize" visibility="public" procflags="override">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="SeedByteSize" visibility="public" procflags="override">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="MakeBlockCodec" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Key" type="TSymetricKey" />
+          <retval type="IBlockCodec" />
+        </parameters>
+      </function>
+      <function name="SelfTest_Key" visibility="public" procflags="override">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="SelfTest_Plaintext" visibility="public" procflags="override">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="SelfTest_Ciphertext" visibility="public" procflags="override">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+</namespace>

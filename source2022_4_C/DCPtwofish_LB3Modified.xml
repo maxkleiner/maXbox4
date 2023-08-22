@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="DCPtwofish_LB3Modified">
+  <const name="INPUTWHITEN" type="Integer">
+    <value>
+      $0
+    </value>
+  </const>
+  <const name="OUTPUTWHITEN" type="Integer">
+    <value>
+      $4
+    </value>
+  </const>
+  <const name="NUMROUNDS" type="Integer">
+    <value>
+      $10
+    </value>
+  </const>
+  <const name="ROUNDSUBKEYS" type="Integer">
+    <value>
+      $8
+    </value>
+  </const>
+  <const name="TOTALSUBKEYS" type="Integer">
+    <value>
+      $28
+    </value>
+  </const>
+  <const name="RS_GF_FDBK" type="Integer">
+    <value>
+      $14D
+    </value>
+  </const>
+  <const name="MDS_GF_FDBK" type="Integer">
+    <value>
+      $169
+    </value>
+  </const>
+  <const name="SK_STEP" type="Integer">
+    <value>
+      $2020202
+    </value>
+  </const>
+  <const name="SK_BUMP" type="Integer">
+    <value>
+      $1010101
+    </value>
+  </const>
+  <const name="SK_ROTL" type="Integer">
+    <value>
+      $9
+    </value>
+  </const>
+  <array name="TSubKeys" low="0" high="39">
+    <element type="Cardinal" />
+  </array>
+  <array name="TSBox" low="0" high="3">
+    <array name="TSBox" low="0" high="255">
+      <element type="Cardinal" />
+    </array>
+  </array>
+  <array name="T128" low="0" high="3">
+    <element type="Cardinal" />
+  </array>
+  <array name="T256" low="0" high="7">
+    <element type="Cardinal" />
+  </array>
+  <array name="T2048" low="0" high="255">
+    <element type="Byte" />
+  </array>
+  <array name="Tp8x8" low="0" high="1">
+    <array name="Tp8x8" alias="T2048" namespace="DCPtwofish_LB3Modified" low="0" high="255">
+      <element type="Byte" />
+    </array>
+  </array>
+  <procedure name="DCP_twofish_InitKey" visibility="public">
+    <parameters>
+      <parameter name="Key" paramflags="const" />
+      <parameter name="Size" type="Cardinal" />
+      <parameter name="SubKeys" type="TSubKeys" paramflags="var" />
+      <parameter name="SBox" type="TSBox" paramflags="var" />
+    </parameters>
+  </procedure>
+  <procedure name="DCP_twofish_EncryptECB" visibility="public">
+    <parameters>
+      <parameter name="SubKeys" type="TSubKeys" paramflags="const" />
+      <parameter name="SBox" type="TSBox" paramflags="const" />
+      <parameter name="InData" type="T128" paramflags="const" />
+      <parameter name="OutData" type="T128" paramflags="var" />
+    </parameters>
+  </procedure>
+  <procedure name="DCP_twofish_DecryptECB" visibility="public">
+    <parameters>
+      <parameter name="SubKeys" type="TSubKeys" paramflags="const" />
+      <parameter name="SBox" type="TSBox" paramflags="const" />
+      <parameter name="InData" type="T128" paramflags="const" />
+      <parameter name="OutData" type="T128" paramflags="var" />
+    </parameters>
+  </procedure>
+  <procedure name="DCP_towfish_Precomp" visibility="public">
+  </procedure>
+</namespace>
