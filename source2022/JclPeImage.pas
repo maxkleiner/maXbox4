@@ -23,7 +23,7 @@
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: July 16, 2002       - the hot one                                                 }
+{ Last modified: July 16, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -930,8 +930,6 @@ function PeMapImgResolvePackageThunk(Address: Pointer): Pointer;
 
 function PeMapFindResource(const Module: HMODULE; const ResourceType: PChar;
   const ResourceName: string): Pointer;
-//function GetResourceFormFile(List: TStrings; const FormName, FileName: String) : Boolean;
-
 
 type
   TJclPeSectionStream = class (TCustomMemoryStream)
@@ -1025,12 +1023,6 @@ function PeIsNameMangled(const Name: string): TJclPeUmResult;
 
 function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
 
-function list_modules(aexename: string): string;
-procedure GetResourceHeader(var ResourceHeader: String; const FormName: String; const FileSize: Integer);
-function GetResourceFormFile(List: TStrings; const FormName, FileName: String) : Boolean;
-function GetImageBase(const FileName: TFileName): DWORD;
-
-
 implementation
 
 uses
@@ -1053,133 +1045,6 @@ const
 //==================================================================================================
 // Helper routines
 //==================================================================================================
-
-
-function list_modules(aexename: string): string;
-var srlist2: Tstringlist;
-    exehandle:THandle;
-
-begin  
- EXEHandle := LoadLibrary(pansichar(aEXEName));
-  with TJclPePackageInfo.create(exehandle) do begin
-     //filename:= exepath+'maxbox4.exe';
-     //writeln('Packages Contains Count2: '+itoa(ContainsCount))
-     //writeln('Requires Count2: '+itoa(RequiresCount))
-     //writeln('Contains2: '+CRLF+contains.text)
-     srlist2:= Tstringlist.create;
-     srlist2.add(#13#10+'Contains Count: '+ inttostr(ContainsCount));
-     srlist2.add('Requires Count: '+ inttostr(RequiresCount));
-     srlist2.add(#13#10+contains.text);
-     srlist2.add('Contains ModulesCountEnd___: '+ inttostr(ContainsCount));
-     result:= srlist2.text;
-     free;
-     srlist2.Free;
-     srlist2:= Nil;
-     FreeLibrary(exehandle);
-    exehandle := 0;
-   end; 
- end;
-
- procedure GetResourceHeader(var ResourceHeader: String; const FormName: String;
-                                                         const FileSize: Integer);
-begin
-  ResourceHeader := #$FF + Char(RT_RCDATA) + #$00 + FormName +
-                    #$00 + #$30 + #$10 + Char(LoByte(LoWord(FileSize))) +
-                    Char(HiByte(LoWord(FileSize))) +
-                    Char(LoByte(HiWord(FileSize))) +
-                    Char(HiByte(HiWord(FileSize))); //}
-end;
-
-function OpenBinResource(const FileName : String) : Boolean;
-var hProcess : THandle;
-begin
-  Result := False;
-  try
-    hProcess := LoadLibraryEx(PChar(FileName),0,LOAD_LIBRARY_AS_DATAFILE);
-    if GetLastError = ERROR_BAD_FORMAT then
-      raise (Exception.Create('Error loading executable module. Bad format.'));
-    //if hProcess <> 0 then
-      //Result := GetResourceNames > 0;
-      result:= True;
-  except
-  end;
-end;
-
-function GetResourceFormFile(List: TStrings; const FormName, FileName: String) : Boolean;
-var
-  InStream,
-  OutStream      : TMemoryStream;
-  ResourceSize   : Integer;
-  ResourceHeader : String;
-  Buffer         : PChar;
-  hProcess : THandle;
-begin
-  Result := True;
-  hProcess := LoadLibraryEx(PChar(FileName),0,LOAD_LIBRARY_AS_DATAFILE);
-  if hProcess <> 0 then begin
-    InStream := TMemoryStream.Create;
-    OutStream := TMemoryStream.Create;
-    try
-      Buffer := LockResource(LoadResource(hProcess,
-                 FindResource(hProcess,PChar(FormName),'RT_RCDATA')));
-      if Pos('TPF0', Buffer) <> 0 then begin
-        ResourceSize := 
-            SizeOfResource(hProcess,FindResource(hProcess,PChar(FormName),'RT_RCDATA'));
-        GetResourceHeader(ResourceHeader,FormName,ResourceSize);
-        InStream.Size := ResourceSize;
-        OutStream.Size := 2*ResourceSize; // Rough estimate
-        InStream.Write(ResourceHeader[1],Length(ResourceHeader));
-        InStream.Write(Buffer^,ResourceSize);
-        InStream.Write(Buffer,ResourceSize);
-        InStream.Seek(0,soFromBeginning);
-      {Worker := TWorker.Create(InStream,OutStream);
-        while not Worker.Done do
-          Application.ProcessMessages;
-        Result := not Worker.SRError;
-        Worker.Free;
-                           }
-        try
-          ObjectResourceToText(InStream,OutStream);
-        except
-          on E: Exception do begin
-          //ShowMessage('Exception ('+'E.ClassName'+') caught while processing a resource ('+
-            //      FormName+') in '+UpperCase(FileName)+'. Scanning will continue, but the end result '+
-            //'may be slightly off due to the black box nature of this resource.');
-            raise (Exception.Create('Exception ('+E.ClassName+') caught while processing a resource'));
-            Result := False;
-           end;
-        on E: EConvertError do begin
-            Result := False;
-          end;
-          on E: EOutOfMemory do begin
-            Result := False;
-          end; //}
-        end;
-
-        OutStream.Seek(0,soFromBeginning);
-        List.BeginUpdate;
-        List.LoadFromStream(OutStream);
-        List.EndUpdate;
-      end;
-    finally
-      InStream.Free;
-      OutStream.Free;
-    end;
-  end;
-end;
-
-function GetImageBase(const FileName: TFileName): DWORD;
-var
-  NtHeaders: TImageNtHeaders;
-begin
-  if PeGetNtHeaders(FileName, NtHeaders) then
-    Result := NtHeaders.OptionalHeader.ImageBase
-  else
-    Result := 0;  //}
-end;
-
-
-
 
 function AddFlagTextRes(var Text: string; const FlagText: PResStringRec; const Value, Mask: Integer): Boolean;
 begin
