@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_HashDsc">
+  <interface name="IHasher">
+    <procedure name="Update" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Source" type="TMemoryStream" />
+      </parameters>
+    </procedure>
+    <procedure name="End_Hash" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="PartBlock" type="TMemoryStream" />
+        <parameter name="Digest" type="TStream" />
+      </parameters>
+    </procedure>
+    <procedure name="Burn" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <function name="SelfTest_Source" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <function name="SelfTest_ReferenceHashValue" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+  </interface>
+  <interface name="IHashDsc">
+    <function name="DigestSize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Integer" />
+      </parameters>
+    </function>
+    <function name="UpdateSize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Integer" />
+      </parameters>
+    </function>
+    <function name="MakeHasher" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Params" type="IInterface" paramflags="const" />
+        <retval type="IHasher" />
+      </parameters>
+    </function>
+  </interface>
+</namespace>

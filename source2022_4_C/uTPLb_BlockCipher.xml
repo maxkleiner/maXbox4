@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_BlockCipher">
+  <interface name="IBlockCodec">
+    <procedure name="Encrypt_Block" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="TMemoryStream" />
+        <parameter name="Ciphertext" type="TMemoryStream" />
+      </parameters>
+    </procedure>
+    <procedure name="Decrypt_Block" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="TMemoryStream" />
+        <parameter name="Ciphertext" type="TMemoryStream" />
+      </parameters>
+    </procedure>
+    <procedure name="Reset" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <procedure name="Burn" visibility="public" procflags="abstract virtual">
+    </procedure>
+  </interface>
+  <interface name="IBlockCipher">
+    <function name="GenerateKey" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Seed" type="TStream" />
+        <retval type="TSymetricKey" />
+      </parameters>
+    </function>
+    <function name="LoadKeyFromStream" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Store" type="TStream" />
+        <retval type="TSymetricKey" />
+      </parameters>
+    </function>
+    <function name="BlockSize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Integer" />
+      </parameters>
+    </function>
+    <function name="KeySize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Integer" />
+      </parameters>
+    </function>
+    <function name="SeedByteSize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Integer" />
+      </parameters>
+    </function>
+    <function name="MakeBlockCodec" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Key" type="TSymetricKey" />
+        <retval type="IBlockCodec" />
+      </parameters>
+    </function>
+    <function name="SelfTest_Key" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <function name="SelfTest_Plaintext" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <function name="SelfTest_Ciphertext" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+  </interface>
+  <class name="TBlockChainLink">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FKey" type="TSymetricKey" visibility="protected" />
+      <field name="FCV" type="TMemoryStream" visibility="protected" />
+      <field name="FCipher" type="IBlockCodec" visibility="protected" />
+      <constructor name="BaseCreate" visibility="protected">
+        <parameters>
+          <parameter name="Key1" type="TSymetricKey" />
+          <parameter name="IV1" type="TMemoryStream" />
+          <parameter name="Cipher1" type="IBlockCodec" />
+        </parameters>
+      </constructor>
+      <procedure name="Burn" visibility="public" procflags="virtual">
+      </procedure>
+      <procedure name="Reset" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="IV" type="TMemoryStream" />
+        </parameters>
+      </procedure>
+      <function name="Clone" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="TBlockChainLink" />
+        </parameters>
+      </function>
+      <procedure name="Encrypt_Block" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Plaintext" type="TMemoryStream" />
+          <parameter name="Ciphertext" type="TMemoryStream" />
+        </parameters>
+      </procedure>
+      <procedure name="Decrypt_Block" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Plaintext" type="TMemoryStream" />
+          <parameter name="Ciphertext" type="TMemoryStream" />
+        </parameters>
+      </procedure>
+      <procedure name="Encrypt_8bit" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Plaintext" type="Byte" />
+          <parameter name="Ciphertext" type="Byte" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="Decrypt_8bit" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Plaintext" type="Byte" paramflags="var" />
+          <parameter name="Ciphertext" type="Byte" />
+        </parameters>
+      </procedure>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+    </members>
+  </class>
+  <const name="cfNoNounce" type="TChainingFeature">
+    <value>
+      cfNoNounce
+    </value>
+  </const>
+  <const name="cfKeyStream" type="TChainingFeature">
+    <value>
+      cfKeyStream
+    </value>
+  </const>
+  <const name="cfAutoXOR" type="TChainingFeature">
+    <value>
+      cfAutoXOR
+    </value>
+  </const>
+  <const name="cf8bit" type="TChainingFeature">
+    <value>
+      cf8bit
+    </value>
+  </const>
+  <enum name="TChainingFeature">
+    <element name="cfNoNounce" />
+    <element name="cfKeyStream" />
+    <element name="cfAutoXOR" />
+    <element name="cf8bit" />
+  </enum>
+  <set name="TChainingFeatureSet" type="TChainingFeature">
+    <element name="cfNoNounce" />
+    <element name="cfKeyStream" />
+    <element name="cfAutoXOR" />
+    <element name="cf8bit" />
+  </set>
+  <interface name="IBlockChainingModel">
+    <function name="Chain_EncryptBlock" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Key" type="TSymetricKey" />
+        <parameter name="InitializationVector" type="TMemoryStream" />
+        <parameter name="Cipher" type="IBlockCodec" paramflags="const" />
+        <retval type="TBlockChainLink" />
+      </parameters>
+    </function>
+    <function name="Chain_DecryptBlock" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Key" type="TSymetricKey" />
+        <parameter name="InitializationVector" type="TMemoryStream" />
+        <parameter name="Cipher" type="IBlockCodec" paramflags="const" />
+        <retval type="TBlockChainLink" />
+      </parameters>
+    </function>
+    <function name="ChainingFeatures" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TChainingFeatureSet" />
+      </parameters>
+    </function>
+  </interface>
+  <interface name="IBlockCipherSelector">
+    <function name="GetBlockCipher" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="IBlockCipher" />
+      </parameters>
+    </function>
+    <function name="GetChainMode" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="IBlockChainingModel" />
+      </parameters>
+    </function>
+  </interface>
+</namespace>

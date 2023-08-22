@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_StreamCipher">
+  <const name="afStar" type="TAlgorithmicFeature">
+    <value>
+      afStar
+    </value>
+  </const>
+  <const name="afCryptographicallyWeak" type="TAlgorithmicFeature">
+    <value>
+      afCryptographicallyWeak
+    </value>
+  </const>
+  <const name="afNotImplementedYet" type="TAlgorithmicFeature">
+    <value>
+      afNotImplementedYet
+    </value>
+  </const>
+  <const name="afForTestOnly" type="TAlgorithmicFeature">
+    <value>
+      afForTestOnly
+    </value>
+  </const>
+  <const name="afForRunTimeOnly" type="TAlgorithmicFeature">
+    <value>
+      afForRunTimeOnly
+    </value>
+  </const>
+  <const name="afEncumberedByPatent" type="TAlgorithmicFeature">
+    <value>
+      afEncumberedByPatent
+    </value>
+  </const>
+  <const name="afEncumberedByCopyRight" type="TAlgorithmicFeature">
+    <value>
+      afEncumberedByCopyRight
+    </value>
+  </const>
+  <const name="afOpenSourceSoftware" type="TAlgorithmicFeature">
+    <value>
+      afOpenSourceSoftware
+    </value>
+  </const>
+  <const name="afCommercial" type="TAlgorithmicFeature">
+    <value>
+      afCommercial
+    </value>
+  </const>
+  <const name="afCompressor" type="TAlgorithmicFeature">
+    <value>
+      afCompressor
+    </value>
+  </const>
+  <const name="afConverter" type="TAlgorithmicFeature">
+    <value>
+      afConverter
+    </value>
+  </const>
+  <const name="afBlockAdapter" type="TAlgorithmicFeature">
+    <value>
+      afBlockAdapter
+    </value>
+  </const>
+  <const name="afDisplayNameOnKeySize" type="TAlgorithmicFeature">
+    <value>
+      afDisplayNameOnKeySize
+    </value>
+  </const>
+  <const name="afDoesNotNeedSalt" type="TAlgorithmicFeature">
+    <value>
+      afDoesNotNeedSalt
+    </value>
+  </const>
+  <const name="afAsymetric" type="TAlgorithmicFeature">
+    <value>
+      afAsymetric
+    </value>
+  </const>
+  <enum name="TAlgorithmicFeature">
+    <element name="afStar" />
+    <element name="afCryptographicallyWeak" />
+    <element name="afNotImplementedYet" />
+    <element name="afForTestOnly" />
+    <element name="afForRunTimeOnly" />
+    <element name="afEncumberedByPatent" />
+    <element name="afEncumberedByCopyRight" />
+    <element name="afOpenSourceSoftware" />
+    <element name="afCommercial" />
+    <element name="afCompressor" />
+    <element name="afConverter" />
+    <element name="afBlockAdapter" />
+    <element name="afDisplayNameOnKeySize" />
+    <element name="afDoesNotNeedSalt" />
+    <element name="afAsymetric" />
+  </enum>
+  <set name="TAlgorithmicFeatureSet" type="TAlgorithmicFeature">
+    <element name="afStar" />
+    <element name="afCryptographicallyWeak" />
+    <element name="afNotImplementedYet" />
+    <element name="afForTestOnly" />
+    <element name="afForRunTimeOnly" />
+    <element name="afEncumberedByPatent" />
+    <element name="afEncumberedByCopyRight" />
+    <element name="afOpenSourceSoftware" />
+    <element name="afCommercial" />
+    <element name="afCompressor" />
+    <element name="afConverter" />
+    <element name="afBlockAdapter" />
+    <element name="afDisplayNameOnKeySize" />
+    <element name="afDoesNotNeedSalt" />
+    <element name="afAsymetric" />
+  </set>
+  <interface name="ICryptoGraphicAlgorithm">
+    <function name="DisplayName" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <function name="ProgId" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <function name="Features" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TAlgorithmicFeatureSet" />
+      </parameters>
+    </function>
+    <function name="DefinitionURL" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <function name="WikipediaReference" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+  </interface>
+  <class name="TSymetricKey">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <procedure name="SaveToStream" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="Burn" visibility="public" procflags="abstract virtual">
+      </procedure>
+    </members>
+  </class>
+  <interface name="IStreamEncryptor">
+    <procedure name="Encrypt" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="TStream" paramflags="const" />
+      </parameters>
+    </procedure>
+    <procedure name="End_Encrypt" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <procedure name="Reset" visibility="public" procflags="abstract virtual">
+    </procedure>
+  </interface>
+  <interface name="IStreamDecryptor">
+    <procedure name="Decrypt" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Ciphertext" type="TStream" paramflags="const" />
+      </parameters>
+    </procedure>
+    <procedure name="End_Decrypt" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <procedure name="Reset" visibility="public" procflags="abstract virtual">
+    </procedure>
+  </interface>
+  <interface name="IStreamCipher">
+    <function name="GenerateKey" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Seed" type="TStream" />
+        <retval type="TSymetricKey" />
+      </parameters>
+    </function>
+    <function name="LoadKeyFromStream" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Store" type="TStream" />
+        <retval type="TSymetricKey" />
+      </parameters>
+    </function>
+    <function name="SeedByteSize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Integer" />
+      </parameters>
+    </function>
+    <function name="Parameterize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Params" type="IInterface" paramflags="const" />
+        <retval type="IStreamCipher" />
+      </parameters>
+    </function>
+    <function name="Start_Encrypt" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Key" type="TSymetricKey" />
+        <parameter name="CipherText" type="TStream" />
+        <retval type="IStreamEncryptor" />
+      </parameters>
+    </function>
+    <function name="Start_Decrypt" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Key" type="TSymetricKey" />
+        <parameter name="PlainText" type="TStream" />
+        <retval type="IStreamDecryptor" />
+      </parameters>
+    </function>
+  </interface>
+  <interface name="IisBase64Converter">
+  </interface>
+</namespace>
