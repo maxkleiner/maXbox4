@@ -1,0 +1,1289 @@
+Program RegEx_Power_Tester_TRex;
+
+// Framework for RegEx tests  TRex at EKON 16
+//*********************************************************************
+// logic REGEX ledwall example with objects, loc's=942, 28 intf, example 309ff  
+// first you define a size und pattern (word) and alter the pattern with
+// the function shows Delphi RegEx, TRegEx Studio and Core Unit Regex; 
+// task: write the sentence in sequence: 'the world of TREX color!'
+//*********************************************************************
+
+Const PATTERNPAUSE = 350;
+      RUNPAUSE = 180;
+      COL = 5;
+      ROW = 7;
+      SIGNS = 36; //(37_[0..36]: Space, A..Z, 0..9)
+      LEFTBASE = 20;
+      TOPBASE = 30; 
+      TEXTPATH = 'examples\outline3.txt';
+      AVIPATH = 'examples\cool.avi';
+      BITMAP = 'examples\citymax.bmp';
+
+//type 
+  //E = Exception;
+  
+var
+  ppForm: TForm;
+  mylabel: TLabel;
+  pattern1: string;
+  labelList: TStringList;
+  psize: integer;
+  pattar: array[0..SIGNS] of shortstring;
+  mbitmap: TBitmap;
+  s1, c1: extended;
+  E: Exception;
+  
+procedure pauseLED(vpatt: shortstring); forward;
+  
+procedure LetShowRunVerify(apatt: string);
+var i,x: integer;
+  o: TLabel;
+begin
+  for x:= 0 to COL do begin
+    for i:= 1 to psize do begin
+      o:= TLabel(labelList.objects[i-1]);
+      if apatt[i] = '1' then o.color:= clblack
+        else o.color:= (clyellow);
+    end;  
+    for i:= 1 to psize do begin   //XCopy
+      apatt[i]:= apatt[i+1];
+      if (i mod COL = 0) then     //!!
+        apatt[i]:= '0'
+    end;  
+    Sleep(RUNPAUSE) 
+    //if x= 4 then Break;  //optimise if run
+  end;
+  //Application.Processmessages; //debug
+end;
+
+procedure LetShowRunVerify2(vpattern: string); //draft
+var
+  i,x: integer;
+  o: TLabel;
+  pattern2: shortstring;
+begin
+   for i:= 1 to 40 do
+      pattern2:= pattern2 + '0';  //Empty Space;
+  for i:= 1 to psize+1 do begin   //recopy   XCopy
+      if vpattern[i] = '1' then begin
+         pattern2[i+1]:= '1';
+        end; 
+       end;
+  for x:= 0 to COL -1 do begin
+   for i:= 1 to psize  do begin
+      //set next line of labels
+      o:= TLabel(labelList.objects[i-1]);
+        if pattern2[i] = '1' then o.color:= clblack
+          else o.color:= (clyellow);
+    end;  
+      for i:= 1 to psize do begin   //recopy
+      pattern2[i]:= pattern2[i+1];
+      if (i mod COL = 0) then     //!!
+        pattern2[i]:= '0'
+    end;
+    //old
+     sleep(RUNPAUSE) 
+    if x= 4 then break; 
+  end;
+  //application.processmessages;
+end;
+  
+
+procedure letShowVerify(vpattern: string);
+var i: integer;
+  o: TLabel;
+begin
+  for i:= 1 to psize  do begin
+    o:= TLabel(labelList.objects[i-1]);
+    //o.caption:= inttostr(i);
+    if i <= length(vpattern) then 
+      if vpattern[i] = '1' then o.color:= clblack
+      else o.color:= clyellow;
+  end;
+  //Runchar(vpattern)
+  //application.ProcessMessages;
+end;
+
+
+procedure Label1Click_EditPattern(Sender: TObject);
+var o: TLabel;
+    sx: byte;
+begin
+  //70 in begin sound
+   //showMessage(intToStr(TLabel(sender).tag))
+   sx:= TLabel(sender).tag;
+   o:= TLabel(labelList.objects[sx-1]);
+   //o.caption:= inttostr(i);
+   if o.color = clBlack then o.color:= clyellow
+       else o.color:= clblack;
+end;
+
+
+procedure pauseLED(vpatt: shortstring);
+begin
+  sleep(PATTERNPAUSE);
+  letShowVerify(vpatt);
+end;
+
+
+procedure Label1DClick_WritePattern(Sender: TObject);
+var i: byte;
+   st: shortstring;
+    o: TLabel;
+begin
+  //70 in begin sound
+  st:= pattar[0];
+   for i:= 1 to psize do begin
+     o:= TLabel(labelList.objects[i-1]);
+     //o.caption:= inttostr(i);
+     if o.color = clBlack then st[i]:= '1'
+       else st[i]:= '0';
+   end;
+  //SetLEDConsole(st)
+   //writeln(st)
+end;
+
+
+procedure ShowLED_TestSeq;
+var 
+   pt0, pt11, tmpstr: shortstring;
+   il: integer;
+begin
+   pt0:=  '00000000000000000000000000000000000';
+   pt11:= '00100010101001111111011100111111100'; //hex store test 32+3=35
+   tmpstr:= pt11;
+   delete(tmpstr,4,32)
+   writeln('cut test '+tmpstr)
+   writeln(bintohex2(tmpstr)); //00000001
+   writeln(bintohex2(pt11));   //153FB9FC
+   writeln(tmpstr+hextobin2(bintohex2(pt11)));  //test to store pattern as HEX
+   writeln(pt11)
+   pattern1:= '';
+   for il:= 0 to SIGNS do begin
+     letShowVerify(pattar[il]);
+     //writeln('pt'+inttostr(il))
+     pauseLED(pt0)
+   end;  
+end;
+
+Procedure WriteLED_Set(sentence: string; arun: boolean);    //draft
+var il,a: byte;
+begin
+   sentence:= Uppercase(sentence)
+   for il:= 1 to length(sentence) do begin
+     a:= Ord(sentence[il])-47;   //ASCII 0=48 9=57  
+     writeln(inttostr(a))   //debug
+    if (a>0) and (a<16) then begin
+       if arun then  
+          letShowRunVerify(pattar[a])
+          else letShowVerify(pattar[a]);
+     end;
+     if (a>17) and (a<42) then begin   //ASCII A=65 Z=90
+       if arun then
+         letShowRunVerify(pattar[a-7])
+         else  letShowVerify(pattar[a-7]);
+     end;
+     if a>220 then begin
+     //if not arun then
+         pauseLED(pattar[0]);
+     end;    
+     write(sentence[il])  //test to console
+   end; 
+end;  
+
+procedure FormKeyPress(Sender: TObject; var Key: Char);
+begin
+ if Key =  #13 
+   then WriteLED_Set(pattern1, true);
+ if Key = #27 then ppForm.close;
+end;
+
+procedure CloseForm(Sender: TObject; var action: TCloseAction);
+var i: integer;
+begin 
+   for i:= 1 to psize do              
+     TLabel(labelList.objects[i-1]).Free;
+   action:= caFree;  
+   writeln('free it label objects')     //debug
+end; 
+ 
+
+procedure loadPForm(vx, vy: integer);
+begin
+  psize:= vx*vy
+  //constructor
+  ppform:= TForm.Create(self);
+  with ppform do begin
+    caption:= 'LEDBOX, click to edit, dblclick write out pattern'+
+                 ' Press <Return> to run the Sentence';  
+    width:= (vx*psize)+ 10 + 300;
+    height:= (vy*psize)+ 30;
+    BorderStyle:= bsDialog;
+    Position:= poScreenCenter;
+    onKeyPress:= @FormKeyPress
+    //OnClick:= @Label1Click;
+    OnClose:= @closeForm;
+    Show;
+  end  
+end;
+
+procedure InitPuzzle(vx: byte);
+var  i,x,y: integer;
+begin
+  labelList:= TStringList.Create;
+  x:= 1;
+  y:= 1;
+  for i:= 1 to psize do begin
+    mylabel:= TLabel.Create(ppform);
+    with mylabel do begin
+      Parent:= ppForm;
+      color:= clyellow;
+      transparent:= false;
+      AutoSize:= false;
+      layout:= tlcenter;
+      alignment:= tacenter;
+      font.Size:= (psize div vx) + 12;
+      //font.Style:= [fsbold];
+      font.Color:= clyellow;
+      width:= psize; //+1 without raster
+      height:= psize;
+      Left:= (x-1)*(psize + 1);
+      Top:= (y-1)*(psize + 1);
+      //event handler to click!  
+      OnClick:= @Label1Click_EditPattern;
+      OnDblClick:= @Label1DClick_WritePattern;
+      tag:= i; //save the position
+    end;
+    //set next line of labels
+    if (i mod vx = 0) then begin
+      x:= 1; 
+      inc(y);
+    end else
+      inc(x);
+    //add labels to the list
+    labellist.instancesize
+    labelList.addObject(inttostr(i), mylabel);
+  end;
+end;
+
+
+procedure InitLED_SignPatterns;     //add with 0 at the end
+begin
+   pattar[0]:= '000000000000000000000000000000000000';  //Empty Space;
+   pattar[1]:= '001000101001010010100101001010001000'; //0
+   pattar[2]:= '001100111000010000100001000010000100'; //1
+   pattar[3]:= '011100001000010011100100001000011100'; //2
+   pattar[4]:= '011100001000010011100001000010011100'; //3
+   pattar[5]:= '001100101001010010100111100010000100'; //4
+   pattar[6]:= '011100100001100000100001000010011000'; //5
+   pattar[7]:= '001100100001000011100101001010001000'; //6
+   pattar[8]:= '011100001000010001000010000100001000'; //7
+   pattar[9]:= '011100101001010011100101001010011100'; //8
+   pattar[10]:= '011100101001010011100001000100010000'; //9
+   pattar[11]:= '001000101001010100011111110001100010';  //A;
+   pattar[12]:= '111001001010010111001001010010111000';  //B;
+   pattar[13]:= '001100100010000100001000001000001100';  //C;
+   pattar[14]:= '111001001010001100011000110010111000';  //D;
+   pattar[15]:= '111101000010000111101000010000111100';  //E;
+   pattar[16]:= '111111000010000111101000010000100000';  //F;
+   pattar[17]:= '001100100110000101111000101001001100';  //G;
+   pattar[18]:= '100011000110001111111000110001100010';  //H;
+   pattar[19]:= '001000010000100001000010000100001000';  //I;
+   pattar[20]:= '001110001000010000100001010010011000'; //J;
+   pattar[21]:= '100011001010100110001010010010100010'; //K;
+   pattar[22]:= '100001000010000100001000010000111110'; //L;
+   pattar[23]:= '110111010110101101011000110001100010'; //M;
+   pattar[24]:= '100011100110101100111000110001100010'; //N;
+   pattar[25]:= '001000101010001100011000101010001000'; //O;
+   pattar[26]:= '111001001010010100101110010000100000'; //P;
+   pattar[27]:= '011101000110001100011000101110000110'; //Q;
+   pattar[28]:= '111001001010010111001010010010100010'; //R
+   pattar[29]:= '011101000010000011000001000010111000'; //S
+   pattar[30]:= '111110010000100001000010000100001000'; //T
+   pattar[31]:= '100011000110001100011000111011011100'; //U
+   pattar[32]:= '100011000110001010100101000100001000'; //V
+   pattar[33]:= '100011000110101101011010110101010100'; //W
+   pattar[34]:= '100011000101010001000101010001100010'; //X
+   pattar[35]:= '100011101101010001000010000100001000'; //Y
+   pattar[36]:= '111110000100010001000100010000111110'; //Z
+end;
+
+procedure LetBitmap;
+begin
+ mbitmap:= TBitmap.Create;
+  try
+    mbitmap.LoadFromFile(Exepath+BITMAP);
+    ppForm.Canvas.Draw(270,70, mbitmap);
+  finally
+    raiseException2;
+    //ppForm.Free;
+  end;
+end;  
+
+
+//****************************** TRex Tester ********************************//
+type 
+  TDecorateURLsFlags = (
+ // describes, which parts of hyper-link must be included
+ // into VISIBLE part of the link:
+  durlProto, // Protocol (like 'ftp://' or 'http://')
+  durlAddr,  // TCP address or domain name (like 'anso.da.ru')
+  durlPort,  // Port number if specified (like ':8080')
+  durlPath,  // Path to document (like 'index.htm')
+  durlBMark, // Book mark (like '#mark')
+  durlParam  // URL params (like '?ID=2&User=13')
+ );
+
+  TDecorateURLsFlagSet = set of TDecorateURLsFlags;
+
+const 
+  URLTemplate = 
+   '(?i)(' 
+   + '(FTP|HTTP)://'             // Protocol 
+   + '|www\.)'     // trick to catch links without protocol by detecting start'www.'
+   + '([\w\d\-]+(\.[\w\d\-]+)+)' // TCP addr or domain name
+   + '(:\d\d?\d?\d?\d?)?'        // port number
+   + '(((/[%+\w\d\-\\\.]*)+)*)'  // unix path
+   + '(\?[^\s=&]+=[^\s=&]+(&[^\s=&]+=[^\s=&]+)*)?'  // request (GET) params
+   + '(#[\w\d\-%+]+)?';          // bookmark 
+
+
+function DecorateURLs (
+ // can find hyper links like 'http://...' or 'ftp://..'
+ // as well as links without protocol, but start with 'www.'
+
+ const AText : string; // Input text to find hyper-links
+
+  AFlags : TDecorateURLsFlagSet //= [durlAddr, durlPath]
+ // Which part of hyper-links found must be included into visible
+ // part of URL, for example if [durlAddr] then hyper link
+ // 'http://anso.da.ru/index.htm' will be decorated as
+ // '<a href="http://anso.da.ru/index.htm">anso.da.ru</a>'
+   ) : string;
+ // Returns input text with decorated hyper links 
+
+var
+  PrevPos : integer;
+  s, Proto, Addr, HRef : string;
+begin
+  Result := ''; 
+  PrevPos := 1; 
+  with TRegExpr.Create do try 
+     Expression := URLTemplate; 
+     if Exec (AText) then 
+      REPEAT 
+        s := ''; 
+        if AnsiCompareText (Match [1], 'www.') = 0 then begin
+           Proto := 'http://';
+           Addr := Match [1] + Match [3];
+           HRef := Proto + Match [0];
+          end
+         else begin
+           Proto := Match [1];
+           Addr := Match [3];
+           HRef := Match [0];
+          end;
+        if durlProto in AFlags
+         then s := s + Proto;
+        if durlAddr in AFlags
+         then s := s + Addr;
+        if durlPort in AFlags
+         then s := s + Match [5];
+        if durlPath in AFlags
+         then s := s + Match [6];
+        if durlParam in AFlags
+         then s := s + Match [9];
+        if durlBMark in AFlags
+         then s := s + Match [11];
+        Result := Result + Copy (AText, PrevPos,
+         MatchPos [0] - PrevPos) + '<a href="' + HRef + '">' + s + '</a>';
+        PrevPos := MatchPos [0] + MatchLen [0];
+      UNTIL not ExecNext;
+     Result := Result + Copy (AText, PrevPos, MaxInt); // Tail
+    finally Free;
+   end;
+end; { of function DecorateURLs }
+
+//RegEx Online
+const  russTemplate = //'(?i)Ioeoeaeuiue eo?n OA ii aieea?o' 
+    //'.*Aaoa\s*Eo?n\s*Eo?n iie.\s*Eo?n i?ia. [^<\d]*' 
+    //  '.*Äàòà\s*Êó?ñ\s*Êó?ñ ïîê.\s*Êó?ñ ï?îä.\s*Êóðñ íà?[^<\d]*' 
+    '(\d?\d)/(\d?\d)/(\d\d)\s*[\d.]+\s*([\d.]+)'; 
+
+procedure getREGEXOnline(Sender: TObject); 
+var http1: TIDHTTP;
+  htret: string;
+begin 
+  http1:= TIDHTTP.Create(self);
+  htret:= HTTP1.Get('http://win.www.citycat.ru/finance/finmarket/_CBR/'); 
+  //writeln(htret);
+  with TRegExpr.Create do try 
+     Expression:= russTemplate; 
+     if Exec(htret) then begin 
+       //if 
+       writeln(Format ('Russian rouble rate at %s.%s.%s: %s', 
+         [Match[2], Match[1], Match[3], Match[4]])); 
+      end; 
+      //writeln(dump)
+    finally Free; 
+   end; 
+   //text2html
+   //writeln('deco: '+#13+#10+DecorateURLs(htret,[durlAddr, durlPath])) 
+end;  
+
+
+procedure ExtractPhones (const AText : string; APhones : TStrings); 
+  begin 
+  with TRegExpr.Create do try 
+    Expression:= '(\+\d *)?(\((\d+)\) *)?(\d+(-\d*)*)'; 
+    if Exec (AText) then 
+      REPEAT 
+        if Match [3] = '812' 
+         then APhones.Add (Match [4]); 
+      UNTIL not ExecNext; 
+    finally Free; 
+   end; 
+end; 
+
+
+(*procedure regExGreedy;
+var S, RE, Link, Text: string;
+  Match: TMatch;
+begin
+  S := '<a href="go1.html">Go 1</a><a href="go2.html">Go 2</a>'; *)
+  //RE := '<a href="(.*)">(.*)</a>';
+  //Match:= TRegEx.Match(S, RE, [roIgnoreCase, roMultiLine, roCompiled]);
+  //while Match.Success do begin
+    //ShowMessage('URL: '+ Match.Groups[1].Value +', Text: ' + Match.Groups[2].Value);
+    //Match := Match.NextMatch;
+  //end;
+//end;
+
+procedure DelphiPerlRegex;
+//var mot: TPerlRegExOptions;
+begin
+  with TPerlRegex.create do try
+    Options:= Options + [preUnGreedy];
+    Subject:= 'I like to sing out at Foo bar';
+    RegEx:= '([1-9A-Za-z]+) bar';
+    Replacement:= '\1 is the name of the bar I like';
+    if Match then ShowMessageBig(ComputeReplacement);
+    
+    Subject:= 'This is a Linux or a Windows App.';
+    RegEx:= 'Windows|Linux';  // Matches 'Windows' or 'Linux', whichever comes first
+    if Match then showMessageBig(MatchedText +'came first!');
+  finally
+    Free;
+  end; 
+end;
+
+//I have the following REGEX:
+//^(\[[A-Za-z0-9,]+\])?([A-Za-z0-9]+:)?([A-Za-z]+)\(?([^\)]*)\)?$
+(*When presented with Set(ID,99)
+Perl returns:
+1:[], 2:[], 3:[Set], 4:[ID,99] - as I expected
+
+Delphi's Reg ex returns *)
+
+procedure DelphiCoreCodeRegEx;
+var regEx: TPerlRegEx;
+  i: integer;
+begin
+  try
+    { TODO -oUser -cConsole Main : Insert code here }
+    regEx:= TPerlRegEx.Create;
+    try
+      regEx.RegEx:= '^(\[[A-Za-z0-9,]+\])?([A-Za-z0-9]+:)?([A-Za-z]+)\(?([^\)]*)\)?$';
+      regEx.Subject:= 'Set(ID,99)';
+      WriteLn('Regex: '+regEx.RegEx);
+      WriteLn('Subject:'+regEx.Subject);
+      WriteLn('');
+      if regEx.Match then begin
+          for i:= 1 to 4 do
+            Write(Format('Group %d:[%s] ',[i,regEx.Groups[i]]));
+        end
+      else
+        WriteLn('Subject did not match the regular expression');
+      ReadLn('');WriteLn(' ');
+    finally
+      regEx.Free;
+    end;
+  except
+    //on E: Exception do
+     Writeln('E.ClassName'+ ': '+ E.Message);
+  end;
+ end;
+ 
+ 
+var
+  parser: TPerlRegEx;
+  list: TStringList;
+  found: boolean;
+  it: integer;
+
+const codestr1 ='2001, 2002, 200001, 2004, 1000000';
+
+procedure DelphiCoreCodeRegEx2;
+begin
+  try
+    { TODO -oUser -cConsole Main : Insert code here }
+    list:= TStringList.Create;
+    try
+      parser:= TPerlRegEx.Create;
+      try
+        parser.RegEx:= '\b(\d{4})(?!\d)';
+        parser.Subject:= codeStr1;
+        found:= parser.Match;
+        while found do begin
+            list.Add(parser.Groups[1]);
+            found:= parser.MatchAgain;
+          end;
+        //for str in List do
+          //WriteLn('Matched: ',str);
+        for it:= 0 to list.count-1 do 
+           WriteLn('Matched: '+list.strings[it]);
+         WriteLn('Total Matches: '+inttoStr(list.Count));
+        //ReadLn;
+      finally
+        parser.Free;
+      end;
+    finally
+      list.Free;
+    end;
+  except
+    //on E: Exception do
+      //Writeln(raiseLastException+ ' : '+ E.Message);
+  end;
+end; 
+ 
+ 
+var PR: TPerlRegEx;
+    TestString: string;
+
+procedure delphiRegexMailfinder;
+begin
+  // Initialize a test string to include some email addresses. This would normally
+  // be your eMail text.
+  TestString:= '<one@server.domain.xy>, another@otherserver.xyz';
+  PR:= TPerlRegEx.Create;
+  try
+    PR.RegEx:= '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b'; // <-- this is the actual regex used.
+    PR.Options:= PR.Options + [preCaseLess];
+    PR.Compile;
+    PR.Subject:= TestString; // <-- tell the TPerlRegEx where to look for matches
+    if PR.Match then begin
+      // At this point a first matched eMail is already in MatchedText so grab it
+      WriteLn(PR.MatchedText); // Extract first address (one@server.domain.xy)
+      // Let the regex engine look for more matches in a loop:
+      while PR.MatchAgain do
+        WriteLn(PR.MatchedText); //Extract subsequent addresses(another@otherserver)
+    end;
+  finally PR.Free;
+  end;
+  //Readln;
+end;
+
+ var
+    myf: extended;
+    secyear, lightyear: extended;//double;
+    regexres: TStrings;
+    gstr, fstr, email, rex, mystr, fs: string;
+    z,i: integer;
+    regEx, PR1: TPerlRegEx;
+    //match: TPerlMatch;
+
+//main of LED REGEX HEX BOX
+Begin
+
+fs:=  'northwest       NW      Charles Main            300000.00'#13#10+
+      'western         WE      Sharon Gray             53000.89'#13#10+
+      'southwest       SW      Lewis Dalsass           290000.73'+CR+LF+
+      'southern        SO      Suan Chin               54500.10'+CR+LF+
+      'southeast       SE      Patricia Hemenway       400000.00'+CR+LF+
+      'eastern         EA      TB Savage               440500.45'+CR+LF+
+      'northeast       NE      AM Main Jr.             57800.10'+CR+LF+
+      'north           NO      Ann Stephens            455000.50'+CR+LF+
+      'central         CT      KRush                   575500.70'+CR+LF+
+      'Extra [A-Z]****[0-9]..$5.00';
+
+  //SaveString(Exepath+'\examples\regexlist.txt',fs);
+  //memo2.text:= loadfileasString(Exepath+'\examples\regexlist.txt');
+  //SearchandOpenDoc(Exepath+'\examples\regexlist.txt');
+
+//**************************** OOP in maXbox *******************************
+//sizex, sizey as paras()
+  //pattern1:= '0123456789';
+  pattern1:= 'Pascal_Rex';
+  //pattern1:= 'THIS IS MAXLAND';
+
+  (*loadPForm(COL,ROW);
+  initPuzzle(COL); 
+  InitLED_SignPatterns; VCLtester_VCLUtils*)
+ 
+  //ShowLED_TestSeq;
+  //WriteLed_Set('PASCAL')
+  //WriteLed_Set(pattern1)
+  //WriteLed_Set('MAXBOX')
+  //WriteLed_Set(pattern1, true)  //true with animation
+  //Writeln(GetASCII)
+  
+  writeln(floattostr(power(2,64)))
+  writeln('Formula Direct: '+floattoSTr(getFormulaValue('3*45+ln(34)-sqrt(16)')));
+  writeln('Formula Direct: '+floattoSTr(maxCalc('3*45+ln(34)-sqrt(16)')));
+  //writeln('Formula Direct: '+floattoSTr(maxCalc('20 mod 4')));  syntax error
+  //DomainCheck  error
+  myf:= 123.059;
+  writeln('Formula ArcCos: '+floattoSTr(arccos(0.05998)));
+  writeln('Formula ArcSinH: '+floattoSTr(arcSinH(myf)));
+  PrintF('Formula Direct: %f ',[maxCalc('Ln(123.059+sqrt((123.059*123.059)+1))')]);
+  //Result := Ln(X + Sqrt((X * X) + 1));
+  SinCos(0, s1, c1); // 0 test
+  writeln('Formula SinCos:  '+floattoSTr(s1)+ ' '+floattoSTr(c1));
+  s1:= 0.3; c1:= 0.5;
+  SinCos(1.0, s1, c1);
+  writeln('Formula SinCos:  '+floattoSTr(s1)+ ' '+floattoSTr(c1));
+  SinCos(1.0, s1, c1);
+ // SinCosJ(1.0, s1, c1);
+  writeln('Formula SinCosJ: '+floattoSTr(s1)+ ' '+floattoSTr(c1));
+  //Ln((Sqrt(1 - X * X) + 1) / X)
+  writeln('PI is: '+floatToStr(PI));  //3.14159265358979
+  writeln('Formula Gauss first, s=3, z=0.0014: '+#13#10+
+     floattoSTr(maxCalc('1/sqrt(2*PI*3^2)')));
+  writeln('Formula Gauss second: '+
+     floattoSTr(maxCalc('exp((-0.0014^2)/(2*3^2))')));
+  // 8.68956546144783
+  writeln('Formula Gauss : '+
+     floatToSTr(maxCalc('1/SQRT(2*PI*3^2)*EXP((-0.0014^2)/(2*3^2))')));
+ 
+   //light seconds
+    printf('check of light year %f',[maxCalc('(60*24*60*365.25)*(299792458)')]);
+  //printf('check of lyear %f',[maxcalc('(60*24*60*365.25)*[metersperlightsecond]')]);
+    printf('this is ysec %d',[secondoftheyear(now)]);
+    printf('sec of year %f',[maxCalc('60*24*60*365.25')]);
+    //julian year
+    secyear:= (maxCalc('60*24*60*365.25'));
+    writeln('secyear: '+floattostr(secyear));
+  // 6149: GoldenMean: Float = 1.618033988749894848204586834365638; // GoldenMean
+   printf('golden mean %.18f',[goldenmean]);
+   printf('pi of j %.18f',[pij]);
+   printf('one parsec %.18f',[metersperparsec]);
+   printf('ref meters per light second %.18f',[metersperlightsecond]);
+   printf('ref meters per light year %.18f',[metersperlightyear]);
+   lightyear:= metersperlightyear;
+   //Result:   9.461 E12 kilometers
+   //one lightsecond (1 Ls) 299 792,458 km ~ 300 Millionen Meter ~ 300.000 km
+   //lightyear:= 9454254955E15;
+   writeln(floattostr(lightyear));
+   printf('meters per light sec2: %.12f',[lightyear / secyear]);
+   writeln(floattostr(lightyear/secyear));
+   printf('million of sec %f',[maXcalc('1E6 / (60*24*60)')]);
+   printf('2 ^64 -1 is 18 trillionen %.18f',[maXcalc('2^64-1')]);
+   printf('2 ^64 -1 is 18 trillionen %.21f',[power(2,64)-1]);
+   
+  (*ShowmessageBig('this is the first HI on the line so the box goes LO on');
+  z:= $2345;  // $2345 hex : $23 hi byte, $45 lo byte
+  ShowMessage(Format('Integer = $%x', [z]));
+  ShowMessage(Format('Hi byte = $%x', [Hi(z)]));
+  ShowMessage(Format('Lo byte = $%x', [Lo(z)]));*)
+ 
+  //printf('test million of sec %f',[lightyear * secyear]);
+//************************************REGEX *****************************
+//  Function ExecRegExpr( const ARegExpr, AInputStr : RegExprString) : boolean');
+    ///regex1 [12][09]\d{2}-\d{2}-\d{2}T12:[23]\d:\d{2}/
+    //regex2 result group = /((19)|(20))(\d{2}-\d{2}-\d{2}T)(12:[23]\d:\d{2})/
+
+  email:= 'max@kleiner.com';
+  rex:= '[\w\d\-\.]+@[\w\d\-]+(\.[\w\d\-]+)+';
+  writeln('email '+booleanToString(ExecRegExpr(rex, email)))
+
+    if ExecRegExpr (rex, email)   
+    then writeln('gotcha! e-mail is valid ...') else writeln('email not valid');   
+	
+    if ExecRegExpr('((19)|(20))\d{2}-\d{2}-\d{2}T12:[23]\d:\d{2}',
+    '1925-04-01T12:23:29') then writeln('regex true') else writeln('regex false');
+  
+    if ExecRegExpr('((19)|(20))(\d{2}-\d{2}-\d{2}T)(12:[23]\d:\d{2}-)',
+    '1925-04-01T12:23:29-') then writeln('regex true') else writeln('regex false');
+    //4464: Function RegExprSubExpressions(const ARegExpr: string; ASubExprs: TStrings; AExtendedSyntax : boolean) :
+   
+   regexres:= TStringlist.Create;
+   RegExprSubExpressions('((19)|(20))(\d{2}-\d{2}-\d{2}T)(12:[23]\d:\d{2})',regexres,true);
+   writeln(regexres[4]);
+ //Procedure SplitRegExpr(const ARegExpr,AInputStr: RegExprString;APieces:TStrings)');
+   
+   regexres.clear;
+// java.util.regex.Matcher[pattern=((19)|(20))(\d{2}-\d{2}-\d{2}T)(12:[23]\d:\d{2}) region=0,19 lastmatch=] 12:33:29
+
+   SplitRegExpr('((19)|(20))(\d{2}-\d{2}-\d{2}T)(12:[23]\d:\d{2})',
+   '1925-04-01T12:233:29',regexres);
+   writeln(regexres[0]);
+   regexres.Free;
+  
+  //last two müller - maierhuber are false
+  //[ae] a oder e //e? -> 0 oder 1 e
+
+    if ExecRegExpr('M[ae][iy]e?r',
+    '"Meyer", "Meier", "Mair", "Mayer", "Maier", "Meir", "Müller", "Maierhuber') 
+      then writeln('regex maier true') else writeln('regex maier false');
+  
+    if ExecRegExpr('M[ae][iy]e?r.*[be]', 'Mairhuberu') 
+      then writeln('regex maierhuber true') else writeln('regex maierhuber false');
+                                              
+    if ExecRegExpr('^[a-zA-Z_][a-zA-Z0-9_].*','pascal_name_kon') 
+      then writeln('regex pascal true') else writeln('regex pascal false');
+   
+    if ExecRegExpr('^[1-4]{3,}[A-D]{4,}$','121ABCD') 
+      then writeln('regex hash true') else writeln('regex hash false');
+
+    //if ExecRegExpr('[1-9]{4,5}[A-F]{4,}','2127FADFF') 
+    if ExecRegExpr('^([a-fA-F\d]{8})$','8a2127FA') 
+       then writeln('regex hash true') else writeln('regex hash false');
+
+    //if ExecRegExpr('(?i)(?<![a-z0-9][a-f0-9]{32}?![a-z0-9])','8a2127FADFF') 
+       //then writeln('regex hash true') else writeln('regex hash false');
+
+    if ExecRegExpr('^(:\d\d?\d?\d?\d?)$',':80009') 
+    then writeln('regex port true') else writeln('regex port false');
+
+    //if ExecRegExpr('\b\d{4}(?!\d)',':80009') 
+    //then writeln('regex lookahead true') else writeln('regex lookahead false');
+                          
+//def myFile = new File("C:\\dateienmitback\\dateien\\sound\\aa_playlists\\songbird_20110301\\Rockdisco.m3u") //def group = "Queen"
+
+    regexres:= TStringlist.Create;
+    regexres.Clear;
+  
+  //gstr:= 'The Doors';
+  //gstr:= 'Deep Purple';
+  fstr:= loadFileasString(Exepath+'examples\Rockdisco.m3u');
+  //writeln(fstr);
+  //SplitRegExpr('#EXTINF:\d{3},'+gstr+' - (.*)',fstr,regexres);
+   //writeln(regexres[0]);
+   //regexres.Free;
+    //with TRegExpr.Create do try 
+     //modifiers:= /s;
+     //modifierG:= true;
+     // modifierS:= false;
+     // Expression:= '#EXTINF:\d{3},'+gstr+' - ([^\n].*)';
+     //Expression:= '#EXTINF:\d{3},The Doors - (.*)'; 
+     //if Exec(fstr) then begin 
+       // writeln(Format ('Songs of Doors: %s', [Match[1]])); 
+      //end; 
+      //writeln(dump)
+      //((InvertCaseFunction
+    //finally Free; 
+   //end; 
+   
+   
+  with TRegExpr.Create do try 
+  gstr:= 'Deep Purple';
+  modifierS:= false; //non greedy
+     //Expression := '(\+\d *)?(\((\d+)\) *)?(\d+(-\d*)*)'; 
+     Expression:= '#EXTINF:\d{3},'+gstr+' - ([^\n].*)';
+     if Exec(fstr) then 
+      Repeat 
+      //countmatch
+       writeln(Format ('Songs of ' +gstr+': %s', [Match[1]])); 
+        (*if AnsiCompareText(Match[1], 'Woman') > 0 then begin
+          closeMP3;
+          playMP3('C:\maxbook\EKON16\EKON16\06_Woman_From_Tokyo.mp3');
+        end;*)
+      Until Not ExecNext; 
+    finally Free; 
+   end; 
+  regexres.Free;
+  
+  
+ // email:= 'max@kleiner.com';
+  rex:= '[\w\d\-\.]+@[\w\d\-]+(\.[\w\d\-]+)+';
+  fstr:= loadFileasString(Exepath+'examples\Simone_Seiler_Furrer.vcf');
+   
+  with TRegExpr.Create do try 
+  gstr:= 'simone';
+  modifierS:= false; //non greedy
+     //Expression := '(\+\d *)?(\((\d+)\) *)?(\d+(-\d*)*)'; 
+     Expression:= rex;
+     if Exec(fstr) then 
+      Repeat 
+      //countmatch
+       writeln(Format('mail of ' +gstr+': %s',[Match[1]])); 
+      Until Not ExecNext; 
+    finally Free; 
+   end; 
+  //regexres.Free;
+  
+  //@Slide Examples EKON:
+  fstr:= '';
+  fstr:= loadfileasString(Exepath+'\examples\regexlist.txt');
+ 
+  with TRegExpr.Create do try 
+    gstr:= 'perl';
+    modifierS:= false; //non greedy
+     //Expression := '(\+\d *)?(\((\d+)\) *)?(\d+(-\d*)*)'; 
+     Expression:= '(north[^\n].*)';
+     //Expression:= '\b\d{4}(?!\d)';
+     if Exec(fstr) then 
+      Repeat 
+      //countmatch
+       writeln(Format('match of ' +gstr+': %s',[Match[1]])); 
+      Until Not ExecNext; 
+    finally Free; 
+   end; 
+   
+ //******************* compare perlregex - regexstudio *****************
+   
+   //var mystr: string;    Delphi RegEx - RegeX Studio
+       
+       with TRegExpr.Create do try 
+         //Make it case-insensitive 
+         ModifierI:= True; 
+         mystr:= '<body> My TRex on Regex</body>'; 
+         Expression := '<body.*>(.*?)</body>'; 
+       if Exec(Mystr) then 
+              ShowMessageBig(Match[1]); 
+       finally 
+         Free; 
+       end; 
+ 
+       with TPerlRegEx.Create do try        //Perl Delphi RegEx
+         RegEx:= '<title>(.+?)</title>'; 
+         Options:= [preCaseLess]; 
+         Subject:= 'testa <title> My TRex on Regex</title> testb'; 
+         If Match then 
+             ShowMessageBig(Groups[1])  //SubExpressions[1]) ,MatchedText
+         else 
+           ShowMessageBig('Regex Not found');
+       finally
+         Free;
+       end;      
+   
+   
+//********* TMatchCollection   EKON 16 Examples  *****************************
+   //http://www.regexbuddy.com/delphi.html
+   
+    //rex:= '(north[^\n].*)';
+    //rex:= '.*NW|EA[^\n].*';
+    //rex:= '.*3+[^\n].*';
+    //rex:= '.*2\.?[0-9].*';
+    //rex:= '(no)+.*';   //Print all lines containing one or more consecutive occurrences of the pattern “no”.
+    //rex:=  '.*S(h|u).*';  //Print all lines containing the uppercase letter “S”, followed by either “h” or “u”.
+    //rex:=  '[A-Z]'+'****'+'[0-9]..$5.00';
+    //rex:=  '^n.*';
+    //rex:= '.*\.00$';
+    //rex:= '.*5\..';
+    //rex:= '^[we].*';
+    //rex:= '.*\.[^0][^0].*'; //Print all lines ending with a period and exactly two non-zero numbers.
+    //rex:= '.*[0-9]{6}\..*'; //all lines at least 6 consecutive numbs follow. by a period.
+    //rex:= '\<north';
+    rex:= '.*(es).*\1.*';   //subpattern
+    
+    PR1:= TPerlRegEx.Create;
+    try
+      PR1.RegEx:= rex;     //whole line!
+      //PR1.RegEx := '\b\d{4}(?!\d)';
+      PR1.Subject:= fstr;
+      //WriteLn('Regex: '+regEx.RegEx);
+      //WriteLn('Subject:'+regEx.Subject);
+      WriteLn('');
+     //PR1.Options:= PR1.Options + [preCaseLess];
+     //PR1.Options:= PR1.Options + [preMultiline];
+     //PR1.Compile;
+      if PR1.Match then begin
+        WriteLn('firstmatch: '+PR1.MatchedText);    
+      while PR1.MatchAgain do
+        WriteLn('matchNext: '+PR1.MatchedText); // Extract subsequent )
+    end;
+      {if regEx.Match then begin
+          for i:= 1 to 4 do
+            Write(Format('Group %d:[%s] ',[i,regEx.Groups[i]]));
+        end }
+      WriteLn(' ');
+    finally
+      PR1.Free;
+    end;
+  
+  
+  //getREGEXonLine(self);             
+  
+  DelphiPerlRegex;
+  DelphiCoreCodeRegEx;
+  DelphiCoreCodeRegEx2;
+
+  DelphiRegexMailfinder;
+  
+  if ExecRegExpr('^[a-zA-Z_][a-zA-Z0-9_].*$','pascal_name_kon') 
+      then writeln('regex pascal name true') else writeln('regex pascal name false');
+   
+ Writeln(booleanToString(ExecRegExpr('^[a-zA-Z_][a-zA-Z0-9]*','pascal_name_kon'))) 
+ writeln(''); 
+ 
+ Writeln('Tasche '+booleanToString(ExecRegExpr('T[ai]sche','Taaaasche'))) 
+ writeln('');
+  //writeln('deco: '+DecorateURLs('http://anso.da.ru/index.htm',[durlAddr]));
+  //oExpression:=TniRegularExpression.Create('PascalNames:[a-zA-Z_][a-zA-Z0-9_]*',[ ]);
+  //TniRegularExpressionMatchResult = (mrNone, mrFail, mrMatch, mrInsufficient);
+   //if oExpression.match('PascalNames:Get_function_A999') = mrMatch then
+     //      writeln('expression matched! '+intToStr(oExpression.MatchCount)) else
+     //      writeln('no matching');
+
+  //ShowMessage(ReplaceRegExpr('World','Hello, EKON World!', 'Earth',true)); 
+  //maxform1.SerialRS2321Click(self)
+  //Application.onmessage
+  //Application.onException
+  //200 in begin sound
+  //label1click_EditPattern(self)
+  //DisplayStream
+  //SwapLong(swap_endian_u32)
+//  AESSymetricExecute(exepath+'examples\aestest.txt', exepath+'examples\aestest_encrypt/.txt','0001020304');
+ ///  writeln('app handle '+ inttostr(application.handle));
+  //writeln('app owner'+ TApplication(application.owner).name);
+  // writeln('app name '+ (application.name));
+ 
+End.
+         ____    ___   _      ____    _   _   _
+        |  _ \  |  _| | |    |  _ \  | | | | | |
+        | | . | | |_  | |    | |_| | | |_| | | |
+        | | | | |  _| | |    |  __/  |  _  | | |          
+        | |_. | | |_  | |__  | |     | | | | | |
+        |____/  |___| |____| |_|     |_| |_| |_| 
+        
+
+http://regexpstudio.com/tregexpr/help/whats_new.html      
+
+
+Ein Lichtjahr ist die Strecke, die eine elektromagnetische Welle wie das Licht in einem julianischen Jahr in absolutem Vakuum zurücklegt. Das sind etwa 9,5 Billionen Kilometer (9,5 · 1012 km).      
+Das Formelzeichen c (von lateinisch celeritas, Schnelligkeit) wird in vielen Fällen auch für die abweichende Ausbreitungsgeschwindigkeit in   
+
+1 Lj = 9 460 730 472 580 800 m        
+  printf('check of light year %f',[maxcalc('(60*24*60*365.25)*(299792458)')]);
+  
+Für andere Jahresdefinitionen ergeben sich:
+
+    9.454.254.955.488.000 m bezüglich des Gemeinjahrs (exakt),
+    9.460.528.191.000.000 m bezüglich des tropischen Jahrs (zur Epoche J2000.0),
+    9.460.536.207.068.016 m bezüglich des gregorianischen Jahrs (exakt),
+    9.460.895.221.000.000 m bezüglich des siderischen Jahrs (zur Epoche J2000.0).
+    
+ CL.AddConstantN('MetersPerLightYear','Extended').setExtended( MetersPerLightSecond * 31556925.9747);    //mit 365.2422 !
+    
+
+RegEx for a valid file name: (?i)^(?!^(PRN|AUX|CLOCK\$|NUL|CON|COM\d|LPT\d|\..*)(\..+)?$)[^\\\./:\*\?\"<>\|][^\\/:\*\?\"<>\|]{0,254}$        
+                                          
+   Weiterführung der Scholz Software Systems 3S
+        
+The Jedi project provides the following solution in JclMath:
+
+procedure SinCos(X: Float; var Sin, Cos: Float);
+
+  {$IFDEF CPU386}
+  procedure FSinCos(X: Float; var Sin, Cos: Float); assembler;
+  asm
+          FLD     X
+          FSINCOS
+          FSTP    Float PTR [EDX]
+          FSTP    Float PTR [EAX]
+          FWAIT
+  end;
+  {$ENDIF CPU386}
+
+begin
+  DomainCheck(Abs(X) > MaxAngle);
+  {$IFDEF CLR}
+  Sin := System.Math.Sin(X);
+  Cos := System.Math.Cos(X);
+  {$ELSE}
+  FSinCos(X, Sin, Cos);
+  {$ENDIF CLR}
+end;
+
+The domain check raises a exception in case of argument out of +2^63.  
+
+http://regexpstudio.com/tregexpr/help/whats_new.html      
+        
+        
+Text processing from bird's eye view
+Do You want to write program for extracting weather forecast or currency rates or e-mails or whatsoever You want from HTML-pages, e-mails or other unformatted source? Or do You need to import data into Your database from old DB's ugly export form
+
+There are two ways.
+
+The traditional one - You must make full featured text parser. This is an awful peace of work!
+For example, try to implement rules how to recognize e-mail address - simple code like
+	p := Pos ('@', email);   
+	if (p > 1) and (p < length (email))   
+	  then ...   
+	
+don't filter many common errors, for example, users frequently forget enter domain-part of e-mail, You'll need much more complex code (just read the big article "Extended E-mail Address Verification and Correction" on www.Delphi3000.com). Just th
+
+The second way - look at the text from bird's eye view with help of regular expressions engine. You don't write the check processing routine, You just describe how regexp engine must do it for You. Your application will be implemented very fast a
+Unfortunately, Delphi component palette contains no TRegularExpression component. But there are some third-party implementations (I think You already know at least one 8-)).
+
+Example 1
+How to chech e-mail address syntax.
+Just write
+	if ExecRegExpr ('[\w\d\-\.]+@[\w\d\-]+(\.[\w\d\-]+)+', email)   
+	then ... gotcha! e-mail is valid ...   
+	
+Do not forget to add TRegExpr into uses section of the unit.
+
+Example 2
+How to extract phone numbers from unformatted text (web-pages, e-mails, etc).
+For example, we need only St-Petersburg (Russia) phones (city code 812).
+
+procedure ExtractPhones (const AText : string; APhones : TStrings); 
+begin 
+  with TRegExpr.Create do try 
+     Expression := '(\+\d *)?(\((\d+)\) *)?(\d+(-\d*)*)'; 
+     if Exec (AText) then 
+      REPEAT 
+        if Match [3] = '812' 
+         then APhones.Add (Match [4]) 
+      UNTIL not ExecNext; 
+    finally Free; 
+   end; 
+end; 
+
+For the input text
+	"Hi !  
+	Please call me at work (812)123-4567 or at home +7 (812) 12-345-67  
+	truly yours .."  
+	
+this procedure returns
+	APhones[0]='123-4567'  
+	APhones[1]='12-345-67'  
+	
+Example 3
+Extracting currency rate from Russian Bank web page.
+
+Create new project and place at the main form TBitBtn, TLabel and TNMHTTP components.
+
+Add following code as BitBtn1 OnClick event handler (don't mind Russian letter - they need for Russian web-page parsing):
+
+procedure TForm1.BitBtn1Click(Sender: TObject); 
+const 
+  Template = '(?i)Ioeoeaeuiue eo?n OA ii aieea?o' 
+   + '.*Aaoa\s*Eo?n\s*Eo?n iie.\s*Eo?n i?ia. [^<\d]*' 
+   + '(\d?\d)/(\d?\d)/(\d\d)\s*[\d.]+\s*([\d.]+)'; 
+begin 
+  NMHTTP1.Get ('http://win.www.citycat.ru/finance/finmarket/_CBR/'); 
+  with TRegExpr.Create do try 
+     Expression := Template; 
+     if Exec (NMHTTP1.Body) then begin 
+       Label1.Caption := Format ('Russian rouble rate %s.%s.%s: %s', 
+         [Match [2], Match [1], Match [3], Match [4]]); 
+      end; 
+    finally Free; 
+   end; 
+end;  
+
+5. time of day: For example. 11:30.   [01][0-9]:[0-5][0-9] won't work well, because it would allow such impossible times as 19:00 and 00:30.  A more complicated construction works better: (1[012] | [1-9]) :[0-5][0-9].  That is, a 1 followed by 0, 1, or 2, OR any digit 1-9.
+
+procedure perlregex;
+var mot: TPerlRegExOptions;
+begin
+  with TPerlRegex.create do try
+    Options:= Options + [preUnGreedy];
+    Subject:= 'I like to sing out at Foo bar';
+    RegEx:= '([A-Za-z]+) bar';
+    Replacement:= '\1 is the name of the bar I like';
+    if Match then ShowMessageBig(ComputeReplacement);
+    
+    Subject := 'This is a Linux or a Windows App.';
+    RegEx:= 'Windows|Linux';  // Matches 'Windows' or 'Linux', whichever comes first
+    if Match then showMessageBig(MatchedText +'came first!');
+    finally
+    free;
+  end; 
+end;
+
+procedure PerlRegex;
+var mot: TPerlRegExOptions;
+begin
+  with TPerlRegex.create do
+    try
+    Subject:= 'I like to hang out at Foo bar';
+    RegEx:= '([A-Za-z]+) bar';
+    Replacement:= '\1 is the name of the bar I like';
+    if Match then ShowMessage(ComputeReplacement);
+    Subject := 'This is a Linux or a Windows App.';
+    RegEx := 'Windows|Linux';  // Matches 'Windows' or 'Linux', whichever comes first
+    if Match then showMessage(MatchedText + ' came first!');
+    finally
+    free;
+  end; 
+end;
+
+
+------------------------Description
+
+Match option enumeration set for the Perl regular expression.
+Option 	Meaning
+
+preCaseLess
+	
+Tries to match the regex without paying attention to case. If set, 'Bye' will match 'Bye', 'bye', 'BYE' and even 'byE', 'bYe', and so on. Otherwise, only 'Bye' will be matched. Equivalent to Perl's /i modifier.
+
+preMultiLine
+	
+The ^ (beginning of string) and $ (ending of string) regex operators will also match right after and right before a new line in the Subject string. This effectively treats one string with multiple lines as multiple strings. Equivalent to Perl's /m modifier.
+
+preSingleLine
+
+Normally, dot (.) matches anything but a new line (\n). With preSingleLine, dot (.) will match anything, including new lines. This allows a multiline string to be regarded as a single entity. Equivalent to Perl's /s modifier. Note that preMultiLine and preSingleLine can be used together.
+
+preExtended
+
+Allow the regular expression to contain extra white spaces, new lines, and Perl-style comments, all of which will be filtered out. This is sometimes called "free-spacing mode".
+
+preAnchored
+
+Allows the regular expression to match only at the start of the subject or right after the previous match.
+
+preUnGreedy
+	
+Repeat operators (?, *, +, {num,num}) are greedy by default, for example, they try to match as many characters as possible. Set preUnGreedy to use ungreedy repeat operators by default, for example, so that they try to match as few characters as possible.
+
+preNoAutoCapture
+
+Allows the regular expression to capture only named groups. Note that (group) is a non-capturing group. 
+
+
+It's unlikely that Emb will change this before XE3 because it would
+require an interface change, however you can work around it like this :
+
+uses
+RegularExpressionsCore,
+RegularExpressions;
+
+type
+TRegExCrack = record
+private
+FOptions: TRegExOptions;
+FMatchEvaluator: TMatchEvaluator;
+FNotifier: IInterface;
+FRegEx: TPerlRegEx;
+end;
+//Note the above should match the layout of TRegEx exactly.
+
+procedure dosomething;
+var
+regx : TRegEx;
+begin
+regx := TRegEx.Create('.*');
+TRegEx2(regx).FRegEx.Options := TRegEx2(regx).FRegEx.Options +
+[preUnGreedy];
+
+.....
+end;
+
+
+The regular expression engine in Delphi XE is PCRE (Perl Compatible Regular Expression). It's a fast and compliant (with generally accepted regex syntax) engine which has been around for many years. Users of earlier versions of delphi can use it with TPerlRegEx, a delphi class wrapper around it.
+
+The XE interface to pcre is a layer of units based on contributions from various people, the pcre api header translations in RegularExpressionsAPI.pas (Florent Ouchet and co), the wrapper class TPerlRegEx (Jan Goyvaerts) in RegularExpressionsCore.pas and the record wrappers on RegularExpressions.pas (myself). This unit is based on code we currently use in FinalBuilder 6 & 7, it's well tested and has proven to be very reliable in our products.
+
+RegularExpressions.pas is what you will use in your code. It's loosely based on the .net regex interfaces.
+
+The main type in RegularExpressions.pas is TRegEx. TRegEx is a record with a bunch of methods and static class methods for matching with regular expressions. The static versions of the methods are provided for convenience, and should only be used for one off matches, if you are matching in a loop or repeating the same search often then you should create an 'instance' of the TRegEx record and use the non static methods.
+
+You will notice I don't free any of the TRegEx, TMatch or TGroups, that's because they are Records with methods rather than classes. This keeps memory management simple and helps avoid memory leaks, my original code used interfaces and reference counting but Embarcadero preferred to use records (as they have done with other new stuff introduced in recent releases).
+
+
+Re: REGEX Delphi XE2 Question? 		
+Click to report abuse... Click to reply to this thread 	Reply
+  	Posted: Jul 20, 2012 6:41 AM   in response to: Christopher Burke in response to: Christopher Burke
+The only big difference is that I'm using the class method:
+
+G:=TRegex.Match(...) I also tried G:=TRegex.Split as well.
+
+Will try creating and using that instead.
+
+This is the first time I've used the unit, and all defaults are as
+installed.
+
+I hope it helps! I've always used the RegularExpressionsCore unit rather
+than the higher level stuff because the core unit is compatible with the
+unit that Jan Goyvaerts has provided for free for years. That was my
+introduction to regular expressions. So I forgot about the other unit. I
+guess there's either a bug or it just doesn't work the way one might expect.
+Personally, I don't think the low level code is too hard to work with, so
+give it a try ans see if it works better for you.
+
+Lee
+
+northwest       NW      Charles Main            300000.00
+western         WE      Sharon Gray             53000.89
+southwest       SW      Lewis Dalsass           290000.73
+southern        SO      Suan Chin               54500.10
+southeast       SE      Patricia Hemenway       400000.00
+eastern         EA      TB Savage               440500.45
+northeast       NE      AM Main Jr.             57800.10
+north           NO      Ann Stephens            455000.50
+central         CT      KRush                   575500.70
+Extra [A-Z]****[0-9]..$5.00
+
+
+bug comment on regex static record
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  RegEx: TRegEx;
+  Match: TMatch;
+begin
+  RegEx := TRegex.Create('\w+');
+  Match := RegEx.Match('One two three four');
+  while Match.Success do begin
+    Memo1.Lines.Add(Match.Value);
+    Match := Match.NextMatch;
+  end
+end;
+
+Or you could save yourself two lines of code by using the static TRegEx.Match call:
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  Match: TMatch;
+begin
+  Match := TRegEx.Match('One two three four', '\w+');
+  while Match.Success do begin
+    Memo1.Lines.Add(Match.Value);
+    Match := Match.NextMatch;
+  end
+end;
+
+Unfortunately, due to a bug in the RegularExpressions unit, the static call doesn’t work. Depending on your exact code, you may get fewer matches than you should, or you may get blank matches, or your application may crash with an access violation.
+
+The RegularExpressions unit defines TRegEx and TMatch as records. That way you don’t have to explicitly create and destroy them. Internally, TRegEx uses TPerlRegEx to do the heavy lifting. TPerlRegEx is a class that needs to be created and destroyed like any other class. If you look at the TRegEx source code, you’ll notice that it uses an interface to destroy the TPerlRegEx instance when TRegEx goes out of scope. Interfaces are reference counted in Delphi, making them usable for automatic memory management.
+
+The bug is that TMatch and TGroupCollection also need the TPerlRegEx instance to do their work. TRegEx passes its TPerlRegEx instance to TMatch and TGroupCollection, but it does not pass the instance of the interface that is responsible for destroying TPerlRegEx.
+
+This is not a problem in our first code sample. TRegEx stays in scope until we’re done with TMatch. The interface is destroyed when Button1Click exits.
+
+In the second code sample, the static TRegEx.Match call creates a local variable of type TRegEx. This local variable goes out of scope when TRegEx.Match returns. Thus the reference count on the interface reaches zero and TPerlRegEx is destroyed when TRegEx.Match returns. When we call MatchAgain the TMatch record tries to use a TPerlRegEx instance that has already been destroyed.
+
+To fix this bug, delete or rename the two RegularExpressions.dcu files and copy RegularExpressions.pas into your source code folder. Make these changes to both the TMatch and TGroupCollection records in this unit:
+
+    Declare FNotifier: IInterface; in the private section.
+    Add the parameter ANotifier: IInterface; to the Create constructor.
+    Assign FNotifier := ANotifier; in the constructor’s implementation.
+
+You also need to add the ANotifier: IInterface; parameter to the TMatchCollection.Create constructor.
+
+Now try to compile some code that uses the RegularExpressions unit. The compiler will flag all calls to TMatch.Create, TGroupCollection.Create and TMatchCollection.Create. Fix them by adding the ANotifier or FNotifier parameter, depending on whether ARegEx or FRegEx is being passed.
+
+With these fixes, the TPerlRegEx instance won’t be destroyed until the last TRegEx, TMatch, or TGroupCollection that uses it goes out of scope or is used with a different regular expression.
+
+MatchedLength
+
+Try the following expression RegEx := '\b\d{4}(?!\d)'
+
+Breaking it down:
+
+\b - Anchor: Match at word boundaries
+\d - Character Class: digits (0-9)
+{4} - Quantifier: Exactly 4
+(?!\d) - Negative lookahead assertion. Match only if no digits follow
+the preceding pattern sought.
+
+For new code written in Delphi XE, you should definitely use the RegularExpressions unit that is part of Delphi rather than one of the many 3rd party units that may be available. If you're dealing with UTF-8 data, use the RegularExpressionsCore unit to avoid needless UTF-8 to UTF-16 to UTF-8 conversions.
+
+myform
+

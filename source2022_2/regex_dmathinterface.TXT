@@ -1,0 +1,58 @@
+PROGRAM Demo_App_RegexDmathReplacement;
+CONST 
+//<Constant declarations> 
+  TEXTOUT = 'hi world of code';
+
+{TYPE 
+<Type declarations>} 
+
+VAR 
+//<Variable declarations>
+  i, it: integer;
+  getin: string;
+  found: boolean;
+  list: TStringlist;
+
+//<FUNCTION>
+//<PROCEDURE> 
+
+BEGIN  //Main
+//<Executable statements>
+
+  getin:= loadfileasString(Exepath+'source\fundamentals_1_4_lib\311_dmath_interface.pas');
+  //showmessage(getin)
+    list:= TStringList.Create;
+  
+  
+with TPerlRegex.create do try
+    Options:= Options + [preUnGreedy];
+    Subject:= getin;
+    //'I like to sing out at Foo bar';
+    //RegEx:= '([A-Za-z]+) bar';
+    RegEx:= '(procedure Dim[A-Za-z]+)';
+    Replacement:= '\1@dmath';
+    if Match then ShowMessageBig(ComputeReplacement);
+      found:= Match;
+        while found do begin
+            list.Add(Groups[1]);
+            found:= MatchAgain;
+          end;
+         for it:= 0 to list.count-1 do 
+           Writeln('Matched: '+list.strings[it]);
+         WriteLn('Total Matches: '+inttoStr(list.Count));
+         
+      
+    
+    //Subject:= 'This is a Linux or a Windows App.';
+    //RegEx:= 'Windows|Linux';  // Matches 'Windows' or 'Linux', whichever comes first
+    //if Match then showMessageBig(MatchedText +'came first!');
+  finally
+    Free;
+  end; 
+
+  for i:= 1 to 3 do 
+    Writeln(TEXTOUT);
+//<Definitions>  
+END. 
+
+----app_template_loaded_code----
