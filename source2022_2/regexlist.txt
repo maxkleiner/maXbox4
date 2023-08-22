@@ -1,0 +1,10 @@
+northwest       NW      Charles Main            300000.00
+western         WE      Sharon Gray             53000.89
+southwest       SW      Lewis Dalsass           290000.73
+southern        SO      Suan Chin               54500.10
+southeast       SE      Patricia Hemenway       400000.00
+eastern         EA      TB Savage               440500.45
+northeast       NE      AM Main Jr.             57800.10
+north           NO      Ann Stephens            455000.50
+central         CT      KRush                   575500.70
+Extra [A-Z]****[0-9]..$5.00
