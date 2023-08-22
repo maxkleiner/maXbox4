@@ -1,0 +1,660 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_Hash">
+  <interface name="IHash">
+    <function name="GetIsHashing" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <function name="GetHash" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="IHashDsc" />
+      </parameters>
+    </function>
+    <procedure name="SetHash" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="IHashDsc" paramflags="const" />
+      </parameters>
+    </procedure>
+    <function name="GetHashOutput" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TStream" />
+      </parameters>
+    </function>
+    <function name="GetonProgress" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TOnHashProgress" />
+      </parameters>
+    </function>
+    <procedure name="SetOnProgress" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="TOnHashProgress" />
+      </parameters>
+    </procedure>
+    <procedure name="Begin_Hash" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <procedure name="UpdateMemory" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" paramflags="const" />
+        <parameter name="PlaintextLen" type="Integer" />
+      </parameters>
+    </procedure>
+    <procedure name="End_Hash" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <procedure name="Burn" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <procedure name="HashStream" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="TStream" />
+      </parameters>
+    </procedure>
+    <procedure name="HashFile" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="PlaintextFileName" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <procedure name="HashString" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <procedure name="HashAnsiString" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <function name="isUserAborted" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="WriteHashOutputToStream" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Dest" type="TStream" />
+      </parameters>
+    </procedure>
+    <procedure name="WriteHashOutputToMemory" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Dest" paramflags="var" />
+      </parameters>
+    </procedure>
+    <property name="isHashing" visibility="public" read="GetIsHashing" type="Boolean" />
+    <property name="Hash" visibility="public" read="GetHash" write="SetHash" type="IHashDsc" />
+    <property name="HashOutputValue" visibility="public" read="GetHashOutput" type="TStream" />
+    <event name="OnProgress" visibility="public" read="GetonProgress" write="SetOnProgress" type="Boolean" />
+  </interface>
+  <interface name="IHash_TestAccess">
+    <function name="GetHasher" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="IHasher" />
+      </parameters>
+    </function>
+  </interface>
+  <class name="TSimpleHash">
+    <ancestor name="TInterfacedPersistent" namespace="Classes">
+      <methodref name="_AddRef" visibility="protected">
+      </methodref>
+      <methodref name="_Release" visibility="protected">
+      </methodref>
+      <methodref name="QueryInterface" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <ancestor name="TPersistent" namespace="Classes">
+        <methodref name="AssignError" visibility="private">
+        </methodref>
+        <methodref name="AssignTo" visibility="public">
+        </methodref>
+        <methodref name="DefineProperties" visibility="public">
+        </methodref>
+        <methodref name="GetOwner" visibility="protected">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+        <methodref name="Assign" visibility="public">
+        </methodref>
+        <methodref name="GetNamePath" visibility="public">
+        </methodref>
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="IHash_TestAccess" />
+      <implements name="IEventOrigin" />
+      <implements name="IHash" />
+    </interfaces>
+    <members>
+      <field name="FSender" type="TObject" visibility="private" />
+      <function name="GetIsHashing" visibility="private">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="GetHash" visibility="private">
+        <parameters>
+          <retval type="IHashDsc" />
+        </parameters>
+      </function>
+      <procedure name="SetHash" visibility="private">
+        <parameters>
+          <parameter name="Value" type="IHashDsc" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="GetHashOutput" visibility="private">
+        <parameters>
+          <retval type="TStream" />
+        </parameters>
+      </function>
+      <function name="GetonProgress" visibility="private">
+        <parameters>
+          <retval type="TOnHashProgress" />
+        </parameters>
+      </function>
+      <procedure name="SetOnProgress" visibility="private">
+        <parameters>
+          <parameter name="Value" type="TOnHashProgress" />
+        </parameters>
+      </procedure>
+      <procedure name="Begin_Hash" visibility="private">
+      </procedure>
+      <procedure name="UpdateMemory" visibility="private">
+        <parameters>
+          <parameter name="Plaintext" paramflags="const" />
+          <parameter name="PlaintextLen" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="End_Hash" visibility="private">
+      </procedure>
+      <procedure name="Burn" visibility="private">
+      </procedure>
+      <procedure name="HashStream" visibility="private">
+        <parameters>
+          <parameter name="Plaintext" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="HashFile" visibility="private">
+        <parameters>
+          <parameter name="PlaintextFileName" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="HashString" visibility="private">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="HashAnsiString" visibility="private">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="isUserAborted" visibility="private">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="SetEventSender" visibility="private">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="WriteHashOutputToStream" visibility="private">
+        <parameters>
+          <parameter name="Dest" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="WriteHashOutputToMemory" visibility="private">
+        <parameters>
+          <parameter name="Dest" paramflags="var" />
+        </parameters>
+      </procedure>
+      <function name="GetHasher" visibility="private">
+        <parameters>
+          <retval type="IHasher" />
+        </parameters>
+      </function>
+      <field name="FHashDsc" type="IHashDsc" visibility="protected" />
+      <field name="FHasher" type="IHasher" visibility="protected" />
+      <field name="FInputBufferLen" type="Integer" visibility="protected" />
+      <field name="FInputBuffer" type="TMemoryStream" visibility="protected" />
+      <field name="FOutputValue" type="TMemoryStream" visibility="protected" />
+      <field name="FOnProgress" type="TOnHashProgress" visibility="protected" />
+      <field name="FCount" type="Int64" visibility="protected" />
+      <field name="FisUserAborted" type="Boolean" visibility="protected" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+    </members>
+  </class>
+  <class name="THash">
+    <ancestor name="TTPLb_BaseNonVisualComponent" namespace="uTPLb_BaseNonVisualComponent">
+      <methodref name="GetAbout" visibility="private" />
+      <methodref name="SetAbout" visibility="private" />
+      <propertyref name="About" visibility="published" />
+      <ancestor name="TComponent" namespace="Classes">
+        <methodref name="GetComObject" visibility="private">
+        </methodref>
+        <methodref name="GetComponent" visibility="private">
+        </methodref>
+        <methodref name="GetComponentCount" visibility="private">
+        </methodref>
+        <methodref name="GetComponentIndex" visibility="private">
+        </methodref>
+        <methodref name="Insert" visibility="private">
+        </methodref>
+        <methodref name="ReadLeft" visibility="private">
+        </methodref>
+        <methodref name="ReadTop" visibility="private">
+        </methodref>
+        <methodref name="Remove" visibility="private">
+        </methodref>
+        <methodref name="RemoveNotification" visibility="private">
+        </methodref>
+        <methodref name="SetComponentIndex" visibility="private">
+        </methodref>
+        <methodref name="SetReference" visibility="private">
+        </methodref>
+        <methodref name="WriteLeft" visibility="private">
+        </methodref>
+        <methodref name="WriteTop" visibility="private">
+        </methodref>
+        <methodref name="IntfGetComponent" visibility="private">
+        </methodref>
+        <methodref name="ChangeName" visibility="protected">
+        </methodref>
+        <methodref name="DefineProperties" visibility="public">
+        </methodref>
+        <methodref name="GetChildren" visibility="protected">
+        </methodref>
+        <methodref name="GetChildOwner" visibility="protected">
+        </methodref>
+        <methodref name="GetChildParent" visibility="protected">
+        </methodref>
+        <methodref name="GetOwner" visibility="protected">
+        </methodref>
+        <methodref name="Loaded" visibility="public">
+        </methodref>
+        <methodref name="Notification" visibility="public">
+        </methodref>
+        <methodref name="PaletteCreated" visibility="protected">
+        </methodref>
+        <methodref name="ReadState" visibility="public">
+        </methodref>
+        <methodref name="SetAncestor" visibility="protected">
+        </methodref>
+        <methodref name="SetDesigning" visibility="protected">
+        </methodref>
+        <methodref name="SetInline" visibility="protected">
+        </methodref>
+        <methodref name="SetDesignInstance" visibility="protected">
+        </methodref>
+        <methodref name="SetName" visibility="public">
+        </methodref>
+        <methodref name="SetChildOrder" visibility="protected">
+        </methodref>
+        <methodref name="SetParentComponent" visibility="protected">
+        </methodref>
+        <methodref name="Updating" visibility="protected">
+        </methodref>
+        <methodref name="Updated" visibility="protected">
+        </methodref>
+        <methodref name="UpdateRegistry" visibility="public">
+        </methodref>
+        <methodref name="ValidateRename" visibility="public">
+        </methodref>
+        <methodref name="ValidateContainer" visibility="protected">
+        </methodref>
+        <methodref name="ValidateInsert" visibility="protected">
+        </methodref>
+        <methodref name="WriteState" visibility="public">
+        </methodref>
+        <methodref name="QueryInterface" visibility="public">
+        </methodref>
+        <methodref name="_AddRef" visibility="protected">
+        </methodref>
+        <methodref name="_Release" visibility="protected">
+        </methodref>
+        <methodref name="GetTypeInfoCount" visibility="protected">
+        </methodref>
+        <methodref name="GetTypeInfo" visibility="protected">
+        </methodref>
+        <methodref name="GetIDsOfNames" visibility="protected">
+        </methodref>
+        <methodref name="Invoke" visibility="protected">
+        </methodref>
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="DestroyComponents" visibility="public">
+        </methodref>
+        <methodref name="Destroying" visibility="public">
+        </methodref>
+        <methodref name="ExecuteAction" visibility="public">
+        </methodref>
+        <methodref name="FindComponent" visibility="public">
+        </methodref>
+        <methodref name="FreeNotification" visibility="public">
+        </methodref>
+        <methodref name="RemoveFreeNotification" visibility="public">
+        </methodref>
+        <methodref name="FreeOnRelease" visibility="public">
+        </methodref>
+        <methodref name="GetEnumerator" visibility="public">
+        </methodref>
+        <methodref name="GetParentComponent" visibility="public">
+        </methodref>
+        <methodref name="GetNamePath" visibility="public">
+        </methodref>
+        <methodref name="HasParent" visibility="public">
+        </methodref>
+        <methodref name="InsertComponent" visibility="public">
+        </methodref>
+        <methodref name="RemoveComponent" visibility="public">
+        </methodref>
+        <methodref name="SetSubComponent" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="UpdateAction" visibility="public">
+        </methodref>
+        <methodref name="IsImplementorOf" visibility="public">
+        </methodref>
+        <methodref name="ReferenceInterface" visibility="public">
+        </methodref>
+        <propertyref name="ComObject" visibility="public">
+        </propertyref>
+        <propertyref name="Components" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentCount" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentIndex" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentState" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentStyle" visibility="public">
+        </propertyref>
+        <propertyref name="DesignInfo" visibility="public">
+        </propertyref>
+        <propertyref name="Owner" visibility="public">
+        </propertyref>
+        <propertyref name="VCLComObject" visibility="public">
+        </propertyref>
+        <propertyref name="Name" visibility="published">
+        </propertyref>
+        <propertyref name="Tag" visibility="published">
+        </propertyref>
+        <ancestor name="TPersistent" namespace="Classes">
+          <methodref name="AssignError" visibility="private">
+          </methodref>
+          <methodref name="AssignTo" visibility="public">
+          </methodref>
+          <methodref name="DefineProperties" visibility="public">
+          </methodref>
+          <methodref name="GetOwner" visibility="protected">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+          <methodref name="Assign" visibility="public">
+          </methodref>
+          <methodref name="GetNamePath" visibility="public">
+          </methodref>
+          <ancestor name="TObject" namespace="System">
+            <methodref name="Create" visibility="public">
+            </methodref>
+            <methodref name="Free" visibility="public">
+            </methodref>
+            <methodref name="InitInstance" visibility="public">
+            </methodref>
+            <methodref name="CleanupInstance" visibility="public">
+            </methodref>
+            <methodref name="ClassType" visibility="public">
+            </methodref>
+            <methodref name="ClassName" visibility="public">
+            </methodref>
+            <methodref name="ClassNameIs" visibility="public">
+            </methodref>
+            <methodref name="ClassParent" visibility="public">
+            </methodref>
+            <methodref name="ClassInfo" visibility="public">
+            </methodref>
+            <methodref name="InstanceSize" visibility="public">
+            </methodref>
+            <methodref name="InheritsFrom" visibility="public">
+            </methodref>
+            <methodref name="MethodAddress" visibility="public">
+            </methodref>
+            <methodref name="MethodName" visibility="public">
+            </methodref>
+            <methodref name="FieldAddress" visibility="public">
+            </methodref>
+            <methodref name="GetInterface" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceEntry" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceTable" visibility="public">
+            </methodref>
+            <methodref name="SafeCallException" visibility="public">
+            </methodref>
+            <methodref name="AfterConstruction" visibility="public">
+            </methodref>
+            <methodref name="BeforeDestruction" visibility="public">
+            </methodref>
+            <methodref name="Dispatch" visibility="public">
+            </methodref>
+            <methodref name="DefaultHandler" visibility="public">
+            </methodref>
+            <methodref name="NewInstance" visibility="public">
+            </methodref>
+            <methodref name="FreeInstance" visibility="public">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="IHash_TestAccess" />
+      <implements name="ICryptographicLibraryWatcher" />
+    </interfaces>
+    <members>
+      <field name="FHashObj" type="TSimpleHash" visibility="private" />
+      <field name="FHash" type="IHash" visibility="private" />
+      <field name="FLib" type="TCryptographicLibrary" visibility="private" />
+      <field name="FHashId" type="string" visibility="private" />
+      <field name="FIntfCached" type="Boolean" visibility="private" />
+      <function name="GetIsHashing" visibility="private">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="GetHashOutput" visibility="private">
+        <parameters>
+          <retval type="TStream" />
+        </parameters>
+      </function>
+      <function name="GetonProgress" visibility="private">
+        <parameters>
+          <retval type="TOnHashProgress" />
+        </parameters>
+      </function>
+      <procedure name="SetOnProgress" visibility="private">
+        <parameters>
+          <parameter name="Value" type="TOnHashProgress" />
+        </parameters>
+      </procedure>
+      <procedure name="ProgIdsChanged" visibility="private">
+      </procedure>
+      <procedure name="SetLib" visibility="private">
+        <parameters>
+          <parameter name="Value" type="TCryptographicLibrary" />
+        </parameters>
+      </procedure>
+      <procedure name="Dummy" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetHashId" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetIntfCached" visibility="private">
+        <parameters>
+          <parameter name="Value" type="Boolean" />
+        </parameters>
+      </procedure>
+      <function name="GetFeatures" visibility="private">
+        <parameters>
+          <retval type="TAlgorithmicFeatureSet" />
+        </parameters>
+      </function>
+      <procedure name="ReadData" visibility="private">
+        <parameters>
+          <parameter name="Reader" type="TReader" />
+        </parameters>
+      </procedure>
+      <procedure name="WriteData" visibility="private">
+        <parameters>
+          <parameter name="Writer" type="TWriter" />
+        </parameters>
+      </procedure>
+      <function name="GetHasher" visibility="private">
+        <parameters>
+          <retval type="IHasher" />
+        </parameters>
+      </function>
+      <procedure name="Notification" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="AComponent" type="TComponent" />
+          <parameter name="Operation" type="TOperation" />
+        </parameters>
+      </procedure>
+      <procedure name="DefineProperties" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Filer" type="TFiler" />
+        </parameters>
+      </procedure>
+      <function name="GetHashDisplayName" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="Loaded" visibility="public" procflags="override">
+      </procedure>
+      <property name="InterfacesAreCached" visibility="protected" read="FIntfCached" write="SetIntfCached" type="Boolean" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="AOwner" type="TComponent" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="Begin_Hash" visibility="public">
+      </procedure>
+      <procedure name="UpdateMemory" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" paramflags="const" />
+          <parameter name="PlaintextLen" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="End_Hash" visibility="public">
+      </procedure>
+      <procedure name="Burn" visibility="public">
+      </procedure>
+      <procedure name="HashStream" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="HashFile" visibility="public">
+        <parameters>
+          <parameter name="PlaintextFileName" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="HashString" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="HashAnsiString" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="isUserAborted" visibility="public">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <property name="isHashing" visibility="public" read="GetIsHashing" type="Boolean" />
+      <property name="HashId" visibility="public" read="FHashId" write="SetHashId" type="string" />
+      <property name="HashOutputValue" visibility="public" read="GetHashOutput" type="TStream" />
+      <property name="Hash" visibility="published" read="GetHashDisplayName" write="Dummy" stored="False" type="string" />
+      <property name="Features" visibility="published" read="GetFeatures" stored="False" type="TAlgorithmicFeatureSet" />
+      <property name="CryptoLibrary" visibility="published" read="FLib" write="SetLib" type="TCryptographicLibrary" />
+      <event name="OnProgress" visibility="published" read="GetonProgress" write="SetOnProgress" type="Boolean" />
+    </members>
+  </class>
+</namespace>

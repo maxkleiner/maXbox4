@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_CodecIntf">
+  <const name="cmUnitialized" type="TCodecMode">
+    <value>
+      cmUnitialized
+    </value>
+  </const>
+  <const name="cmIdle" type="TCodecMode">
+    <value>
+      cmIdle
+    </value>
+  </const>
+  <const name="cmEncrypting" type="TCodecMode">
+    <value>
+      cmEncrypting
+    </value>
+  </const>
+  <const name="cmDecrypting" type="TCodecMode">
+    <value>
+      cmDecrypting
+    </value>
+  </const>
+  <enum name="TCodecMode">
+    <element name="cmUnitialized" />
+    <element name="cmIdle" />
+    <element name="cmEncrypting" />
+    <element name="cmDecrypting" />
+  </enum>
+  <interface name="ICodec">
+    <procedure name="SetStreamCipher" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="IStreamCipher" paramflags="const" />
+      </parameters>
+    </procedure>
+    <procedure name="SetBlockCipher" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="IBlockCipher" paramflags="const" />
+      </parameters>
+    </procedure>
+    <procedure name="SetChainMode" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="IBlockChainingModel" paramflags="const" />
+      </parameters>
+    </procedure>
+    <function name="GetMode" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TCodecMode" />
+      </parameters>
+    </function>
+    <function name="GetStreamCipher" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="IStreamCipher" />
+      </parameters>
+    </function>
+    <function name="GetBlockCipher" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="IBlockCipher" />
+      </parameters>
+    </function>
+    <function name="GetChainMode" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="IBlockChainingModel" />
+      </parameters>
+    </function>
+    <function name="GetOnProgress" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TOnEncDecProgress" />
+      </parameters>
+    </function>
+    <procedure name="SetOnProgress" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="TOnEncDecProgress" />
+      </parameters>
+    </procedure>
+    <function name="GetAsymetricKeySizeInBits" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Cardinal" />
+      </parameters>
+    </function>
+    <procedure name="SetAsymetricKeySizeInBits" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="value" type="Cardinal" />
+      </parameters>
+    </procedure>
+    <function name="GetAsymGenProgressEvent" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TGenerateAsymetricKeyPairProgress" />
+      </parameters>
+    </function>
+    <procedure name="SetAsymGenProgressEvent" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="TGenerateAsymetricKeyPairProgress" />
+      </parameters>
+    </procedure>
+    <function name="GetKey" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TSymetricKey" />
+      </parameters>
+    </function>
+    <function name="GetCipherDisplayName" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Lib" type="TCryptographicLibrary" />
+        <retval type="string" />
+      </parameters>
+    </function>
+    <procedure name="Init" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Key" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <procedure name="SaveKeyToStream" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Store" type="TStream" />
+      </parameters>
+    </procedure>
+    <procedure name="InitFromStream" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Store" type="TStream" />
+      </parameters>
+    </procedure>
+    <procedure name="InitFromKey" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Key" type="TSymetricKey" />
+      </parameters>
+    </procedure>
+    <procedure name="Reset" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <procedure name="Burn" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="doIncludeBurnKey" type="Boolean" />
+      </parameters>
+    </procedure>
+    <function name="isAsymetric" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="InitFromGeneratedAsymetricKeyPair" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <procedure name="Sign" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Document" type="TStream" />
+        <parameter name="Signature" type="TStream" />
+        <parameter name="ProgressSender" type="TObject" />
+        <parameter name="ProgressEvent" type="TOnEncDecProgress" />
+        <parameter name="SigningKeys_PrivatePart" type="TObject" />
+        <parameter name="wasAborted" type="Boolean" paramflags="var" />
+      </parameters>
+    </procedure>
+    <function name="VerifySignature" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Document" type="TStream" />
+        <parameter name="Signature" type="TStream" />
+        <parameter name="ProgressSender" type="TObject" />
+        <parameter name="ProgressEvent" type="TOnEncDecProgress" />
+        <parameter name="SigningKeys_PublicPart" type="TObject" />
+        <parameter name="wasAborted" type="Boolean" paramflags="var" />
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="Begin_EncryptMemory" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="CipherText" type="TStream" />
+      </parameters>
+    </procedure>
+    <procedure name="EncryptMemory" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" paramflags="const" />
+        <parameter name="PlaintextLen" type="Integer" />
+      </parameters>
+    </procedure>
+    <procedure name="End_EncryptMemory" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <procedure name="Begin_DecryptMemory" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="PlainText" type="TStream" />
+      </parameters>
+    </procedure>
+    <procedure name="DecryptMemory" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="CipherText" paramflags="const" />
+        <parameter name="CiphertextLen" type="Integer" />
+      </parameters>
+    </procedure>
+    <procedure name="End_DecryptMemory" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <procedure name="EncryptStream" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="TStream" />
+        <parameter name="CipherText" type="TStream" />
+      </parameters>
+    </procedure>
+    <procedure name="DecryptStream" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="TStream" />
+        <parameter name="CipherText" type="TStream" />
+      </parameters>
+    </procedure>
+    <procedure name="EncryptFile" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext_FileName" type="string" paramflags="const" />
+        <parameter name="CipherText_FileName" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <procedure name="DecryptFile" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext_FileName" type="string" paramflags="const" />
+        <parameter name="CipherText_FileName" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <procedure name="EncryptString" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="string" paramflags="const" />
+        <parameter name="CipherText_Base64" type="string" paramflags="var" />
+      </parameters>
+    </procedure>
+    <procedure name="DecryptString" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="string" paramflags="var" />
+        <parameter name="CipherText_Base64" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <procedure name="EncryptAnsiString" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="string" paramflags="const" />
+        <parameter name="CipherText_Base64" type="string" paramflags="var" />
+      </parameters>
+    </procedure>
+    <procedure name="DecryptAnsiString" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Plaintext" type="string" paramflags="var" />
+        <parameter name="CipherText_Base64" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <function name="GetAborted" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetAborted" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <property name="Mode" visibility="public" read="GetMode" type="TCodecMode" />
+    <property name="Key" visibility="public" read="GetKey" type="TSymetricKey" />
+    <property name="StreamCipher" visibility="public" read="GetStreamCipher" write="SetStreamCipher" type="IStreamCipher" />
+    <property name="BlockCipher" visibility="public" read="GetBlockCipher" write="SetBlockCipher" type="IBlockCipher" />
+    <property name="ChainMode" visibility="public" read="GetChainMode" write="SetChainMode" type="IBlockChainingModel" />
+    <event name="OnProgress" visibility="public" read="GetOnProgress" write="SetOnProgress" type="Boolean" />
+    <property name="AsymetricKeySizeInBits" visibility="public" read="GetAsymetricKeySizeInBits" write="SetAsymetricKeySizeInBits" type="Cardinal" />
+    <event name="OnAsymGenProgress" visibility="public" read="GetAsymGenProgressEvent" write="SetAsymGenProgressEvent" type="TGenerateAsymetricKeyPairProgress" />
+    <property name="isUserAborted" visibility="public" read="GetAborted" write="SetAborted" type="Boolean" />
+  </interface>
+</namespace>

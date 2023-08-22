@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_Constants">
+  <const name="AES_ProgId" type="string">
+    <value>
+      native.AES-%%d
+    </value>
+  </const>
+  <const name="Base64_ProgId" type="string">
+    <value>
+      native.base64
+    </value>
+  </const>
+  <const name="CBC_ProgId" type="string">
+    <value>
+      native.CBC
+    </value>
+  </const>
+  <const name="CFB8bit_ProgId" type="string">
+    <value>
+      native.CFB-8bit
+    </value>
+  </const>
+  <const name="CFB_ProgId" type="string">
+    <value>
+      native.CFB
+    </value>
+  </const>
+  <const name="CTR_ProgId" type="string">
+    <value>
+      native.CTR
+    </value>
+  </const>
+  <const name="ECB_ProgId" type="string">
+    <value>
+      native.ECB
+    </value>
+  </const>
+  <const name="MD5_ProgId" type="string">
+    <value>
+      native.hash.MD5
+    </value>
+  </const>
+  <const name="OFB_ProgId" type="string">
+    <value>
+      native.OFB
+    </value>
+  </const>
+  <const name="PCBC_ProgId" type="string">
+    <value>
+      native.PCBC
+    </value>
+  </const>
+  <const name="SHA1_ProgId" type="string">
+    <value>
+      native.hash.SHA-1
+    </value>
+  </const>
+  <const name="SHA224_ProgId" type="string">
+    <value>
+      native.hash.SHA-224
+    </value>
+  </const>
+  <const name="SHA256_ProgId" type="string">
+    <value>
+      native.hash.SHA-256
+    </value>
+  </const>
+  <const name="SHA384_ProgId" type="string">
+    <value>
+      native.hash.SHA-384
+    </value>
+  </const>
+  <const name="SHA512_ProgId" type="string">
+    <value>
+      native.hash.SHA-512
+    </value>
+  </const>
+  <const name="SHA512_224_ProgId" type="string">
+    <value>
+      native.hash.SHA-512/224
+    </value>
+  </const>
+  <const name="SHA512_256_ProgId" type="string">
+    <value>
+      native.hash.SHA-512/256
+    </value>
+  </const>
+  <const name="RSA_ProgId" type="string">
+    <value>
+      native.RSA
+    </value>
+  </const>
+  <const name="BlockCipher_ProgId" type="string">
+    <value>
+      native.StreamToBlock
+    </value>
+  </const>
+  <const name="DES_ProgId" type="string">
+    <value>
+      native.DES
+    </value>
+  </const>
+  <const name="TripleDES_ProgId" type="string">
+    <value>
+      native.3DES.2
+    </value>
+  </const>
+  <const name="TripleDES_KO1_ProgId" type="string">
+    <value>
+      native.3DES.1
+    </value>
+  </const>
+  <const name="Blowfish_ProgId" type="string">
+    <value>
+      native.Blowfish
+    </value>
+  </const>
+  <const name="Twofish_ProgId" type="string">
+    <value>
+      native.Twofish
+    </value>
+  </const>
+  <const name="XXTEA_Large_ProgId" type="string">
+    <value>
+      native.XXTEA.Large.Littleend
+    </value>
+  </const>
+</namespace>

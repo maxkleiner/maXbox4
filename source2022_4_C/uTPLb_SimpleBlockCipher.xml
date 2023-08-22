@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_SimpleBlockCipher">
+  <type name="RawByteString" type="AnsiString" />
+  <class name="TSimpleBlockCipher">
+    <ancestor name="TInterfacedObject" namespace="System">
+      <methodref name="QueryInterface" visibility="protected">
+      </methodref>
+      <methodref name="_AddRef" visibility="protected">
+      </methodref>
+      <methodref name="_Release" visibility="protected">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <propertyref name="RefCount" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="ICryptoGraphicAlgorithm" />
+      <implements name="IBlockCipher" />
+    </interfaces>
+    <members>
+      <function name="DisplayName" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="ProgId" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="Features" visibility="private">
+        <parameters>
+          <retval type="TAlgorithmicFeatureSet" />
+        </parameters>
+      </function>
+      <function name="DefinitionURL" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="WikipediaReference" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="GenerateKey" visibility="private">
+        <parameters>
+          <parameter name="Seed" type="TStream" />
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <function name="LoadKeyFromStream" visibility="private">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <function name="BlockSize" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="KeySize" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="SeedByteSize" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="MakeBlockCodec" visibility="private">
+        <parameters>
+          <parameter name="Key" type="TSymetricKey" />
+          <retval type="IBlockCodec" />
+        </parameters>
+      </function>
+      <function name="SelfTest_Key" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="SelfTest_Plaintext" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="SelfTest_Ciphertext" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="Encrypt" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Buffer" type="string" paramflags="const" />
+          <parameter name="Key" type="TSimpleBlockCipherKey" />
+          <parameter name="doEncrypt" type="Boolean" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <field name="FProgId" type="string" visibility="public" />
+      <field name="FDisplayName" type="string" visibility="public" />
+      <field name="FFeatures" type="TAlgorithmicFeatureSet" visibility="public" />
+      <field name="FBlockSizeInBytes" type="Integer" visibility="public" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="ProgId1" type="string" paramflags="const" />
+          <parameter name="DisplayName1" type="string" paramflags="const" />
+          <parameter name="Features1" type="TAlgorithmicFeatureSet" />
+          <parameter name="BlockSizeInBytes1" type="Integer" />
+        </parameters>
+      </constructor>
+    </members>
+  </class>
+  <classref name="TSimpleBlockCipherClass" ref="TSimpleBlockCipher" />
+  <class name="TSimpleBlockCipherKey">
+    <ancestor name="TSymetricKey" namespace="uTPLb_StreamCipher">
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="Burn" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="FKeyData" type="string" visibility="public" />
+      <procedure name="SaveToStream" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="Burn" visibility="public" procflags="override">
+      </procedure>
+    </members>
+  </class>
+  <class name="TSimpleBlockCipherCodec">
+    <ancestor name="TInterfacedObject" namespace="System">
+      <methodref name="QueryInterface" visibility="protected">
+      </methodref>
+      <methodref name="_AddRef" visibility="protected">
+      </methodref>
+      <methodref name="_Release" visibility="protected">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <propertyref name="RefCount" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="IBlockCodec" />
+    </interfaces>
+    <members>
+      <field name="FKey" type="TSimpleBlockCipherKey" visibility="protected" />
+      <field name="FBuffer" type="string" visibility="protected" />
+      <field name="FCipher" type="TSimpleBlockCipher" visibility="protected" />
+      <procedure name="Encrypt_Block" visibility="protected">
+        <parameters>
+          <parameter name="Plaintext" type="TMemoryStream" />
+          <parameter name="Ciphertext" type="TMemoryStream" />
+        </parameters>
+      </procedure>
+      <procedure name="Decrypt_Block" visibility="protected">
+        <parameters>
+          <parameter name="Plaintext" type="TMemoryStream" />
+          <parameter name="Ciphertext" type="TMemoryStream" />
+        </parameters>
+      </procedure>
+      <procedure name="Reset" visibility="protected">
+      </procedure>
+      <procedure name="Burn" visibility="protected">
+      </procedure>
+    </members>
+  </class>
+</namespace>

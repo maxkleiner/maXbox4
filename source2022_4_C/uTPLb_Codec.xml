@@ -1,0 +1,901 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_Codec">
+  <class name="TSimpleCodec">
+    <ancestor name="TInterfacedPersistent" namespace="Classes">
+      <methodref name="_AddRef" visibility="protected">
+      </methodref>
+      <methodref name="_Release" visibility="protected">
+      </methodref>
+      <methodref name="QueryInterface" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <ancestor name="TPersistent" namespace="Classes">
+        <methodref name="AssignError" visibility="private">
+        </methodref>
+        <methodref name="AssignTo" visibility="public">
+        </methodref>
+        <methodref name="DefineProperties" visibility="public">
+        </methodref>
+        <methodref name="GetOwner" visibility="protected">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+        <methodref name="Assign" visibility="public">
+        </methodref>
+        <methodref name="GetNamePath" visibility="public">
+        </methodref>
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="ICodec_WithAsymetricSupport" />
+      <implements name="IEventOrigin" />
+      <implements name="IBlockCipherSelector" />
+      <implements name="ICodec" />
+    </interfaces>
+    <members>
+      <field name="FMode" type="TCodecMode" visibility="private" />
+      <field name="FStreamCipher" type="IStreamCipher" visibility="private" />
+      <field name="FParameterizedStreamCipher" type="IStreamCipher" visibility="private" />
+      <field name="FBlockCipher" type="IBlockCipher" visibility="private" />
+      <field name="FChainMode" type="IBlockChainingModel" visibility="private" />
+      <field name="FOnProgress" type="TOnEncDecProgress" visibility="private" />
+      <field name="FSender" type="TObject" visibility="private" />
+      <field name="FKey" type="TSymetricKey" visibility="private" />
+      <field name="FEnc" type="IStreamEncryptor" visibility="private" />
+      <field name="FDec" type="IStreamDecryptor" visibility="private" />
+      <field name="FPasswordHasher" type="IHash" visibility="private" />
+      <field name="FPasswordHasherObject" type="TObject" visibility="private" />
+      <field name="FXtextCount" type="Int64" visibility="private" />
+      <field name="FisUserAborted" type="Boolean" visibility="private" />
+      <field name="FOutput" type="TStream" visibility="private" />
+      <field name="FBuffer" type="TMemoryStream" visibility="private" />
+      <field name="FDesalination" type="TDesalinationWriteStream" visibility="private" />
+      <field name="FisSalting" type="Boolean" visibility="private" />
+      <field name="FAsymetricKeySizeInBits" type="Cardinal" visibility="private" />
+      <field name="FAsymGenProgressEvent" type="TGenerateAsymetricKeyPairProgress" visibility="private" />
+      <field name="FCompOwner" type="TComponent" visibility="private" />
+      <procedure name="SetStreamCipher" visibility="private">
+        <parameters>
+          <parameter name="Value" type="IStreamCipher" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetBlockCipher" visibility="private">
+        <parameters>
+          <parameter name="Value" type="IBlockCipher" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetChainMode" visibility="private">
+        <parameters>
+          <parameter name="Value" type="IBlockChainingModel" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="GetMode" visibility="private">
+        <parameters>
+          <retval type="TCodecMode" />
+        </parameters>
+      </function>
+      <function name="GetStreamCipher" visibility="private">
+        <parameters>
+          <retval type="IStreamCipher" />
+        </parameters>
+      </function>
+      <function name="GetBlockCipher" visibility="private">
+        <parameters>
+          <retval type="IBlockCipher" />
+        </parameters>
+      </function>
+      <function name="GetChainMode" visibility="private">
+        <parameters>
+          <retval type="IBlockChainingModel" />
+        </parameters>
+      </function>
+      <function name="GetOnProgress" visibility="private">
+        <parameters>
+          <retval type="TOnEncDecProgress" />
+        </parameters>
+      </function>
+      <procedure name="SetOnProgress" visibility="private">
+        <parameters>
+          <parameter name="Value" type="TOnEncDecProgress" />
+        </parameters>
+      </procedure>
+      <procedure name="SetEventSender" visibility="private">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <function name="isNotBase64Converter" visibility="private">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="GetAsymetricKeySizeInBits" visibility="private">
+        <parameters>
+          <retval type="Cardinal" />
+        </parameters>
+      </function>
+      <procedure name="SetAsymetricKeySizeInBits" visibility="private">
+        <parameters>
+          <parameter name="value" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <function name="GetAsymGenProgressEvent" visibility="private">
+        <parameters>
+          <retval type="TGenerateAsymetricKeyPairProgress" />
+        </parameters>
+      </function>
+      <procedure name="SetAsymGenProgressEvent" visibility="private">
+        <parameters>
+          <parameter name="Value" type="TGenerateAsymetricKeyPairProgress" />
+        </parameters>
+      </procedure>
+      <function name="GetKey" visibility="private">
+        <parameters>
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <function name="Asymetric_Engine" visibility="private">
+        <parameters>
+          <retval type="IAsymetric_Engine" />
+        </parameters>
+      </function>
+      <procedure name="End_EncryptDecrypt" visibility="private">
+      </procedure>
+      <procedure name="DoProgress" visibility="private">
+      </procedure>
+      <procedure name="InitCheck" visibility="private">
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="Init" visibility="public">
+        <parameters>
+          <parameter name="Key" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SaveKeyToStream" visibility="public">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="InitFromStream" visibility="public">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="InitFromKey" visibility="public">
+        <parameters>
+          <parameter name="Key" type="TSymetricKey" />
+        </parameters>
+      </procedure>
+      <procedure name="Reset" visibility="public">
+      </procedure>
+      <procedure name="Burn" visibility="public">
+        <parameters>
+          <parameter name="doIncludeBurnKey" type="Boolean" />
+        </parameters>
+      </procedure>
+      <function name="isAsymetric" visibility="public">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="InitFromGeneratedAsymetricKeyPair" visibility="public">
+      </procedure>
+      <procedure name="Sign" visibility="public">
+        <parameters>
+          <parameter name="Document" type="TStream" />
+          <parameter name="Signature" type="TStream" />
+          <parameter name="ProgressSender" type="TObject" />
+          <parameter name="ProgressEvent" type="TOnEncDecProgress" />
+          <parameter name="SigningKeys_PrivatePart" type="TObject" />
+          <parameter name="wasAborted" type="Boolean" paramflags="var" />
+        </parameters>
+      </procedure>
+      <function name="VerifySignature" visibility="public">
+        <parameters>
+          <parameter name="Document" type="TStream" />
+          <parameter name="Signature" type="TStream" />
+          <parameter name="ProgressSender" type="TObject" />
+          <parameter name="ProgressEvent" type="TOnEncDecProgress" />
+          <parameter name="SigningKeys_PublicPart" type="TObject" />
+          <parameter name="wasAborted" type="Boolean" paramflags="var" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="Begin_EncryptMemory" visibility="public">
+        <parameters>
+          <parameter name="CipherText" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="EncryptMemory" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" paramflags="const" />
+          <parameter name="PlaintextLen" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="End_EncryptMemory" visibility="public">
+      </procedure>
+      <procedure name="Begin_DecryptMemory" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="DecryptMemory" visibility="public">
+        <parameters>
+          <parameter name="CipherText" paramflags="const" />
+          <parameter name="CiphertextLen" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="End_DecryptMemory" visibility="public">
+      </procedure>
+      <procedure name="EncryptStream" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="TStream" />
+          <parameter name="CipherText" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="DecryptStream" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="TStream" />
+          <parameter name="CipherText" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="EncryptFile" visibility="public">
+        <parameters>
+          <parameter name="Plaintext_FileName" type="string" paramflags="const" />
+          <parameter name="CipherText_FileName" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="DecryptFile" visibility="public">
+        <parameters>
+          <parameter name="Plaintext_FileName" type="string" paramflags="const" />
+          <parameter name="CipherText_FileName" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="EncryptString" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="const" />
+          <parameter name="CipherText_Base64" type="string" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="DecryptString" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="var" />
+          <parameter name="CipherText_Base64" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="EncryptAnsiString" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="const" />
+          <parameter name="CipherText_Base64" type="string" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="DecryptAnsiString" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="var" />
+          <parameter name="CipherText_Base64" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="GetAborted" visibility="public">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="SetAborted" visibility="public">
+        <parameters>
+          <parameter name="Value" type="Boolean" />
+        </parameters>
+      </procedure>
+      <function name="GetCipherDisplayName" visibility="public">
+        <parameters>
+          <parameter name="Lib" type="TCryptographicLibrary" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <property name="Mode" visibility="public" read="GetMode" type="TCodecMode" />
+      <property name="StreamCipher" visibility="public" read="GetStreamCipher" write="SetStreamCipher" type="IStreamCipher" />
+      <property name="BlockCipher" visibility="public" read="GetBlockCipher" write="SetBlockCipher" type="IBlockCipher" />
+      <property name="ChainMode" visibility="public" read="GetChainMode" write="SetChainMode" type="IBlockChainingModel" />
+      <event name="OnProgress" visibility="public" read="GetOnProgress" write="SetOnProgress" type="Boolean" />
+    </members>
+  </class>
+  <interface name="ICodec_TestAccess">
+    <function name="GetCodecIntf" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="ICodec" />
+      </parameters>
+    </function>
+  </interface>
+  <class name="TCodec">
+    <ancestor name="TTPLb_BaseNonVisualComponent" namespace="uTPLb_BaseNonVisualComponent">
+      <methodref name="GetAbout" visibility="private" />
+      <methodref name="SetAbout" visibility="private" />
+      <propertyref name="About" visibility="published" />
+      <ancestor name="TComponent" namespace="Classes">
+        <methodref name="GetComObject" visibility="private">
+        </methodref>
+        <methodref name="GetComponent" visibility="private">
+        </methodref>
+        <methodref name="GetComponentCount" visibility="private">
+        </methodref>
+        <methodref name="GetComponentIndex" visibility="private">
+        </methodref>
+        <methodref name="Insert" visibility="private">
+        </methodref>
+        <methodref name="ReadLeft" visibility="private">
+        </methodref>
+        <methodref name="ReadTop" visibility="private">
+        </methodref>
+        <methodref name="Remove" visibility="private">
+        </methodref>
+        <methodref name="RemoveNotification" visibility="private">
+        </methodref>
+        <methodref name="SetComponentIndex" visibility="private">
+        </methodref>
+        <methodref name="SetReference" visibility="private">
+        </methodref>
+        <methodref name="WriteLeft" visibility="private">
+        </methodref>
+        <methodref name="WriteTop" visibility="private">
+        </methodref>
+        <methodref name="IntfGetComponent" visibility="private">
+        </methodref>
+        <methodref name="ChangeName" visibility="protected">
+        </methodref>
+        <methodref name="DefineProperties" visibility="public">
+        </methodref>
+        <methodref name="GetChildren" visibility="protected">
+        </methodref>
+        <methodref name="GetChildOwner" visibility="protected">
+        </methodref>
+        <methodref name="GetChildParent" visibility="protected">
+        </methodref>
+        <methodref name="GetOwner" visibility="protected">
+        </methodref>
+        <methodref name="Loaded" visibility="public">
+        </methodref>
+        <methodref name="Notification" visibility="public">
+        </methodref>
+        <methodref name="PaletteCreated" visibility="protected">
+        </methodref>
+        <methodref name="ReadState" visibility="public">
+        </methodref>
+        <methodref name="SetAncestor" visibility="protected">
+        </methodref>
+        <methodref name="SetDesigning" visibility="protected">
+        </methodref>
+        <methodref name="SetInline" visibility="protected">
+        </methodref>
+        <methodref name="SetDesignInstance" visibility="protected">
+        </methodref>
+        <methodref name="SetName" visibility="public">
+        </methodref>
+        <methodref name="SetChildOrder" visibility="protected">
+        </methodref>
+        <methodref name="SetParentComponent" visibility="protected">
+        </methodref>
+        <methodref name="Updating" visibility="protected">
+        </methodref>
+        <methodref name="Updated" visibility="protected">
+        </methodref>
+        <methodref name="UpdateRegistry" visibility="public">
+        </methodref>
+        <methodref name="ValidateRename" visibility="public">
+        </methodref>
+        <methodref name="ValidateContainer" visibility="protected">
+        </methodref>
+        <methodref name="ValidateInsert" visibility="protected">
+        </methodref>
+        <methodref name="WriteState" visibility="public">
+        </methodref>
+        <methodref name="QueryInterface" visibility="public">
+        </methodref>
+        <methodref name="_AddRef" visibility="protected">
+        </methodref>
+        <methodref name="_Release" visibility="protected">
+        </methodref>
+        <methodref name="GetTypeInfoCount" visibility="protected">
+        </methodref>
+        <methodref name="GetTypeInfo" visibility="protected">
+        </methodref>
+        <methodref name="GetIDsOfNames" visibility="protected">
+        </methodref>
+        <methodref name="Invoke" visibility="protected">
+        </methodref>
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="DestroyComponents" visibility="public">
+        </methodref>
+        <methodref name="Destroying" visibility="public">
+        </methodref>
+        <methodref name="ExecuteAction" visibility="public">
+        </methodref>
+        <methodref name="FindComponent" visibility="public">
+        </methodref>
+        <methodref name="FreeNotification" visibility="public">
+        </methodref>
+        <methodref name="RemoveFreeNotification" visibility="public">
+        </methodref>
+        <methodref name="FreeOnRelease" visibility="public">
+        </methodref>
+        <methodref name="GetEnumerator" visibility="public">
+        </methodref>
+        <methodref name="GetParentComponent" visibility="public">
+        </methodref>
+        <methodref name="GetNamePath" visibility="public">
+        </methodref>
+        <methodref name="HasParent" visibility="public">
+        </methodref>
+        <methodref name="InsertComponent" visibility="public">
+        </methodref>
+        <methodref name="RemoveComponent" visibility="public">
+        </methodref>
+        <methodref name="SetSubComponent" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="UpdateAction" visibility="public">
+        </methodref>
+        <methodref name="IsImplementorOf" visibility="public">
+        </methodref>
+        <methodref name="ReferenceInterface" visibility="public">
+        </methodref>
+        <propertyref name="ComObject" visibility="public">
+        </propertyref>
+        <propertyref name="Components" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentCount" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentIndex" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentState" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentStyle" visibility="public">
+        </propertyref>
+        <propertyref name="DesignInfo" visibility="public">
+        </propertyref>
+        <propertyref name="Owner" visibility="public">
+        </propertyref>
+        <propertyref name="VCLComObject" visibility="public">
+        </propertyref>
+        <propertyref name="Name" visibility="published">
+        </propertyref>
+        <propertyref name="Tag" visibility="published">
+        </propertyref>
+        <ancestor name="TPersistent" namespace="Classes">
+          <methodref name="AssignError" visibility="private">
+          </methodref>
+          <methodref name="AssignTo" visibility="public">
+          </methodref>
+          <methodref name="DefineProperties" visibility="public">
+          </methodref>
+          <methodref name="GetOwner" visibility="protected">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+          <methodref name="Assign" visibility="public">
+          </methodref>
+          <methodref name="GetNamePath" visibility="public">
+          </methodref>
+          <ancestor name="TObject" namespace="System">
+            <methodref name="Create" visibility="public">
+            </methodref>
+            <methodref name="Free" visibility="public">
+            </methodref>
+            <methodref name="InitInstance" visibility="public">
+            </methodref>
+            <methodref name="CleanupInstance" visibility="public">
+            </methodref>
+            <methodref name="ClassType" visibility="public">
+            </methodref>
+            <methodref name="ClassName" visibility="public">
+            </methodref>
+            <methodref name="ClassNameIs" visibility="public">
+            </methodref>
+            <methodref name="ClassParent" visibility="public">
+            </methodref>
+            <methodref name="ClassInfo" visibility="public">
+            </methodref>
+            <methodref name="InstanceSize" visibility="public">
+            </methodref>
+            <methodref name="InheritsFrom" visibility="public">
+            </methodref>
+            <methodref name="MethodAddress" visibility="public">
+            </methodref>
+            <methodref name="MethodName" visibility="public">
+            </methodref>
+            <methodref name="FieldAddress" visibility="public">
+            </methodref>
+            <methodref name="GetInterface" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceEntry" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceTable" visibility="public">
+            </methodref>
+            <methodref name="SafeCallException" visibility="public">
+            </methodref>
+            <methodref name="AfterConstruction" visibility="public">
+            </methodref>
+            <methodref name="BeforeDestruction" visibility="public">
+            </methodref>
+            <methodref name="Dispatch" visibility="public">
+            </methodref>
+            <methodref name="DefaultHandler" visibility="public">
+            </methodref>
+            <methodref name="NewInstance" visibility="public">
+            </methodref>
+            <methodref name="FreeInstance" visibility="public">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="ICodec_TestAccess" />
+      <implements name="ICryptographicLibraryWatcher" />
+    </interfaces>
+    <members>
+      <field name="FPassword" type="string" visibility="class private" />
+      <field name="FCodecObj" type="TSimpleCodec" visibility="private" />
+      <field name="FCodec" type="ICodec" visibility="private" />
+      <field name="FLib" type="TCryptographicLibrary" visibility="private" />
+      <field name="FStreamCipherId" type="string" visibility="private" />
+      <field name="FBlockCipherId" type="string" visibility="private" />
+      <field name="FChainId" type="string" visibility="private" />
+      <field name="FIntfCached" type="Boolean" visibility="private" />
+      <field name="FCountBytes" type="Int64" visibility="private" />
+      <field name="FWorkLoad" type="Int64" visibility="private" />
+      <field name="FDuration" type="TDateTime" visibility="private" />
+      <field name="FStartTime" type="TDateTime" visibility="private" />
+      <procedure name="SetLib" visibility="private">
+        <parameters>
+          <parameter name="Value" type="TCryptographicLibrary" />
+        </parameters>
+      </procedure>
+      <procedure name="Dummy" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetStreamCipherId" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetBlockCipherId" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetChainId" visibility="private">
+        <parameters>
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="SetIntfCached" visibility="private">
+        <parameters>
+          <parameter name="Value" type="Boolean" />
+        </parameters>
+      </procedure>
+      <procedure name="ReadData_Stream" visibility="private">
+        <parameters>
+          <parameter name="Reader" type="TReader" />
+        </parameters>
+      </procedure>
+      <procedure name="WriteData_Stream" visibility="private">
+        <parameters>
+          <parameter name="Writer" type="TWriter" />
+        </parameters>
+      </procedure>
+      <procedure name="ReadData_Block" visibility="private">
+        <parameters>
+          <parameter name="Reader" type="TReader" />
+        </parameters>
+      </procedure>
+      <procedure name="WriteData_Block" visibility="private">
+        <parameters>
+          <parameter name="Writer" type="TWriter" />
+        </parameters>
+      </procedure>
+      <procedure name="ReadData_Chain" visibility="private">
+        <parameters>
+          <parameter name="Reader" type="TReader" />
+        </parameters>
+      </procedure>
+      <procedure name="WriteData_Chain" visibility="private">
+        <parameters>
+          <parameter name="Writer" type="TWriter" />
+        </parameters>
+      </procedure>
+      <function name="GetMode" visibility="private">
+        <parameters>
+          <retval type="TCodecMode" />
+        </parameters>
+      </function>
+      <function name="GetOnProgress" visibility="private">
+        <parameters>
+          <retval type="TOnHashProgress" />
+        </parameters>
+      </function>
+      <procedure name="SetOnProgress" visibility="private">
+        <parameters>
+          <parameter name="Value" type="TOnHashProgress" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="ProgIdsChanged" visibility="private">
+      </procedure>
+      <function name="GetCodecIntf" visibility="private">
+        <parameters>
+          <retval type="ICodec" />
+        </parameters>
+      </function>
+      <procedure name="SetPassword" visibility="private">
+        <parameters>
+          <parameter name="NewPassword" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="GenerateAsymetricKeyPairProgress_Event" visibility="private">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="CountPrimalityTests" type="Integer" />
+          <parameter name="doAbort" type="Boolean" paramflags="var" />
+        </parameters>
+      </procedure>
+      <function name="GetAsymetricKeySizeInBits" visibility="private">
+        <parameters>
+          <retval type="Cardinal" />
+        </parameters>
+      </function>
+      <procedure name="SetAsymetricKeySizeInBits" visibility="private">
+        <parameters>
+          <parameter name="value" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <function name="GetKey" visibility="private">
+        <parameters>
+          <retval type="TSymetricKey" />
+        </parameters>
+      </function>
+      <procedure name="BeginEncDec" visibility="private">
+      </procedure>
+      <procedure name="EndEncDec" visibility="private">
+      </procedure>
+      <procedure name="ClearPassword" visibility="private">
+      </procedure>
+      <procedure name="Notification" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="AComponent" type="TComponent" />
+          <parameter name="Operation" type="TOperation" />
+        </parameters>
+      </procedure>
+      <procedure name="DefineProperties" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Filer" type="TFiler" />
+        </parameters>
+      </procedure>
+      <function name="GetCipherDisplayName" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="GetChainDisplayName" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="Loaded" visibility="public" procflags="override">
+      </procedure>
+      <property name="InterfacesAreCached" visibility="protected" read="FIntfCached" write="SetIntfCached" type="Boolean" />
+      <field name="FGenerateAsymetricKeyPairProgress_CountPrimalityTests" type="Integer" visibility="public" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="AOwner" type="TComponent" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="Burn" visibility="public">
+      </procedure>
+      <procedure name="Reset" visibility="public">
+      </procedure>
+      <procedure name="SaveKeyToStream" visibility="public">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="InitFromStream" visibility="public">
+        <parameters>
+          <parameter name="Store" type="TStream" />
+        </parameters>
+      </procedure>
+      <function name="GetAborted" visibility="public">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="SetAborted" visibility="public">
+        <parameters>
+          <parameter name="Value" type="Boolean" />
+        </parameters>
+      </procedure>
+      <function name="isAsymetric" visibility="public">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="Asymetric_Engine" visibility="public">
+        <parameters>
+          <retval type="IAsymetric_Engine" />
+        </parameters>
+      </function>
+      <procedure name="InitFromKey" visibility="public">
+        <parameters>
+          <parameter name="Key" type="TSymetricKey" />
+        </parameters>
+      </procedure>
+      <procedure name="InitFromGeneratedAsymetricKeyPair" visibility="public">
+      </procedure>
+      <procedure name="Begin_EncryptMemory" visibility="public">
+        <parameters>
+          <parameter name="CipherText" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="EncryptMemory" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" paramflags="const" />
+          <parameter name="PlaintextLen" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="End_EncryptMemory" visibility="public">
+      </procedure>
+      <procedure name="Begin_DecryptMemory" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="DecryptMemory" visibility="public">
+        <parameters>
+          <parameter name="CipherText" paramflags="const" />
+          <parameter name="CiphertextLen" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="End_DecryptMemory" visibility="public">
+      </procedure>
+      <procedure name="EncryptStream" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="TStream" />
+          <parameter name="CipherText" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="DecryptStream" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="TStream" />
+          <parameter name="CipherText" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="EncryptFile" visibility="public">
+        <parameters>
+          <parameter name="Plaintext_FileName" type="string" paramflags="const" />
+          <parameter name="CipherText_FileName" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="DecryptFile" visibility="public">
+        <parameters>
+          <parameter name="Plaintext_FileName" type="string" paramflags="const" />
+          <parameter name="CipherText_FileName" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="EncryptString" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="const" />
+          <parameter name="CipherText_Base64" type="string" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="DecryptString" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="var" />
+          <parameter name="CipherText_Base64" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="EncryptAnsiString" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="const" />
+          <parameter name="CipherText_Base64" type="string" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="DecryptAnsiString" visibility="public">
+        <parameters>
+          <parameter name="Plaintext" type="string" paramflags="var" />
+          <parameter name="CipherText_Base64" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="Speed" visibility="public">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <property name="Key" visibility="public" read="GetKey" type="TSymetricKey" />
+      <property name="StreamCipherId" visibility="public" read="FStreamCipherId" write="SetStreamCipherId" type="string" />
+      <property name="BlockCipherId" visibility="public" read="FBlockCipherId" write="SetBlockCipherId" type="string" />
+      <property name="ChainModeId" visibility="public" read="FChainId" write="SetChainId" type="string" />
+      <property name="Password" visibility="public" read="FPassword" write="SetPassword" type="string" />
+      <property name="Mode" visibility="public" read="GetMode" type="TCodecMode" />
+      <property name="isUserAborted" visibility="public" read="GetAborted" write="SetAborted" type="Boolean" />
+      <property name="CountBytesProcessed" visibility="public" read="FCountBytes" write="FCountBytes" type="Int64" />
+      <property name="EstimatedWorkLoad" visibility="public" read="FWorkLoad" write="FWorkLoad" type="Int64" />
+      <property name="Duration" visibility="public" read="FDuration" write="FDuration" type="TDateTime" />
+      <property name="Cipher" visibility="published" read="GetCipherDisplayName" write="Dummy" stored="False" type="string" />
+      <property name="ChainMode" visibility="published" read="GetChainDisplayName" write="Dummy" stored="False" type="string" />
+      <property name="AsymetricKeySizeInBits" visibility="published" read="GetAsymetricKeySizeInBits" write="SetAsymetricKeySizeInBits" type="Cardinal" />
+      <property name="CryptoLibrary" visibility="published" read="FLib" write="SetLib" type="TCryptographicLibrary" />
+      <event name="OnProgress" visibility="published" read="GetOnProgress" write="SetOnProgress" type="Boolean" />
+    </members>
+  </class>
+</namespace>
