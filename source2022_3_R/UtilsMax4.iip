@@ -1,0 +1,7 @@
+[Main]
+OutputDir=C:\Program Files (x86)\maxbox3\Import\
+SingleUnit=1
+UseUnitAtDT=0
+FilePrefix=uPS
+AfterInterfaceDeclaration=
+AutoRenameOverloadedMethods=0
