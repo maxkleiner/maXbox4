@@ -1,0 +1,385 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_HugeCardinal">
+  <const name="rGreaterThan" type="TCompareResult">
+    <value>
+      rGreaterThan
+    </value>
+  </const>
+  <const name="rEqualTo" type="TCompareResult">
+    <value>
+      rEqualTo
+    </value>
+  </const>
+  <const name="rLessThan" type="TCompareResult">
+    <value>
+      rLessThan
+    </value>
+  </const>
+  <enum name="TCompareResult">
+    <element name="rGreaterThan" />
+    <element name="rEqualTo" />
+    <element name="rLessThan" />
+  </enum>
+  <const name="LittleEndien" type="TByteOrder">
+    <value>
+      LittleEndien
+    </value>
+  </const>
+  <const name="BigEndien" type="TByteOrder">
+    <value>
+      BigEndien
+    </value>
+  </const>
+  <enum name="TByteOrder">
+    <element name="LittleEndien" />
+    <element name="BigEndien" />
+  </enum>
+  <class name="THugeCardinal">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FMaxBits" type="Integer" visibility="private" />
+      <field name="FBits" type="Integer" visibility="private" />
+      <field name="FValue" type="TMemoryStream" visibility="private" />
+      <procedure name="CheckBits" visibility="private">
+      </procedure>
+      <function name="ComputedNeededSize" visibility="private" procflags="class">
+        <parameters>
+          <parameter name="RequestedBits" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="ClearMem" visibility="private">
+        <parameters>
+          <parameter name="Offset" type="Integer" />
+          <parameter name="Length" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="DividePrimitive" visibility="private">
+        <parameters>
+          <parameter name="Divisor" type="THugeCardinal" />
+          <parameter name="Quotient" type="THugeCardinal" paramflags="var" />
+          <parameter name="Remainder" type="THugeCardinal" paramflags="var" />
+          <parameter name="RequiresQuotient" type="Boolean" />
+        </parameters>
+      </procedure>
+      <function name="GetAsBase10" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="NewMemoryStream" visibility="protected">
+        <parameters>
+          <parameter name="InitBitSize" type="Integer" />
+          <retval type="TMemoryStream" />
+        </parameters>
+      </function>
+      <function name="ValuePntr" visibility="protected">
+        <parameters>
+          <parameter name="ByteIndex" type="Integer" />
+          <retval type="PByte" />
+        </parameters>
+      </function>
+      <field name="FPool" type="TMemoryStreamPool" visibility="public" />
+      <constructor name="CreateSimple" visibility="public">
+        <parameters>
+          <parameter name="Value" type="UInt64" />
+        </parameters>
+      </constructor>
+      <constructor name="CreateZero" visibility="public">
+        <parameters>
+          <parameter name="MaxBits1" type="Integer" />
+          <parameter name="Pool1" type="TMemoryStreamPool" />
+        </parameters>
+      </constructor>
+      <constructor name="CreateRandom" visibility="public">
+        <parameters>
+          <parameter name="Bits1" type="Integer" />
+          <parameter name="MaxBits1" type="Integer" />
+          <parameter name="ExactBitLength" type="Boolean" />
+          <parameter name="Pool1" type="TMemoryStreamPool" />
+        </parameters>
+      </constructor>
+      <constructor name="CreateSmall" visibility="public">
+        <parameters>
+          <parameter name="Value" type="UInt64" />
+          <parameter name="MaxBits1" type="Integer" />
+          <parameter name="Pool1" type="TMemoryStreamPool" />
+        </parameters>
+      </constructor>
+      <constructor name="CreateAsClone" visibility="public">
+        <parameters>
+          <parameter name="Master" type="THugeCardinal" />
+          <parameter name="Pool1" type="TMemoryStreamPool" />
+        </parameters>
+      </constructor>
+      <constructor name="CreateAsSizedClone" visibility="public">
+        <parameters>
+          <parameter name="MaxBits1" type="Integer" />
+          <parameter name="Master" type="THugeCardinal" />
+          <parameter name="Pool1" type="TMemoryStreamPool" />
+        </parameters>
+      </constructor>
+      <constructor name="CreateFromStreamIn" visibility="public">
+        <parameters>
+          <parameter name="MaxBits1" type="Integer" />
+          <parameter name="ByteOrder" type="TByteOrder" />
+          <parameter name="Stream" type="TStream" />
+          <parameter name="Pool1" type="TMemoryStreamPool" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <function name="Clone" visibility="public">
+        <parameters>
+          <retval type="THugeCardinal" />
+        </parameters>
+      </function>
+      <function name="CloneSized" visibility="public">
+        <parameters>
+          <parameter name="MaxBits1" type="Integer" />
+          <retval type="THugeCardinal" />
+        </parameters>
+      </function>
+      <procedure name="Resize" visibility="public">
+        <parameters>
+          <parameter name="NewMaxBit1" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Burn" visibility="public">
+      </procedure>
+      <function name="BitLength" visibility="public">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="MaxBits" visibility="public">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="CapacityInBits" visibility="public">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="Assign" visibility="public">
+        <parameters>
+          <parameter name="Source" type="THugeCardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="AssignFromStreamIn" visibility="public">
+        <parameters>
+          <parameter name="ByteOrder" type="TByteOrder" />
+          <parameter name="Stream" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="AssignSmall" visibility="public">
+        <parameters>
+          <parameter name="Value" type="UInt64" />
+        </parameters>
+      </procedure>
+      <procedure name="Swap" visibility="public">
+        <parameters>
+          <parameter name="Peer" type="THugeCardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="Random" visibility="public">
+        <parameters>
+          <parameter name="UpperBound" type="THugeCardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="RandomBits" visibility="public">
+        <parameters>
+          <parameter name="BitsOfRandom" type="Integer" />
+          <parameter name="ExactBitLength" type="Boolean" />
+        </parameters>
+      </procedure>
+      <function name="Compare" visibility="public">
+        <parameters>
+          <parameter name="Reference" type="THugeCardinal" />
+          <retval type="TCompareResult" />
+        </parameters>
+      </function>
+      <function name="CompareSmall" visibility="public">
+        <parameters>
+          <parameter name="Reference" type="UInt64" />
+          <retval type="TCompareResult" />
+        </parameters>
+      </function>
+      <function name="isZero" visibility="public">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="isOdd" visibility="public">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="Zeroise" visibility="public">
+      </procedure>
+      <function name="isSmall" visibility="public">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="ExtractSmall" visibility="public">
+        <parameters>
+          <retval type="UInt64" />
+        </parameters>
+      </function>
+      <function name="ModSmall" visibility="public">
+        <parameters>
+          <parameter name="Modulus" type="UInt64" />
+          <retval type="UInt64" />
+        </parameters>
+      </function>
+      <procedure name="Add" visibility="public">
+        <parameters>
+          <parameter name="Addend" type="THugeCardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="Increment" visibility="public">
+        <parameters>
+          <parameter name="Addend" type="Int64" />
+        </parameters>
+      </procedure>
+      <procedure name="Subtract" visibility="public">
+        <parameters>
+          <parameter name="Subtractend" type="THugeCardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="AddMod" visibility="public">
+        <parameters>
+          <parameter name="Addend" type="THugeCardinal" />
+          <parameter name="Modulus" type="THugeCardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="MulSmall" visibility="public">
+        <parameters>
+          <parameter name="Factor" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <function name="Multiply" visibility="public">
+        <parameters>
+          <parameter name="Factor" type="THugeCardinal" />
+          <retval type="THugeCardinal" />
+        </parameters>
+      </function>
+      <procedure name="MultiplyMod" visibility="public">
+        <parameters>
+          <parameter name="Factor" type="THugeCardinal" />
+          <parameter name="Modulus" type="THugeCardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="SquareMod" visibility="public">
+        <parameters>
+          <parameter name="Modulus" type="THugeCardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="MulPower2" visibility="public">
+        <parameters>
+          <parameter name="ShiftAmnt" type="Integer" />
+        </parameters>
+      </procedure>
+      <function name="Modulo" visibility="public">
+        <parameters>
+          <parameter name="Modulus" type="THugeCardinal" />
+          <retval type="THugeCardinal" />
+        </parameters>
+      </function>
+      <procedure name="Divide" visibility="public">
+        <parameters>
+          <parameter name="Divisor" type="THugeCardinal" />
+          <parameter name="Quotient" type="THugeCardinal" paramflags="var" />
+          <parameter name="Remainder" type="THugeCardinal" paramflags="var" />
+        </parameters>
+      </procedure>
+      <function name="PowerMod" visibility="public">
+        <parameters>
+          <parameter name="Exponent" type="THugeCardinal" />
+          <parameter name="Modulus" type="THugeCardinal" />
+          <parameter name="OnProgress" type="TProgress" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="SmallExponent_PowerMod" visibility="public">
+        <parameters>
+          <parameter name="Exponent" type="UInt64" />
+          <parameter name="Modulus" type="THugeCardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="SmallExponent_Power" visibility="public">
+        <parameters>
+          <parameter name="Exponent" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="StreamOut" visibility="public">
+        <parameters>
+          <parameter name="ByteOrder" type="TByteOrder" />
+          <parameter name="Stream" type="TStream" />
+          <parameter name="SizeToOutput" type="Integer">
+            <value>
+              $FFFFFFFF
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <property name="AsBase10" visibility="public" read="GetAsBase10" type="string" />
+    </members>
+  </class>
+  <variable name="HugeCardinal_InstanceCount" type="Integer" visibility="public" />
+</namespace>

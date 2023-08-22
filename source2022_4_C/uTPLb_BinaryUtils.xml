@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_BinaryUtils">
+  <function name="SwapEndien_u32" visibility="public">
+    <parameters>
+      <parameter name="Value" type="Cardinal" />
+      <retval type="Cardinal" />
+    </parameters>
+  </function>
+  <function name="SwapEndien_s64" visibility="public">
+    <parameters>
+      <parameter name="Value" type="Int64" />
+      <retval type="Int64" />
+    </parameters>
+  </function>
+  <function name="SwapEndien_u64" visibility="public">
+    <parameters>
+      <parameter name="Value" type="UInt64" />
+      <retval type="UInt64" />
+    </parameters>
+  </function>
+  <function name="RotateLeft1Bit_u32" visibility="public">
+    <parameters>
+      <parameter name="Value" type="Cardinal" />
+      <retval type="Cardinal" />
+    </parameters>
+  </function>
+  <procedure name="Read_BigEndien_u32_Hex" visibility="public">
+    <parameters>
+      <parameter name="Value" type="string" paramflags="const" />
+      <parameter name="BinaryOut" type="TStream" />
+    </parameters>
+  </procedure>
+  <function name="Get_TP_LockBox3_HINSTANCE" visibility="public">
+    <parameters>
+      <retval type="Cardinal" />
+    </parameters>
+  </function>
+</namespace>

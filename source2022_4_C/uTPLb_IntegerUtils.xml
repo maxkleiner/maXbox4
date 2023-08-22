@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_IntegerUtils">
+  <function name="Add_uint32_WithCarry" visibility="public">
+    <parameters>
+      <parameter name="x" type="Cardinal" />
+      <parameter name="y" type="Cardinal" />
+      <parameter name="Carry" type="Boolean" paramflags="var" />
+      <retval type="Cardinal" />
+    </parameters>
+  </function>
+  <function name="Subtract_uint32_WithBorrow" visibility="public">
+    <parameters>
+      <parameter name="x" type="Cardinal" />
+      <parameter name="y" type="Cardinal" />
+      <parameter name="Borrow" type="Boolean" paramflags="var" />
+      <retval type="Cardinal" />
+    </parameters>
+  </function>
+  <function name="Add_uint64_WithCarry" visibility="public">
+    <parameters>
+      <parameter name="x" type="UInt64" />
+      <parameter name="y" type="UInt64" />
+      <parameter name="Carry" type="Boolean" paramflags="var" />
+      <retval type="UInt64" />
+    </parameters>
+  </function>
+  <function name="Subtract_uint64_WithBorrow" visibility="public">
+    <parameters>
+      <parameter name="x" type="UInt64" />
+      <parameter name="y" type="UInt64" />
+      <parameter name="Borrow" type="Boolean" paramflags="var" />
+      <retval type="UInt64" />
+    </parameters>
+  </function>
+  <function name="BitCount_8" visibility="public">
+    <parameters>
+      <parameter name="Value" type="Byte" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="BitCount_16" visibility="public">
+    <parameters>
+      <parameter name="Value" type="Word" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="BitCount_32" visibility="public">
+    <parameters>
+      <parameter name="Value" type="Cardinal" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="BitCount_64" visibility="public">
+    <parameters>
+      <parameter name="Value" type="UInt64" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="CountSetBits_64" visibility="public">
+    <parameters>
+      <parameter name="Value" type="UInt64" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+</namespace>

@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_HugeCardinalUtils">
+  <const name="StandardExponent" type="Integer">
+    <value>
+      $10001
+    </value>
+  </const>
+  <variable name="GreatestPassCount" type="Integer" visibility="public" />
+  <variable name="RSA_FailCount" type="Integer" visibility="public" />
+  <function name="gcd" visibility="public">
+    <parameters>
+      <parameter name="a" type="THugeCardinal" />
+      <parameter name="b" type="THugeCardinal" />
+      <retval type="THugeCardinal" />
+    </parameters>
+  </function>
+  <function name="lcm" visibility="public">
+    <parameters>
+      <parameter name="a" type="THugeCardinal" />
+      <parameter name="b" type="THugeCardinal" />
+      <retval type="THugeCardinal" />
+    </parameters>
+  </function>
+  <function name="isCoPrime" visibility="public">
+    <parameters>
+      <parameter name="a" type="THugeCardinal" />
+      <parameter name="b" type="THugeCardinal" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="isProbablyPrime" visibility="public">
+    <parameters>
+      <parameter name="p" type="THugeCardinal" />
+      <parameter name="OnProgress" type="TProgress" />
+      <parameter name="wasAborted" type="Boolean" paramflags="var" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="hasSmallFactor" visibility="public">
+    <parameters>
+      <parameter name="p" type="THugeCardinal" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="GeneratePrime" visibility="public">
+    <parameters>
+      <parameter name="NumBits" type="Integer" />
+      <parameter name="OnProgress" type="TProgress" />
+      <parameter name="OnPrimalityTest" type="TPrimalityTestNoticeProc" />
+      <parameter name="PassCount" type="Integer" />
+      <parameter name="Pool1" type="TMemoryStreamPool" />
+      <parameter name="Prime" type="THugeCardinal" paramflags="var" />
+      <parameter name="NumbersTested" type="Integer" paramflags="var" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="Inverse" visibility="public">
+    <parameters>
+      <parameter name="Prime" type="THugeCardinal" />
+      <parameter name="Modulus" type="THugeCardinal" />
+      <retval type="THugeCardinal" />
+    </parameters>
+  </function>
+  <procedure name="Compute_RSA_Fundamentals_2Factors" visibility="public">
+    <parameters>
+      <parameter name="RequiredBitLengthOfN" type="Integer" />
+      <parameter name="Fixed_e" type="UInt64" />
+      <parameter name="N" type="THugeCardinal" paramflags="var" />
+      <parameter name="e" type="THugeCardinal" paramflags="var" />
+      <parameter name="d" type="THugeCardinal" paramflags="var" />
+      <parameter name="Totient" type="THugeCardinal" paramflags="var" />
+      <parameter name="OnProgress" type="TProgress" />
+      <parameter name="OnPrimalityTest" type="TPrimalityTestNoticeProc" />
+      <parameter name="GeneratePrimePassCount" type="Integer" />
+      <parameter name="Pool1" type="TMemoryStreamPool" />
+      <parameter name="NumbersTested" type="Integer" paramflags="var" />
+      <parameter name="wasAborted" type="Boolean" paramflags="var" />
+    </parameters>
+  </procedure>
+  <function name="Validate_RSA_Fundamentals" visibility="public">
+    <parameters>
+      <parameter name="N" type="THugeCardinal" paramflags="var" />
+      <parameter name="e" type="THugeCardinal" paramflags="var" />
+      <parameter name="d" type="THugeCardinal" paramflags="var" />
+      <parameter name="Totient" type="THugeCardinal" paramflags="var" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+</namespace>

@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_I18n">
+  <const name="ES_NoPassword" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.Init - No password.
+    </value>
+  </const>
+  <const name="ES_AsymPassword" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.Init - Asymetric codecs are not initialized by string.
+    </value>
+  </const>
+  <const name="ES_HashFailed" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.Init - Hash failed.
+    </value>
+  </const>
+  <const name="ES_WrongModeReset" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.Init - Reset when not intialized.
+    </value>
+  </const>
+  <const name="ES_WrongModeEncrypt" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.Begin_EncryptMemory - Wrong mode.
+    </value>
+  </const>
+  <const name="ES_EncryptNoAlg" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.Begin_EncryptMemory - Algorithms not set.
+    </value>
+  </const>
+  <const name="ES_WrongModeDecrypt" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.Begin_DecryptMemory - Wrong mode.
+    </value>
+  </const>
+  <const name="ES_DecryptNoAlg" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.Begin_DecryptMemory - Algorithms not set.
+    </value>
+  </const>
+  <const name="ES_WrongModeEncryptMem" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.EncryptMemory - Wrong mode.
+    </value>
+  </const>
+  <const name="ES_WrongModeDecryptMem" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.DecryptMemory - Wrong mode.
+    </value>
+  </const>
+  <const name="ES_WrongModeEndDecryptMem" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.End_DecryptMemory - Wrong mode.
+    </value>
+  </const>
+  <const name="ES_WrongModeEndEncryptMem" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.End_EncryptMemory - Wrong mode.
+    </value>
+  </const>
+  <const name="ES_Asym_CannotSetParam" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.AsymetricKeySizeInBits - Cannot set parameter whilst enc/decrypting.
+    </value>
+  </const>
+  <const name="ES_Asym_CannotSetCipher" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.Init - Cannot set Cipher whilst enc/decrypting.
+    </value>
+  </const>
+  <const name="ES_AsymNotInitByStr" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.Init - Asymetric codecs are not initialized by string.
+    </value>
+  </const>
+  <const name="ES_NotImplementedNot_Suffix" type="string" resourcestring="true">
+    <value>
+      (not implemented yet!)
+    </value>
+  </const>
+  <const name="ES_LibsChainTooDeep" type="string" resourcestring="true">
+    <value>
+      TCryptographicLibrarys cannot chain more than %%d deep.
+    </value>
+  </const>
+  <const name="ES_CircularLibs" type="string" resourcestring="true">
+    <value>
+      Circular TCryptographicLibrary chaining is prohibited.
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_CloneOverflow" type="string" resourcestring="true">
+    <value>
+      THugeCardinal.CreateAsSizedClone overflow.
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_AddOverflow" type="string" resourcestring="true">
+    <value>
+      THugeCardinal.Add overflow.
+    </value>
+  </const>
+  <const name="ES_CannotAssignHuge_BecauseSourceTooBig" type="string" resourcestring="true">
+    <value>
+      Cannot assign THugeCardinal because source is too big and resizing is not allowed.
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_IncrementOverflow" type="string" resourcestring="true">
+    <value>
+      THugeCardinal.Increment overflow.
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_DivideOverflow" type="string" resourcestring="true">
+    <value>
+      THugeCardinal.Divide overflow.
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_Power2" type="string" resourcestring="true">
+    <value>
+      MulPower2 overflow.
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_MulSmallOverflow" type="string" resourcestring="true">
+    <value>
+      MulSmall overflow.
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_ResizeOverflow" type="string" resourcestring="true">
+    <value>
+      THugeCardinal.Resize overflow
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_PowerOverflow" type="string" resourcestring="true">
+    <value>
+      Power overflow
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_SubractOverflow" type="string" resourcestring="true">
+    <value>
+      THugeCardinal.Subtract overflow.
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_StreamOutOverflow" type="string" resourcestring="true">
+    <value>
+      THugeCardinal.StreamOut overflow.
+    </value>
+  </const>
+  <const name="ES_HugeCardinal_StreamInOverflow" type="string" resourcestring="true">
+    <value>
+      THugeCardinal.StreamIn overflow.
+    </value>
+  </const>
+  <const name="ES_EratosthenesSievSizeTooSmall" type="string" resourcestring="true">
+    <value>
+      EratosthenesSieveSize value (%%d) too small for required number of pre-computed small primes (%%d primes)
+    </value>
+  </const>
+  <const name="ES_InternalError_Suffix" type="string" resourcestring="true">
+    <value>
+      internal error.
+    </value>
+  </const>
+  <const name="ES_InvalidKey" type="string" resourcestring="true">
+    <value>
+      Invalid key.
+    </value>
+  </const>
+  <const name="ES_PlaintextFN_Empty" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.EncryptFile - plaintext filename parameter was empty.
+    </value>
+  </const>
+  <const name="ES_CiphertextFN_Empty" type="string" resourcestring="true">
+    <value>
+      TSimpleCodec.EncryptFile - ciphertext filename parameter was empty.
+    </value>
+  </const>
+  <const name="AS_HugeCardinal_DivideLogicFail" type="string" resourcestring="true">
+    <value>
+      THugeCardinal.Divide internal logic failure.
+    </value>
+  </const>
+  <const name="AS_ZeroToZero" type="string" resourcestring="true">
+    <value>
+      Zero raised to zero is an invalid operation.
+    </value>
+  </const>
+  <const name="AS_LCM_Fail" type="string" resourcestring="true">
+    <value>
+      function lcm failed.
+    </value>
+  </const>
+  <const name="AS_HugeCardinal_N_tooSmall" type="string" resourcestring="true">
+    <value>
+      RequiredBitLengthOfN too small.
+    </value>
+  </const>
+  <const name="AS_HugeCardinal_N_tooBig" type="string" resourcestring="true">
+    <value>
+      RequiredBitLengthOfN absurdly large.
+    </value>
+  </const>
+  <const name="AS_HugeCardinal_N_tooSmall_for_n" type="string" resourcestring="true">
+    <value>
+      RequiredBitLengthOfN too small for n.
+    </value>
+  </const>
+  <const name="AS_BlockToStream_EndEncrypt_InternalMarshalling" type="string" resourcestring="true">
+    <value>
+      TNoncibleEncryptor.End_Encrypt - Internal marshalling error.
+    </value>
+  </const>
+  <const name="AS_BlockToStream_EndDecrypt_InternalMarshalling" type="string" resourcestring="true">
+    <value>
+      TNoncibleDecryptor.End_Encrypt - Internal marshalling error.
+    </value>
+  </const>
+  <const name="AS_BlockPaddingCorrupt" type="string" resourcestring="true">
+    <value>
+      Invalid ciphertext - block padding is corrupted.
+    </value>
+  </const>
+  <const name="RSA_DisplayName" type="string" resourcestring="true">
+    <value>
+      RSA public key encryption system
+    </value>
+  </const>
+  <const name="BlockCipher_DisplayName" type="string" resourcestring="true">
+    <value>
+      Block mode
+    </value>
+  </const>
+  <const name="Base64_DisplayName" type="string" resourcestring="true">
+    <value>
+      Base64
+    </value>
+  </const>
+  <const name="CFB8bit_DisplayName" type="string" resourcestring="true">
+    <value>
+      CFB 8-bit
+    </value>
+  </const>
+  <const name="ECB_DisplayName" type="string" resourcestring="true">
+    <value>
+      ECB (with block padding)
+    </value>
+  </const>
+  <const name="DS_Email" type="string" resourcestring="true">
+    <value>
+      email: 
+    </value>
+  </const>
+  <const name="DS_Web" type="string" resourcestring="true">
+    <value>
+      web: 
+    </value>
+  </const>
+  <const name="DS_RunTimeIs" type="string" resourcestring="true">
+    <value>
+      Run-time package %%s is version %%s .
+    </value>
+  </const>
+  <const name="DS_DesignTimeIs" type="string" resourcestring="true">
+    <value>
+      Design-time package %%s is version %%s .
+    </value>
+  </const>
+  <const name="DS_HashNotSelected" type="string" resourcestring="true">
+    <value>
+      (THash not selected)
+    </value>
+  </const>
+  <const name="DS_BlockSizeEqs" type="string" resourcestring="true">
+    <value>
+      Block size = %%d bits
+    </value>
+  </const>
+  <const name="DS_DigestSizeEqs" type="string" resourcestring="true">
+    <value>
+      Digest size = %%d bits
+    </value>
+  </const>
+  <const name="DS_ChainModeNotSelected" type="string" resourcestring="true">
+    <value>
+      (Chain mode not selected)
+    </value>
+  </const>
+  <const name="DS_CodecNotSelected" type="string" resourcestring="true">
+    <value>
+      (TCodec not selected)
+    </value>
+  </const>
+  <const name="DS_MixedLibraries" type="string" resourcestring="true">
+    <value>
+      (Libraries mixed or not set)
+    </value>
+  </const>
+</namespace>

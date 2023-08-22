@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_StreamUtils">
+  <class name="TDesalinationWriteStream">
+    <ancestor name="TStream" namespace="Classes">
+      <methodref name="GetPosition" visibility="private">
+      </methodref>
+      <methodref name="SetPosition" visibility="private">
+      </methodref>
+      <methodref name="SetSize64" visibility="private">
+      </methodref>
+      <methodref name="GetSize" visibility="public">
+      </methodref>
+      <methodref name="SetSize" visibility="public">
+      </methodref>
+      <methodref name="SetSize" visibility="public">
+      </methodref>
+      <methodref name="Read" visibility="public">
+      </methodref>
+      <methodref name="Write" visibility="public">
+      </methodref>
+      <methodref name="Seek" visibility="public">
+      </methodref>
+      <methodref name="Seek" visibility="public">
+      </methodref>
+      <methodref name="ReadBuffer" visibility="public">
+      </methodref>
+      <methodref name="WriteBuffer" visibility="public">
+      </methodref>
+      <methodref name="CopyFrom" visibility="public">
+      </methodref>
+      <methodref name="ReadComponent" visibility="public">
+      </methodref>
+      <methodref name="ReadComponentRes" visibility="public">
+      </methodref>
+      <methodref name="WriteComponent" visibility="public">
+      </methodref>
+      <methodref name="WriteComponentRes" visibility="public">
+      </methodref>
+      <methodref name="WriteDescendent" visibility="public">
+      </methodref>
+      <methodref name="WriteDescendentRes" visibility="public">
+      </methodref>
+      <methodref name="WriteResourceHeader" visibility="public">
+      </methodref>
+      <methodref name="FixupResourceHeader" visibility="public">
+      </methodref>
+      <methodref name="ReadResHeader" visibility="public">
+      </methodref>
+      <propertyref name="Position" visibility="public">
+      </propertyref>
+      <propertyref name="Size" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="FFreshwaterStream" type="TStream" visibility="private" />
+      <field name="FSaltVolume" type="Integer" visibility="private" />
+      <function name="GetSize" visibility="public" procflags="override">
+        <parameters>
+          <retval type="Int64" />
+        </parameters>
+      </function>
+      <procedure name="SetSize" visibility="public" procflags="overload override">
+        <parameters>
+          <parameter name="NewSize" type="Int64" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="Read" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Buffer" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Write" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Buffer" paramflags="const" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Seek" visibility="public" procflags="overload override">
+        <parameters>
+          <parameter name="Offset" type="Int64" paramflags="const" />
+          <parameter name="Origin" type="TSeekOrigin" />
+          <retval type="Int64" />
+        </parameters>
+      </function>
+      <property name="FreshwaterStream" visibility="public" read="FFreshwaterStream" write="FFreshwaterStream" type="TStream" />
+      <property name="SaltVolume" visibility="public" read="FSaltVolume" write="FSaltVolume" type="Integer" />
+    </members>
+  </class>
+  <array name="TBytes">
+    <element type="Byte" />
+  </array>
+  <array name="TInverseBaseTransform" low="0" high="255">
+    <element type="Byte" />
+  </array>
+  <procedure name="BurnMemory" visibility="public">
+    <parameters>
+      <parameter name="Buff" paramflags="var" />
+      <parameter name="BuffLen" type="Integer" />
+    </parameters>
+  </procedure>
+  <procedure name="ZeroFillStream" visibility="public">
+    <parameters>
+      <parameter name="Stream" type="TMemoryStream" />
+    </parameters>
+  </procedure>
+  <procedure name="RandomFillStream" visibility="public">
+    <parameters>
+      <parameter name="Stream" type="TMemoryStream" />
+    </parameters>
+  </procedure>
+  <function name="CloneMemoryStream" visibility="public">
+    <parameters>
+      <parameter name="Original" type="TMemoryStream" />
+      <retval type="TMemoryStream" />
+    </parameters>
+  </function>
+  <procedure name="BurnMemoryStream" visibility="public">
+    <parameters>
+      <parameter name="Destructo" type="TMemoryStream" />
+    </parameters>
+  </procedure>
+  <procedure name="XOR_Streams2" visibility="public">
+    <parameters>
+      <parameter name="Dest" type="TMemoryStream" />
+      <parameter name="Srce" type="TMemoryStream" />
+    </parameters>
+  </procedure>
+  <procedure name="XOR_Streams3" visibility="public">
+    <parameters>
+      <parameter name="Dest" type="TMemoryStream" />
+      <parameter name="SrceA" type="TMemoryStream" />
+      <parameter name="SrceB" type="TMemoryStream" />
+    </parameters>
+  </procedure>
+  <function name="CompareMemoryStreams" visibility="public">
+    <parameters>
+      <parameter name="S1" type="TMemoryStream" />
+      <parameter name="S2" type="TMemoryStream" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <procedure name="CopyMemoryStream" visibility="public">
+    <parameters>
+      <parameter name="Source" type="TMemoryStream" />
+      <parameter name="Destination" type="TMemoryStream" />
+    </parameters>
+  </procedure>
+  <function name="Stream_to_Base64" visibility="public">
+    <parameters>
+      <parameter name="Source" type="TStream" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <procedure name="Base64_to_stream" visibility="public">
+    <parameters>
+      <parameter name="Base64" type="string" paramflags="const" />
+      <parameter name="Destin" type="TStream" />
+    </parameters>
+  </procedure>
+  <function name="Stream_to_AnsiString" visibility="public">
+    <parameters>
+      <parameter name="Source" type="TStream" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StreamtoString" visibility="public">
+    <parameters>
+      <parameter name="Source" type="TStream" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <procedure name="AnsiString_to_stream" visibility="public">
+    <parameters>
+      <parameter name="Value" type="string" paramflags="const" />
+      <parameter name="Destin" type="TStream" />
+    </parameters>
+  </procedure>
+  <function name="Stream_to_Base64Bytes" visibility="public">
+    <parameters>
+      <parameter name="ASource" type="TStream" />
+      <parameter name="ATransform" type="TBytes" paramflags="const">
+        <value>
+          nil
+        </value>
+      </parameter>
+      <retval type="TBytes" />
+    </parameters>
+  </function>
+  <procedure name="Base64_to_streamBytes" visibility="public">
+    <parameters>
+      <parameter name="Base64" type="TBytes" paramflags="const" />
+      <parameter name="Destin" type="TStream" />
+    </parameters>
+  </procedure>
+  <procedure name="CustomBase64_to_stream" visibility="public">
+    <parameters>
+      <parameter name="Base64" type="TBytes" paramflags="const" />
+      <parameter name="Destin" type="TStream" />
+      <parameter name="InverseTransform" type="TInverseBaseTransform" paramflags="const" />
+    </parameters>
+  </procedure>
+  <function name="Stream_To_Hex" visibility="public">
+    <parameters>
+      <parameter name="ASource" type="TStream" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="Stream_to_decimalbytes" visibility="public">
+    <parameters>
+      <parameter name="Source" type="TStream" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="CompareFiles" visibility="public">
+    <parameters>
+      <parameter name="FN1" type="string" paramflags="const" />
+      <parameter name="FN2" type="string" paramflags="const" />
+      <parameter name="Breathe" type="TNotifyEvent" />
+      <parameter name="BreathingSender" type="TObject" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="FileSize" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <retval type="Int64" />
+    </parameters>
+  </function>
+  <function name="DisplayStream" visibility="public">
+    <parameters>
+      <parameter name="Stream" type="TStream" />
+      <retval type="string" />
+    </parameters>
+  </function>
+</namespace>

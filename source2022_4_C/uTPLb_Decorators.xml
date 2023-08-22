@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_Decorators">
+  <interface name="IControlObject">
+    <function name="ControlObject" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="TObject" />
+      </parameters>
+    </function>
+  </interface>
+  <interface name="IVariableSeedSize">
+    <function name="MinSeedByteSize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Integer" />
+      </parameters>
+    </function>
+    <function name="MaxSeedByteSize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Integer" />
+      </parameters>
+    </function>
+    <property name="Min" visibility="public" read="MinSeedByteSize" type="Integer" />
+    <property name="Max" visibility="public" read="MaxSeedByteSize" type="Integer" />
+  </interface>
+</namespace>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="uTPLb_PointerArithmetic">
+  <function name="Offset" visibility="public">
+    <parameters>
+      <parameter name="Pntr" type="Pointer" />
+      <parameter name="Value" type="Integer" />
+      <retval type="Pointer" />
+    </parameters>
+  </function>
+  <function name="MemStrmOffset" visibility="public">
+    <parameters>
+      <parameter name="Stream" type="TMemoryStream" />
+      <parameter name="Value" type="Integer" />
+      <retval type="Pointer" />
+    </parameters>
+  </function>
+  <function name="ReadMem" visibility="public">
+    <parameters>
+      <parameter name="Source" type="TStream" />
+      <parameter name="Destin" type="TMemoryStream" />
+      <parameter name="DestinOffset" type="Integer" />
+      <parameter name="CountBytes" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="WriteMem" visibility="public">
+    <parameters>
+      <parameter name="Source" type="TMemoryStream" />
+      <parameter name="SourceOffset" type="Integer" />
+      <parameter name="Destin" type="TStream" />
+      <parameter name="CountBytes" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="isAligned32" visibility="public">
+    <parameters>
+      <parameter name="P" type="Pointer" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <procedure name="ClearMemory" visibility="public">
+    <parameters>
+      <parameter name="Stream" type="TMemoryStream" />
+      <parameter name="Offset" type="Integer" />
+      <parameter name="CountBytes" type="Integer" />
+    </parameters>
+  </procedure>
+</namespace>
