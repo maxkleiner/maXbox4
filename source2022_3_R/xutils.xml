@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="xutils">
+  <pointer name="PshortString" type="ShortString" indircnt="1" />
+  <const name="EXIT_DOSERROR" type="Integer">
+    <value>
+      $2
+    </value>
+  </const>
+  <const name="EXIT_ERROR" type="Integer">
+    <value>
+      $1
+    </value>
+  </const>
+  <const name="WhiteSpace" type="Set">
+    <value>
+      [#9..#10,#13,' ']
+    </value>
+  </const>
+  <procedure name="SwapLong" visibility="public">
+    <parameters>
+      <parameter name="x" type="Cardinal" paramflags="var" />
+    </parameters>
+  </procedure>
+  <procedure name="SwapWord" visibility="public">
+    <parameters>
+      <parameter name="x" type="Word" paramflags="var" />
+    </parameters>
+  </procedure>
+  <function name="UpString" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="LowString" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="CleanString" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="AddDoubleQuotes" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="RemoveDoubleQuotes" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="FillTo" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" />
+      <parameter name="tolength" type="Integer" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="Printf" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="const" />
+      <parameter name="Buf" paramflags="var" />
+      <parameter name="size" type="Word" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="AnsiDirectoryExists" visibility="public">
+    <parameters>
+      <parameter name="DName" type="string" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="AnsiFileExists" visibility="public">
+    <parameters>
+      <parameter name="FName" type="string" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="removenulls" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <procedure name="StreamErrorProcedure" visibility="public">
+    <parameters>
+      <parameter name="S" type="TStream" paramflags="var" />
+    </parameters>
+  </procedure>
+  <function name="hexstr" visibility="public">
+    <parameters>
+      <parameter name="val" type="Integer" />
+      <parameter name="cnt" type="Byte" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="fillwithzero" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" />
+      <parameter name="newlength" type="Integer" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="boolstr" visibility="public">
+    <parameters>
+      <parameter name="val" type="Boolean" />
+      <parameter name="cnt" type="Byte" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="decstr" visibility="public">
+    <parameters>
+      <parameter name="val" type="Integer" />
+      <parameter name="cnt" type="Byte" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="decstrunsigned" visibility="public">
+    <parameters>
+      <parameter name="l" type="Cardinal" />
+      <parameter name="cnt" type="Byte" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="Trim" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="TrimLeft" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="TrimRight" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <procedure name="stringdispose" visibility="public">
+    <parameters>
+      <parameter name="p" type="PshortString" paramflags="var" />
+    </parameters>
+  </procedure>
+  <function name="stringdup" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="const" />
+      <retval type="PshortString" />
+    </parameters>
+  </function>
+  <function name="ChangeFileExt" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <parameter name="Extension" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="ValUnsignedDecimal" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <parameter name="code" type="Integer" paramflags="var" />
+      <retval type="Cardinal" />
+    </parameters>
+  </function>
+  <function name="ValDecimal" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <parameter name="code" type="Integer" paramflags="var" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="ValOctal" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <parameter name="code" type="Integer" paramflags="var" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="ValBinary" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <parameter name="code" type="Integer" paramflags="var" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="ValHexadecimal" visibility="public">
+    <parameters>
+      <parameter name="S" type="string" paramflags="const" />
+      <parameter name="code" type="Integer" paramflags="var" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="EscapeToPascal" visibility="public">
+    <parameters>
+      <parameter name="s" type="string" paramflags="const" />
+      <parameter name="code" type="Integer" paramflags="var" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="CompareByte" visibility="public">
+    <parameters>
+      <parameter name="buf1" type="PAnsiChar" />
+      <parameter name="buf2" type="PAnsiChar" />
+      <parameter name="len" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="StrGetNextLine" visibility="public">
+    <parameters>
+      <parameter name="Text" type="string" paramflags="var" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StrToken" visibility="public">
+    <parameters>
+      <parameter name="Text" type="string" paramflags="var" />
+      <parameter name="Delimiter" type="Char" />
+      <parameter name="UseQuotes" type="Boolean" />
+      <retval type="string" />
+    </parameters>
+  </function>
+</namespace>
