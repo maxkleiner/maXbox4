@@ -1,0 +1,4 @@
+13.12.2011 18:55:01V:3.7.1.0 [max2] MONSTERHPVI Cannot open file "E:\maxbox\maxbox3\examples\87_pas_bitmap_test.txt". Das Gerät ist nicht bereit [at:  4044632pgf; mem:1283988]
+14.12.2011 17:43:09V:3.7.1.0 [max2] MONSTERHPVI Das System kann die angegebene Datei nicht finden [at:  4194303pgf; mem:1393760]
+14.12.2011 19:21:04V:3.7.1.0 [max2] MONSTERHPVI Access violation at address 004064C0 in module 'maxbox3_8.exe'. Read of address 00000000 [at:  4194303pgf; mem:1590620]
+14.12.2011 19:21:20V:3.7.1.0 [max2] MONSTERHPVI Access violation at address 004064C0 in module 'maxbox3_8.exe'. Read of address 00000000 [at:  4194303pgf; mem:1590760]

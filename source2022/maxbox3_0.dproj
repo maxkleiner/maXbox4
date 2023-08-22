@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{1068fa24-9048-4ddd-b6c9-cb3c05532074}</ProjectGuid>
+    <MainSource>maxbox3_0.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>maxbox3_0.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_UnitSearchPath>D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9;D:\kleiner2005\TestApp\v21\SynEdit\Source</DCC_UnitSearchPath>
+    <DCC_ResourcePath>D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9;D:\kleiner2005\TestApp\v21\SynEdit\Source</DCC_ResourcePath>
+    <DCC_ObjPath>D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9;D:\kleiner2005\TestApp\v21\SynEdit\Source</DCC_ObjPath>
+    <DCC_IncludePath>D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\ImageFileLibBCB\DelphiSource;D:\Program Files\Borland\RAD Studio\5.0\source\Indy\Indy9;D:\kleiner2005\TestApp\v21\SynEdit\Source</DCC_IncludePath>
+    <DCC_OutputXMLDocumentation>True</DCC_OutputXMLDocumentation>
+    <DCC_AssertionsAtRuntime>False</DCC_AssertionsAtRuntime>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">3</VersionInfo><VersionInfo Name="MinorVer">5</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">6</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">True</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2055</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">kleiner kommunikation</VersionInfoKeys><VersionInfoKeys Name="FileDescription">maXbox Delphi PascalScript</VersionInfoKeys><VersionInfoKeys Name="FileVersion">3.5.0.6</VersionInfoKeys><VersionInfoKeys Name="InternalName">maXbox3 solar</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">free remobjects pascalport</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks">maXbox</VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">maxbox3_0.exe</VersionInfoKeys><VersionInfoKeys Name="ProductName">maXbox</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">3.5 Solar</VersionInfoKeys><VersionInfoKeys Name="Comments">reduce to the max</VersionInfoKeys><VersionInfoKeys Name="Spezielles Build">mX3 Compiler Engine Final</VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages><Source><Source Name="MainSource">maxbox3_0.dpr</Source></Source></Delphi.Personality><ModelSupport>True</ModelSupport></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="maxbox3_0.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="ConfirmReplDlg.pas">
+      <Form>ConfirmReplDialog</Form>
+    </DCCReference>
+    <DCCReference Include="FindReplDlg.pas">
+      <Form>FindReplDialog</Form>
+    </DCCReference>
+    <DCCReference Include="fMain.pas">
+      <Form>MaxForm1</Form>
+    </DCCReference>
+    <DCCReference Include="ide_debugoutput.pas">
+      <Form>debugoutput</Form>
+    </DCCReference>
+    <DCCReference Include="IdHashCRC.pas" />
+    <DCCReference Include="IFSI_IdHTTP.pas" />
+    <DCCReference Include="IFSI_IdTCPClient.pas" />
+    <DCCReference Include="IFSI_SysUtils_max.pas" />
+    <DCCReference Include="IFSI_WinForm1puzzle.pas" />
+    <DCCReference Include="infobox1.pas">
+      <Form>AboutBox</Form>
+    </DCCReference>
+    <DCCReference Include="memorymax3.pas">
+      <Form>winmemory</Form>
+    </DCCReference>
+    <DCCReference Include="uPSCompiler.pas" />
+    <DCCReference Include="uPSC_dateutils.pas" />
+    <DCCReference Include="uPSC_DB.pas" />
+    <DCCReference Include="uPSC_forms.pas" />
+    <DCCReference Include="uPSC_graphics.pas" />
+    <DCCReference Include="uPSI_IdGlobal.pas" />
+    <DCCReference Include="uPSI_IdHashCRC.pas" />
+    <DCCReference Include="uPSI_IdHTTPHeaderInfo.pas" />
+    <DCCReference Include="uPSI_IdMessage.pas" />
+    <DCCReference Include="uPSI_IdSMTP.pas" />
+    <DCCReference Include="uPSI_IniFiles.pas" />
+    <DCCReference Include="uPSI_LinarBitmap.pas" />
+    <DCCReference Include="uPSI_MathMax.pas" />
+    <DCCReference Include="uPSI_PNGLoader.pas" />
+    <DCCReference Include="uPSI_StrUtils.pas" />
+    <DCCReference Include="uPSRuntime.pas" />
+    <DCCReference Include="uPSR_dateutils.pas" />
+    <DCCReference Include="uPSR_DB.pas" />
+    <DCCReference Include="uPSR_forms.pas" />
+    <DCCReference Include="uPSR_graphics.pas" />
+    <DCCReference Include="usecase\CaptionEditForm.pas">
+      <Form>CaptionEditDlg</Form>
+    </DCCReference>
+    <DCCReference Include="usecase\JimShape.pas" />
+    <DCCReference Include="usecase\UCMainForm.pas">
+      <Form>UCMainDlg</Form>
+    </DCCReference>
+    <DCCReference Include="WinForm1.pas">
+      <Form>winFormp</Form>
+    </DCCReference>
+    <None Include="maxbox3_0.todo" />
+    <None Include="ModelSupport_maxbox3_0\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_0\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_0\IdHashCRC\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_0\maxbox3_0\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_0\UCMainForm\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_0\uPSC_dateutils\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_0\uPSC_DB\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_0\uPSC_graphics\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_0\uPSI_IdGlobal\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_0\uPSI_IniFiles\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_0\uPSI_LinarBitmap\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_0\uPSI_LinarBitmap\default.txvpck" />
+    <None Include="ModelSupport_maxbox3_0\uPSI_PNGLoader\default.txaPackage" />
+    <None Include="ModelSupport_maxbox3_0\uPSI_PNGLoader\default.txvpck" />
+  </ItemGroup>
+</Project>

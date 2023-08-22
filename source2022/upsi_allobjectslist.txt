@@ -1,0 +1,997 @@
+//***************************************
+Unit All_Objects_maXbox3; Unit List
+//***************************************
+{ V3.7 November 2011 !
+
+those are just units and few classes, for the objects and classes and his methods check the XML in /source for time being
+In V4.0 there will be a full objectlist including methods, events and properties
+}
+(=== compile-time all time registration Object Functions === )
+{ 
+  Project  : maXbox Objects Series Information List
+  Unit Name: maXCom upsi_allObjectslist.txt /pdf
+  Purpose  : Declarates all Object Functions and Classes of maXbox3.6
+  Date  : 02/11/2011  -  22:54:56 , loc's = 980
+ }
+
+
+01 unit RIRegister_StrUtils_Routines(exec);  //Delphi
+02 unit SIRegister_IdStrings                 //Indy Sockets
+03 unit RIRegister_niSTRING_Routines(Exec);  //from RegEx
+04 unit uPSI_fMain Functions;                //maXbox
+05 unit IFSI_WinForm1puzzle;                 //maXbox
+06 unit RIRegister_LinarBitmap_Routines;     //ImageFileLibBCB
+07 unit RegisterDateTimeLibrary_R(exec);     //Delphi
+08 unit RIRegister_MathMax_Routines(exec);   //Jedi & Delphi
+09 unit RIRegister_IdGlobal_Routines(exec);  //Indy Sockets
+10 unit RIRegister_SysUtils_Routines(Exec);  //Delphi
+11 unit uPSI_IdTCPConnection;                //Indy some functions
+12 unit uPSCompiler.pas;                     //PS kernel functions
+13 unit uPSI_DBCommon;                       //DB Common_Routines/Types
+14 unit uPSI_Printers.pas                    //Delphi VCL
+15 unit uPSI_MPlayer.pas                     //Delphi VCL
+16 unit uPSC_comobj;                         //COM Functions
+17 unit uPSI_Clipbrd;                        //Delphi VCL
+18 unit Filectrl in IFSI_SysUtils_max;       //VCL Runtime
+19 unit uPSI_SqlExpr;                        //DBX3
+20 unit uPSI_ADODB;                          //ADODB
+21 unit uPSI_StrHlpr;                        //String Helper Routines 
+22 unit uPSI_DateUtils;                      //Expansion DateTimeLib
+23 unit uPSI_FileUtils;                      //Expansion Sys/File Utils
+24 unit JUtils / gsUtils;                    //Jedi / Metabase
+25 unit JvFunctions_max;                     //Jedi Functions
+26 unit THTTPParser;                         //Delphi VCL
+27 unit HTTPUtil;                            //Delphi VCL
+28 unit uPSI_XMLutil;                        //Delphi VCL
+29 unit uPSI_SOAPHTTPClient;                 //Delphi VCL SOAP
+30 unit uPSI_Contnrs;                        //Delphi RTL ClassContainer
+31 unit uPSI_MaskUtils;                      //RTL Edit/Mask functions
+32 unit uPSI_MyBigInt;                       //Big Integer with Math
+33 unit uPSI_ConvUtils;                      //Delphi VCL Conversions
+34 unit Types;                               //Delphi\Win32\rtl\sys
+35 unit uPSI_IdHashSHA1;                     //Indy Crypto Lib
+36 unit uPSI_IdHashMessageDigest             //Indy Crypto;
+37 unit uPSI_IdASN1Util;                     //Indy ASN1Util Routines;
+38 unit uPSI_IdLogFile;                      //Indy Logger from LogBase
+39 unit uPSI_IdIcmpClient;                   //Indy Ping ICMP
+40 unit uPSI_IdHashMessageDigest_max         //Indy Crypto &OpenSSL;
+41 unit uPSI_FileCtrl;                         //Delphi RTL 
+42 unit uPSI_Outline;                          //Delphi VCL
+43 unit uPSI_ScktComp;                         //Delphi RTL
+44 unit uPSI_Calendar;                         //Delphi VCL
+45 unit uPSI_VListView                         //VListView;
+46 unit uPSI_DBGrids;                          //Delphi VCL
+47 unit uPSI_DBCtrls;                          //Delphi VCL
+48 unit ide_debugoutput;                       //maXbox
+49 unit uPSI_ComCtrls;                         //Delphi VCL
+50 unit uPSC_stdctrls+;                        //Delphi VCL
+51 unit uPSI_Dialogs;                          //Delphi VCL
+52 unit uPSI_StdConvs;                         //Delphi RTL
+53 unit uPSI_DBClient;                         //Delphi RTL
+54 unit uPSI_DBPlatform;                       //Delphi RTL
+55 unit uPSI_Provider;                         //Delphi RTL
+56 unit uPSI_FMTBcd;                           //Delphi RTL
+57 unit uPSI_DBCGrids;                         //Delphi VCL
+58 unit uPSI_CDSUtil;                          //MIDAS
+59 unit uPSI_VarHlpr;                          //Delphi RTL
+60 unit uPSI_ExtDlgs;                          //Delphi VCL
+61 unit sdpStopwatch;                          //maXbox
+62 unit uPSI_JclStatistics;                    //JCL
+63 unit uPSI_JclLogic;                         //JCL
+64 unit uPSI_JclMiscel;                        //JCL
+65 unit uPSI_JclMath_max;                      //JCL RTL
+66 unit uPSI_uTPLb_StreamUtils;                //LockBox 3
+67 unit uPSI_MathUtils;                        //BCB
+68 unit uPSI_JclMultimedia;                    //JCL
+69 unit uPSI_WideStrUtils;                     //Delphi API/RTL
+70 unit uPSI_GraphUtil;                        //Delphi RTL
+71 unit uPSI_TypeTrans;                        //Delphi RTL
+72 unit uPSI_HTTPApp;                          //Delphi VCL
+
+------------------------------------------------------------------------------
+  <?xml version="1.0" encoding="utf-8" ?> 
+- <namespace name="maxbox3_6">
+- <namespace name="maxbox3_6">
+- <namespace name="maxbox3_7">
+  <contains name="IdPOP3" /> 
+  <contains name="uPSComponent_COM" /> 
+  <contains name="uPSComponent_StdCtrls" /> 
+  <contains name="uPSComponent_Forms" /> 
+  <contains name="uPSComponent_DB" /> 
+  <contains name="SynHighlighterHashEntries" /> 
+  <contains name="uPSR_stdctrls" /> 
+  <contains name="uPSC_stdctrls" /> 
+  <contains name="uPSR_extctrls" /> 
+  <contains name="uPSC_extctrls" /> 
+  <contains name="uPSC_menus" /> 
+  <contains name="uPSR_menus" /> 
+  <contains name="uPSC_buttons" /> 
+  <contains name="uPSR_buttons" /> 
+  <contains name="HyperLabel" /> 
+  <contains name="uPSI_WideStrUtils" /> 
+  <contains name="uPSI_WideStrings" /> 
+  <contains name="uPSI_DateUtils" /> 
+  <contains name="uPSR_Grids" /> 
+  <contains name="uPSC_Grids" /> 
+  <contains name="uPSR_comobj" /> 
+  <contains name="uPSC_comobj" /> 
+  <contains name="StreamUtils" /> 
+  <contains name="SortUtils" /> 
+  <contains name="DynamicLists" /> 
+  <contains name="AnalyzerPlugins" /> 
+  <contains name="PluginLinearBitmap" /> 
+  <contains name="RXMisc" /> 
+  <contains name="HexDump" /> 
+  <contains name="About" /> 
+  <contains name="RXMain" /> 
+  <contains name="rxtypes" /> 
+  <contains name="ExeImage" /> 
+  <contains name="Jcl8087" /> 
+  <contains name="JclStatistics" /> 
+  <contains name="uPSI_JclStatistics" /> 
+  <contains name="JclMiscel" /> 
+  <contains name="uPSI_JclMiscel" /> 
+  <contains name="uPSI_JclLogic" /> 
+  <contains name="uTPLb_IntegerUtils" /> 
+  <contains name="uPSI_uTPLb_StreamUtils" /> 
+  <contains name="uPSI_MathUtils" /> 
+  <contains name="TlHelp32" /> 
+  <contains name="PsAPI" /> 
+  <contains name="Snmp" /> 
+  <contains name="JclIniFiles" /> 
+  <contains name="JclRegistry" /> 
+  <contains name="JclDateTime" /> 
+  <contains name="JclSecurity" /> 
+  <contains name="JclFileUtils" /> 
+  <contains name="JclShell" /> 
+  <contains name="WinSvc" /> 
+  <contains name="JclWin32" /> 
+  <contains name="JclSynch" /> 
+  <contains name="JclBase" /> 
+  <contains name="JclLogic" /> 
+  <contains name="JclResources" /> 
+  <contains name="JclSysUtils" /> 
+  <contains name="JclMultimedia" /> 
+  <contains name="uPSI_JclMultimedia" /> 
+  <contains name="uPSI_FMTBcd" /> 
+  <contains name="uPSI_TypeTrans" /> 
+  <contains name="uPSI_DBCommonTypes" /> 
+  <contains name="uPSI_DBCommon" /> 
+  <contains name="uPSI_DBPlatform" /> 
+  <contains name="uPSI_DBTables" /> 
+  <contains name="uPSI_Printers" /> 
+  <contains name="uPSI_SqlExpr" /> 
+  <contains name="OleDB" /> 
+  <contains name="ADOInt" /> 
+  <contains name="Mtx" /> 
+  <contains name="ADOConst" /> 
+  <contains name="uPSI_ADODB" /> 
+  <contains name="DBGrids" /> 
+  <contains name="uPSI_DBGrids" /> 
+  <contains name="uPSI_DBCtrls" /> 
+  <contains name="VDBConsts" /> 
+  <contains name="DBCGrids" /> 
+  <contains name="uPSI_DBCGrids" /> 
+  <contains name="uPSI_Provider" /> 
+  <contains name="uPSI_ImgList" /> 
+  <contains name="uPSI_Clipbrd" /> 
+  <contains name="uPSI_MPlayer" /> 
+  <contains name="StrHlpr" /> 
+  <contains name="uPSI_StrHlpr" /> 
+  <contains name="uPSI_FileUtils" /> 
+  <contains name="IFSI_gsUtils" /> 
+  <contains name="uPSI_JvFunctions" /> 
+  <contains name="uPSI_FileCtrl" /> 
+  <contains name="Outline" /> 
+  <contains name="uPSI_Outline" /> 
+  <contains name="uPSI_ScktComp" /> 
+  <contains name="Mask" /> 
+  <contains name="Grids" /> 
+  <contains name="Calendar" /> 
+  <contains name="uPSI_Calendar" /> 
+  <contains name="uPSI_ComCtrls" /> 
+  <contains name="VarHlpr" /> 
+  <contains name="uPSI_VarHlpr" /> 
+  <contains name="uPSI_Dialogs" /> 
+  <contains name="uPSI_ExtDlgs" /> 
+  <contains name="VListView" /> 
+  <contains name="uPSI_VListView" /> 
+  <contains name="uPSI_IdTCPConnection" /> 
+  <contains name="IdHTTPHeaderInfo" /> 
+  <contains name="IdThreadMgr" /> 
+  <contains name="IdThreadMgrDefault" /> 
+  <contains name="IdServerIOHandlerSocket" /> 
+  <contains name="IdThreadSafe" /> 
+  <contains name="IdTCPServer" /> 
+  <contains name="IdServerIOHandler" /> 
+  <contains name="IdCookieManager" /> 
+  <contains name="IdAuthenticationManager" /> 
+  <contains name="IdMultipartFormData" /> 
+  <contains name="HTTPParse" /> 
+  <contains name="uPSI_HTTPParse" /> 
+  <contains name="uPSI_HTTPUtil" /> 
+  <contains name="uPSI_HTTPApp" /> 
+  <contains name="IFSI_IdURI" /> 
+  <contains name="IdFTPList" /> 
+  <contains name="IdFTPCommon" /> 
+  <contains name="IdSimpleServer" /> 
+  <contains name="IdFTP" /> 
+  <contains name="IFSI_IdFTP" /> 
+  <contains name="xmlutil_max" /> 
+  <contains name="uPSI_xmlutil" /> 
+  <contains name="uPSI_MaskUtils" /> 
+  <contains name="uPSI_Masks" /> 
+  <contains name="uPSI_Contnrs" /> 
+  <contains name="uPSI_MyBigInt" /> 
+  <contains name="uPSI_SOAPHTTPClient" /> 
+  <contains name="uPSI_VCLScannerIntf" /> 
+  <contains name="WSILIntf" /> 
+  <contains name="HTTPSOAPToPasBind" /> 
+  <contains name="SOAPHTTPPasInv" /> 
+  <contains name="AutoDisp" /> 
+  <contains name="SOAPHTTPDisp" /> 
+  <contains name="Invoker" /> 
+  <contains name="InvConst" /> 
+  <contains name="SOAPPasInv" /> 
+  <contains name="WebBrokerSOAP" /> 
+  <contains name="DBXpress" /> 
+  <contains name="DBByteBuffer" /> 
+  <contains name="DBXDataStoreMetaDataReader" /> 
+  <contains name="DBXRowBlobStreamReader" /> 
+  <contains name="DBXStringDecoder" /> 
+  <contains name="DBXStringEncoder" /> 
+  <contains name="DBXCharDecoder" /> 
+  <contains name="DBXRowBuffer" /> 
+  <contains name="DBXErrorHandler" /> 
+  <contains name="DBXTraceHandler" /> 
+  <contains name="DBXRpcErrorCodes" /> 
+  <contains name="DBXJSonStreamReader" /> 
+  <contains name="DBXTokens" /> 
+  <contains name="DBXStringCodes" /> 
+  <contains name="DBXChannel" /> 
+  <contains name="ScktComp" /> 
+  <contains name="DbxSocketChannelNative" /> 
+  <contains name="DBXFieldHeader" /> 
+  <contains name="DBXFieldPacker" /> 
+  <contains name="DBXBinaryStream" /> 
+  <contains name="DBXDelegate" /> 
+  <contains name="DBXDynalinkNative" /> 
+  <contains name="DBXInformixMetaDataReader" /> 
+  <contains name="DBXInterbaseMetaDataReader" /> 
+  <contains name="DBXDb2MetaDataReader" /> 
+  <contains name="DBXMsSqlMetaDataReader" /> 
+  <contains name="DBXMySqlMetaDataReader" /> 
+  <contains name="DBXOracleMetaDataReader" /> 
+  <contains name="DBXSybaseASAMetaDataReader" /> 
+  <contains name="DBXReaderTableStorage" /> 
+  <contains name="DBXMetaDataCommand" /> 
+  <contains name="DBXMetaDataCommandFactory" /> 
+  <contains name="DBXMetaDataUtil" /> 
+  <contains name="DBXSqlScanner" /> 
+  <contains name="DBXMetaDataError" /> 
+  <contains name="DBXMetaDataNames" /> 
+  <contains name="DBXMetaDataReader" /> 
+  <contains name="DBXPlatformUtil" /> 
+  <contains name="DBXTableStorage" /> 
+  <contains name="DBXSybaseASEMetaDataReader" /> 
+  <contains name="DbxDefaultDrivers" /> 
+  <contains name="DBXPlatform" /> 
+  <contains name="DBPlatform" /> 
+  <contains name="SqlConst" /> 
+  <contains name="DBConnAdmin" /> 
+  <contains name="CopyPrsr" /> 
+  <contains name="vwebMod" /> 
+  <contains name="uPSI_VCLScannerImpl" /> 
+  <contains name="uPSI_StdConvs" /> 
+  <contains name="uPSI_ConvUtils" /> 
+  <contains name="uPSI_DBClient" /> 
+  <contains name="BDE" /> 
+  <contains name="SMINTF" /> 
+  <contains name="bdeconst" /> 
+  <contains name="DBCommon" /> 
+  <contains name="MidConst" /> 
+  <contains name="DataBkr" /> 
+  <contains name="Midas" /> 
+  <contains name="CDSUtil" /> 
+  <contains name="uPSI_CDSUtil" /> 
+  <contains name="uPSI_GraphUtil" /> 
+  <contains name="uPSI_SynMemo" /> 
+  <contains name="IdASN1Util" /> 
+  <contains name="uPSI_IdASN1Util" /> 
+  <contains name="uPSI_IdHash" /> 
+  <contains name="IdHashMessageDigest_max" /> 
+  <contains name="uPSI_IdHashMessageDigest" /> 
+  <contains name="uPSI_IdHashSHA1" /> 
+  <contains name="IdLogBase" /> 
+  <contains name="IdLogFile" /> 
+  <contains name="uPSI_IdLogFile" /> 
+  <contains name="IdTime" /> 
+  <contains name="uPSI_IdTime" /> 
+  <contains name="IdDayTime" /> 
+  <contains name="uPSI_IdDayTime" /> 
+  <contains name="uPSI_IdEMailAddress" /> 
+  <contains name="uPSI_IdMessageClient" /> 
+  <contains name="IdSMTP" /> 
+  <contains name="uPSI_IdMailBox" /> 
+  <contains name="IdQotd" /> 
+  <contains name="uPSI_IdQotd" /> 
+  <contains name="IdTelnet" /> 
+  <contains name="uPSI_IdTelnet" /> 
+  <contains name="IdNetworkCalculator" /> 
+  <contains name="uPSI_IdNetworkCalculator" /> 
+  <contains name="IdFinger" /> 
+  <contains name="uPSI_IdFinger" /> 
+  <contains name="IdRawBase" /> 
+  <contains name="IdRawClient" /> 
+  <contains name="IdRawHeaders" /> 
+  <contains name="IdIcmpClient" /> 
+  <contains name="uPSI_IdIcmpClient" /> 
+  <contains name="MPlayer" /> 
+  <contains name="gsUtils" /> 
+  <contains name="IconList" /> 
+  <contains name="PanelFrame" /> 
+  <contains name="JConsts" /> 
+  <contains name="CRC32Stream" /> 
+  <contains name="BitStream" /> 
+  <contains name="Huffman" /> 
+  <contains name="Deflate" /> 
+  <contains name="Adler32" /> 
+  <contains name="TextStrm" /> 
+  <contains name="UniDIB" /> 
+  <contains name="MMSystem" /> 
+  <contains name="GIFConsts" /> 
+  <contains name="BufStream" /> 
+  <contains name="ColorMapper" /> 
+  <contains name="Streams" /> 
+  <contains name="DelphiStream" /> 
+  <contains name="MathUtils" /> 
+  <contains name="Monitor" /> 
+  <contains name="MemUtils" /> 
+  <contains name="Crc32" /> 
+  <contains name="WebServExp" /> 
+  <contains name="Rio" /> 
+  <contains name="SOAPEnv" /> 
+  <contains name="SOAPDomConv" /> 
+  <contains name="InvRules" /> 
+  <contains name="EncdDecd" /> 
+  <contains name="WebNode" /> 
+  <contains name="OPConvert" /> 
+  <contains name="WSDLNode" /> 
+  <contains name="WinSock" /> 
+  <contains name="WSDLBind" /> 
+  <contains name="WSDLItems" /> 
+  <contains name="Masks" /> 
+  <contains name="WebConst" /> 
+  <contains name="BrkrConst" /> 
+  <contains name="SOAPAttachIntf" /> 
+  <contains name="SOAPAttach" /> 
+  <contains name="UDDIHelper" /> 
+  <contains name="SOAPHTTPTrans" /> 
+  <contains name="HTTPUtil" /> 
+  <contains name="msxml" /> 
+  <contains name="XMLConst" /> 
+  <contains name="SOAPHTTPClient" /> 
+  <contains name="interface2_so" /> 
+  <contains name="uPSI_interface2_so" /> 
+  <contains name="uPSI_IdThread" /> 
+  <contains name="SynMemo" /> 
+  <contains name="SynEditSearch" /> 
+  <contains name="XPMan" /> 
+  <contains name="uPSC_std" /> 
+  <contains name="uPSR_std" /> 
+  <contains name="uPSC_classes" /> 
+  <contains name="uPSR_classes" /> 
+  <contains name="uPSComponent_Default" /> 
+  <contains name="uPSI_Types" /> 
+  <contains name="uPSC_controls" /> 
+  <contains name="uPSR_controls" /> 
+  <contains name="uPSComponent_Controls" /> 
+  <contains name="SynCompletionProposal" /> 
+  <contains name="SynEditPrint" /> 
+  <contains name="SynEditKbdHandler" /> 
+  <contains name="SynEditTextBuffer" /> 
+  <contains name="SynEditWordWrap" /> 
+  <contains name="SynEditAutoComplete" /> 
+  <contains name="RichEdit" /> 
+  <contains name="ToolWin" /> 
+  <contains name="ListActns" /> 
+  <contains name="ComStrs" /> 
+  <contains name="uPSDisassembly" /> 
+  <contains name="uPSI_fMain" /> 
+  <contains name="uPSI_niSTRING" /> 
+  <contains name="uPSI_niRegularExpression" /> 
+  <contains name="niRegularExpression" /> 
+  <contains name="niTestCase" /> 
+  <contains name="niSTRING" /> 
+  <contains name="niExtendedRegularExpression" /> 
+  <contains name="uPSI_niExtendedRegularExpression" /> 
+  <contains name="IdUDPClient" /> 
+  <contains name="IdSNTP" /> 
+  <contains name="IdUDPBase" /> 
+  <contains name="uPSI_IdSNTP" /> 
+  <contains name="uPSDebugger" /> 
+  <contains name="uPSR_dll" /> 
+  <contains name="uPSPreProcessor" /> 
+  <contains name="uPSComponent" /> 
+  <contains name="FileCtrl" /> 
+  <contains name="MaskUtils" /> 
+  <contains name="DateUtils" /> 
+  <contains name="DBCommonTypes" /> 
+  <contains name="DBConsts" /> 
+  <contains name="ComConst" /> 
+  <contains name="sdpStopwatch" /> 
+  <contains name="SynEditPrintTypes" /> 
+  <contains name="SynEditPrinterInfo" /> 
+  <contains name="SynEditPrintMargins" /> 
+  <contains name="SynEditTypes" /> 
+  <contains name="SynEditKeyConst" /> 
+  <contains name="SynEditStrConst" /> 
+  <contains name="SynHighlighterMulti" /> 
+  <contains name="SynEditMiscProcs" /> 
+  <contains name="SynEditPrintHeaderFooter" /> 
+  <contains name="MathMax" /> 
+  <contains name="WinSpool" /> 
+  <contains name="CommDlg" /> 
+  <contains name="StdCtrls" /> 
+  <contains name="Dlgs" /> 
+  <contains name="WideStrUtils" /> 
+  <contains name="StrUtils" /> 
+  <contains name="ShellAPI" /> 
+  <contains name="RegStr" /> 
+  <contains name="WinInet" /> 
+  <contains name="UrlMon" /> 
+  <contains name="ShlObj" /> 
+  <contains name="StdActns" /> 
+  <contains name="Imm" /> 
+  <contains name="Contnrs" /> 
+  <contains name="ImgList" /> 
+  <contains name="CommCtrl" /> 
+  <contains name="Consts" /> 
+  <contains name="Math" /> 
+  <contains name="MyBigInt" /> 
+  <contains name="IdHashMessageDigest" /> 
+  <contains name="IdHashSHA1" /> 
+  <contains name="IdHash" /> 
+  <contains name="IdHeaderList" /> 
+  <contains name="IdCoderQuotedPrintable" /> 
+  <contains name="IdCoder" /> 
+  <contains name="IdCoder3to4" /> 
+  <contains name="IdCoderHeader" /> 
+  <contains name="IdMessageClient" /> 
+  <contains name="IdIOHandlerStream" /> 
+  <contains name="IdStrings" /> 
+  <contains name="IdAssignedNumbers" /> 
+  <contains name="IdSocks" /> 
+  <contains name="IdSocketHandle" /> 
+  <contains name="IdRFCReply" /> 
+  <contains name="IdTCPStream" /> 
+  <contains name="IdStream" /> 
+  <contains name="IdTCPConnection" /> 
+  <contains name="IdIOHandlerSocket" /> 
+  <contains name="IdAntiFreezeBase" /> 
+  <contains name="IdIOHandler" /> 
+  <contains name="SyncObjs" /> 
+  <contains name="Messages" /> 
+  <contains name="ActiveX" /> 
+  <contains name="RTLConsts" /> 
+  <contains name="IdStackConsts" /> 
+  <contains name="IdStack" /> 
+  <contains name="IdURI" /> 
+  <contains name="IdBaseComponent" /> 
+  <contains name="IdException" /> 
+  <contains name="IdResourceStrings" /> 
+  <contains name="IdIntercept" /> 
+  <contains name="IdTCPClient" /> 
+  <contains name="IdMessageCollection" /> 
+  <contains name="SysConst" /> 
+  <contains name="Types" /> 
+  <contains name="ImageHlp" /> 
+  <contains name="IdMailBox" /> 
+  <contains name="uPSI_IdPOP3" /> 
+  <contains name="IdMessage" /> 
+  <contains name="IdMessageCoderXXE" /> 
+  <contains name="IdMessageCoderUUE" /> 
+  <contains name="IdCoderXXE" /> 
+  <contains name="IdCoderUUE" /> 
+  <contains name="IdMessageCoderMIME" /> 
+  <contains name="IdMessageCoder" /> 
+  <contains name="IdEMailAddress" /> 
+  <contains name="StdConvs" /> 
+  <contains name="ConvUtils" /> 
+  <contains name="VCLScannerImpl" /> 
+  <contains name="DBWeb" /> 
+  <contains name="HTTPProd" /> 
+  <contains name="WSDLPub" /> 
+  <contains name="WSDLSOAP" /> 
+  <contains name="VCLScannerIntf" /> 
+  <contains name="IdHTTP" /> 
+  <contains name="IdCookie" /> 
+  <contains name="IdSSLOpenSSL" /> 
+  <contains name="IdThread" /> 
+  <contains name="IdSSLOpenSSLHeaders" /> 
+  <contains name="IdAuthentication" /> 
+  <contains name="IdCoderMIME" /> 
+  <contains name="IdComponent" /> 
+  <contains name="IdGlobal_max" /> 
+  <contains name="DBClient" /> 
+  <contains name="Provider" /> 
+  <contains name="DSIntf" /> 
+  <contains name="DBCtrls" /> 
+  <contains name="DBPWDlg" /> 
+  <contains name="DBLogDlg" /> 
+  <contains name="ADODB" /> 
+  <contains name="SqlExpr" /> 
+  <contains name="DBXSybaseASEReadOnlyMetaData" /> 
+  <contains name="DBXSybaseASAReadOnlyMetaData" /> 
+  <contains name="DBXOracleReadOnlyMetaData" /> 
+  <contains name="DBXMySqlReadOnlyMetaData" /> 
+  <contains name="DBXMsSqlReadOnlyMetaData" /> 
+  <contains name="DBXDb2ReadOnlyMetaData" /> 
+  <contains name="DBXInterbaseReadOnlyMetaData" /> 
+  <contains name="DBXInformixReadOnlyMetaData" /> 
+  <contains name="DBXDynalink" /> 
+  <contains name="DBXClient" /> 
+  <contains name="DBXJSonStreamWriter" /> 
+  <contains name="DBXDataStoreReadOnlyMetaData" /> 
+  <contains name="DBXPool" /> 
+  <contains name="DBXTrace" /> 
+  <contains name="DBXCommon" /> 
+  <contains name="ClassRegistry" /> 
+  <contains name="DBTables" /> 
+  <contains name="InvokeRegistry" /> 
+  <contains name="OPToSOAPDomConv" /> 
+  <contains name="OPToSOAPDomCustom" /> 
+  <contains name="TypeTrans" /> 
+  <contains name="inquire_v1" /> 
+  <contains name="PrivateHeap" /> 
+  <contains name="WSDLIntf" /> 
+  <contains name="HTTPApp" /> 
+  <contains name="XSBuiltIns" /> 
+  <contains name="IntfInfo" /> 
+  <contains name="SOAPConst" /> 
+  <contains name="XMLSchema" /> 
+  <contains name="XMLSchemaTags" /> 
+  <contains name="XMLDoc" /> 
+  <contains name="XMLIntf" /> 
+  <contains name="xmldom" /> 
+  <contains name="msxmldom" /> 
+  <contains name="uTPLb_StreamUtils" /> 
+  <contains name="uTPLb_Random" /> 
+  <contains name="ImageDLLLoader" /> 
+  <contains name="IdGlobal" /> 
+  <contains name="IdStackWindows" /> 
+  <contains name="IdWinSock2" /> 
+  <contains name="FileUtils" /> 
+  <contains name="JvFunctions_max" /> 
+  <contains name="WMFLoader" /> 
+  <contains name="PCXLoader" /> 
+  <contains name="GIFLoader" /> 
+  <contains name="GIFImg" /> 
+  <contains name="BMPLoader" /> 
+  <contains name="DIBTools" /> 
+  <contains name="HIPSLoader" /> 
+  <contains name="PNGLoader" /> 
+  <contains name="JPEGLoader" /> 
+  <contains name="BitmapConversion" /> 
+  <contains name="MemStream" /> 
+  <contains name="ICOLoader" /> 
+  <contains name="LinarBitmap" /> 
+  <contains name="jpeg" /> 
+  <contains name="JclMath_max" /> 
+  <contains name="JclSysInfo" /> 
+  <contains name="JclStrings" /> 
+  <contains name="SynHighlighterJava" /> 
+  <contains name="SynHighlighterXML" /> 
+  <contains name="SynHighlighterSQL" /> 
+  <contains name="SynHighlighterCpp" /> 
+  <contains name="SynHighlighterTeX" /> 
+  <contains name="SynHighlighterHtml" /> 
+  <contains name="DB" /> 
+  <contains name="WideStrings" /> 
+  <contains name="FMTBcd" /> 
+  <contains name="SqlTimSt" /> 
+  <contains name="ComObj" /> 
+  <contains name="ComCtrls" /> 
+  <contains name="ExtActns" /> 
+  <contains name="Mapi" /> 
+  <contains name="ExtDlgs" /> 
+  <contains name="Buttons" /> 
+  <contains name="SynEdit" /> 
+  <contains name="SynEditKeyCmds" /> 
+  <contains name="SynTextDrawer" /> 
+  <contains name="SynHighlighterPas" /> 
+  <contains name="SynEditHighlighter" /> 
+  <contains name="SynEditMiscClasses" /> 
+  <contains name="SynRegExpr" /> 
+  <contains name="uPSC_dll" /> 
+  <contains name="uPSUtils" /> 
+  <contains name="Clipbrd" /> 
+  <contains name="Dialogs" /> 
+  <contains name="ExtCtrls" /> 
+  <contains name="GraphUtil" /> 
+  <contains name="FlatSB" /> 
+  <contains name="Printers" /> 
+  <contains name="HelpIntfs" /> 
+  <contains name="Menus" /> 
+  <contains name="Themes" /> 
+  <contains name="Controls" /> 
+  <contains name="DwmApi" /> 
+  <contains name="ActnList" /> 
+  <contains name="MultiMon" /> 
+  <contains name="UxTheme" /> 
+  <contains name="Graphics" /> 
+  <contains name="Registry" /> 
+  <contains name="IniFiles" /> 
+  <contains name="Classes" /> 
+  <contains name="TypInfo" /> 
+  <contains name="VarUtils" /> 
+  <contains name="SysUtils" /> 
+  <contains name="Windows" /> 
+  <contains name="Variants" /> 
+  <contains name="memorymax3" /> 
+  <contains name="uPSR_DB" /> 
+  <contains name="uPSR_forms" /> 
+  <contains name="uPSC_forms" /> 
+  <contains name="IFSI_SysUtils_max" /> 
+  <contains name="uPSI_IniFiles" /> 
+  <contains name="uPSC_DB" /> 
+  <contains name="uPSR_graphics" /> 
+  <contains name="uPSC_graphics" /> 
+  <contains name="uPSI_LinarBitmap" /> 
+  <contains name="uPSI_PNGLoader" /> 
+  <contains name="uPSI_IdMessage" /> 
+  <contains name="uPSI_IdSMTP" /> 
+  <contains name="uPSI_IdGlobal" /> 
+  <contains name="uPSI_IdHTTPHeaderInfo" /> 
+  <contains name="IFSI_IdHTTP" /> 
+  <contains name="uPSI_IdHashCRC" /> 
+  <contains name="IdHashCRC" /> 
+  <contains name="uPSI_StrUtils" /> 
+  <contains name="IFSI_IdTCPClient" /> 
+  <contains name="CaptionEditForm" /> 
+  <contains name="JimShape" /> 
+  <contains name="UCMainForm" /> 
+  <contains name="IFSI_WinForm1puzzle" /> 
+  <contains name="WinForm1" /> 
+  <contains name="uPSC_dateutils" /> 
+  <contains name="uPSR_dateutils" /> 
+  <contains name="ide_debugoutput" /> 
+  <contains name="uPSI_MathMax" /> 
+  <contains name="FindReplDlg" /> 
+  <contains name="ConfirmReplDlg" /> 
+  <contains name="infobox1" /> 
+  <contains name="uPSCompiler" /> 
+  <contains name="uPSRuntime" /> 
+  <contains name="fMain" /> 
+  <contains name="Forms" /> 
+  <contains name="SysInit" /> 
+  <contains name="System" /> 
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+  </namespace>
+</namespace _maxspace>
+</namespace>
+
+
+
+procedure TMaxForm1.IFPS3ClassesPlugin1CompImport(Sender: TObject;
+  x: TIFPSPascalcompiler);
+begin
+uses
+uses
+  uPSR_std,
+  uPSC_std,
+  uPSR_stdctrls,
+  uPSC_stdctrls,
+  uPSC_classes,
+  uPSR_classes,
+  uPSR_forms,
+  uPSC_forms,
+  uPSC_graphics,
+  uPSC_controls,
+  //uPSC_classes,
+  //uPSR_classes,
+  uPSR_graphics,
+  uPSR_controls,
+  uPSR_extctrls,
+  uPSC_extctrls,
+  uPSC_dateutils,
+  uPSR_dateutils,
+  uPSC_menus,
+  uPSR_menus,
+  uPSC_buttons,
+  uPSR_buttons,
+  uPSI_mathmax,
+   infobox1,
+  uPSI_WideStrings, //3.2
+  uPSI_DateUtils,  //3.2
+  uPSR_Grids,
+  uPSC_Grids,
+  uPSR_comobj,
+  uPSC_comobj,
+  //IFSI_Tetris1,
+  IFSI_WinForm1puzzle, Windows,
+  //dlgSearchText,
+  SynEditTypes, ConfirmReplDlg, FindReplDlg, ShellAPI,
+  SynEditKeyCmds,
+  //ide_debugoutput,
+  //ToolWin; Types, Grids
+  UCMainForm, JimShape,
+  uPSI_FMTBcd,
+  uPSI_DBCommonTypes,
+  uPSI_DBCommon,  //3.1
+  uPSI_DBPlatform, //3.6
+  uPSC_DB, uPSR_DB,
+  uPSI_DBTables,
+  uPSI_Types, //3.5
+  uPSI_Printers, //3.1
+  uPSI_SqlExpr, //3.2
+  uPSI_ADODB,
+  uPSI_DBGrids,  //3.5.1
+  uPSI_DBCtrls,
+  uPSI_DBCGrids,
+  uPSI_Provider,
+  uPSI_ImgList,
+  uPSI_Clipbrd,
+  uPSI_MPlayer,
+  uPSI_StrUtils,
+  uPSI_StrHlpr, //3.2
+  uPSI_FileUtils, //3.2
+  IFSI_gsUtils, //3.2
+  uPSI_JvFunctions,
+  JvFunctions_max, //screenshot
+  memorymax3,
+  uPSI_FileCtrl,    //3.5.1
+  uPSI_Outline,
+  uPSI_ScktComp,
+  uPSI_Calendar,
+  uPSI_ComCtrls, //3.6
+  uPSI_VarHlpr,
+  uPSI_Dialogs,
+  uPSI_ExtDlgs,
+  VListView,
+  uPSI_VListView,
+  uPSI_IdGlobal,
+  uPSI_IdTCPConnection, //3.1
+  IFSI_IdTCPClient,
+  uPSI_IdHTTPHeaderInfo,
+  IFSI_IdHTTP,
+  uPSI_HTTPParse, //3.2
+  uPSI_HTTPUtil, //3.2
+  IFSI_IdURI,
+  IFSI_IdFTP,
+  uPSI_xmlutil, //3.2  XML
+  uPSI_MaskUtils, //3.5
+  uPSI_Masks,
+  uPSI_Contnrs,
+  uPSI_MyBigInt,
+  uPSI_SOAPHTTPClient,
+  uPSI_VCLScannerIntf,
+  uPSI_VCLScannerImpl,
+  uPSI_StdConvs,
+  uPSI_ConvUtils,
+  uPSI_DBClient,
+  uPSI_CDSUtil,
+  uPSI_SynMemo,
+  uPSI_IdASN1Util,
+  uPSI_IdHashCRC, uPSI_IdHash,
+  uPSI_IdHashMessageDigest, //3.5
+  uPSI_IdHashSHA1,
+  uPSI_IdLogFile,
+  uPSI_IdTime,
+  uPSI_IdDayTime,
+  uPSI_IdEMailAddress,
+  uPSI_IdMessage,
+  uPSI_IdMessageClient,
+  uPSI_IdSMTP,
+  uPSI_IdPOP3,
+  uPSI_IdMailBox,
+  uPSI_IdQotd,
+  uPSI_IdTelnet,
+  uPSI_IdNetworkCalculator,
+  uPSI_IdFinger,
+  uPSI_IdIcmpClient,
+  uPSI_LinarBitmap,
+  uPSI_PNGLoader,
+  WinForm1, CRC32,   //3.5
+  VCLScannerIntf, SOAPHTTPClient, //Test for WS
+  uPSI_interface2_so,
+  uPSI_IniFiles,
+  uPSI_IdThread,
+  uPSI_fMain,   //Register Methods to Open Tools API
+  uPSI_niSTRING,
+  uPSI_niRegularExpression,
+  uPSI_niExtendedRegularExpression, //3.1
+  uPSI_IdSNTP,
+  IFSI_SysUtils_max;
+  IFSI_SysUtils_max;
+
+---------------------------------------------------------------------------------
+
+procedure TMaxForm1.IFPS3ClassesPlugin1CompImport(Sender: TObject;
+  x: TIFPSPascalcompiler);
+begin
+  SIRegister_Std(x);
+  SIRegister_Classes(x, true);
+  SIRegister_Graphics(x, true);
+  SIRegister_Controls(x);
+  SIRegister_stdctrls(x);
+  SIRegister_extctrls(x);
+  SIRegister_Forms(x);
+  SIRegister_TwinFormp(x);
+  SIRegister_TMyLabel(x);
+  SIRegister_WinForm1(x);
+  RegisterDateTimeLibrary_C(x);
+  SIRegister_Types(X);       //3.5
+  //SIRegister_Graphics(x, true);
+  SIRegister_StrUtils(X);
+  SIRegister_SysUtils(X);   //3.2
+  SIRegister_EInvalidArgument(x);
+  SIRegister_MathMax(x);
+  SIRegister_WideStrings(X);
+  SIRegister_StrHlpr(X);
+  SIRegister_DB(x);
+  SIRegister_DBCommonTypes(X);
+  SIRegister_DBCommon(X);
+  SIRegister_DBTables(X);
+  SIRegister_DBPlatform(X);
+  SIRegister_DateUtils(X); //3.2
+  SIRegister_FileUtils(X);
+  SIRegister_gsUtils(X);
+  SIRegister_JvFunctions(X);
+  SIRegister_Grids(X);
+  SIRegister_Menus(X); //3.1
+  SIRegister_ComObj(X);
+  SIRegister_Printers(X);
+  SIRegister_MPlayer(X);
+  SIRegister_ImgList(X);
+  SIRegister_Buttons(X);
+  SIRegister_Clipbrd(X);
+  SIRegister_SqlExpr(X);
+  SIRegister_ADODB(X);
+  SIRegister_DBGrids(X);
+  SIRegister_DBCtrls(X);
+  SIRegister_DBCGrids(X); //3.6
+  SIRegister_HTTPParse(X);
+  SIRegister_HTTPUtil(X);
+  //SIRegister_EIdHTTPProtocolException(x);
+  {SIRegister_TIdHTTP(x);
+  SIRegister_TIdCustomHTTP(x);
+  SIRegister_TIdHTTPProtocol(x);
+  SIRegister_TIdHTTPRequest(x);
+  SIRegister_TIdHTTPResponse(x);}
+  SIRegister_IdTCPConnection(X);  //3.1
+  SIRegister_IdTCPClient(X);
+  SIRegister_IdHTTPHeaderInfo(X);
+  SIRegister_IdHTTP(x);
+  //SIRegister_TIdURI(x);
+  SIRegister_IdURI(x);
+  SIRegister_IdFTP(X);
+  SIRegister_xmlutil(X);    //3.2 XML
+  SIRegister_MaskUtils(X); //3.5
+  SIRegister_Masks(X);
+  SIRegister_FileCtrl(X);
+  SIRegister_Outline(X);
+  SIRegister_ScktComp(X);
+  SIRegister_Calendar(X);
+  SIRegister_VListView(X);
+  SIRegister_ide_debugoutput(X);
+  SIRegister_ComCtrls(X); //3.6
+  SIRegister_VarHlpr(X);
+  SIRegister_Dialogs(X);
+  SIRegister_ExtDlgs(X);
+  SIRegister_interface2_so(X);
+  SIRegister_Contnrs(X);
+  SIRegister_MyBigInt(X);
+  SIRegister_StdConvs(X);
+  SIRegister_ConvUtils(X);
+  SIRegister_SOAPHTTPClient(X);
+  SIRegister_VCLScannerIntf(X);
+  SIRegister_VCLScannerImpl(X);
+  SIRegister_FMTBcd(X);
+  SIRegister_Provider(X);
+  SIRegister_DBClient(X);  //3.6
+  SIRegister_CDSUtil(X);
+  SIRegister_SynMemo(X);
+  SIRegister_IdASN1Util(X);
+  SIRegister_IdHash(X);
+  SIRegister_IdHashCRC(X);
+  SIRegister_IdHashMessageDigest(X);  //3.5
+  SIRegister_IdHashSHA1(X);
+  SIRegister_IdLogFile(X);
+  SIRegister_IdTime(X);
+  SIRegister_IdDayTime(X);
+  SIRegister_IdGlobal(X);
+  SIRegister_IdEMailAddress(X);
+  SIRegister_IdMessage(X);
+  SIRegister_IdMessageClient(X);
+  SIRegister_IdSMTP(X);
+  SIRegister_IdPOP3(X);
+  SIRegister_IdMailBox(X);
+  SIRegister_IdQotd(X);
+  SIRegister_IdTelnet(X);
+  SIRegister_IdNetworkCalculator(X);
+  SIRegister_IdFinger(X);
+  SIRegister_IdIcmpClient(X);
+  SIRegister_LinarBitmap(X);
+  SIRegister_PNGLoader(X);
+  SIRegister_IniFiles(X);
+  SIRegister_IdThread(X);
+  SIRegister_fMain(X);
+  SIRegister_niSTRING(X);
+  SIRegister_niRegularExpression(X);
+  SIRegister_niExtendedRegularExpression(X);
+  SIRegister_IdSNTP(X);
+  //SIRegister_SysUtils(X);
+  //SIRegister_SysUtils(X);
+end;
+
+
+[Application maXbox Components Count]
+[D:\kleiner2005\TestApp\maxbox36beta\maxbox3\maxbox3.exe]
+File Number=2175308209
+TBevel=1
+TButton=21
+TCheckBox=3
+TColorDialog=1
+TComboBox=4
+TCoolBar=2
+TDataSetTableProducer=1
+TDirectoryListBox=1
+TDoubleBufferedPanel=1
+TDriveComboBox=1
+TEdit=3
+TFontDialog=2
+TGroupBox=2
+THTTPSoapDispatcher=1
+THTTPSoapPascalInvoker=1
+TImage=4
+TImageList=5
+TLabel=12
+TListView=1
+TMainMenu=1
+TMemo=3
+TMenuItem=104
+TOpenDialog=1
+TOpenPictureDialog=1
+TPanel=8
+TPopupMenu=2
+TPrintDialog=1
+TPSDllPlugin=1
+TPSImport_Classes=1
+TPSImport_ComObj=1
+TPSImport_Controls=1
+TPSImport_DateUtils=1
+TPSImport_DB=1
+TPSImport_Forms=1
+TPSImport_StdCtrls=1
+TPSScript=1
+TPSScriptDebugger=1
+TRadioGroup=3
+TSaveDialog=1
+TSavePictureDialog=1
+TScrollBox=1
+TSplitter=1
+TStatusBar=3
+TSynCppSyn=1
+TSynEditPrint=1
+TSynEditSearch=1
+TSynHTMLSyn=1
+TSynJavaSyn=1
+TSynMemo=1
+TSynPasSyn=1
+TSynSQLSyn=1
+TSynTeXSyn=1
+TSynXMLSyn=1
+TToolBar=3
+TToolButton=38
+TWSDLHTMLPublish=1
+TXPManifest=1
+TXPManifest=1
+
+
+
+http://sourceforge.net/projects/maxbox
+http://sourceforge.net/apps/mediawiki/maxbox
+----code_cleared_checked----
+
+

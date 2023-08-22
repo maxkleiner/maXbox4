@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2010.07.23 22:39:59.718.dproj,D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\maxbox2.dproj=D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\maxbox2_9.dproj</Transaction>
+    <Transaction>2010.07.27 19:57:38.906.dproj,D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\maxbox2_9.dproj=D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\maxbox3_0.dproj</Transaction>
+    <Transaction>2010.08.03 22:41:33.796.pas,D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_IdHashCRC.pas=</Transaction>
+    <Transaction>2010.08.28 22:02:46.375.pas,D:\kleiner2005\TestApp\remSource2009\uPSC_DB.pas=</Transaction>
+    <Transaction>2010.09.05 21:42:09.453.pas,D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\uPSI_IniFiles.pas=</Transaction>
+    <Transaction>2011.07.16 00:18:31.875.pas,D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\Unit1.pas=D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\memorymax3.pas</Transaction>
+    <Transaction>2011.07.16 00:18:31.875.dfm,D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\Unit1.dfm=D:\kleiner2005\TestApp\maxbox2\maxbox2\source_2007\maxbox29\memorymax3.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

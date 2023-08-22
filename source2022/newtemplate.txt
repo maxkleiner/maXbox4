@@ -1,0 +1,23 @@
+PROGRAM Demo_App_38_tester;
+CONST 
+//<Constant declarations> 
+  TEXTOUT = 'hi world of code';
+
+{TYPE 
+<Type declarations>} 
+
+VAR 
+//<Variable declarations>
+  i: integer;
+
+//<FUNCTION>
+//<PROCEDURE> 
+
+BEGIN  //Main
+//<Executable statements>
+  for i:= 1 to 3 do 
+    Writeln(TEXTOUT);
+//<Definitions>  
+END. 
+
+----app_template_loaded----
