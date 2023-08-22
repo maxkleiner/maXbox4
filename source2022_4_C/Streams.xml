@@ -1,0 +1,725 @@
+ï»¿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="Streams">
+  <devnotes>
+    /////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <const name="rs_UnspecifiedError" type="string" resourcestring="true">
+    <value>
+      Error occured. Error description not available!
+    </value>
+  </const>
+  <const name="rs_ReadError" type="string" resourcestring="true">
+    <value>
+      Error reading from stream - %%s
+    </value>
+  </const>
+  <const name="rs_WriteError" type="string" resourcestring="true">
+    <value>
+      Error writing to stream - %%s
+    </value>
+  </const>
+  <const name="rs_ReadLessError" type="string" resourcestring="true">
+    <value>
+      Read less than expected
+    </value>
+  </const>
+  <const name="rs_IOError" type="string" resourcestring="true">
+    <value>
+      IO-error: %%s
+    </value>
+  </const>
+  <const name="rs_ReadDenied" type="string" resourcestring="true">
+    <value>
+      Cannot read from stream
+    </value>
+  </const>
+  <const name="rs_WriteDenied" type="string" resourcestring="true">
+    <value>
+      Cannot write to stream
+    </value>
+  </const>
+  <const name="rs_CreateFileError" type="string" resourcestring="true">
+    <value>
+      Error opening &quot;%%s&quot; - %%s
+    </value>
+  </const>
+  <const name="rs_CloseFileError" type="string" resourcestring="true">
+    <value>
+      Error closing &quot;%%s&quot; - %%s
+    </value>
+  </const>
+  <const name="rs_DeleteFileError" type="string" resourcestring="true">
+    <value>
+      Error deleting &quot;%%s&quot; - %%s
+    </value>
+  </const>
+  <const name="rs_TruncateFileError" type="string" resourcestring="true">
+    <value>
+      Error truncating file &quot;%%s&quot; - %%s
+    </value>
+  </const>
+  <const name="rs_SeekFileError" type="string" resourcestring="true">
+    <value>
+      Error moving file pointer - %%s
+    </value>
+  </const>
+  <const name="rs_GetFileAttrError" type="string" resourcestring="true">
+    <value>
+      Could not read attríbutes - %%s
+    </value>
+  </const>
+  <const name="rs_SetFileAttrError" type="string" resourcestring="true">
+    <value>
+      Could not change attributes - %%s
+    </value>
+  </const>
+  <const name="rs_NoFileAccessSpec" type="string" resourcestring="true">
+    <value>
+      Either read, write or full access must be specified in call to CreateFile
+    </value>
+  </const>
+  <class name="TBaseStream">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="fCanWrite" type="Boolean" visibility="protected" />
+      <field name="fCanRead" type="Boolean" visibility="protected" />
+      <field name="fNoDataExcept" type="Boolean" visibility="protected" />
+      <procedure name="SetNoDataExcept" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Status" type="Boolean" />
+        </parameters>
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <function name="Write" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Buf" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Read" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="Buf" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="EOS" visibility="public" procflags="virtual">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="Available" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="Flush" visibility="public" procflags="virtual">
+      </procedure>
+      <procedure name="CopyFrom" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Source" type="TBaseStream" />
+        </parameters>
+      </procedure>
+      <property name="CanRead" visibility="public" read="fCanRead" type="Boolean" />
+      <property name="CanWrite" visibility="public" read="fCanWrite" type="Boolean" />
+      <property name="NoDataExcept" visibility="public" read="fNoDataExcept" write="SetNoDataExcept" type="Boolean" />
+    </members>
+  </class>
+  <class name="TFilterStream">
+    <ancestor name="TBaseStream" namespace="Streams">
+      <methodref name="SetNoDataExcept" visibility="public" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Write" visibility="public" />
+      <methodref name="Read" visibility="public" />
+      <methodref name="EOS" visibility="public" />
+      <methodref name="Available" visibility="public" />
+      <methodref name="Flush" visibility="public" />
+      <methodref name="CopyFrom" visibility="public" />
+      <propertyref name="CanRead" visibility="public" />
+      <propertyref name="CanWrite" visibility="public" />
+      <propertyref name="NoDataExcept" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="Next" type="TBaseStream" visibility="protected" />
+      <procedure name="SetNoDataExcept" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Status" type="Boolean" />
+        </parameters>
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="InOutStream" type="TBaseStream" />
+        </parameters>
+      </constructor>
+      <function name="Write" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Buf" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Read" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Buf" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Available" visibility="public" procflags="override">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="FreeAll" visibility="public">
+      </procedure>
+    </members>
+  </class>
+  <class name="TSeekableStream">
+    <ancestor name="TBaseStream" namespace="Streams">
+      <methodref name="SetNoDataExcept" visibility="public" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Write" visibility="public" />
+      <methodref name="Read" visibility="public" />
+      <methodref name="EOS" visibility="public" />
+      <methodref name="Available" visibility="public" />
+      <methodref name="Flush" visibility="public" />
+      <methodref name="CopyFrom" visibility="public" />
+      <propertyref name="CanRead" visibility="public" />
+      <propertyref name="CanWrite" visibility="public" />
+      <propertyref name="NoDataExcept" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="GetPos" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetSize" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="Seek" visibility="public" procflags="abstract virtual">
+        <parameters>
+          <parameter name="loc" type="Integer" />
+        </parameters>
+      </procedure>
+      <property name="Position" visibility="public" read="GetPos" write="Seek" type="Integer" />
+      <property name="Size" visibility="public" read="GetSize" type="Integer" />
+      <procedure name="Truncate" visibility="public" procflags="abstract virtual">
+      </procedure>
+    </members>
+  </class>
+  <const name="sfaArchive">
+    <value>
+      sfaArchive
+    </value>
+  </const>
+  <const name="sfaHidden">
+    <value>
+      sfaHidden
+    </value>
+  </const>
+  <const name="sfaSystem">
+    <value>
+      sfaSystem
+    </value>
+  </const>
+  <const name="sfaReadOnly">
+    <value>
+      sfaReadOnly
+    </value>
+  </const>
+  <const name="sfaTemporary">
+    <value>
+      sfaTemporary
+    </value>
+  </const>
+  <const name="sfaCompressed">
+    <value>
+      sfaCompressed
+    </value>
+  </const>
+  <const name="sfaDirectory">
+    <value>
+      sfaDirectory
+    </value>
+  </const>
+  <set name="TFileAttributes">
+    <element name="sfaArchive" />
+    <element name="sfaHidden" />
+    <element name="sfaSystem" />
+    <element name="sfaReadOnly" />
+    <element name="sfaTemporary" />
+    <element name="sfaCompressed" />
+    <element name="sfaDirectory" />
+  </set>
+  <const name="fsRead">
+    <value>
+      fsRead
+    </value>
+  </const>
+  <const name="fsWrite">
+    <value>
+      fsWrite
+    </value>
+  </const>
+  <const name="fsCreate">
+    <value>
+      fsCreate
+    </value>
+  </const>
+  <const name="fsShareRead">
+    <value>
+      fsShareRead
+    </value>
+  </const>
+  <const name="fsShareWrite">
+    <value>
+      fsShareWrite
+    </value>
+  </const>
+  <set name="TfsModes">
+    <element name="fsRead" />
+    <element name="fsWrite" />
+    <element name="fsCreate" />
+    <element name="fsShareRead" />
+    <element name="fsShareWrite" />
+  </set>
+  <const name="fsReset" type="Set">
+    <value>
+      [fsRead..fsWrite]
+    </value>
+  </const>
+  <const name="fsRewrite" type="Set">
+    <value>
+      [fsRead..fsCreate]
+    </value>
+  </const>
+  <const name="fsShared" type="Set">
+    <value>
+      [fsShareRead..fsShareWrite]
+    </value>
+  </const>
+  <class name="TFileStream">
+    <ancestor name="TSeekableStream" namespace="Streams">
+      <methodref name="GetPos" visibility="public" />
+      <methodref name="GetSize" visibility="public" />
+      <methodref name="Seek" visibility="public" />
+      <propertyref name="Position" visibility="public" />
+      <propertyref name="Size" visibility="public" />
+      <methodref name="Truncate" visibility="public" />
+      <ancestor name="TBaseStream" namespace="Streams">
+        <methodref name="SetNoDataExcept" visibility="public" />
+        <methodref name="Create" visibility="public" />
+        <methodref name="Write" visibility="public" />
+        <methodref name="Read" visibility="public" />
+        <methodref name="EOS" visibility="public" />
+        <methodref name="Available" visibility="public" />
+        <methodref name="Flush" visibility="public" />
+        <methodref name="CopyFrom" visibility="public" />
+        <propertyref name="CanRead" visibility="public" />
+        <propertyref name="CanWrite" visibility="public" />
+        <propertyref name="NoDataExcept" visibility="public" />
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="Handle" type="Cardinal" visibility="protected" />
+      <field name="name" type="string" visibility="protected" />
+      <function name="GetPos" visibility="public" procflags="override">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetSize" visibility="public" procflags="override">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetFileAttr" visibility="protected">
+        <parameters>
+          <retval type="TFileAttributes" />
+        </parameters>
+      </function>
+      <procedure name="SetFileAttr" visibility="protected">
+        <parameters>
+          <parameter name="fa" type="TFileAttributes" />
+        </parameters>
+      </procedure>
+      <function name="GetLastWriteTime" visibility="protected">
+        <parameters>
+          <retval type="_FILETIME" />
+        </parameters>
+      </function>
+      <procedure name="SetLastWriteTime" visibility="protected">
+        <parameters>
+          <parameter name="Time" type="_FILETIME" paramflags="const" />
+        </parameters>
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="filename" type="string" />
+          <parameter name="mode" type="TfsModes" />
+        </parameters>
+      </constructor>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="FileHandle" type="Cardinal" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="Delete" visibility="public" procflags="virtual">
+      </procedure>
+      <function name="Write" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Buf" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Read" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Buf" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Available" visibility="public" procflags="override">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="Flush" visibility="public" procflags="override">
+      </procedure>
+      <procedure name="Seek" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="loc" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Truncate" visibility="public" procflags="override">
+      </procedure>
+      <property name="Attributes" visibility="public" read="GetFileAttr" write="SetFileAttr" type="TFileAttributes" />
+      <property name="LastWriteTime" visibility="public" read="GetLastWriteTime" write="SetLastWriteTime" type="_FILETIME" />
+      <property name="FileName" visibility="public" read="name" type="string" />
+      <property name="FileHandle" visibility="public" read="Handle" type="Cardinal" />
+    </members>
+  </class>
+  <class name="TDummyStream">
+    <ancestor name="TBaseStream" namespace="Streams">
+      <methodref name="SetNoDataExcept" visibility="public" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Write" visibility="public" />
+      <methodref name="Read" visibility="public" />
+      <methodref name="EOS" visibility="public" />
+      <methodref name="Available" visibility="public" />
+      <methodref name="Flush" visibility="public" />
+      <methodref name="CopyFrom" visibility="public" />
+      <propertyref name="CanRead" visibility="public" />
+      <propertyref name="CanWrite" visibility="public" />
+      <propertyref name="NoDataExcept" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <function name="Write" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Buf" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Read" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Buf" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Available" visibility="public" procflags="override">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <procedure name="CopyStream" visibility="public">
+    <parameters>
+      <parameter name="Source" type="TBaseStream" />
+      <parameter name="Dest" type="TBaseStream" />
+      <parameter name="Size" type="Integer" paramflags="const" />
+    </parameters>
+  </procedure>
+  <function name="GetLastErrorText" visibility="public">
+    <parameters>
+      <retval type="string" />
+    </parameters>
+  </function>
+</namespace>

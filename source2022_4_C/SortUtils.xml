@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="SortUtils">
+  <devnotes>
+    /////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <type name="SortType2" type="Double" />
+  <array name="DWordArray" low="0" high="0">
+    <element type="Cardinal" />
+  </array>
+  <pointer name="PDWordArray" type="DWordArray" indircnt="1" />
+  <struct name="TDataRecord4">
+    <field name="Value" type="Integer" visibility="public" />
+    <field name="Data" type="Integer" visibility="public" />
+  </struct>
+  <procedure name="QuickSort" visibility="public">
+    <parameters>
+      <parameter name="List" paramflags="var">
+        <array name="List">
+          <element type="Byte" />
+        </array>
+      </parameter>
+      <parameter name="Min" type="Integer" />
+      <parameter name="Max" type="Integer" />
+    </parameters>
+  </procedure>
+  <procedure name="QuickSortDWord" visibility="public">
+    <parameters>
+      <parameter name="List" paramflags="var">
+        <array name="List">
+          <element type="Cardinal" />
+        </array>
+      </parameter>
+      <parameter name="Min" type="Integer" />
+      <parameter name="Max" type="Integer" />
+    </parameters>
+  </procedure>
+  <procedure name="QuickSortDataRecord4" visibility="public">
+    <parameters>
+      <parameter name="List" paramflags="var">
+        <array name="List">
+          <element type="TDataRecord4" />
+        </array>
+      </parameter>
+      <parameter name="Count" type="Integer" />
+    </parameters>
+  </procedure>
+  <procedure name="HeapSort" visibility="public">
+    <parameters>
+      <parameter name="List" paramflags="var">
+        <array name="List">
+          <element type="Byte" />
+        </array>
+      </parameter>
+      <parameter name="Count" type="Cardinal" />
+      <parameter name="FirstNeeded" type="Cardinal">
+        <value>
+          $0
+        </value>
+      </parameter>
+    </parameters>
+  </procedure>
+  <function name="QuickSelect" visibility="public">
+    <parameters>
+      <parameter name="List" paramflags="var">
+        <array name="List">
+          <element type="Byte" />
+        </array>
+      </parameter>
+      <parameter name="Min" type="Integer" />
+      <parameter name="Max" type="Integer" />
+      <parameter name="Wanted" type="Integer" />
+      <retval type="Byte" />
+    </parameters>
+  </function>
+  <function name="QuickSelectDWord" visibility="public">
+    <parameters>
+      <parameter name="List" paramflags="var">
+        <array name="List">
+          <element type="Cardinal" />
+        </array>
+      </parameter>
+      <parameter name="Min" type="Integer" />
+      <parameter name="Max" type="Integer" />
+      <parameter name="Wanted" type="Integer" />
+      <retval type="Cardinal" />
+    </parameters>
+  </function>
+  <function name="QuickSelectDouble" visibility="public">
+    <parameters>
+      <parameter name="List" paramflags="var">
+        <array name="List">
+          <element type="Double" />
+        </array>
+      </parameter>
+      <parameter name="Min" type="Integer" />
+      <parameter name="Max" type="Integer" />
+      <parameter name="Wanted" type="Integer" />
+      <retval type="Double" />
+    </parameters>
+  </function>
+</namespace>

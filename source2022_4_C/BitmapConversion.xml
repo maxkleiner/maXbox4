@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="BitmapConversion">
+  <devnotes>
+    /////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <array name="TMatrix3x3" low="1" high="3">
+    <array name="TMatrix3x3" low="1" high="3">
+      <element type="Double" />
+    </array>
+  </array>
+  <array name="TMatrix4x4" low="1" high="4">
+    <array name="TMatrix4x4" low="1" high="4">
+      <element type="Double" />
+    </array>
+  </array>
+  <const name="RGBTransform" type="TMatrix4x4" visibility="public" />
+  <const name="CMYTransform" type="TMatrix4x4" visibility="public" />
+  <const name="YCbCrTransform601" type="TMatrix4x4" visibility="public" />
+  <const name="YCbCrTransform" type="TMatrix4x4" visibility="public" />
+  <const name="YCbCrTransformCompressed" type="TMatrix4x4" visibility="public" />
+  <const name="YIQTransform" type="TMatrix4x4" visibility="public" />
+  <variable name="InvYCbCrTransform" type="TMatrix4x4" />
+  <variable name="InvYIQTransform" type="TMatrix4x4" />
+  <procedure name="ConvertToGrayscale" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Image" type="TLinearBitmap" paramflags="const" />
+      <parameter name="GrayImage" type="TLinearBitmap" paramflags="const" />
+    </parameters>
+  </procedure>
+  <procedure name="ConvertToGrayscale" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Image" type="TLinearBitmap" paramflags="const" />
+    </parameters>
+  </procedure>
+  <procedure name="ColorTransform" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="A" type="Byte" />
+      <parameter name="B" type="Byte" />
+      <parameter name="C" type="Byte" />
+      <parameter name="X" type="Double" paramflags="out" />
+      <parameter name="Y" type="Double" paramflags="out" />
+      <parameter name="Z" type="Double" paramflags="out" />
+      <parameter name="T" type="TMatrix4x4" paramflags="const" />
+    </parameters>
+  </procedure>
+  <procedure name="ColorTransform" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="A" type="Byte" />
+      <parameter name="B" type="Byte" />
+      <parameter name="C" type="Byte" />
+      <parameter name="X" type="Byte" paramflags="out" />
+      <parameter name="Y" type="Byte" paramflags="out" />
+      <parameter name="Z" type="Byte" paramflags="out" />
+      <parameter name="T" type="TMatrix4x4" paramflags="const" />
+    </parameters>
+  </procedure>
+  <procedure name="ColorTransform" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="A" type="Double" paramflags="const" />
+      <parameter name="B" type="Double" paramflags="const" />
+      <parameter name="C" type="Double" paramflags="const" />
+      <parameter name="X" type="Byte" paramflags="out" />
+      <parameter name="Y" type="Byte" paramflags="out" />
+      <parameter name="Z" type="Byte" paramflags="out" />
+      <parameter name="T" type="TMatrix4x4" paramflags="const" />
+    </parameters>
+  </procedure>
+  <procedure name="ColorTransformRGB2HSI" visibility="public">
+    <parameters>
+      <parameter name="R" type="Byte" />
+      <parameter name="G" type="Byte" />
+      <parameter name="B" type="Byte" />
+      <parameter name="H" type="Byte" paramflags="out" />
+      <parameter name="S" type="Byte" paramflags="out" />
+      <parameter name="I" type="Byte" paramflags="out" />
+    </parameters>
+  </procedure>
+  <procedure name="ColorTransformHSI2RGB" visibility="public">
+    <parameters>
+      <parameter name="H" type="Byte" />
+      <parameter name="S" type="Byte" />
+      <parameter name="I" type="Byte" />
+      <parameter name="R" type="Byte" paramflags="out" />
+      <parameter name="G" type="Byte" paramflags="out" />
+      <parameter name="B" type="Byte" paramflags="out" />
+    </parameters>
+  </procedure>
+  <procedure name="ColorTransformRGB2Lab" visibility="public">
+    <parameters>
+      <parameter name="R" type="Byte" />
+      <parameter name="G" type="Byte" />
+      <parameter name="B" type="Byte" />
+      <parameter name="L" type="Byte" paramflags="out" />
+      <parameter name="a_" type="Byte" paramflags="out" />
+      <parameter name="b_" type="Byte" paramflags="out" />
+    </parameters>
+  </procedure>
+  <procedure name="ColorTransformLab2RGB" visibility="public">
+    <parameters>
+      <parameter name="L" type="Byte" />
+      <parameter name="a_" type="Byte" />
+      <parameter name="b_" type="Byte" />
+      <parameter name="R" type="Byte" paramflags="out" />
+      <parameter name="G" type="Byte" paramflags="out" />
+      <parameter name="B" type="Byte" paramflags="out" />
+    </parameters>
+  </procedure>
+  <procedure name="ColorTransformRGB2LOCO" visibility="public">
+    <parameters>
+      <parameter name="R" type="Byte" />
+      <parameter name="G" type="Byte" />
+      <parameter name="B" type="Byte" />
+      <parameter name="S0" type="Byte" paramflags="out" />
+      <parameter name="S1" type="Byte" paramflags="out" />
+      <parameter name="S2" type="Byte" paramflags="out" />
+    </parameters>
+  </procedure>
+  <procedure name="ColorTransformLOCO2RGB" visibility="public">
+    <parameters>
+      <parameter name="S0" type="Byte" />
+      <parameter name="S1" type="Byte" />
+      <parameter name="S2" type="Byte" />
+      <parameter name="R" type="Byte" paramflags="out" />
+      <parameter name="G" type="Byte" paramflags="out" />
+      <parameter name="B" type="Byte" paramflags="out" />
+    </parameters>
+  </procedure>
+  <procedure name="ConvertColorSpace" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Image" type="TLinearBitmap" />
+      <parameter name="T" type="TMatrix4x4" paramflags="const" />
+      <parameter name="NewImage" type="TLinearBitmap">
+        <value>
+          nil
+        </value>
+      </parameter>
+    </parameters>
+  </procedure>
+  <procedure name="ConvertColorSpace" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Image" type="TLinearBitmap" />
+      <parameter name="ColorTransform" type="TColorTransformProc" />
+      <parameter name="NewImage" type="TLinearBitmap">
+        <value>
+          nil
+        </value>
+      </parameter>
+    </parameters>
+  </procedure>
+</namespace>

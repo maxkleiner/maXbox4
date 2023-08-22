@@ -1,0 +1,422 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="UniDIB">
+  <const name="C_MaxAllowedBPP" type="Integer">
+    <value>
+      $6
+    </value>
+  </const>
+  <const name="C_AllowedBPP" type="Array" visibility="public" />
+  <const name="SBU_NONE" type="Integer">
+    <value>
+      $0
+    </value>
+  </const>
+  <const name="SBU_RED" type="Integer">
+    <value>
+      $1
+    </value>
+  </const>
+  <const name="SBU_GREEN" type="Integer">
+    <value>
+      $2
+    </value>
+  </const>
+  <const name="SBU_BLUE" type="Integer">
+    <value>
+      $3
+    </value>
+  </const>
+  <pointer name="PLogPalette256" type="TLogPalette256" indircnt="1" />
+  <struct name="TLogPalette256">
+    <field name="palVersion" type="Word" visibility="public" />
+    <field name="palNumEntries" type="Word" visibility="public" />
+    <field name="palEntry" visibility="public">
+      <array name="palEntry" low="0" high="255">
+        <element type="tagPALETTEENTRY" />
+      </array>
+    </field>
+  </struct>
+  <struct name="TBitmapInfo256">
+    <field name="bmiHeader" type="tagBITMAPINFOHEADER" visibility="public" />
+    <field name="bmiColors" visibility="public">
+      <array name="bmiColors" low="0" high="255">
+        <element type="tagRGBQUAD" />
+      </array>
+    </field>
+  </struct>
+  <class name="TUniDIB">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FBMInfo" type="TBitmapInfo256" visibility="protected" />
+      <field name="FHandle" type="HBITMAP" visibility="protected" />
+      <field name="FDC" type="HDC" visibility="protected" />
+      <field name="FBits" type="Pointer" visibility="protected" />
+      <field name="FPalHandle" type="HPALETTE" visibility="protected" />
+      <field name="FActPointer" type="Pointer" visibility="protected" />
+      <field name="FDWordWidth" type="Cardinal" visibility="protected" />
+      <field name="XActX" type="Integer" visibility="protected" />
+      <field name="XSize" type="Integer" visibility="protected" />
+      <field name="XUsage" type="Cardinal" visibility="protected" />
+      <field name="XClrCount" type="Integer" visibility="protected" />
+      <field name="XSelPalette" type="HPALETTE" visibility="protected" />
+      <procedure name="SetPixel1" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetPixel4" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetPixel8" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetPixel16" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetPixel16R" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetPixel16G" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetPixel16B" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetPixel24" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetPixel32" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <function name="GetPixel1" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetPixel4" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetPixel8" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetPixel16" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetPixel16R" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetPixel16G" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetPixel16B" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetPixel24" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetPixel32" visibility="protected">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="SetSeqPixel1" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetSeqPixel4" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetSeqPixel8" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetSeqPixel16" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetSeqPixel16R" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetSeqPixel16G" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetSeqPixel16B" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetSeqPixel24" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetSeqPixel32" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <function name="GetSeqPixel1" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetSeqPixel4" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetSeqPixel8" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetSeqPixel16" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetSeqPixel16R" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetSeqPixel16G" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetSeqPixel16B" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetSeqPixel24" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetSeqPixel32" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetHeight" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="GetWidth" visibility="protected">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <field name="SetPixel" type="TSetPixelProc" visibility="public" />
+      <field name="GetPixel" type="TGetPixelFunc" visibility="public" />
+      <field name="SetSeqPixel" type="TSetSeqPixelProc" visibility="public" />
+      <field name="GetSeqPixel" type="TGetSeqPixelFunc" visibility="public" />
+      <procedure name="Seek" visibility="public">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+        </parameters>
+      </procedure>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="AWidth" type="Integer" />
+          <parameter name="AHeight" type="Integer" />
+          <parameter name="ABPP" type="Byte" />
+          <parameter name="SByteUse" type="Byte" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="DIBtoScreen" visibility="public">
+        <parameters>
+          <parameter name="DC" type="HDC" />
+        </parameters>
+      </procedure>
+      <procedure name="SetPalette" visibility="public">
+        <parameters>
+          <parameter name="Pal" type="TLogPalette256" />
+        </parameters>
+      </procedure>
+      <procedure name="Clear" visibility="public">
+      </procedure>
+      <procedure name="DrawHorizLine" visibility="public">
+        <devnotes>
+          ! pDWord:=pDWord+ 4 
+        </devnotes>
+        <parameters>
+          <parameter name="X1" type="Integer" />
+          <parameter name="X2" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Col" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="DrawVertLine" visibility="public">
+        <parameters>
+          <parameter name="X" type="Integer" />
+          <parameter name="Y1" type="Integer" />
+          <parameter name="Y2" type="Integer" />
+          <parameter name="Col" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="DrawLine" visibility="public">
+        <parameters>
+          <parameter name="X1" type="Integer" />
+          <parameter name="Y1" type="Integer" />
+          <parameter name="X2" type="Integer" />
+          <parameter name="Y2" type="Integer" />
+          <parameter name="Col" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="FillPolygon" visibility="public">
+        <parameters>
+          <parameter name="Poly">
+            <array name="Poly">
+              <element type="TPoint" />
+            </array>
+          </parameter>
+          <parameter name="FillCol" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="CaptureScreen" visibility="public">
+      </procedure>
+      <property name="ActPointer" visibility="public" read="FActPointer" write="FActPointer" type="Pointer" />
+      <property name="Bits" visibility="public" read="FBits" type="Pointer" />
+      <property name="DC" visibility="public" read="FDC" type="HDC" />
+      <property name="DWordWidth" visibility="public" read="FDWordWidth" type="Cardinal" />
+      <property name="Handle" visibility="public" read="FHandle" type="HBITMAP" />
+      <property name="Height" visibility="public" read="GetHeight" type="Integer" />
+      <property name="Width" visibility="public" read="GetWidth" type="Integer" />
+    </members>
+  </class>
+</namespace>

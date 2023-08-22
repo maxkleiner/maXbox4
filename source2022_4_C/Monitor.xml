@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="Monitor">
+  <devnotes>
+    /////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <class name="TMonitorObject" alias="TObject" namespace="System">
+    <members>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <procedure name="Free" visibility="public">
+      </procedure>
+      <function name="InitInstance" visibility="public" procflags="class">
+        <parameters>
+          <parameter name="Instance" type="Pointer" />
+          <retval type="TObject" />
+        </parameters>
+      </function>
+      <procedure name="CleanupInstance" visibility="public">
+      </procedure>
+      <function name="ClassType" visibility="public">
+        <parameters>
+          <retval type="TClass" />
+        </parameters>
+      </function>
+      <function name="ClassName" visibility="public" procflags="class">
+        <parameters>
+          <retval type="ShortString" />
+        </parameters>
+      </function>
+      <function name="ClassNameIs" visibility="public" procflags="class">
+        <parameters>
+          <parameter name="Name" type="string" paramflags="const" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="ClassParent" visibility="public" procflags="class">
+        <parameters>
+          <retval type="TClass" />
+        </parameters>
+      </function>
+      <function name="ClassInfo" visibility="public" procflags="class">
+        <parameters>
+          <retval type="Pointer" />
+        </parameters>
+      </function>
+      <function name="InstanceSize" visibility="public" procflags="class">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="InheritsFrom" visibility="public" procflags="class">
+        <parameters>
+          <parameter name="AClass" type="TClass" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="MethodAddress" visibility="public" procflags="class">
+        <parameters>
+          <parameter name="Name" type="ShortString" paramflags="const" />
+          <retval type="Pointer" />
+        </parameters>
+      </function>
+      <function name="MethodName" visibility="public" procflags="class">
+        <parameters>
+          <parameter name="Address" type="Pointer" />
+          <retval type="ShortString" />
+        </parameters>
+      </function>
+      <function name="FieldAddress" visibility="public">
+        <parameters>
+          <parameter name="Name" type="ShortString" paramflags="const" />
+          <retval type="Pointer" />
+        </parameters>
+      </function>
+      <function name="GetInterface" visibility="public">
+        <parameters>
+          <parameter name="IID" type="TGUID" paramflags="const" />
+          <parameter name="Obj" paramflags="out" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="GetInterfaceEntry" visibility="public" procflags="class">
+        <parameters>
+          <parameter name="IID" type="TGUID" paramflags="const" />
+          <retval type="PInterfaceEntry" />
+        </parameters>
+      </function>
+      <function name="GetInterfaceTable" visibility="public" procflags="class">
+        <parameters>
+          <retval type="PInterfaceTable" />
+        </parameters>
+      </function>
+      <function name="SafeCallException" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="ExceptObject" type="TObject" />
+          <parameter name="ExceptAddr" type="Pointer" />
+          <retval type="HRESULT" />
+        </parameters>
+      </function>
+      <procedure name="AfterConstruction" visibility="public" procflags="virtual">
+      </procedure>
+      <procedure name="BeforeDestruction" visibility="public" procflags="virtual">
+      </procedure>
+      <procedure name="Dispatch" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Message" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="DefaultHandler" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Message" paramflags="var" />
+        </parameters>
+      </procedure>
+      <function name="NewInstance" visibility="public" procflags="class virtual">
+        <parameters>
+          <retval type="TObject" />
+        </parameters>
+      </function>
+      <procedure name="FreeInstance" visibility="public" procflags="virtual">
+      </procedure>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+    </members>
+  </class>
+  <function name="GetMonitorLog" visibility="public">
+    <parameters>
+      <parameter name="FreeObjects" type="Boolean">
+        <value>
+          False
+        </value>
+      </parameter>
+      <retval type="TStrings" />
+    </parameters>
+  </function>
+  <function name="MonitorComponent" visibility="public">
+    <parameters>
+      <parameter name="Component" type="TComponent" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+</namespace>

@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="PCXLoader">
+  <devnotes>
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <const name="rsPCXImageFile" type="string" resourcestring="true">
+    <value>
+      Zsoft Paintbrush
+    </value>
+  </const>
+  <struct name="PCXHeader" packed="true">
+    <field name="Manuf" type="Byte" visibility="public" />
+    <field name="Version" type="Byte" visibility="public" />
+    <field name="Encode" type="Byte" visibility="public" />
+    <field name="BitsPerPixel" type="Byte" visibility="public" />
+    <field name="X1" type="Smallint" visibility="public" />
+    <field name="Y1" type="Smallint" visibility="public" />
+    <field name="X2" type="Smallint" visibility="public" />
+    <field name="Y2" type="Smallint" visibility="public" />
+    <field name="XRes" type="Smallint" visibility="public" />
+    <field name="YRes" type="Smallint" visibility="public" />
+    <field name="Palette" visibility="public">
+      <array name="Palette" low="0" high="47">
+        <element type="Byte" />
+      </array>
+    </field>
+    <field name="VideoMode" type="Byte" visibility="public" />
+    <field name="Planes" type="Byte" visibility="public" />
+    <field name="BytesPerLine" type="Smallint" visibility="public" />
+    <field name="Reserved" visibility="public">
+      <array name="Reserved" low="0" high="59">
+        <element type="Byte" />
+      </array>
+    </field>
+  </struct>
+  <class name="TPCXGraphic">
+    <ancestor name="TLinearGraphic" namespace="LinarBitmap">
+      <methodref name="GetEmpty" visibility="public" />
+      <methodref name="GetHeight" visibility="public" />
+      <methodref name="GetWidth" visibility="public" />
+      <methodref name="SetHeight" visibility="public" />
+      <methodref name="SetWidth" visibility="public" />
+      <methodref name="AssignTo" visibility="public" />
+      <propertyref name="Bitmap" visibility="public" />
+      <methodref name="Draw" visibility="public" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Destroy" visibility="public" />
+      <methodref name="LoadFromStream" visibility="public" />
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="LoadFromFile" visibility="public" />
+      <methodref name="SaveToFile" visibility="public" />
+      <methodref name="LoadFromClipboardFormat" visibility="public" />
+      <methodref name="SaveToClipboardFormat" visibility="public" />
+      <ancestor name="TGraphic" namespace="Graphics">
+        <methodref name="SetModified" visibility="private">
+        </methodref>
+        <methodref name="Changed" visibility="public">
+        </methodref>
+        <methodref name="DefineProperties" visibility="public">
+        </methodref>
+        <methodref name="Draw" visibility="public">
+        </methodref>
+        <methodref name="Equals" visibility="public">
+        </methodref>
+        <methodref name="GetEmpty" visibility="public">
+        </methodref>
+        <methodref name="GetHeight" visibility="public">
+        </methodref>
+        <methodref name="GetPalette" visibility="public">
+        </methodref>
+        <methodref name="GetTransparent" visibility="public">
+        </methodref>
+        <methodref name="GetWidth" visibility="public">
+        </methodref>
+        <methodref name="Progress" visibility="protected">
+        </methodref>
+        <methodref name="ReadData" visibility="public">
+        </methodref>
+        <methodref name="SetHeight" visibility="public">
+        </methodref>
+        <methodref name="SetPalette" visibility="public">
+        </methodref>
+        <methodref name="SetTransparent" visibility="public">
+        </methodref>
+        <methodref name="SetWidth" visibility="public">
+        </methodref>
+        <methodref name="WriteData" visibility="public">
+        </methodref>
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="LoadFromFile" visibility="public">
+        </methodref>
+        <methodref name="SaveToFile" visibility="public">
+        </methodref>
+        <methodref name="LoadFromStream" visibility="public">
+        </methodref>
+        <methodref name="SaveToStream" visibility="public">
+        </methodref>
+        <methodref name="LoadFromClipboardFormat" visibility="public">
+        </methodref>
+        <methodref name="SaveToClipboardFormat" visibility="public">
+        </methodref>
+        <methodref name="SetSize" visibility="public">
+        </methodref>
+        <propertyref name="Empty" visibility="public">
+        </propertyref>
+        <propertyref name="Height" visibility="public">
+        </propertyref>
+        <propertyref name="Modified" visibility="public">
+        </propertyref>
+        <propertyref name="Palette" visibility="public">
+        </propertyref>
+        <propertyref name="PaletteModified" visibility="public">
+        </propertyref>
+        <propertyref name="Transparent" visibility="public">
+        </propertyref>
+        <propertyref name="Width" visibility="public">
+        </propertyref>
+        <eventref name="OnChange" visibility="public">
+        </eventref>
+        <eventref name="OnProgress" visibility="public">
+        </eventref>
+        <ancestor name="TInterfacedPersistent" namespace="Classes">
+          <methodref name="_AddRef" visibility="protected">
+          </methodref>
+          <methodref name="_Release" visibility="protected">
+          </methodref>
+          <methodref name="QueryInterface" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <ancestor name="TPersistent" namespace="Classes">
+            <methodref name="AssignError" visibility="private">
+            </methodref>
+            <methodref name="AssignTo" visibility="public">
+            </methodref>
+            <methodref name="DefineProperties" visibility="public">
+            </methodref>
+            <methodref name="GetOwner" visibility="protected">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+            <methodref name="Assign" visibility="public">
+            </methodref>
+            <methodref name="GetNamePath" visibility="public">
+            </methodref>
+            <ancestor name="TObject" namespace="System">
+              <methodref name="Create" visibility="public">
+              </methodref>
+              <methodref name="Free" visibility="public">
+              </methodref>
+              <methodref name="InitInstance" visibility="public">
+              </methodref>
+              <methodref name="CleanupInstance" visibility="public">
+              </methodref>
+              <methodref name="ClassType" visibility="public">
+              </methodref>
+              <methodref name="ClassName" visibility="public">
+              </methodref>
+              <methodref name="ClassNameIs" visibility="public">
+              </methodref>
+              <methodref name="ClassParent" visibility="public">
+              </methodref>
+              <methodref name="ClassInfo" visibility="public">
+              </methodref>
+              <methodref name="InstanceSize" visibility="public">
+              </methodref>
+              <methodref name="InheritsFrom" visibility="public">
+              </methodref>
+              <methodref name="MethodAddress" visibility="public">
+              </methodref>
+              <methodref name="MethodName" visibility="public">
+              </methodref>
+              <methodref name="FieldAddress" visibility="public">
+              </methodref>
+              <methodref name="GetInterface" visibility="public">
+              </methodref>
+              <methodref name="GetInterfaceEntry" visibility="public">
+              </methodref>
+              <methodref name="GetInterfaceTable" visibility="public">
+              </methodref>
+              <methodref name="SafeCallException" visibility="public">
+              </methodref>
+              <methodref name="AfterConstruction" visibility="public">
+              </methodref>
+              <methodref name="BeforeDestruction" visibility="public">
+              </methodref>
+              <methodref name="Dispatch" visibility="public">
+              </methodref>
+              <methodref name="DefaultHandler" visibility="public">
+              </methodref>
+              <methodref name="NewInstance" visibility="public">
+              </methodref>
+              <methodref name="FreeInstance" visibility="public">
+              </methodref>
+              <methodref name="Destroy" visibility="public">
+              </methodref>
+            </ancestor>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <procedure name="LoadFromStream" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="SaveToStream" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+</namespace>

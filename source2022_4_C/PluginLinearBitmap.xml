@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="PluginLinearBitmap">
+  <class name="TPluginLinearBitmap">
+    <ancestor name="TLinearBitmap" namespace="LinarBitmap">
+      <methodref name="GetScanLine" visibility="protected" />
+      <methodref name="GetPixel" visibility="protected" />
+      <methodref name="GetPixelColor" visibility="protected" />
+      <methodref name="SetPixelColor" visibility="protected" />
+      <methodref name="SetPixelFormat" visibility="protected" />
+      <propertyref name="Width" visibility="public" />
+      <propertyref name="Height" visibility="public" />
+      <propertyref name="BytesPerLine" visibility="public" />
+      <propertyref name="PixelFormat" visibility="public" />
+      <propertyref name="PixelSize" visibility="public" />
+      <propertyref name="ScanLine" visibility="public" />
+      <propertyref name="Pixel" visibility="public" />
+      <propertyref name="PixelColor" visibility="public" />
+      <propertyref name="Size" visibility="public" />
+      <propertyref name="Present" visibility="public" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Destroy" visibility="public" />
+      <methodref name="New" visibility="public" />
+      <methodref name="Dispose" visibility="public" />
+      <methodref name="Clear" visibility="public" />
+      <methodref name="ClearColor" visibility="public" />
+      <methodref name="AssignTo" visibility="public" />
+      <methodref name="Assign" visibility="public" />
+      <methodref name="TakeOver" visibility="public" />
+      <methodref name="OptimizeMem" visibility="public" />
+      <methodref name="CopyToClipboard" visibility="public" />
+      <methodref name="GetFromClipboard" visibility="public" />
+      <methodref name="PasteImage" visibility="public" />
+      <methodref name="LoadFromFile" visibility="public" />
+      <methodref name="SaveToFile" visibility="public" />
+      <methodref name="LoadFromStream" visibility="public" />
+      <methodref name="LoadFromStream" visibility="public" />
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="IsGrayScale" visibility="public" />
+      <methodref name="ResizeCanvas" visibility="public" />
+      <methodref name="GetFromDIB" visibility="public" />
+      <methodref name="GetFromHDIB" visibility="public" />
+      <methodref name="MakeDIB" visibility="public" />
+      <methodref name="PaintToCanvas" visibility="public" />
+      <methodref name="StretchDIBits" visibility="public" />
+      <methodref name="PaintToTBitmap" visibility="public" />
+      <ancestor name="TAssignObject" namespace="MemUtils">
+        <methodref name="Assign" visibility="public" />
+        <methodref name="AssignTo" visibility="public" />
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="OtherPalette" type="Pointer" visibility="private" />
+      <field name="OtherMap" type="Pointer" visibility="private" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="Source" type="TImageContainer" paramflags="const" />
+        </parameters>
+      </constructor>
+      <procedure name="New" visibility="public" procflags="overload">
+        <parameters>
+          <parameter name="Source" type="TImageContainer" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="Dispose" visibility="public" procflags="override">
+      </procedure>
+      <procedure name="ForceLocal" visibility="public">
+      </procedure>
+      <procedure name="OptimizeMem" visibility="public" procflags="override">
+      </procedure>
+    </members>
+  </class>
+  <procedure name="LinearBitmapFromImageContainer" visibility="public">
+    <parameters>
+      <parameter name="Bitmap" type="TLinearBitmap" />
+      <parameter name="Image" type="TImageContainer" paramflags="const" />
+    </parameters>
+  </procedure>
+  <procedure name="LinearBitmapToImageContainer" visibility="public">
+    <parameters>
+      <parameter name="Bitmap" type="TLinearBitmap" />
+      <parameter name="Image" type="TImageContainer" paramflags="out" />
+    </parameters>
+  </procedure>
+</namespace>

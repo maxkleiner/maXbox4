@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="ImageDLLLoader">
+  <devnotes>
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <struct name="TImageDLLInfo">
+    <field name="Handle" type="Cardinal" visibility="public" />
+    <field name="LoadFormats" type="string" visibility="public" />
+    <field name="SaveFormats" type="string" visibility="public" />
+    <field name="LoadImage" type="TLoadImage" visibility="public" />
+    <field name="SaveImage" type="TSaveImage" visibility="public" />
+    <field name="FreeImage" type="TFreeImage" visibility="public" />
+  </struct>
+  <array name="TImageDLLInfoArray" low="0" high="3">
+    <element type="TImageDLLInfo" />
+  </array>
+  <class name="TImageDLLLoader">
+    <ancestor name="TBitmapLoader" namespace="LinarBitmap">
+      <methodref name="CanLoad" visibility="public" />
+      <methodref name="CanSave" visibility="public" />
+      <methodref name="GetLoadFilter" visibility="public" />
+      <methodref name="GetSaveFilter" visibility="public" />
+      <methodref name="LoadFromStream" visibility="public" />
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="LoadFromFile" visibility="public" />
+      <methodref name="SaveToFile" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="Loader" visibility="private">
+        <pointer name="Loader" type="TImageDLLInfoArray" indircnt="1" />
+      </field>
+      <field name="Loaders" type="TDynamicList" visibility="public" />
+      <field name="CompOptions" type="string" visibility="public" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <function name="FindDLLs" visibility="public">
+        <parameters>
+          <parameter name="Path" type="string" />
+          <parameter name="CallBack" type="TLoadPluginCallback">
+            <value>
+              nil
+            </value>
+          </parameter>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="GetLoadFilter" visibility="public" procflags="override">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="GetSaveFilter" visibility="public" procflags="override">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="LoadFromFile" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="FileName" type="string" paramflags="const" />
+          <parameter name="FileType" type="string" paramflags="const" />
+          <parameter name="Bitmap" type="TLinearBitmap" />
+        </parameters>
+      </procedure>
+      <procedure name="SaveToFile" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="FileName" type="string" paramflags="const" />
+          <parameter name="FileType" type="string" paramflags="const" />
+          <parameter name="Bitmap" type="TLinearBitmap" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <variable name="Default" type="TImageDLLLoader" visibility="public" />
+</namespace>

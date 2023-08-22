@@ -1,0 +1,737 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="DynamicLists">
+  <devnotes>
+    /////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <class name="TDynamicList">
+    <ancestor name="TStreamClass" namespace="StreamUtils">
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="LoadFromStream" visibility="public" />
+      <methodref name="SaveToFile" visibility="public" />
+      <methodref name="LoadFromFile" visibility="public" />
+      <ancestor name="TAssignObject" namespace="MemUtils">
+        <methodref name="Assign" visibility="public" />
+        <methodref name="AssignTo" visibility="public" />
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="FMirrorPointer" visibility="private">
+        <pointer name="FMirrorPointer" type="Pointer" indircnt="1" />
+      </field>
+      <field name="FListSize" type="Integer" visibility="private" />
+      <field name="FRecordSize" type="Integer" visibility="private" />
+      <procedure name="SetListSize" visibility="private">
+        <parameters>
+          <parameter name="NewSize" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetCount" visibility="private">
+        <parameters>
+          <parameter name="NewCount" type="Integer" />
+        </parameters>
+      </procedure>
+      <field name="FData" type="PByteArray" visibility="protected" />
+      <field name="FCount" type="Integer" visibility="protected" />
+      <property name="ListSize" visibility="protected" read="FListSize" write="SetListSize" type="Integer" />
+      <field name="GrowBy" type="Integer" visibility="public" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="RecordSize" type="Integer" />
+          <parameter name="MirrorPointer" paramflags="var" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="Assign" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Other" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Append" visibility="public">
+        <parameters>
+          <parameter name="Next" type="TDynamicList" />
+        </parameters>
+      </procedure>
+      <procedure name="Clear" visibility="public" procflags="virtual">
+      </procedure>
+      <function name="Add" visibility="public">
+        <parameters>
+          <parameter name="Item" paramflags="const" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="Move" visibility="public">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+          <parameter name="NewIndex" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Delete" visibility="public">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="FastDelete" visibility="public">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SaveToStream" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TBaseStream" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadFromStream" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Stream" type="TBaseStream" />
+        </parameters>
+      </procedure>
+      <property name="RecordSize" visibility="public" read="FRecordSize" type="Integer" />
+      <property name="Count" visibility="public" read="FCount" write="SetCount" type="Integer" />
+      <procedure name="IncCount" visibility="public">
+      </procedure>
+      <function name="Next" visibility="public">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="Zero" visibility="public">
+      </procedure>
+      <procedure name="Optimize" visibility="public" procflags="virtual">
+      </procedure>
+    </members>
+  </class>
+  <array name="TObjectArray" low="0" high="0">
+    <element type="TObject" />
+  </array>
+  <pointer name="PObjectArray" type="TObjectArray" indircnt="1" />
+  <class name="TDynamicObjectList">
+    <ancestor name="TDynamicList" namespace="DynamicLists">
+      <methodref name="SetListSize" visibility="private" />
+      <methodref name="SetCount" visibility="private" />
+      <propertyref name="ListSize" visibility="protected" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Destroy" visibility="public" />
+      <methodref name="Assign" visibility="public" />
+      <methodref name="Append" visibility="public" />
+      <methodref name="Clear" visibility="public" />
+      <methodref name="Add" visibility="public" />
+      <methodref name="Move" visibility="public" />
+      <methodref name="Delete" visibility="public" />
+      <methodref name="FastDelete" visibility="public" />
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="LoadFromStream" visibility="public" />
+      <propertyref name="RecordSize" visibility="public" />
+      <propertyref name="Count" visibility="public" />
+      <methodref name="IncCount" visibility="public" />
+      <methodref name="Next" visibility="public" />
+      <methodref name="Zero" visibility="public" />
+      <methodref name="Optimize" visibility="public" />
+      <ancestor name="TStreamClass" namespace="StreamUtils">
+        <methodref name="SaveToStream" visibility="public" />
+        <methodref name="LoadFromStream" visibility="public" />
+        <methodref name="SaveToFile" visibility="public" />
+        <methodref name="LoadFromFile" visibility="public" />
+        <ancestor name="TAssignObject" namespace="MemUtils">
+          <methodref name="Assign" visibility="public" />
+          <methodref name="AssignTo" visibility="public" />
+          <ancestor name="TObject" namespace="System">
+            <methodref name="Create" visibility="public">
+            </methodref>
+            <methodref name="Free" visibility="public">
+            </methodref>
+            <methodref name="InitInstance" visibility="public">
+            </methodref>
+            <methodref name="CleanupInstance" visibility="public">
+            </methodref>
+            <methodref name="ClassType" visibility="public">
+            </methodref>
+            <methodref name="ClassName" visibility="public">
+            </methodref>
+            <methodref name="ClassNameIs" visibility="public">
+            </methodref>
+            <methodref name="ClassParent" visibility="public">
+            </methodref>
+            <methodref name="ClassInfo" visibility="public">
+            </methodref>
+            <methodref name="InstanceSize" visibility="public">
+            </methodref>
+            <methodref name="InheritsFrom" visibility="public">
+            </methodref>
+            <methodref name="MethodAddress" visibility="public">
+            </methodref>
+            <methodref name="MethodName" visibility="public">
+            </methodref>
+            <methodref name="FieldAddress" visibility="public">
+            </methodref>
+            <methodref name="GetInterface" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceEntry" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceTable" visibility="public">
+            </methodref>
+            <methodref name="SafeCallException" visibility="public">
+            </methodref>
+            <methodref name="AfterConstruction" visibility="public">
+            </methodref>
+            <methodref name="BeforeDestruction" visibility="public">
+            </methodref>
+            <methodref name="Dispatch" visibility="public">
+            </methodref>
+            <methodref name="DefaultHandler" visibility="public">
+            </methodref>
+            <methodref name="NewInstance" visibility="public">
+            </methodref>
+            <methodref name="FreeInstance" visibility="public">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="OwnsObjects" type="Boolean" visibility="protected" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="MirrorPointer" paramflags="var" />
+        </parameters>
+      </constructor>
+      <procedure name="Clear" visibility="public" procflags="override">
+      </procedure>
+      <function name="Add" visibility="public">
+        <parameters>
+          <parameter name="NewObject" type="TObject" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="AddUnique" visibility="public">
+        <parameters>
+          <parameter name="NewObject" type="TObject" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="Insert" visibility="public">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+          <parameter name="NewObject" type="TObject" />
+        </parameters>
+      </procedure>
+      <function name="IndexOf" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Obj" type="TObject" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="Delete" visibility="public">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Remove" visibility="public">
+        <parameters>
+          <parameter name="Obj" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FastDelete" visibility="public">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="FastRemove" visibility="public">
+        <parameters>
+          <parameter name="Obj" type="TObject" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <class name="TListMember">
+    <ancestor name="TStreamClass" namespace="StreamUtils">
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="LoadFromStream" visibility="public" />
+      <methodref name="SaveToFile" visibility="public" />
+      <methodref name="LoadFromFile" visibility="public" />
+      <ancestor name="TAssignObject" namespace="MemUtils">
+        <methodref name="Assign" visibility="public" />
+        <methodref name="AssignTo" visibility="public" />
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="FOwner" type="TDynamicObjectList" visibility="private" />
+      <procedure name="SetOwner" visibility="private">
+        <parameters>
+          <parameter name="List" type="TDynamicObjectList" />
+        </parameters>
+      </procedure>
+      <property name="Owner" visibility="public" read="FOwner" write="SetOwner" type="TDynamicObjectList" />
+      <function name="AddTo" visibility="public">
+        <parameters>
+          <parameter name="List" type="TDynamicObjectList" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="InsertIn" visibility="public">
+        <parameters>
+          <parameter name="List" type="TDynamicObjectList" />
+          <parameter name="Index" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Remove" visibility="public">
+      </procedure>
+    </members>
+  </class>
+  <class name="TSortedObjectList">
+    <ancestor name="TDynamicObjectList" namespace="DynamicLists">
+      <methodref name="Create" visibility="public" />
+      <methodref name="Clear" visibility="public" />
+      <methodref name="Add" visibility="public" />
+      <methodref name="AddUnique" visibility="public" />
+      <methodref name="Insert" visibility="public" />
+      <methodref name="IndexOf" visibility="public" />
+      <methodref name="Delete" visibility="public" />
+      <methodref name="Remove" visibility="public" />
+      <methodref name="FastDelete" visibility="public" />
+      <methodref name="FastRemove" visibility="public" />
+      <ancestor name="TDynamicList" namespace="DynamicLists">
+        <methodref name="SetListSize" visibility="private" />
+        <methodref name="SetCount" visibility="private" />
+        <propertyref name="ListSize" visibility="protected" />
+        <methodref name="Create" visibility="public" />
+        <methodref name="Destroy" visibility="public" />
+        <methodref name="Assign" visibility="public" />
+        <methodref name="Append" visibility="public" />
+        <methodref name="Clear" visibility="public" />
+        <methodref name="Add" visibility="public" />
+        <methodref name="Move" visibility="public" />
+        <methodref name="Delete" visibility="public" />
+        <methodref name="FastDelete" visibility="public" />
+        <methodref name="SaveToStream" visibility="public" />
+        <methodref name="LoadFromStream" visibility="public" />
+        <propertyref name="RecordSize" visibility="public" />
+        <propertyref name="Count" visibility="public" />
+        <methodref name="IncCount" visibility="public" />
+        <methodref name="Next" visibility="public" />
+        <methodref name="Zero" visibility="public" />
+        <methodref name="Optimize" visibility="public" />
+        <ancestor name="TStreamClass" namespace="StreamUtils">
+          <methodref name="SaveToStream" visibility="public" />
+          <methodref name="LoadFromStream" visibility="public" />
+          <methodref name="SaveToFile" visibility="public" />
+          <methodref name="LoadFromFile" visibility="public" />
+          <ancestor name="TAssignObject" namespace="MemUtils">
+            <methodref name="Assign" visibility="public" />
+            <methodref name="AssignTo" visibility="public" />
+            <ancestor name="TObject" namespace="System">
+              <methodref name="Create" visibility="public">
+              </methodref>
+              <methodref name="Free" visibility="public">
+              </methodref>
+              <methodref name="InitInstance" visibility="public">
+              </methodref>
+              <methodref name="CleanupInstance" visibility="public">
+              </methodref>
+              <methodref name="ClassType" visibility="public">
+              </methodref>
+              <methodref name="ClassName" visibility="public">
+              </methodref>
+              <methodref name="ClassNameIs" visibility="public">
+              </methodref>
+              <methodref name="ClassParent" visibility="public">
+              </methodref>
+              <methodref name="ClassInfo" visibility="public">
+              </methodref>
+              <methodref name="InstanceSize" visibility="public">
+              </methodref>
+              <methodref name="InheritsFrom" visibility="public">
+              </methodref>
+              <methodref name="MethodAddress" visibility="public">
+              </methodref>
+              <methodref name="MethodName" visibility="public">
+              </methodref>
+              <methodref name="FieldAddress" visibility="public">
+              </methodref>
+              <methodref name="GetInterface" visibility="public">
+              </methodref>
+              <methodref name="GetInterfaceEntry" visibility="public">
+              </methodref>
+              <methodref name="GetInterfaceTable" visibility="public">
+              </methodref>
+              <methodref name="SafeCallException" visibility="public">
+              </methodref>
+              <methodref name="AfterConstruction" visibility="public">
+              </methodref>
+              <methodref name="BeforeDestruction" visibility="public">
+              </methodref>
+              <methodref name="Dispatch" visibility="public">
+              </methodref>
+              <methodref name="DefaultHandler" visibility="public">
+              </methodref>
+              <methodref name="NewInstance" visibility="public">
+              </methodref>
+              <methodref name="FreeInstance" visibility="public">
+              </methodref>
+              <methodref name="Destroy" visibility="public">
+              </methodref>
+            </ancestor>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="GroupAdd" type="Boolean" visibility="protected" />
+      <procedure name="Sort" visibility="protected">
+      </procedure>
+      <function name="Find" visibility="protected">
+        <parameters>
+          <parameter name="Obj" type="TObject" />
+          <parameter name="Index" type="Integer" paramflags="out" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="Add" visibility="public">
+        <parameters>
+          <parameter name="NewObject" type="TObject" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="AddUnique" visibility="public">
+        <parameters>
+          <parameter name="NewObject" type="TObject" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="IndexOf" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Obj" type="TObject" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="BeginGroupAdd" visibility="public">
+      </procedure>
+    </members>
+  </class>
+  <array name="TPointerArray" low="0" high="0">
+    <element type="Pointer" />
+  </array>
+  <pointer name="PPointerArray" type="TPointerArray" indircnt="1" />
+  <class name="TDynamicPointerList">
+    <ancestor name="TDynamicList" namespace="DynamicLists">
+      <methodref name="SetListSize" visibility="private" />
+      <methodref name="SetCount" visibility="private" />
+      <propertyref name="ListSize" visibility="protected" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Destroy" visibility="public" />
+      <methodref name="Assign" visibility="public" />
+      <methodref name="Append" visibility="public" />
+      <methodref name="Clear" visibility="public" />
+      <methodref name="Add" visibility="public" />
+      <methodref name="Move" visibility="public" />
+      <methodref name="Delete" visibility="public" />
+      <methodref name="FastDelete" visibility="public" />
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="LoadFromStream" visibility="public" />
+      <propertyref name="RecordSize" visibility="public" />
+      <propertyref name="Count" visibility="public" />
+      <methodref name="IncCount" visibility="public" />
+      <methodref name="Next" visibility="public" />
+      <methodref name="Zero" visibility="public" />
+      <methodref name="Optimize" visibility="public" />
+      <ancestor name="TStreamClass" namespace="StreamUtils">
+        <methodref name="SaveToStream" visibility="public" />
+        <methodref name="LoadFromStream" visibility="public" />
+        <methodref name="SaveToFile" visibility="public" />
+        <methodref name="LoadFromFile" visibility="public" />
+        <ancestor name="TAssignObject" namespace="MemUtils">
+          <methodref name="Assign" visibility="public" />
+          <methodref name="AssignTo" visibility="public" />
+          <ancestor name="TObject" namespace="System">
+            <methodref name="Create" visibility="public">
+            </methodref>
+            <methodref name="Free" visibility="public">
+            </methodref>
+            <methodref name="InitInstance" visibility="public">
+            </methodref>
+            <methodref name="CleanupInstance" visibility="public">
+            </methodref>
+            <methodref name="ClassType" visibility="public">
+            </methodref>
+            <methodref name="ClassName" visibility="public">
+            </methodref>
+            <methodref name="ClassNameIs" visibility="public">
+            </methodref>
+            <methodref name="ClassParent" visibility="public">
+            </methodref>
+            <methodref name="ClassInfo" visibility="public">
+            </methodref>
+            <methodref name="InstanceSize" visibility="public">
+            </methodref>
+            <methodref name="InheritsFrom" visibility="public">
+            </methodref>
+            <methodref name="MethodAddress" visibility="public">
+            </methodref>
+            <methodref name="MethodName" visibility="public">
+            </methodref>
+            <methodref name="FieldAddress" visibility="public">
+            </methodref>
+            <methodref name="GetInterface" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceEntry" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceTable" visibility="public">
+            </methodref>
+            <methodref name="SafeCallException" visibility="public">
+            </methodref>
+            <methodref name="AfterConstruction" visibility="public">
+            </methodref>
+            <methodref name="BeforeDestruction" visibility="public">
+            </methodref>
+            <methodref name="Dispatch" visibility="public">
+            </methodref>
+            <methodref name="DefaultHandler" visibility="public">
+            </methodref>
+            <methodref name="NewInstance" visibility="public">
+            </methodref>
+            <methodref name="FreeInstance" visibility="public">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="OwnsObjects" type="Boolean" visibility="protected" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="MirrorPointer" paramflags="var" />
+        </parameters>
+      </constructor>
+      <procedure name="Clear" visibility="public" procflags="override">
+      </procedure>
+      <function name="Add" visibility="public">
+        <parameters>
+          <parameter name="NewData" type="Pointer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <class name="TDynamicIntegerList">
+    <ancestor name="TDynamicList" namespace="DynamicLists">
+      <methodref name="SetListSize" visibility="private" />
+      <methodref name="SetCount" visibility="private" />
+      <propertyref name="ListSize" visibility="protected" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Destroy" visibility="public" />
+      <methodref name="Assign" visibility="public" />
+      <methodref name="Append" visibility="public" />
+      <methodref name="Clear" visibility="public" />
+      <methodref name="Add" visibility="public" />
+      <methodref name="Move" visibility="public" />
+      <methodref name="Delete" visibility="public" />
+      <methodref name="FastDelete" visibility="public" />
+      <methodref name="SaveToStream" visibility="public" />
+      <methodref name="LoadFromStream" visibility="public" />
+      <propertyref name="RecordSize" visibility="public" />
+      <propertyref name="Count" visibility="public" />
+      <methodref name="IncCount" visibility="public" />
+      <methodref name="Next" visibility="public" />
+      <methodref name="Zero" visibility="public" />
+      <methodref name="Optimize" visibility="public" />
+      <ancestor name="TStreamClass" namespace="StreamUtils">
+        <methodref name="SaveToStream" visibility="public" />
+        <methodref name="LoadFromStream" visibility="public" />
+        <methodref name="SaveToFile" visibility="public" />
+        <methodref name="LoadFromFile" visibility="public" />
+        <ancestor name="TAssignObject" namespace="MemUtils">
+          <methodref name="Assign" visibility="public" />
+          <methodref name="AssignTo" visibility="public" />
+          <ancestor name="TObject" namespace="System">
+            <methodref name="Create" visibility="public">
+            </methodref>
+            <methodref name="Free" visibility="public">
+            </methodref>
+            <methodref name="InitInstance" visibility="public">
+            </methodref>
+            <methodref name="CleanupInstance" visibility="public">
+            </methodref>
+            <methodref name="ClassType" visibility="public">
+            </methodref>
+            <methodref name="ClassName" visibility="public">
+            </methodref>
+            <methodref name="ClassNameIs" visibility="public">
+            </methodref>
+            <methodref name="ClassParent" visibility="public">
+            </methodref>
+            <methodref name="ClassInfo" visibility="public">
+            </methodref>
+            <methodref name="InstanceSize" visibility="public">
+            </methodref>
+            <methodref name="InheritsFrom" visibility="public">
+            </methodref>
+            <methodref name="MethodAddress" visibility="public">
+            </methodref>
+            <methodref name="MethodName" visibility="public">
+            </methodref>
+            <methodref name="FieldAddress" visibility="public">
+            </methodref>
+            <methodref name="GetInterface" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceEntry" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceTable" visibility="public">
+            </methodref>
+            <methodref name="SafeCallException" visibility="public">
+            </methodref>
+            <methodref name="AfterConstruction" visibility="public">
+            </methodref>
+            <methodref name="BeforeDestruction" visibility="public">
+            </methodref>
+            <methodref name="Dispatch" visibility="public">
+            </methodref>
+            <methodref name="DefaultHandler" visibility="public">
+            </methodref>
+            <methodref name="NewInstance" visibility="public">
+            </methodref>
+            <methodref name="FreeInstance" visibility="public">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="FValues" type="PIntegerArray" visibility="protected" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <function name="Add" visibility="public">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="Insert" visibility="public">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <function name="IndexOf" visibility="public">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <property name="Values" visibility="public" read="FValues" type="PIntegerArray" />
+    </members>
+  </class>
+</namespace>

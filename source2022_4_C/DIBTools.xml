@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="DIBTools">
+  <const name="UDIBNoError" type="Integer">
+    <value>
+      $0
+    </value>
+  </const>
+  <const name="UDIBUndefError" type="Integer">
+    <value>
+      $1
+    </value>
+  </const>
+  <const name="UDIBFileOpenError" type="Integer">
+    <value>
+      $2
+    </value>
+  </const>
+  <const name="UDIBReadError" type="Integer">
+    <value>
+      $3
+    </value>
+  </const>
+  <const name="UDIBWriteError" type="Integer">
+    <value>
+      $4
+    </value>
+  </const>
+  <const name="UDIBBadFile" type="Integer">
+    <value>
+      $5
+    </value>
+  </const>
+  <const name="Std2ColPalette" type="Array" visibility="public" />
+  <const name="Std16ColPalette" type="Array" visibility="public" />
+  <const name="Std256ColPalette" type="Array" visibility="public" />
+  <variable name="UpsideDownDIB" type="Boolean" />
+  <function name="UDIBLoadBMP" visibility="public">
+    <parameters>
+      <parameter name="Stream" type="TStream" />
+      <parameter name="ADIB" type="TUniDIB" paramflags="var" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+</namespace>

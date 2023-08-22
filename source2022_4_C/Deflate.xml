@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="Deflate">
+  <devnotes>
+    /////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <const name="rsErrorInCompressedData" type="string" resourcestring="true">
+    <value>
+      Error in compressed data
+    </value>
+  </const>
+  <const name="rsBadCompFormat" type="string" resourcestring="true">
+    <value>
+      Bad compression parameters
+    </value>
+  </const>
+  <const name="rsWriteDenied" type="string" resourcestring="true">
+    <value>
+      Stream not open for write
+    </value>
+  </const>
+  <const name="MaxDeflateHashChain" type="Integer">
+    <value>
+      $40
+    </value>
+  </const>
+  <const name="MaxDeflateHashBuffer" type="Integer">
+    <value>
+      $10000
+    </value>
+  </const>
+  <const name="LitLengthValue" type="Integer">
+    <value>
+      $FFFFFFFF
+    </value>
+  </const>
+  <const name="DistValue" type="Integer">
+    <value>
+      $FFFFFFFE
+    </value>
+  </const>
+  <array name="TDeflateHashTable" low="0" high="65535">
+    <element type=":1" />
+  </array>
+  <const name="cmAutoHuffman" type="TDeflateCompressionMethod">
+    <value>
+      cmAutoHuffman
+    </value>
+  </const>
+  <const name="cmFixedHuffman" type="TDeflateCompressionMethod">
+    <value>
+      cmFixedHuffman
+    </value>
+  </const>
+  <const name="cmStore" type="TDeflateCompressionMethod">
+    <value>
+      cmStore
+    </value>
+  </const>
+  <enum name="TDeflateCompressionMethod">
+    <element name="cmAutoHuffman" />
+    <element name="cmFixedHuffman" />
+    <element name="cmStore" />
+  </enum>
+  <array name="TDeflateHuffmanBuffer" low="0" high="65536">
+    <element type=":2" />
+  </array>
+  <const name="dsNewBlock">
+    <value>
+      dsNewBlock
+    </value>
+  </const>
+  <const name="dsBufferRead">
+    <value>
+      dsBufferRead
+    </value>
+  </const>
+  <const name="dsDecodeSegment">
+    <value>
+      dsDecodeSegment
+    </value>
+  </const>
+  <class name="TDeflateStream">
+    <ancestor name="THuffmanBitStream" namespace="Huffman">
+      <methodref name="GetSymbol" visibility="public" />
+      <ancestor name="TBitStream" namespace="BitStream">
+        <methodref name="Destroy" visibility="public" />
+        <methodref name="WriteBits" visibility="public" />
+        <methodref name="ReadBits" visibility="public" />
+        <methodref name="ReadBit" visibility="public" />
+        <methodref name="Flush" visibility="public" />
+        <methodref name="Available" visibility="public" />
+        <ancestor name="TFilterStream" namespace="Streams">
+          <methodref name="SetNoDataExcept" visibility="public" />
+          <methodref name="Create" visibility="public" />
+          <methodref name="Write" visibility="public" />
+          <methodref name="Read" visibility="public" />
+          <methodref name="Available" visibility="public" />
+          <methodref name="FreeAll" visibility="public" />
+          <ancestor name="TBaseStream" namespace="Streams">
+            <methodref name="SetNoDataExcept" visibility="public" />
+            <methodref name="Create" visibility="public" />
+            <methodref name="Write" visibility="public" />
+            <methodref name="Read" visibility="public" />
+            <methodref name="EOS" visibility="public" />
+            <methodref name="Available" visibility="public" />
+            <methodref name="Flush" visibility="public" />
+            <methodref name="CopyFrom" visibility="public" />
+            <propertyref name="CanRead" visibility="public" />
+            <propertyref name="CanWrite" visibility="public" />
+            <propertyref name="NoDataExcept" visibility="public" />
+            <ancestor name="TObject" namespace="System">
+              <methodref name="Create" visibility="public">
+              </methodref>
+              <methodref name="Free" visibility="public">
+              </methodref>
+              <methodref name="InitInstance" visibility="public">
+              </methodref>
+              <methodref name="CleanupInstance" visibility="public">
+              </methodref>
+              <methodref name="ClassType" visibility="public">
+              </methodref>
+              <methodref name="ClassName" visibility="public">
+              </methodref>
+              <methodref name="ClassNameIs" visibility="public">
+              </methodref>
+              <methodref name="ClassParent" visibility="public">
+              </methodref>
+              <methodref name="ClassInfo" visibility="public">
+              </methodref>
+              <methodref name="InstanceSize" visibility="public">
+              </methodref>
+              <methodref name="InheritsFrom" visibility="public">
+              </methodref>
+              <methodref name="MethodAddress" visibility="public">
+              </methodref>
+              <methodref name="MethodName" visibility="public">
+              </methodref>
+              <methodref name="FieldAddress" visibility="public">
+              </methodref>
+              <methodref name="GetInterface" visibility="public">
+              </methodref>
+              <methodref name="GetInterfaceEntry" visibility="public">
+              </methodref>
+              <methodref name="GetInterfaceTable" visibility="public">
+              </methodref>
+              <methodref name="SafeCallException" visibility="public">
+              </methodref>
+              <methodref name="AfterConstruction" visibility="public">
+              </methodref>
+              <methodref name="BeforeDestruction" visibility="public">
+              </methodref>
+              <methodref name="Dispatch" visibility="public">
+              </methodref>
+              <methodref name="DefaultHandler" visibility="public">
+              </methodref>
+              <methodref name="NewInstance" visibility="public">
+              </methodref>
+              <methodref name="FreeInstance" visibility="public">
+              </methodref>
+              <methodref name="Destroy" visibility="public">
+              </methodref>
+            </ancestor>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="fCompressionMethod" type="TDeflateCompressionMethod" visibility="protected" />
+      <procedure name="SetCompressionMethod" visibility="protected">
+        <parameters>
+          <parameter name="Method" type="TDeflateCompressionMethod" />
+        </parameters>
+      </procedure>
+      <property name="CompressionMethod" visibility="public" read="fCompressionMethod" write="SetCompressionMethod" type="TDeflateCompressionMethod" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="NextStream" type="TBaseStream" />
+          <parameter name="Mode" type="Integer">
+            <value>
+              $FFFFFFFF
+            </value>
+          </parameter>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <function name="Write" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Buf" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="Read" visibility="public" procflags="override">
+        <parameters>
+          <parameter name="Buf" paramflags="var" />
+          <parameter name="Count" type="Integer" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="Flush" visibility="public" procflags="override">
+      </procedure>
+      <function name="Available" visibility="public" procflags="override">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <field name="LookBack" type="PByteArray" visibility="private" />
+      <field name="LookBackPtr" type="Word" visibility="private" />
+      <field name="BufferPtr" type="Word" visibility="private" />
+      <field name="BufferSize" type="Cardinal" visibility="private" />
+      <field name="Final" type="Boolean" visibility="private" />
+      <field name="FinishBlock" type="Boolean" visibility="private" />
+      <field name="InBlock" type="Boolean" visibility="private" />
+      <field name="LittLengthCodes" type="THuffmanCodes" visibility="private" />
+      <field name="DistCodes" type="THuffmanCodes" visibility="private" />
+      <field name="LittLengthTree" type="THuffmanTree" visibility="private" />
+      <field name="DistTree" type="THuffmanTree" visibility="private" />
+      <field name="DecodeState" type=".4" visibility="private" />
+      <field name="Position" type="Integer" visibility="private" />
+      <field name="HashTable" visibility="private">
+        <pointer name="HashTable" type="TDeflateHashTable" indircnt="1" />
+      </field>
+      <field name="HuffmanBuffer" visibility="private">
+        <pointer name="HuffmanBuffer" type="TDeflateHuffmanBuffer" indircnt="1" />
+      </field>
+      <field name="HuffmanBufferPos" type="Integer" visibility="private" />
+    </members>
+  </class>
+  <const name="fmRead" type="Integer">
+    <value>
+      $0
+    </value>
+  </const>
+  <const name="fmWrite" type="Integer">
+    <value>
+      $1
+    </value>
+  </const>
+  <function name="OpenDeflateFile" visibility="public">
+    <parameters>
+      <parameter name="Name" type="string" />
+      <parameter name="Mode" type="Integer" />
+      <retval type="TDeflateStream" />
+    </parameters>
+  </function>
+</namespace>

@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="AnalyzerPlugins">
+  <devnotes>
+    ////////////////////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <array name="TBGRPalette" low="0" high="255">
+    <element type=":1" />
+  </array>
+  <pointer name="PBGRPalette" type="TBGRPalette" indircnt="1" />
+  <struct name="TImageContainer" packed="true">
+    <field name="Width" type="Integer" visibility="public" />
+    <field name="Height" type="Integer" visibility="public" />
+    <field name="BytesPerLine" type="Integer" visibility="public" />
+    <field name="PixelFormat" type="Integer" visibility="public" />
+    <field name="Map" type="PByteArray" visibility="public" />
+    <field name="Palette" type="PBGRPalette" visibility="public" />
+    <field name="Options" type="PAnsiChar" visibility="public" />
+  </struct>
+  <pointer name="PImageContainer" type="TImageContainer" indircnt="1" />
+  <const name="cmdMakeMenuItem" type="Integer">
+    <value>
+      $1
+    </value>
+  </const>
+  <struct name="TMakeMenuItem" packed="true">
+    <field name="Menu" type="PAnsiChar" visibility="public" />
+    <field name="Caption" type="PAnsiChar" visibility="public" />
+    <field name="Hint" type="PAnsiChar" visibility="public" />
+    <field name="Tag" type="Integer" visibility="public" />
+  </struct>
+  <pointer name="PMakeMenuItem" type="TMakeMenuItem" indircnt="1" />
+  <const name="cmdCreateImageWindow" type="Integer">
+    <value>
+      $2
+    </value>
+  </const>
+  <struct name="TCreateImageWindow" packed="true">
+    <field name="Name" type="PAnsiChar" visibility="public" />
+    <field name="Image" type="TImageContainer" visibility="public" />
+  </struct>
+  <pointer name="PCreateImageWindow" type="TCreateImageWindow" indircnt="1" />
+  <const name="cmdGetImageWindow" type="Integer">
+    <value>
+      $3
+    </value>
+  </const>
+  <struct name="TGetImageWindow" packed="true">
+    <field name="WindowNumber" type="Integer" visibility="public" />
+    <field name="TotalWindowCount" type="Integer" visibility="public" />
+    <field name="Name" type="PAnsiChar" visibility="public" />
+    <field name="Image" type="TImageContainer" visibility="public" />
+    <field name="Selection" type="TRect" visibility="public" />
+  </struct>
+  <pointer name="PGetImageWindow" type="TGetImageWindow" indircnt="1" />
+  <const name="cmdGetMainWindowHandle" type="Integer">
+    <value>
+      $4
+    </value>
+  </const>
+  <struct name="TGetMainWindowHandle" packed="true">
+    <field name="Handle" type="Cardinal" visibility="public" />
+  </struct>
+  <pointer name="PGetMainWindowHandle" type="TGetMainWindowHandle" indircnt="1" />
+  <const name="cmdUpdateProgress" type="Integer">
+    <value>
+      $5
+    </value>
+  </const>
+  <struct name="TUpdateProgress" packed="true">
+    <field name="Progress" type="Integer" visibility="public" />
+  </struct>
+  <pointer name="PUpdateProgress" type="TUpdateProgress" indircnt="1" />
+  <const name="cmdGetProgramVersion" type="Integer">
+    <value>
+      $6
+    </value>
+  </const>
+  <struct name="TGetProgramVersion" packed="true">
+    <field name="Version" type="Integer" visibility="public" />
+  </struct>
+  <const name="cmdSetFileOpenCapability" type="Integer">
+    <value>
+      $7
+    </value>
+  </const>
+  <struct name="TSetFileOpenCapability" packed="true">
+    <field name="Filter" type="PAnsiChar" visibility="public" />
+    <field name="Tag" type="Integer" visibility="public" />
+  </struct>
+  <pointer name="PSetFileOpenCapability" type="TSetFileOpenCapability" indircnt="1" />
+  <const name="cmdOpenFile" type="Integer">
+    <value>
+      $8
+    </value>
+  </const>
+  <struct name="TOpenFile" packed="true">
+    <field name="FileName" type="PAnsiChar" visibility="public" />
+  </struct>
+  <variable name="AnalyzerCallback" type="TAnalyzerCallback" visibility="public" />
+  <procedure name="RaisePluginError" visibility="public">
+    <parameters>
+      <parameter name="Result" type="Integer" />
+      <parameter name="Default" type="string">
+        <value>
+          
+        </value>
+      </parameter>
+    </parameters>
+  </procedure>
+  <procedure name="BitmapFromImageContainer" visibility="public">
+    <parameters>
+      <parameter name="Bitmap" type="TBitmap" />
+      <parameter name="Image" type="TImageContainer" paramflags="const" />
+    </parameters>
+  </procedure>
+  <procedure name="BitmapToImageContainer" visibility="public">
+    <parameters>
+      <parameter name="Bitmap" type="TBitmap" />
+      <parameter name="Image" type="TImageContainer" paramflags="out" />
+    </parameters>
+  </procedure>
+  <procedure name="FreeImageContainer" visibility="public">
+    <parameters>
+      <parameter name="Image" type="TImageContainer" paramflags="var" />
+    </parameters>
+  </procedure>
+  <function name="FindImageWindowName" visibility="public">
+    <parameters>
+      <parameter name="Image" type="TImageContainer" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+</namespace>

@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="Huffman">
+  <devnotes>
+    /////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <const name="MaxHuffmanCodes" type="Integer">
+    <value>
+      $121
+    </value>
+  </const>
+  <const name="RightBit" type="Integer">
+    <value>
+      $1
+    </value>
+  </const>
+  <const name="LeftBit" type="Integer">
+    <value>
+      $0
+    </value>
+  </const>
+  <const name="NoNode" type="Integer">
+    <value>
+      $FFFF
+    </value>
+  </const>
+  <struct name="TTreeNode">
+    <field name="Right" type="Word" visibility="public" />
+    <field name="Left" type="Word" visibility="public" />
+    <field name="Parent" type="Word" visibility="public" />
+    <field name="Freq" type="Cardinal" visibility="public" />
+  </struct>
+  <array name="THuffmanNodeList" low="0" high="577">
+    <element type="TTreeNode" />
+  </array>
+  <pointer name="PHuffmanTree" type="THuffmanTree" indircnt="1" />
+  <class name="THuffmanCodes">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="LastCode" type="Cardinal" visibility="public" />
+      <field name="List" visibility="public">
+        <array name="List" low="0" high="288">
+          <element type=":2" />
+        </array>
+      </field>
+      <procedure name="Init" visibility="public">
+        <parameters>
+          <parameter name="SymbolCount" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="FindCodes" visibility="public" procflags="overload">
+        <parameters>
+          <parameter name="LengthList" paramflags="var" />
+          <parameter name="MaxBits" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="FindCodes" visibility="public" procflags="overload">
+        <parameters>
+          <parameter name="Tree" type="PHuffmanTree" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="FindCodesStat" visibility="public">
+        <parameters>
+          <parameter name="FreqTable" type="PCardinalArray" />
+          <parameter name="MaxBits" type="Cardinal">
+            <value>
+              $20
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="FindCodesStat2" visibility="public">
+        <parameters>
+          <parameter name="FreqTable" type="PCardinalArray" />
+          <parameter name="MaxBits" type="Cardinal">
+            <value>
+              $20
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="FixCodes" visibility="public">
+        <parameters>
+          <parameter name="Length" type="Cardinal" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <class name="THuffmanTree">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="Tree" type="THuffmanNodeList" visibility="public" />
+      <procedure name="Init" visibility="public">
+        <parameters>
+          <parameter name="SymbolCount" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="Build" visibility="public" procflags="overload">
+        <devnotes>
+          &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; = Root?
+        </devnotes>
+        <parameters>
+          <parameter name="Codes" type="THuffmanCodes" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="Build" visibility="public" procflags="overload">
+        <parameters>
+          <parameter name="LengthList" paramflags="var" />
+          <parameter name="MaxBits" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="BuildStat" visibility="public">
+        <parameters>
+          <parameter name="FreqTable" type="PCardinalArray" />
+        </parameters>
+      </procedure>
+      <function name="GetSymbol" visibility="public">
+        <parameters>
+          <parameter name="Stream" type="TBitStream" />
+          <retval type="Cardinal" />
+        </parameters>
+      </function>
+      <procedure name="WriteSymbol" visibility="public">
+        <parameters>
+          <parameter name="Symbol" type="Cardinal" />
+          <parameter name="Stream" type="TBitStream" />
+        </parameters>
+      </procedure>
+      <field name="LastCode" type="Cardinal" visibility="protected" />
+      <field name="LastNode" type="Cardinal" visibility="protected" />
+      <field name="Root" type="Cardinal" visibility="protected" />
+    </members>
+  </class>
+  <class name="THuffmanBitStream">
+    <ancestor name="TBitStream" namespace="BitStream">
+      <methodref name="Destroy" visibility="public" />
+      <methodref name="WriteBits" visibility="public" />
+      <methodref name="ReadBits" visibility="public" />
+      <methodref name="ReadBit" visibility="public" />
+      <methodref name="Flush" visibility="public" />
+      <methodref name="Available" visibility="public" />
+      <ancestor name="TFilterStream" namespace="Streams">
+        <methodref name="SetNoDataExcept" visibility="public" />
+        <methodref name="Create" visibility="public" />
+        <methodref name="Write" visibility="public" />
+        <methodref name="Read" visibility="public" />
+        <methodref name="Available" visibility="public" />
+        <methodref name="FreeAll" visibility="public" />
+        <ancestor name="TBaseStream" namespace="Streams">
+          <methodref name="SetNoDataExcept" visibility="public" />
+          <methodref name="Create" visibility="public" />
+          <methodref name="Write" visibility="public" />
+          <methodref name="Read" visibility="public" />
+          <methodref name="EOS" visibility="public" />
+          <methodref name="Available" visibility="public" />
+          <methodref name="Flush" visibility="public" />
+          <methodref name="CopyFrom" visibility="public" />
+          <propertyref name="CanRead" visibility="public" />
+          <propertyref name="CanWrite" visibility="public" />
+          <propertyref name="NoDataExcept" visibility="public" />
+          <ancestor name="TObject" namespace="System">
+            <methodref name="Create" visibility="public">
+            </methodref>
+            <methodref name="Free" visibility="public">
+            </methodref>
+            <methodref name="InitInstance" visibility="public">
+            </methodref>
+            <methodref name="CleanupInstance" visibility="public">
+            </methodref>
+            <methodref name="ClassType" visibility="public">
+            </methodref>
+            <methodref name="ClassName" visibility="public">
+            </methodref>
+            <methodref name="ClassNameIs" visibility="public">
+            </methodref>
+            <methodref name="ClassParent" visibility="public">
+            </methodref>
+            <methodref name="ClassInfo" visibility="public">
+            </methodref>
+            <methodref name="InstanceSize" visibility="public">
+            </methodref>
+            <methodref name="InheritsFrom" visibility="public">
+            </methodref>
+            <methodref name="MethodAddress" visibility="public">
+            </methodref>
+            <methodref name="MethodName" visibility="public">
+            </methodref>
+            <methodref name="FieldAddress" visibility="public">
+            </methodref>
+            <methodref name="GetInterface" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceEntry" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceTable" visibility="public">
+            </methodref>
+            <methodref name="SafeCallException" visibility="public">
+            </methodref>
+            <methodref name="AfterConstruction" visibility="public">
+            </methodref>
+            <methodref name="BeforeDestruction" visibility="public">
+            </methodref>
+            <methodref name="Dispatch" visibility="public">
+            </methodref>
+            <methodref name="DefaultHandler" visibility="public">
+            </methodref>
+            <methodref name="NewInstance" visibility="public">
+            </methodref>
+            <methodref name="FreeInstance" visibility="public">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="GetSymbol" visibility="public">
+        <parameters>
+          <parameter name="Tree" type="THuffmanTree" paramflags="const" />
+          <retval type="Cardinal" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <procedure name="CalcHistogram" visibility="public">
+    <parameters>
+      <parameter name="Data" paramflags="var" />
+      <parameter name="Length" type="Cardinal" />
+      <parameter name="Stat" paramflags="var">
+        <array name="Stat">
+          <element type="Cardinal" />
+        </array>
+      </parameter>
+    </parameters>
+  </procedure>
+  <procedure name="PrintCodes" visibility="public">
+    <parameters>
+      <parameter name="Codes" type="THuffmanCodes" paramflags="const" />
+    </parameters>
+  </procedure>
+</namespace>

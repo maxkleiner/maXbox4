@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="MathUtils">
+  <devnotes>
+    /////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <type name="Float" type="Double" />
+  <const name="MaxFloat" type="Extended">
+    <value>
+      1.7e+308
+    </value>
+  </const>
+  <const name="Origo" type="TPoint" visibility="public" />
+  <pointer name="PFloat" type="Double" indircnt="1" />
+  <array name="TFloatArray" low="0" high="511">
+    <element type="Double" />
+  </array>
+  <pointer name="PFloatArray" type="TFloatArray" indircnt="1" />
+  <array name="TFloatDynArray">
+    <element type="Double" />
+  </array>
+  <array name="TSingleArray" low="0" high="255">
+    <element type="Single" />
+  </array>
+  <pointer name="PSingleArray" type="TSingleArray" indircnt="1" />
+  <array name="TDoubleArray" low="0" high="255">
+    <element type="Double" />
+  </array>
+  <pointer name="PDoubleArray" type="TDoubleArray" indircnt="1" />
+  <struct name="TFloatRect">
+    <field name="Left" type="Double" visibility="public" />
+    <field name="Top" type="Double" visibility="public" />
+    <field name="Right" type="Double" visibility="public" />
+    <field name="Bottom" type="Double" visibility="public" />
+  </struct>
+  <struct name="TFloatPoint">
+    <field name="X" type="Double" visibility="public" />
+    <field name="Y" type="Double" visibility="public" />
+  </struct>
+  <array name="TFloatPointArray">
+    <element type="TFloatPoint" />
+  </array>
+  <struct name="Fix" packed="true">
+    <field name="Dec" type="Word" visibility="public" />
+    <field name="Int" type="Smallint" visibility="public" />
+  </struct>
+  <struct name="TTriDiagRec">
+    <field name="Upper" type="Double" visibility="public" />
+    <field name="Diag" type="Double" visibility="public" />
+  </struct>
+  <function name="sinc" visibility="public">
+    <parameters>
+      <parameter name="x" type="Double" paramflags="const" />
+      <retval type="Double" />
+    </parameters>
+  </function>
+  <function name="Gauss" visibility="public">
+    <parameters>
+      <parameter name="x" type="Double" paramflags="const" />
+      <parameter name="Spread" type="Double" paramflags="const" />
+      <retval type="Double" />
+    </parameters>
+  </function>
+  <function name="FloatPoint" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="X" type="Double" paramflags="const" />
+      <parameter name="Y" type="Double" paramflags="const" />
+      <retval type="TFloatPoint" />
+    </parameters>
+  </function>
+  <function name="RoundRect" visibility="public">
+    <parameters>
+      <parameter name="ALeft" type="Double" paramflags="const" />
+      <parameter name="ATop" type="Double" paramflags="const" />
+      <parameter name="ARight" type="Double" paramflags="const" />
+      <parameter name="ABottom" type="Double" paramflags="const" />
+      <retval type="TRect" />
+    </parameters>
+  </function>
+  <function name="RoundPoint" visibility="public">
+    <parameters>
+      <parameter name="X" type="Double" paramflags="const" />
+      <parameter name="Y" type="Double" paramflags="const" />
+      <retval type="TPoint" />
+    </parameters>
+  </function>
+  <function name="FloatRect" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="ALeft" type="Double" paramflags="const" />
+      <parameter name="ATop" type="Double" paramflags="const" />
+      <parameter name="ARight" type="Double" paramflags="const" />
+      <parameter name="ABottom" type="Double" paramflags="const" />
+      <retval type="TFloatRect" />
+    </parameters>
+  </function>
+  <function name="FloatRect" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="Rect" type="TRect" paramflags="const" />
+      <retval type="TFloatRect" />
+    </parameters>
+  </function>
+  <function name="FloatPoint" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="P" type="TPoint" paramflags="const" />
+      <retval type="TFloatPoint" />
+    </parameters>
+  </function>
+  <function name="RotatePoint" visibility="public">
+    <parameters>
+      <parameter name="Point" type="TFloatPoint" />
+      <parameter name="Center" type="TFloatPoint" paramflags="const" />
+      <parameter name="Angle" type="Double" paramflags="const" />
+      <retval type="TFloatPoint" />
+    </parameters>
+  </function>
+  <function name="OffsetPoint" visibility="public">
+    <parameters>
+      <parameter name="P" type="TPoint" paramflags="const" />
+      <parameter name="Offset" type="TPoint" paramflags="const" />
+      <retval type="TPoint" />
+    </parameters>
+  </function>
+  <function name="LineInRect" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="P1" type="TPoint" paramflags="const" />
+      <parameter name="P2" type="TPoint" paramflags="const" />
+      <parameter name="Rect" type="TRect" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="LineInRect" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="P1" type="TFloatPoint" paramflags="const" />
+      <parameter name="P2" type="TFloatPoint" paramflags="const" />
+      <parameter name="Rect" type="TFloatRect" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="LineSegmentIntersection" visibility="public">
+    <parameters>
+      <parameter name="L1P1" type="TFloatPoint" paramflags="const" />
+      <parameter name="L1P2" type="TFloatPoint" />
+      <parameter name="L2P1" type="TFloatPoint" paramflags="const" />
+      <parameter name="L2P2" type="TFloatPoint" />
+      <parameter name="P" type="TFloatPoint" paramflags="var" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="PointToLineSegmentDist" visibility="public">
+    <parameters>
+      <parameter name="Point" type="TFloatPoint" paramflags="const" />
+      <parameter name="LineP1" type="TFloatPoint" paramflags="const" />
+      <parameter name="LineP2" type="TFloatPoint" paramflags="const" />
+      <retval type="Double" />
+    </parameters>
+  </function>
+  <function name="FloatPtInRect" visibility="public">
+    <parameters>
+      <parameter name="Rect" type="TFloatRect" paramflags="const" />
+      <parameter name="P" type="TFloatPoint" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="ClipLineToRect" visibility="public">
+    <parameters>
+      <parameter name="P1" type="TFloatPoint" paramflags="var" />
+      <parameter name="P2" type="TFloatPoint" paramflags="var" />
+      <parameter name="Rect" type="TFloatRect" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="NormalizeRect" visibility="public">
+    <parameters>
+      <parameter name="Rect" type="TRect" paramflags="const" />
+      <retval type="TRect" />
+    </parameters>
+  </function>
+  <function name="InRangeR" visibility="public">
+    <parameters>
+      <parameter name="A" type="Double" paramflags="const" />
+      <parameter name="Min" type="Double" paramflags="const" />
+      <parameter name="Max" type="Double" paramflags="const" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="ForceInRange" visibility="public">
+    <parameters>
+      <parameter name="A" type="Integer" />
+      <parameter name="Min" type="Integer" />
+      <parameter name="Max" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="ForceInRangeR" visibility="public">
+    <parameters>
+      <parameter name="A" type="Double" paramflags="const" />
+      <parameter name="Min" type="Double" paramflags="const" />
+      <parameter name="Max" type="Double" paramflags="const" />
+      <retval type="Double" />
+    </parameters>
+  </function>
+  <function name="ForceInBox" visibility="public">
+    <parameters>
+      <parameter name="Point" type="TPoint" paramflags="const" />
+      <parameter name="Box" type="TRect" paramflags="const" />
+      <retval type="TPoint" />
+    </parameters>
+  </function>
+  <procedure name="ShuffleList" visibility="public">
+    <parameters>
+      <parameter name="List" paramflags="var">
+        <array name="List">
+          <element type="Integer" />
+        </array>
+      </parameter>
+      <parameter name="Count" type="Integer" />
+    </parameters>
+  </procedure>
+  <function name="Ceil4" visibility="public">
+    <parameters>
+      <parameter name="X" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="Ceil8" visibility="public">
+    <parameters>
+      <parameter name="X" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="Ceil16" visibility="public">
+    <parameters>
+      <parameter name="X" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="FloorInt" visibility="public">
+    <parameters>
+      <parameter name="Value" type="Integer" />
+      <parameter name="StepSize" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="RoundInt" visibility="public">
+    <parameters>
+      <parameter name="Value" type="Integer" />
+      <parameter name="StepSize" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <procedure name="Diff" visibility="public">
+    <parameters>
+      <parameter name="X" paramflags="var">
+        <array name="X">
+          <element type="Double" />
+        </array>
+      </parameter>
+    </parameters>
+  </procedure>
+  <procedure name="TridiagonalSolve" visibility="public">
+    <parameters>
+      <parameter name="T" paramflags="var">
+        <array name="T">
+          <element type="TTriDiagRec" />
+        </array>
+      </parameter>
+      <parameter name="y" paramflags="var">
+        <array name="y">
+          <element type="Double" />
+        </array>
+      </parameter>
+      <parameter name="N" type="Integer">
+        <value>
+          $0
+        </value>
+      </parameter>
+    </parameters>
+  </procedure>
+  <function name="PointDist" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="P1" type="TFloatPoint" paramflags="const" />
+      <parameter name="P2" type="TFloatPoint" paramflags="const" />
+      <retval type="Double" />
+    </parameters>
+  </function>
+  <function name="PointDist" visibility="public" procflags="overload">
+    <parameters>
+      <parameter name="P1" type="TPoint" paramflags="const" />
+      <parameter name="P2" type="TPoint" paramflags="const" />
+      <retval type="Double" />
+    </parameters>
+  </function>
+  <function name="VectorAdd" visibility="public">
+    <parameters>
+      <parameter name="V1" type="TFloatPoint" paramflags="const" />
+      <parameter name="V2" type="TFloatPoint" paramflags="const" />
+      <retval type="TFloatPoint" />
+    </parameters>
+  </function>
+  <function name="VectorSubtract" visibility="public">
+    <parameters>
+      <parameter name="V1" type="TFloatPoint" paramflags="const" />
+      <parameter name="V2" type="TFloatPoint" paramflags="const" />
+      <retval type="TFloatPoint" />
+    </parameters>
+  </function>
+  <function name="VectorDot" visibility="public">
+    <parameters>
+      <parameter name="V1" type="TFloatPoint" paramflags="const" />
+      <parameter name="V2" type="TFloatPoint" paramflags="const" />
+      <retval type="Double" />
+    </parameters>
+  </function>
+  <function name="VectorLengthSqr" visibility="public">
+    <parameters>
+      <parameter name="V" type="TFloatPoint" paramflags="const" />
+      <retval type="Double" />
+    </parameters>
+  </function>
+  <function name="VectorMult" visibility="public">
+    <parameters>
+      <parameter name="V" type="TFloatPoint" paramflags="const" />
+      <parameter name="s" type="Double" paramflags="const" />
+      <retval type="TFloatPoint" />
+    </parameters>
+  </function>
+</namespace>

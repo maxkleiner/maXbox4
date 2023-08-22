@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="FileUtils">
+  <devnotes>
+    ////////////////////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <variable name="ProgramPath" type="string" />
+  <variable name="TempPath" type="string" />
+  <const name="faFile" type="Integer">
+    <value>
+      $27
+    </value>
+  </const>
+  <const name="faFileOrDir" type="Integer">
+    <value>
+      $37
+    </value>
+  </const>
+  <function name="MakeValidFileName" visibility="public">
+    <parameters>
+      <parameter name="Str" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <procedure name="GetDirList" visibility="public">
+    <parameters>
+      <parameter name="Search" type="string" paramflags="const" />
+      <parameter name="List" type="TStrings" />
+      <parameter name="Recursive" type="Boolean">
+        <value>
+          False
+        </value>
+      </parameter>
+    </parameters>
+  </procedure>
+  <procedure name="WriteLog" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <parameter name="LogLine" type="string" paramflags="const" />
+    </parameters>
+  </procedure>
+  <function name="ExecuteFile" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <parameter name="Params" type="string" paramflags="const">
+        <value>
+          
+        </value>
+      </parameter>
+      <parameter name="DefaultDir" type="string" paramflags="const">
+        <value>
+          
+        </value>
+      </parameter>
+      <parameter name="ShowCmd" type="Integer">
+        <value>
+          $5
+        </value>
+      </parameter>
+      <retval type="Cardinal" />
+    </parameters>
+  </function>
+  <function name="ExtractFileExtNoDot" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="ExtractFileExtNoDotUpper" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="RemoveFileExt" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="ForceBackslash" visibility="public">
+    <parameters>
+      <parameter name="PathName" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="RemoveBackslash" visibility="public">
+    <parameters>
+      <parameter name="PathName" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="GetFileSize" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <retval type="Int64" />
+    </parameters>
+  </function>
+  <function name="SetFileTimeStamp" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <parameter name="TimeStamp" type="Integer" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="DeleteFileEx" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" />
+      <parameter name="Flags" type="Word">
+        <value>
+          $0
+        </value>
+      </parameter>
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="MoveFile" visibility="public">
+    <parameters>
+      <parameter name="Source" type="string" />
+      <parameter name="Dest" type="string" />
+      <parameter name="Flags" type="Word">
+        <value>
+          $0
+        </value>
+      </parameter>
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="CopyFileEx" visibility="public">
+    <parameters>
+      <parameter name="Source" type="string" />
+      <parameter name="Dest" type="string" />
+      <parameter name="Flags" type="Word">
+        <value>
+          $0
+        </value>
+      </parameter>
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="CopyFile" visibility="public">
+    <parameters>
+      <parameter name="Source" type="string" />
+      <parameter name="Dest" type="string" />
+      <parameter name="CanOverwrite" type="Boolean" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="GetParameterFileName" visibility="public">
+    <parameters>
+      <retval type="string" />
+    </parameters>
+  </function>
+  <procedure name="ShowFileProperties" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+    </parameters>
+  </procedure>
+  <procedure name="ShowSearchDialog" visibility="public">
+    <parameters>
+      <parameter name="Directory" type="string" paramflags="const" />
+    </parameters>
+  </procedure>
+  <function name="GetDroppedFile" visibility="public">
+    <parameters>
+      <parameter name="Msg" type="TWMDropFiles" paramflags="const" />
+      <parameter name="Index" type="Integer">
+        <value>
+          $0
+        </value>
+      </parameter>
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="SearchRecFileSize64" visibility="public">
+    <parameters>
+      <parameter name="SearchRec" type="TSearchRec" paramflags="const" />
+      <retval type="Int64" />
+    </parameters>
+  </function>
+  <function name="IsFormatRegistered" visibility="public">
+    <parameters>
+      <parameter name="Extension" type="string" />
+      <parameter name="AppID" type="string" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <procedure name="RegisterFileFormat" visibility="public">
+    <parameters>
+      <parameter name="Extension" type="string" />
+      <parameter name="AppID" type="string" />
+      <parameter name="Description" type="string">
+        <value>
+          
+        </value>
+      </parameter>
+      <parameter name="Executable" type="string">
+        <value>
+          
+        </value>
+      </parameter>
+      <parameter name="IconIndex" type="Integer">
+        <value>
+          $0
+        </value>
+      </parameter>
+    </parameters>
+  </procedure>
+  <function name="InitTempPath" visibility="public">
+    <parameters>
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="FileContains" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <parameter name="Text" type="string" />
+      <parameter name="CaseSensitive" type="Boolean" />
+      <parameter name="ExceptionOnError" type="Boolean">
+        <value>
+          True
+        </value>
+      </parameter>
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="LoadFileAsString" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <procedure name="CreateFileFromString" visibility="public">
+    <parameters>
+      <parameter name="FileName" type="string" paramflags="const" />
+      <parameter name="Data" type="string" paramflags="const" />
+    </parameters>
+  </procedure>
+</namespace>

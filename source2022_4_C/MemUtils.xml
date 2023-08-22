@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="MemUtils">
+  <devnotes>
+    ////////////////////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <array name="TIntegerArray" low="0" high="32767">
+    <element type="Integer" />
+  </array>
+  <pointer name="PIntegerArray" type="TIntegerArray" indircnt="1" />
+  <array name="TCardinalArray" low="0" high="32767">
+    <element type="Cardinal" />
+  </array>
+  <pointer name="PCardinalArray" type="TCardinalArray" indircnt="1" />
+  <struct name="Int64Split" packed="true">
+    <field name="Lo" type="Cardinal" visibility="public" />
+    <field name="Hi" type="Integer" visibility="public" />
+  </struct>
+  <class name="TAssignObject">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <procedure name="Assign" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Other" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="AssignTo" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Other" type="TObject" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <procedure name="FreeAndNilData" visibility="public">
+    <parameters>
+      <parameter name="P" paramflags="var" />
+    </parameters>
+  </procedure>
+  <function name="AllocMem" visibility="public">
+    <parameters>
+      <parameter name="Size" type="Cardinal" />
+      <retval type="Pointer" />
+    </parameters>
+  </function>
+  <function name="FastLocateByte" visibility="public" callconv="pascal">
+    <parameters>
+      <parameter name="Where" paramflags="const" />
+      <parameter name="Start" type="Integer" />
+      <parameter name="BSize" type="Integer" />
+      <parameter name="What" type="Word" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="FastLocate2Bytes" visibility="public" callconv="pascal">
+    <parameters>
+      <parameter name="Where" paramflags="const" />
+      <parameter name="Start" type="Integer" />
+      <parameter name="BSize" type="Integer" />
+      <parameter name="What" type="Word" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="FastLocateDWord" visibility="public">
+    <parameters>
+      <parameter name="Where" paramflags="var" />
+      <parameter name="BSize" type="Integer" />
+      <parameter name="What" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <procedure name="ZeroMem" visibility="public">
+    <parameters>
+      <parameter name="Dest" paramflags="var" />
+      <parameter name="SizeOf" type="Integer" />
+    </parameters>
+  </procedure>
+  <procedure name="FillDWord" visibility="public">
+    <parameters>
+      <parameter name="Dest" paramflags="var" />
+      <parameter name="Count" type="Integer" />
+      <parameter name="Value" type="Cardinal" />
+    </parameters>
+  </procedure>
+  <function name="GetSwap2" visibility="public">
+    <parameters>
+      <parameter name="A" type="Word" />
+      <retval type="Word" />
+    </parameters>
+  </function>
+  <procedure name="Swap4" visibility="public">
+    <parameters>
+      <parameter name="A" type="Cardinal" paramflags="var" />
+    </parameters>
+  </procedure>
+  <function name="GetSwap4" visibility="public">
+    <parameters>
+      <parameter name="A" type="Cardinal" />
+      <retval type="Cardinal" />
+    </parameters>
+  </function>
+  <procedure name="SwapDWords" visibility="public">
+    <parameters>
+      <parameter name="A" paramflags="var" />
+      <parameter name="B" paramflags="var" />
+    </parameters>
+  </procedure>
+</namespace>

@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="IconList">
+  <devnotes>
+    /////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <array name="TPalEntriesArray" low="0" high="255">
+    <element type="tagPALETTEENTRY" />
+  </array>
+  <pointer name="PPalEntriesArray" type="TPalEntriesArray" indircnt="1" />
+  <class name="TIconImage">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="fWidth" type="Integer" visibility="protected" />
+      <field name="fHeight" type="Integer" visibility="protected" />
+      <field name="fPixelFormat" type="TPixelFormat" visibility="protected" />
+      <field name="fBitsPerPixel" type="Integer" visibility="protected" />
+      <field name="fBytesPerLine" type="Integer" visibility="protected" />
+      <field name="fMaskBytesPerLine" type="Integer" visibility="protected" />
+      <field name="fImageSize" type="Integer" visibility="protected" />
+      <field name="fMaskSize" type="Integer" visibility="protected" />
+      <field name="fPaletteSize" type="Integer" visibility="protected" />
+      <field name="Mask" type="PByteArray" visibility="public" />
+      <field name="Image" type="PByteArray" visibility="public" />
+      <field name="Palette" type="PPalEntriesArray" visibility="public" />
+      <field name="HotSpot" type="TPoint" visibility="public" />
+      <property name="Width" visibility="public" read="fWidth" type="Integer" />
+      <property name="Height" visibility="public" read="fHeight" type="Integer" />
+      <property name="BytesPerLine" visibility="public" read="fBytesPerLine" type="Integer" />
+      <property name="MaskBytesPerLine" visibility="public" read="fMaskBytesPerLine" type="Integer" />
+      <property name="ImageSize" visibility="public" read="fImageSize" type="Integer" />
+      <property name="MaskSize" visibility="public" read="fMaskSize" type="Integer" />
+      <property name="PixelFormat" visibility="public" read="fPixelFormat" type="TPixelFormat" />
+      <property name="BitsPerPixel" visibility="public" read="fBitsPerPixel" type="Integer" />
+      <property name="PaletteSize" visibility="public" read="fPaletteSize" type="Integer" />
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="Width" type="Integer" />
+          <parameter name="Height" type="Integer" />
+          <parameter name="BitsPerPixel" type="Integer" />
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="AssignTo" visibility="public">
+        <parameters>
+          <parameter name="Bitmap" type="TObject" />
+          <parameter name="Transparent" type="TColor">
+            <value>
+              $FFFFFFFF
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="Draw" visibility="public">
+        <parameters>
+          <parameter name="XPos" type="Integer" />
+          <parameter name="YPos" type="Integer" />
+          <parameter name="Canvas" type="TCanvas" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <array name="TIconImageArray" low="0" high="0">
+    <element type="TIconImage" />
+  </array>
+  <pointer name="PIconImageArray" type="TIconImageArray" indircnt="1" />
+  <const name="ltUnknown" type="TIconListType">
+    <value>
+      ltUnknown
+    </value>
+  </const>
+  <const name="ltIcon" type="TIconListType">
+    <value>
+      ltIcon
+    </value>
+  </const>
+  <const name="ltCursor" type="TIconListType">
+    <value>
+      ltCursor
+    </value>
+  </const>
+  <enum name="TIconListType">
+    <element name="ltUnknown" />
+    <element name="ltIcon" />
+    <element name="ltCursor" />
+  </enum>
+  <class name="TIconList">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="fCount" type="Integer" visibility="private" />
+      <field name="fIcons" type="PIconImageArray" visibility="private" />
+      <field name="ListFree" type="Integer" visibility="private" />
+      <field name="ListType" type="TIconListType" visibility="public" />
+      <property name="Count" visibility="public" read="fCount" type="Integer" />
+      <property name="Icons" visibility="public" read="fIcons" type="PIconImageArray" />
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <function name="AddIcon" visibility="public">
+        <parameters>
+          <parameter name="Width" type="Integer" />
+          <parameter name="Height" type="Integer" />
+          <parameter name="BitsPerPixel" type="Integer" />
+          <retval type="TIconImage" />
+        </parameters>
+      </function>
+      <procedure name="AddList" visibility="public">
+        <parameters>
+          <parameter name="List" type="TIconList" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadFromStream" visibility="public">
+        <parameters>
+          <parameter name="Stream" type="TSeekableStream" />
+        </parameters>
+      </procedure>
+      <procedure name="SaveToStream" visibility="public">
+        <parameters>
+          <parameter name="Stream" type="TBaseStream" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadFromFile" visibility="public">
+        <parameters>
+          <parameter name="Name" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="SaveToFile" visibility="public">
+        <parameters>
+          <parameter name="Name" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="Clear" visibility="public">
+      </procedure>
+    </members>
+  </class>
+</namespace>

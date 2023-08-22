@@ -1,0 +1,407 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="ColorMapper">
+  <devnotes>
+    /////////////////////////////////////////////////////////////////////////////
+  </devnotes>
+  <const name="BluePlane" type="Integer">
+    <value>
+      $0
+    </value>
+  </const>
+  <const name="GreenPlane" type="Integer">
+    <value>
+      $1
+    </value>
+  </const>
+  <const name="RedPlane" type="Integer">
+    <value>
+      $2
+    </value>
+  </const>
+  <const name="AllPlanes" type="Integer">
+    <value>
+      $3
+    </value>
+  </const>
+  <array name="TColorMapList" low="0" high="255">
+    <element type="Byte" />
+  </array>
+  <class name="TColorMap">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="Map" type="TColorMapList" visibility="public" />
+      <procedure name="SetDirect" visibility="public">
+      </procedure>
+      <procedure name="SetNegative" visibility="public">
+      </procedure>
+      <procedure name="SetBrightnessContrast" visibility="public">
+        <parameters>
+          <parameter name="Brightness" type="Integer" />
+          <parameter name="Contrast" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetBrightnessContrastCourve" visibility="public">
+        <parameters>
+          <parameter name="Brightness" type="Integer" />
+          <parameter name="Contrast" type="Integer" />
+          <parameter name="Courve" paramflags="var">
+            <array name="Courve">
+              <element type="TPoint" />
+            </array>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="SetBlackWhitePoint" visibility="public">
+        <parameters>
+          <parameter name="Black" type="Integer" />
+          <parameter name="White" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetGamma" visibility="public">
+        <parameters>
+          <parameter name="Gamma" type="Double" />
+        </parameters>
+      </procedure>
+      <procedure name="Threshold" visibility="public">
+        <parameters>
+          <parameter name="Value" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SetZeroPoint" visibility="public">
+        <parameters>
+          <parameter name="Point" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Quantize" visibility="public">
+        <parameters>
+          <parameter name="Levels" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="SmoothCourve" visibility="public">
+        <parameters>
+          <parameter name="Points" paramflags="const">
+            <array name="Points">
+              <element type="TPoint" />
+            </array>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="Add" visibility="public">
+        <parameters>
+          <parameter name="A" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Combine" visibility="public">
+        <parameters>
+          <parameter name="ColorMap2" type="TColorMap" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="Apply" visibility="public" procflags="overload">
+        <parameters>
+          <parameter name="Image" type="TLinearBitmap" />
+          <parameter name="Plane" type="Integer">
+            <value>
+              $3
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="Apply" visibility="public" procflags="overload">
+        <parameters>
+          <parameter name="Palette" type="PPalette" />
+          <parameter name="Plane" type="Integer">
+            <value>
+              $3
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="Apply" visibility="public" procflags="overload">
+        <parameters>
+          <parameter name="OrgMap" type="PByteArray" />
+          <parameter name="NewImage" type="TLinearBitmap" />
+          <parameter name="Plane" type="Integer">
+            <value>
+              $3
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="SaveToStream" visibility="public">
+        <parameters>
+          <parameter name="Stream" type="TBaseStream" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadFromStream" visibility="public">
+        <parameters>
+          <parameter name="Stream" type="TBaseStream" />
+        </parameters>
+      </procedure>
+      <procedure name="SaveToFile" visibility="public">
+        <parameters>
+          <parameter name="FileName" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadFromFile" visibility="public">
+        <parameters>
+          <parameter name="FileName" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+    </members>
+  </class>
+  <array name="THistogramStat" low="0" high="255">
+    <element type="Cardinal" />
+  </array>
+  <class name="THistogram">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="Stat" type="THistogramStat" visibility="public" />
+      <field name="Count" type="Cardinal" visibility="public" />
+      <procedure name="Reset" visibility="public">
+      </procedure>
+      <function name="Max" visibility="public">
+        <parameters>
+          <retval type="Cardinal" />
+        </parameters>
+      </function>
+      <procedure name="Calc" visibility="public" procflags="overload">
+        <parameters>
+          <parameter name="Image" type="TLinearBitmap" />
+          <parameter name="Plane" type="Integer">
+            <value>
+              $3
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="Calc" visibility="public" procflags="overload">
+        <parameters>
+          <parameter name="Image" type="TLinearBitmap" />
+          <parameter name="Rect" type="TRect" paramflags="const" />
+          <parameter name="Plane" type="Integer">
+            <value>
+              $3
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="Update" visibility="public">
+        <parameters>
+          <parameter name="ColorMap" type="TColorMap" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="GetStat" visibility="public">
+        <parameters>
+          <parameter name="MinCol" type="Byte" paramflags="var" />
+          <parameter name="MaxCol" type="Byte" paramflags="var" />
+          <parameter name="Mean" type="Double" paramflags="var" />
+          <parameter name="StdDev" type="Double" paramflags="var" />
+        </parameters>
+      </procedure>
+      <function name="Variance" visibility="public">
+        <parameters>
+          <parameter name="First" type="Byte">
+            <value>
+              $0
+            </value>
+          </parameter>
+          <parameter name="Last" type="Byte">
+            <value>
+              $FF
+            </value>
+          </parameter>
+          <retval type="Double" />
+        </parameters>
+      </function>
+      <procedure name="Equalize" visibility="public">
+        <parameters>
+          <parameter name="Map" type="TColorMap" paramflags="var" />
+          <parameter name="Levels" type="Integer">
+            <value>
+              $100
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <function name="BestGamma" visibility="public">
+        <parameters>
+          <retval type="Double" />
+        </parameters>
+      </function>
+      <procedure name="GetBlackWhitePoint" visibility="public">
+        <parameters>
+          <parameter name="PixelsOut" type="Integer" />
+          <parameter name="Black" type="Integer" paramflags="out" />
+          <parameter name="White" type="Integer" paramflags="out" />
+        </parameters>
+      </procedure>
+      <function name="EqualizeColor" visibility="public">
+        <parameters>
+          <parameter name="Color" type="Byte" />
+          <retval type="Byte" />
+        </parameters>
+      </function>
+      <function name="MostUsedColor" visibility="public">
+        <parameters>
+          <retval type="Byte" />
+        </parameters>
+      </function>
+      <function name="CountColorsUsed" visibility="public">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="SplitBimodalHistogram" visibility="public">
+        <parameters>
+          <retval type="Byte" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <variable name="AllRect" type="TRect" visibility="public" />
+  <function name="CountColorsUsed" visibility="public">
+    <parameters>
+      <parameter name="Image" type="TLinearBitmap" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <procedure name="AutoColorCorrection" visibility="public">
+    <parameters>
+      <parameter name="Image" type="TLinearBitmap" />
+      <parameter name="AnalyzeRect" type="TRect" />
+      <parameter name="SplitPlanes" type="Boolean">
+        <value>
+          False
+        </value>
+      </parameter>
+    </parameters>
+  </procedure>
+  <procedure name="AutoBlackWhitePoint" visibility="public">
+    <parameters>
+      <parameter name="Image" type="TLinearBitmap" />
+    </parameters>
+  </procedure>
+  <procedure name="AdjustSaturationGamma" visibility="public">
+    <parameters>
+      <parameter name="Image" type="TLinearBitmap" />
+      <parameter name="Saturation" type="Double" />
+      <parameter name="GammaR" type="Double">
+        <value>
+          1
+        </value>
+      </parameter>
+      <parameter name="GammaG" type="Double">
+        <value>
+          0
+        </value>
+      </parameter>
+      <parameter name="GammaB" type="Double">
+        <value>
+          0
+        </value>
+      </parameter>
+    </parameters>
+  </procedure>
+</namespace>
