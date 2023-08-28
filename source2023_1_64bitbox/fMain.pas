@@ -192,7 +192,7 @@
           12280   4.7.6.10 X unit unit uPSI_RestUtils;   TEEChart extensions , WGet3()
           12298   4.7.6.20 bugfixing teEngine, tecanvas , PSResources TFEditorBuildRegFuncList(Sender: TPSScript);
             try   5.0.1.10  could not run - alpha state
-          12464   5.0.1.11 first time 24/08/2023 double compile - py64 test
+          12472   5.0.1.11 first time 24/08/2023 double compile - py64 test
 
  ************************************************************************************* }
 
@@ -1231,9 +1231,9 @@ uses
   uPSI_urandom,
   uPSI_usimann,
   uPSI_JvHighlighter,
-  uPSI_Diff,
-  //uPSI_cJSON,
-  uPSI_StBits,
+  uPSI_Diff,   *)
+ // uPSI_cJSON,
+(*  uPSI_StBits,
   uPSI_StAstroP,
   uPSI_StStat,
   uPSI_StNetCon,
@@ -1258,7 +1258,7 @@ uses
   uPSI_SerDlgs,    *)
   //memorymax3,      //add on games  *)
   //gewinntmax3,
-  //IdGlobal_max,   //3.7 for file information    *)
+  IdGlobal_max,   //3.7 for file information    *)
   StrUtils, uPSI_StrUtils,       // dupestring
 
   uPSI_FileCtrl,    //3.5.1
@@ -1579,18 +1579,18 @@ uses
   uPSI_PppState,
   uPSI_PppParser,
   uPSI_PppLexer,
-  uPSI_PCharUtils,
+  uPSI_PCharUtils,  *)
   uPSI_uJSON,
-  uPSI_JclStrHashMap,
+ (* uPSI_JclStrHashMap,
   uPSI_JclHookExcept,
   fplotMain, //add on
   uPSI_EncdDecd,
   uPSI_SockAppReg,
   uPSI_DbxSocketChannelNative,
   uPSI_DbxDataGenerator,
-  uPSI_DBXClient,
+  uPSI_DBXClient,    *)
   uPSI_IdGlobal,
-  uPSI_IdIOHandlerSocket,  //3.9.3
+ (* uPSI_IdIOHandlerSocket,  //3.9.3
   uPSI_IdTCPConnection, //3.1
   IFSI_IdTCPClient,
   uPSI_IdHeaderList,     //3.9.6
@@ -1601,9 +1601,9 @@ uses
   uPSI_HTTPApp, //3.7
   uPSI_IdSocketHandle,
   uPSI_IdTCPServer,
-  uPSI_IdCustomHTTPServer,
+  uPSI_IdCustomHTTPServer, *)
   IFSI_IdURI,
-  IFSI_IdFTP,
+ (* IFSI_IdFTP,
   uPSI_IdRemoteCMDClient,
   uPSI_IdRemoteCMDServer,
   uPSI_IdRexec,
@@ -1633,9 +1633,9 @@ uses
   uPSI_JvWinampApi, //3.9.9.60    *)
   uPSI_MSysUtils,
  (* uPSI_ESBMaths2,
-  uPSI_ESBMaths,
+  uPSI_ESBMaths,  *)
   uPSI_uLkJSON,
-  uPSI_ZURL,
+(*  uPSI_ZURL,
   uPSI_ZSysUtils,  //3.9.9.60
   uPSI_ZMatchPattern,
   uPSI_ZClasses,
@@ -2028,8 +2028,8 @@ uses
   uPSI_jcontrolutils,
   uPSI_kcMapViewer, //add GeoNames
   uPSI_kcMapViewerDESynapse,
-  uPSI_cparserutils,    //3.9.9.98_7
-  //uPSI_GIS_SysUtils,  *)
+  uPSI_cparserutils,    //3.9.9.98_7   *)
+  //uPSI_GIS_SysUtils,  //*)
   uPSI_LedNumber,
 (*  uPSI_StStrL,         //3.9.9.98_8
   uPSI_indGnouMeter,  *)
@@ -2155,10 +2155,10 @@ uses
   uPSI_xercesxmldom,
   uPSI_xmldom,
   uPSI_JclExprEval,
-  uPSI_Gameboard,
+  uPSI_Gameboard, *)
   uPSI_ExtPascal,
   uPSI_ExtUtil,
-  uPSI_FCGIApp,
+ (* uPSI_FCGIApp,
   uPSI_PersistSettings,  //also Windows API Settings  SpectraLib , pipehelper, pipe2
   uPSI_SynEditAutoComplete,
   uPSI_SynEditTextBuffer,
@@ -2222,9 +2222,9 @@ uses
   uPSI_ChronCheck,
   uPSI_REXX,
   uPSI_SysImg,
-  uPSI_Tokens,
+  uPSI_Tokens,   *)
   uPSI_KFunctions,   //func pac campbell
-  uPSI_KMessageBox,
+(*  uPSI_KMessageBox,
   uPSI_NamedPipesImpl,
   uPSI_KLog,                //4.2.0.80  plus thread
   uPSI_NamedPipeThreads,
@@ -2254,9 +2254,9 @@ uses
   uPSI_IdCoderHeader,
   uPSI_uMRU,
   uPSI_FannNetwork,  //needs a dll !
-  uPSI_RTLDateTimeplus,       //46210
+  uPSI_RTLDateTimeplus,       //46210   *)
   uPSI_ULog,
-  uPSI_UThread,
+ (* uPSI_UThread,
   uPSI_UTCPIP,
   uPSI_statmach,           //46310
   uPSI_uTPLb_RSA_Primitives,
@@ -2314,23 +2314,23 @@ uses
   uPSI_neuralcache,
   uPSI_neuralbyteprediction,     //4.7.4.60
   uPSI_neuralplanbuilder,
- (* uPSI_USearchAnagrams,          //4.7.4.62
+ (* uPSI_USearchAnagrams,          //4.7.4.62     *)
   uPSI_JsonsUtilsEx,
    uPSI_Jsons,
-   uPSI_Bricks,
+ (*  uPSI_Bricks,
    uPSI_lifeblocks,           //4.7.4.64
    //uPSI_SystemsDiagram,       //4.7.5.20 -----  47520
   //uPSI_qsFoundation,    *)
   //uPSI_Prediction,
  // uPSI_cInternetUtils2,
- (* uPSI_cWindows,
-  uPSI_flcSysUtils,            // include exclude
-  uPSI_RotImg,
+ // uPSI_cWindows,
+ (* uPSI_flcSysUtils,            // include exclude  *)
+  uPSI_RotImg, //*)
   uPSI_SimpleImageLoader,
   uPSI_HSLUtils,
   uPSI_GraphicsMathLibrary,
   //uPSI_umodels,
-  uPSI_flcStatistics,
+(*  uPSI_flcStatistics,
   uPSI_flcMaths,
   uPSI_flcCharSet,
   uPSI_flcBits32,
@@ -2390,12 +2390,12 @@ uses
   uPSI_BlocksUnit,
   uPSI_DelticsCommandLine,
   uPSI_DelticsStrUtils,
-  uPSI_DelticsBitField,
+  uPSI_DelticsBitField, *)
   uPSI_DelticsSysUtils,    //4.7.6.10 III
   uPSI_U_Splines,     //4.7.6.10 IV
   uPSI_U_CoasterB,
   //uPSI_clJsonSerializerBase,
-  uPSI_clJsonParser,   *)
+(*  uPSI_clJsonParser,   *)
   uPSI_SynHighlighterPython,
 (*  uPSI_DudsCommonDelphi,
   uPSI_AINNNeuron,  *)
@@ -2403,10 +2403,12 @@ uses
   uPSI_WinApiDownload,
   uPSI_pxQRcode,    //4.7.6.10 VII     *)
   uPSI_DelphiZXingQRCode,
-//  uPSI_RestJsonUtils,
- // uPSI_KLibUtils,           // 4.7.6.10 VIII
-  //uPSI_KLibWindows,   *)
+  uPSI_RestJsonUtils,
+  uPSI_KLibUtils,           // 4.7.6.10 VIII
+  uPSI_KLibWindows,   //*)
   //uPSI_AzuliaUtils,           //httpget
+  uPSI_HttpConnection,
+  uPSI_HttpConnectionWinInet,
   uPSI_RestUtils,
   uPSI_PSResources,         //4.7.6.20
   uPSI_RestClient,
@@ -2417,7 +2419,7 @@ uses
   //uPSI_SimpleSFTP,  *)
   uPSI_WbemScripting_TLB,  //*-->uPSI_ComObjOleDB_utils;)
   uPSI_wmiserv,
-  uPSI_uJSON,   //*)
+ // uPSI_uJSON,   //*)
   uPSI_RegSvrUtils,
 (*  uPSI_osFileUtil,   //4.2.4.60    *)
  // uPSI_SHDocVw,       //twebbrowser
@@ -2441,9 +2443,10 @@ uses
   uPSI_WDosDrivers,      //4.2.5.10 IV
   uPSI_cCipherRSA,
   uPSI_CromisStreams,   //4.2.6.10
-  uPSI_uTPLb_BinaryUtils,
-  uPSI_UJSONFunctions, //UJSONFunctions.pas
-  uPSI_USha256,  *)
+  uPSI_uTPLb_BinaryUtils,    *)
+  uPSI_UJSONFunctions,
+  //UJSONFunctions.pas
+(*  uPSI_USha256,  *)
   //uPSI_Series,
  (* uPSI_uTPLb_HashDsc,
   uPSI_uTPLb_Hash,
@@ -2879,9 +2882,9 @@ begin
   SIRegister_TIdHTTPProtocol(x);
   SIRegister_TIdHTTPRequest(x);
   SIRegister_TIdHTTPResponse(x);}
-  SIRegister_IdException(X);
+  SIRegister_IdException(X); *)
   SIRegister_IdGlobal(X);     //remove 3.9.9.1
-  SIRegister_IdRFCReply(X);   //3.9.7.5
+ (* SIRegister_IdRFCReply(X);   //3.9.7.5
   SIRegister_IdDateTimeStamp(X);  //3.9.9.40
   SIRegister_IdStack(X);
   SIRegister_IdSocks(X);
@@ -2929,10 +2932,10 @@ begin
   SIRegister_IdHTTPHeaderInfo(X);
   SIRegister_IdHTTP(x);
   SIRegister_HTTPApp(X);
-  //SIRegister_TIdURI(x);
+  //SIRegister_TIdURI(x);   *)
   SIRegister_IdURI(x);
   //SIRegister_IdSocketHandle(X);
-  SIRegister_IdTCPServer(X);
+ (* SIRegister_IdTCPServer(X);
   SIRegister_IdFTP(X);
   SIRegister_IdCustomHTTPServer(X); //3.9.3
   SIRegister_IdSSLOpenSSL(X);
@@ -3673,10 +3676,10 @@ begin
   SIRegister_xercesxmldom(X);
   SIRegister_xmldom(X);
   SIRegister_JclExprEval(X);
-  SIRegister_Gameboard(X);
+  SIRegister_Gameboard(X);    *)
   SIRegister_ExtPascal(X);
   SIRegister_ExtUtil(X);
-  SIRegister_FCGIApp(X);
+(*  SIRegister_FCGIApp(X);
   SIRegister_PersistSettings(X);
   SIRegister_SynEditAutoComplete(X);
   SIRegister_SynEditTextBuffer(X);
@@ -3746,9 +3749,9 @@ begin
   SIRegister_ChronCheck(X);
   SIRegister_REXX(X);
   SIRegister_SysImg(X);
-  SIRegister_Tokens(X);
+  SIRegister_Tokens(X); *)
   SIRegister_KFunctions(X);
-  SIRegister_KMessageBox(X);
+(*  SIRegister_KMessageBox(X);
   SIRegister_NamedPipesImpl(X);
   SIRegister_KLog(X);               //4.2.0.80
   SIRegister_NamedPipeThreads(X);
@@ -3804,7 +3807,7 @@ begin
   SIRegister_CromisStreams(X);
   SIRegister_uTPLb_BinaryUtils(X);
   SIRegister_USha256(X);     *)
- // SIRegister_UJSONFunctions(X);
+  SIRegister_UJSONFunctions(X);
   //SIRegister_uTPLb_HashDsc(X);
  (* SIRegister_uTPLb_Hash(X);
   SIRegister_UTime(X);
@@ -3825,19 +3828,19 @@ begin
   SIRegister_neuralcache(X);
   SIRegister_neuralbyteprediction(X);
  (* SIRegister_USearchAnagrams(X);
-  SIRegister_HashUnit(X);          //4.7.4.62
+  SIRegister_HashUnit(X);          //4.7.4.62   *)
   SIRegister_JsonsUtilsEx(X);
   SIRegister_Jsons(X);
-  SIRegister_Bricks(X);
-  SIRegister_lifeblocks(X);       //4.7.4.64
-  SIRegister_cInternetUtils(X);    //4.7.5.20 -----  47520
-  SIRegister_cWindows(X);
-  SIRegister_flcSysUtils(X);
+ (* SIRegister_Bricks(X);
+  SIRegister_lifeblocks(X);       //4.7.4.64       *)
+ // SIRegister_cInternetUtils(X);    //4.7.5.20 -----  47520
+ // SIRegister_cWindows(X);
+ (* SIRegister_flcSysUtils(X);      *)
   SIRegister_SimpleImageLoader(X);
   SIRegister_RotImg(X);
   SIRegister_HSLUtils(X);
   SIRegister_GraphicsMathLibrary(X);
-  SIRegister_flcStatistics(X);
+(*  SIRegister_flcStatistics(X);
   SIRegister_flcMaths(X);
   //SIRegister_flcCharSet(X); ---> behind cfundamentutils cause charset
   //SIRegister_flcBits32(X);   ---> behind cause word32
@@ -3898,11 +3901,11 @@ begin
   SIRegister_BlocksUnit(X);
   SIRegister_DelticsCommandLine(X);
   SIRegister_DelticsStrUtils(X);
-  SIRegister_DelticsBitField(X);
+  SIRegister_DelticsBitField(X);    *)
   SIRegister_DelticsSysUtils(X);    //4.7.6.10 III
   SIRegister_U_Splines(X);
   SIRegister_U_CoasterB(X);
-  SIRegister_clJsonParser(X);    *)
+ (* SIRegister_clJsonParser(X);    *)
   SIRegister_SynHighlighterPython(X);  //4.7.6.10 V
 (*  SIRegister_DudsCommonDelphi(X);
   SIRegister_AINNNeuron(X);    *)
@@ -3911,13 +3914,15 @@ begin
   //uPSI_pxQRcode.pas                 //4.7.6.10 VII
   SIRegister_pxQRcode(X);  //*)
   SIRegister_DelphiZXingQRCode(X);
-(*  SIRegister_RestJsonUtils(X);
+ SIRegister_RestJsonUtils(X);  //*)
   SIRegister_KLibUtils(X);
   SIRegister_KLibWindows(X);
-  SIRegister_AzuliaUtils(X);   *)
+ // SIRegister_AzuliaUtils(X);   *)
   SIRegister_RestUtils(X);
  SIRegister_PSResources(X);           //4.7.6.20
   //PSResources;
+  SIRegister_HttpConnection(X);
+  SIRegister_HttpConnectionWinInet(X);
   SIRegister_RestClient(X);
 
  (* SIRegister_XMLIntf(X);
@@ -4096,9 +4101,9 @@ begin
   SIRegister_JvWinampApi(X);     *)
   SIRegister_MSysUtils(X);
  (* SIRegister_ESBMaths(X);
-  SIRegister_ESBMaths2(X);
+  SIRegister_ESBMaths2(X);   *)
   SIRegister_uLkJSON(X);
-  SIRegister_ZSysUtils(X);
+(*  SIRegister_ZSysUtils(X);
   SIRegister_ZURL(X);
   SIRegister_ZClasses(X);
   SIRegister_ZMatchPattern(X);
@@ -4385,24 +4390,24 @@ begin
   RIRegister_neuralcache(X);
   RIRegister_neuralbyteprediction(X);
 (*  RIRegister_USearchAnagrams(X);
-  RIRegister_HashUnit(X);            //4.7.4.62
+  RIRegister_HashUnit(X);            //4.7.4.62    *)
   RIRegister_Jsons(X);
   RIRegister_JsonsUtilsEx_Routines(Exec);
-  RIRegister_Bricks(X);
+ (* RIRegister_Bricks(X);
   RIRegister_lifeblocks(X);
   RIRegister_cInternetUtils_Routines(Exec);  ////4.7.5.20  ----47520
   RIRegister_cInternetUtils(X);
   RIRegister_cWindows_Routines(Exec);
   RIRegister_cWindows(X);
   RIRegister_flcSysUtils_Routines(Exec);
-  RIRegister_flcSysUtils(X);
+  RIRegister_flcSysUtils(X);   *)
   RIRegister_SimpleImageLoader(X);
   RIRegister_RotImg_Routines(Exec);
   RIRegister_RotImg(X);
   RIRegister_HSLUtils_Routines(Exec);
   RIRegister_GraphicsMathLibrary_Routines(Exec);
   RIRegister_GraphicsMathLibrary(X);
-  RIRegister_flcStatistics_Routines(Exec);
+(*  RIRegister_flcStatistics_Routines(Exec);
   RIRegister_flcStatistics(X);
   RIRegister_flcMaths_Routines(Exec);
   RIRegister_flcCharSet_Routines(Exec);
@@ -4746,8 +4751,8 @@ begin
   RIRegister_JvDBRichEd(X);
   RIRegister_JvDice(X);
   //RIRegister_JclMime(X);
-  //RIRegister_TIdURI(x);
-  RIRegister_IdURI(X);    *)
+  //RIRegister_TIdURI(x);   *)
+  RIRegister_IdURI(X);    //*)
    RIRegister_SyncObjs(X);
   //RIRegister_AsyncCalls_Routines(Exec);
 (*  RIRegister_AsyncCalls(X);
@@ -4966,10 +4971,10 @@ begin
   RIRegister_IdMappedPortUDP(X);   *)
   RIRegister_MSysUtils_Routines(Exec);
  (* RIRegister_ESBMaths2_Routines(Exec);
-  RIRegister_ESBMaths_Routines(Exec);
+  RIRegister_ESBMaths_Routines(Exec);     *)
   RIRegister_uLkJSON(X);
   RIRegister_uLkJSON_Routines(Exec);
-  RIRegister_ZURL(X);
+ (* RIRegister_ZURL(X);
   RIRegister_ZSysUtils(X);
   RIRegister_ZSysUtils_Routines(Exec);
   RIRegister_ZClasses(X);
@@ -5530,12 +5535,12 @@ begin
   RIRegister_DelticsCommandLine(X);
   RIRegister_DelticsStrUtils(X);
   RIRegister_DelticsStrUtils_Routines(Exec);
-  RIRegister_DelticsBitField(X);
+  RIRegister_DelticsBitField(X);     *)
   RIRegister_DelticsSysUtils_Routines(Exec);
   RIRegister_DelticsSysUtils(X);                //4.7.6.10 III
   RIRegister_U_Splines(X);
   RIRegister_U_CoasterB(X);
-  RIRegister_MARSCoreUtils_Routines(Exec);
+ (* RIRegister_MARSCoreUtils_Routines(Exec);
   RIRegister_clJsonParser(X);
   RIRegister_SynHighlighterPython(X);
   RIRegister_DudsCommonDelphi_Routines(Exec);
@@ -5545,14 +5550,16 @@ begin
   RIRegister_pxQRcode_Routines(Exec);   //*)
   RIRegister_DelphiZXingQRCode(X);
  (* RIRegister_RestJsonUtils_Routines(Exec);
-  RIRegister_RestJsonUtils(X);
+  RIRegister_RestJsonUtils(X);  *)
   RIRegister_KLibUtils_Routines(Exec);   //VIII
   RIRegister_KLibWindows_Routines(Exec);
-  RIRegister_AzuliaUtils_Routines(Exec);
+ (* RIRegister_AzuliaUtils_Routines(Exec);
   RIRegister_AzuliaUtils(X); *)
   RIRegister_RestUtils(X);
   RIRegister_PSResources(X);
   RIRegister_PSResources_Routines(Exec);
+  RIRegister_HttpConnection(X);
+  RIRegister_HttpConnectionWinInet(X);
   RIRegister_RestClient(X);
 
  (* RIRegister_StExpr(X);
@@ -5663,11 +5670,11 @@ begin
   RIRegister_xmldom_Routines(Exec);
   RIRegister_JclExprEval(X);
   RIRegister_Gameboard(X);
-  RIRegister_Gameboard_Routines(Exec);
+  RIRegister_Gameboard_Routines(Exec);   *)
 
   RIRegister_ExtPascal(X);
   RIRegister_ExtUtil(X);
-  RIRegister_FCGIApp(X);
+ (* RIRegister_FCGIApp(X);
   RIRegister_PersistSettings_Routines(Exec);
   RIRegister_PersistSettings(X);
   RIRegister_SynEditAutoComplete(X);
@@ -5752,9 +5759,9 @@ begin
   RIRegister_REXX_Routines(exec);
   RIRegister_SysImg(X);
   RIRegister_SysImg_Routines(exec);
-  RIRegister_Tokens(X);
+  RIRegister_Tokens(X);    *)
   RIRegister_KFunctions_Routines(Exec);
-  RIRegister_KMessageBox_Routines(Exec);
+ (* RIRegister_KMessageBox_Routines(Exec);
   RIRegister_NamedPipeThreads(X);
   RIRegister_NamedPipesImpl(X);
   RIRegister_KLog(X);
@@ -5822,9 +5829,9 @@ begin
   RIRegister_TNamesEnumerator(X);
   RIRegister_CromisStreams_Routines(Exec);
   RIRegister_uTPLb_BinaryUtils_Routines(Exec);
-   RIRegister_USha256_Routines(Exec);
+   RIRegister_USha256_Routines(Exec);  *)
   RIRegister_UJSONFunctions(X);
-  RIRegister_uTPLb_Hash(X);        //4.2.6.10
+ (* RIRegister_uTPLb_Hash(X);        //4.2.6.10
   RIRegister_UTime_Routines(Exec);
   RIRegister_uTPLb_Codec(X);    //4.2.8.10
   RIRegister_uTPLb_BlockCipher(X);
@@ -5899,10 +5906,10 @@ begin
   RIRegister_IdHashSHA1(X);
   RIRegister_IdLogFile(X);
   RIRegister_IdTime(X);
-  RIRegister_IdDayTime(X);
+  RIRegister_IdDayTime(X);   *)
   RIRegister_IdGlobal(X);
   RIRegister_IdGlobal_Routines(exec);
-  RIRegister_IdEMailAddress(X);
+ (* RIRegister_IdEMailAddress(X);
   RIRegister_IdMessage(X);
   RIRegister_IdMessageClient(X);
   RIRegister_IdSMTP(X);
@@ -11462,6 +11469,7 @@ begin
   if CompileDebug then begin
     cedebug.GetCompiled(s);
     IFPS3DataToText(s, sout);
+    debugout.font.size:= 12;
     debugout.Caption:= 'Debug Decompile Output';
     debugout.output.Lines.Text:= sout;
     debugout.output.Lines.Add('Decompiled Code maXbox: ' +
