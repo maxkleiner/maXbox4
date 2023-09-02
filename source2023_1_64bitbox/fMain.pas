@@ -192,7 +192,7 @@
           12280   4.7.6.10 X unit unit uPSI_RestUtils;   TEEChart extensions , WGet3()
           12298   4.7.6.20 bugfixing teEngine, tecanvas , PSResources TFEditorBuildRegFuncList(Sender: TPSScript);
             try   5.0.1.10  could not run - alpha state
-          12480   5.0.1.11 first time 24/08/2023 double compile - py64 test
+          12481   5.0.1.11 first time 24/08/2023 double compile - py64 test
 
  ************************************************************************************* }
 
@@ -975,7 +975,7 @@ type
     function CompileDebug: Boolean;
     function ExecuteDebug: Boolean;
     function RunCompiledScript(bytecode: ansistring; out RTErrors: string): boolean;
-    procedure showandSaveBCode(const bdata: string);
+    procedure showandSaveBCode(const bdata: ansistring);
     procedure lineToNumber(met: boolean);
     procedure defFileread;
     procedure SaveFileOptionsToIni(const filen: string);
@@ -1003,7 +1003,7 @@ type
     procedure ClickinListbox2(sender: TObject);
     procedure defFilereadUpdate;
     function RunCompiledScript2(Bytecode: AnsiString;
-      out RuntimeErrors: AnsiString): Boolean;
+      out RuntimeErrors: String): Boolean;
     procedure SetTodoMarks(myFile: string);
    //procedure DoEditorExecuteCommand(EditorCommand: word);
   //  procedure WebScannerDirect(urls: string);
@@ -1117,11 +1117,11 @@ uses
   (*
   uPSI_JclStatistics,
   uPSI_JclMiscel,
-  uPSI_JclLogic,
+  uPSI_JclLogic,  *)
   uPSI_uTPLb_StreamUtils,  //LockBox3
   uPSI_uTPLb_AES,
   uPSI_uTPLb_SHA2,
-  uPSI_AESPassWordDlg,     *)
+  uPSI_AESPassWordDlg,     //*)
   uPSI_MathUtils,
   //uPSI_JclMultimedia,   *)
   uPSI_FMTBcd,
@@ -1183,10 +1183,10 @@ uses
   uPSI_HexDump,
 (*  uPSI_JvHtmlParser,
   uPSI_JvgXMLSerializer,
-  uPSI_JvStrings,
+  uPSI_JvStrings,  *)
   uPSI_uTPLb_IntegerUtils,
   uPSI_uTPLb_HugeCardinal,
-  uPSI_uTPLb_HugeCardinalUtils,    *)
+  uPSI_uTPLb_HugeCardinalUtils,    //*)
   uPSI_SynRegExpr,    //RegExprStudio!
   uPSI_SynURIOpener,
   uPSI_StBase,
@@ -1279,9 +1279,9 @@ uses
   uPSI_ugamma,
   uPSI_StSpawn,
   uPSI_actionMain,
-  uPSI_CtlPanel,                    DragQueryFile( Drop : HDROP;
+  uPSI_CtlPanel,                    DragQueryFile( Drop : HDROP;  *)
   uPSI_LongIntList,
-  uPSI_xrtl_util_CPUUtils,
+(*  uPSI_xrtl_util_CPUUtils,
   uPSI_xrtl_net_URI,
   uPSI_xrtl_net_URIUtils,
   uPSI_xrtl_util_StrUtils,
@@ -1789,9 +1789,9 @@ uses
   uPSI_Joystick,
   uPSI_ScreenSaver,
   uPSI_XCollection,
-  uPSI_Polynomials,
+  uPSI_Polynomials,   *)
   uPSI_PersistentClasses, //9.86
-  uPSI_XOpenGL,
+ (* uPSI_XOpenGL,
   uPSI_VectorLists,
   uPSI_MeshUtils,
   uPSI_JclSysUtils,
@@ -1861,18 +1861,18 @@ uses
   uPSI_synhttp_daemon,
   uPSI_NetWork,
   uPSI_PingThread,
-  uPSI_JvThreadTimer,
+  uPSI_JvThreadTimer,    *)
   uPSI_wwSystem,
-  uPSI_IdComponent,
+(*  uPSI_IdComponent,
   uPSI_IdIOHandlerThrottle,
   uPSI_Themes,
   uPSI_StdStyleActnCtrls,
   uPSI_UDDIHelper,
   uPSI_IdIMAP4Server,
-  uPSI_VariantSymbolTable, //3.9.9.92
+  uPSI_VariantSymbolTable, //3.9.9.92   *)
   uPSI_udf_glob,
-  uPSI_TabGrid,
-  uPSI_JsDBTreeView,
+ // uPSI_TabGrid,
+ (* uPSI_JsDBTreeView,
   uPSI_JsSendMail,
   uPSI_dbTvRecordList,
   uPSI_TreeVwEx,
@@ -1883,8 +1883,8 @@ uses
 //  uPSI_FileIntf,
   //uPSI_SockTransport,   *)
   uPSI_WinInet,
-(*  uPSI_Wwstr,
-  uPSI_DBLookup,
+  uPSI_Wwstr,
+(*  uPSI_DBLookup,
   uPSI_Printgri,
   uPSI_Hotspot,
   uPSI_HList,
@@ -2078,9 +2078,9 @@ uses
   uPSI_ShellCtrls,
   uPSI_fmath,
   uPSI_fcomp,     //3.9.9.160
-  //uPSI_HighResTimer,   //*)
-  //uconvMain,
- // uPSI_uconvMain,  // *)
+  uPSI_HighResTimer,   //*)
+  uconvMain,
+  uPSI_uconvMain,  // *)
   uPSI_ParserUtils,
   //uPSI_uPSUtils,   //3.9.9.160    - add func CalculateDigits
   //uPSI_ParserU,
@@ -2155,8 +2155,8 @@ uses
   uPSI_DBOleCtl,
   uPSI_xercesxmldom,
   uPSI_xmldom,
-  uPSI_JclExprEval,
-  uPSI_Gameboard, *)
+  uPSI_JclExprEval, *)
+  uPSI_Gameboard, //*)
   uPSI_ExtPascal,
   uPSI_ExtUtil,
  (* uPSI_FCGIApp,
@@ -2295,12 +2295,12 @@ uses
   uPSI_ALExecute2,
   uPSI_ALIsapiHTTP,         //4.7.1.80
   uPSI_uUsb,
-  uPSI_uWebcam,
+  uPSI_uWebcam,     *)
   uPSI_uTPLb_MemoryStreamPool,   //4.7.1.80 II
   uPSI_uTPLb_Signatory,
   uPSI_uTPLb_Constants,
   uPSI_uTPLb_Random,
-  uPSI_EwbCoreTools,
+(*  uPSI_EwbCoreTools,
   uPSI_EwbUrl,
   uPSI_SendMail_For_Ewb, *)
   uPSI_MaskEdit,
@@ -2448,17 +2448,17 @@ uses
   uPSI_UJSONFunctions,
   //UJSONFunctions.pas
 (*  uPSI_USha256,  *)
-  //uPSI_Series,
- (* uPSI_uTPLb_HashDsc,
+  //uPSI_Series,    *)
+  uPSI_uTPLb_HashDsc,
   uPSI_uTPLb_Hash,
   //uPSI_mimeinln,
-  uPSI_UTime, // UTime,
+  uPSI_UTime, // UTime,  *)
   uPSI_uTPLb_StreamCipher,    //4.2.8.10
   uPSI_uTPLb_BlockCipher,
   uPSI_uTPLb_Asymetric,
   uPSI_uTPLb_CodecIntf,
   uPSI_uTPLb_Codec,
-  uPSI_ADOInt,*)
+ // uPSI_ADOInt,*)
   //uPSI_MidasCon,
  (* uPSI_XMLIntf,
   uPSI_XMLDoc,
@@ -2755,16 +2755,16 @@ begin
   SIRegister_JvTurtle(X);
 (*  SIRegister_JvHtmlParser(X);
   SIRegister_JvgXMLSerializer(X);
-  SIRegister_JvStrings(X);
+  SIRegister_JvStrings(X);    *)
   SIRegister_uTPLb_MemoryStreamPool(X);     //4.7.1.80
   SIRegister_uTPLb_Constants(X);
-  SIRegister_uTPLb_Random(X);
+  SIRegister_uTPLb_Random(X);  //*)
 
   SIRegister_uTPLb_IntegerUtils(X);
   SIRegister_uTPLb_HugeCardinal(X);
   SIRegister_uTPLb_HugeCardinalUtils(X);
   SIRegister_LongIntList(X);
-  SIRegister_SortThds(X);
+ (* SIRegister_SortThds(X);
   SIRegister_ThSort(X);
   SIRegister_JvExprParser(X);   *)
   SIRegister_SynRegExpr(X);
@@ -2853,18 +2853,18 @@ begin
  (* SIRegister_StTxtDat(X);     *)
   SIRegister_StRegEx(X);
   SIRegister_HexDump(X);
-  //SIRegister_uTPLb_Codec(X);    //mX 4.7.1.80
- (*  SIRegister_uTPLb_StreamUtils(X);
+  SIRegister_uTPLb_Codec(X);    //mX 4.7.1.80
+  SIRegister_uTPLb_StreamUtils(X);
   SIRegister_uTPLb_StreamCipher(X); // uPSI_uTPLb_StreamCipher,
   SIRegister_uTPLb_BlockCipher(X);
   SIRegister_uTPLb_CodecIntf(X); ///uPSI_uTPLb_CodecIntf.pas
   SIRegister_uTPLb_Asymetric(X); //uPSI_uTPLb_Asymetric,
-//  SIRegister_uTPLb_Signatory(X);      //check codec
+  SIRegister_uTPLb_Signatory(X);      //check codec
 
   SIRegister_uTPLb_AES(X);
   SIRegister_uTPLb_SHA2(X);
   SIRegister_AESPassWordDlg(X);
-  SIRegister_JclMultimedia(X);    *)
+(*  SIRegister_JclMultimedia(X);    *)
   SIRegister_TTypeTranslatoR(X);
 (*  SIRegister_IdMessageCoder(X);
   SIRegister_IdMessageCoderMIME(X);
@@ -3346,9 +3346,9 @@ begin
   SIRegister_ScreenSaver(X);
   SIRegister_Polynomials(X);
   SIRegister_XCollection(X);
-  //RIRegister_XCollection_Routines(Exec);
+  //RIRegister_XCollection_Routines(Exec);  *)
   SIRegister_PersistentClasses(X);
-  SIRegister_XOpenGL(X);
+(* SIRegister_XOpenGL(X);
   SIRegister_VectorLists(X);
   SIRegister_MeshUtils(X);
   SIRegister_JclBorlandTools(X); //3.9.9.86
@@ -3410,19 +3410,19 @@ begin
   SIRegister_synhttp_daemon(X);
   SIRegister_PingThread(X);
   SIRegister_JvThreadTimer(X);
-  SIRegister_NetWork(X);
+  SIRegister_NetWork(X);   *)
   SIRegister_wwSystem(X);
-  SIRegister_Themes(X);
+(*  SIRegister_Themes(X);
   SIRegister_StdStyleActnCtrls(X);
   SIRegister_UDDIHelper(X);
   SIRegister_IdIMAP4Server(X);
-  SIRegister_VariantSymbolTable(X);
+  SIRegister_VariantSymbolTable(X);   *)
   SIRegister_udf_glob(X);
-  SIRegister_TabGrid(X);
+ (* SIRegister_TabGrid(X);
   SIRegister_JsDBTreeView(X);
-  SIRegister_JsSendMail(X);         //3.9.9.92
+  SIRegister_JsSendMail(X);         //3.9.9.92     *)
   SIRegister_Wwstr(X);
-  SIRegister_dblookup(X);
+(*  SIRegister_dblookup(X);
   SIRegister_Printgri(X);
   SIRegister_Hotspot(X);
   SIRegister_HList(X);
@@ -3606,8 +3606,8 @@ begin
  SIRegister_ShellCtrls(X);
  //SIRegister_fmath(X);
  SIRegister_fcomp(X);     //3.9.9.160
-(* SIRegister_HighResTimer(X);
- SIRegister_uconvMain(X);   *)
+ SIRegister_HighResTimer(X);
+ SIRegister_uconvMain(X);   //*)
  SIRegister_ParserUtils(X);
  //SIRegister_uPSUtils(X);
  //SIRegister_ParserU(X);
@@ -3676,8 +3676,8 @@ begin
   //SIRegister_NSToIS(X);     no ns-http*.dll
   SIRegister_xercesxmldom(X);
   SIRegister_xmldom(X);
-  SIRegister_JclExprEval(X);
-  SIRegister_Gameboard(X);    *)
+  SIRegister_JclExprEval(X);   *)
+  SIRegister_Gameboard(X);   // *)
   SIRegister_ExtPascal(X);
   SIRegister_ExtUtil(X);
 (*  SIRegister_FCGIApp(X);
@@ -3809,12 +3809,12 @@ begin
   SIRegister_uTPLb_BinaryUtils(X);
   SIRegister_USha256(X);     *)
   SIRegister_UJSONFunctions(X);
-  //SIRegister_uTPLb_HashDsc(X);
- (* SIRegister_uTPLb_Hash(X);
+  SIRegister_uTPLb_HashDsc(X);
+ SIRegister_uTPLb_Hash(X);
   SIRegister_UTime(X);
   SIRegister_uTPLb_Codec(X);   //4.2.8.10     move up
   SIRegister_uTPLb_Signatory(X);      //check codec
-  SIRegister_EwbCoreTools(X);
+ (* SIRegister_EwbCoreTools(X);
   SIRegister_SendMail_For_Ewb(X);
   SIRegister_EwbUrl(X);    *)
   SIRegister_MaskEdit(X);
@@ -4293,11 +4293,11 @@ begin
   RIRegister_SynRegExpr_Routines(Exec);
 (*  RIRegister_JvHtmlParser(X);
   RIRegister_JvgXMLSerializer(X);
-  RIRegister_JvStrings_Routines(Exec);
+  RIRegister_JvStrings_Routines(Exec);   *)
   RIRegister_uTPLb_IntegerUtils_Routines(Exec);
   RIRegister_uTPLb_HugeCardinal(X);
   RIRegister_uTPLb_HugeCardinalUtils_Routines(Exec);
-  RIRegister_LongIntList(X);     *)
+  RIRegister_LongIntList(X);    // *)
   RIRegister_StBase(X);
   RIRegister_StBase_Routines(Exec);
   RIRegister_StUtils_Routines(Exec);  //SysTools4
@@ -4370,10 +4370,10 @@ begin
   //RIRegister_ALLibPhoneNumber_Routines(Exec);
   RIRegister_ALExecute_Routines2(Exec);
   RIRegister_uUsb(X);
-  RIRegister_uWebcam_Routines(Exec);
+  RIRegister_uWebcam_Routines(Exec);    *)
   RIRegister_uTPLb_MemoryStreamPool(X);  //4.7.1.80
   RIRegister_uTPLb_Signatory(X);
-  RIRegister_EwbCoreTools_Routines(Exec);
+ (* RIRegister_EwbCoreTools_Routines(Exec);
   RIRegister_EwbUrl(X);
   RIRegister_SendMail_For_Ewb_Routines(Exec);
   RIRegister_SendMail_For_Ewb(X);     *)
@@ -4653,15 +4653,15 @@ begin
   RIRegister_JvCsvParse_Routines(Exec);  *)
   RIRegister_HexDump(X);
   RIRegister_HexDump_Routines(Exec);
- (* RIRegister_uTPLb_StreamUtils_Routines(Exec); //4.2.8.10
-  RIRegister_uTPLb_StreamCipher(X); // uPSI_uTPLb_StreamCipher,
-  RIRegister_uTPLb_Asymetric(X); //uPSI_uTPLb_Asymetric,
+  RIRegister_uTPLb_StreamUtils_Routines(Exec); //4.2.8.10
+ (* RIRegister_uTPLb_StreamCipher(X); // uPSI_uTPLb_StreamCipher,
+  RIRegister_uTPLb_Asymetric(X); //uPSI_uTPLb_Asymetric,  *)
   RIRegister_uTPLb_Random(X);
 
   RIRegister_uTPLb_AES(X);
   RIRegister_uTPLb_AES_Routines(Exec);
   RIRegister_uTPLb_SHA2(X);
-  RIRegister_AESPassWordDlg(X);  *)
+ (* RIRegister_AESPassWordDlg(X);  *)
   RIRegister_MathUtils_Routines(Exec);
 (*  RIRegister_JclMultimedia(X);
   RIRegister_JclMultimedia_Routines(Exec); //3.9.75  *)
@@ -5201,9 +5201,9 @@ begin
   RIRegister_ScreenSaver_Routines(Exec);
   RIRegister_Polynomials_Routines(Exec);
   RIRegister_XCollection(X);
-  RIRegister_XCollection_Routines(Exec);
+  RIRegister_XCollection_Routines(Exec);     *)
   RIRegister_PersistentClasses(X);
-  RIRegister_XOpenGL_Routines(Exec);
+(*  RIRegister_XOpenGL_Routines(Exec);
   RIRegister_VectorLists_Routines(Exec);
   RIRegister_VectorLists(X);
   RIRegister_MeshUtils_Routines(Exec);
@@ -5282,23 +5282,23 @@ begin
   RIRegister_synhttp_daemon(X);
   RIRegister_PingThread(X);
   RIRegister_JvThreadTimer(X);
-  RIRegister_NetWork_Routines(EXec);
+  RIRegister_NetWork_Routines(EXec); *)
   RIRegister_wwSystem_Routines(Exec);
-  RIRegister_IdComponent(X);
+(*  RIRegister_IdComponent(X);
   RIRegister_IdIOHandlerThrottle(X);
   RIRegister_Themes(X);
   RIRegister_StdStyleActnCtrls(X);
   RIRegister_Themes_Routines(Exec);
   RIRegister_UDDIHelper_Routines(EXec);
   RIRegister_IdIMAP4Server(X);
-  RIRegister_VariantSymbolTable(X);
+  RIRegister_VariantSymbolTable(X);  *)
   RIRegister_udf_glob(X);
-  RIRegister_TabGrid(X);
+  //RIRegister_TabGrid(X);
   RIRegister_udf_glob_Routines(Exec);
-  RIRegister_JsDBTreeView(X);
-  RIRegister_JsSendMail(X);         //3.9.9.92
+ (* RIRegister_JsDBTreeView(X);
+  RIRegister_JsSendMail(X);         //3.9.9.92     *)
   RIRegister_Wwstr_Routines(exec);
-  RIRegister_dblookup(X);
+ (* RIRegister_dblookup(X);
   RIRegister_dbTvRecordList(X);
   RIRegister_TreeVwEx(X);
   RIRegister_ECDataLink(X);
@@ -5581,8 +5581,8 @@ begin
   RIRegister_ShellCtrls_Routines(Exec);
   RIRegister_fmath_Routines(Exec);
   RIRegister_fcomp_Routines(Exec);
- (* RIRegister_HighResTimer(X);
-  RIRegister_uconvMain(X);        *)
+  RIRegister_HighResTimer(X);
+  RIRegister_uconvMain(X);       // *)
   RIRegister_ParserUtils_Routines(Exec);
   //RIRegister_uPSUtils_Routines(Exec);
   //RIRegister_uPSUtils(X);
@@ -5669,9 +5669,9 @@ begin
   RIRegister_xercesxmldom(X);
   RIRegister_xmldom(X);
   RIRegister_xmldom_Routines(Exec);
-  RIRegister_JclExprEval(X);
+  RIRegister_JclExprEval(X);   *)
   RIRegister_Gameboard(X);
-  RIRegister_Gameboard_Routines(Exec);   *)
+  RIRegister_Gameboard_Routines(Exec);  // *)
 
   RIRegister_ExtPascal(X);
   RIRegister_ExtUtil(X);
@@ -5832,11 +5832,11 @@ begin
   RIRegister_uTPLb_BinaryUtils_Routines(Exec);
    RIRegister_USha256_Routines(Exec);  *)
   RIRegister_UJSONFunctions(X);
- (* RIRegister_uTPLb_Hash(X);        //4.2.6.10
+  RIRegister_uTPLb_Hash(X);        //4.2.6.10
   RIRegister_UTime_Routines(Exec);
   RIRegister_uTPLb_Codec(X);    //4.2.8.10
   RIRegister_uTPLb_BlockCipher(X);
-  RIRegister_ADOInt(X);
+ (* RIRegister_ADOInt(X);
   RIRegister_XMLIntf(X);
   RIRegister_XMLDoc(X);
   RIRegister_XMLDoc_Routines(Exec);  *)
@@ -6849,7 +6849,9 @@ begin
   end;
 end;
 
-function RunCompiledScript3(Bytecode: AnsiString; out RuntimeErrors: AnsiString): Boolean;
+// TbtString = {$IFDEF DELPHI2009UP}AnsiString{$ELSE}String{$ENDIF};
+
+function RunCompiledScript3(Bytecode: AnsiString; out RuntimeErrors: String): Boolean;
 begin
   result:= maxform1.RunCompiledScript2(Bytecode, RuntimeErrors);
 end;
@@ -7060,11 +7062,12 @@ begin
   Sender.AddFunction(@myMessageBox2,'Function MessageBox(hndl: cardinal; text, caption: string; utype: cardinal): Integer;');
   Sender.AddFunction(@myPlaySound, 'Function PlaySound(s: pchar; flag,syncflag: integer): boolean;');
   Sender.AddFunction(@myGetWindowsDirectory, 'function GetWindowsDirectory(lpBuffer: PChar; uSize: longword): longword;');
+  *)
   Sender.AddFunction(@GetHINSTANCE, 'function GetHINSTANCE: longword;');
   Sender.AddFunction(@GetHINSTANCE, 'function HINSTANCE: longword;');
   Sender.AddFunction(@getHMODULE, 'function getHMODULE: longword;');
   Sender.AddFunction(@getHMODULE, 'function HMODULE: longword;');
-  Sender.AddFunction(@GetAllocMemCount, 'function AllocMemCount: integer;');
+ (* Sender.AddFunction(@GetAllocMemCount, 'function AllocMemCount: integer;');
   Sender.AddFunction(@GetAllocMemSize, 'function AllocMemSize: integer;');
   Sender.AddFunction(@getLongTimeFormat, 'function LongTimeFormat: string;');
   Sender.AddFunction(@getLongDateFormat, 'function LongDateFormat: string;');
@@ -7318,9 +7321,9 @@ begin
   Sender.AddFunction(@versionCheckAct, 'function VersionCheckAct: string;'); *)
   Sender.AddFunction(@getBox, 'procedure getBox(aurl, extension: string);');
  (* Sender.AddFunction(@checkBox, 'function CheckBox: string;');
-  Sender.AddFunction(@myFillcharSearchRec, 'procedure FillCharSearchRec;');
+  Sender.AddFunction(@myFillcharSearchRec, 'procedure FillCharSearchRec;');  *)
   Sender.AddFunction(@mySaveByteCode, 'procedure SaveByteCode;');
-  Sender.AddFunction(@myResetKeyPressed, 'procedure ResetKeyPressed;');
+ (* Sender.AddFunction(@myResetKeyPressed, 'procedure ResetKeyPressed;');
   Sender.AddFunction(@mysetKeyPressed, 'procedure SetKeyPressed;');
   Sender.AddFunction(@myGetPSScript, 'function GetPSScript: string;');
   //Sender.AddFunction(@list_functions, 'function list_functions: TStringlist');
@@ -7486,7 +7489,7 @@ begin
   PSScript.Script.Assign(memo1.Lines);
   cedebug.MainFileName:= Act_Filename;
   cedebug.Script.Assign(memo1.Lines);
-  memo2.Lines.Add('XCompiler Scripz: '+memo1.text);
+  // debig memo2.Lines.Add('XCompiler Scripz: '+memo1.text);
   //showmessage(psscript.script.Text);
   memo2.Lines.Add('Compiling '+RCSTRMB +inttostr(memo1.Lines.count-1)+' lines');
   //TPSPascalCompiler transforms to bytecode
@@ -7647,11 +7650,12 @@ begin
  //psscript.RuntimeImporter.CreateAndRegister(psscript.exec,false);
 end;
 
-function TMaxForm1.RunCompiledScript2(Bytecode: AnsiString; out RuntimeErrors: AnsiString): Boolean;
+function TMaxForm1.RunCompiledScript2(Bytecode: AnsiString; out RuntimeErrors: String): Boolean;
 var
   Runtime: TPSExec;
   ClassImporter: TPSRuntimeClassImporter;
   stopw: TStopwatch;    //3.9.9.120
+  bycout: string;
 
 begin
   stopw:= TStopwatch.Create;    //3.8.2
@@ -7676,10 +7680,10 @@ begin
           and (Runtime.ExceptionCode = erNoError);  }
      memo2.lines.add(bytecode);
     //PSScript1.SetCompiled(Bytecode);
-   { if not result then begin
-      IFPS3DataToText(Bytecode,Bytecode);
-      memo2.lines.add(bytecode);
-    end;  }
+    if not result then begin
+      IFPS3DataToText(Bytecode,bycout);
+      memo2.lines.add(bycout);
+    end;  //}
     //if not Result then
       //RuntimeErrors:=  PSErrorToString(Runtime.LastEx, '');
   finally
@@ -7708,9 +7712,27 @@ function LoadFile(const FileName: TFileName): string;
      end;
    end;
 
+   //helper
+function LoadFile2(const FileName: TFileName): ansistring;
+   begin
+     with TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite) do begin
+       try
+         SetLength(Result, Size);
+         Read(Pointer(Result)^, Size);
+       except
+         Result := '';  // Deallocates memory
+         Free;
+         raise;
+       end;
+       Free;
+     end;
+   end;
+
+
 
 procedure TMaxForm1.LoadBytecode1Click(Sender: TObject);
-var bcerrorcode, sdata, afilename: ansistring;
+var bcerrorcode, afilename: string;
+    sdata: ansistring;
 begin
  with TOpenDialog.Create(self) do begin
     Filter:= 'ByteCode files (*.psb)|*.PSB';
@@ -7722,7 +7744,7 @@ begin
     if execute then begin
     //filename:=
      Memo2.lines.add('ByteCode Start of: '+filename+' '+datetimetostr(now)); //end else
-      sdata:= loadFile(filename);
+      sdata:= loadFile2(filename);
     //filename:= ExtractFilePath(ParamStr(0)) + ChangeFileExt(SCRIPTFILE,'.out');
          if MessageDlg(RCSTRMB+': Run ByteCode now?',
                   mtConfirmation, [mbYes,mbNo], 0) = mrYes then
@@ -8029,7 +8051,7 @@ begin
 end;}
 
 
-procedure TMaxForm1.showAndSaveBCode(const bdata: string);
+procedure TMaxForm1.showAndSaveBCode(const bdata: ansistring);
 var outfile: string;
     fx: longint;
 begin
@@ -8058,7 +8080,7 @@ begin
 end;
 
 procedure TMaxForm1.SBytecode1Click(Sender: TObject);
-var mybytecode: string;
+var mybytecode: ansistring;
 begin
  //sBytecode1.Checked:= not sBytecode1.Checked;
  //if sBytecode1.Checked then STATShowBytecode:= true else
@@ -8197,7 +8219,7 @@ end;
 procedure TMaxForm1.CryptoBox1Click(Sender: TObject);
 begin
   //crypto box  AES
-    //WinFormp.SetCryptFormAES;
+    WinFormp.SetCryptFormAES;
 end;
 
 
