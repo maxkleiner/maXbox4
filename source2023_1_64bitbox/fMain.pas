@@ -1302,11 +1302,11 @@ uses
   uPSI_StIniStm,
  (* uPSI_GR32_ExtImage,      //3.9.7
   uPSI_GR32_OrdinalMaps,
-  uPSI_GR32_Rasterizers,
+  uPSI_GR32_Rasterizers,  *)
   uPSI_xrtl_util_Exception,
   uPSI_xrtl_util_Compare,
   uPSI_xrtl_util_Value,
-  uPSI_JvDirectories,  //a
+(*  uPSI_JvDirectories,  //a
   uPSI_JclSchedule,
   //uPSI_JvDBUltimGrid,
   uPSI_JclSvcCtrl,
@@ -1538,12 +1538,12 @@ uses
   uPSI_StWmDCpy,
   uPSI_StText,
   uPSI_StNTLog,
-  uPSI_JclUnitConv_mX2,
+  uPSI_JclUnitConv_mX2,   *)
   uPSI_xrtl_util_TimeUtils,
   uPSI_xrtl_util_TimeZone,
   uPSI_xrtl_util_TimeStamp,
   uPSI_xrtl_util_Map,
-  uPSI_xrtl_util_Set, *)
+  uPSI_xrtl_util_Set, //*)
   uPSI_VListView,
  (* uPSI_IdServerIOHandler,
   uPSI_IdServerIOHandlerSocket,
@@ -1845,9 +1845,9 @@ uses
   uPSI_mimepart,
   uPSI_mimeinln,
   uPSI_ftpsend,
-  uPSI_ftptsend,
+  uPSI_ftptsend,   *)
   uPSI_httpsend,
-  uPSI_sntpsend,
+(*  uPSI_sntpsend,
   uPSI_smtpsend,
   uPSI_snmpsend,    //3.9.9.91
   uPSI_imapsend,
@@ -2033,15 +2033,15 @@ uses
   uPSI_cparserutils,    //3.9.9.98_7   *)
   //uPSI_GIS_SysUtils,  //*)
   uPSI_LedNumber,
-(*  uPSI_StStrL,         //3.9.9.98_8
-  uPSI_indGnouMeter,  *)
+  uPSI_StStrL,         //3.9.9.98_8
+  uPSI_indGnouMeter,  //*)
   uPSI_Sensors, //)
-  //uPSI_pwmain,   //beta but stable, 2015 V4
+  uPSI_pwmain,   //beta but stable, 2015 V4
   pwnative_out,          // for interactive shell cli
   uPSI_pwnative_out,
   uPSI_HTMLUtil,
-(*  uPSI_synwrap1,
-  uPSI_W32VersionInfo,
+  uPSI_synwrap1,
+(*  uPSI_W32VersionInfo,
   uPSI_IpAnim,
   uPSI_IpUtils,
   uPSI_LrtPoTools,
@@ -2462,8 +2462,8 @@ uses
  // uPSI_ADOInt,*)
   //uPSI_MidasCon,
  (* uPSI_XMLIntf,
-  uPSI_XMLDoc,
-  uPSI_xrtl_util_ValueImpl,  *)
+  uPSI_XMLDoc, *)
+  uPSI_xrtl_util_ValueImpl,  //*)
   uPSI_ProxyUtils,           //4.2.8.10 II
   uPSI_maxXMLUtils2,      //4.2.8.10 IV   *)
   //pwnative_out;           // for interactive shell cli
@@ -3399,9 +3399,9 @@ begin
   SIRegister_mimemess(X);
   SIRegister_mimeinln(X);
   SIRegister_ftpsend(X);
-  SIRegister_ftptsend(X);
+  SIRegister_ftptsend(X);    *)
   SIRegister_httpsend(X);
-  SIRegister_sntpsend(X);
+ (* SIRegister_sntpsend(X);
   SIRegister_snmpsend(X);
   SIRegister_smtpsend(X);    //3.9.9.91
   SIRegister_imapsend(X);
@@ -3567,14 +3567,14 @@ begin
  SIRegister_kcMapViewerDESynapse(X);
  SIRegister_cparserutils(X);  *)
  SIRegister_LedNumber(X);
-(* SIRegister_StStrL(X);
- SIRegister_indGnouMeter(X);  *)
+ SIRegister_StStrL(X);
+ SIRegister_indGnouMeter(X);  //*)
  SIRegister_Sensors(X);  //*)
- //SIRegister_pwnative_out(X);
+ SIRegister_pwnative_out(X);
  SIRegister_HTMLUtil(X);
-(* SIRegister_synwrap1(X);
+ SIRegister_synwrap1(X);
  SIRegister_pwmain(X);
- SIRegister_W32VersionInfo(X);
+(* SIRegister_W32VersionInfo(X);
  SIRegister_IpAnim(X);
  SIRegister_IpUtils(X);
  SIRegister_LrtPoTools(X);
@@ -3929,8 +3929,8 @@ begin
 
  (* SIRegister_XMLIntf(X);
   SIRegister_XMLDoc(X);
-  SIRegister_MidasCon(X);
-  //SIRegister_xrtl_util_ValueImpl(X);  *)
+  SIRegister_MidasCon(X);  *)
+  //SIRegister_xrtl_util_ValueImpl(X);  //*)
   SIRegister_ProxyUtils(X);
   SIRegister_OmniXMLUtils(X);
  (* SIRegister_Hashes(X);         //45810
@@ -4139,16 +4139,16 @@ begin
   SIRegister_JclHookExcept(X);
   SIRegister_StStrS(X);    //ansi char   shortstring
    //SIRegister_EncdDecd(X);
-  //SIRegister_SockAppReg(X);
+  //SIRegister_SockAppReg(X);  *)
    SIRegister_xrtl_util_TimeStamp(X);
   SIRegister_xrtl_util_TimeUtils(X);
   SIRegister_xrtl_util_TimeZone(X);
   SIRegister_xrtl_util_Map(X);
-  SIRegister_xrtl_util_Set(X);  //3.9.6.4
+  SIRegister_xrtl_util_Set(X);  //3.9.6.4 *)
   SIRegister_xrtl_util_Compare(X);
   SIRegister_xrtl_util_Value(X);
   SIRegister_xrtl_util_Exception(X);
-  SIRegister_cFileUtils(X);
+ (* SIRegister_cFileUtils(X);
   SIRegister_cDateTime(X);   *)
   SIRegister_cTimers(X);
   SIRegister_cRandom(X);
@@ -4697,19 +4697,19 @@ begin
   RIRegister_GR32_Image(X);
   RIRegister_GR32_ExtImage(X);
   RIRegister_GR32_ExtImage_Routines(Exec);
-  RIRegister_GR32_OrdinalMaps(X);
+  RIRegister_GR32_OrdinalMaps(X);  *)
   RIRegister_xrtl_util_TimeStamp(X);
-  //RIRegister_xrtl_util_TimeUtils(X);
+ // RIRegister_xrtl_util_TimeUtils(X);
   RIRegister_xrtl_util_TimeUtils_Routines(Exec);
   RIRegister_xrtl_util_TimeZone(X);
   RIRegister_xrtl_util_TimeZone_Routines(Exec);
   RIRegister_xrtl_util_Map(X);
-  RIRegister_xrtl_util_Set(X);  //3.9.6.4
+  RIRegister_xrtl_util_Set(X);  //3.9.6.4   *)
   RIRegister_xrtl_util_Exception(X);
   RIRegister_xrtl_util_Exception_Routines(Exec);
   RIRegister_xrtl_util_Compare_Routines(Exec);
   RIRegister_xrtl_util_Value(X);
-  RIRegister_xrtl_util_Value_Routines(Exec);  *)
+  RIRegister_xrtl_util_Value_Routines(Exec);  //*)
   RIRegister_cRandom_Routines(Exec);
   RIRegister_ueval_Routines(Exec);
    //RIRegister_EIdHTTPProtocolException(x);
@@ -5267,11 +5267,11 @@ begin
   RIRegister_mimepart_Routines(Exec);
   RIRegister_mimeinln_Routines(Exec);
   RIRegister_ftpsend(X);
-  RIRegister_ftptsend(X);
+  RIRegister_ftptsend(X);  *)
   RIRegister_httpsend(X);
-  RIRegister_ftpsend_Routines(Exec);
+//  RIRegister_ftpsend_Routines(Exec);
   RIRegister_httpsend_Routines(Exec);
-  RIRegister_sntpsend(X);
+(*  RIRegister_sntpsend(X);
   RIRegister_snmpsend(X);
   RIRegister_snmpsend_Routines(Exec);
   RIRegister_smtpsend_Routines(Exec);
@@ -5476,15 +5476,15 @@ begin
   RIRegister_kcMapViewerDESynapse(X);
   RIRegister_TLineBreaker(X);
   RIRegister_cparserutils_Routines(Exec); //3.9.9.98_7   *)
- // RIRegister_LedNumber(X);
-(*  RIRegister_StStrL_Routines(EXec);
-  RIRegister_indGnouMeter(X);  *)
-//  RIRegister_Sensors(X);      //*)
-//  RIRegister_pwnative_out_Routines(Exec);
-//  RIRegister_HTMLUtil_Routines(Exec);
-(*  RIRegister_synwrap1_Routines(Exec);
+  RIRegister_LedNumber(X);
+ RIRegister_StStrL_Routines(EXec);
+  RIRegister_indGnouMeter(X);  //*)
+  RIRegister_Sensors(X);      //*)
+  RIRegister_pwnative_out_Routines(Exec);
+  RIRegister_HTMLUtil_Routines(Exec);
+  RIRegister_synwrap1_Routines(Exec);
   RIRegister_pwmain_Routines(Exec);
-  RIRegister_W32VersionInfo_Routines(Exec);
+ (* RIRegister_W32VersionInfo_Routines(Exec);
   RIRegister_W32VersionInfo(X);
   RIRegister_IpAnim(X);
   RIRegister_IpUtils(X);
