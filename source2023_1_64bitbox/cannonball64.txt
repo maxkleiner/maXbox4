@@ -1,0 +1,1190 @@
+unit U_Cannonballs32_mX4_64bit;
+{Copyright © 06, Gary Darby,  www.DelphiForFun.org
+ This program may be used or modified for any non-commercial purpose
+ so long as this original notice remains in place.
+ All other rights are reserved - adapt for maXbox4 by Max
+ including stats form calcul   - check float as extended
+ http://delphiforfun.org/Programs/cannon_balls.htm
+ - processmessages global for smother aggragation
+ - WAIT const for sleeptime sync
+ - background map to simulate & train
+ }
+
+interface
+
+{uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, StdCtrls, Spin, ExtCtrls, shellAPI, Grids , U_Stats;   }
+
+const WAIT = 2;
+
+type
+  afloat=extended;   //we use float dircect type from maXbox
+  
+  TMainForm = {class(}TForm;
+  var
+    Label1: TLabel;
+    Label2: TLabel;
+    ElevationEdt: TSpinEdit;
+    PowerBar: TTrackBar;
+    Button1: TButton;
+    ReloadBtn: TButton;
+    TrackBar1: TTrackBar;
+    Image1: TImage;
+    ViewStatsBtn: TButton;
+    StaticText1: TStaticText;
+    Label3: TLabel;
+    Label4: TLabel;
+    Gravitybar: TTrackBar;
+    Label6: TLabel;
+    BLengthBar: TTrackBar;
+    PowderLbl: TLabel;
+    Distlbl: TLabel;
+    GLbl: TLabel;
+    BarLenLbl: TLabel;
+    SymBox, picbox: TCheckBox;
+    StatsType: TRadioGroup;
+       procedure TMainFormFormActivate(Sender: TObject);
+       procedure TMainFormElevationEdtChange(Sender: TObject);
+       procedure TMainFormFirebtnClick(Sender: TObject);
+       procedure TMainFormReloadBtnClick(Sender: TObject);
+       procedure TMainFormPowerBarChange(Sender: TObject);
+       procedure TMainFormStaticText1Click(Sender: TObject);
+       procedure TMainFormTrackBar1Change(Sender: TObject);
+       procedure TMainFormViewStatsBtnClick(Sender: TObject);
+       procedure TMainFormBLengthBarChange(Sender: TObject);
+       procedure TMainFormGravitybarChange(Sender: TObject);
+       procedure TMainFormSymBoxClick(Sender: TObject);
+       //procedure TMainFormPicBoxClick(Sender: TObject);
+       procedure TMainFormStatsTypeClick(Sender: TObject);
+  //public
+  var
+    { Public declarations }
+    p1,p2,p3,p4:TPoint;
+    origin:TPoint;  {center of rotation of cannon}
+    firstpos :TPoint; {top left of cannonball}
+    theta:float; {current elevation in radians}
+    prevpoint:TPoint;  {previous location of ball while moving}
+    barrelLength:integer;
+    groundlevel:integer;
+    v1:float; {initial velocity}
+    g:float;  {gravity}
+    ballleft,balltop,ballsize,ballradius:integer;
+    targetrect:Trect;
+    targetwidth,targetheight:integer;
+       procedure UpdateImage;
+       Procedure Drawcannon(const origin:TPoint;
+                            const angle:float; const bore:integer);
+       function hittarget(var msg:string):boolean;
+       procedure TheroreticalCalc;
+  //end;
+  
+  //unit U_Stats;
+  type TStats = {class}TForm;
+  var
+    aButton1: TButton;
+    StringGrid1: TStringGrid;
+    aMemo1: TMemo;
+    aLabel1: TLabel;
+  //end;
+
+var
+  Stats: TStats;
+
+var
+  MainForm: TMainForm;
+
+implementation
+
+//{$R *.DFM}
+//Uses math;
+
+function distance(p1,p2:TPoint):float;
+begin
+  result:=sqrt(sqr(p1.x-p2.x)+sqr(p1.y-p2.y));
+end;
+
+
+{************** FormActivate *********8}
+procedure TMainFormFormActivate(Sender: TObject);
+{startup stuff}
+begin
+  mainform.doublebuffered:=true;
+  {initialize target values}
+  with targetrect do begin
+    targetwidth:=20;
+    targetheight:=65;
+    left:=627;
+    top:=272;
+    right:=left+targetwidth;
+    bottom:=top+targetheight;
+  end;
+  {initialize cannonball and cannon}
+  ballleft:=27;
+  balltop:=295;
+  ballsize:=25;
+  {set origin for cannon}
+  origin.x:=ballleft+ballsize div 2 {-image1.left};
+  origin.y:=balltop+ballsize div 2 {-image1.top};
+  firstpos.x:=ballleft; {cannon ball "home"}
+  firstpos.y:=balltop;
+  ballradius:=ballsize div 2;
+  barrelLength:=BLengthBar.position; {3*(ballsize+4);}
+  theta:=DegToRad(elevationEdt.value);
+  drawcannon(origin,-theta,ballsize);
+  groundlevel:=p1.y;
+  with image1.picture.bitmap do begin
+    width:=image1.width;
+    height:=image1.height;
+  end;
+  //image1.picture.bitmap.loadfromresourcename(hinstance, 'UCACTOR');
+  //image1.picture.bitmap.loadfromresourcename(hinstance, 'MOON_FULL');
+  //image1.picture.bitmap.loadfromresourcename(hinstance, 'MAXWORLD');
+  //image1.stretch:= true;
+  //Canvas.StretchDraw(Rect(0, 0, Width, Height), MyBitMap);
+  TMainFormpowerbarchange(sender);
+  TMainFormgravityBarChange(sender);
+  TMainFormBLengthBarChange(sender);
+  UpdateImage;
+  with {Stats.}stringgrid1 do begin
+    colwidths[0]:=100;
+    cells[0,0]:='Status';
+    cells[1,0]:='Total Time';
+    cells[2,0]:='Flight Time';
+    cells[3,0]:='V';
+    cells[4,0]:='Vx';
+    cells[5,0]:='Vy';
+    cells[6,0]:='Dx';
+    cells[7,0]:='Dy';
+    cells[8,0]:='H.Dist';
+    cells[9,0]:='Altitude';
+  end;  //}
+  writeln('debug - activate event..');
+end;
+
+  var InBarrel: boolean;
+  function isInBarrel:boolean;
+    {check if the next move would still be in the barrel}
+    var
+      ballcenter:TPoint;
+    begin
+      result:=false;
+      if not inbarrel then exit;
+      if barrellength<ballradius
+      then result:=false {return false for very short barrel length}
+      else begin{handle longer barrel lengths}
+        ballcenter:=Point(ballleft+ballradius,balltop+ballradius);
+        {We will say the we are still in the barrel if the center of the ball
+         is less than barrel length from where it started}
+        result:=(distance(firstpos,ballcenter) < barrellength);
+        inbarrel:=result;  {we'll set a flag and test it at the  top of the
+                            routine so that once we are out, we will not
+                            reutrn that we are in (even is the ball is
+                            falling back clise to its starting point}
+      end;
+    end;
+    
+    
+   procedure writestats(msg:string; time1,time2, vAv, vx,vy, dx,dy:Float);
+  {Show shot statistics}
+  begin
+    with {Stats.}stringgrid1 do begin
+      rowcount:=rowcount+1;
+      If rowcount=2 then fixedrows:=1;
+      row:=rowcount-1;
+      cells[0,row]:=msg;
+      cells[1,row]:=format('%6.1f',[time1+time2]);
+      cells[2,row]:=format('%6.1f',[time2]);
+      cells[3,row]:=format('%6.1f',[vAv]);
+      cells[4,row]:=format('%6.1f',[vx]);
+      cells[5,row]:=format('%6.1f',[vy]);
+      cells[6,row]:=format('%6.1f',[Dx]);
+      cells[7,row]:=format('%6.1f',[Dy]);
+      cells[8,row]:=format('%3d',[ballleft-firstpos.x]);
+      cells[9,row]:=format('%3d',[firstpos.y-balltop]);
+    end;
+  end;  //*)
+
+
+{*************** FireBtnClick **********}
+procedure TMainFormFireBtnClick(Sender: TObject);
+{user pressed fire button}
+var
+  v2,vAv:Float;  {velocities}
+  a,vx,vy,vy1,vy2,x,y,nexty:float;
+  temp:float;
+  stopped:boolean;
+  msg:string;
+  Barrellength:float;
+  barreltop:TPoint;
+  firstout:boolean;
+  dx,dy:float;  {distances}
+  SinTheta, CosTheta, TanTheta:float;  {pre calculate to save a little time}
+  time1,time2:float;
+  TimeInc:float; {time increment per loop}
+  Sleeptime:integer;
+  flightstart:TPoint;
+ // InBarrel: boolean;
+
+ (*   {----------------  InBarrel -------------}
+    function isInBarrel:boolean;
+    {check if the next move would still be in the barrel}
+    var
+      ballcenter:TPoint;
+    begin
+      result:=false;
+      if not inbarrel then exit;
+      if barrellength<ballradius
+      then result:=false {return false for very short barrel length}
+      else {handle longer barrel lengths}
+      begin
+        ballcenter:=Point(ballleft+ballradius,balltop+ballradius);
+        {We will say the we are still in the barrel if the center of the ball
+         is less than barrel length from where it started}
+        result:=(distance(firstpos,ballcenter) < barrellength);
+        inbarrel:=result;  {we'll set a flag and test it at the  top of the
+                            routine so that once we are out, we will not
+                            reutrn that we are in (even is the ball is
+                            falling back clise to its starting point}
+      end;
+    end;  *)
+
+
+  {--------- WriteStats -----------}
+(*  procedure writestats(msg:string);
+  {Show shot statistics}
+  begin
+    with Stats.stringgrid1 do
+    begin
+      rowcount:=rowcount+1;
+      If rowcount=2 then fixedrows:=1;
+      row:=rowcount-1;
+      cells[0,row]:=msg;
+      cells[1,row]:=format('%6.1f',[time1+time2]);
+      cells[2,row]:=format('%6.1f',[time2]);
+      cells[3,row]:=format('%6.1f',[vAv]);
+      cells[4,row]:=format('%6.1f',[vx]);
+      cells[5,row]:=format('%6.1f',[vy]);
+      cells[6,row]:=format('%6.1f',[Dx]);
+      cells[7,row]:=format('%6.1f',[Dy]);
+      cells[8,row]:=format('%3d',[ballleft-firstpos.x]);
+      cells[9,row]:=format('%3d',[firstpos.y-balltop]);
+    end;
+  end;  *)
+
+
+
+Begin {firebtnclick}
+  {precalculate trig function to save a little time in the fireing loop}
+  //processmessagesOFF;
+  sinTheta:=sin(theta);
+  costheta:=cos(theta);
+  //if theta>0 then TanTheta:=tan(theta)else TanTheta:=1000;
+  TMainFormreloadbtnclick(sender); {reset the cannonball}
+  {set initial velocities}
+  Barrellength:=distance(p1,p4);
+  barreltop.y:=origin.y-round(barrellength*sintheta);
+  barreltop.x:=origin.x+round(barrellength*costheta);
+  flightstart:=point(0,0);
+  mainform.tag:=0;
+  x:=ballleft;
+  y:=balltop;
+  g:=gravitybar.position/100;
+  a:=-g*sin(theta);
+  v1:=powerbar.position;  {assume initial velocity up the barrel = 1/2 powder charge}
+  time1:=0;
+  time2:=0;
+  timeinc:=0.5;
+  {initialize vx & vy for 1st Inbarrel function call}
+  Vx:= v1*costheta;
+  vy:=v1*sintheta; {negative=moving up since y coordinate increases downwards}
+  VAv:=v1;
+  dx:=Vx*timeinc;
+  dy:=Vy*timeinc;
+
+  sleeptime:= WAIT;   //slowmotion
+  firstout:=true;
+  stopped:=false;
+  {stats.}stringgrid1.rowcount:=1;    //fix
+  distlbl.caption:='X distance: Flight 0.0  Total 0.0';
+  theroreticalCalc;  {display theoretical results}
+  inBarrel:=true;
+  Viewstatsbtn.enabled:=false;
+  repeat
+    if statstype.itemindex=1 then writestats('       Time step',
+                                            time1,time2, vAv, vx,vy, dx,dy);
+
+    if IsInBarrel then begin
+      {
+       We'll assume that the cannonball inside the barrel is "rolling up a ramp"
+       with the component of gravity acting parallel to the barrel being the
+       force acting to reduce the velocity of the cannonball in both x and y directions
+      }
+      time1:=time1+timeinc;
+      v2:=v1+a*timeinc;
+      vAv:=(v1+v2)/2;
+      vx:=vAv*costheta;
+      vy:=vAv*sintheta;
+      dx:=vx*timeinc;
+      dy:=vy*timeinc;
+      x:=x+dx;
+      y:=y-dy;
+      ballleft:=round(x);
+      balltop:=round(y);
+
+      if (v2<=0) and ((ballleft<firstpos.x) or (balltop>firstpos.y)) then begin
+        stopped:=true;
+        ballleft:=firstpos.x;
+        balltop:=firstpos.y;
+      end;
+      sleep(SleepTime);
+      v1:=v2;
+    end else begin
+    {cannonball has left the barrel}
+      time2:=time2+timeinc;
+      if firstout then begin {initialize for out of barrel}
+        {now ball follows projectile motion rules}
+        writestats('Left barrel',time1,time2, vAv, vx,vy, dx,dy);
+        firstout:=false;
+        flightstart:=Point(ballleft,balltop);
+        {out of the barrel, all of gravity is now acting on the y coordinate}
+        a:=-gravitybar.position/100;
+        vy1:=vy; {velocity change is now only the vertical coordinate}
+      end;
+      distlbl.caption:=format('X distance: Flight %6.1f  Total %6.1f',
+                              [x-flightstart.x,x-firstpos.x]);
+
+      temp:=vy1+a*timeinc;
+      if (vy1>=0) and (temp<=0) then 
+                  writestats('Top of flight',time1,time2, vAv, vx,vy, dx,dy);
+      vy2:= temp;
+      vy:=(vy1+vy2)/2;
+      dy:=vy*timeinc;
+      nexty:=y-dy;
+
+      If vy2<=0 then begin{moving down}
+        if (y<=barreltop.y) and (nexty>=barreltop.y) then 
+                writestats('Passing barrel top',time1,time2, vAv, vx,vy, dx,dy);
+        if (nexty>groundlevel-ballsize)
+        then begin {next move goes below the floor}
+          balltop:=groundlevel-ballsize;
+          stopped:=true;
+          writestats('Landed ',time1,time2, vAv, vx,vy, dx,dy);
+        end else begin
+          y:=nexty;
+          balltop:=round(y); {balltop-trunc(dy)}
+        end;
+      end
+      else begin {moving up}
+        if (nexty<0) then begin  {next move will go through ceiling}
+          dy:=0;  {bounce it off of the ceiling}
+          vy2:=-vy1;
+          if gravitybar.position=0 then stopped:=true;
+        end
+        else begin
+          y:=nexty;
+          balltop:=round(y);
+        end;
+      end;
+      {move x (across) direction}
+      if x+dx>image1.width then begin
+        ballleft:=image1.width-ballsize;
+        balltop:=groundlevel-ballsize;;
+        stopped:=true;
+      end else begin
+        x:=x+dx;
+        ballleft:=round(x);
+      end;
+      sleep(sleeptime); {delay a little for visual effect}
+      vy1:=vy2;
+      If hittarget(msg) then Begin
+        showmessage(msg);
+        writestats('Hit target',time1,time2, vAv, vx,vy, dx,dy);
+        stopped:=true;
+      end;
+    end;
+    UpdateImage;
+    application.processmessages;  {in case the user hit reload button}
+    if mainform.tag<>0 then stopped:=true;
+  until stopped;
+  Viewstatsbtn.enabled:=true;
+  //processmessagesON;
+end;
+
+
+{************* TheoreticalCalc **********}
+procedure TheroreticalCalc;
+var
+  root,T1, Vf:float;
+  Vxf, Vyf:float;
+  X1,Y1:float;
+  TTop, Xtop,Ytop:float;
+  Tlast, VyLast, Xlast:float;
+  floor:float;
+begin
+  with {stats.}amemo1.lines do begin
+    clear;
+    add(format('Barrel Len %d, Angle %6.1f, Initial V %6.1f, gravity %6.1f',
+                [barrellength,180*theta/pi,v1,g]));
+    if g=0 then g:=0.001;            
+    root:= v1*v1 - 2*g*sin(theta)*Barrellength;
+    if root>=0 then begin
+      T1:=(v1 - sqrt(root))/(g*sin(theta+0.001));
+      Vf:= v1 - g*sin(theta)*T1;
+      Vxf:=Vf*cos(theta);
+      Vyf:=Vf*sin(theta);
+      X1:=Barrellength*cos(theta);
+      Y1:=Barrellength*sin(Theta);
+      floor:=(origin.y+ballradius)-groundlevel;
+      {out of barrel, Vx remains constant, Vy := Vyf- g*DeltaT}
+      {Vy=0 then Vyf-g*Ttop=0 or Ttop=Vyf/g}
+      Ttop:=Vyf/g;
+      {x distance at top} Xtop:=Vxf*Ttop;
+      {height at top = average y velocity+ time}   Ytop:=(Vyf + 0)/2*TTop;
+      {Time to fall from ytop to groundlevel, descending part of projectiles path}
+      //Vylast:=2*g*(Ytop+Y1-floor); {speed when ball hits ground}
+      TLast:=sqrt(2*(Y1+YTop-floor)/g );
+      Xlast:=Vxf*TLast;
+      add(format('Time in barrel %6.1f seconds',[T1]));
+      add(format('X distance at end of barrel %6.1f',[X1]));
+      add(format('Y distance at end of barrel %6.1f',[Y1]));
+      add(format('Time to top of freeflight arc %6.1f, %6.1f total',[Ttop,T1+Ttop]));
+      add(format('X distance to top of freeflight arc %6.1f, %6.1f total',[Xtop,X1+Xtop]));
+      add(format('Height above barrel to top of freeflight arc %6.1f, %6.1f total',
+                                                                    [Ytop,Y1+Ytop]));
+      add(format('Time to reach ground from max height %6.1f, %6.1f total',
+                                                                    [TLast,T1+Ttop+TLast]));
+      add(format('X distance from top of freeflight arc to end %6.1f, %6.1f total',
+                                                                    [XLast,X1+Xtop+XLast]));
+    end else add('Velocity too low, cannonball does not exit barrel');
+  end;
+end;
+
+
+  procedure rotate(var p:Tpoint; a:float);
+   {rotate a point to angle a from horizontal}
+   var t:TPoint;
+   begin
+     t:=P;
+     p.x:=trunc(t.x*cos(a)-t.y*sin(a));
+     p.y:=trunc(t.x*sin(a)+t.y*cos(a));
+   end;
+
+   procedure translate(var p:TPoint; t:TPoint);
+   {translate a point by t.x and t.y}
+   Begin
+     p.x:=p.x+t.x;
+     p.y:=p.y+t.y;
+   end;
+
+
+{************** DrawCannon *************}
+procedure drawCannon(const origin:TPoint;
+                         const angle:float;
+                         const bore:integer);
+
+var a:float;
+    w:integer;
+begin
+  a:=angle;
+  w:=bore div 2;
+  {get the corners of a cannon centered at (0,0) and at 0 deg angle}
+  {then rotate each corner to desired angle and move cannon to origin }
+  p1:=point(-w,w);    rotate(p1,a); translate(p1,origin);
+  p2:=point(-w,-w);   rotate(p2,a); translate(p2,origin);
+  p3:=point(barrelLength,-w);  rotate(p3,a); translate(p3,origin);
+  p4:=point(barrelLength,+w);  rotate(p4,a); translate(p4,origin);
+  UpdateImage;
+end;
+
+
+
+{************* UpdateImage ***********}
+procedure UpdateImage;
+{redraw cannon, cannonball and background}
+var
+  barrelcenterX,barrelcenterY:integer;
+begin
+  with  image1, image1.Canvas do begin
+    brush.color:=clblue;
+    fillrect(cliprect);
+    {redraw the cannon barrel}
+    pen.width:=2;
+    pen.color:=clblack;
+    polyline([p1,p2,p3,p4,p1,p2]);
+    brush.color:=clgray;
+    barrelcenterx:=(p1.x+p3.x) div 2;
+    barrelcenterY:=(p1.y+p3.y) div 2;
+    floodfill(barrelcenterX, barrelcenterY, clblack,fsborder);
+   
+    {redraw the ground level line}
+    moveto(0,groundlevel);
+    lineto(width,groundlevel);
+
+    {color the ground}
+    brush.color:=clgreen;
+    floodfill(100,height-1,clblack,fsborder);
+
+    {color the sky}
+    brush.color:=clblue;
+    floodfill(100,1,clblack,fsborder);
+    If picbox.checked then begin
+      image1.picture.bitmap.loadfromresourcename(hinstance, 'MAXWORLD');
+      image1.stretch:= true;
+    end;  
+
+    {draw the cannonball}
+    brush.color:=clmaroon;
+    ellipse(ballleft,balltop,ballleft+ballsize,balltop+ballsize);
+
+    {redraw the target}
+     brush.color:=clred;
+     canvas.rectangle1(targetrect);
+     Update;
+  end;
+end;
+
+{**************** ElevationEdtChange **********}
+procedure TMainFormElevationEdtChange(Sender: TObject);
+{User changed the angle, set new angle and redraw cannon }
+begin
+   theta:=DegToRad(elevationEdt.value);
+   drawcannon(origin,-theta,ballsize);
+   TMainFormSymboxClick(sender);
+end;
+
+
+{*************** HitTarget ************}
+function {TMainForm}hittarget(var msg:string):boolean;
+{Detect cases where overlaps or cannonball passes through target between samples}
+{Also uses IntersectRect API function to detect intersections}
+var
+  //px,py,x,y:integer; {work fields}
+  //m,b:float;
+  Outrect:Trect;
+begin
+  result:=false;
+  //with shape1 do
+  begin
+    if (ballleft+ballsize >= targetrect.left) then begin {could be there}
+      if ballleft>targetrect.right then begin
+      {we're past it, check if we passed right through since last sample}
+        (*
+        px:=prevpoint.x+ballsize;
+        py:=prevpoint.y+ballsize;
+        x:=ballleft+ballsize;
+        y:=balltop+ballsize;
+        m:=(y-py)/(x-px);  {slope of flight angle}
+        b:=y-m*x;
+        {does this line intersect the target rectangle?}
+        {is the top right corner of the target line above the line?}
+        *)
+      end
+      else begin {we could be there}
+        if intersectrect(outRect,
+                      rect(ballleft,balltop,ballleft+ballsize,balltop+ballsize),
+                      targetrect)
+        then begin
+          {probable hit, but we have 2 special conditions to check}
+          {1. top right corner of intersection rectangle is top right corner of target}
+          {   means we just missed it, cll it a near miss}
+          if (outrect.right=targetrect.right) and (outrect.top=targetrect.top)
+          then begin
+             msg:='Caught the top!';
+             ballleft:=targetrect.right;
+             balltop:=groundlevel-ballsize;
+          end else begin
+            {2. bottom left corner of intersection rectangle is top left corner of
+            target}
+            { it will hit, but move the ball so visually it looks like it already
+              hit the target
+              }
+            if (outrect.left=targetrect.left) and (outrect.top=targetrect.top) then begin
+              {now move ball so it touches the target}
+              msg:='Left top hit!';
+              ballleft:=targetrect.left-ballsize;
+              balltop:=groundlevel-ballsize;
+            end else begin
+              ballleft:=targetrect.left-ballsize;
+              balltop:=groundlevel-ballsize;
+            end;
+            msg:='Good shot!';
+          end;
+          result:=true;
+          updateimage;
+        end;
+      end;
+    end;
+    prevpoint:=point(ballleft,balltop);
+  end;
+end;
+
+
+
+{************** ReloadBtnClick ************}
+procedure TMainFormReloadBtnClick(Sender: TObject);
+{move cannonball back to cannon}
+begin
+  mainform.tag:=1;
+  application.processmessages;
+  ballleft:=firstpos.x;
+  balltop:=firstpos.y;
+  UpdateImage;
+end;
+
+
+procedure TMainFormPowerBarChange(Sender: TObject);
+begin
+  powderlbl.caption:=inttostr(powerbar.position);
+end;
+
+procedure TMainFormStaticText1Click(Sender: TObject);
+begin
+  //ShellExecute(Handle, 'open', 'http://www.delphiforfun.org/',
+  //nil, nil, SW_SHOWNORMAL) ;
+  openweb('http://delphiforfun.org/Programs/cannon_balls.htm') ;
+end;
+
+
+procedure TMainFormSymBoxClick(Sender: TObject);
+begin
+  with image1, image1.canvas do begin  //è ? image1.canvas
+    {redraw the ground level}
+    If symbox.checked
+    then groundlevel:=origin.y-trunc(barrellength*sin(theta))+ballradius
+    else groundlevel:=origin.y+ballradius;
+    targetrect.top:=groundlevel-(targetheight);
+    targetrect.bottom:=groundlevel;
+    if (ballleft<>origin.x-ballradius) or (balltop<>origin.y-ballradius) then 
+                 balltop:=groundlevel-ballsize;
+    UpdateImage;
+  end;
+end;
+
+procedure TMainFormPicBoxClick(Sender: TObject);
+begin
+  image1.stretch:= false
+  with image1.picture.bitmap do begin
+    width:=image1.width;
+    height:=image1.height;
+  end;
+  UpdateImage;
+end;
+
+
+procedure TMainFormTrackBar1Change(Sender: TObject);
+begin
+  targetrect.left:=trackbar1.position-10;
+  targetrect.right:=targetrect.left+targetwidth;
+  UpdateImage;
+end;
+
+{************* ViewStatsBtnClick **********}
+procedure TMainFormViewStatsBtnClick(Sender: TObject);
+begin
+  //loadStatForm;
+  stats.ShowModal;
+end;
+
+procedure TMainFormBLengthBarChange(Sender: TObject);
+begin
+   barrellength:=BLengthbar.position;
+   drawcannon(origin,-theta,ballsize);
+   BarlenLbl.caption:=inttostr(BlengthBar.position);
+   TMainFormsymboxclick(sender);
+end;
+
+procedure TMainFormGravitybarChange(Sender: TObject);
+begin
+  GLbl.caption:=inttostr(Gravitybar.position);
+end;
+
+procedure TMainFormStatsTypeClick(Sender: TObject);
+begin
+  viewstatsbtn.enabled:=false;
+end;
+
+procedure CloseClick(Sender: TObject; var action: TCloseAction);
+begin
+   //if MessageDlg('Wanna Leave?',mtConfirmation,[mbYes, mbNo],0)= mrYes then begin
+   //for i:= 1 to QB+1 do bArr[i].Free;
+   ProcessmessagesON;
+   action:= caFree;
+   writeln('Cannonball Free and destroy finished');
+ //  TForm1_Destroy(self)
+ end;
+
+procedure loadStatForm;
+begin
+ Stats:= TStats.create(self)
+ with stats do begin
+  Left:= 109
+  Top:= 131
+  BorderStyle:= bsDialog
+  Caption:= 'Cannon firing statistics'
+  ClientHeight:= 566
+  ClientWidth:= 792
+  Color:= clBtnFace
+  Font.Charset:= DEFAULT_CHARSET
+  Font.Color:= clWindowText
+  Font.Height:= -11
+  Font.Name:= 'MS Sans Serif'
+  Font.Style:= []
+  OldCreateOrder:= False
+  Position:= poScreenCenter
+  PixelsPerInch:= 96
+  //TextHeight:= 13
+  //Show;
+  //end;
+  Label1:= TLabel.create(stats)
+  with label1 do begin
+   parent:= stats;
+    Left:= 168
+    Top:= 360
+    Width:= 136
+    Height:= 16
+    Caption:= 'Theoretical Results'
+    Font.Charset:= DEFAULT_CHARSET
+    Font.Color:= clWindowText
+    Font.Height:= -13
+    Font.Name:= 'MS Sans Serif'
+    //Font.Style:= [fsBold]
+    ParentFont:= False
+  end;
+  Button1:= TButton.create(stats)
+  with button1 do begin
+   parent:= stats;
+    Left:= 356
+    Top:= 522
+    Width:= 75
+    Height:= 25
+    Caption:= 'OK'
+    Default:= True
+    ModalResult:= 1
+    TabOrder:= 0
+  end ;
+  StringGrid1:= TStringGrid.create(stats)
+  with stringgrid1 do begin
+    parent:= stats;
+    Left:= 0
+    Top:= 0
+    Width:= 792
+    Height:= 345
+    Align:= alTop
+    ColCount:= 10
+    ScrollBars:= ssVertical
+    //TabOrder:= 1
+    //colwidths:= 64;
+    for it:= 0 to 9 do 
+      ColWidths[it]:= 64;
+     {64  64  64  64 64 64 64 64 64 64) }
+  end;
+  aMemo1:= TMemo.create(stats)
+  with amemo1 do begin
+   parent:= stats;
+    Left:= 168
+    Top:= 376
+    Width:= 465
+    Height:= 137
+    Lines.add('aMemo1')
+    TabOrder:= 2
+  end ;
+ end;
+end;
+
+procedure loadmainForm;
+begin
+ MainForm:= TMainForm.create(self)
+ with mainform do begin
+  setbounds(31, 58, 824, 628);
+  Caption:= 
+    'Cannon  V3_1 64-bit - Ballistic Cannonball flight constrained by barrel.  What angl' +
+    'e which produces maximum range?  '
+  Color:= clBtnFace
+  icon.loadfromresourcename(hinstance, 'XHANOI');
+  Font.Charset:= DEFAULT_CHARSET
+  Font.Color:= clWindowText
+  Font.Height:= -11
+  Font.Name:= 'MS Sans Serif'
+  Font.Style:= []
+  OldCreateOrder:= False
+  Position:= poScreenCenter
+  OnActivate:= @TMainFormFormActivate ;
+  onclose:= @CloseClick;
+  PixelsPerInch:= 96
+  //Show;
+  //TextHeight:= 13
+  //end;
+  Label1:= TLabel.create(mainform)
+  with label1 do begin
+   parent:= mainform;
+    Left:= 64
+    Top:= 408
+    Width:= 91
+    Height:= 13
+    Caption:= 'Elevation (degrees)'
+  end;
+  Label2:= TLabel.create(mainform)
+  with label2 do begin
+   parent:= mainform;
+    Left:= 83
+    Top:= 448
+    Width:= 72
+    Height:= 13
+    Caption:= 'Powder charge'
+  end ;
+  Image1:= TImage.create(mainform)
+  with image1 do begin
+   parent:= mainform;
+    Left:= 24
+    Top:= 16
+    Width:= 753
+    Height:= 337
+  end;
+  Label3:= TLabel.create(mainform)
+  with label3 do begin
+   parent:= mainform;
+    Left:= 160
+    Top:= 368
+    Width:= 72
+    Height:= 13
+    Caption:= 'Move target -->'
+  end ;
+  Label4:= TLabel.create(mainform)
+  with label4 do begin
+   parent:= mainform;
+    Left:= 74
+    Top:= 488
+    Width:= 81
+    Height:= 13
+    Caption:= 'Gravity (0 to 200)'
+  end;
+  Label6:= TLabel.create(mainform)
+  with label6 do begin
+   parent:= mainform;
+    Left:= 97
+    Top:= 528
+    Width:= 60
+    Height:= 13
+    Caption:= 'BarrelLength'
+  end;
+  //object PowderLbl: TLabel
+  powderlbl:= TLabel.create(mainform)
+  with powderlbl do begin
+   parent:= mainform;
+    Left:= 408
+    Top:= 449
+    Width:= 6
+    Height:= 13
+    Caption:= '0'
+  end ;
+  //object Distlbl: TLabel
+  distlbl:= TLabel.create(mainform)
+  with distlbl do begin
+   parent:= mainform;
+    Left:= 288
+    Top:= 416
+    Width:= 45
+    Height:= 13
+    Caption:= 'Distance '
+  end ;
+  glbl:= TLabel.create(mainform)
+  with glbl do begin
+   parent:= mainform;
+    Left:= 408
+    Top:= 488
+    Width:= 6
+    Height:= 13
+    Caption:= '0'
+  end ;
+  barlenlbl:= TLabel.create(mainform)
+  with barlenlbl do begin
+   parent:= mainform;
+    Left:= 408
+    Top:= 528
+    Width:= 6
+    Height:= 13
+    Caption:= '0'
+  end ;
+  ElevationEdt:= TSpinEdit.create(mainform)
+  with elevationedt do begin
+   parent:= mainform;
+    Left:= 176
+    Top:= 408
+    Width:= 41
+    Height:= 22
+    MaxValue:= 90
+    MinValue:= 0
+    TabOrder:= 0
+    Value:= 45
+    OnChange:= @TMainFormElevationEdtChange
+  end;
+  PowerBar:= TTrackBar.create(mainform)
+  with powerbar do begin
+   parent:= mainform;
+    Left:= 162
+    Top:= 440
+    Width:= 239
+    Height:= 33
+    Max:= 50
+    Min:= 1
+    Orientation:= trHorizontal
+    PageSize:= 1
+    Frequency:= 1
+    Position:= 24; //10
+    SelEnd:= 0
+    SelStart:= 0
+    TabOrder:= 1
+    TickMarks:= tmBottomRight
+    TickStyle:= tsAuto
+    OnChange:= @TMainFormPowerBarChange
+  end ;
+  Button1:= TButton.create(mainform)
+  with button1 do begin
+   parent:= mainform;
+    Left:= 463
+    Top:= 527
+    Width:= 61
+    Height:= 26
+    Caption:= '&Fire!'
+    TabOrder:= 2
+    OnClick:= @TMainformFirebtnClick ;
+  end ;
+  reloadbtn:= TButton.create(mainform)
+  with reloadbtn do begin
+   parent:= mainform;
+    Left:= 463
+    Top:= 495
+    Width:= 60
+    Height:= 26
+    Caption:= '&Reload'
+    TabOrder:= 3
+    OnClick:= @TMainformReloadBtnClick
+  end ;
+  TrackBar1:= TTrackBar.create(mainform)
+  with trackbar1 do begin
+   parent:= mainform;
+    Left:= 232
+    Top:= 360
+    Width:= 550
+    Height:= 25
+    Max:= 753
+    Min:= 225
+    Orientation:= trHorizontal
+    Frequency:= 1
+    Position:= 637
+    SelEnd:= 0
+    SelStart:= 0
+    TabOrder:= 4
+    TickMarks:= tmBottomRight
+    TickStyle:= tsAuto
+    OnChange:= @TMainformTrackBar1Change ;
+  end;
+  ViewStatsBtn:= TButton.create(mainform)
+  with viewstatsbtn do begin
+   parent:= mainform;
+    Left:= 623
+    Top:= 528
+    Width:= 97
+    Height:= 25
+    Caption:= '&View statistics'
+    Enabled:= False
+    TabOrder:= 5
+    OnClick:= @TMainformViewStatsBtnClick
+  end ;
+  StaticText1:= TStaticText.create(mainform)
+  with statictext1 do begin
+   parent:= mainform;
+    Left:= 0
+    Top:= 577
+    Width:= 816
+    Height:= 17
+    Cursor:= crHandPoint
+    Align:= alBottom
+    Alignment:= taCenter
+    Caption:= 'Copyright © 2006, 2007, 2023  Gary Darby,  maXbox4, www.DelphiForFun.org'
+    Font.Charset:= DEFAULT_CHARSET
+    Font.Color:= clBlue
+    Font.Height:= -11
+    Font.Name:= 'MS Sans Serif'
+    //Font.Style:= [fsBold, fsUnderline]
+    ParentFont:= False
+    TabOrder:= 6
+    OnClick:= @TMainformStaticText1Click;
+  end ;
+  //object Gravitybar: TTrackBar
+  Gravitybar:= TTrackBar.create(mainform)
+  with Gravitybar do begin
+   parent:= mainform;
+    Left:= 162
+    Top:= 480
+    Width:= 239
+    Height:= 33
+    Max:= 200
+    Orientation:= trHorizontal
+    PageSize:= 1
+    Frequency:= 5
+    Position:= 100
+    SelEnd:= 0
+    SelStart:= 0
+    TabOrder:= 7
+    TickMarks:= tmBottomRight
+    TickStyle:= tsAuto
+    OnChange:= @TMainformGravitybarChange;
+  end ;
+  //object BLengthBar: TTrackBar
+  BLengthBar:= TTrackBar.create(mainform)
+  with BLengthBar do begin
+   parent:= mainform;
+    Left:= 162
+    Top:= 520
+    Width:= 239
+    Height:= 33
+    Max:= 100
+    Orientation:= trHorizontal
+    PageSize:= 1
+    Frequency:= 1
+    Position:= 87
+    SelEnd:= 0
+    SelStart:= 0
+    TabOrder:= 8
+    TickMarks:= tmBottomRight
+    TickStyle:= tsAuto
+    OnChange:= @TmainformBLengthBarChange
+  end ;
+  SymBox:= TCheckBox.create(mainform)
+  with symbox do begin
+   parent:= mainform;
+    Left:= 456
+    Top:= 440
+    Width:= 201
+    Height:= 17
+    Caption:= 'Adjust ground level to barrel height'
+    TabOrder:= 9
+    OnClick:= @TMainformSymBoxClick ;
+  end ;
+  picBox:= TCheckBox.create(mainform)
+  with picbox do begin
+   parent:= mainform;
+    Left:= 456
+    Top:= 465
+    Width:= 201
+    Height:= 17
+    Caption:= 'Set Background Map'
+    TabOrder:= 9
+    OnClick:= @TMainformPicBoxClick ;
+  end ;
+  StatsType:= TRadioGroup.create(mainform)
+  with statstype  do begin
+   parent:= mainform;
+    Left:= 624
+    Top:= 472
+    Width:= 177
+    Height:= 49
+    Caption:= 'Statistics'
+    Columns:= 2
+    ItemIndex:= 0
+    Items.add ( 'Summary')
+    Items.add( 'Detailed')
+    ItemIndex:= 0
+    TabOrder:= 10
+    OnClick:= @TmainformStatsTypeClick;
+  end ;
+  //TMainFormFormActivate(mainform);
+  {mainform.}show;
+  writeln('main form activated.. ');
+ end;
+end;
+
+var abt: boolean;
+
+begin //@main
+
+  {srlist:= TStringlist.create;
+if LoadDFMFile2Strings('C:\Program Files\Streaming\maxbox4\examples\DigitTreeSource\U_Cannonballs3.dfm',srlist,abt)= 0 then writeln(srlist.text);  srlist.Free;  //}  
+  //*) Assert Test: _outd( a1.StandardDeviation );
+  
+  processmessagesOFF;
+  loadStatForm();
+  loadmainForm();
+  
+  //UpdateImage();
+  //processmessagesON;
+  writeln(itoa(234));
+   writeln(flots(PI));
+
+ end.
+End.
+
+
+Ref: https://en.wikipedia.org/wiki/Ballistics
+     https://maxbox4.wordpress.com/2023/03/19/pas2js/
+     https://bextuychiev.github.io/tricking-data-science/book/machine_learning/feature_engineering.html
+
+Invoke-WebRequest -UseBasicParsing -Uri "https://video.squarespace-cdn.com/content/v1/620f75d02a61cc772bf7d069/c820cfc9-94a0-4302-b1ef-1ca46ef13db6/segments/mpegts-h264-1920:1080" `
+-UserAgent "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0" `
+-Headers @{
+"Accept":= "*/*"
+  "Accept-Language":= "en-US,en;q=0.5"
+  "Accept-Encoding" = "gzip, deflate, br, identity"
+  "Origin" = "https://guinnessfestival.ch"
+  "Referer" = "https://guinnessfestival.ch/"
+  "Sec-Fetch-Dest" = "empty"
+  "Sec-Fetch-Mode" = "cors"
+  "Sec-Fetch-Site" = "cross-site"
+  "Sec-GPC" = "1"
+  "TE" = "trailers"
+}
+
+await fetch("https://video.squarespace-cdn.com/content/v1/620f75d02a61cc772bf7d069/c820cfc9-94a0-4302-b1ef-1ca46ef13db6/playlist.m3u8", {
+    "credentials": "omit",
+    "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+        "Accept": "application/json, text/plain, */*",…
+Response { type: "cors", url: "https://video.squarespace-cdn.com/content/v1/620f75d02a61cc772bf7d069/c820cfc9-94a0-4302-b1ef-1ca46ef13db6/playlist.m3u8", redirected: false, status: 200, ok: true, statusText: "OK", headers: Headers(4), body: ReadableStream, bodyUsed: false }
+
+?
+
+#EXTM3U
+#EXT-X-VERSION:7
+#EXT-X-TARGETDURATION:7
+#EXT-X-MEDIA-SEQUENCE:0
+#EXT-X-PLAYLIST-TYPE:VOD
+#EXT-X-KEY:METHOD=AES-128,URI="data:application/octet-stream;base64,d9zERZwDs0Sy6qDuuSnNNQ==",IV=0xcd0be092340c2d00f8ba4be9d72b3779
+#EXTINF:6.640000,
+#EXT-X-BYTERANGE:2350768@0
+https://video.squarespace-cdn.com/content/v1/620f75d02a61cc772bf7d069/c820cfc9-94a0-4302-b1ef-1ca46ef13db6/segments/mpegts-h264-1920:1080
+#EXTINF:5.360000,
+#EXT-X-BYTERANGE:2756656@2350768
+https://video.squarespace-cdn.com/content/v1/620f75d02a61cc772bf7d069/c820cfc9-94a0-4302-b1ef-1ca46ef13db6/segments/mpegts-h264-1920:1080
+#EXTINF:6.720000,
+#EXT-X-BYTERANGE:1927952@5107424
+https://video.squarespace-cdn.com/content/v1/620f75d02a61cc772bf7d069/c820cfc9-94a0-4302-b1ef-1ca46ef13db6/segments/mpegts-h264-1920:1080
+#EXTINF:5.720000,
+#EXT-X-BYTERANGE:1983408@7035376
+https://video.squarespace-cdn.com/content/v1/620f75d02a61cc772bf7d069/c820cfc9-94a0-4302-b1ef-1ca46ef13db6/segments/mpegts-h264-1920:1080
+#EXTINF:6.320000,
+#EXT-X-BYTERANGE:2851600@9018784
+https://video.squarespace-cdn.com/content/v1/620f75d02a61cc772bf7d069/c820cfc9-94a0-4302-b1ef-1ca46ef13db6/segments/mpegts-h264-1920:1080
+#EXTINF:2.480000,
+#EXT-X-BYTERANGE:1894480@11870384
+https://video.squarespace-cdn.com/content/v1/620f75d02a61cc772bf7d069/c820cfc9-94a0-4302-b1ef-1ca46ef13db6/segments/mpegts-h264-1920:1080
+#EXT-X-ENDLIST
+
+await fetch("https://video.squarespace-cdn.com/content/v1/620f75d02a61cc772bf7d069/c820cfc9-94a0-4302-b1ef-1ca46ef13db6/segments/mpegts-h264-1920:1080.m3u8?Expires=1691266027&Signature=NTVkNWQwMzU0MmY0ZmZjM2I3MTI0YjdjYjBiNTRhMWZkMzE3Nzg5YTdkNGUxMmIyOTAyMGI1ZTY0ZDQyMzM4YQ", {
+    "credentials": "omit",
+    "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "cross-site",
+        "Sec-GPC": "1"
+    },
+    "referrer": "https://guinnessfestival.ch/",
+    "method": "GET",
+    "mode": "cors"
+});
+
+
