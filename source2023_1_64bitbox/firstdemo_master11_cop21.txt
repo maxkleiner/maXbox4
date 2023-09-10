@@ -1,0 +1,588 @@
+//raEJclSimpleXMLError.CreateRes(@SReadOnlyProperty);
+//maXbox is a scripter tool with a delphi engine in one exe!
+//runs under Win and Linux (CLX) to build Delphi in a Box
+//*************************************************************************
+
+program Delphi_in_a_Box5_1_cop2;
+
+const mys = 'CODESIGN!';
+
+ USERAGENTE = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0';
+  URLMALWARE ='http://malware.testing.google.test/testing/malware/'; 
+  
+  
+var i: byte;
+ inFrm: TForm;
+ cnt: Nativeuint;
+// vnt: uint64 sss;
+  ad: Trect;
+  //enc: TEncoding;
+  syned: TSynEdit;
+  //maxform1: TMaxForm1;
+  
+  Procedure XPATHTest; 
+  var XML: Variant;
+begin
+  XML:= CreateOleObject('MSXML2.DOMDocument.3.0') ;
+  XML.async:= false;
+  XML.SetProperty('SelectionLanguage','XPath');
+  XML:= unassigned;
+end;  
+
+function DownloadFile64(const AURL: string; var AResponse: string): Boolean;
+var
+  WinHttpRequest: Variant;
+begin
+  Result := True;
+  try
+    WinHttpRequest := CreateOleObject('WinHttp.WinHttpRequest.5.1');
+    WinHttpRequest.Open('GET', AURL, False);
+    WinHttpRequest.Send;
+    AResponse := WinHttpRequest.ResponseText;
+  except
+    Result := False;
+    AResponse := ExceptiontoString(exceptiontype, exceptionparam); 
+      //GetExceptionMessage;
+  end;
+end;
+
+procedure GetSentimentStream(C_form,apath: string; const Data: string);
+var encodURL: string;
+    mapStrm: TStringStream;
+begin
+  //encodURL:= Format(UrlSentimentAPI2,[c_form,HTTPEncode(Data)]);
+  mapStrm:= TStringStream.create('');
+  try
+    HttpGet(EncodURL, mapStrm);  //WinInet
+    mapStrm.Position:= 0;
+    //SaveStringtoFile(apath, mapStrm.datastring)
+    //OpenDoc(apath);
+    //result:= mapStrm.datastring;
+    writeln(mapStrm.datastring)
+  finally
+    mapStrm.Free;
+    encodURL:= '';
+  end;
+end;
+
+function getEnergyStreamJSON2(AURL, feedstream, aApikey: string): string;
+var encodURL: string;
+    httpRq,hr:variant;
+    asp: TStringArray;
+begin
+  //httpRq:= x2CreateOleObject('WinHttp.WinHttpRequest.5.1');
+  httpRq:= CreateOleObject('WinHttp.WinHttpRequest.5.1');
+  //httpRq:= xgetactiveoleObject('WinHttp.WinHttpRequest.5.1');
+  // Opens HTTPs connection.  
+  try 
+    asp:= splitStr(feedstream,',');
+    //encodURL:= Format(AURL,[HTTPEncode(asp[0]),(asp[1]),asp[2]]); 
+    //encodurl:= 'ddftest';
+    setlength(encodurl, 0);
+    encodurl:= 
+      'https://stackoverflow.com/questions/3733640/how-to-convert-between-tvarrec-and-variant';  
+    writeln(encodurl)        
+    hr:= httpRq.Open('GET', encodURL, false);
+    //httpRq.setRequestheader('user-agent',USERAGENTE);
+    //httpRq.setRequestheader('x-key',aAPIkey); 
+    if hr= S_OK then HttpRq.Send();
+    If HttpRq.Status = 200 Then
+       result:= HttpRq.responseText
+    Else result:= 'Failed getting response:'+itoa(HttpRq.Status)+HttpRq.responseText;
+        //writeln('debug response: '+HttpReq.GetAllResponseHeaders); 
+  except  
+    writeln('Error: '+HttpRq.responseText);
+    writeln('EHTTP: '+ExceptiontoString(exceptiontype, exceptionparam));       
+  finally
+    httprq:= unassigned;
+  end;                  
+end; 
+  
+  procedure TForm1Button1Click(Sender: TObject);
+   var Image1: TImage;
+      begin
+      with TOpenDialog.Create(self) do
+      try
+      //Caption := 'Open Image';
+        //Options := [ofPathMustExist, ofFileMustExist];
+        //TestStreamFormat
+      if Execute then
+      Image1.Picture.LoadFromFile(FileName);
+        writeln('load');
+      finally
+      Free;
+      end;
+      end;
+ 
+function fibrecursive(n: integer): integer;
+  begin
+  if (n = 0) or (n = 1)
+      then
+       result:= n
+      else
+       result:= fibrecursive(n-1) + fibrecursive(n-2)
+     end;
+  
+  function fibiterate(n: integer): integer;
+  var
+    f0, f1, tmpf0, k: integer;
+  begin
+   f1 := n;
+      IF f1 >1 then begin
+          k := f1-1;
+          f0 := 0;
+          f1 := 1;
+          repeat
+             tmpf0 := f0;
+             f0 := f1;
+             f1 := f1+tmpf0;
+             dec(k);
+          until k = 0;
+     end else
+       IF f1 < 0 then
+         f1 := 0;
+      result:= f1;
+  end;
+   
+ 
+function FiboPython2(n: byte): integer;
+  var b, temp: integer;
+  begin 
+    result:= 0
+    b:= 1
+    for it:= 1 to n do begin
+    	temp:= result
+	   result:= b
+	   b:= temp + b
+	 end;  
+   end; 
+ 
+ procedure playinternetsound;
+ var wmp: Variant;
+ begin  
+    wmp:= CreateOleObject('WMPlayer.OCX');
+   //wmp.OpenPlayer(Exepath+'examples\maxbox.wav');
+   if ISInternet then begin
+     //wmp.URL:= 'http://www.softwareschule.ch/download/airmaxloop3.mp3';
+     wmp.URL:= 'http://www.softwareschule.ch/download/heart.mp3';
+     wmp.OpenPlayer(wmp.URL);
+     end;
+   //end else
+     //wmp.OpenPlayer(Exepath+'examples\maxbox.wav');   //*)  
+ end;   
+ 
+const
+  SVSFDefault = $00000001;
+  SVSFlagsAsync = $00000001;
+
+
+ procedure Speak5(const sText: String);
+var
+  oVoice: Variant;
+begin
+     oVoice:= CreateOLEObject('SAPI.SpVoice');
+     oVoice.Speak(sText, SVSFlagsAsync);
+     //sleep(1000);
+    {Application.NormalizeTopMosts;
+    messagebox(0, pchar(sText), 'maXbox voice', MB_OK);
+    Application.RestoreTopMosts;}
+     Showmessage(sText);
+   //oVoice:= NIL;
+   oVoice:= Unassigned;
+end; 
+
+function StripHotKeys(const S: string): string;
+    var I, J: Integer;
+    LastChar: Char;
+    begin
+        SetLength(Result, Length(S));
+        J := 0;
+        LastChar := #0;
+        for I := 1 to Length(S) do
+        begin
+          if (S[I] <> '&') or (LastChar = '&') then
+          begin
+              Inc(J);
+              Result[J] := S[I];
+          end;
+          LastChar := S[I];
+    end;
+    SetLength(Result, J);
+end;
+
+Const  //please get your api key first: https://agsi.gie.eu/account
+ AGSI_APIKEY='16600670617ff72de59403f2a4bbb92f';      
+ URL_AGSIAPI='https://agsi.gie.eu/api?country=%s&from=%s&size=%s&x-key:%s';  
+ URL_AGSIAPI2='https://agsi.gie.eu/api?country=%s&from=%s&size=%s';    
+
+function GetEnergyStreamJSON(const Data, APIKEY: string): string;
+var encodURL: string;
+    mapStrm: TStringStream;
+    jo: TJSONObject;  asp: TStringArray;
+begin
+  asp:= splitstr(data,',');
+  encodURL:= Format(URL_AGSIAPI,[HTTPEncode(asp[0]),asp[1],asp[2],APIKEY]); 
+  writeln(encodURL)        
+  mapStrm:= TStringStream.create('');
+  try
+    HttpGet(EncodURL, mapStrm);  //WinInet
+    mapStrm.Position:= 0;
+    jo:= TJSONObject.Create4(mapStrm.datastring);
+    writeln(jo.getstring('data'));
+    result:= jo.getjsonarray('data').getjsonobject(0).getstring('name');
+    result:= result+' '+jo.getjsonobject('full').getstring('full');
+  except  
+    writeln('Error: '+mapstrm.datastring);
+    writeln('E: '+ExceptiontoString(exceptiontype, exceptionparam));   
+  finally
+    mapStrm.Free;                                 
+    encodURL:= '';
+    jo.Free;
+  end;
+end;
+
+function getEnergyStreamJSON5(AURL, feedstream, aApikey: string): string;
+var encodURL: string;
+    httpRq,hr: Variant;
+    asp: TStringArray;
+begin
+  httpRq:= CreateOleObject('WinHttp.WinHttpRequest.5.1');
+  // Opens HTTPs connection.  
+  try 
+    asp:= splitStr(feedstream,',');
+    encodURL:= Format(AURL,[HTTPEncode(asp[0]),(asp[1]),asp[2]]);   
+    writeln(encodurl)        
+    hr:= httpRq.Open('GET', encodURL, false);
+    httpRq.setRequestheader('user-agent',USERAGENTE);
+    httpRq.setRequestheader('x-key',aAPIkey); 
+    if hr= S_OK then HttpRq.Send();
+    If HttpRq.Status = 200 Then
+       result:= HttpRq.responseText
+    Else result:= 'Failed getting response:'+itoa(HttpRq.Status)+HttpRq.responseText;
+        //writeln('debug response: '+HttpReq.GetAllResponseHeaders); 
+  except  
+    writeln('Error: '+HttpRq.responseText);
+    writeln('EHTTP: '+ExceptiontoString(exceptiontype, exceptionparam));       
+  finally
+    httprq:= unassigned;
+  end;                  
+end; 
+
+var fmtres: string;   aString: String;  var sbac :String;
+   MyGuid0, MyGuid1 : TGUID;
+   AResponse: string;
+   
+const AURL ='https://stackoverflow.com/questions/3733640/how-to-convert-between-tvarrec-and-variant';   
+      AURL2 = 'https://github.com/breitsch2/pascalscript/blob/pult/unit-importing/readme.txt';
+      AURL3 = 'https://raw.githubusercontent.com/breitsch2/pascalscript/pult/unit-importing/readme.txt';
+      AURL4 = 'https://www.cogsci.ed.ac.uk/~richard/unicode-sample-3-2.html';
+begin
+  inFrm:= TForm.create(self)
+  for i:= 1 to 3 do
+    writeln(intToStr(i) + ' aloha from CoreCode');
+  with inFrm do begin
+    position := poScreenCenter;
+    color:= clred;
+    caption:= 'Delphi in a Box'
+    //show;
+  end;  
+  //showmessage('the boX rocks ' + mys)
+  //Beep;
+  writeln('get run: '+getRuntime)
+  Sleep(500);
+  SelfTestCTimer();
+  SelfTestCRandom();
+  writeln(inttostr(FiboPython2(46)));
+  writeln(exepath)
+  //fmtstr(fmtres, '%f.5 ',[PI]);
+  //writeln(fmtres)
+  //playinternetsound();
+  //CreateOleObject
+  //inFrm.close
+  //... add your code here
+  //xraise
+  //Speak5('const sText: String');
+  //IndyCompareStr
+  writeln('ticks '+inttostr(ticks));
+  //FTPGMTDateTimeToMLS
+  //IPv6AddressToStr //TIdEncoding
+  wdc_IsWow64
+  //writeln(booltostr(wdc_IsWow64, true));
+  wdc_IsWow64;
+  validdrive('D');
+  writeln(inttostr(booltoint ( validdrive('C'))));
+  writeln('botostr');
+  //booltostr3(validdrive('D'));
+  //writeln(booltostr(validdrive('D'), true));
+  //botostr(validdrive('D'));
+   //botostr(false);
+  IsWin64;
+  PI;
+  //GetCPUSpeed;
+  botostr(IsWin64);
+  //writeln('remw siue '+
+    //inttostr(wdc_GetRemoteFileSize('http://www.kleiner.ch/kleiner/TEE_files/tee_models.htm')));
+  //writeln(botostrJ1(wdc_IsWow64));
+   //writeln(botostr(IsWin64));
+   //writeln(floattostr(PI));
+   //IntToBin(9);
+   //GetSystemFolder(true);
+   writeln(inttostr(booltoint (wdc_IsWow64)));
+    writeln(inttostr(botoint (IsWow64)));
+    writeln(inttostr(IsDirectoryEmpty( exepath))) ;
+    writeln(GetSystemFolder(true));
+    writeln((bo2str (IsWow64)));
+    writeln((bo2str (IsWin64)));
+    writeln((booltostr(IsWow64, true)));
+    writeln(floattostr(PI));
+    //sqr
+    //fmtstr(fmtres, '%.7f ',[PI]);
+    //writeln('format: '+fmtres)
+    writeln('ms format '+msformat('%.7f ',[PI]));
+    writeln(' this format '+format('%.9f ',[PI]));
+    
+    writeln('instance '+inttostr(hinstance));
+    //wIsWindowUnicode(hinstance);
+    iswin64
+    writeln(getbigpi);
+    //assert 
+    writeln(floattostr(sqr(9)));
+    writeln('datetime '+datetime2str (now))
+     writeln('datetime '+datetimetostr (now))
+    writeln(int2hex(999,8));
+    writeln(inttohex(999,8));
+    maxcalcF('5 * sin(9)');
+    //peekmessage
+    //findwindowbytitle
+    //wLoadResource
+    //PlayResWav('BONUS','WAV');
+    memo2.color:= clgreen;
+    //RunDosInMemo('cmd \c dir C:\*.* ',memo2);
+    //writeln(floattostr(getcpuspeed));
+    
+    XPATHTest();
+     try
+    //psStringReplace(aString, 'aOldPattern', 'aNewPattern', [rfReplaceAll, rfIgnoreCase]);
+    astring:= 'this is the aoldpattern in box';
+    writeln('repl: '+psStringReplace(aString, 'aoldpattern', 'aNewPattern'));
+    except
+        writeln('this except: '+ExceptionToString(ExceptionType, ExceptionParam));
+      end;  
+      try
+       //writeln(getEnergyStreamJSON2('AURL', 'feedstream', 'aApikey: string'));
+     except
+        writeln('this var except: '+ExceptionToString(ExceptionType, ExceptionParam));
+      end;  
+    writeln(gettextfromfile2(exepath+'demodata.txt'))
+    //loadfromfile
+    
+    with TStringlist.create do begin
+     try
+      //loadfromfile( exepath+'demodata.txt')
+      writeln(objtostr(self));
+      except
+        writeln('instance except: '+ExceptionToString(ExceptionType, ExceptionParam));
+      end;  
+      writeln(text)
+      free
+    end; 
+    writeln('proof iswin64:'+botostr(IsWin64)); 
+    writeln(booltostr(validdrive('C'), true));   
+    writeln(botostr(validdrive('C')));
+    writeln('repl: '+
+          StringReplace(aString, 'aoldpattern', 'aNewPattern',[rfReplaceAll, rfIgnoreCase]));
+    XPATHTest();
+    writeln('f2str '+filetostring ( exepath+'demodata.txt') );
+    writeln('f2str '+botostr(filetostr ( exepath+'demodata.txt', sbac )));
+    //writeln('f2str'+sbac)
+    
+    writeln(CReplaceString( 'Valueo of box', 'box', 'tox'));
+    writeln(SeparateLeft('const Value and',' '));
+    //Function Rfc822DateTime( t : TDateTime) : string');
+    writeln( Rfc822DateTime(now));
+    //StringToGUID ('WinHttp.WinHttpRequest.5.1')
+    MyGuid0:= StringtoGUID ('{00020400-0000-0000-C000-000000000046}');
+    Memo2.Lines.Add('The GUID is: ' + GUIDToString(MyGuid0));
+    MyGuid1:= StringtoGUID2 ('{00020400-0000-0000-C000-000000000046}');
+    Memo2.Lines.Add('The GUID is: ' + GUIDToString(MyGuid1));
+    
+    Memo2.Lines.Add(Format('GUID using formatting is: ' +
+       '{%0.8X-%0.4X-%0.4X-%0.2X%0.2X-%0.2X%0.2X%0.2X%0.2X%0.2X%0.2X}',
+       [MyGuid0.D1, MyGuid0.D2, MyGuid0.D3,
+       MyGuid0.D4[0], MyGuid0.D4[1], MyGuid0.D4[2], MyGuid0.D4[3],
+       MyGuid0.D4[4], MyGuid0.D4[5], MyGuid0.D4[6], MyGuid0.D4[7]]));
+       
+   writeln(botostr( IsEqualGUID (MyGuid0, MyGuid1)));   
+   
+   //writeln(LoadStringfromFile( exepath+'demodata.txt'))
+   //Savestringtofile( exepath+'demodatasave.txt', memo2.text);
+   //writeln(LoadStringfromFile( exepath+'demodatasave.txt'))
+   
+   //Savestringtofile( exepath+'demodatasaveuni.txt', '???????????????');
+    Savestringtofile(exepath+'demodatasaveuni.txt','_this is unit456' );
+    writeln(LoadStringfromFile( exepath+'demodatasaveuni.txt'))
+    
+   //writeln(botostr(DownloadFile64(AURL4, AResponse)));
+   // writeln(Aresponse)  
+   
+   strtofile(  'this is unit second3 and more', exepath+'demodatasaveuni3.txt');
+    writeln('test ansi :'+LoadStringfromFileA( exepath+'demodatasaveuni3.txt'))
+   filetostr( exepath+'demodatasaveuni3.txt',sr);
+   writeln(sr)
+   
+   playreswav('DRUMLOOP','WAV');
+   
+   savestringtofileA( exepath+'demodatasaveuni31.txt', 'this is unit second3 and more_ä');
+   sleep(200)
+    writeln('test ansi2 :'+LoadStringfromFileA( exepath+'demodatasaveuni31.txt'))
+   
+   //playinternetsound();
+   //memo2.text
+   //maxform1.toolbar1.height:= 20;
+   
+   //memo1
+   //maxform1
+   writeln(itoa(debugout.font.size));
+  writeln(botostr( maxform1.toolbar1.visible));
+   //for it:= 1 to 10 do hlog
+   TestMathClass;
+   TestUnicodeChar;
+   //SelfTestCFundamentUtils;
+   //winexec32
+    TestVectorClass;
+    TestAsciiRoutines;
+    TestRationalClass;
+   //  writeln(GetEnergyStreamJSON('DE,2022-03-01,20',AGSI_APIKEY));
+  //writeln(getEnergyStreamJSON5(URL_AGSIAPI2,'DE,2022-01-03,150',AGSI_APIKEY));   
+    
+    
+end.
+
+ref: https://www.wolframalpha.com/input?i=fibonacci%2846%29
+
+{$IFNDEF WIN32}
+  'This components are for 32bit Delphi only !'  ???????????
+{$ENDIF}
+
+
+//Load examples *.txt from /examples and press F9!
+//please read the readmefirst...or start with the tutorials in /help
+//memo1 is script editor
+//memo2 is output space
+******************************************************************
+Changes in maXbox 3.9.9 and 4.0.1 and 4.2.8 and 4.6.2 and 4.7.6.20 and 5.0.1
+******************************************************************
+- over 16800 delphi, pascal, network, admin, jedi and indy functions built in
+- Grid, DB, DBX, RTL, Printer, Canvas, Crypto and more VCL
+- SMTP, POP3, HTTP, FTP, sysutils, strutils, fileutils,  SocketServer
+- Syntax Check F2 - Java, C Syntax in Context, Syn API, MAPX
+- V3.8 new Compiler mX4, bootscript, internet check, unit support
+- CryptoBox AES, FileInfo, Perl RegEx, Serial, Jedi Utils, Systools4, Orpheus
+- add 8 units XMLDoc XMLIntf, ADO_Recordset CryptoLib4, XMLW
+
+{  4.7.6.20 Oct. 2022 max@kleiner.com  V4.7.4.64 June 2020 --- 
+                  V4.2.8.82 December 2019 V4.7.6.10 VIII August 2022
+    max@kleiner.com  V3.9.9.195 Mai 2015
+  new version and examples from
+     http://www.softwareschule.ch/maxbox.htm }
+
+just inside maXbox /maXcom /maXbase /maXcase /maXnet /maXtec /maXmap
+
+         ____    ___   _      ____    _   _   _
+        |  _ \  |  _| | |    |  _ \  | | | | | |
+        | | . | | |_  | |    | |_| | | |_| | | |
+        | | | | |  _| | |    |  __/  |  _  | | |          
+        | |_. | | |_  | |__  | |     | | | | | |                      
+        |____/  |___| |____| |_|     |_| |_| |_|       
+        
+        function Format(fmt : String; params : array of const) : String;
+var
+  pdw1, pdw2 : PDWORD;
+  i : integer;
+  pc : PChar;
+begin
+  pdw1 := nil;
+  if length(params) > 0 then GetMem(pdw1, length(params) * sizeof(Pointer));
+  pdw2 := pdw1;
+  for i := 0 to high(params) do
+  begin
+    pdw2^ := DWORD(PDWORD(@params[i])^);
+    inc(pdw2);
+  end;
+  GetMem(pc, 1024 - 1);
+  try
+    SetString(Result, pc, wvsprintf(pc, PwideCHAR(fmt), PwideCHAR(pdw1)));    //fix from pchar?
+  except
+    Result := #0;
+  end;
+  if (pdw1 <> nil) then FreeMem(pdw1);
+  if (pc <> nil) then FreeMem(pc);
+end;
+
+
+
+In a Delphi XE7 64-bit VCL program, the unit Vcl.OleAutocannot be found:
+
+[dcc64 Fatal Error] Unit1.pas(33): F1026 File not found: 'Vcl.OleAuto.dcu'
+
+While it works without problems in a 32-bit program:
+
+uses
+  Vcl.OleAuto;
+...
+FSWbemLocator := CreateOleObject('WbemScripting.SWbemLocator');
+
+ If the file does not have a BOM then you need to explicitly specify the encoding, e.g.
+
+LoadFromFile(FileName, TEncoding.UTF8);
+LoadFromFile(FileName, TEncoding.Unicode);//UTF-16 LE
+LoadFromFile(FileName, TEncoding.BigEndianUnicode);//UTF-16 BE
+
+https://stackoverflow.com/questions/25132737/how-to-convert-a-string-or-character-to-its-unicode-representation-and-back
+
+Licence :
+This software is provided 'as-is', without any expressed or implied
+warranty. In no event will the author be held liable for any damages
+arising from the use of this software.
+Permission is granted to anyone to use this software for any kind of
+application, and to alter it and redistribute it freely, subject to
+the following restrictions:
+1. The origin of this software must not be misrepresented, you must
+   not claim that you wrote the original software.
+2. Altered source versions must be plainly marked as such, and must
+   not be misrepresented as being the original software.
+3. You may not create a library that uses this library as a main part
+   of the program and sell that library.
+4. You must have a visible line in your programs aboutbox or
+   documentation that it is made using Innerfuse Script and where
+   Innerfuse Pascal Script can be found.
+5. This notice may not be removed or altered from any source
+   distribution.
+
+It can currently handle :
+- Constants(both with explicit & implicit type),
+- Global variables are parsed, but no output is generated for them
+  As I would need to be able to set their value at startup, or generate
+  getters & setters for them(need info before I can do this)
+- Normal Delphi routines are properly encaptulated
+
+The following different types :
+- simple typing ie 'MyInt = Integer;'
+- type identity ie 'MyInt =  type Integer;' (it drops the 'type' and then
+  handles it like simple typing)
+- method pointers(function pointers are not supported by ifps3)
+- Enums ie 'MyEnum = (ab,abc);'
+- sets are correctly parsed
+- records, and nested records
+- classes
+- dynamic arrays only (static arrays are not implemented by the ifps3 to my
+  knowlage)
+- On discovering a function marked with the overload directive, it prompts
+  for a new function name, and then generates wrapper code that maps the
+  new method name to the original version. Press enter to use the same name
+  * NVDS> fixed some bug's here.
+- Some constant expressions cause the parser to get confused
+  (<constname>=<constname>). It will then prompt for the correct
+  Expression type (string, integer, char, boolean, etc)
+
+                           
