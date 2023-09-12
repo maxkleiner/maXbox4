@@ -1240,11 +1240,11 @@ uses
   uPSI_StAstroP,
   uPSI_StStat,
   uPSI_StNetCon,
-  //uPSI_StDecMth,     cont
+  uPSI_StDecMth,     //cont
   //uPSI_StOStr,
   uPSI_StPtrns,
   uPSI_StNetMsg,  //*)
-  //uPSI_StMath,
+  uPSI_StMath,
   uPSI_StExport,
   uPSI_StExpLog,
   uPSI_StFirst,
@@ -1383,7 +1383,7 @@ uses
  // uPSI_JvAirBrush,
  (* uPSI_JclLocales,      //last  *)
   uPSI_XmlVerySimple, //*)
-  uPSI_Services,
+    uPSI_Services,
  // uPSI_JvForth,                *)
  // uPSI_RestRequest,
   //HttpRESTConnectionIndy,
@@ -2042,16 +2042,16 @@ uses
   uPSI_pwnative_out,
   uPSI_HTMLUtil,
   uPSI_synwrap1,
-(*  uPSI_W32VersionInfo,
-  uPSI_IpAnim,
+(*  uPSI_W32VersionInfo,   *)
+  uPSI_IpAnim, //*)
   uPSI_IpUtils,
   uPSI_LrtPoTools,
-  uPSI_Laz_DOM,
-  uPSI_hhAvComp,          //3.9.9.101
+  uPSI_Laz_DOM,  //3*)
+  uPSI_hhAvComp,          //3.9.9.101   *)
   uPSI_GPS2,
-  uPSI_GPS,
-  uPSI_GPSUDemo,
-  GPSUDemo, //for form call; *)
+  uPSI_GPS,  //*)
+  //uPSI_GPSUDemo,      internal erros!
+  //GPSUDemo, //for form call; *)
   uPSI_NMEA,        //3.9.9.101
   uPSI_ScreenThreeDLab,
   ScreenThreeDLab,   //form call  *)
@@ -2269,15 +2269,16 @@ uses
   uPSI_DCPbase64,
   uPSI_FlyFilesUtils,
   //uPSI_PJConsoleApp,
-  uPSI_PJStreamWrapper,   // templ for free()
-  uPSI_LatLonDist,
+  uPSI_PJStreamWrapper,   // templ for free()   *)
+  uPSI_LatLonDist,   //*)
   uPSI_cHash,
-  uPSI_commDriver,
+ (* uPSI_commDriver,
   uPSI_PXLNetComs,      //FDEF VER185} // Delphi 2007
-  uPSI_PXLTiming,
+  uPSI_PXLTiming,   *)
   uPSI_Odometer,         //4.7.1.10
   uPSI_UIntegerpartition,
-  uPSI_idPHPRunner,
+  uPSI_API_strings,
+ (* uPSI_idPHPRunner,
   uPSI_idCGIRunner,
   //uPSI_cTCPConnection,
   //uPSI_cHTTPTests,
@@ -2288,14 +2289,14 @@ uses
   uPSI_OverbyteIcsLogger,
   //uPSI_OverbyteIcsNntpCli,
   uPSI_OverbyteIcsCharsetUtils,
-  uPSI_OverbyteIcsMimeUtils,
+  uPSI_OverbyteIcsMimeUtils,    *)
   uPSI_OverbyteIcsUrl,
-  uPSI_uWebSocket,
+  //uPSI_uWebSocket,
   uPSI_KhFunction,
   uPSI_ALOpenOffice,
   //uPSI_ALLibPhoneNumber,
   uPSI_ALExecute2,
-  uPSI_ALIsapiHTTP,         //4.7.1.80
+ (* uPSI_ALIsapiHTTP,         //4.7.1.80
   uPSI_uUsb,
   uPSI_uWebcam,     *)
   uPSI_uTPLb_MemoryStreamPool,   //4.7.1.80 II
@@ -2517,8 +2518,8 @@ uses
   uPSI_IdQotdServer,
   uPSI_IdFingerServer,
   uPSI_IdDNSResolver,
-  //uPSI_IdUserAccounts,
-   //uPSI_StDecMth,
+  //uPSI_IdUserAccounts, *)
+  //uPSI_StDecMth,
   //uPSI_DSUtil,
     //teeprocs,
   //series,  *)
@@ -2533,9 +2534,9 @@ uses
   //uPSI_PerlRegEx,     //3.9.6
   uPSI_Masks,
   uPSI_Contnrs,
- (* uPSI_MyBigInt,
+  uPSI_MyBigInt,
   uPSI_SOAPHTTPClient,
-  uPSI_VCLScannerIntf,
+ (* uPSI_VCLScannerIntf,
   uPSI_VCLScannerImpl, *)
   uPSI_StdConvs,
   uPSI_Midas,                 //V4
@@ -2823,11 +2824,11 @@ begin
   SIRegister_StAstroP(X);
   SIRegister_StStat(X);
   SIRegister_StNetCon(X);
- (* SIRegister_StDecMth(X);
-  SIRegister_StOStr(X);  *)
+  SIRegister_StDecMth(X);
+  //SIRegister_StOStr(X); // *)
   SIRegister_StPtrns(X);
   SIRegister_StNetMsg(X);
- // SIRegister_StMath(X);  *)
+  SIRegister_StMath(X);  //*)
   SIRegister_StExpLog(X);
   SIRegister_StExport(X);
   SIRegister_StGenLog(X);  //*)
@@ -2956,15 +2957,15 @@ begin
   SIRegister_StatsClasses(X);   //unit test
   SIRegister_Dialogs(X);
   SIRegister_ExtDlgs(X);
-(*  SIRegister_ValEdit(X);
-  SIRegister_interface2_so(X);  *)
+  SIRegister_ValEdit(X);
+  //SIRegister_interface2_so(X);  *)
   SIRegister_Contnrs(X);
- (* SIRegister_MyBigInt(X); *)
+ SIRegister_MyBigInt(X); //*)
   SIRegister_StdConvs(X);
  // SIRegister_ConvUtils(X);
- (* SIRegister_SOAPHTTPClient(X);  //HTTPRIO
-  SIRegister_VCLScannerIntf(X);
-  SIRegister_VCLScannerImpl(X);  *)
+  SIRegister_SOAPHTTPClient(X);  //HTTPRIO
+  //SIRegister_VCLScannerIntf(X);
+  //SIRegister_VCLScannerImpl(X);  *)
   SIRegister_FMTBcd(X);
   SIRegister_Midas(X);
 (*  SIRegister_Provider(X);
@@ -3576,15 +3577,15 @@ begin
  SIRegister_HTMLUtil(X);
  SIRegister_synwrap1(X);
  SIRegister_pwmain(X);
-(* SIRegister_W32VersionInfo(X);
- SIRegister_IpAnim(X);
+(* SIRegister_W32VersionInfo(X);  *)
+ SIRegister_IpAnim(X);  //*)
  SIRegister_IpUtils(X);
  SIRegister_LrtPoTools(X);
- SIRegister_Laz_DOM(X);
- SIRegister_hhAvComp(X);
+ SIRegister_Laz_DOM(X);   //*)
+ SIRegister_hhAvComp(X);// *)
  SIRegister_GPS2(X);
  SIRegister_GPS(X);
- SIRegister_GPSUDemo(X);  *)
+ //SIRegister_GPSUDemo(X);  *)
  SIRegister_NMEA(X);        //3.9.9.101
  SIRegister_ScreenThreeDLab(X);
  SIRegister_DynaZip(X);  //*)
@@ -3951,28 +3952,29 @@ begin
   SIRegister_DCPbase64(X);
   SIRegister_FlyFilesUtils(X);
   //SIRegister_PJConsoleApp(X);
-  SIRegister_PJStreamWrapper(X);
+  SIRegister_PJStreamWrapper(X);   *)
   SIRegister_LatLonDist(X);
   SIRegister_cHash(X);
-  SIRegister_commDriver(X);
-  SIRegister_PXLNetComs(X);
-  SIRegister_PXLTiming(X);
+ // SIRegister_commDriver(X);
+  //SIRegister_PXLNetComs(X);
+  //SIRegister_PXLTiming(X);
   SIRegister_Odometer(X);        //47110
   //SIRegister_UIntList(X);
   SIRegister_UIntegerpartition(X);
-  SIRegister_idCGIRunner(X);
+  SIRegister_API_strings(X);
+ (* SIRegister_idCGIRunner(X);
   SIRegister_idPHPRunner(X);
   SIRegister_DrBobCGI(X);
   SIRegister_OverbyteIcsLogger(X);
   SIRegister_OverbyteIcsCharsetUtils(X);
-  SIRegister_OverbyteIcsMimeUtils(X);
+  SIRegister_OverbyteIcsMimeUtils(X);   *)
   SIRegister_OverbyteIcsUrl(X);
-  SIRegister_uWebSocket(X);
+ // SIRegister_uWebSocket(X);
   SIRegister_KhFunction(X);
   SIRegister_ALOpenOffice(X);
   //SIRegister_ALLibPhoneNumber(X);
   SIRegister_ALExecute2(X);
-  SIRegister_uUsb(X);
+ (* SIRegister_uUsb(X);
   SIRegister_uWebcam(X);
 
     SIRegister_dbTvRecordList(X);    *)
@@ -4311,11 +4313,11 @@ begin
   RIRegister_StAstroP_Routines(Exec);
   RIRegister_StStat_Routines(Exec);
   RIRegister_StNetCon(X);
-  //RIRegister_StDecMth(X);
+  RIRegister_StDecMth(X);
  // RIRegister_StOStr(X);
   RIRegister_StPtrns(X);
   RIRegister_StNetMsg(X);
-  //RIRegister_StMath_Routines(Exec);  *)
+  RIRegister_StMath_Routines(Exec); //*)
   RIRegister_StExpLog(X);
   RIRegister_StExport(X);
   RIRegister_StGenLog(X);
@@ -4345,34 +4347,35 @@ begin
   RIRegister_crlfParser(X);
   RIRegister_DCPbase64_Routines(Exec);
   RIRegister_FlyFilesUtils_Routines(Exec);
-  RIRegister_PJStreamWrapper(X);
+  RIRegister_PJStreamWrapper(X);       *)
   RIRegister_LatLonDist_Routines(Exec);
   RIRegister_cHash_Routines(Exec);
   RIRegister_AHash(X);
-  RIRegister_commDriver(X);
-  RIRegister_PXLNetComs(X);
-  RIRegister_PXLTiming_Routines(Exec);
-  RIRegister_PXLTiming(X);
+ // RIRegister_commDriver(X);
+ // RIRegister_PXLNetComs(X);
+ // RIRegister_PXLTiming_Routines(Exec);
+ // RIRegister_PXLTiming(X);
   RIRegister_Odometer(X);        //47110
-  //RIRegister_UIntList(X);
+  RIRegister_UIntList(X);
   RIRegister_UIntegerpartition(X);
-  RIRegister_idCGIRunner(X);
+  RIRegister_API_strings_Routines(Exec);
+ (* RIRegister_idCGIRunner(X);
   RIRegister_idPHPRunner(X);
   RIRegister_DrBobCGI_Routines(Exec);
   RIRegister_OverbyteIcsLogger(X);
   RIRegister_OverbyteIcsCharsetUtils_Routines(Exec);
   RIRegister_OverbyteIcsCharsetUtils(X);    //47120
   RIRegister_OverbyteIcsMimeUtils(X);
-  RIRegister_OverbyteIcsMimeUtils_Routines(Exec);
+  RIRegister_OverbyteIcsMimeUtils_Routines(Exec);  *)
   RIRegister_OverbyteIcsUrl_Routines(Exec);
-  RIRegister_uWebSocket(X);
+  //RIRegister_uWebSocket(X);
   RIRegister_KhFunction_Routines(exec);
   RIRegister_KhFunction(X);
   RIRegister_ALOpenOffice_Routines(Exec);
   RIRegister_ALOpenOffice(X);
   //RIRegister_ALLibPhoneNumber_Routines(Exec);
   RIRegister_ALExecute_Routines2(Exec);
-  RIRegister_uUsb(X);
+ (* RIRegister_uUsb(X);
   RIRegister_uWebcam_Routines(Exec);    *)
   RIRegister_uTPLb_MemoryStreamPool(X);  //4.7.1.80
   RIRegister_uTPLb_Signatory(X);
@@ -4900,11 +4903,11 @@ begin
   RIRegister_IdASN1Util_Routines(Exec);  *)
   RIRegister_Contnrs(X);
   RIRegister_Contnrs_Routines(Exec);
-  //RIRegister_MyBigInt(X); *)
+  RIRegister_MyBigInt(X); //*)
   RIRegister_StdConvs_Routines(Exec);
   //RIRegister_ConvUtils(X);
   //RIRegister_ConvUtils_Routines(Exec);
-  //RIRegister_SOAPHTTPClient(X);
+  RIRegister_SOAPHTTPClient(X);
   //RIRegister_VCLScannerImpl(X);
   //RIRegister_SynEditKeyCmds_Routines(Exec);
   //RIRegister_SynEditKeyCmds(X);
@@ -5487,18 +5490,18 @@ begin
   RIRegister_synwrap1_Routines(Exec);
   RIRegister_pwmain_Routines(Exec);
  (* RIRegister_W32VersionInfo_Routines(Exec);
-  RIRegister_W32VersionInfo(X);
-  RIRegister_IpAnim(X);
+  RIRegister_W32VersionInfo(X);   *)
+  RIRegister_IpAnim(X);  //*)
   RIRegister_IpUtils(X);
   RIRegister_IpUtils_Routines(Exec);
   RIRegister_LrtPoTools_Routines(Exec);
   RIRegister_Laz_DOM(X);
   RIRegister_hhAvComp(X);
-  RIRegister_hhAvComp_Routines(Exec);
+  RIRegister_hhAvComp_Routines(Exec);    //*)
   RIRegister_GPS2(X);
   RIRegister_GPS(X);
   RIRegister_GPS_Routines(Exec);
-  RIRegister_GPSUDemo(X);    *)
+  //RIRegister_GPSUDemo(X);    *)
   RIRegister_NMEA_Routines(Exec); //3.9.9.101
   RIRegister_ScreenThreeDLab(X);  //*)
   RIRegister_Spin(X);
@@ -6938,6 +6941,7 @@ procedure TMaxForm1.PSScriptCompile(Sender: TPSScript);
 begin
   //AddTypeS('TThreadFunction','TThreadFunction = function(P: Pointer): Longint; stdcall)');
   Sender.AddFunction(@MyWriteln, 'procedure Writeln(s: string);');
+  Sender.AddFunction(@MyWriteln, 'procedure Writ(s: string);');
   Sender.AddFunction(@MyWriteln, 'procedure Println(s: string);');  //alias
   Sender.AddFunction(@MyWrite, 'procedure Write(S: string);');
   Sender.AddFunction(@MyWrite, 'procedure Print(S: string);');
@@ -11019,7 +11023,7 @@ end;
 procedure TMaxForm1.GetWebScript1Click(Sender: TObject);
 begin
   //this is srvice in winformpuzzle
-  //getScriptandRunAsk;
+  getScriptandRunAsk;
 end;
 
 procedure TMaxForm1.GetWidth(sender: TObject);
@@ -11057,7 +11061,7 @@ begin
 end;
 
 procedure TMaxForm1.GPSSatView1Click(Sender: TObject);
-//  FDemo: TFDemo;
+  //FDemo: TFDemo;
 begin
  { FDemo:= TFDemo.Create(self);
   try
