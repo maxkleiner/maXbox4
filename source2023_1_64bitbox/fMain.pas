@@ -195,6 +195,7 @@
           12481   5.0.1.11 first time 24/08/2023 double compile - py64 test
           12506   5.0.1.12 re register and import std, stdctrsl, classes, forms & graphics, bccompatible
           12518   5.0.1.13 x64 string return works, create CreateOleObject and variant from IDispatch works
+          12528   5.0.1.14 maxform1. reflection utf8decode for loadfile, umath, getwebscript, jvchart
 
  ************************************************************************************* }
 
@@ -246,9 +247,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.1.13';
+   MBVERSION = '5.0.1.14';
    MBVER = '501';              //for checking!
-   MBVER2 = '50113';              //for checking!
+   MBVER2 = '50114';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile.txt';
@@ -1193,10 +1194,10 @@ uses
   uPSI_SynURIOpener,
   uPSI_StBase,
   uPSI_StUtils,   //SysTools4 -3.9.1
-(*  uPSI_IMouse,  *)
+  uPSI_IMouse,  //*)
   uPSI_SyncObjs,
-  //uPSI_AsyncCalls,
-  //uPSI_ParallelJobs,  //*)
+  uPSI_AsyncCalls,
+  //uPSI_ParallelJobs,  AV Crash//*)
   uPSI_Variants,
   uPSI_VarCmplx,
  (* uPSI_DTDSchema, *)
@@ -1270,7 +1271,7 @@ uses
   uPSI_Calendar,  //*)
   uPSI_ComCtrls, //3.6 ttreeview and listview!  richedit   trackbar tabsheet  datetimepicketr , tupdown  fix , pagecontrol
 
- // uPSI_VarHlpr, //uPSI_Dialogs,  rmoved
+ uPSI_VarHlpr, //uPSI_Dialogs,  rmoved
   uPSI_ExtDlgs,
   uPSI_ValEdit,  //*)
   VListView,
@@ -1333,16 +1334,16 @@ uses
   uPSI_JclMime,
   uPSI_JvRichEdit,
  // uPSI_JvDBRichEd,
- (* uPSI_JvDice,
-  uPSI_JvFloatEdit,    //3.9.8
+ (* uPSI_JvDice,   *)
+ // uPSI_JvFloatEdit,    //3.9.8
   uPSI_JvDirFrm,
-  uPSI_JvDualListForm,
+  uPSI_JvDualListForm, //*)
   uPSI_JvTransLED,
   uPSI_JvPlaylist,
   uPSI_JvFormAutoSize,
   uPSI_JvDualList,
-  uPSI_JvSwitch,
-  uPSI_JvTimerLst,
+  //uPSI_JvSwitch,
+ (* uPSI_JvTimerLst,
   uPSI_JvMemTable,   *)
   uPSI_JvObjStr,
   uPSI_xrtl_math_Integer,
@@ -1351,12 +1352,12 @@ uses
   uPSI_JvFormPatch,
   uPSI_JvDataConv,
   uPSI_JvCpuUsage,
-  uPSI_JvCpuUsage2,
+  uPSI_JvCpuUsage2,   *)
   uPSI_JvParserForm,
   uPSI_JvJanTreeView,
-  uPSI_JvYearGridEditForm,
-  uPSI_JvMarkupCommon,   *)
-  //uPSI_JvChart,  //*)
+  uPSI_JvYearGridEditForm, //*)
+  uPSI_JvMarkupCommon,   //*)
+  uPSI_JvChart,  //*)
   uPSI_JvXPCore,  //add resource rc files!  res file
   uPSI_JvXPCoreUtils,
   uPSI_JvSearchFiles,
@@ -1597,8 +1598,8 @@ uses
   uPSI_IdTCPConnection, //3.1
   IFSI_IdTCPClient,
   uPSI_IdHeaderList,     //3.9.6
-  uPSI_IdHTTPHeaderInfo,     //user agent compatible
-  IFSI_IdHTTP,   *)
+  uPSI_IdHTTPHeaderInfo,     //user agent compatible    *)
+  IFSI_IdHTTP,
   uPSI_HTTPParse, //3.2
   uPSI_HTTPUtil, //3.2  *)
   uPSI_HTTPApp, //3.7
@@ -1606,8 +1607,8 @@ uses
   uPSI_IdTCPServer,
   uPSI_IdCustomHTTPServer, *)
   IFSI_IdURI,
- (* IFSI_IdFTP,
-  uPSI_IdRemoteCMDClient,
+ IFSI_IdFTP,
+ (* uPSI_IdRemoteCMDClient,
   uPSI_IdRemoteCMDServer,
   uPSI_IdRexec,
   uPSI_IdUDPServer,
@@ -1686,8 +1687,8 @@ uses
   uPSI_StStrS,     //Shortstring functions !
   uPSI_StTree,
   uPSI_StVArr,
-  uPSI_StRegIni,
-  uPSI_usvd,   *)
+  uPSI_StRegIni,  *)
+  uPSI_usvd,   //*)
   uPSI_DepWalkUtils,
  (* uPSI_OptionsFrm,
   uPSI_yuvconverts,
@@ -1819,25 +1820,25 @@ uses
   uPSI_ButtonGroup,
   uPSI_CategoryButtons,
   uPSI_DbExcept,
-  gl_actorUnit1, // open gl demo for I := 0 to List.Count - 1 do
+  gl_actorUnit1, // open gl demo for I := 0 to List.Count - 1 do   *)
   uPSI_AxCtrls,
-  uPSI_gl_actorUnit1,
-  uPSI_StdVCL,
-  uPSI_DataAwareMain,  //3.9.9.88
+ // uPSI_gl_actorUnit1,
+  uPSI_StdVCL,     //only in^terfaces
+ (* uPSI_DataAwareMain,  //3.9.9.88
   uPSI_TabNotBk,  *)
   uPSI_Tabs,
   (*uPSI_udwsfiler,  *)
-  //uPSI_synaip,
-  //uPSI_synacode,
- (* uPSI_synachar,
+  uPSI_synaip,
+  uPSI_synacode,
+  uPSI_synachar,  //*)
   uPSI_synamisc,
   synamisc, //for dns info
-  uPSI_synaser,
+  //uPSI_synaser,      serial asm
   uPSI_synaicnv,
-  uPSI_tlntsend,
-  uPSI_pingsend,
+ (* uPSI_tlntsend,
+  uPSI_pingsend,  *)
   uPSI_blcksock,
-  uPSI_asn1util,
+ (* uPSI_asn1util,
   uPSI_dnssend,
   uPSI_clamsend,
   uPSI_ldapsend,
@@ -2417,7 +2418,7 @@ uses
   uPSI_PSResources,         //4.7.6.20
   uPSI_RestClient,
 
- (* uPSI_IdNNTPServer,        //4.2.4.25
+ (* uPSI_IdNNTPServer,        //4.2.4.25  *)
   uPSI_UWANTUtils,
   uPSI_OverbyteIcsAsn1Utils,
   //uPSI_SimpleSFTP,  *)
@@ -2425,25 +2426,25 @@ uses
   uPSI_wmiserv,
  // uPSI_uJSON,   //*)
   uPSI_RegSvrUtils,
-(*  uPSI_osFileUtil,   //4.2.4.60    *)
+  uPSI_osFileUtil,   //4.2.4.60    *)
  // uPSI_SHDocVw,       //twebbrowser
- // uPSI_xutils,
-(*  uPSI_ietf,          //4.2.4.80
-  //uPSI_iso3166,
+  uPSI_xutils,
+  uPSI_ietf,          //4.2.4.80
+  //uPSI_iso3166,*)
   uPSI_dateutil,      //real
   uPSI_dateext4,      //4.2.4.80_2
-  uPSI_locale,
+  uPSI_locale,   //*)
   uPSI_Strings,
-  uPSI_crc_checks,
+(*  uPSI_crc_checks,
   uPSI_extdos,        //4.2.4.80_3
   uPSI_uBild,
-  uPSI_SimpleTCP,
-  uPSI_IdFTPList,
+  uPSI_SimpleTCP, *)
+  //uPSI_IdFTPList,
   uPSI_uTPLb_RSA_Engine,
   uPSI_uTPLb_CryptographicLibrary,
   uPSI_cHugeInt,          //4.2.5.10
-  uPSI_xBase,
-  uPSI_ImageHistogram,
+ // uPSI_xBase,
+ (* uPSI_ImageHistogram,
   uPSI_WDosDrivers,      //4.2.5.10 IV
   uPSI_cCipherRSA,
   uPSI_CromisStreams,   //4.2.6.10
@@ -2480,17 +2481,17 @@ uses
  //uPSI_SimpleDS,
  (* uPSI_DBXSqlScanner,
   uPSI_DBXMetaDataUtil,  *)
-  //uPSI_TeEngine,
- (* uPSI_TeeProcs,
-  uPSI_TeCanvas,  *)      // check fonts   fixed fonts
+ //uPSI_TeEngine,
+  uPSI_TeeProcs,
+  uPSI_TeCanvas,  //((*)      // check fonts   fixed fonts
 
   //uPSI_Chart,
  // uPSI_MDIEdit,
-(*  uPSI_CopyPrsr,
-  uPSI_SockApp,   *)
+  //uPSI_CopyPrsr,
+  //uPSI_SockApp,   *)
   //CoolMain,
  // uPSI_CoolMain,
-(*  uPSI_StCRC, *)
+  uPSI_StCRC, //*)
  // uPSI_BoldComUtils,
  (* uPSI_BoldIsoDateTime,
   uPSI_BoldXMLRequests,
@@ -2521,8 +2522,8 @@ uses
   //uPSI_IdUserAccounts, *)
   //uPSI_StDecMth,
   //uPSI_DSUtil,
-    //teeprocs,
-  //series,  *)
+    teeprocs,
+  //series,  to 2007*)
  // uPSI_cPEM,             //3.9.6
   uPSI_xmlutil, //3.2  XML    *)
  uPSI_MaskUtils, //3.5  *)
@@ -2554,7 +2555,7 @@ uses
  (* uPSI_Tabs,
   uPSI_JclGraphUtils,
   uPSI_JclCounter,  *)
-  //uPSI_JclSysInfo;
+  uPSI_JclSysInfo,
 (*  uPSI_JclSecurity,
   uPSI_IdUserAccounts, *)
  // uPSI_JclFileUtils,   //*)
@@ -2573,7 +2574,7 @@ uses
  // uPSI_StNetCon,
   uPSI_StNet,
   uPSI_StNetPfm,
-(*  uPSI_JvPatchFile,
+(*  uPSI_JvPatchFile,  *)
   //uPSI_SynMemo,
   uPSI_IdASN1Util,
   uPSI_IdHashCRC,
@@ -2581,9 +2582,9 @@ uses
   //uPSI_IdHashMessageDigest, //3.5
  // uPSI_IdHash,   //types
   uPSI_IdHashSHA1,
-(*  uPSI_IdLogFile,
+  uPSI_IdLogFile,
   uPSI_IdTime,
-  uPSI_IdQOTDUDP,
+(*  uPSI_IdQOTDUDP,
   uPSI_IdQOTDUDPServer,
   uPSI_IdSysLogMessage,
   uPSI_IdSysLog,
@@ -2620,7 +2621,7 @@ uses
  (* uPSI_DBXChannel,
   uPSI_DBXIndyChannel,
   VCLScannerIntf,
-  SOAPHTTPClient, //Test for WS
+  SOAPHTTPClient, //Test for WS  *)
   uPSI_interface2_so,     //----------exports for DLL func  *)
   uPSI_IniFiles,    //standard
   //uPSI_IdThread,  //*)
@@ -2629,8 +2630,8 @@ uses
   uPSI_niSTRING,
   uPSI_niRegularExpression,
   uPSI_niExtendedRegularExpression, //3.1
- (* uPSI_IdSNTP,
-  JclSysInfo,  //loadedmoduleslist *)
+ (* uPSI_IdSNTP,  *)
+  JclSysInfo,  //loadedmoduleslist getipaddr, getDNS*)
    IFSI_SysUtils_max, Globfct,        //*)
   uPSI_cFundamentUtils; //, PSResources;
 
@@ -2773,10 +2774,10 @@ begin
   SIRegister_SynRegExpr(X);
   SIRegister_SynURIOpener(X);
   SIRegister_StUtils(X);  //SysTools4
- (* SIRegister_IMouse(X); *)
+  SIRegister_IMouse(X); //*)
   SIRegister_SyncObjs(X);
-(*  SIRegister_AsyncCalls(X);
-  SIRegister_ParallelJobs(X);  *)
+  SIRegister_AsyncCalls(X);
+  //SIRegister_ParallelJobs(X);  //*)
   SIRegister_Variants(X);
   SIRegister_VarCmplx(X);
  (* SIRegister_DTDSchema(X);  *)
@@ -2880,9 +2881,9 @@ begin
   SIRegister_HTTPUtil(X);   //*)
   SIRegister_utypes(X);  //for dmath.dll   and eval
  (* SIRegister_FlatSB(X);
-  //SIRegister_EIdHTTPProtocolException(x);
-  {SIRegister_TIdHTTP(x);
-  SIRegister_TIdCustomHTTP(x);
+  //SIRegister_EIdHTTPProtocolException(x);    *)
+  SIRegister_TIdHTTP(x);
+(*  SIRegister_TIdCustomHTTP(x);
   SIRegister_TIdHTTPProtocol(x);
   SIRegister_TIdHTTPRequest(x);
   SIRegister_TIdHTTPResponse(x);}
@@ -2933,15 +2934,15 @@ begin
   SIRegister_IdTCPConnection(X);  //3.1
   SIRegister_IdTCPClient(X);
   SIRegister_IdAuthentication(X);  //4.7.1.80
-  SIRegister_IdHTTPHeaderInfo(X);
-  SIRegister_IdHTTP(x);  *)
+  SIRegister_IdHTTPHeaderInfo(X);     *)
+  SIRegister_IdHTTP(x);  //*)
   SIRegister_HTTPApp(X);
   //SIRegister_TIdURI(x);   *)
   SIRegister_IdURI(x);
   //SIRegister_IdSocketHandle(X);
- (* SIRegister_IdTCPServer(X);
+ (* SIRegister_IdTCPServer(X);  *)
   SIRegister_IdFTP(X);
-  SIRegister_IdCustomHTTPServer(X); //3.9.3
+ (* SIRegister_IdCustomHTTPServer(X); //3.9.3
   SIRegister_IdSSLOpenSSL(X);
   SIRegister_xmlutil(X);    //3.2 XML  *)
   SIRegister_MaskUtils(X); //3.5
@@ -2953,12 +2954,12 @@ begin
   SIRegister_VListView(X);
   SIRegister_ide_debugoutput(X);
   //SIRegister_ComCtrls(X); //3.6  move upwards
- (* SIRegister_VarHlpr(X);    //variants   *)
+ SIRegister_VarHlpr(X);    //variants  system.internal.varhlpr*)
   SIRegister_StatsClasses(X);   //unit test
   SIRegister_Dialogs(X);
   SIRegister_ExtDlgs(X);
   SIRegister_ValEdit(X);
-  //SIRegister_interface2_so(X);  *)
+  SIRegister_interface2_so(X);  //*)
   SIRegister_Contnrs(X);
  SIRegister_MyBigInt(X); //*)
   SIRegister_StdConvs(X);
@@ -2980,9 +2981,9 @@ begin
   SIRegister_devcutils(X);
  // SIRegister_Tabs(X);
  (* SIRegister_JclGraphUtils(X);
-  SIRegister_JclCounter(X);
+  SIRegister_JclCounter(X);   *)
   SIRegister_JclSysInfo(X);
-  SIRegister_JclSecurity(X);
+ (* SIRegister_JclSecurity(X);
   SIRegister_IdUserAccounts(X);
   SIRegister_JclFileUtils(X);   *)
   SIRegister_JvStarfield(X);   //3.9.7    *)
@@ -3023,11 +3024,11 @@ begin
   SIRegister_JvWin32(X);
  (* SIRegister_JvPaintFX(X); *)
   SIRegister_JvNTEventLog(X);
- (* SIRegister_JvDirFrm(X);
+  SIRegister_JvDirFrm(X);
   SIRegister_JvParserForm(X);
   SIRegister_JvDualListForm(X);
   SIRegister_JvDualList(X);
-  SIRegister_JvSwitch(X);
+ (* SIRegister_JvSwitch(X);
   SIRegister_JvTimerLst(X);  *)
   SIRegister_JvObjStr(X);
 (*  SIRegister_JvMemTable(X);
@@ -3036,14 +3037,14 @@ begin
   SIRegister_JvFormPatch(X);
   SIRegister_JvDataConv(X);
   SIRegister_JvCpuUsage(X);
-  SIRegister_JvCpuUsage2(X);
+  SIRegister_JvCpuUsage2(X);  *)
   SIRegister_JvJanTreeView(X);
-  SIRegister_JvYearGridEditForm(X);
+  SIRegister_JvYearGridEditForm(X);    //*)
   SIRegister_JvMarkupCommon(X);
   SIRegister_JvPlaylist(X);
   SIRegister_JvTransLED(X);
-  SIRegister_JvFormAutoSize(X);
-  SIRegister_JvChart(X);  *)
+  SIRegister_JvFormAutoSize(X); // *)
+  SIRegister_JvChart(X);  //*)
   SIRegister_JvXPCore(X);
   SIRegister_JvXPCoreUtils(X);  //*)
   SIRegister_ExtCtrls2(X);
@@ -3149,16 +3150,16 @@ begin
   SIRegister_JvAppInst(X);
   SIRegister_JvAppCommand(X);
   SIRegister_JvAnimatedImage(X);
-  SIRegister_JvAnimTitle(X);
+  SIRegister_JvAnimTitle(X);   *)
   SIRegister_IdASN1Util(X);
-  SIRegister_IdHashMessageDigest(X);  //3.5
-  SIRegister_IdHash(X);
+  //SIRegister_IdHashMessageDigest(X);  //3.5
+  //SIRegister_IdHash(X);
   SIRegister_IdHashCRC(X);
   //SIRegister_IdHashMessageDigest(X);  //3.5   *)
   SIRegister_IdHashSHA1(X);
-(*  SIRegister_IdLogFile(X);
+  SIRegister_IdLogFile(X);
   SIRegister_IdTime(X);
-  SIRegister_IdDayTime(X);
+ (* SIRegister_IdDayTime(X);
  // SIRegister_IdGlobal(X);
   SIRegister_IdEMailAddress(X);
   SIRegister_IdMessage(X);
@@ -3254,8 +3255,8 @@ begin
   SIRegister_StMerge(X);
   SIRegister_StTree(X);
   SIRegister_StVArr(X);
-  SIRegister_StRegIni(X);
-  SIRegister_usvd(X);  *)
+  SIRegister_StRegIni(X);   *)
+  SIRegister_usvd(X);  //*)
   SIRegister_DepWalkUtils(X);
  (* SIRegister_OptionsFrm(X);
   SIRegister_JvPropAutoSave(X);
@@ -3377,21 +3378,21 @@ begin
   SIRegister_GLVectorFileObjects(X); //3.9.9.88
   SIRegister_CategoryButtons(X);
   SIRegister_ButtonGroup(X);
-  SIRegister_DbExcept(X);
+  SIRegister_DbExcept(X);  *)
   SIRegister_StdVCL(X);
   SIRegister_AxCtrls(X);
-  SIRegister_gl_actorUnit1(X);  //3.9.9.88
+ (* SIRegister_gl_actorUnit1(X);  //3.9.9.88
   SIRegister_DataAwareMain(X);
   SIRegister_TabNotBk(X);
-  SIRegister_udwsfiler(X);
+  SIRegister_udwsfiler(X);  *)
   SIRegister_synaip(X);
   SIRegister_synacode(X);
-  SIRegister_synachar(X);
+  SIRegister_synachar(X);   //*)
   SIRegister_synamisc(X);
-  SIRegister_synaser(X);
+ (* SIRegister_synaser(X); *)
   SIRegister_synaicnv(X);
   SIRegister_blcksock(X); //synaclient
-  SIRegister_tlntsend(X);
+ (* SIRegister_tlntsend(X);
   SIRegister_pingsend(X);
   SIRegister_asn1util(X);
   SIRegister_dnssend(X);
@@ -3780,32 +3781,32 @@ begin
   //SIRegister_kmemofrm(X);
   SIRegister_OverbyteIcsTicks64(X);
   SIRegister_OverbyteIcsSha1(X);
- (* SIRegister_IdNNTPServer(X);
+ (* SIRegister_IdNNTPServer(X); *)
   SIRegister_UWANTUtils(X);
-  SIRegister_OverbyteIcsAsn1Utils(X); *)
-  //SIRegister_WbemScripting_TLB(X); //*)
-  //SIRegister_wmiserv(X);
+  SIRegister_OverbyteIcsAsn1Utils(X); /// *)
+  SIRegister_WbemScripting_TLB(X); //*)
+  SIRegister_wmiserv(X);
   SIRegister_uJSON(X);
   SIRegister_RegSvrUtils(X);    //4.2.4.60
- (* SIRegister_osFileUtil(X);
-  SIRegister_SHDocVw(X);       //4.2.4.60_2
-  SIRegister_ietf(X);
-  SIRegister_xutils(X);          //4.2.4.80
+  SIRegister_osFileUtil(X);
+  //SIRegister_SHDocVw(X);       //4.2.4.60_2
+  SIRegister_ietf(X);   //*)
+  SIRegister_xutils(X);          //4.2.4.80   *)
   SIRegister_dateutil(X);
   SIRegister_dateext4(X);
-  SIRegister_locale(X);
+  SIRegister_locale(X);  //*)
   SIRegister_Strings(X);
-  SIRegister_crc(X);
+ (* SIRegister_crc(X);
   SIRegister_extdos(X);
   SIRegister_uBild(X);
   SIRegister_SimpleTCP(X);
-  //SIRegister_IdFTPList(X);
+  //SIRegister_IdFTPList(X);   *)
   SIRegister_uTPLb_RSA_Engine(X);
   SIRegister_uTPLb_CryptographicLibrary(X);
   SIRegister_THugeInt(X);
   SIRegister_cHugeInt(X);
   // of version 4.2.5.10
-  SIRegister_xBase(X);
+(* SIRegister_xBase(X);
   SIRegister_ImageHistogram(X);
   SIRegister_WDosDrivers(X);
   SIRegister_cCipherRSA(X);
@@ -4060,11 +4061,11 @@ begin
   SIRegister_ulambert(X);
 (*  SIRegister_SimpleDS(X);
   SIRegister_DBXSqlScanner(X);
-  SIRegister_DBXMetaDataUtil(X);
+  SIRegister_DBXMetaDataUtil(X);    *)
   SIRegister_TeeProcs(X);
   SIRegister_TeCanvas(X);    //TEcanvas
   //SIRegister_TeeProcs(X);
-  SIRegister_TeEngine(X);
+(*  SIRegister_TeEngine(X);
   SIRegister_Chart(X);     //3.9.9.20!
   SIRegister_Series(X);  //4.2.6.10     *)
 
@@ -4074,8 +4075,8 @@ begin
  SIRegister_ExtActns(X);
   SIRegister_AppEvnts(X);
  //SIRegister_CoolMain(X);
- (* SIRegister_StCRC(X);
-  SIRegister_BoldContainers(X);
+  SIRegister_StCRC(X);
+ (* SIRegister_BoldContainers(X);
   SIRegister_BoldComUtils(X);
   SIRegister_BoldIsoDateTime(X);
   SIRegister_BoldXMLRequests(X);
@@ -4586,9 +4587,9 @@ begin
   RIRegister_JvTransparentForm(X);
   RIRegister_JvWinDialogs(X);
   RIRegister_JvWinDialogs_Routines(Exec);
-  RIRegister_JvFloatEdit(X);
+  RIRegister_JvFloatEdit(X); *)
   RIRegister_JvDirFrm(X);
-  RIRegister_JvDirFrm_Routines(Exec);   *)
+  RIRegister_JvDirFrm_Routines(Exec);  //*)
   RIRegister_JclUnitConv_mX2_Routines(Exec);
  (* RIRegister_JvDualListForm(X);
   RIRegister_JvDualList(X);
@@ -4608,15 +4609,15 @@ begin
   RIRegister_JvDataConv(X);
   RIRegister_JvPicClip(X);
   RIRegister_JvCpuUsage(X);
-  RIRegister_JvCpuUsage2(X);
+  RIRegister_JvCpuUsage2(X);  *)
   RIRegister_JvParserForm(X);
-  RIRegister_JvJanTreeView(X);
+  RIRegister_JvJanTreeView(X);   //*)
   RIRegister_JvPlaylist(X);
   RIRegister_JvTransLED(X);
   RIRegister_JvFormAutoSize(X);
-  RIRegister_JvYearGridEditForm(X);
-  RIRegister_JvMarkupCommon(X);
-  RIRegister_JvChart(X); *)
+  RIRegister_JvYearGridEditForm(X); //*)
+  RIRegister_JvMarkupCommon(X);  // *)
+  RIRegister_JvChart(X); //*)
   RIRegister_JvXPCore(X);
   RIRegister_StatsClasses(X);
   RIRegister_ExtCtrls2_Routines(Exec);
@@ -4718,8 +4719,8 @@ begin
   RIRegister_cRandom_Routines(Exec);
   RIRegister_ueval_Routines(Exec);
    //RIRegister_EIdHTTPProtocolException(x);
-  {RIRegister_TIdHTTP(x);
-  RIRegister_TIdCustomHTTP(x);
+  RIRegister_TIdHTTP(x);
+  {RIRegister_TIdCustomHTTP(x);
   RIRegister_TIdHTTPProtocol(x);
   RIRegister_TIdHTTPRequest(x);
   RIRegister_TIdHTTPResponse(x);}
@@ -4741,17 +4742,17 @@ begin
  (* RIRegister_JclGraphUtils_Routines(Exec);  *)
   RIRegister_IdHashSHA1Utils_Routines(Exec);
  (* RIRegister_JclCounter(X);
-  RIRegister_JclCounter_Routines(Exec);
+  RIRegister_JclCounter_Routines(Exec);  *)
   RIRegister_JclSysInfo_Routines(Exec);
-  RIRegister_JclSecurity_Routines(Exec);
+(*  RIRegister_JclSecurity_Routines(Exec);
   RIRegister_IdUserAccounts(X);
   RIRegister_JclFileUtils(X);
   RIRegister_JclFileUtils_Routines(Exec);
   RIRegister_IdAuthentication(X);
-  RIRegister_IdAuthentication_Routines(Exec);
+  RIRegister_IdAuthentication_Routines(Exec);  *)
   RIRegister_IMouse_Routines(Exec);
   RIRegister_IMouse(X);
-  RIRegister_JclPrint(X);
+ (* RIRegister_JclPrint(X);
   RIRegister_JclPrint_Routines(Exec);   *)
   RIRegister_JclMime_Routines(Exec);
   RIRegister_JvRichEdit(X);
@@ -4762,10 +4763,10 @@ begin
   RIRegister_IdURI(X);    //*)
    RIRegister_SyncObjs(X);
   //RIRegister_AsyncCalls_Routines(Exec);
-(*  RIRegister_AsyncCalls(X);
+  RIRegister_AsyncCalls(X);
   RIRegister_AsyncCalls_Routines(Exec);
-   RIRegister_ParallelJobs(X);
-  RIRegister_ParallelJobs_Routines(Exec);  *)
+   //RIRegister_ParallelJobs(X);
+  //RIRegister_ParallelJobs_Routines(Exec);  //*)
   RIRegister_Variants_Routines(Exec);
   RIRegister_VarCmplx_Routines(Exec);
 (*  RIRegister_DTDSchema(X);   *)
@@ -4868,7 +4869,7 @@ begin
   RIRegister_JclStreams_Routines(Exec);  // *)
   RIRegister_BlockSocket(X);
   RIRegister_synautil_Routines(Exec);
- (*  RIRegister_JvXmlDatabase(X);
+ (*  RIRegister_JvXmlDatabase(X);  *)
    RIRegister_IdURI(x);
   RIRegister_IdFTP(X);
   RIRegister_xmlutil_Routines(Exec); //3.2 XML    *)
@@ -4898,9 +4899,9 @@ begin
   RIRegister_DBClient(X);
   RIRegister_CDSUtil_Routines(Exec);   *)
   RIRegister_GraphUtil_Routines(Exec);
- (* RIRegister_VarHlpr_Routines(Exec);
-  RIRegister_interface2_so(X);
-  RIRegister_IdASN1Util_Routines(Exec);  *)
+  RIRegister_VarHlpr_Routines(Exec);
+  RIRegister_interface2_so(X);  // *)
+  RIRegister_IdASN1Util_Routines(Exec); // *)
   RIRegister_Contnrs(X);
   RIRegister_Contnrs_Routines(Exec);
   RIRegister_MyBigInt(X); //*)
@@ -4943,12 +4944,12 @@ begin
   RIRegister_ulambert_Routines(Exec);
  (* RIRegister_SimpleDS(X);
   RIRegister_DBXSqlScanner(X);
-  RIRegister_DBXMetaDataUtil(X);
+  RIRegister_DBXMetaDataUtil(X);   *)
   RIRegister_TeeProcs(X);
   RIRegister_TeeProcs_Routines(Exec);
   RIRegister_TeCanvas_Routines(Exec);
   RIRegister_TeCanvas(X);
-  RIRegister_TeEngine(X);
+ (* RIRegister_TeEngine(X);
   RIRegister_TeEngine_Routines(Exec);
   RIRegister_Chart(X);
   RIRegister_Chart_Routines(Exec);
@@ -5088,8 +5089,8 @@ begin
   RIRegister_StMerge(X);
   RIRegister_StTree(X);
   RIRegister_StVArr(X);
-  RIRegister_StRegIni(X);
-  RIRegister_usvd_Routines(Exec);    *)
+  RIRegister_StRegIni(X);   *)
+  RIRegister_usvd_Routines(Exec);    //*)
   RIRegister_DepWalkUtils_Routines(Exec);
  (* RIRegister_OptionsFrm(X);
   RIRegister_yuvconverts_Routines(Exec);
@@ -5241,22 +5242,22 @@ begin
   RIRegister_GLVectorFileObjects(X);   //3.9.9.88
   RIRegister_ButtonGroup(X);
   RIRegister_CategoryButtons(X);
-  RIRegister_DbExcept(X);
+  RIRegister_DbExcept(X);  *)
   RIRegister_AxCtrls(X);
-  RIRegister_gl_actorUnit1(X);  //3.9.9.88
+  //RIRegister_gl_actorUnit1(X);  //3.9.9.88    *)
   RIRegister_AxCtrls_Routines(Exec);
-  RIRegister_DataAwareMain(X);
+(*  RIRegister_DataAwareMain(X);
   RIRegister_TabNotBk(X);
-  RIRegister_udwsfiler(X);
+  RIRegister_udwsfiler(X); *)
   RIRegister_synaip_Routines(Exec);
   RIRegister_synacode_Routines(Exec);
-  RIRegister_synachar_Routines(Exec);
+  RIRegister_synachar_Routines(Exec);  //*)
   RIRegister_synamisc_Routines(Exec); // comment it if no routines
-  RIRegister_synaser(X);
-  RIRegister_synaser_Routines(Exec);
+ (* RIRegister_synaser(X);
+  RIRegister_synaser_Routines(Exec);   *)
   RIRegister_synaicnv_Routines(Exec);
   RIRegister_blcksock(X);
-  RIRegister_tlntsend(X);
+ (* RIRegister_tlntsend(X);
   RIRegister_pingsend_Routines(Exec);
   RIRegister_pingsend(X);
   RIRegister_asn1util_Routines(exec);
@@ -5800,33 +5801,33 @@ begin
   RIRegister_KEditCommon_Routines(exec);
   RIRegister_UtilsMax4(X);
   RIRegister_UtilsMax4_Routines(Exec);
- (* RIRegister_IdNNTPServer(X);
+ (* RIRegister_IdNNTPServer(X);  *)
   RIRegister_UWANTUtils_Routines(Exec);
-  RIRegister_OverbyteIcsAsn1Utils_Routines(Exec);
+  RIRegister_OverbyteIcsAsn1Utils_Routines(Exec);  //*)
   RIRegister_wmiserv_Routines(Exec);
-  RIRegister_WbemScripting_TLB(X);  *)
+  RIRegister_WbemScripting_TLB(X);  //*)
   RIRegister_uJSON(X);
   RIRegister_RegSvrUtils_Routines(Exec);
   RIRegister_RegSvrUtils(X);
- (* RIRegister_osFileUtil_Routines(Exec); //4.2.4.60
-   RIRegister_SHDocVw(X);
-   RIRegister_ietf_Routines(Exec);
+  RIRegister_osFileUtil_Routines(Exec); //4.2.4.60
+  // RIRegister_SHDocVw(X);
+   RIRegister_ietf_Routines(Exec);   //*)
   RIRegister_xutils_Routines(Exec);
   RIRegister_dateutil_Routines(Exec);
   RIRegister_dateext4_Routines(Exec);
-  RIRegister_locale_Routines(Exec);
+  RIRegister_locale_Routines(Exec);  //*)
     RIRegister_Strings_Routines(Exec);
-  RIRegister_crc_Routines(Exec);
+(*  RIRegister_crc_Routines(Exec);
   RIRegister_extdos_Routines(Exec);
   RIRegister_uBild(x);
   RIRegister_SimpleTCP(X);
-  RIRegister_IdFTPList(X);
+  RIRegister_IdFTPList(X); *)
   RIRegister_uTPLb_RSA_Engine(X);
   RIRegister_uTPLb_CryptographicLibrary(X);
   RIRegister_THugeInt(X);
   RIRegister_cHugeInt_Routines(Exec);
   // 4.2.5.10
-  RIRegister_xBase(X);
+(*  RIRegister_xBase(X);
   RIRegister_xBase_Routines(Exec);
   RIRegister_ImageHistogram(X);
   RIRegister_ImageHistogram_Routines(Exec);
@@ -5872,9 +5873,9 @@ begin
   RIRegister_St2DBarC(X);
 (*  RIRegister_FmxUtils_Routines(Exec);
   RIRegister_SockApp(X);
-  RIRegister_CoolMain(X);
+  RIRegister_CoolMain(X);    *)
   RIRegister_StCRC_Routines(Exec);
-  RIRegister_SynDBEdit(X);
+ (* RIRegister_SynDBEdit(X);
   RIRegister_SynEditWildcardSearch(X);
   RIRegister_JvPcx(X);
   RIRegister_IdWhois(X);
@@ -5907,13 +5908,13 @@ begin
   RIRegister_JvAppCommand_Routines(Exec);
   RIRegister_JvAnimatedImage(X);
   RIRegister_JvAnimTitle(X);
-  RIRegister_IdHash(X);
+  RIRegister_IdHash(X);    *)
   RIRegister_IdHashCRC(X);
-  RIRegister_IdHashMessageDigest(X);
+ // RIRegister_IdHashMessageDigest(X);
   RIRegister_IdHashSHA1(X);
-  RIRegister_IdLogFile(X);
+ RIRegister_IdLogFile(X);
   RIRegister_IdTime(X);
-  RIRegister_IdDayTime(X);   *)
+(* RIRegister_IdDayTime(X);   *)
   RIRegister_IdGlobal(X);
   RIRegister_IdGlobal_Routines(exec);
  (* RIRegister_IdEMailAddress(X);
@@ -7140,8 +7141,11 @@ begin
   Sender.AddFunction(@winform1.MD5,'function MD5(const fileName: string): string;');
   Sender.AddFunction(@winform1.IdSHA1Hash,'function SHA1(const fileName: string): string;');
   Sender.AddFunction(@winform1.SHA1,'function SHA1_(const fileName: string): string;');
-  Sender.AddFunction(@winform1.IdSHA2Hash,'function SHA2(const fileName: string): string;');
+  Sender.AddFunction(@winform1.IdSHA2Hash,'function SHA2_(const fileName: string): string;');
   Sender.AddFunction(@winform1.SHA1fromString,'function SHAfromString(const fileName: string): string;');
+  Sender.AddFunction(@upsi_chash.SHA2,'function SHA2_(const fileName: string): ansistring;');
+  Sender.AddFunction(@winform1.SHA2fromFile,'function SHA2(const fileName: string): string;');
+  Sender.AddFunction(@winform1.SHA3fromFile,'function SHA3(const fileName: string): string;');
 
   Sender.AddFunction(@CRC32H,'function CRC32(const fileName: string): LongWord;');
   Sender.AddFunction(@getCmdLine,'function CmdLine: PChar;');
@@ -7415,10 +7419,10 @@ begin
   SearchAndCopy(memo1.lines, '#perf', perftime, 11);
   SearchAndCopy(memo1.lines, '#sign',Format('%s: %s: %s ',
        [getUserNameWin, getComputernameWin, datetimetoStr(now)]), 11);
-  {SearchAndCopy(memo1.lines, '#tech',Format('perf: %s threads: %d %s %s %s',
+ SearchAndCopy(memo1.lines, '#tech',Format('perf: %s threads: %d %s %s %s',
        [perftime, numprocessthreads, getIPAddress(getComputerNameWin), timetoStr(time),mbversion]), 11);
   SearchAndCopy(memo1.lines, '#net',Format('DNS: %s; local IPs: %s; local IP: %s',
-       [getDNS, GetLocalIPs, getIPAddress(getComputerNameWin)]), 10);    *) }
+       [getDNS, GetLocalIPs, getIPAddress(getComputerNameWin)]), 10);   // *) }
   memo2.Lines.Add('Macro Expanded '+inttostr(memo1.Lines.count-1)+' lines');
 end;
 
@@ -9928,13 +9932,13 @@ begin
                    else output.Lines.Add('Network Off' + '  COMPort: false');
         if IsInternetConnected then output.Lines.Add('Internet On')
                    else output.Lines.Add('Internet Off');
-       (* output.Lines.add('Local IP: '+getIPAddress(getComputerNameWin)+' DNS: '+ getDNS);
+        output.Lines.add('Local IP: '+getIPAddress(getComputerNameWin)+' DNS: '+ getDNS);
         output.Lines.add('Host Name: '+getComputerNameWin+'   Win64: '+boolToStr(isWoW64,true)+'  OS: '+getOSName);
         output.Lines.add('User Name: '+getUserNameWin+'    Is Admin: '+boolToStr(getISAdmin,true));
         output.Lines.add('Process ID: '+intToStr(CurrentProcessID) +'  ThreadCount: '+intToStr(numprocessthreads));
         output.Lines.add('Memory Load: '+inttoStr(GetMemoryLoad) +'% used'+ '  CPU: '+GetProcessorName);
         output.Lines.add('Free Mem: '+inttoStr(GetFreePhysicalMemory div 1024)+' KB'+'  SYS_BIOS: '+GetBiosVendor);
-        output.Lines.add('Time: '+DateTimeToInternetStr(now, true));   *)
+        output.Lines.add('Time: '+DateTimeToInternetStr(now, true));   //*)
         output.Lines.add('mX4 Installed Version: '+MBVERSION);
         output.Lines.add('mX4 Internet Version: '+ActVersion);
         output.Lines.add('Highlighter: '+memo1.Highlighter.GetLanguageName +'  Akku: '+inttostr(RemainingBatteryPercent));
