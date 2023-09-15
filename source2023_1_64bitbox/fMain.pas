@@ -195,7 +195,7 @@
           12481   5.0.1.11 first time 24/08/2023 double compile - py64 test
           12506   5.0.1.12 re register and import std, stdctrsl, classes, forms & graphics, bccompatible
           12518   5.0.1.13 x64 string return works, create CreateOleObject and variant from IDispatch works
-          12528   5.0.1.14 maxform1. reflection utf8decode for loadfile, umath, getwebscript, jvchart
+          12541   5.0.1.14 maxform1. reflection utf8decode for loadfile, umath, getwebscript, jvchart
 
  ************************************************************************************* }
 
@@ -261,7 +261,7 @@ const
    ENDSIGN='end.';
 
 type
-  TMaxForm1 = class(TForm)
+  Tmaxform1 = class(TForm)
     memo2: TMemo;
     Splitter1: TSplitter;
     PSScript: TPSScript;
@@ -1043,7 +1043,7 @@ type
 
 
 var
-  maxForm1: TMaxForm1;
+  maxform1: Tmaxform1;
 
 implementation
 
@@ -1110,11 +1110,11 @@ uses
   // ide_debugoutput,
    //ToolWin;
    //Types, Grids
-  //UCMainForm,
-  // JimShape,  *)
+  UCMainForm,
+   JimShape,  //*)
    RXMain, //3.6.3
    EXEImage,
-   //DependencyWalkerDemoMainForm,
+   DependencyWalkerDemoMainForm,
   WebMapperDemoMainForm,  //*)
   sdpStopwatch,
   //jclunicode conflict
@@ -1216,10 +1216,10 @@ uses
   uPSI_CPortCtl,
   uPSI_CPortEsc, //3.9.3
   uPSI_StSystem,
-(*  uPSI_JvKeyboardStates,
+ uPSI_JvKeyboardStates,
   uPSI_JvMail,
   uPSI_JclConsole,
-  uPSI_JclLANMan,   *)
+  uPSI_JclLANMan,   //*)
   uPSI_BarCodeScaner, //*)
   uPSI_GUITesting,
   uPSI_JvFindFiles,  // *)
@@ -1317,13 +1317,13 @@ uses
   uPSI_JvgDigits, //*)
   uPSI_JclMIDI,
   uPSI_JclWinMidi,
-(*  uPSI_JclNTFS,
+  uPSI_JclNTFS,
   uPSI_JclAppInst,
   uPSI_JvRle,
   // uPSI_JvRas32,
-  uPSI_JvImageDrawThread,
+(*  uPSI_JvImageDrawThread, *)
   uPSI_JvImageWindow,
-  uPSI_JvTransparentForm,
+ (* uPSI_JvTransparentForm,
   uPSI_JvWinDialogs,
   uPSI_JvSimLogic,
   uPSI_JvSimIndicator,
@@ -1381,8 +1381,8 @@ uses
  uPSI_TlHelp32,
   uPSI_JclRegistry,
   uPSI_mORMotReport, //*)
- // uPSI_JvAirBrush,
- (* uPSI_JclLocales,      //last  *)
+  uPSI_JvAirBrush,
+  uPSI_JclLocales,      //last  *)
   uPSI_XmlVerySimple, //*)
     uPSI_Services,
  // uPSI_JvForth,                *)
@@ -1408,7 +1408,7 @@ uses
   ViewToDoFm,  //3.9.9.6
   uPSI_CppTokenizer,
   uPSI_JvHLParser,
-//  uPSI_JclMapi,    *)
+  uPSI_JclMapi,    //&&*)
   uPSI_JclShell, //3.9.9.6
   uPSI_JclCOM,
   (*uPSI_GR32_Math,
@@ -1418,9 +1418,9 @@ uses
   uPSI_GR32_VectorMaps,
   uPSI_cXMLFunctions, *)
   uPSI_JvTimer,
- (* uPSI_cHTTPUtils,
+  uPSI_cHTTPUtils,
   uPSI_cTLSUtils,     //3.9.9.7
-  uPSI_JclGraphics,
+ (* uPSI_JclGraphics,
   uPSI_JclSynch,
   uPSI_IdEcho,
   uPSI_IdEchoServer,
@@ -1443,7 +1443,7 @@ uses
  (* uPSI_IdChargenServer,
   uPSI_IdBlockCipherIntercept,  //3.9.9.8   *)
   //uPSI_IdFTPServer,
- (* uPSI_IdException, *)
+  uPSI_IdException, //*)
   uPSI_uwinstr,
   uPSI_utexplot,
   uPSI_VarRecUtils,
@@ -1454,8 +1454,8 @@ uses
   uPSI_FileUtil,
   changefind,  // for change control
   uPSI_changefind,
- (* uPSI_cmdIntf,
-  //uPSI_fservice,   *)
+  uPSI_cmdIntf,
+  //uPSI_fservice,   //*)
   uPSI_Keyboard,
   uPSI_IDECmdLine,
   uPSI_ip_misc,  //*)
@@ -1472,7 +1472,7 @@ uses
   uPSI_JclAnsiStrings,
   uPSI_JclStreams,
   uPSI_synautil,  //*)
-  //uPSI_SRMgr,
+  uPSI_SRMgr,     // check finalization
   uPSI_HotLog,
   hotlog,
   (*
@@ -1553,10 +1553,10 @@ uses
   uPSI_IdMessageCoderMIME,
   uPSI_IdMultipartFormData, //cause of http post;
   uPSI_IdRawBase,
-  uPSI_IdNTLM,
+  uPSI_IdNTLM,  *)
   uPSI_IdNNTP,
   uPSI_usniffer,
-  uPSI_IdCoder3to4,
+ (* uPSI_IdCoder3to4,
   uPSI_IdCoderMIME,
   uPSI_IdCoderXXE,
   uPSI_IdCoderUUE,
@@ -1603,9 +1603,9 @@ uses
   uPSI_HTTPParse, //3.2
   uPSI_HTTPUtil, //3.2  *)
   uPSI_HTTPApp, //3.7
- (* uPSI_IdSocketHandle,
-  uPSI_IdTCPServer,
-  uPSI_IdCustomHTTPServer, *)
+  uPSI_IdSocketHandle,
+  (*uPSI_IdTCPServer, *)
+ // uPSI_IdCustomHTTPServer, //*)
   IFSI_IdURI,
  IFSI_IdFTP,
  (* uPSI_IdRemoteCMDClient,
@@ -1915,9 +1915,9 @@ uses
   uPSI_SvcMgr,
 (*  uPSI_JvPickDate,
   uPSI_JvNotify,
-  uPSI_JvStrHlder,
+  uPSI_JvStrHlder,   *)
   uPSI_JclNTFS2,
-  uPSI_Jcl8087, //3.9.9.94_3
+(*  uPSI_Jcl8087, //3.9.9.94_3
   uPSI_JvAddPrinter,
   uPSI_JvCabFile,   *)
   uPSI_JvDataEmbedded,
@@ -1945,9 +1945,9 @@ uses
   uPSI_UParser10,
   uPSI_cyIEUtils, //*)
   uPSI_UcomboV2,   //3.9.9.96
- (* uPSI_cyBaseComm,
+  uPSI_cyBaseComm,
   uPSI_cyAppInstances,
-  uPSI_cyAttract,
+ (* uPSI_cyAttract,
   uPSI_cyDERUtils,
   uPSI_cyDocER,  //3.9.9.96
   uPSI_ODBC,
@@ -1970,17 +1970,17 @@ uses
   uPSI_WaveUtils,  ////3.9.9.96_3   *)
   dlgMain,  //CHECKERS GAME
 (*  uPSI_NamedPipes,
-  uPSI_NamedPipeServer,
+  uPSI_NamedPipeServer, *)
   uPSI_process,
   uPSI_DPUtils,
-  uPSI_CommonTools,
+  //&&&&uPSI_CommonTools,
   uPSI_DataSendToWeb,
-  uPSI_StarCalc,
+ (* uPSI_StarCalc,
   uPSI_D2_VistaHelperU,   ////3.9.9.98     *)
   uPSI_ProcessUnit,
  (* uPSI_pipes,
-  uPSI_adgsm,
-  uPSI_BetterADODataSet,
+  uPSI_adgsm,   *)
+  //uPSI_BetterADODataSet,
   uPSI_AdSelCom,      ////3.9.9.98_1    *)
   uPSI_dwsXPlatform,
  (* uPSI_AdSocket,
@@ -2019,7 +2019,7 @@ uses
   uPSI_ComPortInterface,
   uPSI_SwitchLed,
   uPSI_cyDmmCanvas,
-  uPSI_uColorFunctions,
+  uPSI_uColorFunctions,   *)
   uPSI_uSettings,
   uPSI_cyDebug,   ////3.9.9.98_6
   uPSI_cyBaseColorMatrix,
@@ -2027,7 +2027,7 @@ uses
   uPSI_cyCopyFiles,
   uPSI_cySearchFiles,
   uPSI_cyBaseMeasure,
-  uPSI_PJIStreams, //3.9.9.98_6  *)
+(*  uPSI_PJIStreams, //3.9.9.98_6  *)
   uPSI_cyRunTimeResize,
   uPSI_jcontrolutils,
   uPSI_kcMapViewer, //add GeoNames
@@ -2071,11 +2071,11 @@ uses
 (*  panUnit1,      //panorama Viewer
   uPSI_GR32_Geometry,
   uPSI_GR32_Containers,
-  uPSI_GR32_Backends_VCL,
+  uPSI_GR32_Backends_VCL,   *)
   uPSI_StSaturn,    //all other planets!
   uPSI_JclParseUses,
   uPSI_JvFinalize,    //3.9.9.120
-  uPSI_panUnit1,
+ (* uPSI_panUnit1,
   uPSI_DD83u1, *)
   uPSI_BigIni, //*)
   uPSI_ShellCtrls,
@@ -2346,7 +2346,7 @@ uses
   uPSI_flcVectors,             //TInt64ArrayClass
   uPSI_flcMatrix,
   uPSI_flcStringBuilder,
-  //uPSI_flcDynArrays,   *)
+  //uPSI_flcDynArrays,   //*)
   uPSI_flcASCII,
   //uPSI_flcStringPatternMatcher,
   uPSI_flcUnicodeChar, //*)
@@ -2400,10 +2400,10 @@ uses
   uPSI_U_Splines,     //4.7.6.10 IV    getpython()
   uPSI_U_CoasterB,
   //uPSI_clJsonSerializerBase,
-(*  uPSI_clJsonParser,   *)
+  uPSI_clJsonParser,   //*)
   uPSI_SynHighlighterPython,
-(*  uPSI_DudsCommonDelphi,
-  uPSI_AINNNeuron,  *)
+  uPSI_DudsCommonDelphi,
+  uPSI_AINNNeuron,  //*)
   uPSI_uHTMLBuilder,
   uPSI_WinApiDownload,
   uPSI_pxQRcode,    //4.7.6.10 VII     *)
@@ -2411,14 +2411,14 @@ uses
   uPSI_RestJsonUtils,
   uPSI_KLibUtils,           // 4.7.6.10 VIII
   uPSI_KLibWindows,   //*)
-  //uPSI_AzuliaUtils,           //httpget
+  uPSI_AzuliaUtils,           //httpget
   uPSI_HttpConnection,
   uPSI_HttpConnectionWinInet,
   uPSI_RestUtils,
   uPSI_PSResources,         //4.7.6.20
   uPSI_RestClient,
 
- (* uPSI_IdNNTPServer,        //4.2.4.25  *)
+ // uPSI_IdNNTPServer,        //4.2.4.25  *)
   uPSI_UWANTUtils,
   uPSI_OverbyteIcsAsn1Utils,
   //uPSI_SimpleSFTP,  *)
@@ -2435,10 +2435,10 @@ uses
   uPSI_dateext4,      //4.2.4.80_2
   uPSI_locale,   //*)
   uPSI_Strings,
-(*  uPSI_crc_checks,
-  uPSI_extdos,        //4.2.4.80_3
-  uPSI_uBild,
-  uPSI_SimpleTCP, *)
+(*  uPSI_crc_checks,  *)
+  //uPSI_extdos,        //4.2.4.80_3
+  //uPSI_uBild,
+  //uPSI_SimpleTCP, *)
   //uPSI_IdFTPList,
   uPSI_uTPLb_RSA_Engine,
   uPSI_uTPLb_CryptographicLibrary,
@@ -2492,16 +2492,16 @@ uses
   //CoolMain,
  // uPSI_CoolMain,
   uPSI_StCRC, //*)
- // uPSI_BoldComUtils,
- (* uPSI_BoldIsoDateTime,
+  uPSI_BoldComUtils,
+  uPSI_BoldIsoDateTime,
   uPSI_BoldXMLRequests,
-  uPSI_BoldStringList,
+ (* uPSI_BoldStringList,
   uPSI_BoldFileHandler,
-  uPSI_BoldThread,
+  uPSI_BoldThread, *)
   uPSI_BoldContainers,
-  uPSI_BoldQueryUserDlg,
+ (* uPSI_BoldQueryUserDlg, *)
   uPSI_BoldWinINet,
-  uPSI_BoldQueue,
+ (* uPSI_BoldQueue,
   uPSI_JvPcx,
   uPSI_IdWhois,
   uPSI_IdWhoIsServer,
@@ -2552,9 +2552,9 @@ uses
   uPSI_DBBdeWeb,   *)
   uPSI_ShadowWnd, //3.8   *)
   uPSI_ToolWin,
- (* uPSI_Tabs,
-  uPSI_JclGraphUtils,
-  uPSI_JclCounter,  *)
+ (* uPSI_Tabs, *)
+ // uPSI_JclGraphUtils,
+  uPSI_JclCounter,  //*)
   uPSI_JclSysInfo,
 (*  uPSI_JclSecurity,
   uPSI_IdUserAccounts, *)
@@ -2667,7 +2667,7 @@ var
   fx: Text;
 
 
-procedure TMaxForm1.IFPS3ClassesPlugin1CompImport(Sender: TObject;
+procedure Tmaxform1.IFPS3ClassesPlugin1CompImport(Sender: TObject;
   x: TIFPSPascalcompiler);
 begin
   SIRegister_Std(x);
@@ -2809,8 +2809,8 @@ begin
   SIRegister_Spin(X);        //3.9.9.101   *)
 
   SIRegister_ComCtrls(X); //3.9 moved up
-  (*
-  SIRegister_StBase(X);     *)
+
+  SIRegister_StBase(X);     //*)
   SIRegister_ExtPascalUtils(X);
 (*  SIRegister_JvSimpleXml(X);     //domtotree
   SIRegister_JvXmlDatabase(X);   *)
@@ -2843,12 +2843,12 @@ begin
   SIRegister_StMoney(X);
   //SIRegister_StMime(X);  *)
   SIRegister_StEclpse(X);
- (* SIRegister_JvKeyboardStates(X);
+  SIRegister_JvKeyboardStates(X);
   SIRegister_JclMapi(X);
   SIRegister_JvMail(X);
   SIRegister_JclConsole(X);
   SIRegister_JclLANMan(X);
-  SIRegister_ActnList(X);  *)
+ (* SIRegister_ActnList(X);  *)
   SIRegister_ActnMan(X);  //3.9.9.182       *)
   SIRegister_jpeg(X);
   SIRegister_StRandom(X);
@@ -2883,29 +2883,29 @@ begin
  (* SIRegister_FlatSB(X);
   //SIRegister_EIdHTTPProtocolException(x);    *)
   SIRegister_TIdHTTP(x);
-(*  SIRegister_TIdCustomHTTP(x);
+ SIRegister_TIdCustomHTTP(x);
   SIRegister_TIdHTTPProtocol(x);
   SIRegister_TIdHTTPRequest(x);
-  SIRegister_TIdHTTPResponse(x);}
-  SIRegister_IdException(X); *)
+  SIRegister_TIdHTTPResponse(x);  //}
+  SIRegister_IdException(X); //*)
   SIRegister_IdGlobal(X);     //remove 3.9.9.1
  (* SIRegister_IdRFCReply(X);   //3.9.7.5
   SIRegister_IdDateTimeStamp(X);  //3.9.9.40
   SIRegister_IdStack(X);
   SIRegister_IdSocks(X);
   SIRegister_IdComponent(X); //3.9.9.91
-  SIRegister_IdIOHandlerThrottle(X);
+  SIRegister_IdIOHandlerThrottle(X);    *)
   SIRegister_IdSocketHandle(X);
-  SIRegister_IdIntercept(X);
+ (* SIRegister_IdIntercept(X);
   SIRegister_IdIOHandlerSocket(X);
   SIRegister_IdServerIOHandler(X);
   SIRegister_IdServerIOHandlerSocket(X); *)
   SIRegister_IdCoder(X);
  (* SIRegister_IdRawBase(X);
-  SIRegister_IdNTLM(X);
+  SIRegister_IdNTLM(X);  *)
   SIRegister_IdNNTP(X);
   SIRegister_usniffer(X);
-  SIRegister_IdCoder3to4(X);
+ (* SIRegister_IdCoder3to4(X);
   SIRegister_IdCookie(X);
   SIRegister_IdCookieManager(X);
   SIRegister_IdIOHandlerStream(X);
@@ -2980,8 +2980,8 @@ begin
   SIRegister_ToolWin(x);
   SIRegister_devcutils(X);
  // SIRegister_Tabs(X);
- (* SIRegister_JclGraphUtils(X);
-  SIRegister_JclCounter(X);   *)
+ (* SIRegister_JclGraphUtils(X);   *)
+  SIRegister_JclCounter(X);   //*)
   SIRegister_JclSysInfo(X);
  (* SIRegister_JclSecurity(X);
   SIRegister_IdUserAccounts(X);
@@ -2998,14 +2998,14 @@ begin
   SIRegister_JclSchedule(X);
  (* SIRegister_JvSoundControl(X);
   SIRegister_JvBDESQLScript(X);
-  //SIRegister_IdAuthentication(X);
+  //SIRegister_IdAuthentication(X);   *)
   SIRegister_JclNTFS(X);
-  SIRegister_JclAppInst(X);     3     *)
+  SIRegister_JclAppInst(X);     //3     *)
   SIRegister_JclMIDI(X);
   SIRegister_JclWinMidi(X);
- (* SIRegister_JvRle(X);
-  SIRegister_JvImageWindow(X);
-  SIRegister_JvImageDrawThread(X);  //3.9.7.3
+  SIRegister_JvRle(X);
+ SIRegister_JvImageWindow(X);
+ (* SIRegister_JvImageDrawThread(X);  //3.9.7.3
   SIRegister_JvTransparentForm(X);
   SIRegister_JvWinDialogs(X);  *)
   SIRegister_JclUnitConv_mX2(X);
@@ -3055,8 +3055,8 @@ begin
   SIRegister_JvTFUtils(X);
   (*SIRegister_IdMIMETypes(X);
   SIRegister_JvConverter(X);    //JVdataConv
-  SIRegister_JvCsvParse(X);
-  SIRegister_JclLocales(X); *)
+  SIRegister_JvCsvParse(X);   *)
+  SIRegister_JclLocales(X); //*)
   SIRegister_JvSearchFiles(X);
   SIRegister_xrtl_math_Integer(X); //*)
   SIRegister_lazMasks(X);
@@ -3132,9 +3132,9 @@ begin
 (*   SIRegister_SimpleHl(X);
   SIRegister_cXMLFunctions(X);  *)
   SIRegister_JvTimer(X);
- (* SIRegister_cHTTPUtils(X);
+  SIRegister_cHTTPUtils(X);
   SIRegister_cTLSUtils(X);
-  SIRegister_JclGraphics(X);
+ (* SIRegister_JclGraphics(X);
   SIRegister_JclSynch(X);   *)
   SIRegister_Spring_Cryptography_Utils(X);
   SIRegister_MapReader(X);
@@ -3360,7 +3360,7 @@ begin
   SIRegister_JclFileUtils_max(X);
   SIRegister_GLSilhouette(X);  *)
   SIRegister_changefind(X);
-  //SIRegister_cmdIntf(X);
+  SIRegister_cmdIntf(X);
   SIRegister_Keyboard(X);
  (* SIRegister_Octree(X);
   SIRegister_VRMLParser(X);
@@ -3454,9 +3454,9 @@ begin
   SIRegister_WinSvc2(X);
  (* SIRegister_JvPickDate(X);
  SIRegister_JvStrHlder(X);
- SIRegister_JvNotify(X);
+ SIRegister_JvNotify(X);  *)
  SIRegister_JclNTFS2(X);
- SIRegister_Jcl8087(X);
+ (*SIRegister_Jcl8087(X);
  SIRegister_JvAddPrinter(X);
  SIRegister_JvCabFile(X);    *)
  SIRegister_JvDataEmbedded(X);
@@ -3480,9 +3480,9 @@ begin
  SIRegister_UParser10(X);
  SIRegister_cyIEUtils(X);  //*)
  SIRegister_UcomboV2(X);
- (*SIRegister_cyBaseComm(X);
+ SIRegister_cyBaseComm(X);
  SIRegister_cyAppInstances(X);
- SIRegister_cyAttract(X);
+(* SIRegister_cyAttract(X);
  SIRegister_cyDERUtils(X);
  SIRegister_cyDocER(X);
  SIRegister_ODBC(X);
@@ -3505,17 +3505,17 @@ begin
  SIRegister_WaveUtils(X);
  SIRegister_NamedPipes(X);
  SIRegister_NamedPipeServer(X);
- SIRegister_pipes(X);
+ SIRegister_pipes(X); *)
  SIRegister_process(X);
  SIRegister_DPUtils(X);
- SIRegister_CommonTools(X);
+ //SIRegister_CommonTools(X);
  SIRegister_DataSendToWeb(X);
- SIRegister_StarCalc(X);
+(* SIRegister_StarCalc(X);
  SIRegister_D2_VistaHelperU(X);   *)
  SIRegister_ProcessUnit(X);
 // SIRegister_adgsm(X);
-(* SIRegister_BetterADODataSet(X);
- SIRegister_AdSelCom(X);  *)
+(* SIRegister_BetterADODataSet(X);   *)
+ SIRegister_AdSelCom(X);  //*)
  SIRegister_dwsXPlatform(X);
 (* SIRegister_AdSocket(X);
  //SIRegister_AdPacket(X);
@@ -3555,15 +3555,15 @@ begin
  SIRegister_ComPortInterface(X);
  SIRegister_SwitchLed(X);
  SIRegister_cyDmmCanvas(X);
- SIRegister_uColorFunctions(X);
+ SIRegister_uColorFunctions(X);   *)
  SIRegister_uSettings(X);
  SIRegister_cyDebug(X);
  SIRegister_cyBaseColorMatrix(X);
  SIRegister_cyColorMatrix(X);
- SIRegister_cySearchFiles(X);
+SIRegister_cySearchFiles(X);
  SIRegister_cyCopyFiles(X);
  SIRegister_cyBaseMeasure(X);
- SIRegister_PJIStreams(X); *)
+(* SIRegister_PJIStreams(X); *)
  SIRegister_cyRunTimeResize(X);
  SIRegister_jcontrolutils(X);
  SIRegister_kcMapViewer(X);
@@ -3600,16 +3600,16 @@ begin
  SIRegister_JvIni(X); //*)
  SIRegister_NeuralNetwork(X);
  //SIRegister_neuralnetworkCAI(X);
- (*
+
  SIRegister_StExpr(X);
  SIRegister_StSaturn(X);
  SIRegister_JclParseUses(X);
  SIRegister_JvFinalize(X);     //3.9.9.120
- SIRegister_panUnit1(X);
+(* SIRegister_panUnit1(X);
  SIRegister_DD83u1(X);   *)
  SIRegister_BigIni(X);  //*)
  SIRegister_ShellCtrls(X);
- //SIRegister_fmath(X);
+ SIRegister_fmath(X);
  SIRegister_fcomp(X);     //3.9.9.160
  SIRegister_HighResTimer(X);
  SIRegister_uconvMain(X);   //*)
@@ -3911,10 +3911,10 @@ begin
   SIRegister_DelticsSysUtils(X);    //4.7.6.10 III
   SIRegister_U_Splines(X);
   SIRegister_U_CoasterB(X);
- (* SIRegister_clJsonParser(X);    *)
+  SIRegister_clJsonParser(X);    //*)
   SIRegister_SynHighlighterPython(X);  //4.7.6.10 V
-(*  SIRegister_DudsCommonDelphi(X);
-  SIRegister_AINNNeuron(X);    *)
+  SIRegister_DudsCommonDelphi(X);
+  SIRegister_AINNNeuron(X);    //*)
   SIRegister_uHTMLBuilder(X);
   SIRegister_WinApiDownload(X);
   //uPSI_pxQRcode.pas                 //4.7.6.10 VII
@@ -3923,7 +3923,7 @@ begin
  SIRegister_RestJsonUtils(X);  //*)
   SIRegister_KLibUtils(X);
   SIRegister_KLibWindows(X);
- // SIRegister_AzuliaUtils(X);   *)
+  SIRegister_AzuliaUtils(X);   //*)
   SIRegister_RestUtils(X);
  SIRegister_PSResources(X);           //4.7.6.20
   //PSResources;
@@ -4029,7 +4029,7 @@ begin
   SIRegister_JclEDI(X);   //*)
   SIRegister_JclAnsiStrings(X);    //3.9.9.14
   SIRegister_synautil(X);
-  //SIRegister_SRMgr(X);   *)
+  SIRegister_SRMgr(X);   //*)
   SIRegister_DebugBox(X);   // *)
   SIRegister_HotLog(X);
 
@@ -4076,15 +4076,15 @@ begin
   SIRegister_AppEvnts(X);
  //SIRegister_CoolMain(X);
   SIRegister_StCRC(X);
- (* SIRegister_BoldContainers(X);
+  SIRegister_BoldContainers(X);
   SIRegister_BoldComUtils(X);
   SIRegister_BoldIsoDateTime(X);
   SIRegister_BoldXMLRequests(X);
-  SIRegister_BoldStringList(X);
+ (* SIRegister_BoldStringList(X);
   SIRegister_BoldFileHandler(X);
-  SIRegister_BoldThread(X);
+  SIRegister_BoldThread(X); *)
   SIRegister_BoldWinINet(X);
-  SIRegister_BoldQueryUserDlg(X);
+ (* SIRegister_BoldQueryUserDlg(X);
   SIRegister_BoldQueue(X);
   SIRegister_JvPcx(X);
   SIRegister_IdWhois(X);
@@ -4181,7 +4181,7 @@ begin
 
 end;
 
-procedure TMaxForm1.IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TIFPSExec;
+procedure Tmaxform1.IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TIFPSExec;
   x: TIFPSRuntimeClassImporter);
 begin
   //procedure RIRegister_ExtCtrls(cl: TPSRuntimeClassImporter);
@@ -4487,18 +4487,18 @@ begin
   RIRegister_StMoney(X);    *)
   RIRegister_STSystem_Routines(Exec);
   RIRegister_SynURIOpener(X);
- (* RIRegister_JvKeyboardStates(X);
+ RIRegister_JvKeyboardStates(X);
   RIRegister_JclMapi(X);
   RIRegister_JclMapi_Routines(Exec); //3.9.9.6
   RIRegister_JvMail(X);
   RIRegister_JclConsole(X);
   RIRegister_JclLANMan_Routines(exec);
-  RIRegister_JclLocales(X);
+ RIRegister_JclLocales(X);
   RIRegister_JclLocales_Routines(Exec);
-  RIRegister_IdStack(X);
-  RIRegister_IdSocks(X);
+ (* RIRegister_IdStack(X);
+  RIRegister_IdSocks(X); *)
   RIRegister_IdSocketHandle(X);
-  RIRegister_IdMessageCoder(X);
+ (* RIRegister_IdMessageCoder(X);
   RIRegister_IdMessageCoderMIME(X);
   RIRegister_IdServerIOHandler(X);
   RIRegister_IdServerIOHandlerSocket(X);
@@ -4535,9 +4535,9 @@ begin
   RIRegister_LibTar(X);
   RIRegister_LibTar_Routines(Exec);
 (*  RIRegister_IdChargenServer(X);
-  RIRegister_IdBlockCipherIntercept(X);
+  RIRegister_IdBlockCipherIntercept(X);  *)
   RIRegister_IdException(X);
-  RIRegister_IdFTPServer(X); *)
+ (* RIRegister_IdFTPServer(X); *)
   RIRegister_uwinstr_Routines(Exec);
   RIRegister_utexplot_Routines(Exec);
   RIRegister_VarRecUtils_Routines(Exec);
@@ -4572,18 +4572,18 @@ begin
    //RIRegister_IdSSLOpenSSL_Routines(Exec);
   //RIRegister_StBCD(X);
   //RIRegister_ActnList_Routines(Exec);
- (*  RIRegister_JclNTFS(X);
+  RIRegister_JclNTFS(X);
    RIRegister_JclNTFS_Routines(Exec);
   RIRegister_JclAppInst(X);
-  RIRegister_JclAppInst_Routines(Exec);    *)
+  RIRegister_JclAppInst_Routines(Exec);    //*)
   RIRegister_JclMIDI(X);
   RIRegister_JclMIDI_Routines(Exec);
   //RIRegister_JclWinMidi(X);
   RIRegister_JclWinMidi_Routines(Exec);
   //RIRegister_JvRle(X);
-(* RIRegister_JvRle_Routines(Exec);
+ RIRegister_JvRle_Routines(Exec);
   RIRegister_JvImageWindow(X);
-  RIRegister_JvImageDrawThread(X);  //3.9.7.3
+ (* RIRegister_JvImageDrawThread(X);  //3.9.7.3
   RIRegister_JvTransparentForm(X);
   RIRegister_JvWinDialogs(X);
   RIRegister_JvWinDialogs_Routines(Exec);
@@ -4720,8 +4720,8 @@ begin
   RIRegister_ueval_Routines(Exec);
    //RIRegister_EIdHTTPProtocolException(x);
   RIRegister_TIdHTTP(x);
-  {RIRegister_TIdCustomHTTP(x);
-  RIRegister_TIdHTTPProtocol(x);
+  RIRegister_TIdCustomHTTP(x);
+ { RIRegister_TIdHTTPProtocol(x);
   RIRegister_TIdHTTPRequest(x);
   RIRegister_TIdHTTPResponse(x);}
 (*  RIRegister_IdTCPConnection(X);
@@ -4741,8 +4741,8 @@ begin
   RIRegister_Tabs(X);
  (* RIRegister_JclGraphUtils_Routines(Exec);  *)
   RIRegister_IdHashSHA1Utils_Routines(Exec);
- (* RIRegister_JclCounter(X);
-  RIRegister_JclCounter_Routines(Exec);  *)
+  RIRegister_JclCounter(X);
+  RIRegister_JclCounter_Routines(Exec);  //*)
   RIRegister_JclSysInfo_Routines(Exec);
 (*  RIRegister_JclSecurity_Routines(Exec);
   RIRegister_IdUserAccounts(X);
@@ -4844,11 +4844,11 @@ begin
   RIRegister_GR32_VectorMaps(X);
   RIRegister_cXMLFunctions_Routines(Exec);   *)
   RIRegister_JvTimer(X);
- (* RIRegister_cHTTPUtils_Routines(Exec);
+  RIRegister_cHTTPUtils_Routines(Exec);
   RIRegister_cHTTPUtils(X);
    RIRegister_ETLSError(X);
   RIRegister_cTLSUtils_Routines(Exec);
-  RIRegister_JclGraphics_Routines(Exec);
+ (* RIRegister_JclGraphics_Routines(Exec);
   RIRegister_JclGraphics(X);
   RIRegister_JclSynch(X);
   RIRegister_JclSynch_Routines(Exec);  *)
@@ -4960,16 +4960,16 @@ begin
  RIRegister_ExtActns(X);
   RIRegister_AppEvnts(X); // *)
   RIRegister_frmExportMain(X);
- (* RIRegister_BoldComUtils_Routines(exec);
+  RIRegister_BoldComUtils_Routines(exec);
   RIRegister_BoldIsoDateTime_routines(exec);
   RIRegister_BoldComUtils(X);
   RIRegister_BoldXMLRequests(X);
-  RIRegister_BoldStringList(X);
+ (* RIRegister_BoldStringList(X);
   RIRegister_BoldFileHandler_Routines(Exec);
   RIRegister_BoldFileHandler(X);
-  RIRegister_BoldThread(X);
+  RIRegister_BoldThread(X);    *)
   RIRegister_BoldContainers(X);
-  RIRegister_BoldQueryUserDlg(X);
+(*  RIRegister_BoldQueryUserDlg(X);
   RIRegister_BoldQueryUserDlg_Routines(Exec);
   RIRegister_BoldWinINet_Routines(Exec);
   RIRegister_BoldQueue(X);
@@ -4990,10 +4990,10 @@ begin
   RIRegister_ZMatchPattern_Routines(Exec);
   RIRegister_ZCollections(X);
   RIRegister_ZEncoding_Routines(Exec);
- (* RIRegister_IdNTLM_Routines(Exec); //SIRegister_IdNTLM(X);
+ (* RIRegister_IdNTLM_Routines(Exec); //SIRegister_IdNTLM(X);   *)
   RIRegister_IdNNTP(X);
   RIRegister_usniffer(X);
-  RIRegister_IdCoder3to4(X);
+ (* RIRegister_IdCoder3to4(X);
   RIRegister_IdCoderMIME(X);
   RIRegister_IdCoderUUE(X);
   RIRegister_IdCoderXXE(X);
@@ -5027,7 +5027,7 @@ begin
   RIRegister_MandelbrotEngine(X);
   RIRegister_delphi_arduino_Unit1(X);
  RIRegister_fplotMain(X);
-   //RIRegister_SRMgr(X);
+   RIRegister_SRMgr(X);
  (*  RIRegister_PppState(X);  *)
    RIRegister_FindFileIter_Routines(exec);
  (*  RIRegister_PppParser(X);
@@ -5223,7 +5223,7 @@ begin
   RIRegister_AfDataControls(X);
  (* RIRegister_GLSilhouette(X);   *)
   RIRegister_changefind(X);
- (* RIRegister_cmdIntf(X);   *)
+  RIRegister_cmdIntf(X);   //*)
   RIRegister_Keyboard_Routines(Exec);
  (* RIRegister_VRMLParser(X);
   RIRegister_GLFileVRML(X);
@@ -5373,10 +5373,10 @@ begin
   RIRegister_UParser10(X);
   RIRegister_cyIEUtils_Routines(Exec);
   RIRegister_UcomboV2(X);           //3.9.9.96
- (* RIRegister_cyBaseComm(X);
+  RIRegister_cyBaseComm(X);
   RIRegister_cyBaseComm_Routines(Exec);
   RIRegister_cyAppInstances(X);
-  RIRegister_cyAttract(X);
+ (* RIRegister_cyAttract(X);
   RIRegister_cyDERUtils_Routines(eXec);
   RIRegister_cyDocER(X);
   RIRegister_ODBC(X);
@@ -5399,23 +5399,23 @@ begin
   RIRegister_WaveUtils_Routines(Exec);
   RIRegister_NamedPipes(X);
   RIRegister_NamedPipes_Routines(Exec);
-  RIRegister_NamedPipeServer(X);
+  RIRegister_NamedPipeServer(X); *)
   RIRegister_process(X);
   RIRegister_DPUtils_Routines(Exec);
   RIRegister_DPUtils(X);
-  RIRegister_CommonTools_Routines(Exec);
-  RIRegister_CommonTools(X);
+  //RIRegister_CommonTools_Routines(Exec);
+  //RIRegister_CommonTools(X);
   RIRegister_DataSendToWeb(X);
-  RIRegister_StarCalc(X);
+ (* RIRegister_StarCalc(X);
   RIRegister_D2_VistaHelperU_Routines(Exec); //3.9.9.98
   RIRegister_pipes_Routines(Exec);
   RIRegister_pipes(X);  *)
   RIRegister_ProcessUnit(X);
  (* RIRegister_adgsm_Routines(Exec);
   RIRegister_BetterADODataSet_Routines(Exec);
-  RIRegister_BetterADODataSet(X);
+  RIRegister_BetterADODataSet(X);  *)
   RIRegister_AdSelCom_Routines(Exec);
-  RIRegister_AdSelCom(X);       *)
+  RIRegister_AdSelCom(X);       //*)
   RIRegister_dwsXPlatform_Routines(Exec);
   RIRegister_dwsXPlatform(X);
  (* RIRegister_AdSocket(X);
@@ -5464,7 +5464,7 @@ begin
   RIRegister_ComPortInterface(X);
   RIRegister_SwitchLed(X);
   RIRegister_cyDmmCanvas(X);
-  RIRegister_uColorFunctions_Routines(EXec);
+  RIRegister_uColorFunctions_Routines(EXec);    *)
   RIRegister_uSettings_Routines(EXec);
   RIRegister_cyDebug(X);
   RIRegister_cyBaseColorMatrix(X);
@@ -5474,7 +5474,7 @@ begin
   RIRegister_cyCopyFiles(X);
   RIRegister_cyCopyFiles_Routines(Exec);
   RIRegister_cyBaseMeasure(X);
-  RIRegister_PJIStreams(X);     *)
+ (* RIRegister_PJIStreams(X);     *)
   RIRegister_cyRunTimeResize(X);
   RIRegister_jcontrolutils_Routines(Exec);
   RIRegister_kcMapViewer(X);
@@ -5548,11 +5548,11 @@ begin
   RIRegister_DelticsSysUtils(X);                //4.7.6.10 III
   RIRegister_U_Splines(X);
   RIRegister_U_CoasterB(X);
- (* RIRegister_MARSCoreUtils_Routines(Exec);
+  RIRegister_MARSCoreUtils_Routines(Exec);  //*)
   RIRegister_clJsonParser(X);
-  RIRegister_SynHighlighterPython(X);
+  RIRegister_SynHighlighterPython(X);  // *)
   RIRegister_DudsCommonDelphi_Routines(Exec);
-  RIRegister_AINNNeuron(X);     *)
+  RIRegister_AINNNeuron(X);    // *)
   RIRegister_uHTMLBuilder(X);
   RIRegister_WinApiDownload(X);
   RIRegister_pxQRcode_Routines(Exec);   //*)
@@ -5561,8 +5561,8 @@ begin
   RIRegister_RestJsonUtils(X);  *)
   RIRegister_KLibUtils_Routines(Exec);   //VIII
   RIRegister_KLibWindows_Routines(Exec);
- (* RIRegister_AzuliaUtils_Routines(Exec);
-  RIRegister_AzuliaUtils(X); *)
+  RIRegister_AzuliaUtils_Routines(Exec);
+  RIRegister_AzuliaUtils(X); //*)
   RIRegister_RestUtils(X);
   RIRegister_PSResources(X);
   RIRegister_PSResources_Routines(Exec);
@@ -5570,17 +5570,17 @@ begin
   RIRegister_HttpConnectionWinInet(X);
   RIRegister_RestClient(X);
 
- (* RIRegister_StExpr(X);
+  RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
-  RIRegister_GR32_Geometry_Routines(Exec);
+ (* RIRegister_GR32_Geometry_Routines(Exec);
   RIRegister_GR32_Containers(X);
   RIRegister_GR32_Containers_Routines(Exec);
-  RIRegister_GR32_Backends_VCL(X);
+  RIRegister_GR32_Backends_VCL(X);    *)
   RIRegister_StSaturn_Routines(Exec);
   RIRegister_JclParseUses(X);
   RIRegister_JclParseUses_Routines(Exec);
   RIRegister_JvFinalize_Routines(Exec);  //3.9.9.120
-  RIRegister_panUnit1(X);
+ (* RIRegister_panUnit1(X);
   RIRegister_DD83u1(X);   *)
   RIRegister_BigIni(X);
   RIRegister_BigIni_Routines(Exec);   //*)
@@ -6028,7 +6028,7 @@ end;
 
 
 
-procedure TMaxForm1.FormCreate(Sender: TObject);
+procedure Tmaxform1.FormCreate(Sender: TObject);
 //var //Plugin: TPSPlugin;
 //var    amark: TSynEditMark;
   var lm: integer;  m: string;   T0: int64;
@@ -6355,7 +6355,7 @@ begin
      end;  //}
 
   end;
-  Except  //silent less log
+  Except  //silent less log                 Rheingoldwagen-Set "Tin Plate" MHI, Märklin H0 40851
     //raise Exception.Create('CLI fault in parse file: '+RCSTRMB+':' +act_filename);
     //showmessage('');
   end;
@@ -6426,7 +6426,7 @@ begin
        memo1.options:= memo1.options + [eoTabIndent]  //silvis wish
 end;
 
-procedure TMaxForm1.FormActivate(Sender: TObject);
+procedure Tmaxform1.FormActivate(Sender: TObject);
 begin
   //STATSavebefore:= true;
   //STATInclude:= true;
@@ -6462,7 +6462,7 @@ begin
   //ShowInclude1Click(self);
 end;
 
-procedure TMaxForm1.FormMarkup(Sender: TObject);
+procedure Tmaxform1.FormMarkup(Sender: TObject);
 //var
   //SynMarkup: TSynEditMarkupHighlightAllCaret;
 begin
@@ -6476,25 +6476,25 @@ begin
 end;
 
 
-procedure TMaxForm1.AppOnException(sender: TObject; E: Exception);
+procedure Tmaxform1.AppOnException(sender: TObject; E: Exception);
 begin
   //MAppOnException(sender, E);
 end;
 
-procedure TMaxForm1.ArduinoDump1Click(Sender: TObject);
+procedure Tmaxform1.ArduinoDump1Click(Sender: TObject);
 begin
   ShowMessage('Arduino HexDump to Flash in uC available in V4'+#13#10+
                 'first example in: ..\examples\arduino_examples'+#13#10+
                 'tests with AVRDUDE to get the flash on a shell with success');
 end;
 
-procedure TMaxForm1.TaskMgr1Click(Sender: TObject);
+procedure Tmaxform1.TaskMgr1Click(Sender: TObject);
 begin
    S_ShellExecute('taskmgr','',seCMDOpen);
     statusbar1.panels.items[0].TEXT:= statusbar1.simpletext +' Task Manager started';
 end;
 
-procedure TMaxForm1.AutoDetectSyntax1Click(Sender: TObject);
+procedure Tmaxform1.AutoDetectSyntax1Click(Sender: TObject);
 var fHighlighters: TStringList;
 begin
   // auto detect of extension
@@ -6567,6 +6567,16 @@ end;
 procedure myMessageBox(const mytext: string);
 begin
   showmessage(mytext)
+end;
+
+function myLength(const mytext: string): integer;
+begin
+   result:= length(mytext)
+end;
+
+function myLens(const mytext: string): string;
+begin
+   result:= inttostr(length(mytext));
 end;
 
 procedure MyWriteln(const sln: string);
@@ -6699,7 +6709,7 @@ begin
       with maxform1.ledimage do begin
         Top:= 2;
         visible:= true;
-        //picture.bitmap.loadfromResourcename(HINSTANCE,'YELLOW')
+        picture.bitmap.loadfromResourcename(HINSTANCE,'YELLOW')
        end;
   end;
 
@@ -6936,7 +6946,7 @@ end;
   50: Stack.SetInt(-1, Max(Stack.GetInt(-2), Stack.GetInt(-3)));// max
  }
 
-procedure TMaxForm1.PSScriptCompile(Sender: TPSScript);
+procedure Tmaxform1.PSScriptCompile(Sender: TPSScript);
 //var s: TSearchRec;
  //var FormatSettings: TFormatSettings;
 begin
@@ -6946,6 +6956,9 @@ begin
   Sender.AddFunction(@MyWriteln, 'procedure Println(s: string);');  //alias
   Sender.AddFunction(@MyWrite, 'procedure Write(S: string);');
   Sender.AddFunction(@MyWrite, 'procedure Print(S: string);');
+  Sender.AddFunction(@Mylength, 'function Len(s: string): integer;');
+  Sender.AddFunction(@Mylens, 'function Lens(s: string): string;');
+
    Sender.AddFunction(@MyReadln, 'function Readln(question: string): string;');
   Sender.AddFunction(@MyReadln1, 'procedure Readln1(var ast: string);');
   Sender.AddFunction(@ImportTest, 'function ImportTest(S1: string;'+
@@ -7390,7 +7403,7 @@ begin
 end;
 
 
-procedure TMaxForm1.Expand_Macro;
+procedure Tmaxform1.Expand_Macro;
 var fpath, fname: string;
 begin
  //        output.Lines.add('Host Name: '+getComputerNameWin);
@@ -7428,7 +7441,7 @@ end;
 
 //var it: integer;
 
-procedure TMaxForm1.PSScriptExecute(Sender: TPSScript);
+procedure Tmaxform1.PSScriptExecute(Sender: TPSScript);
 begin
   PSScript.SetVarToInstance('APPLICATION', Application);
   PSScript.SetVarToInstance('SCREEN', SCREEN);
@@ -7449,7 +7462,7 @@ begin
 end;
 
 // facade and mediator pattern
-procedure TMaxForm1.Compile1Click(Sender: TObject);
+procedure Tmaxform1.Compile1Click(Sender: TObject);
 //var //mybytecode: string;
   var stopw: TStopwatch;
     debugoutform: TDebugoutput; //static;
@@ -7621,7 +7634,7 @@ begin
 end;
 
 
-procedure TMaxForm1.RubySyntax1Click(Sender: TObject);
+procedure Tmaxform1.RubySyntax1Click(Sender: TObject);
 begin
   with RubySyntax1 do
     checked:= NOT checked;
@@ -7636,7 +7649,7 @@ begin
     end;
 end;
 
-procedure TMaxForm1.Run1Click(Sender: TObject);
+procedure Tmaxform1.Run1Click(Sender: TObject);
  var stopw: TStopwatch;    //3.8.2
 begin
   //runs only precondition compile syntax check
@@ -7660,7 +7673,7 @@ begin
    end;
 end;
 
-function TMaxForm1.RunCompiledScript(bytecode: ansistring; out RTErrors: string): boolean;
+function Tmaxform1.RunCompiledScript(bytecode: ansistring; out RTErrors: string): boolean;
 begin
  //psscript.LoadExec;
  //result:= psscript.Exec.LoadData(bytecode);
@@ -7670,7 +7683,7 @@ begin
  //psscript.RuntimeImporter.CreateAndRegister(psscript.exec,false);
 end;
 
-function TMaxForm1.RunCompiledScript2(Bytecode: AnsiString; out RuntimeErrors: String): Boolean;
+function Tmaxform1.RunCompiledScript2(Bytecode: AnsiString; out RuntimeErrors: String): Boolean;
 var
   Runtime: TPSExec;
   ClassImporter: TPSRuntimeClassImporter;
@@ -7750,7 +7763,7 @@ function LoadFile2(const FileName: TFileName): ansistring;
 
 
 
-procedure TMaxForm1.LoadBytecode1Click(Sender: TObject);
+procedure Tmaxform1.LoadBytecode1Click(Sender: TObject);
 var bcerrorcode, afilename: string;
     sdata: ansistring;
 begin
@@ -7782,40 +7795,40 @@ begin
 end;
 
 
-procedure TMaxForm1.mnConsole2Click(Sender: TObject);
+procedure Tmaxform1.mnConsole2Click(Sender: TObject);
 begin
   mnConsole2.Checked:= not mnConsole2.Checked;
   memo2.Visible:= mnConsole2.Checked;
 //console  , output or shell
 end;
 
-procedure TMaxForm1.mnCoolbar2Click(Sender: TObject);
+procedure Tmaxform1.mnCoolbar2Click(Sender: TObject);
 begin
   mnCoolbar2.Checked:= not mnCoolbar2.Checked;
   Coolbar1.Visible:= mnCoolbar2.Checked;
 end;
 
-procedure TMaxForm1.mnSplitter2Click(Sender: TObject);
+procedure Tmaxform1.mnSplitter2Click(Sender: TObject);
 begin
   mnSplitter2.Checked:= not mnSplitter2.Checked;
   Splitter1.Visible:= mnSplitter2.Checked;
 end;
 
-procedure TMaxForm1.mnStatusbar2Click(Sender: TObject);
+procedure Tmaxform1.mnStatusbar2Click(Sender: TObject);
 begin
   mnStatusBar2.Checked:= not mnStatusBar2.Checked;
   StatusBar1.Visible:= mnStatusBar2.Checked;
 //status in menu view
 end;
 
-procedure TMaxForm1.mnToolbar1Click(Sender: TObject);
+procedure Tmaxform1.mnToolbar1Click(Sender: TObject);
 begin
   mnToolBar1.Checked:= not mnToolBar1.Checked;
   ControlBar1.Visible:= mnToolbar1.Checked;
   //toolbar in view
 end;
 
-procedure TMaxForm1.open1Click(Sender: TObject);
+procedure Tmaxform1.open1Click(Sender: TObject);
 begin
   with TOpenDialog.Create(self) do begin
     Filter:= PSTEXT + '|' + PSMODEL + '|' + PSPASCAL + '|' + PSINC +'|'+ PSALL;
@@ -7866,7 +7879,7 @@ begin
     memo1.Gutter.BorderColor:= clwindow;      //3.9.9.100
 end;
 
-procedure TMaxForm1.Saveas3Click(Sender: TObject);
+procedure Tmaxform1.Saveas3Click(Sender: TObject);
 begin
   with TSaveDialog.Create(self) do begin
     Filter:= PSTEXT + '|' + PSINC + '|' + PSPASCAL +'|'+ PSALL;
@@ -7906,7 +7919,7 @@ begin
   end
 end;
 
-procedure TMaxForm1.Save2Click(Sender: TObject);
+procedure Tmaxform1.Save2Click(Sender: TObject);
 begin
   if Act_Filename <> '' then begin
     memo1.Lines.SaveToFile(Act_Filename);
@@ -7919,25 +7932,25 @@ begin
     Saveas3Click(sender);
 end;
 
-procedure TMaxForm1.Savebefore1Click(Sender: TObject);
+procedure Tmaxform1.Savebefore1Click(Sender: TObject);
 begin
  Savebefore1.Checked:= not Savebefore1.Checked;
  if Savebefore1.Checked then STATSavebefore:= true else
    STATSavebefore:= false;
 end;
 
-procedure TMaxForm1.SaveByteCode;
+procedure Tmaxform1.SaveByteCode;
 begin
   SBytecode1Click(self);
 end;
 
-function TMaxForm1.GetPSScript: TPSScript;
+function Tmaxform1.GetPSScript: TPSScript;
 begin
   result:= maxForm1.PSScript;
 end;
 
 
-procedure TMaxForm1.WebCam1Click(Sender: TObject);
+procedure Tmaxform1.WebCam1Click(Sender: TObject);
 begin
   //start webcam
  (* memo2.Lines.Add(getVideoDrivers +'web cam started - try once');
@@ -7948,7 +7961,7 @@ begin
   end;*)
 end;
 
-procedure TMaxForm1.WebScanner1Click(Sender: TObject);
+procedure Tmaxform1.WebScanner1Click(Sender: TObject);
 begin
  WebMapperDemoMainFrm:= TWebMapperDemoMainFrm.Create(Self);
   try
@@ -7959,7 +7972,7 @@ begin
 end;
 
 
-procedure TMaxForm1.WebScannerDirect(urls: string);
+procedure Tmaxform1.WebScannerDirect(urls: string);
 begin
  { WebMapperDemoMainFrm:= TWebMapperDemoMainFrm.Create(Self);
   try
@@ -7973,7 +7986,7 @@ begin
 end;
 
 
-procedure TMaxForm1.WebServer1Click(Sender: TObject);
+procedure Tmaxform1.WebServer1Click(Sender: TObject);
 begin
   //HTTPServerStartExecute(self);
   //add seq in 3.9.9.96
@@ -7982,7 +7995,7 @@ begin
  //start to webserver2
 end;
 
-procedure TMaxForm1.WMCopyData(var Msg: TWMCopyData);
+procedure Tmaxform1.WMCopyData(var Msg: TWMCopyData);
 var
   sText: array[0..99] of Char;
 begin
@@ -7995,7 +8008,7 @@ begin
 end;
 
 
-procedure TMaxForm1.WMDROP_THEFILES(var message: TWMDROPFILES);
+procedure Tmaxform1.WMDROP_THEFILES(var message: TWMDROPFILES);
 const
   MAXCHARS = 254;
 var
@@ -8042,7 +8055,7 @@ begin
     //else      lbintflist.Free;
 end;
 
-procedure TMaxForm1.Largefont1Click(Sender: TObject);
+procedure Tmaxform1.Largefont1Click(Sender: TObject);
 begin
   Largefont1.checked:= not Largefont1.Checked;
   if Largefont1.Checked then begin
@@ -8072,7 +8085,7 @@ begin
 end;}
 
 
-procedure TMaxForm1.showAndSaveBCode(const bdata: ansistring);
+procedure Tmaxform1.showAndSaveBCode(const bdata: ansistring);
 var outfile: string;
     fx: longint;
 begin
@@ -8100,7 +8113,7 @@ begin
    //delete(locstr, 80, length(locstr)-80);  //after cut
 end;
 
-procedure TMaxForm1.SBytecode1Click(Sender: TObject);
+procedure Tmaxform1.SBytecode1Click(Sender: TObject);
 var mybytecode: ansistring;
 begin
  //sBytecode1.Checked:= not sBytecode1.Checked;
@@ -8116,7 +8129,7 @@ begin
     //end;
 end;
 
-procedure TMaxForm1.ScriptExplorer1Click(Sender: TObject);
+procedure Tmaxform1.ScriptExplorer1Click(Sender: TObject);
 var listform: TFormListView;
 begin
  listform1:= TFormListview.Create(self);
@@ -8129,14 +8142,14 @@ begin
   end; //}
 end;
 
-procedure TMaxForm1.ScriptListbox1Click(Sender: TObject);
+procedure Tmaxform1.ScriptListbox1Click(Sender: TObject);
 begin
   //CB1SCList.SetFocus;
   CB1SCList.DroppedDown:= true;
   CB1SCList.SetFocus;
 end;
 
-procedure TMaxForm1.FormKeyPress(Sender: TObject; var Key: Char);
+procedure Tmaxform1.FormKeyPress(Sender: TObject; var Key: Char);
 begin
   //if Key = #27 then Close;
   if Key = #27 then begin
@@ -8146,7 +8159,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.FormOutput1Click(Sender: TObject);
+procedure Tmaxform1.FormOutput1Click(Sender: TObject);
 begin
   //redirect the memo2 in form
   formOutput1.Checked:= not formOutput1.Checked;
@@ -8157,21 +8170,21 @@ begin
 end;
 
 
-procedure TMaxForm1.FPlot1Click(Sender: TObject);
+procedure Tmaxform1.FPlot1Click(Sender: TObject);
 begin
    Application.CreateForm(TfplotForm1, fplotForm1);
    fplotForm1.show;
    fplotForm1.btnPlot.Click;
 end;
 
-procedure TMaxForm1.FractalDemo1Click(Sender: TObject);
+procedure Tmaxform1.FractalDemo1Click(Sender: TObject);
 begin
  winformp.SetFractalForm(875, 895);
  //getrvalue
  //writeln(screensize)
 end;
 
-procedure TMaxForm1.FullTextFinder1Click(Sender: TObject);
+procedure Tmaxform1.FullTextFinder1Click(Sender: TObject);
 begin
   //full text finder
   //winformp.
@@ -8181,7 +8194,7 @@ begin
    //StartFileFinder;     //Full Text Finder
 end;
 
-procedure TMaxForm1.Checkers1Click(Sender: TObject);
+procedure Tmaxform1.Checkers1Click(Sender: TObject);
 begin
   // fplotForm1.show;
   //checkers gamer
@@ -8190,7 +8203,7 @@ begin
   //Application.Run;
 end;
 
-procedure TMaxForm1.Chess41Click(Sender: TObject);
+procedure Tmaxform1.Chess41Click(Sender: TObject);
 begin
   //this is chess game
   ///chessbrd.Register;
@@ -8205,13 +8218,13 @@ begin
   end;    //}
 end;
 
-procedure TMaxForm1.CipherFile1Click(Sender: TObject);
+procedure Tmaxform1.CipherFile1Click(Sender: TObject);
 begin
   //showmessage('CipherBox available in mX3.5')
   WinFormp.SetCryptForm;
 end;
 
-procedure TMaxForm1.CreateDLLStub1Click(Sender: TObject);
+procedure Tmaxform1.CreateDLLStub1Click(Sender: TObject);
 begin
 //ShowMessage('https server available in V4'+#13#10+
     //            'first example in: ..\examples\303_webserver');
@@ -8220,7 +8233,7 @@ begin
                           '          External ''OpenProcess@kernel32.dll stdcall'';');
 end;
 
-procedure TMaxForm1.CreateGUID1Click(Sender: TObject);
+procedure Tmaxform1.CreateGUID1Click(Sender: TObject);
 var Guid: TGUID;
 begin
  //bold
@@ -8228,7 +8241,7 @@ begin
    memo2.Lines.add(GUIDToString(GUID));
 end;
 
-procedure TMaxForm1.CreateHeader1Click(Sender: TObject);
+procedure Tmaxform1.CreateHeader1Click(Sender: TObject);
 begin
   if fileExists(ExtractFilePath(ParamStr(0))+ CODECOMPLETION) then
        maxForm1.fAutoComplete.ExecuteCompletion('header',memo1) else
@@ -8237,14 +8250,14 @@ begin
  // is in file template
 end;
 
-procedure TMaxForm1.CryptoBox1Click(Sender: TObject);
+procedure Tmaxform1.CryptoBox1Click(Sender: TObject);
 begin
   //crypto box  AES
     WinFormp.SetCryptFormAES;
 end;
 
 
-procedure TMaxForm1.Clear1Click(Sender: TObject);
+procedure Tmaxform1.Clear1Click(Sender: TObject);
 begin
   if MessageDlg('mX4 Welcode to '+RCSTRMB+ ' Clear code memo now?',
     mtConfirmation, [mbYes,mbNo], 0) = mrYes then begin
@@ -8268,7 +8281,7 @@ begin
    end
 end;
 
-procedure TMaxForm1.lineToNumber(met: boolean);
+procedure Tmaxform1.lineToNumber(met: boolean);
 var i: integer;
   mypos, offset: integer;
   mystr: string[250];
@@ -8295,28 +8308,28 @@ begin
   end;
 end;
 
-procedure TMaxForm1.Slinenumbers1Click(Sender: TObject);
+procedure Tmaxform1.Slinenumbers1Click(Sender: TObject);
 begin
   if Slinenumbers1.Checked then lineToNumber(true)
     else lineToNumber(false)
 end;
 
 
-procedure TMaxForm1.Sniffer1Click(Sender: TObject);
+procedure Tmaxform1.Sniffer1Click(Sender: TObject);
 begin
   { Application.CreateForm(TsniffForm, sniffForm);
    sniffForm.Show;
    memo2.lines.add('web sniffer wiremax started at: ' +DateTimeToStr(Now));   }
 end;
 
-procedure TMaxForm1.SOAPTester1Click(Sender: TObject);
+procedure Tmaxform1.SOAPTester1Click(Sender: TObject);
 begin
   // Application.CreateForm(TSoapForm, SoapForm);
   // SoapForm.Show;
   //Application.CreateForm(TWSDLPicker, WSDLPicker);
 end;
 
-procedure TMaxForm1.SocketServer1Click(Sender: TObject);
+procedure Tmaxform1.SocketServer1Click(Sender: TObject);
 begin
   //borland socket Server
     CreateMutex(nil, True, 'SCKTSRVR');
@@ -8345,14 +8358,14 @@ begin
   end;      *)
 end;
 
-procedure TMaxForm1.Sort1IntflistClick(Sender: TObject);
+procedure Tmaxform1.Sort1IntflistClick(Sender: TObject);
 begin
 //sort intflist
   if intfnavigator1.checked then
      lbintflist.Sorted:= true;
 end;
 
-procedure TMaxForm1.defFileread;
+procedure Tmaxform1.defFileread;
 var deflist: TStringlist;
      filepath, fN: string;
 begin
@@ -8515,7 +8528,7 @@ filepath:= ExtractFilePath(Application.ExeName);
  end;
 end;
 
-procedure TMaxForm1.defFilereadUpdate;
+procedure Tmaxform1.defFilereadUpdate;
 var deflist: TStringlist;
      filepath, fN: string;
 begin
@@ -8583,7 +8596,7 @@ filepath:= ExtractFilePath(Application.ExeName);
 end;
 
 
-procedure TMaxForm1.SaveFileOptionsToIni(const filen: string);
+procedure Tmaxform1.SaveFileOptionsToIni(const filen: string);
 var filepath, fN: string;
 begin
  filepath:= ExtractFilePath(Application.ExeName);
@@ -8642,7 +8655,7 @@ begin
  end;
 end;   //*)
 
-procedure TMaxForm1.LoadFileNameFromIni;
+procedure Tmaxform1.LoadFileNameFromIni;
 begin
  with TStringlist.Create do begin
    LoadFromFile(DEFINIFILE);
@@ -8664,7 +8677,7 @@ begin
 end;
 
 
-procedure TMaxForm1.LinuxShellScript1Click(Sender: TObject);
+procedure Tmaxform1.LinuxShellScript1Click(Sender: TObject);
 begin
 //SynUNIXShellScriptSyn1
   with LinuxShellScript1 do
@@ -8681,7 +8694,7 @@ begin
  //linux
 end;
 
-Procedure TMaxForm1.LoadBootScript;
+Procedure Tmaxform1.LoadBootScript;
 var filepath, fN: string;   //bcerrorcode
     i: longint;
     vresult: boolean;
@@ -8717,7 +8730,7 @@ begin
 end;
 
 
-procedure TMaxForm1.About1Click(Sender: TObject);
+procedure Tmaxform1.About1Click(Sender: TObject);
 begin
   ShowinfoBox('About maXbox', RCSTRMB,(MBVERSION),true);
   statusBar1.Font.color:= clblue;
@@ -8728,7 +8741,7 @@ end;
 
 //this section describes search & replace functions
 // OnFind routine for find text
-procedure TMaxForm1.FileChanges1Click(Sender: TObject);
+procedure Tmaxform1.FileChanges1Click(Sender: TObject);
 var  drive: shortstring;
   //  mycf: TChangeFinder;
     alistview: TListbox;
@@ -8753,12 +8766,12 @@ begin
     screen.cursor:=crDefault;     *)
 end;
 
-procedure TMaxForm1.FindFunction1Click(Sender: TObject);
+procedure Tmaxform1.FindFunction1Click(Sender: TObject);
 begin
   ShowMessage('Add On available in V5')
 end;
 
-procedure TMaxForm1.FindNextText(Sender: TObject);
+procedure Tmaxform1.FindNextText(Sender: TObject);
 begin
   with FindReplDialog do begin
   //showmessage(inttostr(length(findtext)));   debug
@@ -8773,7 +8786,7 @@ begin
   end;
 
 // OnReplace routine for replace text
-procedure TMaxForm1.ReplaceNextText(Sender: TObject);
+procedure Tmaxform1.ReplaceNextText(Sender: TObject);
 begin
   with FindReplDialog do begin
     if Length(FindText)=0 then SysUtils.Beep
@@ -8786,7 +8799,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.Search1Click(Sender: TObject);
+procedure Tmaxform1.Search1Click(Sender: TObject);
 begin
   with FindReplDialog do begin
   //procedure TFindReplDialog.rgpStartClick(Sender: TObject);
@@ -8799,64 +8812,64 @@ begin
   end;
 end;
 
-procedure TMaxForm1.GEOMapView1Click(Sender: TObject);
+procedure Tmaxform1.GEOMapView1Click(Sender: TObject);
 begin
  //get geo map mapbox
  //getGEOMapandRunAsk
 end;
 
-function TMaxForm1.GetActFileName: string;
+function Tmaxform1.GetActFileName: string;
 begin
   result:= Act_Filename;
 end;
 
-function TMaxForm1.GetScriptPath: string;
+function Tmaxform1.GetScriptPath: string;
 begin
   result:= extractfilepath(Act_Filename);
 end;
 
-procedure TMaxForm1.SetActFileName(vname: string);
+procedure Tmaxform1.SetActFileName(vname: string);
 begin
   Act_Filename:= vname;
 end;
 
-function TMaxForm1.GetLastFileName: string;
+function Tmaxform1.GetLastFileName: string;
 begin
   result:= Last_fName;
 end;
 
-function TMaxForm1.GetPerftime: string;
+function Tmaxform1.GetPerftime: string;
 begin
   result:= perftime;
 end;
 
-procedure TMaxForm1.ResetKeyPressed;
+procedure Tmaxform1.ResetKeyPressed;
 begin
   fKeypressed:= false;
 end;
 
-procedure TMaxForm1.setKeyPressed;
+procedure Tmaxform1.setKeyPressed;
 begin
   fKeypressed:= true;
 end;
 
-procedure TMaxForm1.SetLastFileName(vname: string);
+procedure Tmaxform1.SetLastFileName(vname: string);
 begin
   Last_fName:= vname;
 end;
 
-function TMaxForm1.GetClientTop : integer;
+function Tmaxform1.GetClientTop : integer;
 begin
   Result:= Height-ClientHeight + Coolbar1.Height+ControlBar1.Height+15;
 end;
 
-procedure TMaxForm1.Undo1Click(Sender: TObject);
+procedure Tmaxform1.Undo1Click(Sender: TObject);
 begin
   memo1.Undo; //check unlockundo
 end;
 
 
-function TMaxForm1.UpdateFindtext : string;
+function Tmaxform1.UpdateFindtext : string;
 begin
   with memo1 do begin
     if SelAvail then Result:= SelText
@@ -8864,7 +8877,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.UpdateService1Click(Sender: TObject);
+procedure Tmaxform1.UpdateService1Click(Sender: TObject);
 begin
     //if MBVER < MBVER then getfileversion//get from internet text file
   screen.cursor:=crHourglass;
@@ -8877,7 +8890,7 @@ begin
  // memo2.lines.Add(' Checked Version: '+checkBox);
 end;
 
-procedure TMaxForm1.Memo1ReplaceText(Sender: TObject; const ASearch,
+procedure Tmaxform1.Memo1ReplaceText(Sender: TObject; const ASearch,
   AReplace: String; Line, Column: Integer; var Action: TSynReplaceAction);
 var
   mPos: TPoint;
@@ -8890,7 +8903,7 @@ begin
   Action:= ConfirmReplDialog.Execute(mPos,Format(RCReplace,[ASearch,AReplace]));
 end;
 
-procedure TMaxForm1.Memo1StatusChange(Sender: TObject; Changes: TSynStatusChanges);
+procedure Tmaxform1.Memo1StatusChange(Sender: TObject; Changes: TSynStatusChanges);
 const
   ModifiedStrs: array[boolean] of string = ('', 'Modified');
 var  p: TBufferCoord;
@@ -8923,7 +8936,7 @@ var  p: TBufferCoord;
   end;}
 end;
 
-procedure TMaxForm1.Memo2KeyPress(Sender: TObject; var Key: Char);
+procedure Tmaxform1.Memo2KeyPress(Sender: TObject; var Key: Char);
 begin
   //keypressed simulates the dos shell
   fkeypressed:= true;
@@ -8931,23 +8944,23 @@ begin
   //memo2.Lines.Add('ShellCompiler: isKeyPressed at '+DatetimetoStr(Now));
 end;
 
-procedure TMaxForm1.Memory1Click(Sender: TObject);
+procedure Tmaxform1.Memory1Click(Sender: TObject);
 begin
   //memory game
   FormCreateInit(self);
 end;
 
-procedure TMaxForm1.MetricReport1Click(Sender: TObject);
+procedure Tmaxform1.MetricReport1Click(Sender: TObject);
 begin
   ShowMessage('Add On available in V5')
 end;
 
-procedure TMaxForm1.Minesweeper1Click(Sender: TObject);
+procedure Tmaxform1.Minesweeper1Click(Sender: TObject);
 begin
   ShowMessage('Add On available in V5 - start script 285_minesweeper2.TXT')
 end;
 
-procedure TMaxForm1.WordWrap1Click(Sender: TObject);
+procedure Tmaxform1.WordWrap1Click(Sender: TObject);
 begin
  wordWrap1.Checked:= not WordWrap1.Checked;
  if WordWrap1.Checked then memo1.WordWrap:= true else
@@ -8955,19 +8968,19 @@ begin
 end;
 
 
-procedure TMaxForm1.SearchNext1Click(Sender: TObject);
+procedure Tmaxform1.SearchNext1Click(Sender: TObject);
 begin
   FindNextText(self);
 end;
 
 
-procedure TMaxForm1.SerialRS2321Click(Sender: TObject);
+procedure Tmaxform1.SerialRS2321Click(Sender: TObject);
 begin
   //start to serial
   //StartSerialDialog;
 end;
 
-procedure TMaxForm1.Replace1Click(Sender: TObject);
+procedure Tmaxform1.Replace1Click(Sender: TObject);
 begin
   with FindReplDialog do begin
     Findtext:= UpdateFindtext;
@@ -9000,7 +9013,7 @@ begin
     showmessage('this Include: '+ orginfilename + ' '+FileName + ' '+output);
 end;  *)
 
-procedure TMaxForm1.PythonSyntax1Click(Sender: TObject);
+procedure Tmaxform1.PythonSyntax1Click(Sender: TObject);
 begin
   with PythonSyntax1 do
     checked:= NOT checked;
@@ -9015,7 +9028,7 @@ begin
     end;
 end;
 
-procedure TMaxForm1.ShowInclude1Click(Sender: TObject);
+procedure Tmaxform1.ShowInclude1Click(Sender: TObject);
 begin
  //showInclude1.Checked:= false;
  showInclude1.Checked:= not showInclude1.Checked;
@@ -9023,7 +9036,7 @@ begin
    STATInclude:= false;
 end;
 
-procedure TMaxForm1.ShowIndent1Click(Sender: TObject);  //new4
+procedure Tmaxform1.ShowIndent1Click(Sender: TObject);  //new4
 begin
   showIndent1.Checked:= not showIndent1.Checked;
 
@@ -9038,7 +9051,7 @@ begin
   end;  //}
 end;
 
-procedure TMaxForm1.ShowSpecChars1Click(Sender: TObject);
+procedure Tmaxform1.ShowSpecChars1Click(Sender: TObject);
 begin
  showSpecChars1.Checked:= not showSpecChars1.Checked;
  if showSpecChars1.Checked then Memo1.Options:=
@@ -9046,26 +9059,26 @@ begin
  Memo1.Options:= Memo1.Options - [eoShowSpecialChars];
 end;
 
-procedure TMaxForm1.ShrinkFontConsole1Click(Sender: TObject);
+procedure Tmaxform1.ShrinkFontConsole1Click(Sender: TObject);
 begin
   memo2.Font.Size:= memo2.Font.Size-1;
   //last_fontsize:= memo1.Font.Size;
 end;
 
-procedure TMaxForm1.SimpleBrowser1Click(Sender: TObject);
+procedure Tmaxform1.SimpleBrowser1Click(Sender: TObject);
 begin
    // Application.CreateForm(TwebMainForm, webMainForm);
     memo1.lines.Add('----Simple Browser started----');
 end;
 
-procedure TMaxForm1.SimuLogBox1Click(Sender: TObject);
+procedure Tmaxform1.SimuLogBox1Click(Sender: TObject);
 begin
   //start of the logbox
    //winformp.SetLogBoxForm;
 end;
 
 
-procedure TMaxForm1.SkyStyle1Click(Sender: TObject);
+procedure Tmaxform1.SkyStyle1Click(Sender: TObject);
 begin
  with memo2 do begin
     height:= 230;
@@ -9087,7 +9100,7 @@ begin
 
 end;
 
-procedure TMaxForm1.SynEditPrint1PrintLine(Sender: TObject; LineNumber,
+procedure Tmaxform1.SynEditPrint1PrintLine(Sender: TObject; LineNumber,
   PageNumber: Integer);
 begin
   //fprintout.Footer.Add()
@@ -9099,7 +9112,7 @@ end;
 
 //var ppagenumber: integer;
 
-procedure TMaxForm1.SynEditPrint1PrintStatus(Sender: TObject; Status: TSynPrintStatus;
+procedure Tmaxform1.SynEditPrint1PrintStatus(Sender: TObject; Status: TSynPrintStatus;
   PageNumber: Integer; var Abort: Boolean);
 begin
  //fprintout.Footer.DefaultFont.Size:= 7;
@@ -9114,21 +9127,21 @@ begin
    //ppagenumber:= pagenumber;
 end;
 
-procedure TMaxForm1.SynExport1Click(Sender: TObject);
+procedure Tmaxform1.SynExport1Click(Sender: TObject);
 begin
  // exprt to do
  // Application.CreateForm(TSynexportform, Synexportform);
  // Synexportform.show;
 end;
 
-procedure TMaxForm1.SynMultiSyn1CustomRange(Sender: TSynMultiSyn;
+procedure Tmaxform1.SynMultiSyn1CustomRange(Sender: TSynMultiSyn;
   Operation: TRangeOperation; var Range: Pointer);
 begin
 //  to be test for filters
 end;
 
 //printing procedures--------------------------------------
-procedure TMaxForm1.Preview1Click(Sender: TObject);
+procedure Tmaxform1.Preview1Click(Sender: TObject);
 var dlg: TSynEditPrintPreview;
     afrm: TForm;
 begin
@@ -9178,7 +9191,7 @@ begin
    // showmessage('will be in V4');
 end;
 
-procedure TMaxForm1.Printout1Click(Sender: TObject);
+procedure Tmaxform1.Printout1Click(Sender: TObject);
 //var pntindex: integer;
 begin
    //set all properties because this can affect pagination
@@ -9243,7 +9256,7 @@ begin
   statusBar1.panels[0].text:= Act_Filename +' is printed';
 end;
 
-procedure TMaxForm1.ProcessList1Click(Sender: TObject);
+procedure Tmaxform1.ProcessList1Click(Sender: TObject);
 begin
   // processlist of devcc
   //ProcessListForm.Show;
@@ -9256,7 +9269,7 @@ begin
 
 end;
 
-procedure TMaxForm1.EditFont1Click(Sender: TObject);
+procedure Tmaxform1.EditFont1Click(Sender: TObject);
 begin
   dlgPrintFont1.Font.Assign(memo1.Font);
   if dlgPrintFont1.Execute then begin
@@ -9267,19 +9280,19 @@ begin
    //CaptionEdit.Font := FontDialog1.Font;
 end;
 
-procedure TMaxForm1.EditReplace1Click(Sender: TObject);
+procedure Tmaxform1.EditReplace1Click(Sender: TObject);
 begin
  //edit replace to enable rename clicked words
   editreplace1.checked:= not editreplace1.checked;
 end;
 
-procedure TMaxForm1.EnlargeFontConsole1Click(Sender: TObject);
+procedure Tmaxform1.EnlargeFontConsole1Click(Sender: TObject);
 begin
   memo2.Font.Size:= memo2.Font.Size+1;
   //last_fontsize:= memo1.Font.Size;
 end;
 
-procedure TMaxForm1.EnlargeGutter1Click(Sender: TObject);
+procedure Tmaxform1.EnlargeGutter1Click(Sender: TObject);
 begin
   enlargeGutter1.Checked:= not enlargeGutter1.Checked;
   if enlargeGutter1.Checked then begin
@@ -9291,20 +9304,20 @@ begin
   end;
 end;
 
-procedure TMaxForm1.Terminal1Click(Sender: TObject);
+procedure Tmaxform1.Terminal1Click(Sender: TObject);
 begin
   //Application.CreateForm(TvtMainForm, vtMainForm);
   //vtmainForm.Show;
   //
 end;
 
-procedure TMaxForm1.TCPSockets1Click(Sender: TObject);
+procedure Tmaxform1.TCPSockets1Click(Sender: TObject);
 begin
   //this is 26
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter26.pdf');
 end;
 
-procedure TMaxForm1.TerminalStyle1Click(Sender: TObject);
+procedure Tmaxform1.TerminalStyle1Click(Sender: TObject);
 var Attri: TSynHighlighterAttributes;
 begin
  with memo1 do begin
@@ -9339,13 +9352,13 @@ begin
   end;
 end;
 
-procedure TMaxForm1.Tetris1Click(Sender: TObject);
+procedure Tmaxform1.Tetris1Click(Sender: TObject);
 begin
   //will be tetris kiss
   //Application.CreateForm(TTetro1, Tetro1);
 end;
 
-procedure TMaxForm1.ShellStyle1Click(Sender: TObject);
+procedure Tmaxform1.ShellStyle1Click(Sender: TObject);
 begin
  with memo2 do begin
     height:= 350;
@@ -9356,7 +9369,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.BigScreen1Click(Sender: TObject);
+procedure Tmaxform1.BigScreen1Click(Sender: TObject);
 begin
  with memo2 do begin
     height:= 500;
@@ -9368,7 +9381,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.BlaisePascalMagazine1Click(Sender: TObject);
+procedure Tmaxform1.BlaisePascalMagazine1Click(Sender: TObject);
   var URLBuf: array[0..255] of char;
 begin
     strPCopy(URLBuf, RS_BPM);
@@ -9376,50 +9389,50 @@ begin
                 NIL, NIL, sw_ShowNormal)
 end;
 
-procedure TMaxForm1.Bookmark11Click(Sender: TObject);
+procedure Tmaxform1.Bookmark11Click(Sender: TObject);
 begin
   bookmarkimage:= 10;   //warning
 end;
 
-procedure TMaxForm1.Bookmark21Click(Sender: TObject);
+procedure Tmaxform1.Bookmark21Click(Sender: TObject);
 begin
   bookmarkimage:= 11;   //bug
 end;
 
-procedure TMaxForm1.Bookmark31Click(Sender: TObject);
+procedure Tmaxform1.Bookmark31Click(Sender: TObject);
 begin
   bookmarkimage:= 12;  //info
 end;
 
-procedure TMaxForm1.Bookmark41Click(Sender: TObject);
+procedure Tmaxform1.Bookmark41Click(Sender: TObject);
 begin
   bookmarkimage:= 13;  //question
 end;
 
-procedure TMaxForm1.Bookmark51Click(Sender: TObject);
+procedure Tmaxform1.Bookmark51Click(Sender: TObject);
 begin
   bookmarkimage:= 15;  //hint
 end;
 
-procedure TMaxForm1.ConfigFile1Click(Sender: TObject);
+procedure Tmaxform1.ConfigFile1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+DEFINIFILE); // 'maxboxdef.ini');
 end;
 
-procedure TMaxForm1.ConfigUpdate1Click(Sender: TObject);
+procedure Tmaxform1.ConfigUpdate1Click(Sender: TObject);
 begin
   deffilereadupdate;  //refresh the ini file
   statusBar1.panels[0].text:= 'Refresh Config File Reload: '+DEFINIFILE;
   memo2.lines.Add(statusBar1.panels[0].text);
 end;
 
-procedure TMaxForm1.Configuration1Click(Sender: TObject);
+procedure Tmaxform1.Configuration1Click(Sender: TObject);
 begin
   //configuration
    searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter25.pdf');
 end;
 
-procedure TMaxForm1.Console1Click(Sender: TObject);
+procedure Tmaxform1.Console1Click(Sender: TObject);
 begin
  with memo2 do begin
     height:= 300;
@@ -9431,13 +9444,13 @@ begin
 end;
 
 
-procedure TMaxForm1.CountWords1Click(Sender: TObject);
+procedure Tmaxform1.CountWords1Click(Sender: TObject);
 begin
   //jumps to highlightning of words
   Memo1DblClick(self);
 end;
 
-procedure TMaxForm1.ReadOnly1Click(Sender: TObject);
+procedure Tmaxform1.ReadOnly1Click(Sender: TObject);
 begin
  readonly1.Checked:= not readonly1.Checked;
  if readonly1.Checked then memo2.ReadOnly:= true else
@@ -9445,31 +9458,31 @@ begin
 end;
 
 
-procedure TMaxForm1.Redo1Click(Sender: TObject);
+procedure Tmaxform1.Redo1Click(Sender: TObject);
 begin
   memo1.Redo;
 end;
 
-procedure TMaxForm1.Rename1Click(Sender: TObject);
+procedure Tmaxform1.Rename1Click(Sender: TObject);
 begin
   showmessage('will be in V5');
 end;
 
-procedure TMaxForm1.intfRefactor1Click(Sender: TObject);
+procedure Tmaxform1.intfRefactor1Click(Sender: TObject);
 begin
 // refactor
   showmessage('will be in V5');
 end;
 
 
-procedure TMaxForm1.mnuPrintFont1Click(Sender: TObject);
+procedure Tmaxform1.mnuPrintFont1Click(Sender: TObject);
 begin
   dlgPrintFont1.Font.Assign(memo1.Font);  //fPrintOut
   if dlgPrintFont1.Execute then
     fPrintOut.Font.Assign(dlgPrintFont1.Font);
 end;
 
-procedure TMaxForm1.ModulesCount1Click(Sender: TObject);
+procedure Tmaxform1.ModulesCount1Click(Sender: TObject);
 var
   aStrList: TStringList;
   I: Integer;
@@ -9491,7 +9504,7 @@ begin
   //get modules dll list
 end;
 
-procedure TMaxForm1.SetInterfacesMarks(myFile: string);
+procedure Tmaxform1.SetInterfacesMarks(myFile: string);
 var
   i, t1, t2, tstr, actline, preline: integer;
   s1, mstr: string;
@@ -9542,7 +9555,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.SetInterfacesMarks2(myFile: string);   //active
+procedure Tmaxform1.SetInterfacesMarks2(myFile: string);   //active
 var
   i, it1, it2, it3,it4, it5, itstr: integer;
   s1: string;
@@ -9584,7 +9597,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.SetTodoMarks(myFile: string);
+procedure Tmaxform1.SetTodoMarks(myFile: string);
 var
   i, it1, itstr: integer;
   s1: string;
@@ -9627,7 +9640,7 @@ begin
 end;
 
 
-procedure TMaxForm1.SetInterfacesMarksMemo3; //deprecated
+procedure Tmaxform1.SetInterfacesMarksMemo3; //deprecated
 var
   i, it1, it2, itstr: integer;
   s1: string;
@@ -9657,18 +9670,18 @@ end;
 
 
 
-procedure TMaxForm1.Move1Click(Sender: TObject);
+procedure Tmaxform1.Move1Click(Sender: TObject);
 begin
   Showmessage('available in V5');
 end;
 
-procedure TMaxForm1.MP3Player1Click(Sender: TObject);
+procedure Tmaxform1.MP3Player1Click(Sender: TObject);
 begin
   //call mp3player
   //FormSetMP3FormCreate;
 end;
 
-procedure TMaxForm1.MyScript1Click(Sender: TObject);
+procedure Tmaxform1.MyScript1Click(Sender: TObject);
 var deflist: TStringlist;
   filepath, fn, myscript: string;
 begin
@@ -9691,7 +9704,7 @@ filepath:= ExtractFilePath(Application.ExeName);
   end;
 end;
 
-procedure TMaxForm1.MyScript2Click(Sender: TObject);
+procedure Tmaxform1.MyScript2Click(Sender: TObject);
 var deflist: TStringlist;
   filepath, fn, myscript: string;
 begin
@@ -9714,7 +9727,7 @@ filepath:= ExtractFilePath(Application.ExeName);
   end;
 end;
 
-procedure TMaxForm1.N3DLab1Click(Sender: TObject);
+procedure Tmaxform1.N3DLab1Click(Sender: TObject);
 var FormLab3D: TFormLab3D;
 begin
   FormLab3D:= TFormLab3D.Create(self);
@@ -9726,13 +9739,13 @@ begin
 // modal
 end;
 
-procedure TMaxForm1.N4GewinntGame1Click(Sender: TObject);
+procedure Tmaxform1.N4GewinntGame1Click(Sender: TObject);
 begin
  // start the game 4gewinnt
   FormCreateInit4Game(self);
 end;
 
-procedure TMaxForm1.New1Click(Sender: TObject);
+procedure Tmaxform1.New1Click(Sender: TObject);
 begin
   if MessageDlg('Welcode to '+RCSTRMB+ ' Clear memo now and load code?',
     mtConfirmation, [mbYes,mbNo], 0) = mrYes then begin
@@ -9782,7 +9795,7 @@ begin
   end
 end;
 
-procedure TMaxForm1.NewInstance1Click(Sender: TObject);
+procedure Tmaxform1.NewInstance1Click(Sender: TObject);
 var sOname, sEName: string;
 begin
   if DirectoryExists(ExtractFilePath(Application.ExeName)) then begin
@@ -9800,7 +9813,7 @@ begin
      //CB1SCList.ItemIndex:= CB1SCList.Items.Count-1;
 end;
 
-procedure TMaxForm1.Include1Click(Sender: TObject);
+procedure Tmaxform1.Include1Click(Sender: TObject);
 var
   aStrList: TStringList;
 begin
@@ -9823,12 +9836,12 @@ begin
   end;
 end;
 
-procedure TMaxForm1.DoEditorExecuteCommand(EditorCommand: word);
+procedure Tmaxform1.DoEditorExecuteCommand(EditorCommand: word);
 begin
  // memo1.CommandProcessor(TSynEditorCommand(EditorCommand),' ',NIL);
 end;
 
-procedure TMaxForm1.DOSShell1Click(Sender: TObject);
+procedure Tmaxform1.DOSShell1Click(Sender: TObject);
 begin
   //ghgh      shellexecute3
   //ExecuteCommand('cmd','/k dir *.*')
@@ -9838,14 +9851,14 @@ begin
   //ExecConsoleApp('cmd','/k dir *.*',NIL);
 end;
 
-procedure TMaxForm1.IndentSelection1Click(Sender: TObject);
+procedure Tmaxform1.IndentSelection1Click(Sender: TObject);
 begin
  //memo1.Marks;
   //memo1.Keystrokes.items[0].command:= ecBlockIndent;
  // DoEditorExecuteCommand(ecBlockIndent);
 end;
 
-procedure TMaxForm1.UnindentSection1Click(Sender: TObject);
+procedure Tmaxform1.UnindentSection1Click(Sender: TObject);
 begin
   //memo1.Keystrokes.items[0].command:= ecBlockUnIndent;
   // Find Command(ecBlockUnIndent);
@@ -9854,7 +9867,7 @@ begin
 end;
 
 
-procedure TMaxForm1.UnitConverter1Click(Sender: TObject);
+procedure Tmaxform1.UnitConverter1Click(Sender: TObject);
 // open unit converter
 //((var uconvFormLab3D: TFormLab3D;
 //var fconvMain: TfconvMain;
@@ -9867,7 +9880,7 @@ begin
   end; }
 end;
 
-procedure TMaxForm1.Info1Click(Sender: TObject);
+procedure Tmaxform1.Info1Click(Sender: TObject);
 var
   //aStrList: TStringList;
   mytimestamp: TDateTime;
@@ -9907,7 +9920,7 @@ begin
         output.Lines.add('Associated Task: '+mname+': '+mdes);
         output.Lines.add('SHA1 of File: '+SHA1(Act_Filename));
         output.Lines.add('MD5 of File: '+MD5(Act_Filename));   // *)
-       // output.Lines.add('CRC32 of File: '+IntToStr((CRC32H(Act_Filename)))+' : '+inttoHex(CRC32H(Act_Filename),4));
+        output.Lines.add('CRC32 of File: '+IntToStr((CRC32H(Act_Filename)))+' : '+inttoHex(CRC32H(Act_Filename),4));
       (*  Attributes:= FileGetAttr(Act_Filename);
         ReadOnly:= (Attributes and faReadOnly) = faReadOnly;
         Archive:= (Attributes and faArchive) = faArchive;
@@ -9963,7 +9976,7 @@ begin
 //end;
 //end;
 
-procedure TMaxForm1.InternetRadio1Click(Sender: TObject);
+procedure Tmaxform1.InternetRadio1Click(Sender: TObject);
    var wmp: OleVariant;
    var URLBuf: array[0..255] of char;
 
@@ -9988,21 +10001,21 @@ begin
   //wmp.controls.play;
 end;
 
-procedure TMaxForm1.IntfNavigator1Click(Sender: TObject);
+procedure Tmaxform1.IntfNavigator1Click(Sender: TObject);
 begin
   intfnavigator1.checked:= NOT intfnavigator1.checked;
   if intfnavigator1.checked then LoadInterfaceList else
      FreeAndNil(lbintflist);
 end;
 
-procedure TMaxForm1.FormDemo1Click(Sender: TObject);
+procedure Tmaxform1.FormDemo1Click(Sender: TObject);
 begin
   // actionMain unit;
   // Application.CreateForm(TActionForm, ActionForm);
   // ActionForm.Show;
 end;
 
-procedure TMaxForm1.FormDestroy(Sender: TObject);
+procedure Tmaxform1.FormDestroy(Sender: TObject);
 begin
   //fprintOut.Free;
   DragAcceptFiles(maxForm1.Handle, false);
@@ -10012,7 +10025,7 @@ begin
   //listform1.Free;
 end;
 
-procedure TMaxForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure Tmaxform1.FormClose(Sender: TObject; var Action: TCloseAction);
 //const
   //SWarningText = ' Save Code Changes to %s?';
 begin
@@ -10067,7 +10080,7 @@ begin
   //showmessage('form close');  //debug
 end;
 
-procedure TMaxForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+procedure Tmaxform1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 const
   SWarningText = ' Save Code Changes to %s ?';
 begin
@@ -10092,13 +10105,13 @@ begin
   end;
 end;
 
-procedure TMaxForm1.UpdateView1Click(Sender: TObject);
+procedure Tmaxform1.UpdateView1Click(Sender: TObject);
 begin
   memo1.Repaint; //after copy&paste or drag'n drop
 end;
 
 
-procedure TMaxForm1.URILinksClicks1Click(Sender: TObject);
+procedure Tmaxform1.URILinksClicks1Click(Sender: TObject);
 begin
   with URILinksClicks1 do
     checked:= NOT checked;
@@ -10119,129 +10132,129 @@ begin
     end;
 end;
 
-procedure TMaxForm1.Tutorial22Services1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial22Services1Click(Sender: TObject);
 begin
  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter22.pdf');
 end;
 
-procedure TMaxForm1.Tutorial23RealTime1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial23RealTime1Click(Sender: TObject);
 begin
 //    Showmessage('available in V4');
    searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter23.pdf');
 end;
 
-procedure TMaxForm1.Tutorial24CleanCode1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial24CleanCode1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter24.pdf');
 end;
 
-procedure TMaxForm1.Tutorial27XML1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial27XML1Click(Sender: TObject);
 begin
     Showmessage('will available soon');
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter27.pdf');
 end;
 
-procedure TMaxForm1.Tutorial28DLL1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial28DLL1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter28.pdf');
 end;
 
-procedure TMaxForm1.Tutorial29UMLClick(Sender: TObject);
+procedure Tmaxform1.Tutorial29UMLClick(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter29.pdf');
 end;
 
-procedure TMaxForm1.Tutorial30WOT1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial30WOT1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter30.pdf');
 end;
 
-procedure TMaxForm1.Tutorial19COMArduino1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial19COMArduino1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter19.pdf');
 end;
 
-procedure TMaxForm1.Tutorial20RegexClick(Sender: TObject);
+procedure Tmaxform1.Tutorial20RegexClick(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter20.pdf');
 end;
 
-procedure TMaxForm1.Tutorial21Android1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial21Android1Click(Sender: TObject);
 begin
   //android
     Showmessage('available in V5');
 end;
 
-procedure TMaxForm1.Tutorial17Server1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial17Server1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter17.pdf');
 end;
 
-procedure TMaxForm1.Tutorial183RGBLED1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial183RGBLED1Click(Sender: TObject);
 begin
  //wille be arduino
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter18_3.pdf');
 end;
 
-procedure TMaxForm1.Tutorial18Arduino1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial18Arduino1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter18.pdf');
 end;
 
-procedure TMaxForm1.Tutorial13Ciphering1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial13Ciphering1Click(Sender: TObject);
 begin
 // cipher a file pdf
    searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter13.pdf');
 end;
 
-procedure TMaxForm1.Tutorial14Async1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial14Async1Click(Sender: TObject);
 begin
    searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter14.pdf');
 end;
 
-procedure TMaxForm1.Tutorial151Click(Sender: TObject);
+procedure Tmaxform1.Tutorial151Click(Sender: TObject);
 begin
    searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter15.pdf');
 end;
 
-procedure TMaxForm1.Lessons15Review1Click(Sender: TObject);
+procedure Tmaxform1.Lessons15Review1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter16.pdf');
 end;
 
 
-procedure TMaxForm1.Tutorial10Statistics1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial10Statistics1Click(Sender: TObject);
 begin
    searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter10.pdf');
   //statistics pdf
 end;
 
-procedure TMaxForm1.Tutorial11Forms1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial11Forms1Click(Sender: TObject);
 begin
    searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter11.pdf');
 end;
 
-procedure TMaxForm1.Tutorial12SQL1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial12SQL1Click(Sender: TObject);
 begin
    searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter12.pdf');
 end;
 
-procedure TMaxForm1.TrainingArduino1Click(Sender: TObject);
+procedure Tmaxform1.TrainingArduino1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\arduino_training.pdf');
 end;
 
-procedure TMaxForm1.Tutorial0Function1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial0Function1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter0.pdf');
 end;
 
-procedure TMaxForm1.Tutorial101Click(Sender: TObject);
+procedure Tmaxform1.Tutorial101Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter9.pdf');
 end;
 
-procedure TMaxForm1.CodeCompletionList1Click(Sender: TObject);
+procedure Tmaxform1.CodeCompletionList1Click(Sender: TObject);
 begin
   if fileExists(ExtractFilePath(ParamStr(0))+ CODECOMPLETION) then begin
     statusBar1.panels[0].text:= ' Code Completion Load...' +CODECOMPLETION;
@@ -10249,7 +10262,7 @@ begin
     showMessage('the file '+CODECOMPLETION+' is missing');
 end;
 
-procedure TMaxForm1.CodeSearch1Click(Sender: TObject);
+procedure Tmaxform1.CodeSearch1Click(Sender: TObject);
  var S: string;
 begin
   S:= '';
@@ -10259,26 +10272,26 @@ begin
   //code searchforall
 end;
 
-procedure TMaxForm1.SaveOutput1Click(Sender: TObject);
+procedure Tmaxform1.SaveOutput1Click(Sender: TObject);
 begin
   memo2.Lines.SaveToFile(Act_Filename+'Output'+'.txt');
   memo2.Lines.Add(Act_Filename+'Output'+'.txt'+'  as output file stored');
 end;
 
-procedure TMaxForm1.SaveScreenshotClick(Sender: TObject);
+procedure Tmaxform1.SaveScreenshotClick(Sender: TObject);
 begin
-  //CaptureScreenPNG(ExePath+'mx_screenshot.png');
+  CaptureScreenPNG(ExePath+'mx_screenshot.png');
   memo2.Lines.Add('Screenshot saved as: '+ExePath+'mx_screenshot.png');
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'mx_screenshot.png');
 end;
 
-procedure TMaxForm1.sbvclhelpClick(Sender: TObject);
+procedure Tmaxform1.sbvclhelpClick(Sender: TObject);
 begin
   //sbvclhelp vcl.pdf
     searchAndOpenDoc(ExtractFilePath(ParamStr(0))+ALLOBJECTSLIST)
 end;
 
-procedure TMaxForm1.ExportClipboard1Click(Sender: TObject);
+procedure Tmaxform1.ExportClipboard1Click(Sender: TObject);
 begin
   memo1.SelectAll;
   if memo1.Focused then memo1.CopyToClipboard;
@@ -10291,7 +10304,7 @@ begin
 end;
 
 
-procedure TMaxForm1.ExporttoHTML1Click(Sender: TObject);
+procedure Tmaxform1.ExporttoHTML1Click(Sender: TObject);
 begin
   //export to HTML
   SynExporterHTML1.Highlighter:= memo1.Highlighter;
@@ -10309,7 +10322,7 @@ begin
   memo2.Lines.Add(FileNewExt(Act_Filename,'.htm')+' as HTML output stored');
 end;
 
-procedure TMaxForm1.ExporttoRTF1Click(Sender: TObject);
+procedure Tmaxform1.ExporttoRTF1Click(Sender: TObject);
 //var fHighlighters: TStringList;
 begin
   {fHighlighters:= TStringList.Create;
@@ -10346,7 +10359,7 @@ begin
 
 end;
 
-procedure TMaxForm1.ExternalApp1Click(Sender: TObject);
+procedure Tmaxform1.ExternalApp1Click(Sender: TObject);
 begin
  // has an app entry in ini
    if fileExists(ExternalApp) then begin
@@ -10360,7 +10373,7 @@ begin
    end;
  end;
 
-procedure TMaxForm1.ExternalApp22Click(Sender: TObject);
+procedure Tmaxform1.ExternalApp22Click(Sender: TObject);
 begin
   if fileExists(ExternalApp2) then begin
      S_ShellExecute(Externalapp2,'',seCmdOpen);
@@ -10373,7 +10386,7 @@ begin
    end;
 end;
 
-procedure TMaxForm1.ImportfromClipboard1Click(Sender: TObject);
+procedure Tmaxform1.ImportfromClipboard1Click(Sender: TObject);
 begin
   last_fName:= Act_Filename;
   loadLastfile1.Caption:= '&Load Last'+': '+ extractFileName(last_fName);
@@ -10384,94 +10397,94 @@ begin
   CB1SCList.ItemIndex:= CB1SCList.Items.Count-1;
 end;
 
-procedure TMaxForm1.ImportfromClipboard2Click(Sender: TObject);
+procedure Tmaxform1.ImportfromClipboard2Click(Sender: TObject);
 begin
   ImportfromClipboard1Click(Sender);
 end;
-procedure TMaxForm1.Close1Click(Sender: TObject);
+procedure Tmaxform1.Close1Click(Sender: TObject);
 begin
   self.Close;
 end;
 
-procedure TMaxForm1.Manual1Click(Sender: TObject);
+procedure Tmaxform1.Manual1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\delphi_kurs.pdf')
 end;
 
-procedure TMaxForm1.ManualE1Click(Sender: TObject);
+procedure Tmaxform1.ManualE1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\objectpascal_guide.pdf')
 end;
 
-procedure TMaxForm1.ManualmaXbox1Click(Sender: TObject);
+procedure Tmaxform1.ManualmaXbox1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maXbox_Introduction_2014.pdf')
 end;
 
-procedure TMaxForm1.tutorial1Click(Sender: TObject);
+procedure Tmaxform1.tutorial1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter.pdf')
 end;
 
-procedure TMaxForm1.tutorial21Click(Sender: TObject);
+procedure Tmaxform1.tutorial21Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter2.pdf');
 end;
 
-procedure TMaxForm1.tutorial31Click(Sender: TObject);
+procedure Tmaxform1.tutorial31Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter3.pdf');
 end;
 
-procedure TMaxForm1.Tutorial31Closure1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial31Closure1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter31.pdf');
 end;
 
-procedure TMaxForm1.Tutorial361Click(Sender: TObject);
+procedure Tmaxform1.Tutorial361Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter36.pdf');
 end;
 
-procedure TMaxForm1.Tutorial39GEOMaps1Click(Sender: TObject);
+procedure Tmaxform1.Tutorial39GEOMaps1Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter39.pdf');
 end;
 
-procedure TMaxForm1.tutorial4Click(Sender: TObject);
+procedure Tmaxform1.tutorial4Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter4.pdf');
 end;
 
-procedure TMaxForm1.Tutorial5Click(Sender: TObject);
+procedure Tmaxform1.Tutorial5Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter5.pdf');
 end;
 
-procedure TMaxForm1.Tutorial6Click(Sender: TObject);
+procedure Tmaxform1.Tutorial6Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter6.pdf');
 end;
 
-procedure TMaxForm1.Tutorial71Click(Sender: TObject);
+procedure Tmaxform1.Tutorial71Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter7.pdf');
 end;
 
-procedure TMaxForm1.Tutorial81Click(Sender: TObject);
+procedure Tmaxform1.Tutorial81Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter8.pdf');
   Showmessage('available in 3.1');
 end;
 
-procedure TMaxForm1.Tutorial91Click(Sender: TObject);
+procedure Tmaxform1.Tutorial91Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))
                     +'docs\PascalScript_maXbox_EKON_14_2.pdf');
 end;
 
 
-procedure TMaxForm1.intfAdd1Click(Sender: TObject);
+procedure Tmaxform1.intfAdd1Click(Sender: TObject);
  var S: string;
 begin
   S:= '';
@@ -10486,7 +10499,7 @@ begin
 end;
 
 
-procedure TMaxForm1.intfDelete1Click(Sender: TObject);
+procedure Tmaxform1.intfDelete1Click(Sender: TObject);
 var
   i: integer;
 begin
@@ -10499,7 +10512,7 @@ begin
 // delete
 end;
 
-procedure TMaxForm1.ActiveLineColor1Click(Sender: TObject);
+procedure Tmaxform1.ActiveLineColor1Click(Sender: TObject);
 begin
   activelinecolor1.Checked:= not activelinecolor1.Checked;
   if activelinecolor1.Checked then begin
@@ -10511,7 +10524,7 @@ begin
   //activelinecolor1.Checked:= not activelinecolor1.Checked;
 end;
 
-procedure TMaxForm1.AddToDo1Click(Sender: TObject);
+procedure Tmaxform1.AddToDo1Click(Sender: TObject);
 begin
  //ctrl+shift
    if fileExists(ExtractFilePath(ParamStr(0))+ CODECOMPLETION) then
@@ -10519,7 +10532,7 @@ begin
       showMessage('The file '+CODECOMPLETION+' is missing');
 end;
 
-procedure TMaxForm1.ADOWorkbench1Click(Sender: TObject);
+procedure Tmaxform1.ADOWorkbench1Click(Sender: TObject);
 begin
  //ADO
  //ADODBTest
@@ -10528,7 +10541,7 @@ begin
   memo2.Lines.Add('ADO Workbench4 Loaded');
 end;
 
-procedure TMaxForm1.AllFunctionsList1Click(Sender: TObject);
+procedure Tmaxform1.AllFunctionsList1Click(Sender: TObject);
 var URLBuf: array[0..255] of char;
   begin
  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+ALLFUNCTIONSLISTPDF);
@@ -10539,24 +10552,24 @@ var URLBuf: array[0..255] of char;
   end;   //}
 end;
 
-procedure TMaxForm1.AllObjectsList1Click(Sender: TObject);
+procedure Tmaxform1.AllObjectsList1Click(Sender: TObject);
 begin
   //this is all objects list
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+ALLOBJECTSLIST)
 end;
 
-procedure TMaxForm1.AllResourceList1Click(Sender: TObject);
+procedure Tmaxform1.AllResourceList1Click(Sender: TObject);
 begin
   //all resource show
     searchAndOpenDoc(ExtractFilePath(ParamStr(0))+ALLTYPELIST)
 end;
 
-procedure TMaxForm1.AllUnitList1Click(Sender: TObject);
+procedure Tmaxform1.AllUnitList1Click(Sender: TObject);
 begin
  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+ALLUNITLIST)
 end;
 
-procedure TMaxForm1.AndroidDump1Click(Sender: TObject);
+procedure Tmaxform1.AndroidDump1Click(Sender: TObject);
 begin
    ShowMessage('Android Dump to Dalvik Compile Format Runtime Emulator available in V5'+#13#10+
                 'first example in: ..\examples\androidlcl')
@@ -10569,7 +10582,7 @@ end;
 
 
 //----------------------- PlugIns---------------------------------------------
-procedure TMaxForm1.PANView1Click(Sender: TObject);
+procedure Tmaxform1.PANView1Click(Sender: TObject);
 begin
  //start the pan view
    //panForm1:= TpanForm1.Create(self);
@@ -10586,7 +10599,7 @@ begin
   end;  }
 end;
 
-function TMaxForm1.ParseMacros(Str: String): String;
+function Tmaxform1.ParseMacros(Str: String): String;
 var
   //e: TEditor;
   Dir: String;
@@ -10656,7 +10669,7 @@ begin
 
 end;
 
-procedure TMaxForm1.PascalSchool1Click(Sender: TObject);
+procedure Tmaxform1.PascalSchool1Click(Sender: TObject);
   var URLBuf: array[0..255] of char;
   begin
     strPCopy(URLBuf, RS_PS);
@@ -10666,7 +10679,7 @@ procedure TMaxForm1.PascalSchool1Click(Sender: TObject);
 end;
 
 
-procedure TMaxForm1.PasStyle1Click(Sender: TObject);
+procedure Tmaxform1.PasStyle1Click(Sender: TObject);
 begin
  with memo2 do begin
     height:= 230;
@@ -10693,7 +10706,7 @@ begin
   SynPasSyn1.FloatAttri.Foreground:= cllime;
 end;
 
-procedure TMaxForm1.PerlSyntax1Click(Sender: TObject);
+procedure Tmaxform1.PerlSyntax1Click(Sender: TObject);
 begin
   with PerlSyntax1 do
     checked:= NOT checked;
@@ -10708,7 +10721,7 @@ begin
     end;
 end;
 
-procedure TMaxForm1.PHPSyntax1Click(Sender: TObject);
+procedure Tmaxform1.PHPSyntax1Click(Sender: TObject);
 begin
   with PHPSyntax1 do
     checked:= NOT checked;
@@ -10722,7 +10735,7 @@ begin
     end;
 end;
 
-procedure TMaxForm1.PicturePuzzle1Click(Sender: TObject);
+procedure Tmaxform1.PicturePuzzle1Click(Sender: TObject);
 begin
   Form1Boss:= TForm1boss.Create(self);
   try
@@ -10735,7 +10748,7 @@ begin
 end;
 
 
-procedure TMaxForm1.DelphiSite1Click(Sender: TObject);
+procedure Tmaxform1.DelphiSite1Click(Sender: TObject);
   var URLBuf: array[0..255] of char;
   begin
     strPCopy(URLBuf, RS_DS);
@@ -10743,19 +10756,19 @@ procedure TMaxForm1.DelphiSite1Click(Sender: TObject);
                   NIL, NIL, sw_ShowNormal)
 end;
 
-procedure TMaxForm1.DependencyWalker1Click(Sender: TObject);
+procedure Tmaxform1.DependencyWalker1Click(Sender: TObject);
 begin
 // go to dependency walker
-  { DependencyWalkerDemoMainFrm:= TDependencyWalkerDemoMainFrm.Create(self);
+   DependencyWalkerDemoMainFrm:= TDependencyWalkerDemoMainFrm.Create(self);
    try
      DependencyWalkerDemoMainFrm.ShowModal;
    finally
      DependencyWalkerDemoMainFrm.Free;
-   end;    }
+   end;    //}
 end;
 
 
-procedure TMaxForm1.DLLSpy1Click(Sender: TObject);
+procedure Tmaxform1.DLLSpy1Click(Sender: TObject);
 begin
   //DLL Spy
    DLLForm1:= TDLLForm1.Create(self);
@@ -10776,7 +10789,7 @@ begin
   SelectAll1.Enabled := (Edit1.SelLength > 0) and (Edit1.SelLength < Length(Edit1.Text));
 end;*)
 
-procedure TMaxForm1.ClickinListbox2(sender: TObject);
+procedure Tmaxform1.ClickinListbox2(sender: TObject);
 var idx: integer;
     temp: string;
 begin
@@ -10791,7 +10804,7 @@ end;
 
 
 
-procedure TMaxForm1.ClickinListbox(sender: TObject);
+procedure Tmaxform1.ClickinListbox(sender: TObject);
 var idx: integer;
     temp: string;
 begin
@@ -10828,14 +10841,14 @@ begin
 end;
 
 
-procedure TMaxForm1.GetIntflistWidth(sender: TObject);
+procedure Tmaxform1.GetIntflistWidth(sender: TObject);
 begin
   lbintflistwidth:= lbintflist.width;
   statusBar1.panels[1].text:= 'Interfacelist change: '+inttoStr(lbintflistwidth);
 end;
 
 
-procedure TMaxForm1.LoadInterfaceList;
+procedure Tmaxform1.LoadInterfaceList;
 var
   //  i: integer;
   AFilename: string;
@@ -10973,7 +10986,7 @@ var
 end;
 
 
-procedure TMaxForm1.LoadInterfaceList2;
+procedure Tmaxform1.LoadInterfaceList2;
 begin
   if NOT assigned(lbintflist) then begin
    LoadInterfaceList;
@@ -10981,60 +10994,60 @@ begin
   end;
 end;
 
-procedure TMaxForm1.DMathLibrary1Click(Sender: TObject);
+procedure Tmaxform1.DMathLibrary1Click(Sender: TObject);
 begin
    searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\dmath_manual.pdf');
 end;
 
-procedure TMaxForm1.DocuforAddOns1Click(Sender: TObject);
+procedure Tmaxform1.DocuforAddOns1Click(Sender: TObject);
 begin
   //searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter63.pdf');
    ShowMessage('Full Add Ons Docu available in V5_1')
 end;
 
-procedure TMaxForm1.PlayMP31Click(Sender: TObject);
+procedure Tmaxform1.PlayMP31Click(Sender: TObject);
 begin
     //Application.CreateForm(TwinFormp, winFormp);
   winformp.show;// this is play
 end;
 
-procedure TMaxForm1.GetEMails1Click(Sender: TObject);
+procedure Tmaxform1.GetEMails1Click(Sender: TObject);
 begin
   //GetMailHeaders;
 end;
 
-Function TMaxForm1.GetStatChange: boolean;
+Function Tmaxform1.GetStatChange: boolean;
 begin
   result:= STATEdchanged;
 end;
 
-Function TMaxForm1.GetActiveLineColor: TColor;
+Function Tmaxform1.GetActiveLineColor: TColor;
 begin
   result:= factivelinecolor;
 end;
 
-Procedure TMaxForm1.SetActiveLineColor(acolor: TColor);
+Procedure Tmaxform1.SetActiveLineColor(acolor: TColor);
 begin
   factivelinecolor:= acolor;
 end;
 
 
-Function TMaxForm1.GetStatExecuteShell: boolean;
+Function Tmaxform1.GetStatExecuteShell: boolean;
 begin
   result:= StatExecuteShell;
 end;
 
-procedure TMaxForm1.GetWebScript1Click(Sender: TObject);
+procedure Tmaxform1.GetWebScript1Click(Sender: TObject);
 begin
   //this is srvice in winformpuzzle
   getScriptandRunAsk;
 end;
 
-procedure TMaxForm1.GetWidth(sender: TObject);
+procedure Tmaxform1.GetWidth(sender: TObject);
 begin
 end;
 
-procedure TMaxForm1.GotoEnd1Click(Sender: TObject);
+procedure Tmaxform1.GotoEnd1Click(Sender: TObject);
 begin
   with FindReplDialog do begin
   FindText:='';                    //bugfix 3.8.6.2
@@ -11050,7 +11063,7 @@ begin
   //goto code end
 end;
 
-procedure TMaxForm1.GotoLine1Click(Sender: TObject);
+procedure Tmaxform1.GotoLine1Click(Sender: TObject);
 var lnumb: string;
 begin
   try
@@ -11064,7 +11077,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.GPSSatView1Click(Sender: TObject);
+procedure Tmaxform1.GPSSatView1Click(Sender: TObject);
   //FDemo: TFDemo;
 begin
  { FDemo:= TFDemo.Create(self);
@@ -11076,7 +11089,7 @@ begin
   //the view
 end;
 
-procedure TMaxForm1.ThreadDemo1Click(Sender: TObject);
+procedure Tmaxform1.ThreadDemo1Click(Sender: TObject);
 begin
   //StartThreadDemo;
    with TThreadSortForm.Create(self) do begin
@@ -11085,7 +11098,7 @@ begin
    end; //}
 end;
 
-procedure TMaxForm1.ToDoList1Click(Sender: TObject);
+procedure Tmaxform1.ToDoList1Click(Sender: TObject);
 //var ViewToDoForm: TViewToDoForm;
 begin
   //to do form devcc
@@ -11101,12 +11114,12 @@ begin
   }
 end;
 
-Procedure TMaxForm1.SetStatChange(vstat: boolean);
+Procedure Tmaxform1.SetStatChange(vstat: boolean);
 begin
   STATEdchanged:= vstat;//
 end;
 
-procedure TMaxForm1.LoadLastFile1Click(Sender: TObject);
+procedure Tmaxform1.LoadLastFile1Click(Sender: TObject);
 var templastfile: string;
 //  {$WriteableConst On}
 //const toogle1 = true;
@@ -11146,7 +11159,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.Memo1Change(Sender: TObject);
+procedure Tmaxform1.Memo1Change(Sender: TObject);
 begin
   STATedchanged:= true;
   memo1.Refresh; //2.8.1
@@ -11157,7 +11170,7 @@ begin
 end;
 
 
-procedure TMaxForm1.ShowWords(mystring: string);
+procedure Tmaxform1.ShowWords(mystring: string);
 var
   i, t1, t2, tstr: integer;
   s1, mstr: string;
@@ -11198,7 +11211,7 @@ begin
 end;
 
 
-procedure TMaxForm1.Memo1DblClick(Sender: TObject);  //beta 3
+procedure Tmaxform1.Memo1DblClick(Sender: TObject);  //beta 3
 var fw, s1: string;
   t1, cfound: integer;
   //oldcolor, selcolor: TSynSelectedColor;
@@ -11302,7 +11315,7 @@ begin
   end; *)
 end;
 
-procedure TMaxForm1.Memo1GutterClick(Sender: TObject; Button: TMouseButton; X, Y,
+procedure Tmaxform1.Memo1GutterClick(Sender: TObject; Button: TMouseButton; X, Y,
   Line: Integer; Mark: TSynEditMark);
 var  p: TBufferCoord;
    aline, i: integer;
@@ -11407,7 +11420,7 @@ var  p: TBufferCoord;
   //ResetMarkButtons;
 end;
 
-procedure TMaxForm1.Memo1PlaceBookmark(Sender: TObject;
+procedure Tmaxform1.Memo1PlaceBookmark(Sender: TObject;
                                            var Mark: TSynEditMark);
 var aline, i: integer;
     amark: TSynEditMark;
@@ -11463,7 +11476,7 @@ begin
 end;
 
 //-----------------------------------------Debug-----------------------------//
-function TMaxForm1.CompileDebug: Boolean;
+function Tmaxform1.CompileDebug: Boolean;
 var
   i: Longint;
 begin
@@ -11481,7 +11494,7 @@ begin
 end;
 
 
-procedure TMaxForm1.ComponentCount1Click(Sender: TObject);
+procedure Tmaxform1.ComponentCount1Click(Sender: TObject);
 var
   complist: TStringList;
 begin
@@ -11499,7 +11512,7 @@ begin
   complist.Free;   //}
 end;
 
-function TMaxForm1.ExecuteDebug: Boolean;
+function Tmaxform1.ExecuteDebug: Boolean;
 begin
   debugout.Output.Clear;
   if cedebug.Execute then begin
@@ -11514,7 +11527,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.Decompile1Click(Sender: TObject);
+procedure Tmaxform1.Decompile1Click(Sender: TObject);
  var
   s: ansistring;        sout: string;
 begin
@@ -11531,12 +11544,12 @@ begin
   end;
 end;
 
-procedure TMaxForm1.Defactor1Click(Sender: TObject);
+procedure Tmaxform1.Defactor1Click(Sender: TObject);
 begin
   Showmessage('yeah, will be in V54');
 end;
 
-procedure TMaxForm1.StepInto1Click(Sender: TObject);
+procedure Tmaxform1.StepInto1Click(Sender: TObject);
 begin
   if cedebug.Exec.Status = isRunning then
     cedebug.StepInto
@@ -11549,7 +11562,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.StepOut1Click(Sender: TObject);
+procedure Tmaxform1.StepOut1Click(Sender: TObject);
 begin
 if cedebug.Exec.Status = isRunning then
     cedebug.StepOver
@@ -11562,7 +11575,7 @@ if cedebug.Exec.Status = isRunning then
 end;
 
 
-procedure TMaxForm1.SyntaxCheck1Click(Sender: TObject);
+procedure Tmaxform1.SyntaxCheck1Click(Sender: TObject);
 //var mybytecode: string;
   procedure OutputMessages;
   var
@@ -11645,7 +11658,7 @@ begin
 
 end;
 
-procedure TMaxForm1.Reset1Click(Sender: TObject);
+procedure Tmaxform1.Reset1Click(Sender: TObject);
 begin
 if cedebug.Exec.Status = isRunning then
     cedebug.Stop;
@@ -11653,13 +11666,13 @@ if cedebug.Exec.Status = isRunning then
        memo1.Gutter.BorderColor:= clwindow;      //4.2.4.80
 end;
 
-procedure TMaxForm1.ResourceExplore1Click(Sender: TObject);
+procedure Tmaxform1.ResourceExplore1Click(Sender: TObject);
 begin
   tbtn6resClick(self)
   //to do
 end;
 
-procedure TMaxForm1.Reversi1Click(Sender: TObject);
+procedure Tmaxform1.Reversi1Click(Sender: TObject);
 //var revfrm: TmForm;
 begin
   //othello
@@ -11674,7 +11687,7 @@ begin
   end;   }
 end;
 
-procedure TMaxForm1.Richedit1Click(Sender: TObject);
+procedure Tmaxform1.Richedit1Click(Sender: TObject);
 begin
 //applicatino
  //Application.Initialize;
@@ -11693,7 +11706,7 @@ begin
    //FrameForm.Show;
 end;
 
-procedure TMaxForm1.cedebugAfterExecute(Sender: TPSScript);
+procedure Tmaxform1.cedebugAfterExecute(Sender: TPSScript);
 begin
 //Caption:= 'Editor';
   FActiveLine:= 0;
@@ -11701,7 +11714,7 @@ begin
   memo1.Gutter.LeadingZeros:= false; //2.8
 end;
 
-procedure TMaxForm1.cedebugBreakpoint(Sender: TObject;
+procedure Tmaxform1.cedebugBreakpoint(Sender: TObject;
                 const FileName: ansiString; Position, Row, Col: Cardinal);
 begin
 FActiveLine:= Row;
@@ -11715,7 +11728,7 @@ FActiveLine:= Row;
 // this is debug
 end;
 
-procedure TMaxForm1.cedebugCompile(Sender: TPSScript);
+procedure Tmaxform1.cedebugCompile(Sender: TPSScript);
 begin
 // this is just for test and runtime
   Sender.AddRegisteredVariable('Self', 'TForm');
@@ -11727,7 +11740,7 @@ begin
   Sender.AddRegisteredVariable('debugout', 'Tdebugoutput');  //!!
 end;
 
-procedure TMaxForm1.cedebugExecute(Sender: TPSScript);
+procedure Tmaxform1.cedebugExecute(Sender: TPSScript);
 begin
   cedebug.SetVarToInstance('SELF', Self);
   cedebug.SetVarToInstance('APPLICATION', Application);
@@ -11742,7 +11755,7 @@ begin
   cedebug.SetVarToInstance('debugout', debugout);
 end;
 
-procedure TMaxForm1.cedebugIdle(Sender: TObject);
+procedure Tmaxform1.cedebugIdle(Sender: TObject);
 begin
  Application.HandleMessage;
   if FResume then begin
@@ -11753,7 +11766,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.cedebugLineInfo(Sender: TObject;
+procedure Tmaxform1.cedebugLineInfo(Sender: TObject;
               const FileName: ansiString; Position, Row, Col: Cardinal);
 begin
   if cedebug.Exec.DebugMode <> dmRun then begin
@@ -11768,7 +11781,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.Memo1SpecialLineColors(Sender: TObject; Line: Integer;
+procedure Tmaxform1.Memo1SpecialLineColors(Sender: TObject; Line: Integer;
   var Special: Boolean; var FG, BG: TColor);
 begin
   cedebug.MainFileName:= Act_Filename;
@@ -11800,7 +11813,7 @@ begin
 end;
 
 
-procedure TMaxForm1.BreakPointMenuClick(Sender: TObject);
+procedure Tmaxform1.BreakPointMenuClick(Sender: TObject);
 var
   Line: Longint;
 begin
@@ -11812,7 +11825,7 @@ begin
   memo1.Refresh;
 end;
 
-procedure TMaxForm1.btnClassReportClick(Sender: TObject);
+procedure Tmaxform1.btnClassReportClick(Sender: TObject);
 var
   s,ss, s1, mstr: string;
   aStrList: TStringList;
@@ -11851,25 +11864,25 @@ begin
 end;
 
 
-procedure TMaxForm1.BtnZoomMinusClick(Sender: TObject);
+procedure Tmaxform1.BtnZoomMinusClick(Sender: TObject);
 begin
   memo1.Font.Size:= memo1.Font.Size-1;
   last_fontsize:= memo1.Font.Size;
 end;
 
-procedure TMaxForm1.BtnZoomPlusClick(Sender: TObject);
+procedure Tmaxform1.BtnZoomPlusClick(Sender: TObject);
 begin
 // fonstsize
   memo1.Font.Size:= memo1.Font.Size+1;
   last_fontsize:= memo1.Font.Size;
 end;
 
-procedure TMaxForm1.Calculator1Click(Sender: TObject);
+procedure Tmaxform1.Calculator1Click(Sender: TObject);
 begin
   SearchAndOpenDoc('C:\WINDOWS\System32\calc.exe');
 end;
 
-procedure TMaxForm1.CB1SCListChange(Sender: TObject);
+procedure Tmaxform1.CB1SCListChange(Sender: TObject);
 var idx, old: integer;
    temps: string;
 begin
@@ -11933,7 +11946,7 @@ begin
   memo1.Gutter.BorderColor:= clWindow;      //3.9.9.100
 end;
 
-procedure TMaxForm1.CB1SCListDrawItem(Control: TWinControl; Index: Integer; aRect: TRect;
+procedure Tmaxform1.CB1SCListDrawItem(Control: TWinControl; Index: Integer; aRect: TRect;
   State: TOwnerDrawState);
 begin
   //CB1SCList.Canvas.TextRect(ARect,ARect.Left+2,
@@ -11956,7 +11969,7 @@ begin
   Result:=R or (Integer(G) shl 8) or (Integer(B) shl 16);
 end;
 
-procedure TMaxForm1.Darkcolor1Click(Sender: TObject);
+procedure Tmaxform1.Darkcolor1Click(Sender: TObject);
   begin
       orangestyle1click(self);
       memo1.Gutter.Gradient:= false;
@@ -11988,7 +12001,7 @@ procedure TMaxForm1.Darkcolor1Click(Sender: TObject);
 
 end;
 
-procedure TMaxForm1.DebugRun1Click(Sender: TObject);
+procedure Tmaxform1.DebugRun1Click(Sender: TObject);
 begin
  memo1.Gutter.Gradient:= true;
  if cedebug.Running then begin
@@ -12000,7 +12013,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.StatusBar1DblClick(Sender: TObject);
+procedure Tmaxform1.StatusBar1DblClick(Sender: TObject);
 begin
   if statedChanged = false then
   statusBar1.panels[0].text:=
@@ -12009,14 +12022,14 @@ begin
     statusBar1.panels[0].text:= ExtractFilePath(Act_Filename) +' file directory';
 end;
 
-procedure TMaxForm1.PSScriptLine(Sender: TObject);
+procedure Tmaxform1.PSScriptLine(Sender: TObject);
 begin
   //PSScript.online:= , doesn't hang while long running
   Application.ProcessMessages;
   //memo2.lines.Add('runtime is running test');
 end;
 
-function TMaxForm1.PSScriptNeedFile(Sender: TObject;
+function Tmaxform1.PSScriptNeedFile(Sender: TObject;
   const OrginFileName: AnsiString; var FileName, Output: AnsiString): Boolean;
 //begin
  //PSScriptNeedFile
@@ -12042,30 +12055,30 @@ begin
 
 end;
 
-procedure TMaxForm1.OpenDirectory1Click(Sender: TObject);
+procedure Tmaxform1.OpenDirectory1Click(Sender: TObject);
 var sOname, sEName: string;
 begin
   if DirectoryExists(ExtractFilePath(Act_Filename)) then begin
     sOName:= ExtractFilePath(Act_Filename) + #0;
     sEName:= 'explorer.exe';
-   // ShellExecute(0, NIL, @sEName[1], @sOName[1], NIL, SW_SHOW);
+    ShellExecute(0, NIL, @sEName[1], @sOName[1], NIL, SW_SHOW);
   end else
     showMessage('No Example Workdirectory found...');
         memo1.Gutter.BorderColor:= clwindow;      //4.2.4.80
 end;
 
-procedure TMaxForm1.OpenExamples1Click(Sender: TObject);
+procedure Tmaxform1.OpenExamples1Click(Sender: TObject);
 var sOname, sEName: string;
 begin
   if DirectoryExists(ExePath+'\examples') then begin
     sOName:= ExtractFilePath(ExePath+'examples\') + #0;
     sEName:= 'explorer.exe';
-    //ShellExecute(0, NIL, @sEName[1], @sOName[1], NIL, SW_SHOW);
+    ShellExecute(0, NIL, @sEName[1], @sOName[1], NIL, SW_SHOW);
   end else
     showMessage('No Standard Examples found...');
 end;
 
-procedure TMaxForm1.OpenGLTry1Click(Sender: TObject);
+procedure Tmaxform1.OpenGLTry1Click(Sender: TObject);
 //var sOname, sEName: string;
 begin
   //human gl SearchAndOpenDoc(Exepath+'exercices\Actor.exe');
@@ -12092,7 +12105,7 @@ begin
     showMessage('No ..\exercices\model\*.* Data found..., please copy');  }
 end;
 
-procedure TMaxForm1.OrangeStyle1Click(Sender: TObject);
+procedure Tmaxform1.OrangeStyle1Click(Sender: TObject);
 begin
   with memo2 do begin
         color:= clblack;
@@ -12123,7 +12136,7 @@ begin
 //
 end;
 
-procedure TMaxForm1.Oscilloscope1Click(Sender: TObject);
+procedure Tmaxform1.Oscilloscope1Click(Sender: TObject);
 begin
  // Application.CreateForm(TOscfrmMain, oscfrmMain);
  // oscfrmMain.Show;
@@ -12131,14 +12144,14 @@ begin
   //Form2.Show;
 end;
 
-procedure TMaxForm1.procMessClick(Sender: TObject);
+procedure Tmaxform1.procMessClick(Sender: TObject);
 begin
    procMess.Checked:= not procMess.Checked;
    if procMess.Checked then PSScript.OnLine:= maxForm1.PSScriptLine else
    PSScript.OnLine:= NIL;
 end;
 
-procedure TMaxForm1.tbtn6resClick(Sender: TObject);
+procedure Tmaxform1.tbtn6resClick(Sender: TObject);
 var
  TmpExeFile: TExeImage;
  rcfrm: TRCMainForm;
@@ -12164,10 +12177,10 @@ begin
   end; //*)
 end;
 
-procedure TMaxForm1.tbtnUseCaseClick(Sender: TObject);
+procedure Tmaxform1.tbtnUseCaseClick(Sender: TObject);
 var newNameExt, ucFile: string;
 begin
- (* with TUCMainDlg.create(application) do begin
+  with TUCMainDlg.create(application) do begin
     try
       //first with a actor and a packagae
       newNameExt := ChangeFileExt(Act_Filename, '.uc');
@@ -12177,7 +12190,7 @@ begin
         TmCustomShape.LoadFromFile(ucFile, ScrollBox1);
         statusBar1.panels[0].text:= ExtractFileName(ucFile)+' : Code & Model ready!';
       end;
-      SetCodeFileName(newNameExt);
+      SetCodeFileName(newNameExt);       //WHRE??
       showModal;
       statusBar1.panels[0].text:= 'UC Dialog active';
     finally
@@ -12185,13 +12198,13 @@ begin
       Free;
       statusBar1.panels[0].text:= 'UC Dialog closed';
     end;
-  end;  *)
+  end;  //*)
   //this is stack attack
   //fix it with a cast
 end;
 
 
-procedure TMaxForm1.Halt1Click(Sender: TObject);
+procedure Tmaxform1.Halt1Click(Sender: TObject);
 begin
   //stop the app
   StepInto1Click(sender);
@@ -12199,7 +12212,7 @@ begin
 
 end;
 
-procedure TMaxForm1.HEXEditor1Click(Sender: TObject);
+procedure Tmaxform1.HEXEditor1Click(Sender: TObject);
 begin
   Showmessage('available V4 but you find one in ..\maxbox3\source\Hex_Editor_MX');
   //Application.CreateForm(THexForm2, HexForm2);
@@ -12207,14 +12220,14 @@ begin
   //Application.CreateForm(THexForm2, HexForm2);
 end;
 
-procedure TMaxForm1.HEXEditor2Click(Sender: TObject);
+procedure Tmaxform1.HEXEditor2Click(Sender: TObject);
 begin
   Showmessage('available in V4 you find one in ..\maxbox3\source\Hex_Editor_MX');
  // Application.CreateForm(THexForm2, HexForm2);
  // HexForm2.Show;
 end;
 
-procedure TMaxForm1.HEXView1Click(Sender: TObject);
+procedure Tmaxform1.HEXView1Click(Sender: TObject);
 begin
   Showmessage('available in V4 you find one in ..\maxbox3\source\Hex_Editor_MX');
   //Application.CreateForm(THexForm2, HexForm2);
@@ -12236,7 +12249,7 @@ begin
       //  Notebook.PageIndex := 3;
 end;
 
-procedure TMaxForm1.HTMLSyntax1Click(Sender: TObject);
+procedure Tmaxform1.HTMLSyntax1Click(Sender: TObject);
 begin
   with HTMLSyntax1 do
     checked:= NOT checked;
@@ -12252,7 +12265,7 @@ begin
 end;
 
 
-procedure TMaxForm1.texSyntax1Click(Sender: TObject);
+procedure Tmaxform1.texSyntax1Click(Sender: TObject);
 begin
   with TexSyntax1 do
     checked:= NOT checked;
@@ -12267,7 +12280,7 @@ begin
 end;
 
 
-procedure TMaxForm1.toolbtnTutorialClick(Sender: TObject);
+procedure Tmaxform1.toolbtnTutorialClick(Sender: TObject);
 var sOname, sEName: string;
 begin
   if DirectoryExists((ExePath+'docs\')) then begin
@@ -12279,7 +12292,7 @@ begin
 end;
 
 
-procedure TMaxForm1.CSyntax1Click(Sender: TObject);
+procedure Tmaxform1.CSyntax1Click(Sender: TObject);
 begin
   with CSyntax1 do
     checked:= NOT checked;
@@ -12294,7 +12307,7 @@ begin
     end;
 end;
 
-procedure TMaxForm1.CSyntax2Click(Sender: TObject);
+procedure Tmaxform1.CSyntax2Click(Sender: TObject);
 begin
   with CSyntax2 do
     checked:= NOT checked;
@@ -12309,7 +12322,7 @@ begin
     end;
 end;
 
-procedure TMaxForm1.SQLSyntax1Click(Sender: TObject);
+procedure Tmaxform1.SQLSyntax1Click(Sender: TObject);
 begin
   with SQLSyntax1 do
     checked:= NOT checked;
@@ -12325,7 +12338,7 @@ begin
 // this is SQL
 end;
 
-procedure TMaxForm1.XMLSyntax1Click(Sender: TObject);
+procedure Tmaxform1.XMLSyntax1Click(Sender: TObject);
 begin
   with XMLSyntax1 do
     checked:= NOT checked;
@@ -12342,7 +12355,7 @@ begin
     end;
 end;
 
-procedure TMaxForm1.JavaScriptSyntax1Click(Sender: TObject);
+procedure Tmaxform1.JavaScriptSyntax1Click(Sender: TObject);
 begin
   with JavaScriptSyntax1 do
     checked:= NOT checked;
@@ -12357,7 +12370,7 @@ begin
     end;
 end;
 
-procedure TMaxForm1.JavaSyntax1Click(Sender: TObject);
+procedure Tmaxform1.JavaSyntax1Click(Sender: TObject);
 begin
   with JavaSyntax1 do
     checked:= NOT checked;
@@ -12373,18 +12386,18 @@ begin
 end;
 
 
-procedure TMaxForm1.JumptoOutput1Click(Sender: TObject);
+procedure Tmaxform1.JumptoOutput1Click(Sender: TObject);
 begin
   memo2.setfocus;
 end;
 
-procedure TMaxForm1.JumptoTerminal1Click(Sender: TObject);
+procedure Tmaxform1.JumptoTerminal1Click(Sender: TObject);
 begin
   memo2.setfocus;
 end;
 
 
-function TMaxForm1.getCodeEnd: integer;
+function Tmaxform1.getCodeEnd: integer;
 var i: integer;
     s1: string;
 begin
@@ -12399,7 +12412,7 @@ begin
   end;
 end;
 
-procedure TMaxForm1.ShowInterfaces(myFile: string);
+procedure Tmaxform1.ShowInterfaces(myFile: string);
 var i, t1, t2, tstr: integer;
   s1, mstr: string;
   aStrList: TStringList;
@@ -12482,7 +12495,7 @@ begin
 end;
 // inderface list to F11
 
-procedure TMaxForm1.ShowInterfaces1Click(Sender: TObject);
+procedure Tmaxform1.ShowInterfaces1Click(Sender: TObject);
 begin
   //this is all about declaration
   ShowInterfaces(Act_Filename);
@@ -12490,7 +12503,7 @@ begin
       memo1.Gutter.BorderColor:= clwindow;      //4.2.4.80
 end;
 
-procedure TMaxForm1.ShowLastException1Click(Sender: TObject);
+procedure Tmaxform1.ShowLastException1Click(Sender: TObject);
 var aStrList: TStringList;
 begin
   aStrList:= TStringList.create;
