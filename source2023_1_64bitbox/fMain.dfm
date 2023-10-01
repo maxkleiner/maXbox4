@@ -1,8 +1,8 @@
-object MaxForm1: TMaxForm1
+object maxform1: Tmaxform1
   Left = 229
   Top = 254
   BorderWidth = 1
-  Caption = 'maXbox5 Ocean550 mX501 Rheingold+++++ alpha!'
+  Caption = 'maXbox5 Ocean550 mX501 Rheingold+++++ alpha07!'
   ClientHeight = 823
   ClientWidth = 1041
   Color = clBtnFace
@@ -2064,6 +2064,7 @@ object MaxForm1: TMaxForm1
     OnLine = PSScriptLine
     OnCompile = PSScriptCompile
     OnExecute = PSScriptExecute
+    OnAfterExecute = cedebugAfterExecute
     OnCompImport = IFPS3ClassesPlugin1CompImport
     OnExecImport = IFPS3ClassesPlugin1ExecImport
     Plugins = <
@@ -6426,7 +6427,7 @@ object MaxForm1: TMaxForm1
           FF00FFC56418AF4501DC8840E9A76CEEBB89EBB581DC914DBD590F752D0C9034
           02FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFA646088B350575
           2D0C752D0C8B35059E4006FF00FFFF00FFFF00FFFF00FFFF00FF}
-        Caption = 'Tutorials 1-99'
+        Caption = 'Tutorials 1-120'
         Hint = 'Procedural Programming'
         ImageIndex = 1
         object Tutorial11: TMenuItem
