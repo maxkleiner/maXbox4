@@ -198,6 +198,7 @@
           12541   5.0.1.14 maxform1. reflection utf8decode for loadfile, umath, getwebscript, jvchart
           12542   5.0.1.15 maxform1. madexcept utf8decode for loadfile, umath, getwebscript, jvchart
           12584   5.0.1.17 GPS2, ADOTest, ADODB, GPS, VendorTestFramework , dmath2 ,statmach, uPSI_SHDocVw;
+          12590   5.0.1.17 unit SynEditMiscClasses2;,unit SynEdit2; prepare for Clear or TrackChanges;
 
  ************************************************************************************* }
 
@@ -211,7 +212,7 @@ interface
 uses
   Forms, SysUtils, uPSComponent, uPSCompiler, uPSRuntime, Menus,
   Classes, ExtCtrls, Controls, StdCtrls,  SynEditHighlighter,
-  SynHighlighterPas, SynEdit, {SynMemo,} SynEditMiscClasses, SynEditSearch,
+  SynHighlighterPas, SynEdit, {SynMemo,SynEdit2} SynEditMiscClasses, SynEditSearch,
   XPMan, Buttons, Dialogs, uPSComponent_Default, Messages,
   uPSComponent_Controls, SynCompletionProposal, SynEditPrint, SynEditAutoComplete,
   ImgList, ComCtrls, ToolWin, Graphics, uPSDebugger, uPSDisassembly,
@@ -1622,12 +1623,12 @@ uses
   uPSI_IdHL7,
   uPSI_IdIPMCastBase,
   uPSI_IdIPMCastServer,
-  uPSI_IdIPMCastClient,
-  uPSI_IdRawHeaders,
-  uPSI_IdRawClient,
+  uPSI_IdIPMCastClient,  *)
+  uPSI_IdRawHeaders, //*)
+  uPSI_IdRawClient,   //*)
   uPSI_IdRawFunctions,
   uPSI_IdTCPStream,
-  uPSI_IdSNPP,  *)
+  uPSI_IdSNPP,  //*)
   AdoMain, //ADO Workbench   *)
   actionMain, //FormDemo   *)
   MDIEdit,  //RichEdit
@@ -1656,8 +1657,8 @@ uses
   uPSI_PJConsoleApp,
   uPSI_UConsoleAppEx,  //3.9.9.80
   uPSI_IdLogEvent,
- // uPSI_Reversi,  *)
- // uPSI_Geometry,
+  uPSI_Reversi, //*)
+  uPSI_Geometry,
   uPSI_Textures,
   //uPSI_IdSMTPServer,
   uPSI_IB,
@@ -1670,7 +1671,7 @@ uses
   uPSI_Jvg3DColors,
   uPSI_JvHLEditor,
   uPSI_JvHLEditorPropertyForm,
-  //uPSI_JvFullColorForm,
+  uPSI_JvFullColorForm,
   //uPSI_JvSegmentedLEDDisplayMapperFrame,  //*)
   uPSI_JvShellHook,    //*)
   uPSI_JvSHFileOperation,     //3.9.9.82
@@ -1775,7 +1776,7 @@ uses
   //uPSI_ALFcnSQL,
   uPSI_AsyncTimer,
   uPSI_ApplicationFileIO,  //9.85  *)
-  //uPSI_PsAPI,      //processmemory , createprocess, exitthread  , addspeed
+  uPSI_PsAPI,      //processmemory , createprocess, exitthread  , addspeed
  uPSI_ovcuser,
   uPSI_ovcurl,
  // uPSI_ovcvlb,  internal error
@@ -1891,11 +1892,11 @@ uses
   //uPSI_SockTransport,   *)
   uPSI_WinInet,
   uPSI_Wwstr,
- //uPSI_DBLookup,
+ //uPSI_DBLookup,     not founc
  (* uPSI_Printgri, *)
   uPSI_Hotspot,
   uPSI_HList,
- // uPSI_DrTable,   *)
+ //&& uPSI_DrTable,   bde *)
   uPSI_TConnect,
   uPSI_DataBkr,  //*)
   uPSI_HTTPIntr,
@@ -1913,7 +1914,7 @@ uses
   uPSI_JvDateTimePicker,
   uPSI_JvCreateProcess,
   uPSI_JvEasterEgg,
-  //uPSI_JvDatePickerEdit,  *)
+  uPSI_JvDatePickerEdit,  //*)
   uPSI_WinSvc,
   uPSI_WinSvc2,   //*)
   uPSI_SvcMgr,
@@ -1932,7 +1933,7 @@ uses
   U_Oscilloscope4, //in 'U_Oscilloscope4.pas' {frmMain},
   U_Spectrum4, // in 'U_Spectrum4.pas' {Form2},
   //uPSI_JvBoxProcs,     redecalre
- (* uPSI_JvaScrollText,
+  uPSI_JvaScrollText,
   uPSI_JvArrow,    //3.9.9.95   *)
   uPSI_UrlMon,
   uPSI_U_Oscilloscope4,
@@ -2018,7 +2019,7 @@ uses
   uPSI_cTCPBuffer,  ////3.9.9.98_5   *)
   uPSI_Glut,  // *)
   uPSI_LEDBitmaps,
-  //uPSI_FileClass,
+  uPSI_FileClass,
   uPSI_FileUtilsClass,
   uPSI_ComPortInterface,
   uPSI_SwitchLed,
@@ -2031,7 +2032,7 @@ uses
   uPSI_cyCopyFiles,
   uPSI_cySearchFiles,
   uPSI_cyBaseMeasure,
-(*  uPSI_PJIStreams, //3.9.9.98_6  *)
+//  uPSI_PJIStreams, //3.9.9.98_6  *)
   uPSI_cyRunTimeResize,
   uPSI_jcontrolutils,
   uPSI_kcMapViewer, //add GeoNames
@@ -2079,8 +2080,8 @@ uses
   uPSI_StSaturn,    //all other planets!
   uPSI_JclParseUses,
   uPSI_JvFinalize,    //3.9.9.120
- (* uPSI_panUnit1,
-  uPSI_DD83u1, *)
+ // uPSI_panUnit1,
+  uPSI_DD83u1, //*)
   uPSI_BigIni, //*)
   uPSI_ShellCtrls,
   uPSI_fmath,
@@ -2143,7 +2144,7 @@ uses
  (* uPSI_DdeMan,  *)
   uPSI_DIUtils,   //3.9.9.195
   //uPSI_gnugettext,
- (* uPSI_Xmlxform,  *)
+  uPSI_Xmlxform,  //*)
  //uPSI_SvrHTTPIndy, //*)
   uPSI_CPortTrmSet, //3.9.9.195
   //XMLDoc3,  to V4
@@ -2170,7 +2171,7 @@ uses
   uPSI_PersistSettings,  //also Windows API Settings  SpectraLib , pipehelper, pipe2
   uPSI_SynEditAutoComplete,
   uPSI_SynEditTextBuffer,
- //uPSI_JclPCRE,
+  uPSI_JclPCRE,
   //uPSI_ZConnection,
   //uPSI_ZSequence, *)
   chessPrg,
@@ -2278,9 +2279,9 @@ uses
   uPSI_PJStreamWrapper,   // templ for free()   *)
   uPSI_LatLonDist,   //*)
   uPSI_cHash,
- (* uPSI_commDriver,
+  uPSI_commDriver,
   uPSI_PXLNetComs,      //FDEF VER185} // Delphi 2007
-  uPSI_PXLTiming,   *)
+  uPSI_PXLTiming,   //*)
   uPSI_Odometer,         //4.7.1.10
   uPSI_UIntegerpartition,
   uPSI_API_strings,
@@ -2457,7 +2458,7 @@ uses
   uPSI_UJSONFunctions,
   //UJSONFunctions.pas
   uPSI_USha256,  //*)
-  //uPSI_Series,    *)
+  uPSI_Series,    //*)
   uPSI_uTPLb_HashDsc,
   uPSI_uTPLb_Hash,
   //uPSI_mimeinln,
@@ -2479,20 +2480,20 @@ uses
  uPSI_St2DBarC,
   uPSI_FmxUtils,
   uPSI_CustomDrawTreeView,
- (* uPSI_IdLPR,
-  uPSI_SockRequestInterpreter,  //3.9.9.18  *)
+  uPSI_IdLPR,
+ // uPSI_SockRequestInterpreter,  //3.9.9.18  *)
   uPSI_ulambert,
   //dbchart,  *)
- //uPSI_SimpleDS,
+ uPSI_SimpleDS,
  (* uPSI_DBXSqlScanner,
   uPSI_DBXMetaDataUtil,  *)
- //uPSI_TeEngine,
+ uPSI_TeEngine,
   uPSI_TeeProcs,
   uPSI_TeCanvas,  //((*)      // check fonts   fixed fonts
 
-  //uPSI_Chart,
+  uPSI_Chart,
  // uPSI_MDIEdit,
-  //uPSI_CopyPrsr,
+  //uPSI_CopyPrsr, *)
   //uPSI_SockApp,   *)
   CoolMain,
   uPSI_CoolMain,
@@ -2504,12 +2505,12 @@ uses
   uPSI_BoldFileHandler,
   uPSI_BoldThread, //*)
   uPSI_BoldContainers,
- (* uPSI_BoldQueryUserDlg, *)
+  uPSI_BoldQueryUserDlg, //*)
   uPSI_BoldWinINet,
- (* uPSI_BoldQueue,
+  uPSI_BoldQueue,     //*)
   uPSI_JvPcx,
   uPSI_IdWhois,
-  uPSI_IdWhoIsServer,
+ (* uPSI_IdWhoIsServer,
   uPSI_IdGopher,
   uPSI_IdDateTimeStamp,
   uPSI_IdDayTimeServer,
@@ -2523,12 +2524,12 @@ uses
   uPSI_IdGopherServer,
   uPSI_IdQotdServer,
   uPSI_IdFingerServer,
-  uPSI_IdDNSResolver,
-  //uPSI_IdUserAccounts, *)
+  uPSI_IdDNSResolver,  *)
+  //uPSI_IdUserAccounts, redeclare//*)
   //uPSI_StDecMth,
   uPSI_DSUtil,
     teeprocs,
-  //series,  to 2007*)
+  //series,  //to 2007*)
   uPSI_cPEM,             //3.9.6
   uPSI_xmlutil, //3.2  XML    *)
  uPSI_MaskUtils, //3.5  *)
@@ -2542,8 +2543,8 @@ uses
   uPSI_Contnrs,
   uPSI_MyBigInt,
   uPSI_SOAPHTTPClient,
- (* uPSI_VCLScannerIntf,
-  uPSI_VCLScannerImpl, *)
+  uPSI_VCLScannerIntf,
+  uPSI_VCLScannerImpl, //*)
   uPSI_StdConvs,
   uPSI_Midas,                 //V4
 
@@ -2566,21 +2567,21 @@ uses
   uPSI_JclFileUtils,   //*)
   uPSI_JvAnalogClock,    //3.9.7
   uPSI_JvAlarms,
-(* uPSI_JvSQLS,
-  uPSI_JvDBSecur,
-  uPSI_JvDBQBE, *)
+// uPSI_JvSQLS,
+  //uPSI_JvDBSecur,
+  //uPSI_JvDBQBE, *)
   uPSI_JvStarfield,
  // uPSI_JVCLMiscal,
  uPSI_JvProfiler32,
-  //uPSI_IdAuthentication,
+  //uPSI_IdAuthentication,     redeclare
 (*  uPSI_IdRFCReply,        //3.9.75
-  uPSI_IdIdentServer,
-  uPSI_IdIdent,   *)
+  uPSI_IdIdentServer,   *)
+  uPSI_IdIdent,   //*)
   //uPSI_StNetCon,     redeclaer
   uPSI_StNet,
   uPSI_StNetPfm,
   uPSI_JvPatchFile,  //*)
-  //uPSI_SynMemo,
+ //uPSI_SynMemo,    redeclare
   uPSI_IdASN1Util,
   uPSI_IdHashCRC,
    uPSI_IdHash, //*)
@@ -2596,18 +2597,18 @@ uses
   uPSI_IdSysLogServer,
   uPSI_IdTimeServer,
   uPSI_IdTimeUDP,
-  uPSI_IdTimeUDPServer,
+  uPSI_IdTimeUDPServer,   *)
 
   uPSI_IdDayTime,
-  uPSI_IdEMailAddress,
+ (* uPSI_IdEMailAddress,
   uPSI_IdMessage,
   uPSI_IdMessageClient,
   uPSI_IdSMTP,
   uPSI_IdPOP3,
-  uPSI_IdMailBox,
-  uPSI_IdQotd,
+  uPSI_IdMailBox,   *)
+  uPSI_IdQotd, //*)
   uPSI_IdTelnet,
-  uPSI_IdNetworkCalculator,      f
+ (* uPSI_IdNetworkCalculator,      f
   uPSI_IdFinger,
   uPSI_IdIcmpClient,
   uPSI_IdUDPBase,
@@ -2616,15 +2617,15 @@ uses
   uPSI_IdTrivialFTP,   *)
   uPSI_LinarBitmap,
   uPSI_PNGLoader,
-  // WinForm1,
+  // WinForm1,    redeclare
   CRC32, // *)
   gsutils, //3.5
-  //reversiMain,
+  reversiMain,
  // SynEditMarkupHighAll,  //3.9.8.9 beta   *)
   uHighlighterProcs,
   uPSI_ufft,
- (* uPSI_DBXChannel,
-  uPSI_DBXIndyChannel,
+ // uPSI_DBXChannel,
+  //uPSI_DBXIndyChannel, *)
   VCLScannerIntf,
   SOAPHTTPClient, //Test for WS  *)
   uPSI_interface2_so,     //----------exports for DLL func  *)
@@ -2922,15 +2923,15 @@ begin
   SIRegister_fplotMain(X);   //*)
   SIRegister_uJSON(X);
 (*  SIRegister_EncdDecd(X);
-  SIRegister_SockAppReg(X);
-  SIRegister_Reversi(X);  *)
+  SIRegister_SockAppReg(X);    *)
+  SIRegister_Reversi(X);  //*)
   SIRegister_Textures(X);
  SIRegister_MyGrids(X);
   SIRegister_SortGrid(X);
 (*  SIRegister_JvExControls(X);
   SIRegister_JvBDEMemTable(X);  *)
   SIRegister_yuvconverts(X);
- // SIRegister_PsAPI(X);  *)
+ SIRegister_PsAPI(X);  //*)
   SIRegister_ovcurl(X);
   SIRegister_ovcuser(X);
   SIRegister_ovccolor(X);
@@ -2970,10 +2971,10 @@ begin
   SIRegister_Contnrs(X);
  SIRegister_MyBigInt(X); //*)
   SIRegister_StdConvs(X);
- // SIRegister_ConvUtils(X);
+  SIRegister_ConvUtils(X);
   SIRegister_SOAPHTTPClient(X);  //HTTPRIO
-  //SIRegister_VCLScannerIntf(X);
-  //SIRegister_VCLScannerImpl(X);  *)
+  SIRegister_VCLScannerIntf(X);
+  SIRegister_VCLScannerImpl(X);  //*)
   SIRegister_FMTBcd(X);
   SIRegister_Midas(X);
   SIRegister_Provider(X);  //*)
@@ -3169,17 +3170,17 @@ begin
   SIRegister_IdHashSHA1(X);
   SIRegister_IdLogFile(X);
   SIRegister_IdTime(X);
- (* SIRegister_IdDayTime(X);
+  SIRegister_IdDayTime(X);
  // SIRegister_IdGlobal(X);
-  SIRegister_IdEMailAddress(X);
+(*  SIRegister_IdEMailAddress(X);
   SIRegister_IdMessage(X);
   SIRegister_IdMessageClient(X);
   SIRegister_IdSMTP(X);
   SIRegister_IdPOP3(X);
-  SIRegister_IdMailBox(X);
+  SIRegister_IdMailBox(X);*)
   SIRegister_IdQotd(X);
   SIRegister_IdTelnet(X);
-  SIRegister_IdNetworkCalculator(X);
+ (* SIRegister_IdNetworkCalculator(X);
   SIRegister_IdFinger(X);
   SIRegister_IdIcmpClient(X);
   SIRegister_IdUDPBase(X);
@@ -3195,8 +3196,8 @@ begin
   SIRegister_IdMessageCollection(X);
   SIRegister_IdDNSResolver(X);
   //SIRegister_IdRFCReply(X);   //3.9.7.5
-  SIRegister_IdIdentServer(X);
-  SIRegister_IdIdent(X);    *)
+  SIRegister_IdIdentServer(X);  *)
+  SIRegister_IdIdent(X);    //*)
   SIRegister_IdEcho(X);
   SIRegister_IdEchoServer(X);
   //SIRegister_IdEchoUDP(X);
@@ -3244,13 +3245,14 @@ begin
   SIRegister_DbxSocketChannelNative(X);
   SIRegister_DBXClient(X);   //*)
   SIRegister_IdLogEvent(X);
- (* SIRegister_IdSMTPServer(X);
-  SIRegister_Geometry(X); *)
+ (* SIRegister_IdSMTPServer(X);    *)
+  SIRegister_Geometry(X); //*)
   SIRegister_IB(X);
   SIRegister_IBX(X);
  // SIRegister_IWDBCommon(X);
   SIRegister_IBScript(X);   //*)
- (* SIRegister_JvCSVBaseControls(X);      //*)
+  SIRegister_JvCSVBaseControls(X);      //*)
+ SIRegister_JvFullColorForm(X);
   SIRegister_JvShellHook(X);
   SIRegister_Jvg3DColors(X);
   SIRegister_JvSHFileOperation(X);
@@ -3460,6 +3462,7 @@ begin
  SIRegister_JvDateTimePicker(X);
   SIRegister_JvEasterEgg(X);
   SIRegister_JvCreateProcess(X);    //*)
+  SIRegister_JvDatePickerEdit(X);
   SIRegister_WinSvc(X); //*)
   SIRegister_SvcMgr(X);
   SIRegister_WinSvc2(X);
@@ -3474,8 +3477,8 @@ begin
  SIRegister_U_HexView(X);
  SIRegister_UWavein4(X);
  SIRegister_AMixer(X);
- //SIRegister_JvArrow(X);
- //SIRegister_JvaScrollText(X);      //*)
+ SIRegister_JvArrow(X);
+ SIRegister_JvaScrollText(X);      //*)
  SIRegister_UrlMon(X);  //types also in wininet
  SIRegister_U_Oscilloscope4(X); //*)
  SIRegister_DFFUtils(X);
@@ -3561,7 +3564,7 @@ SIRegister_AdPacket(X);
  SIRegister_cTCPBuffer(X); //*)
  SIRegister_Glut(X);    //*)
  SIRegister_LEDBitmaps(X);
- //SIRegister_FileClass(X);
+ SIRegister_FileClass(X);
  SIRegister_FileUtilsClass(X);
  SIRegister_ComPortInterface(X);
  SIRegister_SwitchLed(X);
@@ -3616,8 +3619,8 @@ SIRegister_cySearchFiles(X);
  SIRegister_StSaturn(X);
  SIRegister_JclParseUses(X);
  SIRegister_JvFinalize(X);     //3.9.9.120
-(* SIRegister_panUnit1(X);
- SIRegister_DD83u1(X);   *)
+(* SIRegister_panUnit1(X);   *)
+ SIRegister_DD83u1(X);   //*)
  SIRegister_BigIni(X);  //*)
  SIRegister_ShellCtrls(X);
  SIRegister_fmath(X);
@@ -3674,9 +3677,9 @@ SIRegister_cySearchFiles(X);
   SIRegister_MTMainForm(X);
 (*  SIRegister_DdeMan(X);  *)
   SIRegister_DIUtils(X);  //3.9.9.195
-(*  SIRegister_gnugettext(X);
+(*  SIRegister_gnugettext(X);    *)
   SIRegister_Xmlxform(X);
-  SIRegister_SvrHTTPIndy(X);   *)
+  //SIRegister_SvrHTTPIndy(X);   //*)
   SIRegister_CPortTrmSet(X);
   SIRegister_HTTPProd(X);                    //V4   mX4  - 44 units
 
@@ -3700,7 +3703,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_PersistSettings(X);
  SIRegister_SynEditAutoComplete(X);
   SIRegister_SynEditTextBuffer(X);
- (* SIRegister_JclPCRE(X);
+  SIRegister_JclPCRE(X);
   //RIRegister_JclPCRE_Routines(Exec);  *)
   SIRegister_ChessBrd(X);
   SIRegister_ChessPrg(X);
@@ -3970,11 +3973,11 @@ SIRegister_cySearchFiles(X);
   SIRegister_PJStreamWrapper(X);   //*)
   SIRegister_LatLonDist(X);
   SIRegister_cHash(X);
- // SIRegister_commDriver(X);
-  //SIRegister_PXLNetComs(X);
-  //SIRegister_PXLTiming(X);
+ SIRegister_commDriver(X);
+  SIRegister_PXLNetComs(X);
+  SIRegister_PXLTiming(X);
   SIRegister_Odometer(X);        //47110
-  //SIRegister_UIntList(X);
+  SIRegister_UIntList(X);
   SIRegister_UIntegerpartition(X);
   SIRegister_API_strings(X);
  (* SIRegister_idCGIRunner(X);
@@ -4056,33 +4059,33 @@ SIRegister_cySearchFiles(X);
   //uPSI_IdIPMCastBase;
   SIRegister_IdIPMCastBase(X);
   SIRegister_IdIPMCastServer(X);
-  SIRegister_IdIPMCastClient(X);
+  SIRegister_IdIPMCastClient(X);  *)
   SIRegister_IdRawHeaders(X);
   SIRegister_IdRawClient(X);
   SIRegister_IdRawFunctions(X);
   SIRegister_IdTCPStream(X);
-  SIRegister_IdSNPP(X);   *)
+  SIRegister_IdSNPP(X);   //*)
   SIRegister_St2DBarC(X);
   SIRegister_ImageWin(X);
- // SIRegister_FmxUtils(X);
- // SIRegister_CustomDrawTreeView(X);
+  SIRegister_FmxUtils(X);
+  SIRegister_CustomDrawTreeView(X);
   SIRegister_GraphWin(X);
   SIRegister_StSpawn(X);  //*)
   SIRegister_actionMain(X);
   SIRegister_CtlPanel(X);
- (* SIRegister_IdLPR(X);
-  SIRegister_SockRequestInterpreter(X);  *)
+  SIRegister_IdLPR(X);
+ (* SIRegister_SockRequestInterpreter(X);  out *)
   SIRegister_ulambert(X);
-(*  SIRegister_SimpleDS(X);
-  SIRegister_DBXSqlScanner(X);
+  SIRegister_SimpleDS(X);
+ (* SIRegister_DBXSqlScanner(X);
   SIRegister_DBXMetaDataUtil(X);    *)
   SIRegister_TeeProcs(X);
   SIRegister_TeCanvas(X);    //TEcanvas
   //SIRegister_TeeProcs(X);
-(*  SIRegister_TeEngine(X);
+  SIRegister_TeEngine(X);   //*)
   SIRegister_Chart(X);     //3.9.9.20!
   SIRegister_Series(X);  //4.2.6.10     *)
-
+    //TEEChart 64b
   SIRegister_CopyPrsr(X);
  (* SIRegister_SockApp(X);   *)
   SIRegister_MDIEdit(X);
@@ -4098,11 +4101,11 @@ SIRegister_cySearchFiles(X);
   SIRegister_BoldFileHandler(X);
   SIRegister_BoldThread(X); //*)
   SIRegister_BoldWinINet(X);
- (* SIRegister_BoldQueryUserDlg(X);
-  SIRegister_BoldQueue(X);
+  SIRegister_BoldQueryUserDlg(X);
+  SIRegister_BoldQueue(X); //*)
   SIRegister_JvPcx(X);
   SIRegister_IdWhois(X);
-  SIRegister_IdWhoIsServer(X);
+ (* SIRegister_IdWhoIsServer(X);
   SIRegister_IdGopher(X);
   SIRegister_IdDiscardServer(X);
   SIRegister_IdDiscardUDPServer(X);
@@ -4366,10 +4369,10 @@ begin
   RIRegister_LatLonDist_Routines(Exec);
   RIRegister_cHash_Routines(Exec);
   RIRegister_AHash(X);
- // RIRegister_commDriver(X);
- // RIRegister_PXLNetComs(X);
- // RIRegister_PXLTiming_Routines(Exec);
- // RIRegister_PXLTiming(X);
+  RIRegister_commDriver(X);
+  RIRegister_PXLNetComs(X);
+  RIRegister_PXLTiming_Routines(Exec);
+  RIRegister_PXLTiming(X);
   RIRegister_Odometer(X);        //47110
   RIRegister_UIntList(X);
   RIRegister_UIntegerpartition(X);
@@ -4529,8 +4532,8 @@ begin
   RIRegister_IdIrcServer(X);
   RIRegister_IdMessageCollection(X);
   RIRegister_IdRFCReply(X);
-  RIRegister_IdIdentServer(X);
-  RIRegister_IdIdent(X);  *)
+  RIRegister_IdIdentServer(X);  *)
+  RIRegister_IdIdent(X);  //*)
   RIRegister_IdEcho(X);
   RIRegister_IdEchoServer(X);
   //SIRegister_IdEchoUDP(X);
@@ -4926,10 +4929,10 @@ begin
   RIRegister_Contnrs_Routines(Exec);
   RIRegister_MyBigInt(X); //*)
   RIRegister_StdConvs_Routines(Exec);
-  //RIRegister_ConvUtils(X);
-  //RIRegister_ConvUtils_Routines(Exec);
+  RIRegister_ConvUtils(X);
+  RIRegister_ConvUtils_Routines(Exec);
   RIRegister_SOAPHTTPClient(X);
-  //RIRegister_VCLScannerImpl(X);
+  RIRegister_VCLScannerImpl(X);
   //RIRegister_SynEditKeyCmds_Routines(Exec);
   //RIRegister_SynEditKeyCmds(X);
   RIRegister_SynMacroRecorder(X);  //*)
@@ -4953,24 +4956,24 @@ begin
   RIRegister_SynHighlighterDfm_Routines(Exec);
   RIRegister_SynHighlighterDfm(X);  //*)
   RIRegister_ImageWin(X);
-  //RIRegister_CustomDrawTreeView(X);
+  RIRegister_CustomDrawTreeView(X);
   RIRegister_GraphWin(X);
   RIRegister_StSpawn(X);  //*)
   RIRegister_actionMain(X);
  RIRegister_CtlPanel(X);
   RIRegister_CtlPanel_Routines(Exec);
-(*  RIRegister_IdLPR(X);
-  RIRegister_SockRequestInterpreter(X);  *)
+  RIRegister_IdLPR(X);
+ (* RIRegister_SockRequestInterpreter(X);  *)
   RIRegister_ulambert_Routines(Exec);
- (* RIRegister_SimpleDS(X);
-  RIRegister_DBXSqlScanner(X);
+  RIRegister_SimpleDS(X);
+ (* RIRegister_DBXSqlScanner(X);
   RIRegister_DBXMetaDataUtil(X);   *)
   RIRegister_TeeProcs(X);
   RIRegister_TeeProcs_Routines(Exec);
   RIRegister_TeCanvas_Routines(Exec);
   RIRegister_TeCanvas(X);
- (* RIRegister_TeEngine(X);
-  RIRegister_TeEngine_Routines(Exec);
+  RIRegister_TeEngine(X);
+  RIRegister_TeEngine_Routines(Exec); // *)
   RIRegister_Chart(X);
   RIRegister_Chart_Routines(Exec);
   RIRegister_Series_Routines(Exec);
@@ -4989,12 +4992,12 @@ begin
   RIRegister_BoldFileHandler(X);
   RIRegister_BoldThread(X);    //*)
   RIRegister_BoldContainers(X);
-(*  RIRegister_BoldQueryUserDlg(X);
+  RIRegister_BoldQueryUserDlg(X);
   RIRegister_BoldQueryUserDlg_Routines(Exec);
   RIRegister_BoldWinINet_Routines(Exec);
   RIRegister_BoldQueue(X);
   RIRegister_BoldQueue_Routines(Exec);
-  RIRegister_IdMappedPortTCP(X);
+ (* RIRegister_IdMappedPortTCP(X);
   RIRegister_IdMappedFTP(X);
   RIRegister_IdMappedPortUDP(X);   *)
   RIRegister_MSysUtils_Routines(Exec);
@@ -5073,9 +5076,9 @@ begin
   RIRegister_DbxSocketChannelNative(X);
   RIRegister_DBXClient(X);  //*)
   RIRegister_IdLogEvent(X);
- (* RIRegister_Reversi_Routines(Exec);
-  RIRegister_IdSMTPServer(X);
-  RIRegister_Geometry_Routines(Exec);  *)
+  RIRegister_Reversi_Routines(Exec);
+ (* RIRegister_IdSMTPServer(X);     *)
+  RIRegister_Geometry_Routines(Exec);  //*)
   RIRegister_Textures(X);        //3.9.9.81
   RIRegister_IBX(X);
   RIRegister_IBSQL_Routines(Exec);
@@ -5089,6 +5092,7 @@ begin
   RIRegister_JvCSVBaseControls(X); //*)
   RIRegister_JvShellHook(X);
   RIRegister_JvShellHook_Routines(Exec);
+  RIRegister_JvFullColorForm(X);
   RIRegister_Jvg3DColors(X);
   RIRegister_JvSHFileOperation(X);
   RIRegister_uFilexport(X);
@@ -5205,7 +5209,7 @@ begin
   RIRegister_AsyncTimer(X);  //*)
   RIRegister_ApplicationFileIO(X);
   RIRegister_ApplicationFileIO_Routines(Exec);
- (* RIRegister_PsAPI_Routines(Exec);  *)
+  RIRegister_PsAPI_Routines(Exec);  //*)
   RIRegister_ovcurl(X);
   RIRegister_ovcuser(X);
  (* RIRegister_ovcvlb(X);   *)
@@ -5361,6 +5365,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_JvDateTimePicker(X);
   RIRegister_JvEasterEgg(X);
   RIRegister_JvCreateProcess(X);   //*)
+  RIRegister_JvDatePickerEdit(X);
   RIRegister_WinSvc_Routines(Exec);
   RIRegister_WinSvc2_Routines(Exec);  // *)
 
@@ -5377,8 +5382,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_U_HexView(X);
   RIRegister_UWavein4(X);
   RIRegister_AMixer(X);
-  //RIRegister_JvArrow(X);
-  //RIRegister_JvaScrollText(X);
+  RIRegister_JvArrow(X);
+  RIRegister_JvaScrollText(X);
   RIRegister_U_Oscilloscope4(X); // *)
   RIRegister_DFFUtils_Routines(Exec);
   RIRegister_TPrimes(X);     //*)
@@ -5480,7 +5485,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_cTCPBuffer(X); //*)
   RIRegister_Glut_Routines(Exec);      //*)
   RIRegister_LEDBitmaps_Routines(Exec);
- // RIRegister_FileClass(X);
+  RIRegister_FileClass(X);
   RIRegister_FileUtilsClass(X);
   RIRegister_ComPortInterface(X);
   RIRegister_SwitchLed(X);
@@ -5603,8 +5608,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_JclParseUses(X);
   RIRegister_JclParseUses_Routines(Exec);
   RIRegister_JvFinalize_Routines(Exec);  //3.9.9.120
- (* RIRegister_panUnit1(X);
-  RIRegister_DD83u1(X);   *)
+ (* RIRegister_panUnit1(X);    *)
+  RIRegister_DD83u1(X);   //*)
   RIRegister_BigIni(X);
   RIRegister_BigIni_Routines(Exec);   //*)
   RIRegister_ShellCtrls(X);
@@ -5675,10 +5680,10 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_DIUtils(X);
   RIRegister_DIUtils_Routines(Exec);
  (* RIRegister_gnugettext_Routines(Exec);
-  RIRegister_TGnuGettextInstance(X);   //3.9.9.195
+  RIRegister_TGnuGettextInstance(X);   //3.9.9.195     *)
   RIRegister_Xmlxform(X);
   RIRegister_Xmlxform_Routines(Exec);
-  RIRegister_SvrHTTPIndy(X);
+(* RIRegister_SvrHTTPIndy(X);
   RIRegister_SvrHTTPIndy_Routines(Exec);  *)
   RIRegister_CPortTrmSet(X);
   RIRegister_CPortTrmSet_Routines(Exec); //3.9.9.195
@@ -5710,8 +5715,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_PersistSettings(X);
   RIRegister_SynEditAutoComplete(X);
   RIRegister_SynEditTextBuffer(X);
- (* RIRegister_JclPCRE(X);
-  RIRegister_JclPCRE_Routines(Exec);    *)
+  RIRegister_JclPCRE(X);
+  RIRegister_JclPCRE_Routines(Exec);   // *)
   RIRegister_ChessBrd(X);
   RIRegister_ChessPrg(X);    //Form
    RIRegister_Graph3D(X);
@@ -5887,22 +5892,22 @@ RIRegister_DSUtil_Routines(Exec);
  (* RIRegister_IdHL7(X);
   RIRegister_IdIPMCastBase(X);
   RIRegister_IdIPMCastServer(X);
-  RIRegister_IdIPMCastClient(X);
+  RIRegister_IdIPMCastClient(X);   *)
   //RIRegister_IdRawHeaders(X);
   RIRegister_IdRawClient(X);
   RIRegister_IdRawFunctions_Routines(Exec);
   RIRegister_IdTCPStream(X);
-  RIRegister_IdSNPP(X);  *)
+  RIRegister_IdSNPP(X);  //*)
   RIRegister_St2DBarC(X);
-(*  RIRegister_FmxUtils_Routines(Exec);
-  RIRegister_SockApp(X);  *)
+  RIRegister_FmxUtils_Routines(Exec);
+  //RIRegister_SockApp(X);  *)
   RIRegister_CoolMain(X);    //*)
   RIRegister_StCRC_Routines(Exec);
  RIRegister_SynDBEdit(X);
   RIRegister_SynEditWildcardSearch(X);
-(*  RIRegister_JvPcx(X);
-  RIRegister_IdWhois(X);
-  RIRegister_IdWhoIsServer(X);
+  RIRegister_JvPcx(X);
+ RIRegister_IdWhois(X);
+(*  RIRegister_IdWhoIsServer(X);
   RIRegister_IdGopher(X);
   RIRegister_IdDateTimeStamp(X);
   RIRegister_IdDiscardServer(X);
@@ -5937,7 +5942,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_IdHashSHA1(X);
  RIRegister_IdLogFile(X);
   RIRegister_IdTime(X);
-(* RIRegister_IdDayTime(X);   *)
+ RIRegister_IdDayTime(X);   //*)
   RIRegister_IdGlobal(X);
   RIRegister_IdGlobal_Routines(exec);
  (* RIRegister_IdEMailAddress(X);
@@ -5945,10 +5950,10 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_IdMessageClient(X);
   RIRegister_IdSMTP(X);
   RIRegister_IdPOP3(X);
-  RIRegister_IdMailBox(X);
+  RIRegister_IdMailBox(X);   *)
   RIRegister_IdQotd(X);
   RIRegister_IdTelnet(X);
-  RIRegister_IdNetworkCalculator(X);
+ (* RIRegister_IdNetworkCalculator(X);
   RIRegister_IdFinger(X);
   RIRegister_IdIcmpClient(X);
   RIRegister_IdUDPBase(X);
@@ -11209,7 +11214,7 @@ begin
   memo1.Refresh; //2.8.1
   //debug statusBar1.SimpleText:= ' editior changed';
   memo1.SetBookmark(3,2,memo1.carety);
-  //statusBar1.panels[2].text:= ' M!'+' T:'+intToStr(numprocessthreads);
+  statusBar1.panels[2].text:= ' M!'+' T:'+intToStr(numprocessthreads);
   memo1.Gutter.BorderColor:= clwebyellow;  //clweblightyellow;
 end;
 
@@ -11717,10 +11722,10 @@ begin
 end;
 
 procedure Tmaxform1.Reversi1Click(Sender: TObject);
-//var revfrm: TmForm;
+var revfrm: TmForm;
 begin
   //othello
- {mform:= TmForm.Create(self);
+ mform:= TmForm.Create(self);
   try
     mForm.Cursor:= CRHandpoint;
     mform.ShowModal;
@@ -11728,7 +11733,7 @@ begin
   finally
     mForm.Cursor:= CRDefault;
     mform.Free;
-  end;   }
+  end;   //}
 end;
 
 procedure Tmaxform1.Richedit1Click(Sender: TObject);
@@ -12575,6 +12580,7 @@ end;
     RegisterMethod(@TJvMail.Destroy, 'Free');
      RegisterMethod(@TKCustomColors.Assign, 'Assign');
          RegisterPublishedProperties;}  //RIRegister_KMessageBox_Routines
+
    //  with CL.AddClassN(CL.FindClass('TObjectList'),'TKObjectList') do
    //{ CL.AddClassN(CL.FindClass('Class of TIdAuthentication'),'TIdAuthenticationClass');   //3.8
   //CL.AddTypeS('TIdAuthenticationClass', 'class of TIdAuthentication');
