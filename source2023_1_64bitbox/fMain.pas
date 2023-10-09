@@ -1850,11 +1850,11 @@ uses
   uPSI_asn1util,
   uPSI_dnssend,
  (* uPSI_clamsend,
-  uPSI_ldapsend,
+  uPSI_ldapsend,   *)
   uPSI_mimemess,
-  uPSI_slogsend,
+  uPSI_slogsend, //*)
   uPSI_mimepart,
-  uPSI_mimeinln,  *)
+  //uPSI_mimeinln,  *)
   uPSI_ftpsend,
   uPSI_ftptsend,  // *)
   uPSI_httpsend,
@@ -1885,7 +1885,7 @@ uses
   uPSI_udf_glob,
   //uPSI_TabGrid,
   uPSI_JsDBTreeView,
- (* uPSI_JsSendMail, *)
+  uPSI_JsSendMail, //*)
   //uPSI_dbTvRecordList,  *)
   uPSI_TreeVwEx,
  // uPSI_ECDataLink,
@@ -2319,7 +2319,7 @@ uses
   //uPSI_SendMail_For_Ewb, //*)
   uPSI_MaskEdit,
   uPSI_SimpleRSSTypes,
-  //uPSI_SimpleRSS,           //4.7.2.82
+  uPSI_SimpleRSS,           //4.7.2.82
   //uPSI_psULib,
   //uPSI_rfc1213ip,
  (* uPSI_rfc1213util,  *)
@@ -2366,8 +2366,8 @@ uses
   uPSI_JclTimeZones,
   uPSI_XmlDocRssParser,
   uPSI_RssParser,
-  //uPSI_SimpleParserRSS,
-  //uPSI_SimpleRSSUtils, //*)
+  uPSI_SimpleParserRSS,
+  uPSI_SimpleRSSUtils, //*)
   uPSI_StrUtil,
  // uPSI_TAChartUtils,  // *)
    //Python Section
@@ -2440,7 +2440,7 @@ uses
   uPSI_SHDocVw,       //twebbrowser   or edge
   uPSI_xutils,
   uPSI_ietf,          //4.2.4.80
-  //uPSI_iso3166,*)
+  //uPSI_iso3166,*  missing)
   uPSI_dateutil,      //real
   uPSI_dateext4,      //4.2.4.80_2
   uPSI_locale,   //*)
@@ -2465,7 +2465,7 @@ uses
   uPSI_Series,    //*)
   uPSI_uTPLb_HashDsc,
   uPSI_uTPLb_Hash,
-  //uPSI_mimeinln,
+  uPSI_mimeinln,
   uPSI_UTime, // UTime,  *)
   uPSI_uTPLb_StreamCipher,    //4.2.8.10
   uPSI_uTPLb_BlockCipher,
@@ -3416,11 +3416,11 @@ begin
   SIRegister_asn1util(X);
   SIRegister_dnssend(X);
  (* SIRegister_ldapsend(X);
-  SIRegister_clamsend(X);
-  SIRegister_slogsend(X);
+  SIRegister_clamsend(X);  *)
+  SIRegister_slogsend(X);  //*)
   SIRegister_mimepart(X);
-  SIRegister_mimemess(X);
-  SIRegister_mimeinln(X);  *)
+  SIRegister_mimemess(X);  // *)
+  SIRegister_mimeinln(X);  //*)
   SIRegister_ftpsend(X);
   SIRegister_ftptsend(X);    //*)
   SIRegister_httpsend(X);
@@ -3444,7 +3444,7 @@ begin
   SIRegister_udf_glob(X);
  (* SIRegister_TabGrid(X);  *)
   SIRegister_JsDBTreeView(X);
-  //SIRegister_JsSendMail(X);         //3.9.9.92     *)
+  SIRegister_JsSendMail(X);         //3.9.9.92     *)
   SIRegister_Wwstr(X);
 (*  SIRegister_dblookup(X);
   SIRegister_Printgri(X);   *)
@@ -3846,8 +3846,8 @@ SIRegister_cySearchFiles(X);
    SIRegister_EwbUrl(X);    //*)
   SIRegister_MaskEdit(X);
   SIRegister_SimpleRSSTypes(X);
- (* SIRegister_SimpleRSS(X);          //4.7.2.80    dep to indy
-  SIRegister_psULib(X);
+  SIRegister_SimpleRSS(X);          //4.7.2.80    dep to indy
+ (* SIRegister_psULib(X);
   SIRegister_psUFinancial(X);
   SIRegister_rfc1213util(X);    *)
   SIRegister_JTools(X);  //*)
@@ -3888,8 +3888,8 @@ SIRegister_cySearchFiles(X);
   SIRegister_XmlDocRssParser(X);
   SIRegister_RssModel(X);
   SIRegister_RssParser(X);
-(*  SIRegister_SimpleParserRSS(X);
-  SIRegister_SimpleRSSUtils(X);    *)
+  SIRegister_SimpleParserRSS(X);
+  SIRegister_SimpleRSSUtils(X);    //*)
   SIRegister_StrUtil(X);   //*)
   SIRegister_PythonEngine(X);
   SIRegister_VclPythonGUIInputOutput(X);
@@ -4410,8 +4410,8 @@ begin
   RIRegister_MaskEdit(X);
   RIRegister_MaskEdit_Routines(Exec);
   RIRegister_SimpleRSSTypes(X);
- (* RIRegister_SimpleRSS(X);    //4.7.2.82
-  RIRegister_psULib_Routines(Exec);
+ RIRegister_SimpleRSS(X);    //4.7.2.82
+ (* RIRegister_psULib_Routines(Exec);
   RIRegister_psUFinancial_Routines(Exec);
   RIRegister_rfc1213util_Routines(Exec);    *)
   RIRegister_JTools_Routines(Exec);
@@ -4464,9 +4464,9 @@ begin
   RIRegister_XmlDocRssParser(X);
   RIRegister_RssParser_Routines(Exec);
   RIRegister_RssModel(X);
- (* RIRegister_SimpleParserRSS(X);
+  RIRegister_SimpleParserRSS(X);
   //RIRegister_SimpleRSSUtils(X);
-  RIRegister_SimpleRSSUtils_Routines(Exec);   *)
+  RIRegister_SimpleRSSUtils_Routines(Exec);   //*)
   RIRegister_StrUtil_Routines(Exec);
   RIRegister_StrUtil(X);    //*)
   RIRegister_PythonEngine_Routines(Exec);
@@ -5300,17 +5300,17 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_dnssend_Routines(Exec);
  (* RIRegister_ldapsend(X);
   RIRegister_clamsend(X);
-  RIRegister_ldapsend_Routines(Exec);
+  RIRegister_ldapsend_Routines(Exec);     *)
   RIRegister_slogsend(X);
   RIRegister_mimemess(X);
   RIRegister_slogsend_Routines(Exec);
   RIRegister_mimepart(X);
-  RIRegister_mimepart_Routines(Exec);
-  RIRegister_mimeinln_Routines(Exec);  *)
+  RIRegister_mimepart_Routines(Exec);  //*)
+  RIRegister_mimeinln_Routines(Exec);  //*)
   RIRegister_ftpsend(X);
   RIRegister_ftptsend(X);  //*)
   RIRegister_httpsend(X);
-//  RIRegister_ftpsend_Routines(Exec);
+ RIRegister_ftpsend_Routines(Exec);
   RIRegister_httpsend_Routines(Exec);
   RIRegister_sntpsend(X);
   RIRegister_snmpsend(X);
@@ -5338,7 +5338,7 @@ RIRegister_DSUtil_Routines(Exec);
   //RIRegister_TabGrid(X);
   RIRegister_udf_glob_Routines(Exec);
   RIRegister_JsDBTreeView(X);
-  //RIRegister_JsSendMail(X);         //3.9.9.92     *)
+  RIRegister_JsSendMail(X);         //3.9.9.92     *)
   RIRegister_Wwstr_Routines(exec);
  (* RIRegister_dblookup(X);
   RIRegister_dbTvRecordList(X);  *)
