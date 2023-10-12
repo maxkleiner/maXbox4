@@ -198,8 +198,8 @@
           12541   5.0.1.14 maxform1. reflection utf8decode for loadfile, umath, getwebscript, jvchart
           12542   5.0.1.15 maxform1. madexcept utf8decode for loadfile, umath, getwebscript, jvchart
           12584   5.0.1.17 GPS2, ADOTest, ADODB, GPS, VendorTestFramework , dmath2 ,statmach, uPSI_SHDocVw;
-          12600   5.0.1.17 unit SynEditMiscClasses2;,unit SynEdit2; prepare for Clear or TrackChanges;
-          12600   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix
+          12600   5.0.1.18 unit SynEditMiscClasses2;,unit SynEdit2; prepare for Clear or TrackChanges;
+          12629   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx
  ************************************************************************************* }
 
 unit fMain;
@@ -637,7 +637,8 @@ type
     ShowIndent1: TMenuItem;
     JumptoTerminal1: TMenuItem;
     JumptoOutput1: TMenuItem;
-    memo1: TSynEdit;      //SynEdit1
+    memo1: TSynEdit;
+    Collapse1: TMenuItem;      //SynEdit1
     procedure IFPS3ClassesPlugin1CompImport(Sender: TObject; x: TPSPascalCompiler);
     procedure IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TPSExec; x: TPSRuntimeClassImporter);
     procedure PSScriptCompile(Sender: TPSScript);
@@ -916,6 +917,7 @@ type
     procedure ShowIndent1Click(Sender: TObject);
     procedure JumptoTerminal1Click(Sender: TObject);
     procedure JumptoOutput1Click(Sender: TObject);
+    procedure Collapse1Click(Sender: TObject);
     //function PSScriptNeedFile(Sender: TObject; const OrginFileName: AnsiString;
       //var FileName, Output: AnsiString): Boolean;
     //procedure Memo1DropFiles(Sender: TObject; X,Y: Integer; AFiles: TStrings);
@@ -1245,7 +1247,7 @@ uses
   uPSI_StStat,
   uPSI_StNetCon,
   uPSI_StDecMth,     //cont
-  //uPSI_StOStr,    errros
+  uPSI_StOStr,    //errros
   uPSI_StPtrns,
   uPSI_StNetMsg,  //*)
   uPSI_StMath,
@@ -1253,7 +1255,7 @@ uses
   uPSI_StExpLog,
   uPSI_StFirst,
   uPSI_StSort,
-  //uPSI_ActnList, *)
+  uPSI_ActnList, //*)
   uPSI_jpeg,
   uPSI_StRandom,
   uPSI_StDict,
@@ -1323,7 +1325,7 @@ uses
   uPSI_JclNTFS,
   uPSI_JclAppInst,
   uPSI_JvRle,
-  // uPSI_JvRas32,
+  uPSI_JvRas32,
 (*  uPSI_JvImageDrawThread, *)
   uPSI_JvImageWindow,
   //uPSI_JvTransparentForm,
@@ -1420,9 +1422,9 @@ uses
   uPSI_JclShell, //3.9.9.6
   uPSI_JclCOM,
   (*uPSI_GR32_Math,
-  uPSI_GR32_LowLevel,
+  uPSI_GR32_LowLevel,  *)
   uPSI_SimpleHl,
-  uPSI_GR32_Filters,
+ (* uPSI_GR32_Filters,
   uPSI_GR32_VectorMaps,  *)
   uPSI_cXMLFunctions, //*)
   uPSI_JvTimer,
@@ -1518,7 +1520,7 @@ uses
   //uPSI_SynEditMiscProcs, //* redeclare)
   uPSI_BlockSocket,
   //uPSI_IdExtHTTPServer,   filetypetomimetype
- //  uPSI_JclMath,
+   uPSI_JclMath,
 
   ScktMain, //SocketServer   *)
   SvcMgr,       //fix application namespace  to svcmgr.sapplication
@@ -1560,7 +1562,7 @@ uses
   uPSI_IdServerIOHandlerSocket,   *)
   uPSI_IdMessageCoder,
   uPSI_IdMessageCoderMIME,
-  //uPSI_IdMultipartFormData, //cause of http post;    *)
+  uPSI_IdMultipartFormData, //cause of http post;    *)
   uPSI_IdRawBase,
   //uPSI_IdNTLM,  *)
   uPSI_IdNNTP,
@@ -1617,10 +1619,10 @@ uses
  // uPSI_IdCustomHTTPServer, //*)
   IFSI_IdURI,
  IFSI_IdFTP,
- (* uPSI_IdRemoteCMDClient,
-  uPSI_IdRemoteCMDServer,
+  uPSI_IdRemoteCMDClient,
+  uPSI_IdRemoteCMDServer, //*)
   uPSI_IdRexec,
-  uPSI_IdUDPServer,
+ (* uPSI_IdUDPServer,
   uPSI_IdIPWatch,
   uPSI_IdMessageCollection,
   uPSI_IdIrcServer,
@@ -1947,7 +1949,7 @@ uses
   uPSI_UGetParens, //i//n DFFUtils
   uPSI_UGeometry,
   uPSI_UAstronomy, //3.9.9.95
-  //uPSI_USolarSystem,   //4.7.4.62
+  uPSI_USolarSystem,   //4.7.4.62
 
   uPSI_UCardComponentV2,
   uPSI_UTGraphSearch, //*)
@@ -2188,8 +2190,8 @@ uses
   uPSI_VariantRtn,
   uPSI_SqlTxtRtns,    //*)
   uPSI_BSpectrum,
- (* uPSI_IPAddressControl,
-  uPSI_Paradox,  *)
+ uPSI_IPAddressControl,
+  uPSI_Paradox,  //*)
   uPSI_Environ,
   uPSI_GraphicsPrimitivesLibrary,
   uPSI_DrawFigures,
@@ -2212,7 +2214,7 @@ uses
   uPSI_SynCompletionProposal,  //*)
   uPSI_rxAniFile, //*)
   uPSI_ulinfit,     {with usvdfit}
- (* uPSI_JclStringLists,
+  uPSI_JclStringLists,
   //uPSI_ZLib,       obj error   *)
   uPSI_MaxTokenizers,
   uPSI_MaxStrUtils,
@@ -2253,7 +2255,7 @@ uses
   uPSI_IdAntiFreeze,  //4.2.2.95
   uPSI_IdLogStream,
   uPSI_IdThreadSafe,
-  //uPSI_IdThreadMgr,
+  //uPSI_IdThreadMgr,    not found
   uPSI_IdAuthentication,
   uPSI_IdAuthenticationManager, //*)
   uPSI_OverbyteIcsConApp, //*)
@@ -2270,8 +2272,8 @@ uses
   (*uPSI_FannNetwork,  //needs a dll !  *)
   uPSI_RTLDateTimeplus,       //46210   *)
   uPSI_ULog,
- (* uPSI_UThread,
-  uPSI_UTCPIP,    *)
+  uPSI_UThread,
+  //uPSI_UTCPIP,    *)
   uPSI_statmach,           //46310
   uPSI_uTPLb_RSA_Primitives,
   uPSI_UMatrix,
@@ -2305,7 +2307,7 @@ uses
   //uPSI_uWebSocket,
   uPSI_KhFunction,
   uPSI_ALOpenOffice,
-  //uPSI_ALLibPhoneNumber,
+  //uPSI_ALLibPhoneNumber,    need dll
   uPSI_ALExecute2,
  uPSI_ALIsapiHTTP,         //4.7.1.80
   uPSI_uUsb,
@@ -2358,7 +2360,7 @@ uses
   uPSI_flcStringBuilder,
   //uPSI_flcDynArrays,   //*)
   uPSI_flcASCII,
-  //uPSI_flcStringPatternMatcher,
+  uPSI_flcStringPatternMatcher,
   uPSI_flcUnicodeChar, //*)
   uPSI_flcFloats,            //4.7.5.90
   uPSI_SemaphorGrids,        //4.7.5.80
@@ -2369,7 +2371,8 @@ uses
   uPSI_SimpleParserRSS,
   uPSI_SimpleRSSUtils, //*)
   uPSI_StrUtil,
- // uPSI_TAChartUtils,  // *)
+  uPSI_Pas2JSUtils,
+  //uPSI_TAChartUtils,  // *)
    //Python Section
   uPSI_PythonEngine,
   uPSI_VclPythonGUIInputOutput,
@@ -2379,7 +2382,7 @@ uses
   uPSI_WDCCOleVariantEnum,
   uPSI_WDCCWinInet,  //*)
   uPSI_PythonVersions,
-  //uPSI_PythonAction,  // *)
+  uPSI_PythonAction,  // *)
   uPSI_SingleList,          //4.7.5.90
   uPSI_AdMeter,  //*)
   uPSI_neuralvolume,    //maxForm1.memo2.lines.Add('
@@ -2428,7 +2431,7 @@ uses
   uPSI_PSResources,         //4.7.6.20
   uPSI_RestClient,
 
- // uPSI_IdNNTPServer,        //4.2.4.25  *)
+  //uPSI_IdNNTPServer,        //4.2.4.25  *)
   uPSI_UWANTUtils,
   uPSI_OverbyteIcsAsn1Utils,
   //uPSI_SimpleSFTP,  //needs 'CL32.DLL';  &&*)
@@ -2455,7 +2458,7 @@ uses
   uPSI_cHugeInt,          //4.2.5.10
   //uPSI_xBase,
  uPSI_ImageHistogram,
- (* uPSI_WDosDrivers,      //4.2.5.10 IV  *)
+ // uPSI_WDosDrivers,      //  asm 4.2.5.10 IV  *)
   uPSI_cCipherRSA,
   uPSI_CromisStreams,   //4.2.6.10
   uPSI_uTPLb_BinaryUtils,    //*)
@@ -2489,8 +2492,8 @@ uses
   uPSI_ulambert,
   //dbchart,  *)
  uPSI_SimpleDS,
- (* uPSI_DBXSqlScanner,
-  uPSI_DBXMetaDataUtil,  *)
+  uPSI_DBXSqlScanner,
+  uPSI_DBXMetaDataUtil, // *)
  uPSI_TeEngine,
   uPSI_TeeProcs,
   uPSI_TeCanvas,  //((*)      // check fonts   fixed fonts
@@ -2498,7 +2501,7 @@ uses
   uPSI_Chart,
   //uPSI_MDIEdit,  //redeclare
   //uPSI_CopyPrsr, *)
-  //uPSI_SockApp,   *)
+  //uPSI_SockApp,   not found*)
   CoolMain,
   uPSI_CoolMain,
   uPSI_StCRC, //*)
@@ -2515,9 +2518,9 @@ uses
   uPSI_JvPcx,
   uPSI_IdWhois,
  (* uPSI_IdWhoIsServer,
-  uPSI_IdGopher,
+  uPSI_IdGopher,  *)
   uPSI_IdDateTimeStamp,
-  uPSI_IdDayTimeServer,
+(*  uPSI_IdDayTimeServer,
   uPSI_IdDayTimeUDP,
   uPSI_IdDayTimeUDPServer,
   uPSI_IdDICTServer,
@@ -2530,7 +2533,7 @@ uses
   uPSI_IdFingerServer,
   uPSI_IdDNSResolver,  *)
   //uPSI_IdUserAccounts, redeclare//*)
-  //uPSI_StDecMth,
+  //uPSI_StDecMth,     redeclare
   uPSI_DSUtil,
     teeprocs,
   //series,  //to 2007*)
@@ -2540,8 +2543,8 @@ uses
   uPSI_cutils,  cutils, //GetVersionString
   uPSI_BoldUtils,
  uPSI_IdSimpleServer,
-  //uPSI_OpenSSLUtils,
-(*  uPSI_IdSSLOpenSSL,     //3.9.4    *)
+  //uPSI_OpenSSLUtils,   libeay
+//  uPSI_IdSSLOpenSSL,     //3.9.4    *)
   uPSI_PerlRegEx,     //3.9.6
   uPSI_Masks,
   uPSI_Contnrs,
@@ -2563,7 +2566,7 @@ uses
   uPSI_ShadowWnd, //3.8   *)
   uPSI_ToolWin,
   //uPSI_Tabs, //redecalre*)
-  //uPSI_JclGraphUtils,
+  //uPSI_JclGraphUtils,  not found
   uPSI_JclCounter,  //*)
   uPSI_JclSysInfo,
   uPSI_JclSecurity,
@@ -2572,14 +2575,14 @@ uses
   uPSI_JvAnalogClock,    //3.9.7
   uPSI_JvAlarms,
 // uPSI_JvSQLS,
-  //uPSI_JvDBSecur,
+  //uPSI_JvDBSecur,    bde
   //uPSI_JvDBQBE, *)
   uPSI_JvStarfield,
  // uPSI_JVCLMiscal,
  uPSI_JvProfiler32,
   //uPSI_IdAuthentication,     redeclare
-(*  uPSI_IdRFCReply,        //3.9.75
-  uPSI_IdIdentServer,   *)
+// uPSI_IdRFCReply,       not found //3.9.75
+  uPSI_IdIdentServer,   //*)
   uPSI_IdIdent,   //*)
   //uPSI_StNetCon,     redeclaer
   uPSI_StNet,
@@ -2600,25 +2603,25 @@ uses
   uPSI_IdSysLog,
   uPSI_IdSysLogServer,
   uPSI_IdTimeServer,
- (* uPSI_IdTimeUDP,
-  uPSI_IdTimeUDPServer,   *)
+  uPSI_IdTimeUDP,
+ // uPSI_IdTimeUDPServer,   *)
 
   uPSI_IdDayTime,
- (* uPSI_IdEMailAddress,
-  uPSI_IdMessage,
-  uPSI_IdMessageClient,
-  uPSI_IdSMTP,
+  uPSI_IdEMailAddress,   //*)
+  //uPSI_IdMessage,
+  //uPSI_IdMessageClient,
+  (*uPSI_IdSMTP,
   uPSI_IdPOP3,
   uPSI_IdMailBox,   *)
   uPSI_IdQotd, //*)
   uPSI_IdTelnet,
- (* uPSI_IdNetworkCalculator,      f
+  uPSI_IdNetworkCalculator,      //f  *)
   uPSI_IdFinger,
-  uPSI_IdIcmpClient,
+  uPSI_IdIcmpClient,     //*)
   uPSI_IdUDPBase,
-  uPSI_IdUDPClient,
+  uPSI_IdUDPClient,  //*)
   uPSI_IdTrivialFTPBase,
-  uPSI_IdTrivialFTP,   *)
+  uPSI_IdTrivialFTP,   //*)
   uPSI_LinarBitmap,
   uPSI_PNGLoader,
   // WinForm1,    redeclare
@@ -2634,7 +2637,7 @@ uses
   SOAPHTTPClient, //Test for WS  *)
   uPSI_interface2_so,     //----------exports for DLL func  *)
   uPSI_IniFiles,    //standard
-  //uPSI_IdThread,  //*)
+  uPSI_IdThread,  //*)
   uPSI_fMain,   //Register Methods to Open Tools API and MBVersion!
   ComObj, //OCX internet radio
   uPSI_niSTRING,
@@ -2700,6 +2703,7 @@ begin
 
   SIRegister_StrUtils(X);
    SIRegister_SysUtils(X);   //3.2   --> sysutils_max also unit down  , TBytes
+   SIRegister_Pas2JSUtils(X);
   SIRegister_EInvalidArgument(x);
   SIRegister_MathMax(x);  //*)
  SIRegister_WideStrUtils(X);
@@ -2738,7 +2742,7 @@ begin
   SIRegister_DBCGrids(X); //3.6
   SIRegister_IniFiles(X);    //remove 3.8.4
   SIRegister_JclBase(X);
- (* SIRegister_JclMath(X);   *)
+  SIRegister_JclMath(X);  // *)
   SIRegister_JvgCommClasses(X);  //*)
   SIRegister_JvgUtils(X);    //with JvGTypes
   SIRegister_JclStatistics(X);
@@ -2838,7 +2842,7 @@ begin
   SIRegister_StStat(X);
   SIRegister_StNetCon(X);
   SIRegister_StDecMth(X);
-  //SIRegister_StOStr(X); // *)
+  SIRegister_StOStr(X); // *)
   SIRegister_StPtrns(X);
   SIRegister_StNetMsg(X);
   SIRegister_StMath(X);  //*)
@@ -2860,7 +2864,7 @@ begin
   SIRegister_JvMail(X);
   SIRegister_JclConsole(X);
   SIRegister_JclLANMan(X);
- (* SIRegister_ActnList(X);  *)
+  SIRegister_ActnList(X);  //*  many changes)
   SIRegister_ActnMan(X);  //3.9.9.182       *)
   SIRegister_jpeg(X);
   SIRegister_StRandom(X);
@@ -2887,7 +2891,7 @@ begin
   //SIRegister_IdServerIOHandler(X);
   //SIRegister_IdServerIOHandlerSocket(X);   change 3.9.9.8
   SIRegister_IdHeaderList(X);
- (* SIRegister_IdMultipartFormData(X);   *)
+  SIRegister_IdMultipartFormData(X);   //*)
   SIRegister_MathUtils(X);
   SIRegister_HTTPParse(X);
   SIRegister_HTTPUtil(X);   //*)
@@ -2901,9 +2905,9 @@ begin
   SIRegister_TIdHTTPResponse(x);  //}
   SIRegister_IdException(X); //*)
   SIRegister_IdGlobal(X);     //remove 3.9.9.1
- (* SIRegister_IdRFCReply(X);   //3.9.7.5
+ (* SIRegister_IdRFCReply(X);   //3.9.7.5   3)*)
   SIRegister_IdDateTimeStamp(X);  //3.9.9.40
-  SIRegister_IdStack(X);  *)
+ (* SIRegister_IdStack(X);  *)
   SIRegister_IdSocks(X);   // *)
   SIRegister_IdComponent(X); //3.9.9.91
   //SIRegister_IdIOHandlerThrottle(X);    *)
@@ -3016,6 +3020,7 @@ begin
   SIRegister_JclMIDI(X);
   SIRegister_JclWinMidi(X);
   SIRegister_JvRle(X);
+  SIRegister_JvRas32(X);
  SIRegister_JvImageWindow(X);
  (* SIRegister_JvImageDrawThread(X);  //3.9.7.3
   SIRegister_JvTransparentForm(X);  *)
@@ -3146,7 +3151,7 @@ begin
   SIRegister_UtilsMax4(X);
   SIRegister_MaxUtils(X);
 
-(*   SIRegister_SimpleHl(X); *)
+   SIRegister_SimpleHl(X); //*)
   SIRegister_cXMLFunctions(X);  //*)
   SIRegister_JvTimer(X);
   SIRegister_cHTTPUtils(X);
@@ -3177,32 +3182,32 @@ begin
   SIRegister_IdLogFile(X);
   SIRegister_IdTime(X);
   SIRegister_IdDayTime(X);
- // SIRegister_IdGlobal(X);
-(*  SIRegister_IdEMailAddress(X);
-  SIRegister_IdMessage(X);
+ // SIRegister_IdGlobal(X);  *)
+ SIRegister_IdEMailAddress(X);
+(*  SIRegister_IdMessage(X);
   SIRegister_IdMessageClient(X);
   SIRegister_IdSMTP(X);
   SIRegister_IdPOP3(X);
   SIRegister_IdMailBox(X);*)
   SIRegister_IdQotd(X);
   SIRegister_IdTelnet(X);
- (* SIRegister_IdNetworkCalculator(X);
+  SIRegister_IdNetworkCalculator(X);  //*)
   SIRegister_IdFinger(X);
-  SIRegister_IdIcmpClient(X);
+  SIRegister_IdIcmpClient(X);  //*)
   SIRegister_IdUDPBase(X);
-  SIRegister_IdUDPClient(X);
+  SIRegister_IdUDPClient(X);  //*)
   SIRegister_IdTrivialFTPBase(X);
-  SIRegister_IdTrivialFTP(X);
+  SIRegister_IdTrivialFTP(X);    //*)
   SIRegister_IdRemoteCMDClient(X);
   SIRegister_IdRemoteCMDServer(X);
   SIRegister_IdRexec(X); //client & server
-  SIRegister_IdUDPServer(X);
+ (* SIRegister_IdUDPServer(X);
   SIRegister_IdIPWatch(X);
   SIRegister_IdIrcServer(X);
   SIRegister_IdMessageCollection(X);
   SIRegister_IdDNSResolver(X);
-  //SIRegister_IdRFCReply(X);   //3.9.7.5
-  SIRegister_IdIdentServer(X);  *)
+  //SIRegister_IdRFCReply(X);   //3.9.7.5   *)
+  SIRegister_IdIdentServer(X);  //*)
   SIRegister_IdIdent(X);    //*)
   SIRegister_IdEcho(X);
   SIRegister_IdEchoServer(X);
@@ -3493,7 +3498,7 @@ begin
  SIRegister_UIntList(X);
  SIRegister_UGeometry(X);
  SIRegister_UAstronomy(X);
-// SIRegister_USolarSystem(X);   *)
+ SIRegister_USolarSystem(X);   //*)
 
  SIRegister_UCardComponentV2(X);
  SIRegister_UTGraphSearch(X);
@@ -3720,7 +3725,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_VariantRtn(X);
   SIRegister_SqlTxtRtns(X);    //*)
   SIRegister_BSpectrum(X);
- (* SIRegister_IPAddressControl(X);
+  SIRegister_IPAddressControl(X);  //*)
   SIRegister_Paradox(X);
   //RIRegister_Paradox_Routines(Exec);    *)
   SIRegister_Environ(X);
@@ -3746,7 +3751,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_SynCompletionProposal(X);
   SIRegister_rxAniFile(X);  //*)
   SIRegister_ulinfit(X);
-(*  SIRegister_JclStringLists(x);
+  SIRegister_JclStringLists(x);
   //SIRegister_ZLib(X);
   //RIRegister_ZLib_Routines(Exec);    *)
   SIRegister_MaxTokenizers(X);
@@ -3880,7 +3885,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_flcMatrix(X);
   SIRegister_flcStringBuilder(X); //*)
   SIRegister_flcASCII(X);
-  //SIRegister_flcStringPatternMatcher(X);
+  SIRegister_flcStringPatternMatcher(X);
   SIRegister_flcUnicodeChar(X);
   SIRegister_SemaphorGrids(X);     //4-7-5-80
   SIRegister_uXmlDates(X);
@@ -3891,14 +3896,15 @@ SIRegister_cySearchFiles(X);
   SIRegister_SimpleParserRSS(X);
   SIRegister_SimpleRSSUtils(X);    //*)
   SIRegister_StrUtil(X);   //*)
+  //SIRegister_Pas2JSUtils(X);
   SIRegister_PythonEngine(X);
   SIRegister_VclPythonGUIInputOutput(X);
   SIRegister_VarPyth(X);
   SIRegister_WDCCMisc(X);
   SIRegister_WDCCWinInet(X);
- // SIRegister_WDCCOleVariantEnum(X);
+  SIRegister_WDCCOleVariantEnum(X);
   SIRegister_PythonVersions(X);
- // SIRegister_PythonAction(X); *)
+  SIRegister_PythonAction(X); //*)
   SIRegister_SingleListClass(X);
   SIRegister_AdMeter(X);
   SIRegister_neuralplanbuilder(X);
@@ -3964,7 +3970,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_uMRU(X);
  (* SIRegister_FannNetwork(X);   *)
   SIRegister_RTLDateTimeplus(X);
- (* SIRegister_UThread(X);  *)
+ SIRegister_UThread(X);  //*)
    SIRegister_ULog(X);
  (* SIRegister_UTCPIP(X);   *)
   SIRegister_statmach(X);     //46310  *)
@@ -4083,8 +4089,8 @@ SIRegister_cySearchFiles(X);
  (* SIRegister_SockRequestInterpreter(X);  out *)
   SIRegister_ulambert(X);
   SIRegister_SimpleDS(X);
- (* SIRegister_DBXSqlScanner(X);
-  SIRegister_DBXMetaDataUtil(X);    *)
+ SIRegister_DBXSqlScanner(X);
+  SIRegister_DBXMetaDataUtil(X);    //*)
   SIRegister_TeeProcs(X);
   SIRegister_TeCanvas(X);    //TEcanvas
   //SIRegister_TeeProcs(X);
@@ -4154,9 +4160,9 @@ SIRegister_cySearchFiles(X);
   SIRegister_IdSysLog(X);
   SIRegister_IdSysLogServer(X);
   SIRegister_IdTimeServer(X);
- (* SIRegister_IdTimeUDPServer(X);
+ (* SIRegister_IdTimeUDPServer(X);  *)
   SIRegister_IdTimeUDP(X);
-  SIRegister_IdUserAccounts(X); *)
+  SIRegister_IdUserAccounts(X); //*)
   SIRegister_JclStrHashMap(X); //*)
   SIRegister_delphi_arduino_Unit1(X);
   SIRegister_PppState(X); //*)
@@ -4187,7 +4193,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_PNGLoader(X);
   SIRegister_BitmapConversion(X); //*)
   SIRegister_IniFiles(X);
-  //SIRegister_IdThread(X);  *)
+ SIRegister_IdThread(X);  //*)
   SIRegister_fMain(X);       //reflection
  SIRegister_niSTRING(X);
   SIRegister_niRegularExpression(X);
@@ -4245,6 +4251,7 @@ begin
   RIRegister_Printers(X);
   RIRegister_Printers_Routines(Exec); //*)
   RIRegister_StrUtils_Routines(exec);
+  RIRegister_Pas2JSUtils_Routines(Exec);
 
   RIRegister_MPlayer(X);
   RIRegister_ImgList(X);
@@ -4286,7 +4293,7 @@ begin
   RIRegister_JvComponent(X);
   RIRegister_JvFormToHtml(X);
   RIRegister_IdHeaderList(X);
- (* RIRegister_IdMultipartFormData(X);  *)
+  RIRegister_IdMultipartFormData(X);  //*)
   //SIRegister_JvCtrlUtils(X);
   RIRegister_JvCtrlUtils_Routines(Exec);
  (* RIRegister_JvBdeUtils(X);
@@ -4338,7 +4345,7 @@ begin
   RIRegister_StStat_Routines(Exec);
   RIRegister_StNetCon(X);
   RIRegister_StDecMth(X);
- // RIRegister_StOStr(X);
+  RIRegister_StOStr(X);
   RIRegister_StPtrns(X);
   RIRegister_StNetMsg(X);
   RIRegister_StMath_Routines(Exec); //*)
@@ -4346,7 +4353,7 @@ begin
   RIRegister_StExport(X);
   RIRegister_StGenLog(X);
   RIRegister_StGenLog_Routines(Exec);
- (* RIRegister_ActnList(X);      *)
+  RIRegister_ActnList(X);      //*)
   RIRegister_jpeg(X);
  RIRegister_StRandom(X);
   RIRegister_StDict(X);
@@ -4361,8 +4368,8 @@ begin
   RIRegister_RTLDateTimeplus_Routines(Exec);
   RIRegister_RTLDateTimeplus(X);
    RIRegister_ULog(X);
-(*  RIRegister_UThread(X);
-  RIRegister_UTCPIP(X);  *)
+ RIRegister_UThread(X);
+  //RIRegister_UTCPIP(X);  *)
   RIRegister_statmach(X);              //46310    *)
   RIRegister_uTPLb_RSA_Primitives_Routines(Exec);
   RIRegister_UMatrix_Routines(Exec);
@@ -4455,7 +4462,7 @@ begin
   RIRegister_flcStringBuilder_Routines(Exec);
   RIRegister_flcStringBuilder(X);    //*)
   RIRegister_flcASCII_Routines(Exec);      //47520  - 80
-  //RIRegister_flcStringPatternMatcher_Routines(Exec);
+  RIRegister_flcStringPatternMatcher_Routines(Exec);
   RIRegister_flcUnicodeChar_Routines(Exec);
   RIRegister_SemaphorGrids(X);
   RIRegister_uXmlDates_Routines(Exec);
@@ -4475,12 +4482,12 @@ begin
   RIRegister_VarPyth_Routines(Exec);
   RIRegister_WDCCMisc_Routines(Exec);
   RIRegister_WDCCWinInet(X);
- // RIRegister_WDCCOleVariantEnum(X);
- // RIRegister_WDCCOleVariantEnum_Routines(Exec);
+ RIRegister_WDCCOleVariantEnum(X);
+  RIRegister_WDCCOleVariantEnum_Routines(Exec);
   RIRegister_WDCCWinInet_Routines(Exec);
   RIRegister_PythonVersions_Routines(Exec);
   RIRegister_PythonVersions(X);
- (* RIRegister_PythonAction(X);    *)
+  RIRegister_PythonAction(X);    //*//)
   RIRegister_VclPythonGUIInputOutput_Routines(Exec);  //*)
   RIRegister_SingleList_Routines(Exec);
   RIRegister_SingleListClass(X);
@@ -4529,16 +4536,16 @@ begin
   RIRegister_IdTCPServer(X);
   RIRegister_IdCustomHTTPServer(X);
   RIRegister_IdCustomHTTPServer_Routines(Exec);
-  RIRegister_IdSSLOpenSSL(X);
+  RIRegister_IdSSLOpenSSL(X);    *)
   RIRegister_IdRemoteCMDClient(X);
   RIRegister_IdRemoteCMDServer(X);
   RIRegister_IdRexec(X);
-  RIRegister_IdUDPServer(X);
+ (* RIRegister_IdUDPServer(X);
   RIRegister_IdIPWatch(X);
   RIRegister_IdIrcServer(X);
   RIRegister_IdMessageCollection(X);
-  RIRegister_IdRFCReply(X);
-  RIRegister_IdIdentServer(X);  *)
+  RIRegister_IdRFCReply(X); *)
+  RIRegister_IdIdentServer(X);  //*)
   RIRegister_IdIdent(X);  //*)
   RIRegister_IdEcho(X);
   RIRegister_IdEchoServer(X);
@@ -4609,6 +4616,7 @@ begin
   RIRegister_JclWinMidi_Routines(Exec);
   //RIRegister_JvRle(X);
  RIRegister_JvRle_Routines(Exec);
+ RIRegister_JvRas32(X);
   RIRegister_JvImageWindow(X);
  (* RIRegister_JvImageDrawThread(X);  //3.9.7.3
   RIRegister_JvTransparentForm(X); *)
@@ -4870,9 +4878,9 @@ begin
   RIRegister_JclShell_Routines(Exec);
   RIRegister_JclCOM_Routines(Exec);
 (*  RIRegister_GR32_Math_Routines(Exec);
-  RIRegister_GR32_LowLevel_Routines(Exec);
+  RIRegister_GR32_LowLevel_Routines(Exec); *)
   RIRegister_SimpleHl(X);
-  RIRegister_GR32_Filters_Routines(Exec);
+ (* RIRegister_GR32_Filters_Routines(Exec);
   RIRegister_GR32_VectorMaps(X);  *)
   RIRegister_cXMLFunctions_Routines(Exec);   //*)
   RIRegister_JvTimer(X);
@@ -4890,8 +4898,9 @@ begin
     RIRegister_D2XXUnit_Routines(Exec);
   {$ENDIF}
    //SIRegister_D2XXUnit(X);
-  //RIRegister_D2XXUnit_Routines(Exec);
-  RIRegister_JclMath(X);   *)
+  //RIRegister_D2XXUnit_Routines(Exec);  *)
+  RIRegister_JclMath(X);  // *)
+  RIRegister_JCLMathMax_Routines(Exec);
   RIRegister_JclDateTime_Routines(Exec);
   RIRegister_JclEDI_Routines(Exec);
   RIRegister_JclEDI(X);
@@ -4976,8 +4985,8 @@ begin
  (* RIRegister_SockRequestInterpreter(X);  *)
   RIRegister_ulambert_Routines(Exec);
   RIRegister_SimpleDS(X);
- (* RIRegister_DBXSqlScanner(X);
-  RIRegister_DBXMetaDataUtil(X);   *)
+  RIRegister_DBXSqlScanner(X);
+  RIRegister_DBXMetaDataUtil(X);   //*)
   RIRegister_TeeProcs(X);
   RIRegister_TeeProcs_Routines(Exec);
   RIRegister_TeCanvas_Routines(Exec);
@@ -5053,9 +5062,9 @@ begin
   RIRegister_IdSysLog(X);
   RIRegister_IdSysLogServer(X);
   RIRegister_IdTimeServer(X);
-(*  RIRegister_IdTimeUDPServer(X);
+(*  RIRegister_IdTimeUDPServer(X); *)
   RIRegister_IdTimeUDP(X);
-  RIRegister_IdUserAccounts(X); *)
+  RIRegister_IdUserAccounts(X); //*)
   RIRegister_TextUtils_Routines(Exec); // *)
   RIRegister_MandelbrotEngine(X);
   RIRegister_delphi_arduino_Unit1(X);
@@ -5403,7 +5412,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_UGeometry_Routines(EXec);
   RIRegister_UAstronomy(X);
   RIRegister_UAstronomy_Routines(Exec);  //3.9.9.95_1
-//  RIRegister_USolarSystem_Routines(Exec);  *)
+  RIRegister_USolarSystem_Routines(Exec);  //*)
   RIRegister_UCardComponentV2(X);
   RIRegister_UTGraphSearch(X);
   RIRegister_UParser10(X);
@@ -5738,9 +5747,9 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_VariantRtn_Routines(Exec);
   RIRegister_SqlTxtRtns_Routines(Exec); //*)
   RIRegister_BSpectrum(X);
-(*  RIRegister_IPAddressControl(X);
+ RIRegister_IPAddressControl(X);
   RIRegister_Paradox(X);
-  RIRegister_Paradox_Routines(Exec);   *)
+  RIRegister_Paradox_Routines(Exec);   //*)
   RIRegister_Environ(X);
   RIRegister_GraphicsPrimitivesLibrary(X);
   //SIRegister_DrawFigures(X);
@@ -5772,7 +5781,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_SynCompletionProposal_Routines(Exec);
   RIRegister_rxAniFile(X);  //*)
   RIRegister_ulinfit_Routines(Exec);
- (* RIRegister_JclStringLists_Routines(Exec);
+  RIRegister_JclStringLists_Routines(Exec);
   RIRegister_JclStringLists(X);
   //RIRegister_ZLib(X);              *)
   //RIRegister_ZLib_Routines(Exec);
@@ -5918,9 +5927,9 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_JvPcx(X);
  RIRegister_IdWhois(X);
 (*  RIRegister_IdWhoIsServer(X);
-  RIRegister_IdGopher(X);
+  RIRegister_IdGopher(X); *)
   RIRegister_IdDateTimeStamp(X);
-  RIRegister_IdDiscardServer(X);
+ (* RIRegister_IdDiscardServer(X);
   RIRegister_IdDiscardUDPServer(X);
   RIRegister_IdDICTServer(X);
   RIRegister_IdDayTimeUDPServer(X);
@@ -5955,27 +5964,27 @@ RIRegister_DSUtil_Routines(Exec);
  RIRegister_IdDayTime(X);   //*)
   RIRegister_IdGlobal(X);
   RIRegister_IdGlobal_Routines(exec);
- (* RIRegister_IdEMailAddress(X);
-  RIRegister_IdMessage(X);
+  RIRegister_IdEMailAddress(X);
+ (* RIRegister_IdMessage(X);
   RIRegister_IdMessageClient(X);
   RIRegister_IdSMTP(X);
   RIRegister_IdPOP3(X);
   RIRegister_IdMailBox(X);   *)
   RIRegister_IdQotd(X);
   RIRegister_IdTelnet(X);
- (* RIRegister_IdNetworkCalculator(X);
+  RIRegister_IdNetworkCalculator(X);  //*)
   RIRegister_IdFinger(X);
-  RIRegister_IdIcmpClient(X);
+  RIRegister_IdIcmpClient(X);  //*)
   RIRegister_IdUDPBase(X);
-  RIRegister_IdUDPClient(X);
+  RIRegister_IdUDPClient(X);  //*)
   RIRegister_IdTrivialFTPBase_Routines(Exec);
-  RIRegister_IdTrivialFTP(X);    *)
+  RIRegister_IdTrivialFTP(X);    //*)
   RIRegister_LinarBitmap(X);
   RIRegister_LinarBitmap_Routines(Exec);
   RIRegister_PNGLoader(X);
   RIRegister_PNGLoader_Routines(Exec);  //*)
   RIRegister_IniFiles(X);
-  //RIRegister_IdThread(X); *)
+  RIRegister_IdThread(X); //*)
   RIRegister_fMain(X);           //reflection
  RIRegister_niSTRING_Routines(Exec);
   RIRegister_niSTRING(X);
@@ -6098,7 +6107,7 @@ begin
   //memo1.TabWidth:= 6;  //3.9.3
   memo1.TabWidth:= 3;  //3.9.8    //9.9.20
   dragAcceptFiles(maxForm1.Handle, True );    //fix5
-  memo2.Lines.add('Welcode Coder: memo1 is editor - memo2 is output');
+  memo2.Lines.add('Welcode Coder: memo1 is editor - memo2 is console output');
   //should  be a first help docu
   memo2.Height:= 175;
   memo2.WordWrap:= true;
@@ -6117,7 +6126,8 @@ begin
   //memo1.gutter.trackchanges
   //memo1.Gutter.color:= CoolBar1.COLOR; //clmoneygreen;
   memo1.WantTabs:= true;
-  memo1.WordWrap:= true;
+  memo1.WordWrap:= false;
+  memo1.UseCodeFolding := true;
    statusbar1.SimplePanel:= false;
   with statusbar1 do begin
     //simplepanel:= true;
@@ -6157,7 +6167,7 @@ begin
       lbintflistwidth:= 350;
   // if (ParamStr(1) = '') then begin   //bug
    SetCurrentDir(ExtractFilePath(ParamStr(0)));   //3.9.9.100
-    if fileexists(DEFINIFILE) then LoadFileNameFromIni;  //script file
+    if fileexists(DEFINIFILE) then LoadFileNameFromIni;  //script file and -onchange
     DefFileread;
   // end;
   PSScript.UsePreProcessor:= true;
@@ -6238,8 +6248,8 @@ begin
   CB1SCList.ItemIndex:= CB1SCList.Items.Count-1;
   //if STATVERSIONCHECK then
     //if VersionCheck then memo2.Lines.Add('Version on Internet Checked!') else
- // if (STATVERSIONCHECK AND VersionCheck) then memo2.Lines.Add('Version on Internet checked!') else
-  // memo2.Lines.Add('Internet Version NOT checked!');   //3.8
+  if (STATVERSIONCHECK AND VersionCheck) then memo2.Lines.Add('Version on Internet checked!') else
+   memo2.Lines.Add('Internet Version NOT checked!');   //3.8
   if STATExecuteBoot then LoadBootScript;
   if STATExceptionLog then begin
      Application.OnException:= AppOnException;   //v3
@@ -6255,6 +6265,7 @@ begin
    hlog.hlWriter.hlFileDef.path:= exepath;  //+'examples'; //dexamples\THotlogfile.txt';
    hlog.hlWriter.hlFileDef.append:= true;  //+'examples'; //dexamples\THotlogfile.txt';
    hlog.StartLogging; //fix5 }  //bug
+   //memo1.modified:= false;
   end;
  try
    // test bed for interactive shell to hell:
@@ -6502,6 +6513,8 @@ begin
 //  maxForm1.showInclude1.Checked:= false;
   // maxForm1.STATInclude:= false;
   //ShowInclude1Click(self);
+  //memo1.InsertMode:= false;
+  //memo1.modified:= false;
 end;
 
 procedure Tmaxform1.FormMarkup(Sender: TObject);
@@ -7426,7 +7439,7 @@ begin
   Sender.AddRegisteredVariable('Application', 'TApplication');
   Sender.AddRegisteredVariable('Screen', 'TScreen');
   Sender.AddRegisteredVariable('Self', 'TForm');
-  //Sender.AddRegisteredVariable('Memo1', 'TSynEdit');
+  Sender.AddRegisteredVariable('Memo1', 'TSynEdit');
   Sender.AddRegisteredVariable('memo2', 'TMemo');
   //with Sender.AddClassN(CL.FindClass('TForm'),'TMaxform1')
    // Sender.AddRegisteredVariable('maxForm1', 'TForm');  //!!
@@ -8719,6 +8732,7 @@ begin
  with TStringlist.Create do begin
    LoadFromFile(DEFINIFILE);
    try
+     memo1.onchange:= Nil;     //to prevent do change at first
      memo1.Lines.LoadFromFile(values['LAST_FILE']);
    //set act filename
      Act_Filename:= values['LAST_FILE'];
@@ -8733,6 +8747,7 @@ begin
    end;
    Free;
  end;
+  memo1.onchange:= Memo1Change;
 end;
 
 
@@ -9035,8 +9050,8 @@ end;
 
 procedure Tmaxform1.SerialRS2321Click(Sender: TObject);
 begin
-  //start to serial
-  //StartSerialDialog;
+  //start to serial rs332
+  StartSerialDialog;
 end;
 
 procedure Tmaxform1.Replace1Click(Sender: TObject);
@@ -10329,6 +10344,20 @@ begin
   if InputQuery('CodeSearchEngine2', 'Enter your code search for examples:', S) and (S <> '') then
     //StartCodeFinder(S);
   //code searchforall
+end;
+
+procedure Tmaxform1.Collapse1Click(Sender: TObject);
+begin
+  collapse1.Checked:= not collapse1.Checked;
+  //if STATCodefolding
+  if collapse1.Checked then begin
+    memo1.UncollapseAll;
+    //ATCodefolding:= true;
+  end else begin
+    memo1.collapseAll;
+    //ATCodefolding:= false;
+  end;  //}
+  //memo1.UncollapseAll;
 end;
 
 procedure Tmaxform1.SaveOutput1Click(Sender: TObject);

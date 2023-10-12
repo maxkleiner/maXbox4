@@ -2,7 +2,7 @@ object maxform1: Tmaxform1
   Left = 229
   Top = 254
   BorderWidth = 1
-  Caption = 'maXbox5 Ocean550 mX501 Rheingold+++++ alpha07!'
+  Caption = 'maXbox5 Ocean550 mX501 Rheingold+++++ alpha20!'
   ClientHeight = 823
   ClientWidth = 1041
   Color = clBtnFace
@@ -2000,7 +2000,7 @@ object maxform1: Tmaxform1
         'help'
       '//memo1 is script editor'
       '//memo2 is output space'
-      'Road to 64-bit box with maXbox 5 - 2024'
+      'Road to 64-bit box with maXbox5 - 2024'
       '****************************************************************'
       
         'Changes in maXbox 3.9.9 and 4.6.3 and 4.7.2.82 / 4.7.5.90  4.7.6' +
@@ -2023,7 +2023,8 @@ object maxform1: Tmaxform1
         '- CryptoBox AES, FileInfo, Perl RegEx, Serial, Jedi Utils, Systo' +
         'ols4, Orpheus, Indent, D4P'
       ''
-      '{   V4.7.6.20 October 2022 '
+      '{ V5.0.1.20 October 2023  '
+      '   V4.7.6.20 October 2022 '
       
         '    max@kleiner.com V4.7.6.10 VIII August 2022 CAI ML Seventh Ed' +
         'ition Sept X Edition'
@@ -2050,8 +2051,10 @@ object maxform1: Tmaxform1
         '        | |_. | | |_  | |__  | |     | | | | | |                ' +
         '      '
       '        |____/  |___| |____| |_|     |_| |_| |_|             ')
+    Options = [eoAutoIndent, eoDragDropEditing, eoEnhanceEndKey, eoGroupUndo, eoScrollPastEol, eoShowScrollHint, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces, eoShowLigatures]
     SearchEngine = SynEditSearch1
-    WantReturns = False
+    WordWrap = True
+    WordWrapGlyph.MaskColor = clMoneyGreen
     OnChange = Memo1Change
     OnGutterClick = Memo1GutterClick
     OnPlaceBookmark = Memo1PlaceBookmark
@@ -2717,6 +2720,12 @@ object maxform1: Tmaxform1
         GroupIndex = 1
         Hint = 'shows vertical lines'
         OnClick = ShowIndent1Click
+      end
+      object Collapse1: TMenuItem
+        Caption = ' Expandfolding'
+        Checked = True
+        GroupIndex = 1
+        OnClick = Collapse1Click
       end
       object procMess: TMenuItem
         Caption = ' ProcessMessages!'
