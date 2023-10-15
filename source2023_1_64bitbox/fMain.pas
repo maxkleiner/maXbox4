@@ -199,7 +199,7 @@
           12542   5.0.1.15 maxform1. madexcept utf8decode for loadfile, umath, getwebscript, jvchart
           12584   5.0.1.17 GPS2, ADOTest, ADODB, GPS, VendorTestFramework , dmath2 ,statmach, uPSI_SHDocVw;
           12600   5.0.1.18 unit SynEditMiscClasses2;,unit SynEdit2; prepare for Clear or TrackChanges;
-          12629   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx
+          12634   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx , classes_orig
  ************************************************************************************* }
 
 unit fMain;
@@ -226,7 +226,7 @@ uses
   SynHighlighterEiffel, SynHighlighterAsm, SynHighlighterDfm, SynHighlighterVB,
   SynHighlighterIni, SynHighlighterBat, SynHighlighterIDL,
   SynHighlighterVBScript, SynHighlighterMsg, syneditcodefolding,
-  System.ImageList, syneditkeycmds
+  System.ImageList, syneditkeycmds, Vcl.Imaging.pngimage
   {,IWBaseControl,IWBaseHTMLControl}; //, jpeg;
 
 const
@@ -255,10 +255,10 @@ const
    MBVER2 = '50120';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
-   MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile.txt';
-   MXVERSIONFILE2 = 'http://www.softwareschule.ch/maxvfile2.txt';
+   MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
+   MXVERSIONFILE2 = 'http://www.softwareschule.ch/maxvfile264.txt';
    MXINTERNETCHECK = 'www.ask.com';
-   MXMAIL = 'max@kleiner.com';
+   MXMAIL = 'maxkleiner1@gmail.com';
    TAB = #$09;
    CODECOMPLETION ='bds_delphi.dci';
    ENDSIGN='end.';
@@ -1059,18 +1059,18 @@ uses
   uPSC_std,          //TObject!   TComponent
   uPSR_stdctrls,
   uPSC_stdctrls,    //listbox   , memo , button   ondatafind
-  uPSC_classes,   //memory stream    stringlist   , resourcestream
-  uPSR_classes,
+  uPSC_classes_orig,   //memory stream    interfacelist, tlist, stringlist   , resourcestream
+  uPSR_classes_orig,
   uPSR_forms,
   uPSC_forms,
   uPSI_Types, //3.5+3.6  dword-longword
   uPSC_graphics,
-  uPSC_controls,
+  uPSC_controls_orig,
   //uPSC_classes,
   //uPSR_classes,
   uPSComponentExt,
   uPSR_graphics,
-  uPSR_controls,
+  uPSR_controls_orig,
   uPSR_extctrls,   //TPanel  autosize
   uPSC_extctrls,
   uPSC_dateutils,
@@ -1187,7 +1187,7 @@ uses
   uPSI_JvTurtle,
   uPSI_SortThds,
   uPSI_ThSort, thsort,
-(*  uPSI_JvExprParser,  *)
+  uPSI_JvExprParser,  //*)
   uPSI_HexDump,
  uPSI_JvHtmlParser,
  uPSI_JvgXMLSerializer,
@@ -1349,7 +1349,7 @@ uses
   uPSI_JvDualList,
   uPSI_JvSwitch,
   uPSI_JvTimerLst,
-   //uPSI_JvMemTable,   //*)
+  // uPSI_JvMemTable,   //  BDE *)
   uPSI_JvObjStr,
   uPSI_xrtl_math_Integer,
   uPSI_JvPicClip,
@@ -1422,7 +1422,7 @@ uses
   uPSI_JclShell, //3.9.9.6
   uPSI_JclCOM,
   (*uPSI_GR32_Math,
-  uPSI_GR32_LowLevel,  *)
+  uPSI_GR32_LowLevel,  //*)
   uPSI_SimpleHl,
  (* uPSI_GR32_Filters,
   uPSI_GR32_VectorMaps,  *)
@@ -1498,8 +1498,8 @@ uses
   uPSI_StBarC,
   uPSI_StDbBarC,
   uPSI_StBarPN,
-  (*uPSI_StDbPNBC,
-  uPSI_StDb2DBC,  *)
+  uPSI_StDbPNBC,
+  uPSI_StDb2DBC,  //*)
   uPSI_StMoney,  // defwin64*)
   uPSI_SynEditTypes,
   uPSI_SynEditMiscClasses,
@@ -1567,16 +1567,16 @@ uses
   //uPSI_IdNTLM,  *)
   uPSI_IdNNTP,
   uPSI_usniffer,
- (* uPSI_IdCoder3to4,
+  uPSI_IdCoder3to4,
   uPSI_IdCoderMIME,
   uPSI_IdCoderXXE,
   uPSI_IdCoderUUE,
-  uPSI_IdCookie,
-  uPSI_IdCookieManager, *)
+ (* uPSI_IdCookie,   *)
+  uPSI_IdCookieManager, //*)
   uPSI_IdHTTPWebBrokerBridge,
   uPSI_IdIntercept, //*)
   uPSI_IdLogBase,
- (* uPSI_IdIOHandlerStream,  *)
+  uPSI_IdIOHandlerStream,  //*)
   uPSI_IdMappedPortUDP,  //*)
   uPSI_WDosSocketUtils,
   uPSI_WDosPlcUtils,
@@ -1809,23 +1809,23 @@ uses
  //uPSI_VectorLists,
   //uPSI_MeshUtils,  //  vector geo*)
   uPSI_JclSysUtils,
-  //uPSI_JclBorlandTools,
+  uPSI_JclBorlandTools,
  uPSI_JclFileUtils_max,    //*)
   uPSI_AfDataControls,
  (* uPSI_GLSilhouette,
   uPSI_VRMLParser,
   uPSI_GLFileVRML, *)
 //  uPSI_Octree,
- (* uPSI_GLPolyhedron, *)
+  //uPSI_GLPolyhedron, //*)
   uPSI_GLCrossPlatform,
  (* uPSI_GLParticles,
   uPSI_GLNavigator,
   uPSI_GLStarRecord,
-  uPSI_GLCanvas,
-  uPSI_GeometryBB, *)
+  uPSI_GLCanvas, *)
+ // uPSI_GeometryBB, *)
   //uPSI_GeometryCoordinates,  //*)
-  //uPSI_VectorGeometry,
-  //uPSI_TGA,
+  //uPSI_VectorGeometry, *)
+  uPSI_TGA,
   //uPSI_GLScriptPython;
   //uPSI_GLVectorFileObjects,  //3.9.9.88   *)
   uPSI_ButtonGroup,
@@ -2529,9 +2529,9 @@ uses
   //uPSI_IdMappedPortTCP_,
   //uPSI_IdMappedFTP,    //3.9.9.50
 (*  uPSI_IdGopherServer,
-  uPSI_IdQotdServer,
+  uPSI_IdQotdServer,   *)
   uPSI_IdFingerServer,
-  uPSI_IdDNSResolver,  *)
+  //uPSI_IdDNSResolver,  //incompatible *)
   //uPSI_IdUserAccounts, redeclare//*)
   //uPSI_StDecMth,     redeclare
   uPSI_DSUtil,
@@ -2697,7 +2697,7 @@ begin
   //SIRegister_TwinFormp(x);
 (*  SIRegister_TMyLabel(x);    *)
   SIRegister_WinForm1(x);
-  RegisterDateTimeLibrary_C(x);   //*)
+  RegisterDateTimeLibrary_C(x);   // from upsc_dateutils*)
   SIRegister_Types(X);       //3.5
   SIRegister_Graphics(x, true);
 
@@ -2786,7 +2786,7 @@ begin
   SIRegister_LongIntList(X);
   SIRegister_SortThds(X);
   SIRegister_ThSort(X);
- (* SIRegister_JvExprParser(X);   *)
+  SIRegister_JvExprParser(X);   //*)
   SIRegister_SynRegExpr(X);
   SIRegister_SynURIOpener(X);
   SIRegister_StUtils(X);  //SysTools4
@@ -2854,8 +2854,8 @@ begin
  SIRegister_StBarC(X);
   SIRegister_StDbBarC(X);
   SIRegister_StBarPN(X);
-(*  SIRegister_StDbPNBC(X);
-  SIRegister_StDb2DBC(X);  *)
+  SIRegister_StDbPNBC(X);
+  SIRegister_StDb2DBC(X); // *)
   SIRegister_StMoney(X);
   //SIRegister_StMime(X);  *)
   SIRegister_StEclpse(X);
@@ -2921,10 +2921,10 @@ begin
   //SIRegister_IdNTLM(X);  *)
   SIRegister_IdNNTP(X);
   SIRegister_usniffer(X);
- (* SIRegister_IdCoder3to4(X);
-  SIRegister_IdCookie(X);
+ SIRegister_IdCoder3to4(X);
+ (* SIRegister_IdCookie(X); *)
   SIRegister_IdCookieManager(X);
-  SIRegister_IdIOHandlerStream(X);  *)
+  SIRegister_IdIOHandlerStream(X);  //*)
   SIRegister_IdLogBase(X);     //*)
   SIRegister_TextUtils(X);  //*)
   SIRegister_MandelbrotEngine(X);
@@ -3230,8 +3230,8 @@ begin
   SIRegister_IdFTPList(X);                //4.2.5.10   *)
   SIRegister_IdCoderHeader(X);
   (*
-  SIRegister_IdFTPServer(X);
-  SIRegister_IdFingerServer(X);    *)
+  SIRegister_IdFTPServer(X);  *)
+  SIRegister_IdFingerServer(X);    //*)
   SIRegister_StNet(X);
   SIRegister_StNetPfm(X);
  SIRegister_JvPatchFile(X);
@@ -3379,7 +3379,7 @@ begin
   //SIRegister_DSUtil( X);
 (* SIRegister_XOpenGL(X);
   SIRegister_VectorLists(X);
-  SIRegister_MeshUtils(X);
+  SIRegister_MeshUtils(X);   *)
   SIRegister_JclBorlandTools(X); //3.9.9.86    *)
   SIRegister_JclFileUtils_max(X);
  // SIRegister_GLSilhouette(X);  *)
@@ -3397,9 +3397,9 @@ begin
   SIRegister_GLCanvas(X);
   SIRegister_GeometryBB(X);
   SIRegister_GeometryCoordinates(X);
-  SIRegister_VectorGeometry(X);
+  SIRegister_VectorGeometry(X);  *)
   SIRegister_TGA(X);
-  SIRegister_GLVectorFileObjects(X); //3.9.9.88   *)
+  //SIRegister_GLVectorFileObjects(X); //3.9.9.88   *)
   SIRegister_CategoryButtons(X);
   SIRegister_ButtonGroup(X);
  // SIRegister_DbExcept(X);  *)
@@ -4031,8 +4031,8 @@ SIRegister_cySearchFiles(X);
    SIRegister_xrtl_util_Compat(X);
   SIRegister_OleAuto(X);            //OlESysError
   SIRegister_xrtl_util_COMUtils(X);
- (* SIRegister_CmAdmCtl(X);
-  SIRegister_GR32(X);
+  SIRegister_CmAdmCtl(X);
+ (* SIRegister_GR32(X);
   SIRegister_GR32_Image(X);
   SIRegister_GR32_Rasterizers(X);
   SIRegister_GR32_ExtImage(X);
@@ -4145,9 +4145,9 @@ SIRegister_cySearchFiles(X);
   SIRegister_ZMatchPattern(X);
   SIRegister_ZCollections(X);
   SIRegister_ZEncoding(X);
- (* SIRegister_IdCoderMIME(X);
+  SIRegister_IdCoderMIME(X);
   SIRegister_IdCoderUUE(X);
-  SIRegister_IdCoderXXE(X);   *)
+  SIRegister_IdCoderXXE(X);   //*)
   SIRegister_WDosSocketUtils(X);
   SIRegister_WDosPlcUtils(X);
   SIRegister_WDosPorts(X);
@@ -4230,8 +4230,8 @@ begin
   //RIRegister_Buttons_Routines(Exec);     add
   (*RIRegister_TwinFormp(x);
   RIRegister_TMyLabel(x);
-  RIRegister_WinForm1(x);
-  RegisterDateTimeLibrary_R(exec); *)
+  RIRegister_WinForm1(x);  *)
+  RegisterDateTimeLibrary_R(exec); //*)
   RIRegister_EInvalidArgument(x);
   RIRegister_MathMax_Routines(exec);
   RIRegister_WideStrUtils_Routines(Exec);
@@ -4324,7 +4324,7 @@ begin
   RIRegister_JvTurtle(X);
   RIRegister_SortThds(X);
   RIRegister_ThSort(X);
- (* RIRegister_JvExprParser(X);   *)
+  RIRegister_JvExprParser(X);   //*)
   RIRegister_SynRegExpr(X);
   RIRegister_SynRegExpr_Routines(Exec);
   RIRegister_JvHtmlParser(X);
@@ -4512,8 +4512,8 @@ begin
   RIRegister_StBarC(X);
  RIRegister_StDbBarC(X);
   RIRegister_StBarPN(X);
- (* RIRegister_StDbPNBC(X);
-  RIRegister_StDb2DBC(X); *)
+  RIRegister_StDbPNBC(X);
+  RIRegister_StDb2DBC(X); //*)
   RIRegister_StMoney(X);    //*)
   RIRegister_STSystem_Routines(Exec);
   RIRegister_SynURIOpener(X);
@@ -4626,8 +4626,8 @@ begin
   RIRegister_JvDirFrm(X);
   RIRegister_JvDirFrm_Routines(Exec);  //*)
   RIRegister_JclUnitConv_mX2_Routines(Exec);
- (* RIRegister_JvDualListForm(X);
-  RIRegister_JvDualList(X);    *)
+  RIRegister_JvDualListForm(X);
+  RIRegister_JvDualList(X);    //*)
   RIRegister_JvSwitch(X);
   RIRegister_JvTimerLst(X);   //*)
   RIRegister_JvObjStr(X);
@@ -4731,8 +4731,8 @@ begin
   RIRegister_OleAuto_Routines(Exec);
   RIRegister_xrtl_util_COMUtils(X);
   RIRegister_xrtl_util_COMUtils_Routines(Exec);
- (*RIRegister_CmAdmCtl(X);
-  RIRegister_GR32(X);
+ RIRegister_CmAdmCtl(X);
+(*  RIRegister_GR32(X);
   RIRegister_GR32_Routines(Exec);
   RIRegister_GR32_Rasterizers(X);
   RIRegister_GR32_Rasterizers_Routines(Exec);
@@ -5035,12 +5035,12 @@ begin
  (* RIRegister_IdNTLM_Routines(Exec); //SIRegister_IdNTLM(X);   *)
   RIRegister_IdNNTP(X);
   RIRegister_usniffer(X);
- (* RIRegister_IdCoder3to4(X);
+  RIRegister_IdCoder3to4(X);
   RIRegister_IdCoderMIME(X);
   RIRegister_IdCoderUUE(X);
   RIRegister_IdCoderXXE(X);
-  RIRegister_IdCookie(X);
-  RIRegister_IdCookieManager(X);  *)
+ (* RIRegister_IdCookie(X);  *)
+  RIRegister_IdCookieManager(X);  //*)
   RIRegister_WDosSocketUtils_Routines(Exec);
   RIRegister_WDosPlcUtils_Routines(Exec);
   RIRegister_WDosPorts(X);
@@ -5049,11 +5049,11 @@ begin
   RIRegister_WDosTimers_Routines(Exec);
   RIRegister_WDosPlcs(X);
   RIRegister_WDosPneumatics(X);
-(*  RIRegister_IdDNSResolver(X);
-  RIRegister_IdFingerServer(X);  *)
+(*  RIRegister_IdDNSResolver(X);  *)
+  RIRegister_IdFingerServer(X);  //*)
   RIRegister_IdIntercept(X);
   RIRegister_IdHTTPWebBrokerBridge(X);
-  //RIRegister_IdIOHandlerStream(X);
+  RIRegister_IdIOHandlerStream(X);
   RIRegister_IdLogBase(X);
  (* RIRegister_IdQOTDUDP(X);
   RIRegister_IdQOTDUDPServer(X);    *)
@@ -5260,7 +5260,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_MeshUtils_Routines(Exec);*)
   RIRegister_JclSysUtils(X);
   RIRegister_JclSysUtils_Routines(Exec);
- (* RIRegister_JclBorlandTools(X);
+  RIRegister_JclBorlandTools(X);
   RIRegister_JclBorlandTools_Routines(Exec); //3.9.9.86   *)
   RIRegister_JclFileUtils_max_Routines(Exec);
   RIRegister_JclFileUtils_max(X);   //*)
@@ -5280,9 +5280,9 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_GLCanvas(X);
   RIRegister_GeometryBB_Routines(eXec);
   RIRegister_GeometryCoordinates_Routines(eXec);
-  RIRegister_VectorGeometry_Routines(Exec);
+  RIRegister_VectorGeometry_Routines(Exec);  *)
   RIRegister_TGA(X);
-  RIRegister_GLVectorFileObjects_Routines(Exec);
+ (* RIRegister_GLVectorFileObjects_Routines(Exec);
   RIRegister_GLVectorFileObjects(X);   //3.9.9.88     *)
   RIRegister_ButtonGroup(X);
   RIRegister_CategoryButtons(X);
@@ -7917,6 +7917,7 @@ begin
          Save2Click(self)
       end else
         STATEdchanged:= false;
+         memo1.onchange:= Nil;
       memo1.Lines.LoadFromFile(FileName);
       last_fName:= Act_Filename;
       memo2.Lines.Add(extractFileName(last_fName) + BEFOREFILE);    //beta
@@ -7927,8 +7928,8 @@ begin
       //CB1SCList.Items.Add(ExtractFileName(Act_Filename));   //3.8 wb
       CB1SCList.Items.Add((Act_Filename));   //3.9 wb
       CB1SCList.ItemIndex:= CB1SCList.Items.Count-1;
-      maxForm1.Caption:= 'maXbox4 ScriptStudio:  '+ExtractFilename(Act_Filename);
-
+      maxForm1.Caption:= 'maXbox5 64bit ScriptStudio:  '+ExtractFilename(Act_Filename);
+       memo1.onchange:= memo1change;
     //default action
     end else if fileexists(Def_FName) then
       if MessageDlg('WellCode, you want to load '+DEFFILENAME,
@@ -7976,7 +7977,7 @@ begin
       Act_Filename:= FileName;
       memo2.Lines.Add(FileName +' stored');
       statusBar1.panels[0].text:= FileName +' File stored';
-      maxForm1.Caption:= 'maXbox4 ScriptStudio:  '+ExtractFilename(Act_Filename);
+      maxForm1.Caption:= 'maXbox5 ScriptStudio:  '+ExtractFilename(Act_Filename);
        // add last file to the deffile
       SaveFileOptionsToIni(FileName);
       STATEdchanged:= false;
@@ -8103,6 +8104,7 @@ begin
    last_fName:= Act_Filename;
    memo2.Lines.Add(extractFileName(last_fName) + BEFOREFILE);    //beta
    loadLastfile1.Caption:= '&Load Last File' +': '+ extractFileName(last_fName);
+    memo1.onchange:= Nil;     //to prevent do change at first
    with Memo1 do begin
      Lines.clear;
      //Grab the name of a dropped file
@@ -8110,6 +8112,7 @@ begin
      //check ansistrings
      Lines.loadFromFile(StrPas(bFilename));
    end;
+    memo1.onchange:= memo1change;     //to prevent do change at first
    Act_Filename:= strpas(bFilename);   //fix5   fixed
    memo2.Lines.Add(bFileName + FILELOAD);
    statusBar1.panels[0].text:= bFileName +' drag&drop' +FILELOAD;
@@ -8547,7 +8550,7 @@ filepath:= ExtractFilePath(Application.ExeName);
 
    //STATVersionCheck
     end else begin
-      // init values case of no file
+      // init values case of no file  ini template
       deflist.add('//***Definitions for ' +RCSTRMB+MBVERSION+' ***');
       deflist.add('[FORM]'); //ini file compatible mX3
       deflist.values['LAST_FILE']:= DEFFILENAME; //Def_FName;
@@ -8588,9 +8591,9 @@ filepath:= ExtractFilePath(Application.ExeName);
       deflist.Values['RSAKEY']:= 'filepathY';
       deflist.Values['IPHOST']:= '127.0.0.1';
       deflist.Values['IPPORT']:= '8080';
-      deflist.Values['VERSIONCHECK']:= 'Y';
+      deflist.Values['VERSIONCHECK']:= 'N';
       deflist.Values['APP']:= 'C:\WINDOWS\System32\Calc.exe';
-      deflist.Values['MYSCRIPT']:= 'E:\maxbox3\mXGit39991\maxbox3\examples\330_myclock.txt';
+      deflist.Values['MYSCRIPT']:= 'E:\maxbox5\mXGit50120\maxbox5\examples\330_myclock.txt';
       deflist.Values['DEP']:= 'Y';
 
       deflist.SaveToFile(fN);
@@ -9768,7 +9771,7 @@ filepath:= ExtractFilePath(Application.ExeName);
       deflist.LoadFromFile(fN);
       myscript:= (deflist.Values['MYSCRIPT']);
       if fileexists(myscript) then
-      S_ShellExecute(ExtractFilePath(ParamStr(0))+'maxbox4.exe',
+      S_ShellExecute(ExtractFilePath(ParamStr(0))+'maxbox5.exe',
         myscript,seCmdOpen) else
       MessageDlg('Could not open myscript: '+myscript+' please verify ini script path', mtWarning, [mbOK], 0);
    end else
@@ -9791,7 +9794,7 @@ filepath:= ExtractFilePath(Application.ExeName);
       deflist.LoadFromFile(fN);
       myscript:= (deflist.Values['MYSCRIPT2']);
       if fileexists(myscript) then
-      S_ShellExecute(ExtractFilePath(ParamStr(0))+'maxbox4.exe',
+      S_ShellExecute(ExtractFilePath(ParamStr(0))+'maxbox5.exe',
         myscript,seCmdOpen) else
       MessageDlg('Could not open myscript: '+myscript+' please verify ini script path', mtWarning, [mbOK], 0);
    end else
@@ -10003,7 +10006,7 @@ begin
         if Archive then output.Lines.Add('File is Archive');
         if System then output.Lines.Add('File is System!');  *)
         output.Lines.add('File Version: '+GetVersionString(Act_Filename));
-        output.Lines.add('File Version: '+GetVersionString(exepath+'maXbox4.exe'));
+        output.Lines.add('File Version: '+GetVersionString(exepath+'maXbox5.exe'));
         output.Lines.add(DupeString('_',90)); //*)
         output.Lines.add('Work Dir: '+GetCurrentDir);  //*)
         output.Lines.add('Exe Dir: '+ExePath);
@@ -11987,6 +11990,7 @@ begin
      end;
    end;
 
+   memo1.onchange:= Nil;
   idx:= CB1SCList.itemIndex;  //choice
   if CB1SCList.items[idx] <> Act_Filename then begin
     last_fName:= Act_Filename;
@@ -12016,6 +12020,7 @@ begin
     statusBar1.panels[0].text:= Act_Filename +' '+ FILELOAD;
     memo2.Lines.Add(extractFileName(Act_Filename) +' '+ FILELOAD);
     //memo2.Lines.add('mX file load: '+Act_Filename);
+     memo1.onchange:= memo1change;
   except
     Showmessage('Invalid File Path - Please Set <File Open/Save As...>');
   end;
