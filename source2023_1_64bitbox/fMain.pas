@@ -199,7 +199,7 @@
           12542   5.0.1.15 maxform1. madexcept utf8decode for loadfile, umath, getwebscript, jvchart
           12584   5.0.1.17 GPS2, ADOTest, ADODB, GPS, VendorTestFramework , dmath2 ,statmach, uPSI_SHDocVw;
           12600   5.0.1.18 unit SynEditMiscClasses2;,unit SynEdit2; prepare for Clear or TrackChanges;
-          12634   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx , classes_orig
+          12693   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx , classes_orig
  ************************************************************************************* }
 
 unit fMain;
@@ -1059,7 +1059,7 @@ uses
   uPSC_std,          //TObject!   TComponent
   uPSR_stdctrls,
   uPSC_stdctrls,    //listbox   , memo , button   ondatafind
-  uPSC_classes_orig,   //memory stream    interfacelist, tlist, stringlist   , resourcestream
+  uPSC_classes_orig,   //memory stream    interfacelist, tlist, stringlist, collection   , resourcestream
   uPSR_classes_orig,
   uPSR_forms,
   uPSC_forms,
@@ -1444,9 +1444,9 @@ uses
   //uPSI_IdHostnameServer,
  (* uPSI_IdTunnelCommon,
   uPSI_IdTunnelMaster,
-  uPSI_IdTunnelSlave,
+  uPSI_IdTunnelSlave, *)
   uPSI_IdRSH,
-  uPSI_IdRSHServer,  *)
+  //uPSI_IdRSHServer,  *)
   uPSI_Spring_Cryptography_Utils,
   uPSI_MapReader,
   uPSI_LibTar,      //FileTimeGMT
@@ -1558,8 +1558,8 @@ uses
   uPSI_xrtl_util_Map,
   uPSI_xrtl_util_Set, //*)
   uPSI_VListView,
- (* uPSI_IdServerIOHandler,
-  uPSI_IdServerIOHandlerSocket,   *)
+  uPSI_IdServerIOHandler,
+  uPSI_IdServerIOHandlerSocket,   //*)
   uPSI_IdMessageCoder,
   uPSI_IdMessageCoderMIME,
   uPSI_IdMultipartFormData, //cause of http post;    *)
@@ -1605,9 +1605,9 @@ uses
   uPSI_DbxDataGenerator,
   uPSI_DBXClient,   // *)
   uPSI_IdGlobal,
- (* uPSI_IdIOHandlerSocket,  //3.9.3
-  uPSI_IdTCPConnection, //3.1
-  IFSI_IdTCPClient,  *)
+  uPSI_IdIOHandlerSocket,  //3.9.3
+  //uPSI_IdTCPConnection, //3.1
+  IFSI_IdTCPClient,  //*)
   uPSI_IdHeaderList,     //3.9.6
   uPSI_IdHTTPHeaderInfo,     //user agent compatible    *)
   IFSI_IdHTTP,
@@ -2520,10 +2520,10 @@ uses
  (* uPSI_IdWhoIsServer,
   uPSI_IdGopher,  *)
   uPSI_IdDateTimeStamp,
-(*  uPSI_IdDayTimeServer,
+ uPSI_IdDayTimeServer,
   uPSI_IdDayTimeUDP,
   uPSI_IdDayTimeUDPServer,
-  uPSI_IdDICTServer,
+(*  uPSI_IdDICTServer,
   uPSI_IdDiscardServer,
   uPSI_IdDiscardUDPServer, *)
   //uPSI_IdMappedPortTCP_,
@@ -2888,8 +2888,8 @@ begin
   SIRegister_TTypeTranslatoR(X);
  SIRegister_IdMessageCoder(X);
   SIRegister_IdMessageCoderMIME(X);
-  //SIRegister_IdServerIOHandler(X);
-  //SIRegister_IdServerIOHandlerSocket(X);   change 3.9.9.8
+  SIRegister_IdServerIOHandler(X);
+  SIRegister_IdServerIOHandlerSocket(X);   //change 3.9.9.8
   SIRegister_IdHeaderList(X);
   SIRegister_IdMultipartFormData(X);   //*)
   SIRegister_MathUtils(X);
@@ -2947,8 +2947,8 @@ begin
   SIRegister_ovctcary(X);
   SIRegister_DXPUtils(X);
   SIRegister_JclSysUtils(X);
-(* SIRegister_IdTCPConnection(X);  //3.1
-  SIRegister_IdTCPClient(X);    *)
+(* SIRegister_IdTCPConnection(X);  //3.1   *)
+  SIRegister_IdTCPClient(X);    //*)
   SIRegister_IdAuthentication(X);  //4.7.1.80
   SIRegister_IdHTTPHeaderInfo(X);    // *)
   SIRegister_IdHTTP(x);  //*)
@@ -2959,7 +2959,7 @@ begin
  (* SIRegister_IdTCPServer(X);  *)
   SIRegister_IdFTP(X);
  (* SIRegister_IdCustomHTTPServer(X); //3.9.3
-  SIRegister_IdSSLOpenSSL(X);
+  SIRegister_IdSSLOpenSSL(X);   *)
   SIRegister_xmlutil(X);    //3.2 XML  *)
   SIRegister_MaskUtils(X); //3.5
   SIRegister_Masks(X); //*)
@@ -3111,7 +3111,7 @@ begin
   SIRegister_StAstro(X);  //*)
   SIRegister_StSort(X);
  SIRegister_XmlVerySimple(X);
- (* SIRegister_StVInfo(X);  *)
+  SIRegister_StVInfo(X);  //*)
   SIRegister_JvBrowseFolder(X);
   SIRegister_JvBoxProcs(X);   //*)
   SIRegister_usimann(X);
@@ -3220,8 +3220,8 @@ begin
  (* SIRegister_IdTunnelCommon(X);
   SIRegister_IdTunnelMaster(X);
   SIRegister_IdTunnelSlave(X);
-  SIRegister_IdRSHServer(X);
-  SIRegister_IdRSH(X);   *)
+  SIRegister_IdRSHServer(X);    *)
+  SIRegister_IdRSH(X);   //*)
   SIRegister_LibTar(X);
  (* SIRegister_IdQOTDUDP(X);
   SIRegister_IdQOTDUDPServer(X);
@@ -3926,7 +3926,7 @@ SIRegister_cySearchFiles(X);
   ///uPSI_neuralgeneric,        //4.7.6.10
   SIRegister_neuralgeneric(X);
   //uPSI_neuralthread,
-  //SIRegister_neuralthread(X);
+  SIRegister_neuralthread(X);
   SIRegister_uSysTools(X);
  SIRegister_uWinNT(X);
   SIRegister_URungeKutta4(X);
@@ -4121,9 +4121,9 @@ SIRegister_cySearchFiles(X);
   SIRegister_IdGopher(X);
   SIRegister_IdDiscardServer(X);
   SIRegister_IdDiscardUDPServer(X);
-  SIRegister_IdDICTServer(X);
+  SIRegister_IdDICTServer(X);  *)
   SIRegister_IdDayTimeUDPServer(X);
-  SIRegister_IdDayTimeServer(X);
+  SIRegister_IdDayTimeServer(X);  //*)
   SIRegister_IdDayTimeUDP(X);  //3.9.9.50   *)
   //SIRegister_IdMappedPortTCP(X);
   //SIRegister_IdMappedFTP(X);
@@ -4498,8 +4498,8 @@ begin
   RIRegister_neuralvolumev_Routines(Exec);
   RIRegister_DoubleList4_Routines(Exec);
   RIRegister_DoubleList4(X);               //47590
- (* RIRegister_ByteListClass_Routines(Exec);
-  RIRegister_ByteListClass(X);  *)
+  RIRegister_ByteListClass_Routines(Exec);
+  RIRegister_ByteListClass(X);  //*)
   RIRegister_flcVectors_Routines(Exec);
   RIRegister_flcVectors(X);   //*)
   RIRegister_uSysTools_Routines(Exec);
@@ -4530,10 +4530,10 @@ begin
   RIRegister_IdSocketHandle(X);
   RIRegister_IdMessageCoder(X);
   RIRegister_IdMessageCoderMIME(X);
- (* RIRegister_IdServerIOHandler(X);
+  RIRegister_IdServerIOHandler(X);
   RIRegister_IdServerIOHandlerSocket(X);
   RIRegister_IdIOHandlerSocket(X);
-  RIRegister_IdTCPServer(X);
+ (* RIRegister_IdTCPServer(X);
   RIRegister_IdCustomHTTPServer(X);
   RIRegister_IdCustomHTTPServer_Routines(Exec);
   RIRegister_IdSSLOpenSSL(X);    *)
@@ -4559,8 +4559,8 @@ begin
   RIRegister_IdTunnelCommon(X);
   RIRegister_IdTunnelMaster(X);
   RIRegister_IdTunnelSlave(X);
-  RIRegister_IdRSHServer(X);
-  RIRegister_IdRSH(X);    *)
+  RIRegister_IdRSHServer(X);   *)
+  RIRegister_IdRSH(X);    //*)
   RIRegister_MapReader_Routines(Exec);
   RIRegister_LibTar(X);
   RIRegister_LibTar_Routines(Exec);
@@ -4760,8 +4760,8 @@ begin
  { RIRegister_TIdHTTPProtocol(x);
   RIRegister_TIdHTTPRequest(x);
   RIRegister_TIdHTTPResponse(x);}
-(*  RIRegister_IdTCPConnection(X);
-  RIRegister_IdTCPClient(X); *)
+(*  RIRegister_IdTCPConnection(X);  *)
+  RIRegister_IdTCPClient(X); //*)
   RIRegister_IdHTTPHeaderInfo(X);
   //RIRegister_IdHTTP(x);   *)
   RIRegister_HTTPParse(X);
@@ -5931,11 +5931,11 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_IdDateTimeStamp(X);
  (* RIRegister_IdDiscardServer(X);
   RIRegister_IdDiscardUDPServer(X);
-  RIRegister_IdDICTServer(X);
+  RIRegister_IdDICTServer(X);    *)
   RIRegister_IdDayTimeUDPServer(X);
-  RIRegister_IdDayTimeServer(X);
+  RIRegister_IdDayTimeServer(X);   //*)
   RIRegister_IdDayTimeUDP(X);  //3.9.9.50
-  RIRegister_IdQotdServer(X);
+(* RIRegister_IdQotdServer(X);
   RIRegister_IdGopherServer(X); *)
   RIRegister_JvRgbToHtml(X);
   RIRegister_JvRgbToHtml_Routines(Exec);
@@ -6073,6 +6073,52 @@ begin
     //MessageBox(0, pChar('Sorry, filepath to '+vfilenamepath+' is missing'),'maXbox Doc',MB_OKCANCEL);
 end;
 
+function IsFileOpen(const txtpath:string):Boolean;
+var atxt: Textfile;
+const
+  fmTextOpenRead = 55217;
+  fmTextOpenWrite = 55218;
+begin
+  AssignFile(atxt, txtpath);
+  Result:= (TTextRec(atxt).Mode = fmTextOpenRead) or (TTextRec(atxt).Mode = fmTextOpenWrite)
+end;
+
+function IsFileInUse(fName: string) : boolean;
+var
+  HFileRes: HFILE;
+begin
+  Result:= False;
+  if not FileExists(fName) then begin
+    Exit;
+  end;
+  HFileRes:= CreateFile(PChar(fName)
+    ,GENERIC_READ or GENERIC_WRITE
+    ,0
+    ,nil
+    ,OPEN_EXISTING
+    ,FILE_ATTRIBUTE_NORMAL
+    ,0);
+  Result:= (HFileRes = INVALID_HANDLE_VALUE);
+  if not(Result) then begin
+    CloseHandle(HFileRes);
+  end;
+end;
+
+ function FileReallyIsInUse(fName: string): boolean;
+var Stream: TFileStream;
+begin
+  result:= false;
+  try
+    try
+      Stream:= TFileStream.Create(fName, fmcreate or fmShareDenyNone);  //fmCreate, fmShareExclusive);
+      //Stream.Seek(0, soFromBeginning);  //  (resulting file was 0 bytes)
+    except on E: EFOpenError do//    Exception do
+      result:= true;
+    end;
+  finally
+    Stream.Free;
+  end;
+end;
 
 
 procedure Tmaxform1.FormCreate(Sender: TObject);
@@ -6261,10 +6307,23 @@ begin
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
-   hlog.hlWriter.hlFileDef.ddname:= 'maxboxlog'; //dexamples\THotlogfile.txt';
-   hlog.hlWriter.hlFileDef.path:= exepath;  //+'examples'; //dexamples\THotlogfile.txt';
-   hlog.hlWriter.hlFileDef.append:= true;  //+'examples'; //dexamples\THotlogfile.txt';
-   hlog.StartLogging; //fix5 }  //bug
+
+   //memo2.Lines.Add('maxboxlog open: '+booltostr(IsFileopen(exepath+'maxboxlog.log')));
+   memo2.Lines.Add('maxboxlog open1: '+booltostr(IsFileinuse(exepath+'maxboxlog.log')));
+   //if not IsFileopen(exepath+'maxboxlog.log') then begin
+   //if not IsFileinuse(exepath+'maxboxlog.log') then begin
+    hlog.hlWriter.hlFileDef.ddname:= 'maxboxlog'; //dexamples\THotlogfile.txt';
+    hlog.hlWriter.hlFileDef.path:= exepath;  //+'examples'; //dexamples\THotlogfile.txt';
+    hlog.hlWriter.hlFileDef.append:= true;  //+'examples'; //dexamples\THotlogfile.txt';
+    if not IsFileInUse(exepath+'maxboxlog.log') then begin
+    //if hlog.started = false then begin
+    try
+      hlog.StartLogging; //fix5 }  //bug
+      memo2.Lines.Add('maxboxlog hlog.started open2: '+booltostr(hlog.started));
+    except
+      memo2.lines.add('except: second logfile sync warning');
+    end;
+   end;
    //memo1.modified:= false;
   end;
  try
@@ -6435,7 +6494,6 @@ begin
     memo1.CodeFolding.FoldRegions.Add(rtkeyword, true, false, true, 'repeat','until');
     memo1.CodeFolding.FoldRegions.Add(rtkeyword, true, false, true, 'case','end');
     memo1.CodeFolding.FoldRegions.Add(rtkeyword, true, false, true, '{$IFDEF','{$ENDIF}');
-
     memo1.InitCodeFolding;
 
     *)
@@ -6450,9 +6508,7 @@ begin
   //end;
 
   //if not STATCodefolding then showIndent1.Checked:= false;
-
-   //SetErrorMode(SEM_FAILCRITICALERRORS);
-
+  //SetErrorMode(SEM_FAILCRITICALERRORS);
 
   Sleep(100);
   if STATExceptionLog then begin
@@ -7052,7 +7108,7 @@ begin
   Sender.AddFunction(@mySearchRecExcludeAttr, 'function SearchRecExcludeAttr: integer;');
   Sender.AddFunction(@myBeep, 'procedure Beep');
   //Sender.AddFunction(@myNow, 'function Now: string');
-  //Sender.AddFunction(@myNow2, 'function Now2: tDateTime');
+  Sender.AddFunction(@myNow2, 'function Now2: tDateTime');
   Sender.AddFunction(@FileExists, 'function fileExists(const FileName: string): Boolean;');   // *)
   Sender.AddFunction(@myShellExecute,'function ShellExecute(hWnd: HWND;' +
       'Operation, FileName, Parameters,Directory: string; ShowCmd: Integer): integer; stdcall;');
@@ -7106,7 +7162,7 @@ begin
   Sender.AddFunction(@VectorDot,'function VectorDot(const V1,V2: TFloatPoint): Double;');
   Sender.AddFunction(@VectorLengthSqr,'function VectorLengthSqr(const V: TFloatPoint): Double;');
   Sender.AddFunction(@VectorMult,'function VectorMult(const V: TFloatPoint; const s: Double): TFloatPoint;');
-  //Sender.AddFunction(@myreset,'function Reset2(mypath: string):string;');
+  Sender.AddFunction(@myreset,'function Reset2(mypath: string):string;');
   Sender.AddFunction(@myVal, 'procedure Val(const s: string; var n, z: Integer)');  //*)
   Sender.AddFunction(@searchAndOpenDoc, 'procedure SearchAndOpenDoc(vfilenamepath: string)');
   Sender.AddFunction(@searchAndOpenDoc, 'procedure SearchAndOpenFile(vfilenamepath: string)');
@@ -7179,13 +7235,13 @@ begin
   Sender.AddFunction(@PrintBitmap, 'procedure PrintBitmap(aGraphic: TGraphic; Title: string);');
   //Sender.AddFunction(@ReadVersion2,'procedure ReadVersion(aFileName: STRING; aVersion : TStrings);');
   Sender.AddFunction(@ReadVersion,'function ReadVersion(aFileName: STRING; aVersion : TStrings): boolean;');
-  //Sender.AddFunction(@GetFileVersion,'function GetFileVersion(Filename: String): String;');
+  Sender.AddFunction(@GetFileVersion,'function GetFileVersion(Filename: String): String;');
   Sender.AddFunction(@StringPad,'Function StringPad(InputStr,FillChar: String; StrLen:Integer; StrJustify:Boolean): String;');
   Sender.AddFunction(@MinimizeMaxbox, 'Procedure MinimizeMaxbox;');
   Sender.AddFunction(@MinimizeMaxbox, 'Procedure MinimizeWindow;');
   Sender.AddFunction(@SaveCanvas2, 'procedure SaveCanvas2(vCanvas: TCanvas; FileName: string);');
   Sender.AddFunction(@SaveCanvas2, 'procedure SaveCanvas(vCanvas: TCanvas; FileName: string);');
-   //Sender.AddFunction(@DrawPlot, 'procedure drawPlot(vPoints: TPointArray; cFrm: TForm; vcolor: integer);');
+   Sender.AddFunction(@DrawPlot, 'procedure drawPlot(vPoints: TPointArray; cFrm: TForm; vcolor: integer);');
   Sender.AddFunction(@mysucc, 'procedure Succ(X: int64);');
   Sender.AddFunction(@mypred,'procedure Pred(X: int64);');
   Sender.AddFunction(@PopupURL,'Procedure PopupURL(URL : WideString);');
@@ -7258,7 +7314,7 @@ begin
   Sender.AddFunction(@IsWow64String,'function IsWin64String(var s: string): Boolean;');
   Sender.AddFunction(@RGB,'Function RGB(R,G,B: Byte): TColor;');
   Sender.AddFunction(@Sendln,'Function Sendln(amess: string): boolean;');
-  //Sender.AddFunction(@GetSource,'function GetSource: string;');
+ // Sender.AddFunction(@GetSource,'function GetSource: string;');
   Sender.AddFunction(@maXbox,'procedure maXbox;');
   Sender.AddFunction(@AspectRatio,'Function AspectRatio(aWidth, aHeight: Integer): String;');  // *)
   Sender.AddFunction(@wget,'function wget(aURL, afile: string): boolean;');
@@ -7366,7 +7422,7 @@ begin
   Sender.AddFunction(@getIsAdmin, 'function getISAdmin: boolean;');
   Sender.AddFunction(@ShowBitmap, 'procedure ShowBitmap(bmap: TBitmap);');
   Sender.AddFunction(@IsWindowsVista, 'function IsWindowsVista: boolean;');
-  //Sender.AddFunction(@GetOsVersionInfo, 'function GetOsVersionInfo: TOSVersionInfo;');
+  Sender.AddFunction(@GetOsVersionInfo, 'function GetOsVersionInfo: TOSVersionInfo;');
   Sender.AddFunction(@ChangeOEPFromBytes, 'function ChangeOEPFromBytes(bFile:mTByteArray):Boolean;');
   Sender.AddFunction(@ChangeOEPFromFile, 'function ChangeOEPFromFile(sFile:string; sDestFile:string):Boolean;');
   Sender.AddFunction(@CopyEXIF, 'procedure CopyEXIF(const FileNameEXIFSource, FileNameEXIFTarget: string);');
@@ -9878,12 +9934,14 @@ begin
   if DirectoryExists(ExtractFilePath(Application.ExeName)) then begin
     sOName:= ExtractFilePath(Application.ExeName) + #0;
     sEName:= Application.ExeName;
+    hlog.Add('>>>> New Instance: {App_name} v{App_ver}{80@}{now}');
+    hlog.Free; //prevent efpopen file exception
     ShellExecute(0, 'open', @sEName[1], NIL, @sOName[1], SW_SHOW);
     //ShellExecute(0, NIL, @sEName[1], @sOName[1], NIL, SW_SHOW);
     statusBar1.panels[0].text:= 'New Instance created of: '+ExtractFileName(Act_Filename);
     memo2.lines.Add(statusBar1.panels[0].text);
   end else
-    showMessage('No mX4 Instance found...');
+    showMessage('No mX4_5 Instance found...');
     //GetCurrentDir;
   //searchAndOpenDoc(ExePath+ExtractFileName(Application.ExeName))
      //CB1SCList.Items.Add(ExtractFileName(Act_Filename));   //3.8 wb
@@ -10135,6 +10193,7 @@ begin
   fAutoComplete.Free;
   debugout.Free;
   listform1.Free;
+  hlog.free; //V5 64bit
   //memo1.CodeFolding.FoldRegions.Clear;
   //memo1.CodeFolding.FoldRegions.Free;
    // memo1.codefolding.enabled:= False;  //FoldRanges.ranges.free;
