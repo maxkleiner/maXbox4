@@ -199,7 +199,7 @@
           12542   5.0.1.15 maxform1. madexcept utf8decode for loadfile, umath, getwebscript, jvchart
           12584   5.0.1.17 GPS2, ADOTest, ADODB, GPS, VendorTestFramework , dmath2 ,statmach, uPSI_SHDocVw;
           12600   5.0.1.18 unit SynEditMiscClasses2;,unit SynEdit2; prepare for Clear or TrackChanges;
-          12693   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx , classes_orig
+          12700   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx , classes_orig
  ************************************************************************************* }
 
 unit fMain;
@@ -1334,8 +1334,10 @@ uses
   uPSI_JvSimIndicator,
   uPSI_JvSimPID,
   uPSI_JvSimPIDLinker, //*)
-  //uPSI_JclPeImage,      //anti virus routines   CL.AddTypeS('TImageFileHeader
+  uPSI_JclPeImage,      //anti virus routines   CL.AddTypeS('TImageFileHeader
   //uPSI_JclPrint,   not found
+  uPSI_CompilersURunner,
+  //uPSI_AzuliaUtils,   redeclare
   uPSI_JclMime,
   uPSI_JvRichEdit,
   uPSI_JvDBRichEd,
@@ -1616,7 +1618,7 @@ uses
   uPSI_HTTPApp, //3.7
   uPSI_IdSocketHandle,
   (*uPSI_IdTCPServer, *)
- // uPSI_IdCustomHTTPServer, //*)
+  uPSI_IdCustomHTTPServer, //*)
   IFSI_IdURI,
  IFSI_IdFTP,
   uPSI_IdRemoteCMDClient,
@@ -2566,7 +2568,8 @@ uses
   uPSI_ShadowWnd, //3.8   *)
   uPSI_ToolWin,
   //uPSI_Tabs, //redecalre*)
-  //uPSI_JclGraphUtils,  not found
+  uPSI_JclGraphUtils,  //not found
+  uPSI_VelthuisFloatUtils,
   uPSI_JclCounter,  //*)
   uPSI_JclSysInfo,
   uPSI_JclSecurity,
@@ -2958,8 +2961,8 @@ begin
   //SIRegister_IdSocketHandle(X);
  (* SIRegister_IdTCPServer(X);  *)
   SIRegister_IdFTP(X);
- (* SIRegister_IdCustomHTTPServer(X); //3.9.3
-  SIRegister_IdSSLOpenSSL(X);   *)
+  SIRegister_IdCustomHTTPServer(X); //3.9.3
+ (* SIRegister_IdSSLOpenSSL(X);   *)
   SIRegister_xmlutil(X);    //3.2 XML  *)
   SIRegister_MaskUtils(X); //3.5
   SIRegister_Masks(X); //*)
@@ -2996,7 +2999,8 @@ begin
   SIRegister_ToolWin(x);
   SIRegister_devcutils(X);
  // SIRegister_Tabs(X);
- (* SIRegister_JclGraphUtils(X);   *)
+  SIRegister_JclGraphUtils(X);   //*)
+  SIRegister_VelthuisFloatUtils(X);
   SIRegister_JclCounter(X);   //*)
   SIRegister_JclSysInfo(X);
   SIRegister_JclSecurity(X);
@@ -4020,8 +4024,9 @@ SIRegister_cySearchFiles(X);
   SIRegister_JvSimIndicator(X);
   SIRegister_JvSimPID(X);
   SIRegister_JvSimPIDLinker(X);
- (* SIRegister_JclPeImage(X);
-  SIRegister_xrtl_util_CPUUtils(X);   *)
+  SIRegister_JclPeImage(X);
+  //SIRegister_xrtl_util_CPUUtils(X);   *)
+  SIRegister_CompilersURunner(X);
   SIRegister_xrtl_net_URI(X);
   SIRegister_xrtl_net_URIUtils(X);
   SIRegister_xrtl_util_StrUtils(X);
@@ -4533,10 +4538,10 @@ begin
   RIRegister_IdServerIOHandler(X);
   RIRegister_IdServerIOHandlerSocket(X);
   RIRegister_IdIOHandlerSocket(X);
- (* RIRegister_IdTCPServer(X);
+ (* RIRegister_IdTCPServer(X); *)
   RIRegister_IdCustomHTTPServer(X);
   RIRegister_IdCustomHTTPServer_Routines(Exec);
-  RIRegister_IdSSLOpenSSL(X);    *)
+(* RIRegister_IdSSLOpenSSL(X);    *)
   RIRegister_IdRemoteCMDClient(X);
   RIRegister_IdRemoteCMDServer(X);
   RIRegister_IdRexec(X);
@@ -4587,8 +4592,9 @@ begin
   RIRegister_StNet(X);
   RIRegister_StNetPfm(X);
   RIRegister_JvPatchFile(X);
- (* RIRegister_JclPeImage(X);
-  RIRegister_JclPeImage_Routines(Exec);   *)
+  RIRegister_JclPeImage(X);
+  RIRegister_JclPeImage_Routines(Exec);   //*)
+  RIRegister_CompilersURunner(X);
   RIRegister_cPEM(X);
   RIRegister_cPEM_Routines(Exec);
   RIRegister_FlatSB_Routines(Exec);  //*)
@@ -4775,7 +4781,8 @@ begin
   RIRegister_ShadowWnd(X);  //3.8  *)
   RIRegister_ToolWin(X);
   RIRegister_Tabs(X);
- (* RIRegister_JclGraphUtils_Routines(Exec);  *)
+  RIRegister_JclGraphUtils_Routines(Exec);  //*)
+  RIRegister_VelthuisFloatUtils_Routines(Exec);
   RIRegister_IdHashSHA1Utils_Routines(Exec);
   RIRegister_JclCounter(X);
   RIRegister_JclCounter_Routines(Exec);  //*)
