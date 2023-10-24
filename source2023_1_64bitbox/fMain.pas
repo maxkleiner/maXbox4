@@ -199,7 +199,8 @@
           12542   5.0.1.15 maxform1. madexcept utf8decode for loadfile, umath, getwebscript, jvchart
           12584   5.0.1.17 GPS2, ADOTest, ADODB, GPS, VendorTestFramework , dmath2 ,statmach, uPSI_SHDocVw;
           12600   5.0.1.18 unit SynEditMiscClasses2;,unit SynEdit2; prepare for Clear or TrackChanges;
-          12700   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx , classes_orig
+          12721   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx , classes_orig, Novus
+          12725   5.0.1.21 Novus Line , Todoe, serial monitor, code.search, rest adds, ResurceStream
  ************************************************************************************* }
 
 unit fMain;
@@ -250,9 +251,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.1.20';
+   MBVERSION = '5.0.1.21';
    MBVER = '501';              //for checking!
-   MBVER2 = '50120';              //for checking!
+   MBVER2 = '50121';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1649,8 +1650,8 @@ uses
  uPSI_JvTMTL,
   uPSI_JvWinampApi, //3.9.9.60    *)
   uPSI_MSysUtils,
-  //uPSI_ESBMaths2,
- //uPSI_ESBMaths,  *)
+  uPSI_ESBMaths2,
+ uPSI_ESBMaths,  //*)
   uPSI_uLkJSON,
  uPSI_ZURL,
   uPSI_ZSysUtils,  //3.9.9.60
@@ -1739,7 +1740,7 @@ uses
 
   uPSI_ALFcnFile,
   uPSI_ALFcnMime,
-  //uPSI_ALPhpRunner,     //*)
+  uPSI_ALPhpRunner,     //*)
   uPSI_ALGraphic,
   uPSI_ALIniFiles,
   uPSI_ALMemCachedClient,  //3.9.9.84   *)
@@ -1846,7 +1847,7 @@ uses
   uPSI_synachar,  //*)
   uPSI_synamisc,
   synamisc, //for dns info
-  //uPSI_synaser,      serial asm
+  uPSI_synaser,      //serial asm  TBlockSerial
   uPSI_synaicnv,
   uPSI_tlntsend,
   uPSI_pingsend,  //*)
@@ -1896,7 +1897,7 @@ uses
 (*  uPSI_dbTree,      //properties     *)
  // uPSI_dbTreeCBox,   *)
   uPSI_Debug,  //3.9.9.92
-//  uPSI_FileIntf,
+  // uPSI_FileIntf,
   //uPSI_SockTransport,   *)
   uPSI_WinInet,
   uPSI_Wwstr,
@@ -2293,8 +2294,8 @@ uses
   uPSI_Odometer,         //4.7.1.10
   uPSI_UIntegerpartition,
   uPSI_API_strings,
- (* uPSI_idPHPRunner,
-  uPSI_idCGIRunner,  *)
+  //SI_idPHPRunner,
+  //SI_idCGIRunner,  //*
   //uPSI_cTCPConnection,
   //uPSI_cHTTPTests, *)
   //uPSI_cSocksUtils,
@@ -2432,6 +2433,14 @@ uses
   uPSI_RestUtils,
   uPSI_PSResources,         //4.7.6.20
   uPSI_RestClient,
+  uPSI_OpenApiUtils,
+  uPSI_Pas2jsFileUtils,
+  uPSI_HTTPSender,
+  uPSI_NovusFileUtils,
+  uPSI_NovusUtilities,
+  uPSI_NovusStringUtils,
+  uPSI_NovusWindows,
+  uPSI_NovusNumUtils,
 
   //uPSI_IdNNTPServer,        //4.2.4.25  *)
   uPSI_UWANTUtils,
@@ -3319,7 +3328,7 @@ begin
   SIRegister_ALFcnExecute(X);
   SIRegister_ALFcnFile(X);
   SIRegister_ALFcnMime(X);
- (* SIRegister_ALPhpRunner(X);  *)
+  SIRegister_ALPhpRunner(X);  //*)
   SIRegister_ALGraphic(X);
   SIRegister_ALIniFiles(X);
   SIRegister_ALMemCachedClient(X);  //3.9.9.84   *)
@@ -3417,7 +3426,7 @@ begin
   SIRegister_synacode(X);
   SIRegister_synachar(X);   //*)
   SIRegister_synamisc(X);
- (* SIRegister_synaser(X); *)
+  SIRegister_synaser(X); //*)
   SIRegister_synaicnv(X);
   SIRegister_blcksock(X); //synaclient
   SIRegister_tlntsend(X);
@@ -3621,7 +3630,7 @@ SIRegister_cySearchFiles(X);
  SIRegister_DynaZip(X);  //*)
  SIRegister_clockExpert(X);    //*)
  SIRegister_SortUtils(X);  //*)
- //SIRegister_BitmapConversion(X); //down with LinearBitmap
+ //SIRegister_BitmapConversion(X); //down with LinearBitbitmap
   SIRegister_JclTD32(X);  //*)
  SIRegister_ZDbcUtils(X);
  SIRegister_ZScriptParser(X);
@@ -3963,6 +3972,13 @@ SIRegister_cySearchFiles(X);
   SIRegister_HttpConnection(X);
   SIRegister_HttpConnectionWinInet(X);
   SIRegister_RestClient(X);
+  SIRegister_Pas2jsFileUtils(X);
+  SIRegister_OpenApiUtils(X);
+  SIRegister_HTTPSender(X);
+  SIRegister_NovusUtilities(X);
+  SIRegister_NovusStringUtils(X);
+  SIRegister_NovusWindows(X);
+  SIRegister_NovusNumUtils(X);
 
   SIRegister_XMLIntf(X);
   //SIRegister_XMLDoc(X);  *)
@@ -3996,9 +4012,9 @@ SIRegister_cySearchFiles(X);
   SIRegister_UIntList(X);
   SIRegister_UIntegerpartition(X);
   SIRegister_API_strings(X);
- (* SIRegister_idCGIRunner(X);
-  SIRegister_idPHPRunner(X);
-  SIRegister_DrBobCGI(X);   *)
+ // SIRegister_idCGIRunner(X);
+  //IRegister_idPHPRunner(X);
+ // SIRegister_DrBobCGI(X);   *)
   SIRegister_OverbyteIcsLogger(X);  //*)
   SIRegister_OverbyteIcsCharsetUtils(X);
   SIRegister_OverbyteIcsMimeUtils(X);   //*)
@@ -4141,8 +4157,8 @@ SIRegister_cySearchFiles(X);
   SIRegister_JvTMTL(X);
   SIRegister_JvWinampApi(X);    // *)
   SIRegister_MSysUtils(X);
- (* SIRegister_ESBMaths(X);
-  SIRegister_ESBMaths2(X);   *)
+  SIRegister_ESBMaths(X);
+  SIRegister_ESBMaths2(X);   //*)
   SIRegister_uLkJSON(X);
   SIRegister_ZSysUtils(X);
   SIRegister_ZURL(X);
@@ -5027,8 +5043,8 @@ begin
  //RIRegister_IdMappedFTP(X);
   RIRegister_IdMappedPortUDP(X);   //*)
   RIRegister_MSysUtils_Routines(Exec);
- (* RIRegister_ESBMaths2_Routines(Exec);
-  RIRegister_ESBMaths_Routines(Exec);     *)
+  RIRegister_ESBMaths2_Routines(Exec);
+  RIRegister_ESBMaths_Routines(Exec);   //  *)
   RIRegister_uLkJSON(X);
   RIRegister_uLkJSON_Routines(Exec);
   RIRegister_ZURL(X);
@@ -5182,7 +5198,7 @@ begin
   RIRegister_ALFcnExecute_Routines(Exec);
   RIRegister_ALFcnFile_Routines(Exec);
   RIRegister_ALFcnMime_Routines(Exec);
-(* RIRegister_ALPhpRunner(X);    *)
+  RIRegister_ALPhpRunner(X);    //*)
   RIRegister_ALGraphic_Routines(Exec);
   RIRegister_ALIniFiles(X);
   RIRegister_ALMemCachedClient(X); //3.9.9.84  *)
@@ -5304,8 +5320,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_synacode_Routines(Exec);
   RIRegister_synachar_Routines(Exec);  //*)
   RIRegister_synamisc_Routines(Exec); // comment it if no routines
- (* RIRegister_synaser(X);
-  RIRegister_synaser_Routines(Exec);   *)
+  RIRegister_synaser(X);
+  RIRegister_synaser_Routines(Exec);   //*)
   RIRegister_synaicnv_Routines(Exec);
   RIRegister_blcksock(X);
   RIRegister_tlntsend(X);
@@ -5622,7 +5638,15 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_PSResources_Routines(Exec);
   RIRegister_HttpConnection(X);
   RIRegister_HttpConnectionWinInet(X);
+   RIRegister_HTTPSender(X);
   RIRegister_RestClient(X);
+  RIRegister_OpenApiUtils_Routines(Exec);
+  RIRegister_Pas2jsFileUtils_Routines(Exec);
+  RIRegister_NovusUtilities(X);
+  RIRegister_NovusUtilities_Routines(Exec);
+  RIRegister_NovusStringUtils(X);
+  RIRegister_NovusWindows(X);
+  RIRegister_NovusNumUtils(X);
 
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
@@ -6999,14 +7023,14 @@ begin
  y:= tmp;
 end;
 
-(*
+
 procedure TestWebService;
 var rio: THTTPRIO;
     WS: IVCLScanner;
 begin
     RIO:= THTTPRIO.Create(NIL);
      ws:= (RIO as IVCLScanner);
-end; *)
+end; //*)
 
 function keypressed2: boolean;    //keypress on memo2!
 begin
@@ -9942,7 +9966,8 @@ begin
     sOName:= ExtractFilePath(Application.ExeName) + #0;
     sEName:= Application.ExeName;
     hlog.Add('>>>> New Instance: {App_name} v{App_ver}{80@}{now}');
-    hlog.Free; //prevent efpopen file exception
+    if IsFileInUse(exepath+'maxboxlog.log') then
+        hlog.Free; //prevent efpopen file exception
     ShellExecute(0, 'open', @sEName[1], NIL, @sOName[1], SW_SHOW);
     //ShellExecute(0, NIL, @sEName[1], @sOName[1], NIL, SW_SHOW);
     statusBar1.panels[0].text:= 'New Instance created of: '+ExtractFileName(Act_Filename);
@@ -10092,6 +10117,7 @@ begin
         output.Lines.add('User Name: '+getUserNameWin+'    Is Admin: '+boolToStr(getISAdmin,true));
         output.Lines.add('Process ID: '+intToStr(CurrentProcessID) +'  ThreadCount: '+intToStr(numprocessthreads));
         output.Lines.add('Memory Load: '+inttoStr(GetMemoryLoad) +'% used'+ '  CPU: '+GetProcessorName);
+        output.Lines.add('Committ Stack Size: '+inttostr(CommittedStackSize));
         output.Lines.add('Free Mem: '+inttoStr(GetFreePhysicalMemory div 1024)+' KB'+'  SYS_BIOS: '+GetBiosVendor);
         output.Lines.add('Time: '+DateTimeToInternetStr(now, true));   //*)
         output.Lines.add('mX4 Installed Version: '+MBVERSION);
@@ -10411,7 +10437,7 @@ begin
   S:= '';
   S:= 'StringReplace(';
   if InputQuery('CodeSearchEngine2', 'Enter your code search for examples:', S) and (S <> '') then
-    //StartCodeFinder(S);
+    StartCodeFinder(S);
   //code searchforall
 end;
 
@@ -11256,10 +11282,10 @@ begin
 end;
 
 procedure Tmaxform1.ToDoList1Click(Sender: TObject);
-//var ViewToDoForm: TViewToDoForm;
+var ViewToDoForm: TViewToDoForm;
 begin
   //to do form devcc
- { ViewToDoForm:= TViewToDoForm.Create(self);
+ ViewToDoForm:= TViewToDoForm.Create(self);
   try
     ViewToDoForm.Show;
     //ViewToDoForm.ShowModal;
@@ -11268,7 +11294,7 @@ begin
     //ViewToDoForm.Free;
         memo2.Lines.Add('Tasklist opened '+Act_Filename);
   end;
-  }
+  //}
 end;
 
 Procedure Tmaxform1.SetStatChange(vstat: boolean);
@@ -12318,16 +12344,16 @@ begin
  rcFrm:= TRCMainForm.Create(NIL);
  with rcFrm do begin
    try
-   { with FileOpenDialog do begin
+  { with FileOpenDialog do begin
       if not Execute then Exit;
       TmpExeFile:= TExeImage.CreateImage(Self, ExePath+'maxbox3.exe');
       if Assigned(FExeFile) then FExeFile.Destroy;
       FExeFile:= TmpExeFile;
     end; //}
-      //FExeFile:= TExeImage.CreateImage(rcFrm, ExePath+'maxbox5.exe');
+      FExeFile:= TExeImage.CreateImage(rcFrm, ExePath+'maxbox5.exe');
       //DisplayResources;
       showModal;
-      statusBar1.panels[0].text:= ' mX Resources loaded!';
+      statusBar1.panels[0].text:= ' mX5 Resources loaded!';
     finally
       Release;
       Free;
