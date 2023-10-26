@@ -200,7 +200,7 @@
           12584   5.0.1.17 GPS2, ADOTest, ADODB, GPS, VendorTestFramework , dmath2 ,statmach, uPSI_SHDocVw;
           12600   5.0.1.18 unit SynEditMiscClasses2;,unit SynEdit2; prepare for Clear or TrackChanges;
           12721   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx , classes_orig, Novus
-          12725   5.0.1.21 Novus Line , Todoe, serial monitor, code.search, rest adds, ResurceStream
+          12726   5.0.1.22 Novus Line , Todoe, serial monitor, code.search, rest adds, ResurceStream - Release build, makeAPP
  ************************************************************************************* }
 
 unit fMain;
@@ -251,9 +251,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.1.21';
+   MBVERSION = '5.0.1.22';
    MBVER = '501';              //for checking!
-   MBVER2 = '50121';              //for checking!
+   MBVER2 = '50122';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1692,7 +1692,7 @@ uses
   uPSI_JvExControls,
   uPSI_JvBDEMemTable,   *)
   uPSI_JvCommStatus,
-  //uPSI_JvMailSlots,    *)
+  //uPSI_JvMailSlots,    redeclare*)
   uPSI_JvgWinMask,  //3.9.9.82   *)
   uPSI_StEclpse,
   //uPSI_StMime, //*)
@@ -1798,8 +1798,8 @@ uses
   uPSI_ovctcary,
   uPSI_DXPUtils,
  (* uPSI_ALPOP3Client, *)
-  //uPSI_SmallUtils,
-  //uPSI_MakeApp,
+  uPSI_SmallUtils,
+  uPSI_MakeApp,
   uPSI_O32MouseMon,
   uPSI_OvcCache,
   uPSI_ovccalc,
@@ -3377,9 +3377,9 @@ begin
   SIRegister_ovcpeakm(X);
   SIRegister_ovcBidi(X);     //3.9.9.86
  SIRegister_DXPUtils(X);
-(*  SIRegister_ALPOP3Client(X);
+(*  SIRegister_ALPOP3Client(X);  *)
   SIRegister_SmallUtils(X);
-  SIRegister_MakeApp(X);  *)
+  SIRegister_MakeApp(X);  //*)
   SIRegister_O32MouseMon(X);
   SIRegister_OvcCache(X);
   SIRegister_ovccalc(X);
@@ -5263,9 +5263,9 @@ begin
   RIRegister_ovcBidi_Routines(EXec);
   RIRegister_ovctcary(X);
 RIRegister_DXPUtils_Routines(Exec);
-(*  RIRegister_ALPOP3Client(X);
+(*  RIRegister_ALPOP3Client(X);   *)
   RIRegister_SmallUtils_Routines(Exec);
-  RIRegister_MakeApp_Routines(Exec);   *)
+  RIRegister_MakeApp_Routines(Exec);   //*)
   RIRegister_O32MouseMon_Routines(Exec);
   RIRegister_OvcCache(X);
   RIRegister_ovccalc(X);
