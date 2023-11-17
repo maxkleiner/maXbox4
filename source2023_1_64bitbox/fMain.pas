@@ -73,7 +73,7 @@
          4402    V3.9.6.1 app.exception , scanf, raise type
          4672    V3.9.6.3.c bugfix december, interface navigator, more units
          4812    V3.9.6.4  decimals, history=9 , OLE , extini
-         4920    V3.9.7.1.a fulltextfinder, navigator2, flat unit , 4units
+         4920    V3.9.7.1.a fulltextfinder, navigator2, fla unit , 4units
          4990    V3.9.7.3/4  9 units, tmessage , simulator unit
          5111    V3.9.7.5 add 9 units, simu add on, several bugfixes in routines
          5258    V3.9.8.0  halt routine, 18 units, java intf, duallist, codesearch!
@@ -200,7 +200,8 @@
           12584   5.0.1.17 GPS2, ADOTest, ADODB, GPS, VendorTestFramework , dmath2 ,statmach, uPSI_SHDocVw;
           12600   5.0.1.18 unit SynEditMiscClasses2;,unit SynEdit2; prepare for Clear or TrackChanges;
           12721   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx , classes_orig, Novus
-          12726   5.0.1.22 Novus Line , Todoe, serial monitor, code.search, rest adds, ResurceStream - Release build, makeAPP
+          12728   5.0.1.22 Novus Line , Todoe, serial monitor, code.search, rest adds, ResurceStream - Release build, makeAPP
+          12770   5.0.2.24 d11.3 on Win11  aboutbox, finddlg, exception catch AV and debuginfo, debugmode
  ************************************************************************************* }
 
 unit fMain;
@@ -227,7 +228,7 @@ uses
   SynHighlighterEiffel, SynHighlighterAsm, SynHighlighterDfm, SynHighlighterVB,
   SynHighlighterIni, SynHighlighterBat, SynHighlighterIDL,
   SynHighlighterVBScript, SynHighlighterMsg, syneditcodefolding,
-  System.ImageList, syneditkeycmds, Vcl.Imaging.pngimage
+  System.ImageList, syneditkeycmds, Vcl.Imaging.pngimage //, fmain_47650
   {,IWBaseControl,IWBaseHTMLControl}; //, jpeg;
 
 const
@@ -251,9 +252,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.1.22';
-   MBVER = '501';              //for checking!
-   MBVER2 = '50122';              //for checking!
+   MBVERSION = '5.0.2.24';
+   MBVER = '502';              //for checking!
+   MBVER2 = '50224';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -639,7 +640,8 @@ type
     JumptoTerminal1: TMenuItem;
     JumptoOutput1: TMenuItem;
     memo1: TSynEdit;
-    Collapse1: TMenuItem;      //SynEdit1
+    Collapse1: TMenuItem;
+    ImageList3: TImageList;      //SynEdit1
     procedure IFPS3ClassesPlugin1CompImport(Sender: TObject; x: TPSPascalCompiler);
     procedure IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TPSExec; x: TPSRuntimeClassImporter);
     procedure PSScriptCompile(Sender: TPSScript);
@@ -933,6 +935,7 @@ type
     STATLastfile: boolean;
     STATMacro: boolean;
     STATExecuteShell: Boolean;  //bugfix back from
+    STATDebugcheck: boolean;     //V5.0.2
     STATActiveyellow: Boolean;
     STATVersionCheck: boolean;
     STATOtherHL: boolean;
@@ -1035,6 +1038,7 @@ type
     procedure WebScannerDirect(urls: string);
     procedure LoadInterfaceList2;
     function GetStatExecuteShell: boolean;
+    function GetStatDebugCheck: boolean;
     procedure DoEditorExecuteCommand(EditorCommand: word);
     function GetActiveLineColor: TColor;
     procedure SetActiveLineColor(acolor: TColor);
@@ -1059,7 +1063,7 @@ uses
   uPSR_std,
   uPSC_std,          //TObject!   TComponent
   uPSR_stdctrls,
-  uPSC_stdctrls,    //listbox   , memo , button   ondatafind
+  uPSC_stdctrls,    //listbox   , memo , button   ondatafind , customedit
   uPSC_classes_orig,   //memory stream    interfacelist, tlist, stringlist, collection   , resourcestream
   uPSR_classes_orig,
   uPSR_forms,
@@ -1216,7 +1220,7 @@ uses
   uPSI_StGenLog,
   uPSI_JvComCtrls,
   uPSI_JvLogFile,
-  //uPSI_JvGraph,
+  uPSI_JvGraph,
   uPSI_JvCtrls, //*)
   uPSI_CPort,
   uPSI_CPortCtl,
@@ -1329,7 +1333,7 @@ uses
   uPSI_JvRas32,
 (*  uPSI_JvImageDrawThread, *)
   uPSI_JvImageWindow,
-  //uPSI_JvTransparentForm,
+  uPSI_JvTransparentForm,
   uPSI_JvWinDialogs,
   uPSI_JvSimLogic,
   uPSI_JvSimIndicator,
@@ -1433,7 +1437,7 @@ uses
   uPSI_JvTimer,
   uPSI_cHTTPUtils,
   uPSI_cTLSUtils,     //3.9.9.7
- (* uPSI_JclGraphics, *)
+  uPSI_JclGraphics, //*)
   uPSI_JclSynch,
  uPSI_IdEcho,
   uPSI_IdEchoServer,
@@ -1453,7 +1457,7 @@ uses
   uPSI_Spring_Cryptography_Utils,
   uPSI_MapReader,
   uPSI_LibTar,      //FileTimeGMT
- (* uPSI_IdChargenServer,
+ (* uPSI_IdChargenServer,   *)
   uPSI_IdBlockCipherIntercept,  //3.9.9.8   *)
   //uPSI_IdFTPServer,
   uPSI_IdException, //*)
@@ -1503,7 +1507,7 @@ uses
   uPSI_StBarPN,
   uPSI_StDbPNBC,
   uPSI_StDb2DBC,  //*)
-  uPSI_StMoney,  // defwin64*)
+  uPSI_StMoney_,  // defwin64*)
   uPSI_SynEditTypes,
   uPSI_SynEditMiscClasses,
   uPSI_SynEditHighlighter,
@@ -1695,7 +1699,7 @@ uses
   //uPSI_JvMailSlots,    redeclare*)
   uPSI_JvgWinMask,  //3.9.9.82   *)
   uPSI_StEclpse,
-  //uPSI_StMime, //*)
+  uPSI_StMime, //*)
   uPSI_StList,
   uPSI_StMerge,
  // uPSI_StStrS,     //nt found Shortstring functions !
@@ -1893,7 +1897,7 @@ uses
   uPSI_JsSendMail, //*)
   //uPSI_dbTvRecordList,  *)
   uPSI_TreeVwEx,
- // uPSI_ECDataLink,
+ // uPSI_ECDataLink,       BDE
 (*  uPSI_dbTree,      //properties     *)
  // uPSI_dbTreeCBox,   *)
   uPSI_Debug,  //3.9.9.92
@@ -1902,7 +1906,7 @@ uses
   uPSI_WinInet,
   uPSI_Wwstr,
  //uPSI_DBLookup,     not founc
- (* uPSI_Printgri, *)
+ // uPSI_Printgri, *)
   uPSI_Hotspot,
   uPSI_HList,
  //&& uPSI_DrTable,   bde *)
@@ -1931,9 +1935,9 @@ uses
  //uPSI_JvNotify,     errors
   uPSI_JvStrHlder,   //*)
   uPSI_JclNTFS2,
-(*  uPSI_Jcl8087, //3.9.9.94_3
+  uPSI_Jcl8087, //3.9.9.94_3
   uPSI_JvAddPrinter,
-  uPSI_JvCabFile,   *)
+  uPSI_JvCabFile,   //*)
   uPSI_JvDataEmbedded,
   U_HexView,
   uPSI_U_HexView,
@@ -2018,10 +2022,10 @@ uses
   uPSI_Console,
   //uPSI_PlayCap,
   uPSI_AnalogMeter,
- (* uPSI_XPrinter, *)
+  uPSI_XPrinter, //*)
   uPSI_lazIniFiles, //*)
   uPSI_testutils,
- // uPSI_ToolsUnit,
+  uPSI_ToolsUnit,
   uPSI_fpcunit,  //*)
   uPSI_testdecorator,
   uPSI_fpcunittests,
@@ -2063,7 +2067,7 @@ uses
   uPSI_LrtPoTools,
   uPSI_Laz_DOM,  //3*)
   uPSI_hhAvComp,          //3.9.9.101   *)
-  uPSI_GPS2,
+ // uPSI_GPS2,
   //uPSI_GPS,  //*)
   //uPSI_GPSUDemo,      internal erros!
   //GPSUDemo, //for form call; *)
@@ -2179,7 +2183,7 @@ uses
   uPSI_FCGIApp,  //*)
   uPSI_PersistSettings,  //also Windows API Settings  SpectraLib , pipehelper, pipe2
   uPSI_SynEditAutoComplete,
-  uPSI_SynEditTextBuffer,
+  //uPSI_SynEditTextBuffer,
   uPSI_JclPCRE,
   //uPSI_ZConnection,
   //uPSI_ZSequence, *)
@@ -2191,7 +2195,7 @@ uses
   uPSI_RegUtils,  //*)
   uPSI_StdFuncs,      // wrong iintit   - missing comp
   uPSI_VariantRtn,
-  uPSI_SqlTxtRtns,    //*)
+  //uPSI_SqlTxtRtns,    //*)
   uPSI_BSpectrum,
  uPSI_IPAddressControl,
   uPSI_Paradox,  //*)
@@ -2374,7 +2378,7 @@ uses
   uPSI_SimpleParserRSS,
   uPSI_SimpleRSSUtils, //*)
   uPSI_StrUtil,
-  uPSI_Pas2JSUtils,
+  uPSI_Pas2JSUtils,      //++
   //uPSI_TAChartUtils,  // *)
    //Python Section
   uPSI_PythonEngine,
@@ -2441,6 +2445,8 @@ uses
   uPSI_NovusStringUtils,
   uPSI_NovusWindows,
   uPSI_NovusNumUtils,
+  //uPSI_NovuscURLUtils,
+  uPSI_NovusWebUtils,
 
   //uPSI_IdNNTPServer,        //4.2.4.25  *)
   uPSI_UWANTUtils,
@@ -2476,7 +2482,7 @@ uses
   uPSI_UJSONFunctions,
   //UJSONFunctions.pas
   uPSI_USha256,  //*)
-  uPSI_Series,    //*)
+  uPSI_Series,    //*)  to tee chart
   uPSI_uTPLb_HashDsc,
   uPSI_uTPLb_Hash,
   uPSI_mimeinln,
@@ -2486,7 +2492,7 @@ uses
   uPSI_uTPLb_Asymetric,
   uPSI_uTPLb_CodecIntf,
   uPSI_uTPLb_Codec,
-  uPSI_ADOInt,//*)
+ // uPSI_ADOInt,//*)
   uPSI_MidasCon,
   uPSI_XMLIntf,
   //uPSI_XMLDoc, * local unit mismatch)
@@ -2507,7 +2513,7 @@ uses
   uPSI_DBXMetaDataUtil, // *)
  uPSI_TeEngine,
   uPSI_TeeProcs,
-  uPSI_TeCanvas,  //((*)      // check fonts   fixed fonts
+  uPSI_TeCanvas,  //((*)      // check fonts   fixed fonts   fix with tmpLines[x-1] do
 
   uPSI_Chart,
   //uPSI_MDIEdit,  //redeclare
@@ -2715,7 +2721,7 @@ begin
 
   SIRegister_StrUtils(X);
    SIRegister_SysUtils(X);   //3.2   --> sysutils_max also unit down  , TBytes
-   SIRegister_Pas2JSUtils(X);
+  SIRegister_Pas2JSUtils(X);         //++
   SIRegister_EInvalidArgument(x);
   SIRegister_MathMax(x);  //*)
  SIRegister_WideStrUtils(X);
@@ -2726,7 +2732,7 @@ begin
   SIRegister_DB(x);          //this shit!
   SIRegister_DBCommonTypes(X);
   SIRegister_DBCommon(X);
- // SIRegister_DBTables(X);
+  //SIRegister_DBTables(X);
 
   SIRegister_DBPlatform(X);
   SIRegister_DBLogDlg(X);  //3.9
@@ -2746,7 +2752,7 @@ begin
   SIRegister_Buttons(X);
   SIRegister_Clipbrd(X);
  (* SIRegister_SqlExpr(X); *)
-  SIRegister_ADOInt(X);   //4.2.8.10  *)
+  //SIRegister_ADOInt(X);   //4.2.8.10  *)
 
   SIRegister_ADODB(X);
   SIRegister_DBGrids(X); //*)
@@ -2811,12 +2817,12 @@ begin
   SIRegister_DTDSchema(X);  //*)
   SIRegister_ShLwApi(X);
   SIRegister_IBUtils(X); //3.9.2.2 fin -3.9.3
- // SIRegister_JvGraph(X);   *)
+  SIRegister_JvGraph(X);   //*)
   SIRegister_Registry(X);
   SIRegister_TlHelp32(X);
   SIRegister_RunElevatedSupport(X);
   SIRegister_JclRegistry(X);
-  //SIRegister_TJvGradient(X);
+ //  SIRegister_TJvGradient(X);
   SIRegister_JvLogFile(X);   //*)
   SIRegister_JvComCtrls(X);
   SIRegister_JvCtrls(X);   //*)
@@ -2844,7 +2850,7 @@ begin
   SIRegister_JvXmlDatabase(X);   //*)
   SIRegister_StList(X);   //*)
   SIRegister_StFirst(X);
-(*  SIRegister_StMime(X);  *)
+  SIRegister_StMime(X);  //*)
   SIRegister_StToHTML(X);
   SIRegister_StStrms(X);
   SIRegister_StFIN(X);  //&&*)
@@ -2869,7 +2875,7 @@ begin
   SIRegister_StDbPNBC(X);
   SIRegister_StDb2DBC(X); // *)
   SIRegister_StMoney(X);
-  //SIRegister_StMime(X);  *)
+  SIRegister_StMime(X); // *)
   SIRegister_StEclpse(X);
   SIRegister_JvKeyboardStates(X);
   SIRegister_JclMapi(X);
@@ -3035,8 +3041,8 @@ begin
   SIRegister_JvRle(X);
   SIRegister_JvRas32(X);
  SIRegister_JvImageWindow(X);
- (* SIRegister_JvImageDrawThread(X);  //3.9.7.3
-  SIRegister_JvTransparentForm(X);  *)
+ (* SIRegister_JvImageDrawThread(X);  *)//3.9.7.3
+  SIRegister_JvTransparentForm(X);  //*)
   SIRegister_JvWinDialogs(X);  //*)
   SIRegister_JclUnitConv_mX2(X);
   SIRegister_JvFloatEdit(X);  //3.9.8   *)
@@ -3169,7 +3175,7 @@ begin
   SIRegister_JvTimer(X);
   SIRegister_cHTTPUtils(X);
   SIRegister_cTLSUtils(X);
- (* SIRegister_JclGraphics(X);    *)
+  SIRegister_JclGraphics(X);   // *)
   SIRegister_JclSynch(X);   //*)
   SIRegister_Spring_Cryptography_Utils(X);
   SIRegister_MapReader(X);
@@ -3238,9 +3244,9 @@ begin
   SIRegister_LibTar(X);
  (* SIRegister_IdQOTDUDP(X);
   SIRegister_IdQOTDUDPServer(X);
-  SIRegister_IdChargenServer(X);
+  SIRegister_IdChargenServer(X);    *)
   SIRegister_IdBlockCipherIntercept(X);
-  SIRegister_IdFTPList(X);                //4.2.5.10   *)
+  //SIRegister_IdFTPList(X);                //4.2.5.10   *)
   SIRegister_IdCoderHeader(X);
   (*
   SIRegister_IdFTPServer(X);  *)
@@ -3494,9 +3500,9 @@ begin
  SIRegister_JvStrHlder(X);
  (*SIRegister_JvNotify(X);  *)
  SIRegister_JclNTFS2(X);
- (*SIRegister_Jcl8087(X);
+ SIRegister_Jcl8087(X);
  SIRegister_JvAddPrinter(X);
- SIRegister_JvCabFile(X);    *)
+ SIRegister_JvCabFile(X);   //*)
  SIRegister_JvDataEmbedded(X);
  SIRegister_U_HexView(X);
  SIRegister_UWavein4(X);
@@ -3551,15 +3557,15 @@ SIRegister_cyDocER(X);
  SIRegister_StarCalc(X);
  SIRegister_D2_VistaHelperU(X);  // *)
  SIRegister_ProcessUnit(X);
-// SIRegister_adgsm(X);
+ //SIRegister_adgsm(X);
 (* SIRegister_BetterADODataSet(X);   *)
  SIRegister_AdSelCom(X);  //*)
  SIRegister_dwsXPlatform(X);
  SIRegister_AdSocket(X);
-SIRegister_AdPacket(X);
- SIRegister_AdPort(X);
- SIRegister_AdPacket(X);
- //SIRegister_adgsm(X);
+ //SIRegister_AdPacket(X);
+  SIRegister_AdPort(X);
+  SIRegister_AdPacket(X);
+ SIRegister_adgsm(X);
  SIRegister_PathFunc(X);
  SIRegister_CmnFunc2(X);
  SIRegister_CmnFunc(X);
@@ -3578,12 +3584,12 @@ SIRegister_AdPacket(X);
  SIRegister_simplecomport(X);
  SIRegister_Console(X);
  SIRegister_AnalogMeter(X);
- (*SIRegister_XPrinter(X);  *)
+ SIRegister_XPrinter(X);  //*)
  SIRegister_lazIniFiles(X);  //*)
  SIRegister_fpcunit(X);
  SIRegister_testdecorator(X); //((*)
  SIRegister_testutils(X);
- (*SIRegister_ToolsUnit(X);  *)
+ SIRegister_ToolsUnit(X);  //*)
  SIRegister_fpcunittests(X);
  SIRegister_cTCPBuffer(X); //*)
  SIRegister_Glut(X);    //*)
@@ -3622,7 +3628,7 @@ SIRegister_cySearchFiles(X);
  SIRegister_LrtPoTools(X);
  SIRegister_Laz_DOM(X);   //*)
  SIRegister_hhAvComp(X);// *)
- SIRegister_GPS2(X);
+ //SIRegister_GPS2(X);
  //SIRegister_GPS(X);
  //SIRegister_GPSUDemo(X);  *)
  SIRegister_NMEA(X);        //3.9.9.101
@@ -3726,7 +3732,7 @@ SIRegister_cySearchFiles(X);
  SIRegister_FCGIApp(X);
   SIRegister_PersistSettings(X);
  SIRegister_SynEditAutoComplete(X);
-  SIRegister_SynEditTextBuffer(X);
+  //SIRegister_SynEditTextBuffer(X);
   SIRegister_JclPCRE(X);
   //RIRegister_JclPCRE_Routines(Exec);  *)
   SIRegister_ChessBrd(X);
@@ -3736,7 +3742,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_StdFuncs(X);   //this whole shot shit!è
   SIRegister_RegUtils(X);
   SIRegister_VariantRtn(X);
-  SIRegister_SqlTxtRtns(X);    //*)
+// SIRegister_SqlTxtRtns(X);    //*)
   SIRegister_BSpectrum(X);
   SIRegister_IPAddressControl(X);  //*)
   SIRegister_Paradox(X);
@@ -3909,7 +3915,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_SimpleParserRSS(X);
   SIRegister_SimpleRSSUtils(X);    //*)
   SIRegister_StrUtil(X);   //*)
-  //SIRegister_Pas2JSUtils(X);
+ // SIRegister_Pas2JSUtils(X);   //++
   SIRegister_PythonEngine(X);
   SIRegister_VclPythonGUIInputOutput(X);
   SIRegister_VarPyth(X);
@@ -3979,6 +3985,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_NovusStringUtils(X);
   SIRegister_NovusWindows(X);
   SIRegister_NovusNumUtils(X);
+  SIRegister_NovusWebUtils(X);
 
   SIRegister_XMLIntf(X);
   //SIRegister_XMLDoc(X);  *)
@@ -4248,7 +4255,7 @@ begin
   RIRegister_Menus(X);
   RIRegister_Menus_Routines(Exec);
   RIRegister_Buttons(X);
-  //RIRegister_Buttons_Routines(Exec);     add
+  RIRegister_Buttons_Routines(Exec);    // add
   (*RIRegister_TwinFormp(x);
   RIRegister_TMyLabel(x);
   RIRegister_WinForm1(x);  *)
@@ -4272,7 +4279,7 @@ begin
   RIRegister_Printers(X);
   RIRegister_Printers_Routines(Exec); //*)
   RIRegister_StrUtils_Routines(exec);
-  RIRegister_Pas2JSUtils_Routines(Exec);
+  RIRegister_Pas2JSUtils_Routines(Exec);    //++
 
   RIRegister_MPlayer(X);
   RIRegister_ImgList(X);
@@ -4585,8 +4592,8 @@ begin
   RIRegister_MapReader_Routines(Exec);
   RIRegister_LibTar(X);
   RIRegister_LibTar_Routines(Exec);
-(*  RIRegister_IdChargenServer(X);
-  RIRegister_IdBlockCipherIntercept(X);  *)
+(*  RIRegister_IdChargenServer(X);  *)
+  RIRegister_IdBlockCipherIntercept(X);  //*)
   RIRegister_IdException(X);
  (* RIRegister_IdFTPServer(X); *)
   RIRegister_uwinstr_Routines(Exec);
@@ -4640,8 +4647,8 @@ begin
  RIRegister_JvRle_Routines(Exec);
  RIRegister_JvRas32(X);
   RIRegister_JvImageWindow(X);
- (* RIRegister_JvImageDrawThread(X);  //3.9.7.3
-  RIRegister_JvTransparentForm(X); *)
+ (* RIRegister_JvImageDrawThread(X);  *)//3.9.7.3
+  RIRegister_JvTransparentForm(X); //*)
   RIRegister_JvWinDialogs(X);
   RIRegister_JvWinDialogs_Routines(Exec);  //*)
   RIRegister_JvFloatEdit(X); //*)
@@ -4835,8 +4842,8 @@ begin
   RIRegister_JclSimpleXml(X);
   RIRegister_JclSimpleXml_Routines(Exec); //*)
   RIRegister_JvLogFile(X);
- (* RIRegister_JvGraph_Routines(Exec);
-  RIRegister_TJvGradient(X);   *)
+  RIRegister_JvGraph_Routines(Exec);
+  //RIRegister_TJvGradient(X);   //*)
   RIRegister_JvComCtrls(X);
   RIRegister_JvCtrls(X);  //*)
   RIRegister_CPort(X);
@@ -4911,8 +4918,8 @@ begin
   RIRegister_cHTTPUtils(X);
    RIRegister_ETLSError(X);
   RIRegister_cTLSUtils_Routines(Exec);
- (* RIRegister_JclGraphics_Routines(Exec);
-  RIRegister_JclGraphics(X);    *)
+  RIRegister_JclGraphics_Routines(Exec);
+  RIRegister_JclGraphics(X);    //*)
   RIRegister_JclSynch(X);
   RIRegister_JclSynch_Routines(Exec);  //*)
   RIRegister_Spring_Cryptography_Utils_Routines(Exec);
@@ -5149,7 +5156,7 @@ begin
   RIRegister_JvCommStatus(X); //*)
   RIRegister_JvgWinMask(X);  //*)
   RIRegister_StList(X);
- (* RIRegister_StMime(X);  *)
+  RIRegister_StMime(X);  //*)
   RIRegister_StEclpse(X);
  (* RIRegister_StStrS_Routines(Exec);  *)
   RIRegister_StMerge(X);
@@ -5416,7 +5423,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_JvStrHlder(X);
  (* RIRegister_JvNotify(X);
   RIRegister_JvNotify_Routines(Exec);
-  RIRegister_JclNTFS2_Routines(Exec);
+  RIRegister_JclNTFS2_Routines(Exec);    *)
   RIRegister_Jcl8087_Routines(Exec);
   RIRegister_JvAddPrinter(X);
   RIRegister_JvCabFile(X);      //3.9.9.94_3    *)
@@ -5479,8 +5486,8 @@ RIRegister_DSUtil_Routines(Exec);
  RIRegister_pipes_Routines(Exec);
   RIRegister_pipes(X);  //*)
   RIRegister_ProcessUnit(X);
- (* RIRegister_adgsm_Routines(Exec);
-  RIRegister_BetterADODataSet_Routines(Exec);
+  RIRegister_adgsm_Routines(Exec);
+ (* RIRegister_BetterADODataSet_Routines(Exec);
   RIRegister_BetterADODataSet(X);  *)
   RIRegister_AdSelCom_Routines(Exec);
   RIRegister_AdSelCom(X);       //*)
@@ -5514,11 +5521,11 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_simplecomport(X);          //3.9.9.98
   RIRegister_Console_Routines(Exec);
   RIRegister_AnalogMeter(X);
- //(* RIRegister_XPrinter(X);
+  RIRegister_XPrinter(X);
   RIRegister_lazIniFiles(X);  //*)
   RIRegister_testutils(X);
- (* RIRegister_ToolsUnit_Routines(Exec);
-  RIRegister_ToolsUnit(X);  *)
+  RIRegister_ToolsUnit_Routines(Exec);
+  RIRegister_ToolsUnit(X);  //*)
   RIRegister_fpcunit_Routines(Exec);
   RIRegister_fpcunit(X);
   RIRegister_fpcunittests(X);
@@ -5567,7 +5574,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_Laz_DOM(X);
   RIRegister_hhAvComp(X);
   RIRegister_hhAvComp_Routines(Exec);    //*)
-  RIRegister_GPS2(X);
+//7/  RIRegister_GPS2(X);
   //RIRegister_GPS(X);  redeclare
   //RIRegister_GPS_Routines(Exec);
   //RIRegister_GPSUDemo(X);    *)
@@ -5641,12 +5648,13 @@ RIRegister_DSUtil_Routines(Exec);
    RIRegister_HTTPSender(X);
   RIRegister_RestClient(X);
   RIRegister_OpenApiUtils_Routines(Exec);
-  RIRegister_Pas2jsFileUtils_Routines(Exec);
+ RIRegister_Pas2jsFileUtils_Routines(Exec);   //the real shit to found for 4hrs!
   RIRegister_NovusUtilities(X);
   RIRegister_NovusUtilities_Routines(Exec);
   RIRegister_NovusStringUtils(X);
   RIRegister_NovusWindows(X);
   RIRegister_NovusNumUtils(X);
+  RIRegister_NovusWebUtils(X);
 
   RIRegister_StExpr(X);
   RIRegister_StExpr_Routines(Exec);
@@ -5764,7 +5772,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_PersistSettings_Routines(Exec);
   RIRegister_PersistSettings(X);
   RIRegister_SynEditAutoComplete(X);
-  RIRegister_SynEditTextBuffer(X);
+  //RIRegister_SynEditTextBuffer(X);
   RIRegister_JclPCRE(X);
   RIRegister_JclPCRE_Routines(Exec);   // *)
   RIRegister_ChessBrd(X);
@@ -5776,7 +5784,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_StdFuncs_Routines(Exec);
   RIRegister_RegUtils_Routines(Exec);
   RIRegister_VariantRtn_Routines(Exec);
-  RIRegister_SqlTxtRtns_Routines(Exec); //*)
+ // RIRegister_SqlTxtRtns_Routines(Exec); //*)
   RIRegister_BSpectrum(X);
  RIRegister_IPAddressControl(X);
   RIRegister_Paradox(X);
@@ -5921,7 +5929,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_UTime_Routines(Exec);
   RIRegister_uTPLb_Codec(X);    //4.2.8.10
   RIRegister_uTPLb_BlockCipher(X);
-  RIRegister_ADOInt(X);
+  //RIRegister_ADOInt(X);
   RIRegister_XMLIntf(X);
  (* RIRegister_XMLDoc(X);
   RIRegister_XMLDoc_Routines(Exec);  *)
@@ -6164,13 +6172,14 @@ begin
   STATInclude:= false;   // mx42810
   STATExceptionLog:= true; //v3
   STATExecuteShell:= true; //v3   from IFSI_WinForm1puzzle!!
+  STATDebugCheck:= true;            //V5.0.2
   STATformOutput:= false; //v3.5
   STATExecuteBoot:= true; //v38
   STATLastFile:= false; //v393
   STATMemoryReport:= false; //396
   STATMacro:= true;
   STATActiveyellow:= false;
-  STATVersionCheck:= true;
+  STATVersionCheck:= false;
   STATOtherHL:= false;
   fdebuginst:= false;
   fmemoclick:= false;
@@ -6200,17 +6209,19 @@ begin
   //SynPasSyn1.
   //should be a get highlight from extension
   memo1.Gutter.ShowLineNumbers:= true;
+  //// draw word wrap glyphs transparently over gradient
+  memo1.gutter.Gradient:= true;
   //memo1.gutter.trackchanges
   //memo1.Gutter.color:= CoolBar1.COLOR; //clmoneygreen;
   memo1.WantTabs:= true;
-  memo1.WordWrap:= false;
+  memo1.WordWrap:= true;
   memo1.UseCodeFolding := true;
    statusbar1.SimplePanel:= false;
   with statusbar1 do begin
     //simplepanel:= true;
     showhint:= true;
     //left:= 50;
-    hint:= ExtractFilePath(application.ExeName)+' Exe directory';
+    hint:= ExtractFilePath(forms.application.ExeName)+' Exe directory';
      Panels.add;
      //panels.items[0].left:= 20;
      panels.items[0].width:= maxform1.width-270;
@@ -6257,7 +6268,7 @@ begin
   //fprintout.OnPrintLine:= SynEditPrint1PrintLine;
   fprintout.OnPrintStatus:= SynEditPrint1PrintStatus;
    //fAutoComplete.Editor := TCustomSynEdit(SynPasSyn1);
-  if Application.MainForm = NIL then begin
+  if forms.Application.MainForm = NIL then begin
     fAutoComplete:= TSynAutoComplete.Create(Self);
     fAutoComplete.Editor:= memo1;
   if fileexists('bds_delphi.dci') then
@@ -6329,7 +6340,7 @@ begin
    memo2.Lines.Add('Internet Version NOT checked!');   //3.8
   if STATExecuteBoot then LoadBootScript;
   if STATExceptionLog then begin
-     Application.OnException:= AppOnException;   //v3
+     forms.Application.OnException:= AppOnException;   //v3
     //CLI of command line or ShellExecute
    if not FileExists(ExePath+LOGFILE) then begin
      FileCreate(ExePath+LOGFILE);
@@ -6446,7 +6457,7 @@ begin
        NativeWriteln('>>>');
        FreeConsole();
        //halt(10);
-       Application.terminate;
+       forms.Application.terminate;
      end;   //fix5 *)
 
   if (ParamStr(1) <> '') then begin
@@ -6460,7 +6471,7 @@ begin
      CB1SCList.ItemIndex:= CB1SCList.Items.Count-1;
 
      if ((ParamStr(2) = 'f') or (ParamStr(2) = '-f')) then begin
-       Application.BringToFront;  //maximize?
+       forms.Application.BringToFront;  //maximize?
        //maxform1.Show;
        maxform1.memo2.lines.add('CLI Console Call Front: ' +ParamStr(2));
      end;
@@ -6479,17 +6490,17 @@ begin
      hlog.Add('>>>> Start Console Call Exe: {App_name} v{App_ver}{80@}{now}');
      if ((ParamStr(2) = 'm') or (ParamStr(2) = '-m')) then begin
        //Compile1Click(self);!
-       Application.Minimize;
+       forms.Application.Minimize;
      end;
     if (ParamStr(2) = 'r') then begin
-       Application.run;
+       forms.Application.run;
      end;
       if ((ParamStr(2) = 't') or (ParamStr(2) = '-t')) then begin     //new4
         maxform1.memo2.lines.add('CLI Console Call Logt: ' +ParamStr(2));
-       Application.terminate;
+       forms.Application.terminate;
      end;
      if ((ParamStr(2) = 'st') or (ParamStr(2) = '-st')) then begin
-       Application.terminate;
+       forms.Application.terminate;
      end;
      if ((ParamStr(1) = 'version') or (ParamStr(1) = '-version') or (ParamStr(1) = '-ver')) then begin  //new4
        AttachConsole(dword(-1));
@@ -7637,10 +7648,16 @@ procedure Tmaxform1.Compile1Click(Sender: TObject);
     for l:= 0 to PSScript.CompilerMessageCount - 1 do begin
       m:= psscript.CompilerMessages[l].MessageToString;
       memo2.Lines.Add('PSXCompiler: '+PSScript.CompilerErrorToStr(l)+#13#10 +m);
+      //memo1.SetBookmark(8,2,memo1.CaretY);
       if (not b) and (PSScript.CompilerMessages[l] is TIFPSPascalCompilerError)
       then begin
         b:= True;
+        memo1.SetBookmark(0,2,memo1.CaretY);
         memo1.SelStart:= PSScript.CompilerMessages[l].Pos;
+        //memo1.SetBookmark(8,2,memo1.carety);
+        //memo1.SetBookmark(8,2,memo1.CaretY);
+        memo2.Lines.Add('syntax error at line: '+inttostr(memo1.CaretY)) ;
+        //memo1.Refresh;
       end;
     end;
     if b then begin
@@ -7648,7 +7665,9 @@ procedure Tmaxform1.Compile1Click(Sender: TObject);
        with ledimage do begin
         Top:= 2;
         visible:= true;
-        picture.bitmap.loadfromResourcename(HINSTANCE,'LED_RED_ON')
+        picture.bitmap.loadfromResourcename(HINSTANCE,'LED_RED_ON');
+        memo1.SetBookmark(0,2,memo1.CaretY);
+        //memo1.Gutter.BeginUpdate;
        end;
     //bitmap.LoadFromResName }
     end else begin
@@ -7689,6 +7708,7 @@ begin
    //if pos('#', memo1.lines) > 0 then
     if STATMacro then
         Expand_Macro;
+   //memo2.Lines.Add('debug after macro: '+inttoStr(memo1.LinesInWindow));
 
    // if STATCodefolding then            //new4
      // memo1.ReScanForFoldRanges;
@@ -7717,12 +7737,13 @@ begin
         picture.bitmap.loadfromResourcename(HINSTANCE,'LED_RED_ON')
        //bitmap.LoadFromResName
       end;
+      memo1.SetBookmark(0,2,memo1.caretY);
     end else begin
     stopw.Stop;
      memo2.Lines.Add(' mX5 executed: '+dateTimetoStr(Now())+
       '  Runtime: '+stopw.GetValueStr +'  Memload: '+inttoStr(uPSI_MaxUtils.GetMemoryLoad) +'% use');
     end;
-    statusBar1.panels.items[1].text:= ' Runtime: '+stopw.GetValueStr+' Threads: '+intToStr(numprocessthreads);
+    statusBar1.panels.items[1].text:= ' Rtime: '+stopw.GetValueStr+' Thrs: '+intToStr(numprocessthreads);
     perftime:= stopw.GetValueStr;
     stopw.Free;
      //debug test
@@ -7931,7 +7952,7 @@ begin
     FileName:= '*.psb';
     defaultExt:= fileextension;
     title:= 'PascalScript ByteCode Open';
-    InitialDir:= ExtractFilePath(application.ExeName)+'\examples\*.psb';
+    InitialDir:= ExtractFilePath(forms.application.ExeName)+'\examples\*.psb';
     //SetCurrentDir(ExtractFilePath(ParamStr(0)));   //3.9.9.100
     if execute then begin
     //filename:=
@@ -7995,7 +8016,7 @@ begin
     FileName:= '*.txt;*.pas';
     defaultExt:= fileextension;
     title:= 'PascalScript File Open';
-    InitialDir:= ExtractFilePath(application.ExeName)+'*.txt';
+    InitialDir:= ExtractFilePath(forms.application.ExeName)+'*.txt';
     if execute then begin
       if STATedchanged then begin
          sysutils.beep;
@@ -8532,7 +8553,7 @@ var deflist: TStringlist;
      filepath, fN: string;
 begin
 deflist:= TStringlist.create;
-filepath:= ExtractFilePath(Application.ExeName);
+filepath:= ExtractFilePath(forms.Application.ExeName);
   try
     fN:= filepath+ DEFINIFILE;
     if fileexists(fN) then begin
@@ -8619,6 +8640,10 @@ filepath:= ExtractFilePath(Application.ExeName);
               STATVersionCheck:= false;
       if deflist.Values['VERSIONCHECK'] = '' then   //3.9.9
               STATVersionCheck:= true;
+      if deflist.Values['DEBUG'] = 'Y' then       //V5.0.2
+              STATDebugCheck:= true else
+              STATDebugCheck:= false;
+
       if deflist.Values['AUTOBOOKMARK'] = 'Y' then   //3.9.9.84
               STATAutoBookmark:= true;
       if deflist.Values['AUTOBOOKMARK'] = 'N' then   //3.9.9.84
@@ -8695,7 +8720,7 @@ var deflist: TStringlist;
      filepath, fN: string;
 begin
 deflist:= TStringlist.create;
-filepath:= ExtractFilePath(Application.ExeName);
+filepath:= ExtractFilePath(forms.Application.ExeName);
   try
     fN:= filepath+ DEFINIFILE;
     if fileexists(fN) then begin
@@ -8761,7 +8786,7 @@ end;
 procedure Tmaxform1.SaveFileOptionsToIni(const filen: string);
 var filepath, fN: string;
 begin
- filepath:= ExtractFilePath(Application.ExeName);
+ filepath:= ExtractFilePath(forms.Application.ExeName);
  fN:= filepath+ DEFINIFILE;
   if CB1SCList.items.count-1 > 3 then begin   //just a draft
     with  CB1SCList do begin
@@ -8863,7 +8888,7 @@ var filepath, fN: string;   //bcerrorcode
     i: longint;
     vresult: boolean;
 begin
- filepath:= ExtractFilePath(Application.ExeName);
+ filepath:= ExtractFilePath(forms.Application.ExeName);
  fN:= filepath+ BOOTSCRIPT;
  if fileexists(fN) then begin
    with TStringlist.Create do begin
@@ -9086,12 +9111,12 @@ var  p: TBufferCoord;
   if activelinecolor1.checked and StatActiveyellow then
       memo1.ActiveLineColor:= clYellow;
     //   else memo1.ActiveLineColor:= clNone;
-  if Changes * [scAll, scModified] <> [] then begin
-    Statusbar1.Panels[1].Text:= ModifiedStrs[memo1.Modified];
+  //if Changes * [scAll, scModified] <> [] then begin     fix 11
+   // Statusbar1.Panels[1].Text:= ModifiedStrs[memo1.Modified];
     //memo1.Gutter.BorderColor:= clyellow;
      //if STATCodefolding then
        // memo1.ReScanForFoldRanges;              //new4
-  end;
+  //end;
 
   {if Changes * [scAll, scCaretX, scCaretY] <> [] then begin
     p:= memo1.CaretXY;
@@ -9207,10 +9232,10 @@ begin
  //if STATCodefolding
 
  if showIndent1.Checked then begin
-    memo1.CodeFolding.IndentGuides:= true;
+    //memo1.CodeFolding.IndentGuides:= true;
     STATCodefolding:= true;
   end else begin
-    memo1.CodeFolding.IndentGuides:= false;
+    //memo1.CodeFolding.IndentGuides:= false;
     STATCodefolding:= false;
   end;  //}
 end;
@@ -9252,7 +9277,7 @@ begin
     //clear;
  end;
   maxform1.Color:= clwebgold;
-  Application.HintColor:= clYellow;
+  forms.Application.HintColor:= clYellow;
   //ActiveLineColor1Click(self);
   memo1.activeLineColor:= clskyblue;
   factivelinecolor:= clskyblue;
@@ -9410,7 +9435,7 @@ begin
     except
        on E: Exception do begin
              //Printer.PrinterIndex := pntIndex;
-         Application.MessageBox(PChar('SPrintError' +#13#10+E.Message),
+         forms.Application.MessageBox(PChar('SPrintError' +#13#10+E.Message),
                               PChar(fprintout.Title), MB_ICONSTOP + MB_OK);
        end; { on }
     end; { try }
@@ -9549,7 +9574,7 @@ procedure Tmaxform1.BlaisePascalMagazine1Click(Sender: TObject);
   var URLBuf: array[0..255] of char;
 begin
     strPCopy(URLBuf, RS_BPM);
-    ShellExecute(Application.handle, NIL, URLBuf,
+    ShellExecute(forms.Application.handle, NIL, URLBuf,
                 NIL, NIL, sw_ShowNormal)
 end;
 
@@ -9783,7 +9808,7 @@ begin
         then break;
       if it1 > 0 then begin
         inc(itstr);
-      {  aMark:= TSynEditMark.Create;
+       aMark:= TSynEditMark.Create(memo1);
         with aMark do begin
           Line:= i+1;
           //Char:= p.char;
@@ -9791,7 +9816,7 @@ begin
           Visible:= TRUE;
         //InternalImage:= BookMarkOptions.BookMarkImages = nil;
           memo1.Marks.Add(amark);
-        end;  }
+        end;  //}
         //memo1.SetBookmark(itstr,2,i+1);
         //showmessage('bookmark found at ' +inttostr(i+1));
       end;
@@ -9851,7 +9876,7 @@ var deflist: TStringlist;
 begin
 //this is myscript opener
 deflist:= TStringlist.create;
-filepath:= ExtractFilePath(Application.ExeName);
+filepath:= ExtractFilePath(forms.Application.ExeName);
   try
     fN:= filepath+ DEFINIFILE;
     if fileexists(fN) then begin
@@ -9874,7 +9899,7 @@ var deflist: TStringlist;
 begin
 //this is myscript opener
 deflist:= TStringlist.create;
-filepath:= ExtractFilePath(Application.ExeName);
+filepath:= ExtractFilePath(forms.Application.ExeName);
   try
     fN:= filepath+ DEFINIFILE;
     if fileexists(fN) then begin
@@ -9962,9 +9987,9 @@ end;
 procedure Tmaxform1.NewInstance1Click(Sender: TObject);
 var sOname, sEName: string;
 begin
-  if DirectoryExists(ExtractFilePath(Application.ExeName)) then begin
-    sOName:= ExtractFilePath(Application.ExeName) + #0;
-    sEName:= Application.ExeName;
+  if DirectoryExists(ExtractFilePath(forms.Application.ExeName)) then begin
+    sOName:= ExtractFilePath(forms.Application.ExeName) + #0;
+    sEName:= forms.Application.ExeName;
     hlog.Add('>>>> New Instance: {App_name} v{App_ver}{80@}{now}');
     if IsFileInUse(exepath+'maxboxlog.log') then
         hlog.Free; //prevent efpopen file exception
@@ -10005,7 +10030,7 @@ end;
 
 procedure Tmaxform1.DoEditorExecuteCommand(EditorCommand: word);
 begin
- // memo1.CommandProcessor(TSynEditorCommand(EditorCommand),' ',NIL);
+  memo1.CommandProcessor(TSynEditorCommand(EditorCommand),' ',NIL);
 end;
 
 procedure Tmaxform1.DOSShell1Click(Sender: TObject);
@@ -10022,7 +10047,7 @@ procedure Tmaxform1.IndentSelection1Click(Sender: TObject);
 begin
  //memo1.Marks;
   //memo1.Keystrokes.items[0].command:= ecBlockIndent;
- // DoEditorExecuteCommand(ecBlockIndent);
+  DoEditorExecuteCommand(ecBlockIndent);
 end;
 
 procedure Tmaxform1.UnindentSection1Click(Sender: TObject);
@@ -10030,7 +10055,7 @@ begin
   //memo1.Keystrokes.items[0].command:= ecBlockUnIndent;
   // Find Command(ecBlockUnIndent);
   //memo1.Keystrokes.items[memo1.Keystrokes.FindCommand(ecBlockUnIndent)].Command:=ecBlockUnIndent;
- // DoEditorExecuteCommand(ecBlockUnIndent);
+  DoEditorExecuteCommand(ecBlockUnIndent);
 end;
 
 
@@ -10073,7 +10098,7 @@ begin
         output.Lines.add(DupeString('_',90));
         output.Lines.add('App Name: '+extractFileName(Act_Filename));
         output.Lines.add('Path Name: '+extractFilePath(Act_Filename));
-        output.Lines.add('Exe Name: '+extractFileName(Application.ExeName));
+        output.Lines.add('Exe Name: '+extractFileName(forms.Application.ExeName));
         //output.Font.Style:= [];
         output.Lines.add(DupeString('_',90));
        output.Lines.add('File Size: '+IntToStr(FileSizeByName(Act_Filename))+' Kb');
@@ -10156,7 +10181,7 @@ begin
  //I believe it would provide most of the functionality as the interfaces provide.
   if IsInternetConnected then begin
     strPCopy(URLBuf, 'http://europe1.radio.net/');
-    ShellExecute(Application.handle, NIL, URLBuf,
+    ShellExecute(forms.Application.handle, NIL, URLBuf,
                   NIL, NIL, sw_ShowNormal);
    end;
    wmp:= CreateOleObject('WMPlayer.OCX');
@@ -10711,7 +10736,7 @@ procedure Tmaxform1.AddToDo1Click(Sender: TObject);
 begin
  //ctrl+shift
    if fileExists(ExtractFilePath(ParamStr(0))+ CODECOMPLETION) then
-       maxForm1.fAutoComplete.ExecuteCompletion('todo',memo1) else
+      maxForm1.fAutoComplete.ExecuteCompletion('todo',memo1) else
       showMessage('The file '+CODECOMPLETION+' is missing');
 end;
 
@@ -10730,7 +10755,7 @@ var URLBuf: array[0..255] of char;
  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+ALLFUNCTIONSLISTPDF);
   if IsInternetConnected then begin
     strPCopy(URLBuf, ALLFUNCTIONSLISTWEB);
-    ShellExecute(Application.handle, NIL, URLBuf,
+    ShellExecute(forms.Application.handle, NIL, URLBuf,
                   NIL, NIL, sw_ShowNormal);
   end;   //}
 end;
@@ -10856,7 +10881,7 @@ procedure Tmaxform1.PascalSchool1Click(Sender: TObject);
   var URLBuf: array[0..255] of char;
   begin
     strPCopy(URLBuf, RS_PS);
-    ShellExecute(Application.handle, NIL, URLBuf,
+    ShellExecute(forms.Application.handle, NIL, URLBuf,
                  NIL, NIL, sw_ShowNormal)
   //from about
 end;
@@ -10872,7 +10897,7 @@ begin
     //clear;
  end;
   maxform1.Color:= clwebgold;
-  Application.HintColor:= clYellow;
+  forms.Application.HintColor:= clYellow;
   //ActiveLineColor1Click(self);
   //memo1.activeLineColor:= clskyblue;
   factivelinecolor:= clWebLightYellow; //clcream; //clsilver;       //teal, lime
@@ -10935,7 +10960,7 @@ procedure Tmaxform1.DelphiSite1Click(Sender: TObject);
   var URLBuf: array[0..255] of char;
   begin
     strPCopy(URLBuf, RS_DS);
-    ShellExecute(Application.handle, NIL, URLBuf,
+    ShellExecute(forms.Application.handle, NIL, URLBuf,
                   NIL, NIL, sw_ShowNormal)
 end;
 
@@ -11218,6 +11243,11 @@ end;
 Function Tmaxform1.GetStatExecuteShell: boolean;
 begin
   result:= StatExecuteShell;
+end;
+
+Function Tmaxform1.GetStatDebugCheck: boolean;
+begin
+  result:= StatDebugCheck;
 end;
 
 procedure Tmaxform1.GetWebScript1Click(Sender: TObject);
@@ -11504,7 +11534,7 @@ var  p: TBufferCoord;
    aline, i: integer;
     amark: TSynEditMark;
     //marksmemo: TSynEditMarklist;     of memo
-   // marks: TSynEditLineMarks;
+    marks: TSynEditMarkList; //TSynEditLineMarks;
     foundbm: boolean;
     mbuffer: TBufferCoord;
  begin
@@ -11545,14 +11575,21 @@ var  p: TBufferCoord;
      //memo2.lines.Add('found delete bookmark at: '+inttoStr(aline));
      statusBar1.panels[1].text:= 'found del bookmark: '+inttoStr(aline)+' ';
      foundbm:= true;
+     //memo1.Gutter.bands[0]:= memo1.Marks[i];
      //memo1.Gutter.DigitCount:= 5;
      //memo1.UpdateCaret;
      memo1.Marks[i].visible:= true;
+     memo1.SetBookMark(1,2, aline);
+     //memo1.Gutter.bands[1].gutter.color:= clred;
+     memo1.Gutter.bands[0].gutter.visible:= true;
+     //memo1.Gutter.bands[0].gutter.internalimage:= bookmarkimage;
+     //memo1.Gutter.internalimage:= bookmarkimage;
      break;
      //memo1.Marks[i].Free;
      //memo1.Marks.Remove(memo1.Marks[i]);
      //memo1.Marks[i]:= NIL;
-     //memo1.Gutter.Color:= claqua;
+     //memo1.Gutter.bands[0]:= memo1.Marks[i];
+
     end;
 
     // memo1.setwordblock(mbuffer);
@@ -11570,7 +11607,9 @@ var  p: TBufferCoord;
         Line:= aLine;
         //Char:= p.char;
         ImageIndex:= bookmarkimage;//(Sender as TSpeedButton).Tag;  10-13
-        Visible:= TRUE;
+        //memo2.lines.add('debug bookmark: '+inttostr(imageindex));
+        //memo1.Marks[imageindex].visible:= true;
+        amark.Visible:= TRUE;
         //InternalImage:= BookMarkOptions.BookMarkImages = nil;
       end;
     memo1.Marks.Add(amark); //}
@@ -11617,7 +11656,7 @@ begin
 
    //if Mark.IsBookmark then
      //memo1.Marks.Remove(mark);
-      //memo1.Marks.ClearLine(aline);
+     // memo1.Marks.ClearLine(aline);
      //memo1.marks.GetMarksForLine(aline, marks);
    //foundbm:= false;
    //for i:= 0 to memo1.Marks.Count-1 do
@@ -11940,7 +11979,7 @@ end;
 
 procedure Tmaxform1.cedebugIdle(Sender: TObject);
 begin
- Application.HandleMessage;
+ forms.Application.HandleMessage;
   if FResume then begin
     FResume:= False;
     cedebug.Resume;
@@ -12159,7 +12198,7 @@ procedure Tmaxform1.Darkcolor1Click(Sender: TObject);
       orangestyle1click(self);
       memo1.Gutter.Gradient:= false;
       //maxform1.skystyle1click(self);
-      Application.HintColor:= clweblightBlue;
+      forms.Application.HintColor:= clweblightBlue;
       SynPasSyn1.DirectiveAttri.background:= clred;
       SynPasSyn1.DirectiveAttri.foreground:= clwhite;
       memo1.font.color:= clMoneyGreen;
@@ -12202,7 +12241,7 @@ procedure Tmaxform1.StatusBar1DblClick(Sender: TObject);
 begin
   if statedChanged = false then
   statusBar1.panels[0].text:=
-       ExtractFilePath(application.ExeName)+' exe directory'
+       ExtractFilePath(forms.application.ExeName)+' exe directory'
   else
     statusBar1.panels[0].text:= ExtractFilePath(Act_Filename) +' file directory';
 end;
@@ -12210,7 +12249,7 @@ end;
 procedure Tmaxform1.PSScriptLine(Sender: TObject);
 begin
   //PSScript.online:= , doesn't hang while long running
-  Application.ProcessMessages;
+  forms.Application.ProcessMessages;
   //memo2.lines.Add('runtime is running test');
 end;
 
@@ -12315,7 +12354,7 @@ begin
     SynPasSyn1.KeyAttri.Foreground:= clNavy;
   SynPasSyn1.SymbolAttribute.Foreground:= clRed;
   SynPasSyn1.FloatAttri.Foreground:= cllime;
-  Application.HintColor:= clweblightYellow;
+  forms.Application.HintColor:= clweblightYellow;
   //ActiveLineColor1Click(self);
   //memo1.activeLineColor:= clskyblue;
 //
@@ -12323,9 +12362,9 @@ end;
 
 procedure Tmaxform1.Oscilloscope1Click(Sender: TObject);
 begin
- // Application.CreateForm(TOscfrmMain, oscfrmMain);
- // oscfrmMain.Show;
- // Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TOscfrmMain, oscfrmMain);
+  oscfrmMain.Show;
+  Application.CreateForm(TForm2, Form2);
   //Form2.Show;
 end;
 
@@ -12350,14 +12389,19 @@ begin
       if Assigned(FExeFile) then FExeFile.Destroy;
       FExeFile:= TmpExeFile;
     end; //}
-      FExeFile:= TExeImage.CreateImage(rcFrm, ExePath+'maxbox5.exe');
+     //FExeFile:= TExeImage.CreateImage(rcFrm, ExePath+'maxbox5.exe');
+     try
       //DisplayResources;
       showModal;
       statusBar1.panels[0].text:= ' mX5 Resources loaded!';
-    finally
+      //end;
+     finally
       Release;
       Free;
       statusBar1.panels[0].text:= 'Resource Explorer closed';
+     end;
+    except
+      statusBar1.panels[0].text:= 'Resource Explorer not yet ready!'
     end;
   end; //*)
 end;
