@@ -201,7 +201,8 @@
           12600   5.0.1.18 unit SynEditMiscClasses2;,unit SynEdit2; prepare for Clear or TrackChanges;
           12721   5.0.1.20 DProcess, upsi_process , redefine te_engine, techart, pos-fix, PCRE PerlRegEx , classes_orig, Novus
           12728   5.0.1.22 Novus Line , Todoe, serial monitor, code.search, rest adds, ResurceStream - Release build, makeAPP
-          12770   5.0.2.24 d11.3 on Win11  aboutbox, finddlg, exception catch AV and debuginfo, debugmode
+          12797   5.0.2.24 d11.3 on Win11  aboutbox, finddlg, exception catch AV and debuginfo, debugmode, APILibs
+          12808   5.0.2.28 wine compatible, GUI Automation, JSON Converter, API_Base
  ************************************************************************************* }
 
 unit fMain;
@@ -252,9 +253,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.2.24';
+   MBVERSION = '5.0.2.28';
    MBVER = '502';              //for checking!
-   MBVER2 = '50224';              //for checking!
+   MBVER2 = '50228';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1274,6 +1275,7 @@ uses
   gewinntmax3,
   IdGlobal_max,   //3.7 for file information    *)
   StrUtils, uPSI_StrUtils,       // dupestring
+  uPSI_dwsWebUtils,
 
   uPSI_FileCtrl,    //3.5.1
   uPSI_Outline,
@@ -1414,7 +1416,7 @@ uses
   uPSI_devrun,
   uPSI_devExec,
   ProcessListFrm,
-  dprocess3,
+  dprocess3,         //as TProcess2  --> TProcess
   uPSI_dpipes,
   uPSI_dprocess,
   //uPSI_cDictionaries,
@@ -1669,6 +1671,7 @@ uses
   uPSI_PJPipe,
   uPSI_PJConsoleApp,
   uPSI_UConsoleAppEx,  //3.9.9.80
+  uPSI_UConsoleApp, //&&  V5.0.2
   uPSI_IdLogEvent,
   uPSI_Reversi, //*)
   uPSI_Geometry,
@@ -1740,7 +1743,7 @@ uses
   //uPSI_ALFcnSQL,   *)
   //uPSI_ALFcnCGI,  //*)
   uPSI_ALFcnExecute,  //*)
-  uPSI_ALHttpClient2,
+  uPSI_ALHttpClient2,          //PostUrlEncoded0, PostUrlEncoded1
 
   uPSI_ALFcnFile,
   uPSI_ALFcnMime,
@@ -2298,6 +2301,15 @@ uses
   uPSI_Odometer,         //4.7.1.10
   uPSI_UIntegerpartition,
   uPSI_API_strings,
+  uPSI_API_tools,
+  uPSI_API_services,
+  uPSI_API_rs232,
+  uPSI_API_winprocess,
+  uPSI_API_files,         //5.0.2.24
+  uPSI_JsonConverter,
+  uPSI_GUIUtils,
+  uPSI_GUIAutomation,
+
   //SI_idPHPRunner,
   //SI_idCGIRunner,  //*
   //uPSI_cTCPConnection,
@@ -2513,7 +2525,7 @@ uses
   uPSI_DBXMetaDataUtil, // *)
  uPSI_TeEngine,
   uPSI_TeeProcs,
-  uPSI_TeCanvas,  //((*)      // check fonts   fixed fonts   fix with tmpLines[x-1] do
+  uPSI_TeCanvas,  //((*)      // check fonts   fixed fonts   bug fix with tmpLines[x-1] do
 
   uPSI_Chart,
   //uPSI_MDIEdit,  //redeclare
@@ -2982,6 +2994,8 @@ begin
   SIRegister_MaskUtils(X); //3.5
   SIRegister_Masks(X); //*)
   SIRegister_FileCtrl(X);
+  SIRegister_dwsWebUtils(X);
+
   SIRegister_Outline(X);
   SIRegister_ScktComp(X);
   SIRegister_Calendar(X);  //*)
@@ -3271,6 +3285,7 @@ begin
   SIRegister_PJPipeFilters(X);
   SIRegister_PJConsoleApp(X);
   SIRegister_UConsoleAppEx(X);
+  SIRegister_UConsoleApp(X);
   SIRegister_DbxDataGenerator(X);
   SIRegister_DbxSocketChannelNative(X);
   SIRegister_DBXClient(X);   //*)
@@ -4019,7 +4034,16 @@ SIRegister_cySearchFiles(X);
   SIRegister_UIntList(X);
   SIRegister_UIntegerpartition(X);
   SIRegister_API_strings(X);
- // SIRegister_idCGIRunner(X);
+  SIRegister_API_services(x);
+  SIRegister_API_tools(X);
+  SIRegister_API_rs232(X);
+  SIRegister_API_winprocess(X);
+  SIRegister_API_files(X);      //5.0.2.24
+  SIRegister_JsonConverter(X);
+  SIRegister_GUIUtils(X);
+  SIRegister_GUIAutomation(X);  //5.0.2.28
+
+  // SIRegister_idCGIRunner(X);
   //IRegister_idPHPRunner(X);
  // SIRegister_DrBobCGI(X);   *)
   SIRegister_OverbyteIcsLogger(X);  //*)
@@ -4418,7 +4442,18 @@ begin
   RIRegister_UIntList(X);
   RIRegister_UIntegerpartition(X);
   RIRegister_API_strings_Routines(Exec);
- (* RIRegister_idCGIRunner(X);
+  RIRegister_API_services(X);
+  RIRegister_API_tools(x);
+  RIRegister_API_tools_Routines(Exec);
+  RIRegister_API_rs232(X);
+  RIRegister_API_winprocess(X);
+  RIRegister_API_files_Routines(Exec);
+  RIRegister_API_files(X);   //5.0.2.24
+  RIRegister_JsonConverter(X);
+  RIRegister_GUIUtils_Routines(Exec);
+  RIRegister_GUIAutomation(X);  //5.0.2.28
+
+  (* RIRegister_idCGIRunner(X);
   RIRegister_idPHPRunner(X);
   RIRegister_DrBobCGI_Routines(Exec);   *)
   RIRegister_OverbyteIcsLogger(X);   //*)
@@ -4949,6 +4984,7 @@ begin
   RIRegister_Masks_Routines(Exec);  //*)
   RIRegister_FileCtrl(X);
   RIRegister_FileCtrl_Routines(Exec);
+  RIRegister_dwsWebUtils(X);
   RIRegister_Outline(X);
   RIRegister_ScktComp(X);
   RIRegister_ScktComp_Routines(Exec);
@@ -5121,6 +5157,7 @@ begin
   RIRegister_TPJCustomConsoleApp(X);
   RIRegister_PJConsoleApp_Routines(Exec);
  RIRegister_UConsoleAppEx(X);     //3.99.80
+  RIRegister_UConsoleApp(X);
   RIRegister_DbxDataGenerator(X);
   RIRegister_DbxSocketChannelNative(X);
   RIRegister_DBXClient(X);  //*)
@@ -6346,6 +6383,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
+   maxform1.Caption:= 'maXbox5 Ocean590 mX502 Rheingold+++++ beta28!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -9867,7 +9905,7 @@ end;
 procedure Tmaxform1.MP3Player1Click(Sender: TObject);
 begin
   //call mp3player
-  //FormSetMP3FormCreate;
+  FormSetMP3FormCreate;
 end;
 
 procedure Tmaxform1.MyScript1Click(Sender: TObject);
@@ -11268,7 +11306,7 @@ begin
   ReplaceText:= '';
    //cbxSearch.Clear;
    cbxReplace.Clear;
-    Findtext:= 'End.';   //ENDSIGN
+    Findtext:= 'End.';   //ENDSIGN fix to V5.0.2 with +space cause attributes with resend.start
     //OnFind:= FindNextText;
     FindNextText(self);
     //Execute(false);
