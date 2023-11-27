@@ -203,7 +203,9 @@
           12728   5.0.1.22 Novus Line , Todoe, serial monitor, code.search, rest adds, ResurceStream - Release build, makeAPP
           12797   5.0.2.24 d11.3 on Win11  aboutbox, finddlg, exception catch AV and debuginfo, debugmode, APILibs
           12808   5.0.2.28 wine compatible, GUI Automation, JSON Converter, API_Base
- ************************************************************************************* }
+          12825   5.0.2.30 APITrackbar, LEDGrid, JSON Converter, API_Base2, rfc1213, wordwrap logic
+
+  ************************************************************************************* }
 
 unit fMain;
 
@@ -253,9 +255,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.2.28';
+   MBVERSION = '5.0.2.30';
    MBVER = '502';              //for checking!
-   MBVER2 = '50228';              //for checking!
+   MBVER2 = '50230';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1333,7 +1335,7 @@ uses
   uPSI_JclAppInst,
   uPSI_JvRle,
   uPSI_JvRas32,
-(*  uPSI_JvImageDrawThread, *)
+  uPSI_JvImageDrawThread, //*)
   uPSI_JvImageWindow,
   uPSI_JvTransparentForm,
   uPSI_JvWinDialogs,
@@ -1450,10 +1452,10 @@ uses
   uPSI_IdSocks,
   uPSI_IdTelnetServer,
   uPSI_IdAntiFreezeBase,
-  //uPSI_IdHostnameServer,
+  //PSI_IdHostnameServer,
  (* uPSI_IdTunnelCommon,
-  uPSI_IdTunnelMaster,
-  uPSI_IdTunnelSlave, *)
+  uPSI_IdTunnelMaster, *)
+  //uPSI_IdTunnelSlave, //*)
   uPSI_IdRSH,
   //uPSI_IdRSHServer,  *)
   uPSI_Spring_Cryptography_Utils,
@@ -1631,14 +1633,14 @@ uses
   uPSI_IdRemoteCMDClient,
   uPSI_IdRemoteCMDServer, //*)
   uPSI_IdRexec,
- (* uPSI_IdUDPServer,
+ (* uPSI_IdUDPServer,  *)
   uPSI_IdIPWatch,
-  uPSI_IdMessageCollection,
-  uPSI_IdIrcServer,
-  uPSI_IdHL7,
+ (* uPSI_IdMessageCollection,
+  uPSI_IdIrcServer, *)
+  //uPSI_IdHL7,
   uPSI_IdIPMCastBase,
-  uPSI_IdIPMCastServer,
-  uPSI_IdIPMCastClient,  *)
+ (* uPSI_IdIPMCastServer,  *)
+  uPSI_IdIPMCastClient,  //*)
   uPSI_IdRawHeaders, //*)
   uPSI_IdRawClient,   //*)
   uPSI_IdRawFunctions,
@@ -2146,8 +2148,8 @@ uses
   uPSI_ACMConvertor,    //*)
   uPSI_ComObjOleDB_utils, //3.9.9.191
   uPSI_SMScript,
-(*  uPSI_CompFileIo,
-  uPSI_SynHighlighterGeneral,  //3.9.9.192   *)
+  uPSI_CompFileIo,
+ (* uPSI_SynHighlighterGeneral,  //3.9.9.192   *)
   uPSI_geometry2,   // *)
   uPSI_MConnect,  //*)
   uPSI_ObjBrkr, //3.9.9.193  *)
@@ -2309,6 +2311,7 @@ uses
   uPSI_JsonConverter,
   uPSI_GUIUtils,
   uPSI_GUIAutomation,
+  uPSI_API_trackbar,
 
   //SI_idPHPRunner,
   //SI_idCGIRunner,  //*
@@ -2341,9 +2344,9 @@ uses
   uPSI_MaskEdit,
   uPSI_SimpleRSSTypes,
   uPSI_SimpleRSS,           //4.7.2.82
-  //uPSI_psULib,
-  //uPSI_rfc1213ip,
- (* uPSI_rfc1213util,  *)
+  uPSI_psULib,
+  uPSI_rfc1213ip,
+  uPSI_rfc1213util,  //*)
   uPSI_JTools,              //4.7.2.82 II *)
   uPSI_neuralbit,
   uPSI_neuralab,  {uPSI_neuralabfun, }// uPSI_neuralvolumev,  //4.7.3.60
@@ -2557,8 +2560,8 @@ uses
   uPSI_IdDiscardUDPServer, *)
   //uPSI_IdMappedPortTCP_,
   //uPSI_IdMappedFTP,    //3.9.9.50
-(*  uPSI_IdGopherServer,
-  uPSI_IdQotdServer,   *)
+(*  uPSI_IdGopherServer, *)
+  uPSI_IdQotdServer,   //*)
   uPSI_IdFingerServer,
   //uPSI_IdDNSResolver,  //incompatible *)
   //uPSI_IdUserAccounts, redeclare//*)
@@ -2611,7 +2614,7 @@ uses
  // uPSI_JVCLMiscal,
  uPSI_JvProfiler32,
   //uPSI_IdAuthentication,     redeclare
-// uPSI_IdRFCReply,       not found //3.9.75
+ //uPSI_IdRFCReply,       not found //3.9.75
   uPSI_IdIdentServer,   //*)
   uPSI_IdIdent,   //*)
   //uPSI_StNetCon,     redeclaer
@@ -2627,8 +2630,8 @@ uses
   uPSI_IdHashSHA1,
   uPSI_IdLogFile,
   uPSI_IdTime,
-(*  uPSI_IdQOTDUDP,
-  uPSI_IdQOTDUDPServer,  *)
+  uPSI_IdQOTDUDP,
+  //uPSI_IdQOTDUDPServer,  *)
   uPSI_IdSysLogMessage,
   uPSI_IdSysLog,
   uPSI_IdSysLogServer,
@@ -2641,8 +2644,8 @@ uses
   //uPSI_IdMessage,
   //uPSI_IdMessageClient,
   (*uPSI_IdSMTP,
-  uPSI_IdPOP3,
-  uPSI_IdMailBox,   *)
+  uPSI_IdPOP3,  *)
+  uPSI_IdMailBox,  // *)
   uPSI_IdQotd, //*)
   uPSI_IdTelnet,
   uPSI_IdNetworkCalculator,      //f  *)
@@ -2653,7 +2656,7 @@ uses
   uPSI_IdTrivialFTPBase,
   uPSI_IdTrivialFTP,   //*)
   uPSI_LinarBitmap,
-  uPSI_PNGLoader,
+  uPSI_PNGLoader,       //fix byte reverse order
   // WinForm1,    redeclare
   CRC32, // *)
   gsutils, //3.5
@@ -3055,7 +3058,7 @@ begin
   SIRegister_JvRle(X);
   SIRegister_JvRas32(X);
  SIRegister_JvImageWindow(X);
- (* SIRegister_JvImageDrawThread(X);  *)//3.9.7.3
+  SIRegister_JvImageDrawThread(X);  //*)//3.9.7.3
   SIRegister_JvTransparentForm(X);  //*)
   SIRegister_JvWinDialogs(X);  //*)
   SIRegister_JclUnitConv_mX2(X);
@@ -3220,8 +3223,8 @@ begin
 (*  SIRegister_IdMessage(X);
   SIRegister_IdMessageClient(X);
   SIRegister_IdSMTP(X);
-  SIRegister_IdPOP3(X);
-  SIRegister_IdMailBox(X);*)
+  SIRegister_IdPOP3(X);   *)
+  SIRegister_IdMailBox(X);  //*)
   SIRegister_IdQotd(X);
   SIRegister_IdTelnet(X);
   SIRegister_IdNetworkCalculator(X);  //*)
@@ -3234,9 +3237,9 @@ begin
   SIRegister_IdRemoteCMDClient(X);
   SIRegister_IdRemoteCMDServer(X);
   SIRegister_IdRexec(X); //client & server
- (* SIRegister_IdUDPServer(X);
+ (* SIRegister_IdUDPServer(X);  *)
   SIRegister_IdIPWatch(X);
-  SIRegister_IdIrcServer(X);
+(* SIRegister_IdIrcServer(X);
   SIRegister_IdMessageCollection(X);
   SIRegister_IdDNSResolver(X);
   //SIRegister_IdRFCReply(X);   //3.9.7.5   *)
@@ -3256,8 +3259,8 @@ begin
   SIRegister_IdRSHServer(X);    *)
   SIRegister_IdRSH(X);   //*)
   SIRegister_LibTar(X);
- (* SIRegister_IdQOTDUDP(X);
-  SIRegister_IdQOTDUDPServer(X);
+  SIRegister_IdQOTDUDP(X);
+ (* SIRegister_IdQOTDUDPServer(X);
   SIRegister_IdChargenServer(X);    *)
   SIRegister_IdBlockCipherIntercept(X);
   //SIRegister_IdFTPList(X);                //4.2.5.10   *)
@@ -3298,6 +3301,7 @@ begin
   SIRegister_IBScript(X);   //*)
   SIRegister_JvCSVBaseControls(X);      //*)
  SIRegister_JvFullColorForm(X);
+//SIRegister_JvSegmentedLEDDisplayMapperFrame(X);
   SIRegister_JvShellHook(X);
   SIRegister_Jvg3DColors(X);
   SIRegister_JvSHFileOperation(X);
@@ -3710,8 +3714,8 @@ SIRegister_cySearchFiles(X);
   SIRegister_ACMConvertor(X);   //*)
  SIRegister_ComObj2(X);    //3.9.9.191  uPSI_ComObjOleDB_utils! CL.AddTypeS('OleVariant', 'Variant');*)
   SIRegister_SMScript(X);
- (* SIRegister_CompFileIo(X);
-  SIRegister_SynHighlighterGeneral(X); //3.9.9.192   *)
+  SIRegister_CompFileIo(X);
+ (* SIRegister_SynHighlighterGeneral(X); //3.9.9.192   *)
   SIRegister_geometry2(X); //*)
   SIRegister_MConnect(X);
   SIRegister_ObjBrkr(X);  //*)
@@ -3886,9 +3890,10 @@ SIRegister_cySearchFiles(X);
   SIRegister_MaskEdit(X);
   SIRegister_SimpleRSSTypes(X);
   SIRegister_SimpleRSS(X);          //4.7.2.80    dep to indy
- (* SIRegister_psULib(X);
+  SIRegister_psULib(X);
   SIRegister_psUFinancial(X);
-  SIRegister_rfc1213util(X);    *)
+  SIRegister_rfc1213ip(X);
+  SIRegister_rfc1213util(X);    //*)
   SIRegister_JTools(X);  //*)
   //SIRegister_neuralbit(X);
   SIRegister_neuralab(X);
@@ -4042,6 +4047,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_JsonConverter(X);
   SIRegister_GUIUtils(X);
   SIRegister_GUIAutomation(X);  //5.0.2.28
+  SIRegister_API_trackbar(X);
 
   // SIRegister_idCGIRunner(X);
   //IRegister_idPHPRunner(X);
@@ -4119,11 +4125,11 @@ SIRegister_cySearchFiles(X);
   SIRegister_usimplex(X);
   SIRegister_uhyper(X);
   SIRegister_unlfit(X);
-(*  SIRegister_IdHL7(X);
+(*  SIRegister_IdHL7(X);   *)
   //uPSI_IdIPMCastBase;
   SIRegister_IdIPMCastBase(X);
-  SIRegister_IdIPMCastServer(X);
-  SIRegister_IdIPMCastClient(X);  *)
+ //SIRegister_IdIPMCastServer(X);
+  SIRegister_IdIPMCastClient(X); // *)
   SIRegister_IdRawHeaders(X);
   SIRegister_IdRawClient(X);
   SIRegister_IdRawFunctions(X);
@@ -4180,8 +4186,8 @@ SIRegister_cySearchFiles(X);
   //SIRegister_IdMappedPortTCP(X);
   //SIRegister_IdMappedFTP(X);
   SIRegister_IdMappedPortUDP(X);
- (* SIRegister_IdQotdServer(X);
-  SIRegister_IdGopherServer(X);     *)
+  SIRegister_IdQotdServer(X);
+ (* SIRegister_IdGopherServer(X);     *)
   SIRegister_JvRgbToHtml(X);
   SIRegister_JvSysComp(X);
   SIRegister_JvRemLog(X);
@@ -4452,6 +4458,7 @@ begin
   RIRegister_JsonConverter(X);
   RIRegister_GUIUtils_Routines(Exec);
   RIRegister_GUIAutomation(X);  //5.0.2.28
+  RIRegister_API_trackbar(X);
 
   (* RIRegister_idCGIRunner(X);
   RIRegister_idPHPRunner(X);
@@ -4481,9 +4488,10 @@ begin
   RIRegister_MaskEdit_Routines(Exec);
   RIRegister_SimpleRSSTypes(X);
  RIRegister_SimpleRSS(X);    //4.7.2.82
- (* RIRegister_psULib_Routines(Exec);
+  RIRegister_psULib_Routines(Exec);
   RIRegister_psUFinancial_Routines(Exec);
-  RIRegister_rfc1213util_Routines(Exec);    *)
+  RIRegister_rfc1213ip(X);
+  RIRegister_rfc1213util_Routines(Exec);    //*)
   RIRegister_JTools_Routines(Exec);
   //RIRegister_neuralbit_Routines(Exec);   *)
   RIRegister_neuralab_Routines(Exec);
@@ -4603,11 +4611,11 @@ begin
   RIRegister_IdRemoteCMDClient(X);
   RIRegister_IdRemoteCMDServer(X);
   RIRegister_IdRexec(X);
- (* RIRegister_IdUDPServer(X);
+ (* RIRegister_IdUDPServer(X);*)
   RIRegister_IdIPWatch(X);
-  RIRegister_IdIrcServer(X);
-  RIRegister_IdMessageCollection(X);
-  RIRegister_IdRFCReply(X); *)
+ (* RIRegister_IdIrcServer(X);
+  RIRegister_IdMessageCollection(X);  *)
+  //RIRegister_IdRFCReply(X); //*)
   RIRegister_IdIdentServer(X);  //*)
   RIRegister_IdIdent(X);  //*)
   RIRegister_IdEcho(X);
@@ -4669,7 +4677,7 @@ begin
   RIRegister_JvSpeedbarSetupForm_Routines(Exec);
    //RIRegister_IdSSLOpenSSL_Routines(Exec);
   //RIRegister_StBCD(X);
-  //RIRegister_ActnList_Routines(Exec);
+  RIRegister_ActnList_Routines(Exec);
   RIRegister_JclNTFS(X);
    RIRegister_JclNTFS_Routines(Exec);
   RIRegister_JclAppInst(X);
@@ -4682,7 +4690,7 @@ begin
  RIRegister_JvRle_Routines(Exec);
  RIRegister_JvRas32(X);
   RIRegister_JvImageWindow(X);
- (* RIRegister_JvImageDrawThread(X);  *)//3.9.7.3
+  RIRegister_JvImageDrawThread(X);  //*)//3.9.7.3
   RIRegister_JvTransparentForm(X); //*)
   RIRegister_JvWinDialogs(X);
   RIRegister_JvWinDialogs_Routines(Exec);  //*)
@@ -5121,8 +5129,8 @@ begin
   RIRegister_IdHTTPWebBrokerBridge(X);
   RIRegister_IdIOHandlerStream(X);
   RIRegister_IdLogBase(X);
- (* RIRegister_IdQOTDUDP(X);
-  RIRegister_IdQOTDUDPServer(X);    *)
+  RIRegister_IdQOTDUDP(X);
+ (* RIRegister_IdQOTDUDPServer(X);    *)
   RIRegister_IdSysLogMessage_Routines(Exec);
   RIRegister_IdSysLogMessage(X);
   RIRegister_IdSysLog(X);
@@ -5179,6 +5187,7 @@ begin
   RIRegister_JvShellHook(X);
   RIRegister_JvShellHook_Routines(Exec);
   RIRegister_JvFullColorForm(X);
+  //RIRegister_JvSegmentedLEDDisplayMapperFrame(X);
   RIRegister_Jvg3DColors(X);
   RIRegister_JvSHFileOperation(X);
   RIRegister_uFilexport(X);
@@ -5758,8 +5767,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_ComObj2(X);
   RIRegister_ComObj2_Routines(Exec);   //*)
   RIRegister_SMScript(X);
-(*  RIRegister_CompFileIo_Routines(Exec);
-  RIRegister_SynHighlighterGeneral(X);   *)
+  RIRegister_CompFileIo_Routines(Exec);
+ (* RIRegister_SynHighlighterGeneral(X);   *)
   RIRegister_geometry_Routines2(Exec);  //!  *)
   RIRegister_MConnect(X);
   RIRegister_ObjBrkr(X);
@@ -5984,11 +5993,11 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_usimplex_Routines(Exec);
   RIRegister_uhyper_Routines(Exec);
   RIRegister_unlfit_Routines(Exec);
- (* RIRegister_IdHL7(X);
+ (* RIRegister_IdHL7(X);  *)
   RIRegister_IdIPMCastBase(X);
-  RIRegister_IdIPMCastServer(X);
-  RIRegister_IdIPMCastClient(X);   *)
-  //RIRegister_IdRawHeaders(X);
+ // RIRegister_IdIPMCastServer(X);
+  RIRegister_IdIPMCastClient(X);   //*)
+ // RIRegister_IdRawHeaders(X);
   RIRegister_IdRawClient(X);
   RIRegister_IdRawFunctions_Routines(Exec);
   RIRegister_IdTCPStream(X);
@@ -6011,8 +6020,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_IdDayTimeUDPServer(X);
   RIRegister_IdDayTimeServer(X);   //*)
   RIRegister_IdDayTimeUDP(X);  //3.9.9.50
-(* RIRegister_IdQotdServer(X);
-  RIRegister_IdGopherServer(X); *)
+ RIRegister_IdQotdServer(X);
+(*  RIRegister_IdGopherServer(X); *)
   RIRegister_JvRgbToHtml(X);
   RIRegister_JvRgbToHtml_Routines(Exec);
   RIRegister_JvSysComp(X);
@@ -6044,8 +6053,8 @@ RIRegister_DSUtil_Routines(Exec);
  (* RIRegister_IdMessage(X);
   RIRegister_IdMessageClient(X);
   RIRegister_IdSMTP(X);
-  RIRegister_IdPOP3(X);
-  RIRegister_IdMailBox(X);   *)
+  RIRegister_IdPOP3(X);  *)
+  RIRegister_IdMailBox(X);  // *)
   RIRegister_IdQotd(X);
   RIRegister_IdTelnet(X);
   RIRegister_IdNetworkCalculator(X);  //*)
@@ -6234,6 +6243,7 @@ begin
   //should  be a first help docu
   memo2.Height:= 175;
   memo2.WordWrap:= true;
+  wordWrap1.Checked:= false;  // to be set cause folding & indent is on!
   //Plugin:= TPSImport_Winform1.create(self);
   //TPSPluginItem(psscript.plugins.add).plugin:= Plugin;
   //cedebug.Plugins:= psscript.Plugins.
@@ -6251,7 +6261,7 @@ begin
   //memo1.gutter.trackchanges
   //memo1.Gutter.color:= CoolBar1.COLOR; //clmoneygreen;
   memo1.WantTabs:= true;
-  memo1.WordWrap:= true;
+  memo1.WordWrap:= true;       //not possible wrap & folding but in advance
   memo1.UseCodeFolding := true;
    statusbar1.SimplePanel:= false;
   with statusbar1 do begin
@@ -6383,7 +6393,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean590 mX502 Rheingold+++++ beta28!';
+   maxform1.Caption:= 'maXbox5 Ocean600 mX502 Rheingold+++++ beta30!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -9179,19 +9189,24 @@ end;
 
 procedure Tmaxform1.MetricReport1Click(Sender: TObject);
 begin
-  ShowMessage('Add On available in V5')
+  ShowMessage('Add On available in V5.2')
 end;
 
 procedure Tmaxform1.Minesweeper1Click(Sender: TObject);
 begin
-  ShowMessage('Add On available in V5 - start script 285_minesweeper2.TXT')
+  ShowMessage('Add On available in V5.2 - start script 285_minesweeper2.TXT')
 end;
 
 procedure Tmaxform1.WordWrap1Click(Sender: TObject);
 begin
  wordWrap1.Checked:= not WordWrap1.Checked;
- if WordWrap1.Checked then memo1.WordWrap:= true else
-   memo1.WordWrap:= false;
+   if WordWrap1.Checked then begin
+      memo1.useCodeFolding:= false;
+      memo1.WordWrap:= true
+   end else begin
+      memo1.useCodeFolding:= true;
+      memo1.WordWrap:= false;
+   end;
 end;
 
 
@@ -9267,13 +9282,15 @@ procedure Tmaxform1.ShowIndent1Click(Sender: TObject);  //new4
 begin
   showIndent1.Checked:= not showIndent1.Checked;
 
- //if STATCodefolding
+ //if STATCodefolding     in combination with wordwrap
 
  if showIndent1.Checked then begin
-    //memo1.CodeFolding.IndentGuides:= true;
+    memo1.useCodeFolding:= true;
     STATCodefolding:= true;
   end else begin
-    //memo1.CodeFolding.IndentGuides:= false;
+    //memo1.CodeFolding.IndentGuides:= false; --changed from 10.4 to 11.33
+     //memo1.CodeFolding.ShowHintMark  := false;
+     memo1.useCodeFolding:= false;
     STATCodefolding:= false;
   end;  //}
 end;
