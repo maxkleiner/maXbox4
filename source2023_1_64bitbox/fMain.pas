@@ -203,7 +203,7 @@
           12728   5.0.1.22 Novus Line , Todoe, serial monitor, code.search, rest adds, ResurceStream - Release build, makeAPP
           12797   5.0.2.24 d11.3 on Win11  aboutbox, finddlg, exception catch AV and debuginfo, debugmode, APILibs
           12808   5.0.2.28 wine compatible, GUI Automation, JSON Converter, API_Base
-          12825   5.0.2.30 APITrackbar, LEDGrid, JSON Converter, API_Base2, rfc1213, wordwrap logic
+          12832   5.0.2.30 APITrackbar, LEDGrid, JSON Converter, API_Base2, rfc1213, wordwrap logic
 
   ************************************************************************************* }
 
@@ -1154,7 +1154,8 @@ uses
  //uPSI_Types, //3.5
   uPSI_Printers, //3.1  *)
   //uPSI_SqlExpr, //3.2  incompatible *)
-   uPSI_ADODB,                                //( a//adosbtest
+   uPSI_ADODB,
+ //  uPSI_ADODButils,                       //( a//adosbtest   vardatasize
  uPSI_DBGrids,  //3.5.1   local fork of vcl.dbgrids
   uPSI_DBCtrls, //*)
   uPSI_DBCGrids,   //*)
@@ -1211,7 +1212,7 @@ uses
   uPSI_SyncObjs,
   uPSI_AsyncCalls,
   //uPSI_ParallelJobs,  AV Crash//*)
-  uPSI_Variants,
+  uPSI_Variants,       //olestream with IStream
   uPSI_VarCmplx,
   uPSI_DTDSchema, //*)
   uPSI_ShLwApi,
@@ -2676,7 +2677,7 @@ uses
   uPSI_niSTRING,
   uPSI_niRegularExpression,
   uPSI_niExtendedRegularExpression, //3.1
- (* uPSI_IdSNTP,  *)
+  uPSI_IdSNTP,  //*)    time server
   JclSysInfo,  //loadedmoduleslist getipaddr, getDNS*)
    IFSI_SysUtils_max, Globfct,        //*)
   uPSI_cFundamentUtils; //, PSResources;
@@ -4256,7 +4257,7 @@ SIRegister_cySearchFiles(X);
  SIRegister_niSTRING(X);
   SIRegister_niRegularExpression(X);
   SIRegister_niExtendedRegularExpression(X);
- (* SIRegister_IdSNTP(X);
+  SIRegister_IdSNTP(X);
   //SIRegister_SysUtils(X);         //maybe bug      *)
   SIRegister_cFundamentUtils(X);   //3.9.6.3   *)
   SIRegister_ShellAPI(X);
@@ -4337,7 +4338,7 @@ begin
   RIRegister_JclMiscel_Routines(Exec);  // *)
   RIRegister_JclLogic_Routines(Exec);
  RIRegister_JvVCLUtils(X);   //3.8.2
-  //RIRegister_JvVCLUtils_Routines(Exec);  //   user.dll*)
+  RIRegister_JvVCLUtils_Routines(Exec);  //   user.dll*)
   RIRegister_JvUtils_Routines(Exec);
   RIRegister_JvJCLUtils(X);           //+
   RIRegister_JvJCLUtils_Routines(Exec);
@@ -5680,8 +5681,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_WinApiDownload(X);
   RIRegister_pxQRcode_Routines(Exec);   //*)
   RIRegister_DelphiZXingQRCode(X);
- (* RIRegister_RestJsonUtils_Routines(Exec);
-  RIRegister_RestJsonUtils(X);  *)
+  RIRegister_RestJsonUtils_Routines(Exec);
+  RIRegister_RestJsonUtils(X);  //*)
   RIRegister_KLibUtils_Routines(Exec);   //VIII
   RIRegister_KLibWindows_Routines(Exec);
   RIRegister_AzuliaUtils_Routines(Exec);
@@ -6075,7 +6076,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_niSTRING(X);
   RIRegister_niRegularExpression(X);
   RIRegister_niExtendedRegularExpression(X);
- (* RIRegister_IdSNTP(X);  *)
+  RIRegister_IdSNTP(X);  //*)
   RIRegister_cFileUtils_Routines(exec);
  // RIRegister_EFileError(X); *)
   RIRegister_ufft_Routines(Exec);
@@ -6393,7 +6394,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean600 mX502 Rheingold+++++ beta30!';
+   maxform1.Caption:= 'maXbox5 Ocean610 mX502 Rheingold+++++ beta31!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -7485,7 +7486,13 @@ begin
                                       'const Data:string; apath: string);');
   Sender.AddFunction(@GetQrCode3,'procedure GetQrCode3(Width,Height: Word; Correct_Level: string;'+
                                       'const Data:string; apath: string);');
-  Sender.AddFunction(@GetFileList, 'function GetFileList(FileList: TStringlist; apath: string): TStringlist;');
+  Sender.AddFunction(@GetQrCode4,'function GetQrCode4(Width,Height: Word; Correct_Level: string;'+
+                                      'const Data:string; format: string):TBitmap;');
+   Sender.AddFunction(@GetQrCode5,'procedure GetQrCode5(Width,Height: Word; Correct_Level: string;'+
+                                      'const Data:string; apath: string);');
+  Sender.AddFunction(@isRunningWine, 'function IsRunningWine: boolean;');
+  Sender.AddFunction(@isRunningWine, 'function IsWine: boolean;');
+   Sender.AddFunction(@GetFileList, 'function GetFileList(FileList: TStringlist; apath: string): TStringlist;');
   Sender.AddFunction(@GetFileList1, 'function GetFileList1(apath: string): TStringlist;');
   Sender.AddFunction(@LetFileList, 'procedure LetFileList(FileList: TStringlist; apath: string)');
   Sender.AddFunction(@StartWeb, 'procedure StartWeb(aurl: string);');
@@ -7771,8 +7778,8 @@ begin
     memo2.Lines.Add(RCSTRMB +extractFileName(Act_Filename)+' Compiled done: '
                                                          +dateTimetoStr(now()));
     memo2.Lines.Add('--------------------------------------------------------');
-    statusBar1.panels[0].text:= RCSTRMB +Act_Filename+' Compiled: '
-             +dateTimetoStr(now())+'  Mem: '+inttoStr(GetMemoryLoad) +'% ';
+    statusBar1.panels[0].text:= RCSTRMB +Act_Filename+' Compd:'
+             +dateTimetoStr(now())+' Mem:'+inttoStr(GetMemoryLoad) +'% ';
     if not PSScript.Execute then begin
       //pause;
       //ShowMessage('We do not get this far: '+'param');
@@ -7791,7 +7798,7 @@ begin
      memo2.Lines.Add(' mX5 executed: '+dateTimetoStr(Now())+
       '  Runtime: '+stopw.GetValueStr +'  Memload: '+inttoStr(uPSI_MaxUtils.GetMemoryLoad) +'% use');
     end;
-    statusBar1.panels.items[1].text:= ' Rtime: '+stopw.GetValueStr+' Thrs: '+intToStr(numprocessthreads);
+    statusBar1.panels.items[1].text:= ' Rtime:'+stopw.GetValueStr+' Thr:'+intToStr(numprocessthreads);
     perftime:= stopw.GetValueStr;
     stopw.Free;
      //debug test
@@ -8420,7 +8427,7 @@ begin
   //full text finder
   //winformp.
    Application.CreateForm(TwinFormp, winFormp);
-   winformp.Height:= 740;
+   winformp.Height:= 980;
    winformp.finderactive:= true;
    //StartFileFinder;     //Full Text Finder
 end;
@@ -11270,7 +11277,8 @@ end;
 
 procedure Tmaxform1.PlayMP31Click(Sender: TObject);
 begin
-    //Application.CreateForm(TwinFormp, winFormp);
+  Application.CreateForm(TwinFormp, winFormp);
+  winformp.Height:= 750;
   winformp.show;// this is play
 end;
 
@@ -12498,24 +12506,24 @@ end;
 
 procedure Tmaxform1.HEXEditor1Click(Sender: TObject);
 begin
-  Showmessage('available V4 but you find one in ..\maxbox3\source\Hex_Editor_MX');
-  //Application.CreateForm(THexForm2, HexForm2);
-  //HexForm2.Show;
+  Showmessage('available V5 but you find one in ..\maxbox3\source\Hex_Editor_MX');
+  Application.CreateForm(THexForm2, HexForm2);
+  HexForm2.Show;
   //Application.CreateForm(THexForm2, HexForm2);
 end;
 
 procedure Tmaxform1.HEXEditor2Click(Sender: TObject);
 begin
-  Showmessage('available in V4 you find one in ..\maxbox3\source\Hex_Editor_MX');
- // Application.CreateForm(THexForm2, HexForm2);
- // HexForm2.Show;
+  Showmessage('available in V5 you find one in ..\maxbox3\source\Hex_Editor_MX');
+  Application.CreateForm(THexForm2, HexForm2);
+  HexForm2.Show;
 end;
 
 procedure Tmaxform1.HEXView1Click(Sender: TObject);
 begin
   Showmessage('available in V4 you find one in ..\maxbox3\source\Hex_Editor_MX');
-  //Application.CreateForm(THexForm2, HexForm2);
-  //HexForm2.Show;
+  Application.CreateForm(THexForm2, HexForm2);
+  HexForm2.Show;
   {HexDump := CreateHexDump(TWinControl(NoteBook.Pages.Objects[3]));
   FileOpenDialog.Filter := SOpenFilter;
   FileSaveDialog.Filter := SSaveFilter;
