@@ -1,0 +1,252 @@
+PROGRAM DemoIterated_digits_squaring_App_mX5_2Lab_Py;
+
+//https://rosettacode.org/wiki/Iterated_digits_squaring#Delphi
+
+{Hence, we may conclude that for any n=1
+ the sequence, after a finite number of steps, will enter in one of the two cycles:
+(1)or(89,145,42,20,4,16,37,58).  means 1 or 8 numbers are possible, not only 89!}
+
+const UPPERLIMIT = 1000;   //100000000
+
+var statclass: TStatisticClass;
+    vectclass: TVectorClass;
+     
+//Table : array[0..535870473] of integer; //=> Ok  ~ 2.1 GByte storage
+{When I try a clean VCL projet and I declare that :
+
+        Table : array[0..536870473] of integer; => not Ok
+        Table : array[0..536870474] of integer; => Access violation (74 to 76)
+        Table : array[0..536870477] of integer; => Compilation error, data too big > 2Go...
+         }
+         
+Const
+  MaxdigCnt = 14;
+  //2* to use the sum of two square-sums without access violation
+  MaxPoss = 2* 9*9*maxdigCnt;// every digit is 9
+  cM  = 10*1000*1000;// 10^(maxdigCnt div 2)
+  IdxSqrSum = cM;//MaxPoss;//max(cM,MaxPoss);         
+type
+  tSqrSum   = array[0..IdxSqrSum] of Word;
+  tEndsIn   = array[0..maxPoss]of Byte;
+  tresCache = array[0..maxPoss]of Uint64;
+var
+  aSqrDigSum : tSqrSum;
+  aEndsIn: tEndsIn;
+  aresCache : tresCache;
+
+procedure CreateSpuareDigitSum;
+var i,j,k,l : integer;
+begin
+  For i:= 0 to 9 do
+    aSqrDigSum[i] := round(sqr((i)));
+  k:= 10;
+  l:= k;
+  while k < cM do begin
+    For i:= 1 to 9 do
+      For j:= 0 to k-1 do begin
+        aSqrDigSum[l]:=aSqrDigSum[i]+aSqrDigSum[j];
+        inc(l);
+      end;
+    k:= l;
+  end;
+  aSqrDigSum[l]:= 1;
+end;         
+         
+function SumSquaredDigits(N: integer): integer;
+{Sum the squares of the digits in a number}
+var T: integer;
+begin
+Result:=0;
+repeat
+   begin
+   T:=N mod 10;
+   N:=N div 10;
+   Result:=Result+T*T;
+   end
+until N<1;
+end;
+
+function SumSquaredDigits2(N: integer): integer;
+{Sum the squares of the digits in a number}
+begin
+Result:=0;
+  with statclass do begin
+   repeat
+      add(N mod 10)
+      N:=N div 10;
+   until N<1;
+   result:= round(SumOfSquares);
+   clear;
+ end;  
+end;
+
+function SumSquaredDigits3(N: integer): integer;
+{Sum the squares of the digits in a number}
+begin
+Result:=0;
+  with TVectorClass.create([0]) do begin
+   repeat
+      add(N mod 10)
+      N:=N div 10;
+   until N<1;
+   result:= round(SumOfSquares);
+   Free;
+ end;  
+end;
+
+function TestNumber(N: integer): integer;
+{Sum the squares of the digits of number, and do it again}
+{with tne new number until the result is either 89 or 1}
+begin
+ Result:=N;
+ repeat Result:=SumSquaredDigits2(Result);
+ until (Result=89) or (Result=1);
+end;
+
+procedure TestSquareDigitsSum(Memo: TMemo);
+{Count the number of square digit sums end up 89}
+var I,Cnt: integer;
+begin
+Cnt:=0;
+statclass:= TStatisticClass.create;
+//vectclass:= TVectorClass.create([]);
+for I:=1 to UPPERLIMIT  do
+  if TestNumber(I)=89 then Inc(Cnt);
+ memo.lines.add('Count square digit sums end up 89:');
+ Memo.Lines.Add('Sumup Delphi: '+IntToStr(Cnt));
+ statclass.Free;
+ //vectclass.Free;
+end;
+
+Const
+  NbPrime = 100000; //0000;
+  
+ // Table: Array [0 .. NbPremier] of Dword;
+ var Table: Array of Dword;
+
+procedure TForm1Button1ClickBenchmarkPrime(Sender: TObject);
+var current, first, last, cnt: Dword;
+  IsPrime: Boolean;
+  index, sqcompteur: Dword;
+  StartTime, EndTime: TTime;
+  i, j: Dword;
+BEGIN
+  SetLength(Table, NbPrime);
+  StartTime := Time();
+  cnt:= 0;
+  Table[0]:= 2;
+  Table[1]:= 3;
+  last:= 1;
+  index:= 5;
+  while last < NbPrime-1 do begin
+    sqcompteur := trunc(sqrt(index)) + 1;
+    IsPrime:= True;
+    current:= 1;
+    while IsPrime and (Table[current] < sqcompteur) do begin
+      IsPrime:= (index mod Table[current]) <> 0;
+      current:= current + 1
+    end;
+    if IsPrime then begin
+      last:= last + 1;
+      Table[last]:= index;
+       //writeln('prime: '+itoa(index));
+    end;
+    index:= index + 2;
+  end;
+  EndTime:= Time();
+  StartTime:= EndTime - StartTime;
+  //showMessage(TimeToStr(StartTime));
+  for it:= 1 to NbPrime-1 do if table[it] < nbprime then inc(cnt);
+  //for it:= 1 to NbPrime-1 do write(itoa( table[it])+ '  ');
+  writeln('benchmark: '+TimeToStr(StartTime)+' primes found:'+itoa(cnt+1));
+end;
+
+Const ULIMIT = '100000'; //  '100000000'; //100000';   //100000000
+
+procedure PYdigit;
+begin
+  with TPythonEngine.Create(Nil) do begin
+   pythonhome:= 'C:\Users\user\AppData\Local\Programs\Python\Python311\';
+   try
+     loadDLL;
+     {Println('Decimal: '+ 
+           EvalStr('__import__("decimal").Decimal(0.1)'));  }
+     execstr('step = lambda x: sum(int(d) ** 2 for d in str(x))');
+     execstr('iterate = lambda x: x if x in [1, 89] else iterate(step(x))');
+     //>>> [iterate(x) for x in xrange(1, 20)]  
+     Println('Sumup Python: '+ 
+           EvalStr('sum(1 for item in[iterate(x) for x in range(1,1000)]if item==89)')); 
+     Println('Sumup Python: '+ 
+           EvalStr('len([x for x in[iterate(x) for x in range(1,'+ULIMIT+')]if x==89])'));          
+   except
+     raiseError;        
+   finally       
+     free;
+   end; 
+  end; 
+end;
+
+Const TEXTOUT = 'Library: SysUtils,StdCtrls';
+
+Begin  //@Main
+//<Executable statements>
+  for it:= 1 to 3 do 
+    Writeln(TEXTOUT+CRLF);
+  maXcalcF('2^64 /(60*60*24*365)') 
+  writeln(CRLF);
+ processmessagesOFF;
+   TestSquareDigitsSum(memo2); 
+   //TForm1Button1ClickBenchmarkPrime(self);
+   //CreateSpuareDigitSum();
+ processmessagesON;
+//<Definitions>  
+  PYdigit;
+End. 
+
+Doc: If you add the square of the digits of a Natural number (an integer bigger than zero), 
+you always end with either 1 or 89:
+
+15 -> 26 -> 40 -> 16 -> 37 -> 58 -> 89
+7 -> 49 -> 97 -> 130 -> 10 -> 1
+
+ref:  1->10^0: 0
+      1->10^1: 7
+      1->10^2: 80
+      1->10^3: 857
+      1->10^4: 8558
+      1->10^5: 85623
+      1->10^6: 856929
+      1->10^7: 8581146
+      1->10^8: 85744333
+
+     1..1000000 => 856929
+     1..100000000 => 85744333
+     
+     80       Runtime: 0:0:2.372
+     857      Runtime: 0:0:2.427
+     8558     Runtime: 0:0:2.973
+     85623    Runtime: 0:0:8.90
+     856929   Runtime: 0:1:1.88
+     8581146  Runtime: 0:10:20.591
+     85744333 Runtime: 1:39:38.148
+
+https://www.wolframalpha.com/input?i=number+of+primes+between+1+and+100000     
+     00:01:08 found:9592
+ mX5 executed: 12/12/2023 14:50:23  Runtime: 0:1:11.360  Memload: 68% use
+count square digit sums end up 89:
+85623
+benchmark: 00:01:06 found:9592
+ mX5 executed: 12/12/2023 15:06:52  Runtime: 0:1:15.185  Memload: 66% use   
+    
+ Sumup Python: 85744333
+ mX5 executed: 12/12/2023 19:59:31  Runtime: 0:13:9.990  Memload: 64% use    
+     
+     An example in Python:
+
+https://stackoverflow.com/questions/2643850/what-is-a-good-way-to-do-countif-in-python
+>>> step = lambda x: sum(int(d) ** 2 for d in str(x))
+>>> iterate = lambda x: x if x in [1, 89] else iterate(step(x))
+>>> [iterate(x) for x in xrange(1, 20)]
+[1, 89, 89, 89, 89, 89, 1, 89, 89, 1, 89, 89, 1, 89, 89, 89, 89, 89, 1]
+----app_template_loaded_code----
+----File newtemplate.txt not exists - now saved!----
