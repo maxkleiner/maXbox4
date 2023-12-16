@@ -203,7 +203,7 @@
           12728   5.0.1.22 Novus Line , Todoe, serial monitor, code.search, rest adds, ResurceStream - Release build, makeAPP
           12797   5.0.2.24 d11.3 on Win11  aboutbox, finddlg, exception catch AV and debuginfo, debugmode, APILibs
           12808   5.0.2.28 wine compatible, GUI Automation, JSON Converter, API_Base
-          12832   5.0.2.30 APITrackbar, LEDGrid, JSON Converter, API_Base2, rfc1213, wordwrap logic
+          12838   5.0.2.40 APITrackbar, LEDGrid, JSON Converter, API_Base2, rfc1213, wordwrap logic
 
   ************************************************************************************* }
 
@@ -255,9 +255,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.2.30';
+   MBVERSION = '5.0.2.40';
    MBVER = '502';              //for checking!
-   MBVER2 = '50230';              //for checking!
+   MBVER2 = '50240';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1698,9 +1698,9 @@ uses
   uPSI_JvDialogs,
   uPSI_JvDBTreeView,   // *)
   //uPSI_JvDBUltimGrid,  redeclare
- (* uPSI_JvDBQueryParamsForm,
+ (* uPSI_JvDBQueryParamsForm, *)
   uPSI_JvExControls,
-  uPSI_JvBDEMemTable,   *)
+  //uPSI_JvBDEMemTable,   *)
   uPSI_JvCommStatus,
   //uPSI_JvMailSlots,    redeclare*)
   uPSI_JvgWinMask,  //3.9.9.82   *)
@@ -2970,8 +2970,8 @@ begin
   SIRegister_Textures(X);
  SIRegister_MyGrids(X);
   SIRegister_SortGrid(X);
-(*  SIRegister_JvExControls(X);
-  SIRegister_JvBDEMemTable(X);  *)
+  SIRegister_JvExControls(X);
+  //SIRegister_JvBDEMemTable(X);  *)
   SIRegister_yuvconverts(X);
  SIRegister_PsAPI(X);  //*)
   SIRegister_ovcurl(X);
@@ -5196,10 +5196,10 @@ begin
   RIRegister_JvDBTreeView(X);  // *)
   RIRegister_JvDBUltimGrid(X);
  (* RIRegister_JvDBQueryParamsForm(X);
-  RIRegister_JvDBQueryParamsForm_Routines(Exec);
+  RIRegister_JvDBQueryParamsForm_Routines(Exec);  *)
   RIRegister_JvExControls(X);
   RIRegister_JvExControls_Routines(Exec);
-  RIRegister_JvBDEMemTable(X);    *)
+ // RIRegister_JvBDEMemTable(X);    *)
   RIRegister_JvCommStatus(X); //*)
   RIRegister_JvgWinMask(X);  //*)
   RIRegister_StList(X);
@@ -6394,7 +6394,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean610 mX502 Rheingold+++++ beta31!';
+   maxform1.Caption:= 'maXbox5 Ocean620 mX502 Rheingold+++++ beta40!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -8427,7 +8427,8 @@ begin
   //full text finder
   //winformp.
    Application.CreateForm(TwinFormp, winFormp);
-   winformp.Height:= 980;
+   winformp.Height:= 1100;
+   winformp.Width:= winformp.Width+200;
    winformp.finderactive:= true;
    //StartFileFinder;     //Full Text Finder
 end;
@@ -10052,6 +10053,7 @@ begin
   if DirectoryExists(ExtractFilePath(forms.Application.ExeName)) then begin
     sOName:= ExtractFilePath(forms.Application.ExeName) + #0;
     sEName:= forms.Application.ExeName;
+    maxForm1.color:= clgreen;
     hlog.Add('>>>> New Instance: {App_name} v{App_ver}{80@}{now}');
     if IsFileInUse(exepath+'maxboxlog.log') then
         hlog.Free; //prevent efpopen file exception
@@ -10534,9 +10536,11 @@ begin
   //if STATCodefolding
   if collapse1.Checked then begin
     memo1.UncollapseAll;
+    collapse1.Caption:= ' Collapsefolding';
     //ATCodefolding:= true;
   end else begin
     memo1.collapseAll;
+     collapse1.Caption:= ' Expandfolding';
     //ATCodefolding:= false;
   end;  //}
   //memo1.UncollapseAll;
@@ -12823,6 +12827,7 @@ end;
     RegisterMethod(@TJvMail.Destroy, 'Free');
      RegisterMethod(@TKCustomColors.Assign, 'Assign');
          RegisterPublishedProperties;}  //RIRegister_KMessageBox_Routines
+   // CL.AddConstantN('MBVERSION','String').SetString('5.0.2.40');
 
    //  with CL.AddClassN(CL.FindClass('TObjectList'),'TKObjectList') do
    //{ CL.AddClassN(CL.FindClass('Class of TIdAuthentication'),'TIdAuthenticationClass');   //3.8
