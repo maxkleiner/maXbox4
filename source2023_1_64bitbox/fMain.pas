@@ -203,7 +203,7 @@
           12728   5.0.1.22 Novus Line , Todoe, serial monitor, code.search, rest adds, ResurceStream - Release build, makeAPP
           12797   5.0.2.24 d11.3 on Win11  aboutbox, finddlg, exception catch AV and debuginfo, debugmode, APILibs
           12808   5.0.2.28 wine compatible, GUI Automation, JSON Converter, API_Base
-          12838   5.0.2.40 APITrackbar, LEDGrid, JSON Converter, API_Base2, rfc1213, wordwrap logic
+          12844   5.0.2.40 APITrackbar, LEDGrid, JSON Converter, API_Base2, rfc1213, wordwrap logic, Python3.12
 
   ************************************************************************************* }
 
@@ -2397,10 +2397,11 @@ uses
   uPSI_Pas2JSUtils,      //++
   //uPSI_TAChartUtils,  // *)
    //Python Section
-  uPSI_PythonEngine,
+  uPSI_PythonEngine,        //change to 1.12
   uPSI_VclPythonGUIInputOutput,
   uPSI_VarPyth,
-  //uPSI_cParameters,  //uPSI_cFileTemplates, *)
+  uPSI_cParameters,  //uPSI_cFileTemplates, *)
+  uPSI_uCommonFunctions,        //5.02.40
   uPSI_WDCCMisc,
   uPSI_WDCCOleVariantEnum,
   uPSI_WDCCWinInet,  //*)
@@ -2461,7 +2462,7 @@ uses
   uPSI_NovusStringUtils,
   uPSI_NovusWindows,
   uPSI_NovusNumUtils,
-  //uPSI_NovuscURLUtils,
+  // uPSI_NovuscURLUtils,     needs libcurl.dll
   uPSI_NovusWebUtils,
 
   //uPSI_IdNNTPServer,        //4.2.4.25  *)
@@ -2550,8 +2551,8 @@ uses
   uPSI_BoldQueue,     //*)
   uPSI_JvPcx,
   uPSI_IdWhois,
- (* uPSI_IdWhoIsServer,
-  uPSI_IdGopher,  *)
+ (* uPSI_IdWhoIsServer, *)
+  uPSI_IdGopher, //*)
   uPSI_IdDateTimeStamp,
  uPSI_IdDayTimeServer,
   uPSI_IdDayTimeUDP,
@@ -2632,13 +2633,13 @@ uses
   uPSI_IdLogFile,
   uPSI_IdTime,
   uPSI_IdQOTDUDP,
-  //uPSI_IdQOTDUDPServer,  *)
+  uPSI_IdQOTDUDPServer,  //*)
   uPSI_IdSysLogMessage,
   uPSI_IdSysLog,
   uPSI_IdSysLogServer,
   uPSI_IdTimeServer,
   uPSI_IdTimeUDP,
- // uPSI_IdTimeUDPServer,   *)
+  uPSI_IdTimeUDPServer,   //*)
 
   uPSI_IdDayTime,
   uPSI_IdEMailAddress,   //*)
@@ -3242,7 +3243,7 @@ begin
   SIRegister_IdIPWatch(X);
 (* SIRegister_IdIrcServer(X);
   SIRegister_IdMessageCollection(X);
-  SIRegister_IdDNSResolver(X);
+  SIRegister_IdDNSResolver(X); *)
   //SIRegister_IdRFCReply(X);   //3.9.7.5   *)
   SIRegister_IdIdentServer(X);  //*)
   SIRegister_IdIdent(X);    //*)
@@ -3261,8 +3262,8 @@ begin
   SIRegister_IdRSH(X);   //*)
   SIRegister_LibTar(X);
   SIRegister_IdQOTDUDP(X);
- (* SIRegister_IdQOTDUDPServer(X);
-  SIRegister_IdChargenServer(X);    *)
+  SIRegister_IdQOTDUDPServer(X);
+ (* SIRegister_IdChargenServer(X);    *)
   SIRegister_IdBlockCipherIntercept(X);
   //SIRegister_IdFTPList(X);                //4.2.5.10   *)
   SIRegister_IdCoderHeader(X);
@@ -3634,6 +3635,7 @@ SIRegister_cySearchFiles(X);
  SIRegister_kcMapViewerGLGeoNames(X);
  SIRegister_kcMapViewerDESynapse(X); //*)
  SIRegister_cparserutils(X);  //*)
+ SIRegister_uCommonFunctions(X);
  SIRegister_LedNumber(X);
  SIRegister_StStrL(X);
  SIRegister_indGnouMeter(X);  //*)
@@ -3680,6 +3682,7 @@ SIRegister_cySearchFiles(X);
  SIRegister_ParserUtils(X);
  SIRegister_uPSUtils(X);
  SIRegister_ParserU(X);
+ //RIRegister_uCommonFunctions_Routines(Exec);
  //SIRegister_TypInfo(X);
  SIRegister_ServiceMgr(X);
  SIRegister_UDict(X);
@@ -3940,6 +3943,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_PythonEngine(X);
   SIRegister_VclPythonGUIInputOutput(X);
   SIRegister_VarPyth(X);
+  SIRegister_cParameters(X);
   SIRegister_WDCCMisc(X);
   SIRegister_WDCCWinInet(X);
   SIRegister_WDCCOleVariantEnum(X);
@@ -4176,9 +4180,9 @@ SIRegister_cySearchFiles(X);
   SIRegister_BoldQueue(X); //*)
   SIRegister_JvPcx(X);
   SIRegister_IdWhois(X);
- (* SIRegister_IdWhoIsServer(X);
+ (* SIRegister_IdWhoIsServer(X);   *)
   SIRegister_IdGopher(X);
-  SIRegister_IdDiscardServer(X);
+(*  SIRegister_IdDiscardServer(X);
   SIRegister_IdDiscardUDPServer(X);
   SIRegister_IdDICTServer(X);  *)
   SIRegister_IdDayTimeUDPServer(X);
@@ -4219,7 +4223,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_IdSysLog(X);
   SIRegister_IdSysLogServer(X);
   SIRegister_IdTimeServer(X);
- (* SIRegister_IdTimeUDPServer(X);  *)
+  SIRegister_IdTimeUDPServer(X);  //*)
   SIRegister_IdTimeUDP(X);
   SIRegister_IdUserAccounts(X); //*)
   SIRegister_JclStrHashMap(X); //*)
@@ -4552,6 +4556,8 @@ begin
   RIRegister_PythonEngine(X);
   RIRegister_VclPythonGUIInputOutput(X);
   RIRegister_VarPyth_Routines(Exec);
+  RIRegister_cParameters_Routines(Exec);
+  RIRegister_cParameters(X);
   RIRegister_WDCCMisc_Routines(Exec);
   RIRegister_WDCCWinInet(X);
  RIRegister_WDCCOleVariantEnum(X);
@@ -5131,13 +5137,13 @@ begin
   RIRegister_IdIOHandlerStream(X);
   RIRegister_IdLogBase(X);
   RIRegister_IdQOTDUDP(X);
- (* RIRegister_IdQOTDUDPServer(X);    *)
+  RIRegister_IdQOTDUDPServer(X);    //*)
   RIRegister_IdSysLogMessage_Routines(Exec);
   RIRegister_IdSysLogMessage(X);
   RIRegister_IdSysLog(X);
   RIRegister_IdSysLogServer(X);
   RIRegister_IdTimeServer(X);
-(*  RIRegister_IdTimeUDPServer(X); *)
+  RIRegister_IdTimeUDPServer(X); //*)
   RIRegister_IdTimeUDP(X);
   RIRegister_IdUserAccounts(X); //*)
   RIRegister_TextUtils_Routines(Exec); // *)
@@ -5604,6 +5610,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_kcMapViewerDESynapse(X); //*)
   RIRegister_TLineBreaker(X);  //*)
   RIRegister_cparserutils_Routines(Exec); //3.9.9.98_7   *)
+  RIRegister_uCommonFunctions_Routines(Exec);
   RIRegister_LedNumber(X);
  RIRegister_StStrL_Routines(EXec);
   RIRegister_indGnouMeter(X);  //*)
@@ -6012,8 +6019,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_SynEditWildcardSearch(X);
   RIRegister_JvPcx(X);
  RIRegister_IdWhois(X);
-(*  RIRegister_IdWhoIsServer(X);
-  RIRegister_IdGopher(X); *)
+(*  RIRegister_IdWhoIsServer(X); *)
+  RIRegister_IdGopher(X); //*)
   RIRegister_IdDateTimeStamp(X);
  (* RIRegister_IdDiscardServer(X);
   RIRegister_IdDiscardUDPServer(X);
@@ -6394,7 +6401,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean620 mX502 Rheingold+++++ beta40!';
+   maxform1.Caption:= 'maXbox5 Ocean640 mX502 Rheingold+++++ beta40!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -7778,7 +7785,7 @@ begin
     memo2.Lines.Add(RCSTRMB +extractFileName(Act_Filename)+' Compiled done: '
                                                          +dateTimetoStr(now()));
     memo2.Lines.Add('--------------------------------------------------------');
-    statusBar1.panels[0].text:= RCSTRMB +Act_Filename+' Compd:'
+    statusBar1.panels[0].text:= RCSTRMB +Act_Filename+' Ct:'
              +dateTimetoStr(now())+' Mem:'+inttoStr(GetMemoryLoad) +'% ';
     if not PSScript.Execute then begin
       //pause;
@@ -9156,7 +9163,7 @@ var  p: TBufferCoord;
   if Changes*[scCaretY,scCaretX]<>[] then begin
     with FindReplDialog do if Visible and not Searching then
                              FindText:= UpdateFindtext;
-   Statusbar1.Panels[1].Text:= Format(' Row: %7d  --- Col: %3d  Sel: %6d',
+   Statusbar1.Panels[1].Text:= Format('Row:%6d-Col:%3d s:%5d',
        [memo1.CaretY, memo1.CaretX, memo1.SelStart]);
    if Changes * [scAll, scCaretX, scCaretY] <> [] then
      memo1.Hint:= intToStr(memo1.CaretY)+' Cursor: '+memo1.WordAtCursor +'  Mouse: '+memo1.WordAtMouse;
@@ -9349,7 +9356,6 @@ begin
   //ActiveLineColor1Click(self);
   if intfnavigator1.checked then
     lbintfList.Color:= clskyblue;
-
 end;
 
 procedure Tmaxform1.SynEditPrint1PrintLine(Sender: TObject; LineNumber,
@@ -11640,7 +11646,7 @@ var  p: TBufferCoord;
      memo1.Marks[i].Line:= 0;
      memo1.Marks.ClearLine(aline);
      //memo2.lines.Add('found delete bookmark at: '+inttoStr(aline));
-     statusBar1.panels[1].text:= 'found del bookmark: '+inttoStr(aline)+' ';
+     statusBar1.panels[1].text:= 'found delbkmark: '+inttoStr(aline)+' ';
      foundbm:= true;
      //memo1.Gutter.bands[0]:= memo1.Marks[i];
      //memo1.Gutter.DigitCount:= 5;
