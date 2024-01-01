@@ -1,8 +1,8 @@
- { ****************************************************************
+﻿ { ****************************************************************
   sourcefile :    fMain.pas
   typ :  	        boundary-Unit
   author :  	    RemObjects, max kleiner, LoC's 1005
-  description :   handles scriptloading and user events	�gung
+  description :   handles scriptloading and user events	ügung
   classes :	      see ModelMaker ps#12
   specials : 	    cooperates with uPS* units/ namespace
   revisions :     20.07.04 build menu structure
@@ -204,6 +204,7 @@
           12797   5.0.2.24 d11.3 on Win11  aboutbox, finddlg, exception catch AV and debuginfo, debugmode, APILibs
           12808   5.0.2.28 wine compatible, GUI Automation, JSON Converter, API_Base
           12844   5.0.2.40 APITrackbar, LEDGrid, JSON Converter, API_Base2, rfc1213, wordwrap logic, Python3.12
+          12900   5.0.2.60 saveasunicode UTF-8  , PythonVersions, saveasansi, ctools
 
   ************************************************************************************* }
 
@@ -255,9 +256,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.2.40';
+   MBVERSION = '5.0.2.60';
    MBVER = '502';              //for checking!
-   MBVER2 = '50240';              //for checking!
+   MBVER2 = '50260';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -644,7 +645,8 @@ type
     JumptoOutput1: TMenuItem;
     memo1: TSynEdit;
     Collapse1: TMenuItem;
-    ImageList3: TImageList;      //SynEdit1
+    ImageList3: TImageList;
+    SaveasUnicode1: TMenuItem;      //SynEdit1
     procedure IFPS3ClassesPlugin1CompImport(Sender: TObject; x: TPSPascalCompiler);
     procedure IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TPSExec; x: TPSRuntimeClassImporter);
     procedure PSScriptCompile(Sender: TPSScript);
@@ -924,6 +926,7 @@ type
     procedure JumptoTerminal1Click(Sender: TObject);
     procedure JumptoOutput1Click(Sender: TObject);
     procedure Collapse1Click(Sender: TObject);
+    procedure SaveasUnicode1Click(Sender: TObject);
     //function PSScriptNeedFile(Sender: TObject; const OrginFileName: AnsiString;
       //var FileName, Output: AnsiString): Boolean;
     //procedure Memo1DropFiles(Sender: TObject; X,Y: Integer; AFiles: TStrings);
@@ -3762,7 +3765,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_ChessPrg(X);
   SIRegister_Graph3D(X);   //*)
   SIRegister_SysInfoCtrls(X);   //*)
-  SIRegister_StdFuncs(X);   //this whole shot shit!�
+  SIRegister_StdFuncs(X);   //this whole shot shit!è
   SIRegister_RegUtils(X);
   SIRegister_VariantRtn(X);
 // SIRegister_SqlTxtRtns(X);    //*)
@@ -6365,6 +6368,7 @@ begin
   showSpecChars1.Checked:= false;
   debugout:= Tdebugoutput.Create(self);
   editreplace1.Checked:= false;
+  Saveasunicode1.Checked:= false;   //5.0.2.60
   //listform1:= TFormListview.Create(self);
   //listform1.Hide;
   //FOrgListViewWndProc:= ListForm1.WindowProc; // save old window proc
@@ -6565,7 +6569,7 @@ begin
      end;  //}
 
   end;
-  Except  //silent less log                 Rheingoldwagen-Set "Tin Plate" MHI, M�rklin H0 40851
+  Except  //silent less log                 Rheingoldwagen-Set "Tin Plate" MHI, Märklin H0 40851
     //raise Exception.Create('CLI fault in parse file: '+RCSTRMB+':' +act_filename);
     //showmessage('');
   end;
@@ -6793,6 +6797,12 @@ begin
   maxForm1.memo2.Lines.Add(sln);
 end;
 
+procedure MyWritelnUC(const sln: unicodestring);
+begin
+  maxform1.memo2.lines.defaultencoding:= TEncoding.UTF8;
+  maxForm1.memo2.Lines.Add((sln));
+end;
+
 procedure myWriteFirst(const S: string);
 begin
   maxForm1.memo2.WordWrap:= true;
@@ -7002,6 +7012,36 @@ begin
     append(F)
 end;
 
+procedure saveasunicode; //v5.02.60
+begin
+    //to save contexr as unicode - append(Text(mycodestring))
+    maxform1.memo1.lines.savetofile(maxform1.Act_Filename, TEncoding.UTF8);
+    maxform1.memo2.lines.Add('----File saved as Unicode!----UTF8 😀');
+    maxform1.memo1.Lines.LoadFromFile(maxform1.Act_Filename, TEncoding.UTF8);
+end;
+
+procedure saveasansi; //v5.02.60
+begin //to save contexr as unicode - append(Text(mycodestring))
+    maxform1.memo1.lines.savetofile(maxform1.Act_Filename, TEncoding.ansi);
+    maxform1.memo2.lines.Add('----File saved as Ansi!----Ansi8');
+    maxform1.memo1.Lines.LoadFromFile(maxform1.Act_Filename, TEncoding.Ansi);
+end;
+
+procedure saveasunicode1; //v5.02.60
+begin
+    //to save contexr as unicode - append(Text(mycodestring))
+    maxform1.memo1.lines.savetofile(maxform1.Act_Filename, TEncoding.Unicode);
+    maxform1.memo2.lines.Add('----File saved as Unicode!----Unicode 😀 マックスボックス5');
+    maxform1.memo1.Lines.LoadFromFile(maxform1.Act_Filename, TEncoding.Unicode);
+end;
+
+procedure saveasdefault; //v5.02.60
+begin
+    //to save contexr as unicode - append(Text(mycodestring))
+    maxform1.memo1.lines.savetofile(maxform1.Act_Filename, TEncoding.default);
+    maxform1.memo2.lines.Add('----File saved as Unicode!----Default �');
+end;
+
 
 function myreset(mypath: string): TStringList; //v2.9.1
 var mylist: TStringList;
@@ -7170,6 +7210,7 @@ begin
   formatsettings:= myformatsettings2;
    mformatsettings:= myformatsettings2;
   Sender.AddFunction(@MyWriteln, 'procedure Writeln(s: string);');
+  Sender.AddFunction(@MyWritelnUC, 'procedure WritelnUC(s: unicodestring);');
   Sender.AddFunction(@MyWriteln, 'procedure Writ(s: string);');
   Sender.AddFunction(@MyWriteln, 'procedure Println(s: string);');  //alias
   Sender.AddFunction(@MyWrite, 'procedure Write(S: string);');
@@ -7592,6 +7633,10 @@ begin
   Sender.AddFunction(@GetScriptPath2, 'function GetScriptPath: string;');
   Sender.AddFunction(@GetScriptPath2, 'function ScriptPath: string;');
   Sender.AddFunction(@GetScriptName2, 'function ScriptName: string;');
+  Sender.AddFunction(@saveasunicode, 'procedure SaveasUnicode');
+  Sender.AddFunction(@saveasunicode1, 'procedure SaveasUnicode1');
+  Sender.AddFunction(@saveasansi, 'procedure SaveasAnsi');
+  Sender.AddFunction(@saveasdefault, 'procedure SaveasDefault');
 
   //Sender.AddFunction(@mmsystem32.timegettime
   //Sender.AddFunction(@AssignFile,'Procedure AssignFile(var F: Text; FileName: string)');
@@ -8160,6 +8205,17 @@ begin
     end;
    Free;
   end
+end;
+
+procedure Tmaxform1.SaveasUnicode1Click(Sender: TObject);
+begin
+  Saveasunicode1.Checked:= not saveasunicode1.Checked;
+   if Saveasunicode1.Checked then begin saveasunicode;
+     memo2.lines.Add('----saveasunicode() click - now saved!----')
+   end;
+   if not Saveasunicode1.Checked then begin saveasansi;
+       memo2.lines.Add('----saveasansi() click - now saved!----');
+   end;
 end;
 
 procedure Tmaxform1.Save2Click(Sender: TObject);
@@ -11544,7 +11600,7 @@ begin
       if t1 > 0 then begin
         //oldcolor.Background:= clyellow;
         Delete(s1, t1, Length(fw));
-        //Insert('�'+Uppercase(fw), s1, t1);
+        //Insert('¶'+Uppercase(fw), s1, t1);
         Insert(Uppercase(fw), s1, t1);
         memo1.lines[i]:= s1;
         inc(cfound);
