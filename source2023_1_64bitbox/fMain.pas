@@ -204,7 +204,8 @@
           12797   5.0.2.24 d11.3 on Win11  aboutbox, finddlg, exception catch AV and debuginfo, debugmode, APILibs
           12808   5.0.2.28 wine compatible, GUI Automation, JSON Converter, API_Base
           12844   5.0.2.40 APITrackbar, LEDGrid, JSON Converter, API_Base2, rfc1213, wordwrap logic, Python3.12
-          12900   5.0.2.60 saveasunicode UTF-8  , PythonVersions, saveasansi, ctools
+          12925   5.0.2.70 saveasunicode UTF-8  , PythonVersions, saveasansi, ctools, savestringUC, loadfileUC, flcunicodecodecs
+          12932   5.0.2.90 exit3() , orig delphi regex tregex record class , unicode_encode_unit.pas
 
   ************************************************************************************* }
 
@@ -256,9 +257,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.2.60';
+   MBVERSION = '5.0.2.90';
    MBVER = '502';              //for checking!
-   MBVER2 = '50260';              //for checking!
+   MBVER2 = '50290';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1045,6 +1046,7 @@ type
     procedure LoadInterfaceList2;
     function GetStatExecuteShell: boolean;
     function GetStatDebugCheck: boolean;
+    procedure SetStatDebugCheck(ab: boolean);
     procedure DoEditorExecuteCommand(EditorCommand: word);
     function GetActiveLineColor: TColor;
     procedure SetActiveLineColor(acolor: TColor);
@@ -1055,6 +1057,8 @@ type
     procedure SetKeyPressed;
     procedure SaveByteCode;
     function GetPSScript: TPSScript;
+    //procedure SetDebugCheck(ab: boolean);
+    //function LoadFile3(const FileName: TFileName): string;
  end;
 
 
@@ -1207,7 +1211,8 @@ uses
   uPSI_uTPLb_IntegerUtils,
   uPSI_uTPLb_HugeCardinal,
   uPSI_uTPLb_HugeCardinalUtils,    //*)
-  uPSI_SynRegExpr,    //RegExprStudio!
+  uPSI_SynRegExpr,    //RegExprStudio! .$DEFINE reRealExceptionAddr undefine
+  uPSI_RegularExpressions,  //delphi ones based on perlregex
   uPSI_SynURIOpener,
   uPSI_StBase,
   uPSI_StUtils,   //SysTools4 -3.9.1
@@ -1215,7 +1220,7 @@ uses
   uPSI_SyncObjs,
   uPSI_AsyncCalls,
   //uPSI_ParallelJobs,  AV Crash//*)
-  uPSI_Variants,       //olestream with IStream
+  uPSI_Variants,       //olestream with IStream   regextest
   uPSI_VarCmplx,
   uPSI_DTDSchema, //*)
   uPSI_ShLwApi,
@@ -1534,7 +1539,7 @@ uses
   uPSI_lazMasks,
   //uPSI_SynEditMiscProcs, //* redeclare)
   uPSI_BlockSocket,
-  //uPSI_IdExtHTTPServer,   filetypetomimetype
+  //uPSI_IdExtHTTPServer,   //filetypetomimetype
    uPSI_JclMath,
 
   ScktMain, //SocketServer   *)
@@ -1621,7 +1626,7 @@ uses
   uPSI_DBXClient,   // *)
   uPSI_IdGlobal,
   uPSI_IdIOHandlerSocket,  //3.9.3
-  //uPSI_IdTCPConnection, //3.1
+  uPSI_IdTCPConnection, //3.1
   IFSI_IdTCPClient,  //*)
   uPSI_IdHeaderList,     //3.9.6
   uPSI_IdHTTPHeaderInfo,     //user agent compatible    *)
@@ -1630,7 +1635,7 @@ uses
   uPSI_HTTPUtil, //3.2  *)
   uPSI_HTTPApp, //3.7
   uPSI_IdSocketHandle,
-  (*uPSI_IdTCPServer, *)
+  uPSI_IdTCPServer, //  for bindings 5.0.2.90*)
   uPSI_IdCustomHTTPServer, //*)
   IFSI_IdURI,
  IFSI_IdFTP,
@@ -2388,6 +2393,7 @@ uses
   uPSI_flcASCII,
   uPSI_flcStringPatternMatcher,
   uPSI_flcUnicodeChar, //*)
+  uPSI_flcUnicodeCodecs,
   uPSI_flcFloats,            //4.7.5.90
   uPSI_SemaphorGrids,        //4.7.5.80
   uPSI_uXmlDates,
@@ -2826,6 +2832,7 @@ begin
   SIRegister_ThSort(X);
   SIRegister_JvExprParser(X);   //*)
   SIRegister_SynRegExpr(X);
+  SIRegister_RegularExpressions(X);
   SIRegister_SynURIOpener(X);
   SIRegister_StUtils(X);  //SysTools4
   SIRegister_IMouse(X); //*)
@@ -2985,7 +2992,7 @@ begin
   SIRegister_ovctcary(X);
   SIRegister_DXPUtils(X);
   SIRegister_JclSysUtils(X);
-(* SIRegister_IdTCPConnection(X);  //3.1   *)
+ SIRegister_IdTCPConnection(X);  //3.1   idcontext connection*)
   SIRegister_IdTCPClient(X);    //*)
   SIRegister_IdAuthentication(X);  //4.7.1.80
   SIRegister_IdHTTPHeaderInfo(X);    // *)
@@ -2994,7 +3001,7 @@ begin
   //SIRegister_TIdURI(x);   *)
   SIRegister_IdURI(x);
   //SIRegister_IdSocketHandle(X);
- (* SIRegister_IdTCPServer(X);  *)
+  SIRegister_IdTCPServer(X);  // bindings*)
   SIRegister_IdFTP(X);
   SIRegister_IdCustomHTTPServer(X); //3.9.3
  (* SIRegister_IdSSLOpenSSL(X);   *)
@@ -3010,7 +3017,7 @@ begin
   SIRegister_VListView(X);
   SIRegister_ide_debugoutput(X);
   //SIRegister_ComCtrls(X); //3.6  move upwards
- SIRegister_VarHlpr(X);    //variants  system.internal.varhlpr*)
+ SIRegister_VarHlpr(X);    //variants5.  system.internal.varhlpr*)
   SIRegister_StatsClasses(X);   //unit test
   SIRegister_Dialogs(X);
   SIRegister_ExtDlgs(X);
@@ -3933,6 +3940,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_flcASCII(X);
   SIRegister_flcStringPatternMatcher(X);
   SIRegister_flcUnicodeChar(X);
+  SIRegister_flcUnicodeCodecs(X);   //5.0.2.70
   SIRegister_SemaphorGrids(X);     //4-7-5-80
   SIRegister_uXmlDates(X);
   SIRegister_JclTimeZones(X);
@@ -4393,6 +4401,7 @@ begin
   RIRegister_JvExprParser(X);   //*)
   RIRegister_SynRegExpr(X);
   RIRegister_SynRegExpr_Routines(Exec);
+  RIRegister_RegularExpressions(X);
   RIRegister_JvHtmlParser(X);
   RIRegister_JvgXMLSerializer(X);   //*)
   RIRegister_JvStrings_Routines(Exec);   //*)
@@ -4543,6 +4552,8 @@ begin
   RIRegister_flcASCII_Routines(Exec);      //47520  - 80
   RIRegister_flcStringPatternMatcher_Routines(Exec);
   RIRegister_flcUnicodeChar_Routines(Exec);
+  RIRegister_flcUnicodeCodecs_Routines(Exec);
+  RIRegister_flcUnicodeCodecs(X);           //V50270
   RIRegister_SemaphorGrids(X);
   RIRegister_uXmlDates_Routines(Exec);
   RIRegister_JclTimeZones(X);
@@ -4614,7 +4625,7 @@ begin
   RIRegister_IdServerIOHandler(X);
   RIRegister_IdServerIOHandlerSocket(X);
   RIRegister_IdIOHandlerSocket(X);
- (* RIRegister_IdTCPServer(X); *)
+  RIRegister_IdTCPServer(X); // for bindings*)
   RIRegister_IdCustomHTTPServer(X);
   RIRegister_IdCustomHTTPServer_Routines(Exec);
 (* RIRegister_IdSSLOpenSSL(X);    *)
@@ -4839,13 +4850,13 @@ begin
    //RIRegister_EIdHTTPProtocolException(x);
   RIRegister_TIdHTTP(x);
   RIRegister_TIdCustomHTTP(x);
- { RIRegister_TIdHTTPProtocol(x);
-  RIRegister_TIdHTTPRequest(x);
-  RIRegister_TIdHTTPResponse(x);}
-(*  RIRegister_IdTCPConnection(X);  *)
+  RIRegister_TIdHTTPProtocol(x);
+  RIRegister_TIdHTTPRequest(x);       //check for duplicate
+  RIRegister_TIdHTTPResponse(x);  //}
+  RIRegister_IdTCPConnection(X);  //*)
   RIRegister_IdTCPClient(X); //*)
   RIRegister_IdHTTPHeaderInfo(X);
-  //RIRegister_IdHTTP(x);   *)
+  RIRegister_IdHTTP(x);   //*)
   RIRegister_HTTPParse(X);
   RIRegister_HTTPUtil_Routines(Exec); //*)
   RIRegister_HTTPApp(X);         //3.7
@@ -6250,7 +6261,7 @@ begin
   //memo1.TabWidth:= 6;  //3.9.3
   memo1.TabWidth:= 3;  //3.9.8    //9.9.20
   dragAcceptFiles(maxForm1.Handle, True );    //fix5
-  memo2.Lines.add('Welcode Coder: memo1 is editor - memo2 is console output');
+  memo2.Lines.add('Welcode Coder: memo1 is editor 😎 - memo2 is console output ☘');
   //should  be a first help docu
   memo2.Height:= 175;
   memo2.WordWrap:= true;
@@ -6405,7 +6416,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean640 mX502 Rheingold+++++ beta40!';
+   maxform1.Caption:= 'maXbox5 Ocean690 mX502 Rheingold+++++ beta90!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -7561,6 +7572,7 @@ begin
   //*//)
   Sender.AddFunction(@ShowMemory, 'procedure ShowMemory');
   Sender.AddFunction(@ShowMemory2, 'function ShowMemory2: string;');   //*)
+  //Sender.AddFunction(@ShowMemory2, 'function ShowMemory2: string;');   //*)
   Sender.AddFunction(@mygetperftime, 'function getPerfTime: string;');
   Sender.AddFunction(@mygetperftime, 'function getRuntime: string;');
   Sender.AddFunction(@getHostIP, 'function getHostIP: string;');
@@ -7637,8 +7649,15 @@ begin
   Sender.AddFunction(@saveasunicode1, 'procedure SaveasUnicode1');
   Sender.AddFunction(@saveasansi, 'procedure SaveasAnsi');
   Sender.AddFunction(@saveasdefault, 'procedure SaveasDefault');
+  Sender.AddFunction(@SaveString2, 'procedure SaveString2(const AFile, AText: string);');
+  Sender.AddFunction(@SaveString3, 'procedure SaveString3(const AFile, AText: string; Append: Boolean);');
+  Sender.AddFunction(@SaveString3, 'procedure SaveStringUC(const AFile, AText: string; Append: Boolean);');
+  Sender.AddFunction(@loadfile3, 'function LoadFile3(const FileName: TFileName): string;');
+  Sender.AddFunction(@loadfile3, 'function LoadFile2(const FileName: TFileName): string;');
+  Sender.AddFunction(@loadfile3, 'function LoadFileUC(const FileName: TFileName): string;');
+  Sender.AddFunction(@SetDebugCheck3, 'procedure SetDebugCheck(ab: boolean);');
 
-  //Sender.AddFunction(@mmsystem32.timegettime
+      //Sender.AddFunction(@mmsystem32.timegettime
   //Sender.AddFunction(@AssignFile,'Procedure AssignFile(var F: Text; FileName: string)');
   //Sender.AddFunction(@CloseFile,'Procedure CloseFile(var F: Text);');   *)
   Sender.AddRegisteredVariable('Application', 'TApplication');
@@ -7754,7 +7773,7 @@ procedure Tmaxform1.Compile1Click(Sender: TObject);
         showMessage('Load Pascal Script first or - File Open/Save...');
     for l:= 0 to PSScript.CompilerMessageCount - 1 do begin
       m:= psscript.CompilerMessages[l].MessageToString;
-      memo2.Lines.Add('PSXCompiler: '+PSScript.CompilerErrorToStr(l)+#13#10 +m);
+      memo2.Lines.Add('PSXCompiler5: '+PSScript.CompilerErrorToStr(l)+#13#10 +m);
       //memo1.SetBookmark(8,2,memo1.CaretY);
       if (not b) and (PSScript.CompilerMessages[l] is TIFPSPascalCompilerError)
       then begin
@@ -7806,12 +7825,12 @@ begin
   cedebug.Script.Assign(memo1.Lines);
   // debig memo2.Lines.Add('XCompiler Scripz: '+memo1.text);
   //showmessage(psscript.script.Text);
-  memo2.Lines.Add('Compiling '+RCSTRMB +inttostr(memo1.Lines.count-1)+' lines');
+  memo2.Lines.Add('Compiling 🐺 '+RCSTRMB +inttostr(memo1.Lines.count-1)+' lines');
   //TPSPascalCompiler transforms to bytecode
   memo2.Lines.Add('Codelines in window: '+inttoStr(memo1.LinesInWindow));
   statusBar1.panels[1].text:= 'Codelines window: '+inttoStr(memo1.LinesInWindow);
   //PSScript.Comp.OnUses:= '';    units
-  maxForm1.Caption:= 'maXbox5 64-bit ScriptStudio  '+ExtractFilename(Act_Filename);
+  maxForm1.Caption:= 'maXbox5 64-bit ScriptStudio🎧  '+ExtractFilename(Act_Filename);
    //if pos('#', memo1.lines) > 0 then
     if STATMacro then
         Expand_Macro;
@@ -7847,7 +7866,7 @@ begin
       memo1.SetBookmark(0,2,memo1.caretY);
     end else begin
     stopw.Stop;
-     memo2.Lines.Add(' mX5 executed: '+dateTimetoStr(Now())+
+     memo2.Lines.Add(' mX5🐞 executed: '+dateTimetoStr(Now())+
       '  Runtime: '+stopw.GetValueStr +'  Memload: '+inttoStr(uPSI_MaxUtils.GetMemoryLoad) +'% use');
     end;
     statusBar1.panels.items[1].text:= ' Rtime:'+stopw.GetValueStr+' Thr:'+intToStr(numprocessthreads);
@@ -7954,7 +7973,7 @@ begin
       end;
     end else begin
     stopw.Stop;
-    memo2.Lines.Add(' mX5 run mode executed: '+dateTimetoStr(Now())+
+    memo2.Lines.Add(' mX5🦊 run mode executed: '+dateTimetoStr(Now())+
     '  Runtime: '+stopw.GetValueStr +'  Memoryload: '+inttoStr(GetMemoryLoad) +'% use');
     stopw.Free;
    end;
@@ -8287,7 +8306,7 @@ end;
 
 procedure Tmaxform1.WebServer1Click(Sender: TObject);
 begin
-  //HTTPServerStartExecute(self);
+   HTTPServerStartExecute(self);
   //add seq in 3.9.9.96
   //ShowMessage('https server available in V4'+#13#10+
     //            'first example in: ..\examples\303_webserver');
@@ -11379,6 +11398,16 @@ begin
   result:= StatDebugCheck;
 end;
 
+procedure Tmaxform1.SetStatDebugCheck(ab: boolean);
+begin
+  StatDebugCheck:= ab;
+end;
+
+procedure SetDebugCheck(ab: boolean);
+begin
+  maxform1.StatDebugCheck:= ab;
+end;
+
 procedure Tmaxform1.GetWebScript1Click(Sender: TObject);
 begin
   //this is srvice in winformpuzzle
@@ -12331,13 +12360,15 @@ procedure Tmaxform1.Darkcolor1Click(Sender: TObject);
       SynPasSyn1.DirectiveAttri.background:= clred;
       SynPasSyn1.DirectiveAttri.foreground:= clwhite;
       memo1.font.color:= clMoneyGreen;
-      // set hi coolor
+      memo1.font.size:= 12;
+      memo2.font.size:= 12;
+          // set hi coolor
       //memo1.color:= clblack - 50;
-      memo1.activelinecolor:= clnone;
+      memo1.activelinecolor:= clWebDarkSlategray; //clWebDarkred; //clOlive; //clWebFloralWhite; //clnone;   V5.0.2.80
       //memo2.color:= clblack-20;
       memo1.color:= RGB2TColor(32,32,32);  //20,18,18
       memo2.color:= RGB2TColor(20,18,18);
-      factivelinecolor:= clnone;
+      factivelinecolor:= clnone; //memo1.activelinecolor; //clnone;
       SynPasSyn1.KeyAttri.Foreground:= clskyblue; //clweblightBlue; clskyblue;
       SynPasSyn1.SymbolAttribute.Foreground:= clGreen; //clPurple;
       SynPasSyn1.CommentAttribute.Foreground:= clwebOrange;
@@ -12891,6 +12922,7 @@ end;
          RegisterPublishedProperties;}  //RIRegister_KMessageBox_Routines
    // CL.AddConstantN('MBVERSION','String').SetString('5.0.2.40');
 
+   //unit SystemRegularExpressions2;  - unit uPSI_RegularExpressions;
    //  with CL.AddClassN(CL.FindClass('TObjectList'),'TKObjectList') do
    //{ CL.AddClassN(CL.FindClass('Class of TIdAuthentication'),'TIdAuthenticationClass');   //3.8
   //CL.AddTypeS('TIdAuthenticationClass', 'class of TIdAuthentication');
