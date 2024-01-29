@@ -205,7 +205,8 @@
           12808   5.0.2.28 wine compatible, GUI Automation, JSON Converter, API_Base
           12844   5.0.2.40 APITrackbar, LEDGrid, JSON Converter, API_Base2, rfc1213, wordwrap logic, Python3.12
           12925   5.0.2.70 saveasunicode UTF-8  , PythonVersions, saveasansi, ctools, savestringUC, loadfileUC, flcunicodecodecs
-          12932   5.0.2.90 exit3() , orig delphi regex tregex record class , unicode_encode_unit.pas
+          12932   5.0.2.80 exit3() , orig delphi regex tregex record class , unicode_encode_unit.pas
+          12936   5.0.2.90 IOHandler Indy10, unicodetester, bindings, httpserver, tcpserver, commandhandler
 
   ************************************************************************************* }
 
@@ -1457,11 +1458,11 @@ uses
   uPSI_IdEchoUDP,
   uPSI_IdEchoUDPServer,
   //uPSI_IdDsnRegister, *)
- // uPSI_IdStack,
+  uPSI_IdStack,
   uPSI_IdSocks,
   uPSI_IdTelnetServer,
   uPSI_IdAntiFreezeBase,
-  //PSI_IdHostnameServer,
+ // uPSI_IdHostnameServer,
  (* uPSI_IdTunnelCommon,
   uPSI_IdTunnelMaster, *)
   //uPSI_IdTunnelSlave, //*)
@@ -1625,6 +1626,7 @@ uses
   uPSI_DbxDataGenerator,
   uPSI_DBXClient,   // *)
   uPSI_IdGlobal,
+  uPSI_IdIOHandler,     //V5.0.2.90 !
   uPSI_IdIOHandlerSocket,  //3.9.3
   uPSI_IdTCPConnection, //3.1
   IFSI_IdTCPClient,  //*)
@@ -1872,8 +1874,8 @@ uses
   uPSI_blcksock,
   uPSI_asn1util,
   uPSI_dnssend,
- (* uPSI_clamsend,
-  uPSI_ldapsend,   *)
+  uPSI_clamsend, //*)
+  uPSI_ldapsend,   //*)
   uPSI_mimemess,
   uPSI_slogsend, //*)
   uPSI_mimepart,
@@ -1899,7 +1901,7 @@ uses
   uPSI_JvThreadTimer,    //*)
   uPSI_wwSystem,
   uPSI_IdComponent,
-  //uPSI_IdIOHandlerThrottle,  *)
+  //uPSI_IdIOHandlerThrottle,  //*)
   uPSI_Themes,
   uPSI_StdStyleActnCtrls,
   uPSI_UDDIHelper,
@@ -2933,8 +2935,8 @@ begin
   SIRegister_TTypeTranslatoR(X);
  SIRegister_IdMessageCoder(X);
   SIRegister_IdMessageCoderMIME(X);
-  SIRegister_IdServerIOHandler(X);
-  SIRegister_IdServerIOHandlerSocket(X);   //change 3.9.9.8
+  //SIRegister_IdServerIOHandler(X);
+  //SIRegister_IdServerIOHandlerSocket(X);   //change 3.9.9.8
   SIRegister_IdHeaderList(X);
   SIRegister_IdMultipartFormData(X);   //*)
   SIRegister_MathUtils(X);
@@ -2952,15 +2954,16 @@ begin
   SIRegister_IdGlobal(X);     //remove 3.9.9.1
  (* SIRegister_IdRFCReply(X);   //3.9.7.5   3)*)
   SIRegister_IdDateTimeStamp(X);  //3.9.9.40
- (* SIRegister_IdStack(X);  *)
+  SIRegister_IdStack(X);  //*V5.0.2.90)
   SIRegister_IdSocks(X);   // *)
   SIRegister_IdComponent(X); //3.9.9.91
   //SIRegister_IdIOHandlerThrottle(X);    *)
+  SIRegister_IdIOHandler(X);
   SIRegister_IdSocketHandle(X);
   SIRegister_IdIntercept(X);
- (* SIRegister_IdIOHandlerSocket(X);
+  SIRegister_IdIOHandlerSocket(X);       //V5.0.2.90
   SIRegister_IdServerIOHandler(X);
-  SIRegister_IdServerIOHandlerSocket(X); *)
+  SIRegister_IdServerIOHandlerSocket(X); //7*)
   SIRegister_IdCoder(X);
   SIRegister_IdRawBase(X);
   //SIRegister_IdNTLM(X);  *)
@@ -3470,8 +3473,8 @@ begin
   SIRegister_pingsend(X);  //*)
   SIRegister_asn1util(X);
   SIRegister_dnssend(X);
- (* SIRegister_ldapsend(X);
-  SIRegister_clamsend(X);  *)
+  SIRegister_ldapsend(X);
+  SIRegister_clamsend(X);  //*)
   SIRegister_slogsend(X);  //*)
   SIRegister_mimepart(X);
   SIRegister_mimemess(X);  // *)
@@ -4617,8 +4620,9 @@ begin
   RIRegister_JclLANMan_Routines(exec);
  RIRegister_JclLocales(X);
   RIRegister_JclLocales_Routines(Exec);
- (* RIRegister_IdStack(X);  *)
+  RIRegister_IdStack(X);  //*  V5.0.2.90)
   RIRegister_IdSocks(X); //ZZ*)
+  RIRegister_IdIOHandler(X);
   RIRegister_IdSocketHandle(X);
   RIRegister_IdMessageCoder(X);
   RIRegister_IdMessageCoderMIME(X);
@@ -5404,9 +5408,9 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_asn1util_Routines(exec);
  RIRegister_dnssend(X);
   RIRegister_dnssend_Routines(Exec);
- (* RIRegister_ldapsend(X);
+  RIRegister_ldapsend(X);
   RIRegister_clamsend(X);
-  RIRegister_ldapsend_Routines(Exec);     *)
+  RIRegister_ldapsend_Routines(Exec);     //*)
   RIRegister_slogsend(X);
   RIRegister_mimemess(X);
   RIRegister_slogsend_Routines(Exec);
