@@ -207,6 +207,8 @@
           12925   5.0.2.70 saveasunicode UTF-8  , PythonVersions, saveasansi, ctools, savestringUC, loadfileUC, flcunicodecodecs
           12932   5.0.2.80 exit3() , orig delphi regex tregex record class , unicode_encode_unit.pas
           12936   5.0.2.90 IOHandler Indy10, unicodetester, bindings, httpserver, tcpserver, commandhandler
+          12937   5.0.2.95 IOHandler Indy10, udpserver, bindings, idmessager, DNSResolver, arcade5
+          12938   5.0.3.40 IOHandler Indy10, streaming resources, DNSResolver2, CastBaseServer
 
   ************************************************************************************* }
 
@@ -258,9 +260,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.2.90';
-   MBVER = '502';              //for checking!
-   MBVER2 = '50290';              //for checking!
+   MBVERSION = '5.0.3.40';
+   MBVER = '503';              //for checking!
+   MBVER2 = '50340';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1081,7 +1083,7 @@ uses
   uPSC_forms,
   uPSI_Types, //3.5+3.6  dword-longword
   uPSC_graphics,
-  uPSC_controls_orig,
+  uPSC_controls_orig,   //tcontrol & twincontrol thackclass
   //uPSC_classes,
   //uPSR_classes,
   uPSComponentExt,
@@ -1273,7 +1275,7 @@ uses
   uPSI_StExpLog,
   uPSI_StFirst,
   uPSI_StSort,
-  uPSI_ActnList, //*)
+  uPSI_ActnList, // execute *)
   uPSI_jpeg,
   uPSI_StRandom,
   uPSI_StDict,
@@ -1626,7 +1628,7 @@ uses
   uPSI_DbxDataGenerator,
   uPSI_DBXClient,   // *)
   uPSI_IdGlobal,
-  uPSI_IdIOHandler,     //V5.0.2.90 !
+  uPSI_IdIOHandler,     //V5.0.2.90 read & write!
   uPSI_IdIOHandlerSocket,  //3.9.3
   uPSI_IdTCPConnection, //3.1
   IFSI_IdTCPClient,  //*)
@@ -1644,13 +1646,13 @@ uses
   uPSI_IdRemoteCMDClient,
   uPSI_IdRemoteCMDServer, //*)
   uPSI_IdRexec,
- (* uPSI_IdUDPServer,  *)
+  uPSI_IdUDPServer,   // *)
   uPSI_IdIPWatch,
- (* uPSI_IdMessageCollection,
-  uPSI_IdIrcServer, *)
+  uPSI_IdMessageCollection,
+ // uPSI_IdIrcServer, //*)
   //uPSI_IdHL7,
   uPSI_IdIPMCastBase,
- (* uPSI_IdIPMCastServer,  *)
+  uPSI_IdIPMCastServer, //*503)
   uPSI_IdIPMCastClient,  //*)
   uPSI_IdRawHeaders, //*)
   uPSI_IdRawClient,   //*)
@@ -2576,7 +2578,7 @@ uses
 (*  uPSI_IdGopherServer, *)
   uPSI_IdQotdServer,   //*)
   uPSI_IdFingerServer,
-  //uPSI_IdDNSResolver,  //incompatible *)
+  uPSI_IdDNSResolver,  //incompatible add to iddnscommon*)
   //uPSI_IdUserAccounts, redeclare//*)
   //uPSI_StDecMth,     redeclare
   uPSI_DSUtil,
@@ -2654,8 +2656,8 @@ uses
 
   uPSI_IdDayTime,
   uPSI_IdEMailAddress,   //*)
-  //uPSI_IdMessage,
-  //uPSI_IdMessageClient,
+  uPSI_IdMessage,
+  uPSI_IdMessageClient,
   (*uPSI_IdSMTP,
   uPSI_IdPOP3,  *)
   uPSI_IdMailBox,  // *)
@@ -3235,9 +3237,9 @@ begin
   SIRegister_IdDayTime(X);
  // SIRegister_IdGlobal(X);  *)
  SIRegister_IdEMailAddress(X);
-(*  SIRegister_IdMessage(X);
+  SIRegister_IdMessage(X);
   SIRegister_IdMessageClient(X);
-  SIRegister_IdSMTP(X);
+(* SIRegister_IdSMTP(X);
   SIRegister_IdPOP3(X);   *)
   SIRegister_IdMailBox(X);  //*)
   SIRegister_IdQotd(X);
@@ -3252,11 +3254,11 @@ begin
   SIRegister_IdRemoteCMDClient(X);
   SIRegister_IdRemoteCMDServer(X);
   SIRegister_IdRexec(X); //client & server
- (* SIRegister_IdUDPServer(X);  *)
+  SIRegister_IdUDPServer(X);  //* 502095)
   SIRegister_IdIPWatch(X);
-(* SIRegister_IdIrcServer(X);
+(* SIRegister_IdIrcServer(X);   *)
   SIRegister_IdMessageCollection(X);
-  SIRegister_IdDNSResolver(X); *)
+  SIRegister_IdDNSResolver(X); //*)
   //SIRegister_IdRFCReply(X);   //3.9.7.5   *)
   SIRegister_IdIdentServer(X);  //*)
   SIRegister_IdIdent(X);    //*)
@@ -4147,7 +4149,7 @@ SIRegister_cySearchFiles(X);
 (*  SIRegister_IdHL7(X);   *)
   //uPSI_IdIPMCastBase;
   SIRegister_IdIPMCastBase(X);
- //SIRegister_IdIPMCastServer(X);
+   SIRegister_IdIPMCastServer(X);
   SIRegister_IdIPMCastClient(X); // *)
   SIRegister_IdRawHeaders(X);
   SIRegister_IdRawClient(X);
@@ -4636,10 +4638,10 @@ begin
   RIRegister_IdRemoteCMDClient(X);
   RIRegister_IdRemoteCMDServer(X);
   RIRegister_IdRexec(X);
- (* RIRegister_IdUDPServer(X);*)
+  RIRegister_IdUDPServer(X);  //5.0.2.95*)
   RIRegister_IdIPWatch(X);
- (* RIRegister_IdIrcServer(X);
-  RIRegister_IdMessageCollection(X);  *)
+ (* RIRegister_IdIrcServer(X);   *)
+  RIRegister_IdMessageCollection(X);  //*)
   //RIRegister_IdRFCReply(X); //*)
   RIRegister_IdIdentServer(X);  //*)
   RIRegister_IdIdent(X);  //*)
@@ -5148,7 +5150,7 @@ begin
   RIRegister_WDosTimers_Routines(Exec);
   RIRegister_WDosPlcs(X);
   RIRegister_WDosPneumatics(X);
-(*  RIRegister_IdDNSResolver(X);  *)
+  RIRegister_IdDNSResolver(X);  //502095*)
   RIRegister_IdFingerServer(X);  //*)
   RIRegister_IdIntercept(X);
   RIRegister_IdHTTPWebBrokerBridge(X);
@@ -6021,7 +6023,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_unlfit_Routines(Exec);
  (* RIRegister_IdHL7(X);  *)
   RIRegister_IdIPMCastBase(X);
- // RIRegister_IdIPMCastServer(X);
+  RIRegister_IdIPMCastServer(X);
   RIRegister_IdIPMCastClient(X);   //*)
  // RIRegister_IdRawHeaders(X);
   RIRegister_IdRawClient(X);
@@ -6076,9 +6078,9 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_IdGlobal(X);
   RIRegister_IdGlobal_Routines(exec);
   RIRegister_IdEMailAddress(X);
- (* RIRegister_IdMessage(X);
+  RIRegister_IdMessage(X);
   RIRegister_IdMessageClient(X);
-  RIRegister_IdSMTP(X);
+ (* RIRegister_IdSMTP(X);
   RIRegister_IdPOP3(X);  *)
   RIRegister_IdMailBox(X);  // *)
   RIRegister_IdQotd(X);
@@ -6420,7 +6422,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean690 mX502 Rheingold+++++ beta90!';
+   maxform1.Caption:= 'maXbox5 Ocean710 mX503 Rheingold+++++ beta140!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
