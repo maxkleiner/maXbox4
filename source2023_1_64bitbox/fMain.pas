@@ -209,6 +209,8 @@
           12936   5.0.2.90 IOHandler Indy10, unicodetester, bindings, httpserver, tcpserver, commandhandler
           12937   5.0.2.95 IOHandler Indy10, udpserver, bindings, idmessager, DNSResolver, arcade5
           12938   5.0.3.40 IOHandler Indy10, streaming resources, DNSResolver2, CastBaseServer
+          12945   5.0.3.60 tDict2, umakecitylocations, UTF32Resolver2, PM2, CastBaseServer
+          12975   5.0.4.60 +resource library PM.2 res, pacMAIN, pacscores, loadjpegres
 
   ************************************************************************************* }
 
@@ -260,9 +262,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.3.40';
-   MBVER = '503';              //for checking!
-   MBVER2 = '50340';              //for checking!
+   MBVERSION = '5.0.4.60';
+   MBVER = '504';              //for checking!
+   MBVER2 = '50460';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -650,7 +652,8 @@ type
     memo1: TSynEdit;
     Collapse1: TMenuItem;
     ImageList3: TImageList;
-    SaveasUnicode1: TMenuItem;      //SynEdit1
+    SaveasUnicode1: TMenuItem;
+    PacManX51: TMenuItem;      //SynEdit1
     procedure IFPS3ClassesPlugin1CompImport(Sender: TObject; x: TPSPascalCompiler);
     procedure IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TPSExec; x: TPSRuntimeClassImporter);
     procedure PSScriptCompile(Sender: TPSScript);
@@ -931,6 +934,7 @@ type
     procedure JumptoOutput1Click(Sender: TObject);
     procedure Collapse1Click(Sender: TObject);
     procedure SaveasUnicode1Click(Sender: TObject);
+    procedure PacManX51Click(Sender: TObject);
     //function PSScriptNeedFile(Sender: TObject; const OrginFileName: AnsiString;
       //var FileName, Output: AnsiString): Boolean;
     //procedure Memo1DropFiles(Sender: TObject; X,Y: Integer; AFiles: TStrings);
@@ -1641,6 +1645,8 @@ uses
   uPSI_IdSocketHandle,
   uPSI_IdTCPServer, //  for bindings 5.0.2.90*)
   uPSI_IdCustomHTTPServer, //*)
+  uPSI_U_MakeCityLocations2,  // for demo 5.0.3.60
+  uPSI_UDict2,
   IFSI_IdURI,
  IFSI_IdFTP,
   uPSI_IdRemoteCMDClient,
@@ -2448,7 +2454,7 @@ uses
   uPSI_DelticsBitField, //*)
   uPSI_DelticsSysUtils,    //4.7.6.10 III
   uPSI_U_Splines,     //4.7.6.10 IV    getpython()
-  uPSI_U_CoasterB,
+  uPSI_U_CoasterB,        //inc coastersounds.res
   uPSI_clJsonSerializerBase,
   uPSI_clJsonParser,   //*)
   uPSI_SynHighlighterPython,
@@ -2477,6 +2483,8 @@ uses
   uPSI_NovusNumUtils,
   // uPSI_NovuscURLUtils,     needs libcurl.dll
   uPSI_NovusWebUtils,
+  pacMAIN, pacscores,          //V50460
+  uPSI_pacMain,
 
   //uPSI_IdNNTPServer,        //4.2.4.25  *)
   uPSI_UWANTUtils,
@@ -2752,6 +2760,7 @@ begin
   SIRegister_StrUtils(X);
    SIRegister_SysUtils(X);   //3.2   --> sysutils_max also unit down  , TBytes
   SIRegister_Pas2JSUtils(X);         //++
+  SIRegister_pacMain(X);
   SIRegister_EInvalidArgument(x);
   SIRegister_MathMax(x);  //*)
  SIRegister_WideStrUtils(X);
@@ -2949,6 +2958,7 @@ begin
   //SIRegister_EIdHTTPProtocolException(x);    *)
   SIRegister_TIdHTTP(x);
  SIRegister_TIdCustomHTTP(x);
+ SIRegister_U_MakeCityLocations2(X);
   SIRegister_TIdHTTPProtocol(x);
   SIRegister_TIdHTTPRequest(x);
   SIRegister_TIdHTTPResponse(x);  //}
@@ -3009,7 +3019,7 @@ begin
   SIRegister_IdTCPServer(X);  // bindings*)
   SIRegister_IdFTP(X);
   SIRegister_IdCustomHTTPServer(X); //3.9.3
- (* SIRegister_IdSSLOpenSSL(X);   *)
+   (* SIRegister_IdSSLOpenSSL(X);   *)
   SIRegister_xmlutil(X);    //3.2 XML  *)
   SIRegister_MaskUtils(X); //3.5
   SIRegister_Masks(X); //*)
@@ -3701,6 +3711,7 @@ SIRegister_cySearchFiles(X);
  //SIRegister_TypInfo(X);
  SIRegister_ServiceMgr(X);
  SIRegister_UDict(X);
+  SIRegister_UDict2(X);
   SIRegister_ubigFloatV3(X);
   SIRegister_UBigIntsV4(X);
   SIRegister_UP10Build(X);
@@ -4331,6 +4342,7 @@ begin
   RIRegister_Printers_Routines(Exec); //*)
   RIRegister_StrUtils_Routines(exec);
   RIRegister_Pas2JSUtils_Routines(Exec);    //++
+  RIRegister_pacMain(X);
 
   RIRegister_MPlayer(X);
   RIRegister_ImgList(X);
@@ -4634,6 +4646,7 @@ begin
   RIRegister_IdTCPServer(X); // for bindings*)
   RIRegister_IdCustomHTTPServer(X);
   RIRegister_IdCustomHTTPServer_Routines(Exec);
+  RIRegister_U_MakeCityLocations2(X);
 (* RIRegister_IdSSLOpenSSL(X);    *)
   RIRegister_IdRemoteCMDClient(X);
   RIRegister_IdRemoteCMDServer(X);
@@ -5757,6 +5770,7 @@ RIRegister_DSUtil_Routines(Exec);
   //RIRegister_TypInfo_Routines(Exec); //last
   RIRegister_ServiceMgr(X);
   RIRegister_UDict(X);
+  RIRegister_UDict2(X);
   RIRegister_ubigFloatV3(X);
   RIRegister_UBigIntsV4(X);
   RIRegister_UBigIntsV4_Routines(Exec);  //last 180
@@ -6422,7 +6436,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean710 mX503 Rheingold+++++ beta140!';
+   maxform1.Caption:= 'maXbox5 Ocean740 mX504 Rheingold+++++ beta165!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -10943,6 +10957,28 @@ end;
 
 
 //----------------------- PlugIns---------------------------------------------
+procedure Tmaxform1.PacManX51Click(Sender: TObject);
+begin
+  //for pacman 5
+    //this start of pacman    - pacman
+   Form1pac:= TForm1pac.Create(self);
+   Form2pac:= TForm2pac.create(form1pac);
+  try
+    memo2.Lines.Add('PacManX View started');
+    Form1pac.Cursor:= CRHandpoint;
+    {if fileExists(ExtractFilePath(ParamStr(0))+'\examples\sejour2048.jpg') then
+      panForm1.GLMaterialLibrary1.Materials[0].Material.Texture.Image.LoadFromFile(ExtractFilePath(ParamStr(0))+'\examples\sejour2048.jpg');
+    memo2.Lines.Add('OpenGL Panorama View start in single mode');  }
+     //Form1pac.ShowModal;
+     //modal to ensure free all 6 timers action:= cafree;
+      Form1pac.ShowModal;
+    memo2.Lines.Add('PacManX View ended');
+   finally
+    Form1pac.Cursor:= CRDefault;
+    Form1pac.Free;
+  end;
+end;
+
 procedure Tmaxform1.PANView1Click(Sender: TObject);
 begin
  //start the pan view
@@ -12927,6 +12963,7 @@ end;
      RegisterMethod(@TKCustomColors.Assign, 'Assign');
          RegisterPublishedProperties;}  //RIRegister_KMessageBox_Routines
    // CL.AddConstantN('MBVERSION','String').SetString('5.0.2.40');
+   //https://github.com/maxkleiner/maXbox4/blob/master/fMain_47650.pas
 
    //unit SystemRegularExpressions2;  - unit uPSI_RegularExpressions;
    //  with CL.AddClassN(CL.FindClass('TObjectList'),'TKObjectList') do
