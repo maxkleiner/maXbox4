@@ -8,8 +8,8 @@ as an OpenToolsAPI to modify the maXbox GUI - V3.5 -V3.8.6 , version check
   DoEditorExecuteCommand(EditorCommand: word);
   Updated to 3.9.9.85 /80/82/91/94/95/96/98/100/101/110/120/160/190/195 ,420 locs=3808,
   MBVERIALL, ResetKeyPressed, arduino items, terminal;    4.2.2.90  /95  /98  42425 4.2.4.60  4.2.5.10 42610 42810
-                      45810 46210 46310 47110 47120 47180 47182 47282 47360 47460 47462 47464 47520 47580 47590 47620 502028}
-  //locs V5.0.2.28 = 3815
+                      45810 46210 46310 47110 47120 47180 47182 47282 47360 47460 47462 47464 47520 47580 47590 47620 502028 503 504}
+  //locs V5.0.2.28 = 3815   locs V5.0.2.80 = 3821  3825  V50360   3827    V50470
 
 interface
 
@@ -101,8 +101,8 @@ uses
   ,SynHighlighterMulti
 
   ;
- 
- 
+
+
 procedure Register;
 begin
   RegisterComponents('Pascal Script', [TPSImport_fMain]);
@@ -267,6 +267,7 @@ begin
     RegisterProperty('N10', 'TMenuItem', iptrw);
     RegisterProperty('Tutorial11', 'TMenuItem', iptrw);
     RegisterProperty('Tutorial71', 'TMenuItem', iptrw);
+    RegisterProperty('Gameoflifemenu', 'TMenuItem', iptrw);
     RegisterProperty('UpdateService1', 'TMenuItem', iptrw);
     RegisterProperty('PascalSchool1', 'TMenuItem', iptrw);
     RegisterProperty('Tutorial81', 'TMenuItem', iptrw);
@@ -522,6 +523,8 @@ begin
     RegisterMethod('procedure ReadOnly1Click(Sender: TObject);');
     RegisterMethod('procedure ShellStyle1Click(Sender: TObject);');
     RegisterMethod('procedure Console1Click(Sender: TObject);');     //3.2
+    RegisterMethod('procedure setConsole;');     //3.2  5.0.2
+    RegisterMethod('procedure Consolecode;');     //3.2  5.0.3
     RegisterMethod('procedure BigScreen1Click(Sender: TObject);');
     RegisterMethod('procedure Tutorial91Click(Sender: TObject);');
     RegisterMethod('procedure SaveScreenshotClick(Sender: TObject);');
@@ -692,8 +695,10 @@ begin
     RegisterMethod('procedure TrainingArduino1Click(Sender: TObject);');
     RegisterMethod('procedure Chess41Click(Sender: TObject);');
     RegisterMethod('procedure OrangeStyle1Click(Sender: TObject);');
+    RegisterMethod('procedure Orangecode');
     RegisterMethod('procedure Tutorial361Click(Sender: TObject);');
     RegisterMethod('procedure Darkcolor1Click(Sender: TObject);');
+    RegisterMethod('procedure Darkcode;');
     RegisterMethod('procedure ShowIndent1Click(Sender: TObject);');
     RegisterMethod('procedure InternetRadio1Click(Sender: TObject);');
     RegisterMethod('procedure MyScript2Click(Sender: TObject);');
@@ -701,6 +706,10 @@ begin
     RegisterMethod('procedure JumptoOutput1Click(Sender: TObject);');
      RegisterMethod('procedure Collapse1Click(Sender: TObject);');
        RegisterMethod('procedure Folding(Sender: TObject);');
+     RegisterMethod('procedure SaveasUnicode1Click(Sender: TObject);');
+     RegisterMethod('procedure PacManX51Click(Sender: TObject);');
+     RegisterMethod('procedure Tutorial71Click(Sender: TObject);');
+     RegisterMethod('procedure GameofLife(Sender: TObject);');
 
       //RegisterMethod('procedure defFilereadUpdate;');
       //  procedure defFilereadUpdate;
@@ -730,14 +739,14 @@ begin
 
  CL.AddConstantN('INCLUDEBOX','String').SetString('pas_includebox.inc');
  CL.AddConstantN('BOOTSCRIPT','String').SetString('maxbootscript.txt');
- CL.AddConstantN('MBVERSION','String').SetString('5.0.2.30');
- CL.AddConstantN('VERSION','String').SetString('5.0.2.30');
- CL.AddConstantN('MBVERIALL','Integer').SetInt(50230);
- CL.AddConstantN('MBVER2','String').SetString('50230');
+ CL.AddConstantN('MBVERSION','String').SetString('5.0.4.70');
+ CL.AddConstantN('VERSION','String').SetString('5.0.4.70');
+ CL.AddConstantN('MBVERIALL','Integer').SetInt(50470);
+ CL.AddConstantN('MBVER2','String').SetString('50470');
  CL.AddConstantN('EXENAME','String').SetString('maXbox5.exe');
  CL.AddConstantN('MXINTERNETCHECK','String').SetString('www.ask.com');
- CL.AddConstantN('MBVER','String').SetString('502');
- CL.AddConstantN('MBVERI','Integer').SetInt(502);
+ CL.AddConstantN('MBVER','String').SetString('504');
+ CL.AddConstantN('MBVERI','Integer').SetInt(504);
  CL.AddConstantN('MXVERSIONFILE','String').SetString('http://www.softwareschule.ch/maxvfile.txt');
  CL.AddConstantN('MXVERSIONFILE2','String').SetString('http://www.softwareschule.ch/maxvfile2.txt');
 
@@ -3348,6 +3357,8 @@ begin
     RegisterPropertyHelper(@TMaxForm1N10_R,@TMaxForm1N10_W,'N10');
     RegisterPropertyHelper(@TMaxForm1Tutorial11_R,@TMaxForm1Tutorial11_W,'Tutorial11');
     RegisterPropertyHelper(@TMaxForm1Tutorial71_R,@TMaxForm1Tutorial71_W,'Tutorial71');
+    RegisterPropertyHelper(@TMaxForm1Tutorial71_R,@TMaxForm1Tutorial71_W,'gameoflifemenu');
+
     RegisterPropertyHelper(@TMaxForm1UpdateService1_R,@TMaxForm1UpdateService1_W,'UpdateService1');
     RegisterPropertyHelper(@TMaxForm1PascalSchool1_R,@TMaxForm1PascalSchool1_W,'PascalSchool1');
     RegisterPropertyHelper(@TMaxForm1Tutorial81_R,@TMaxForm1Tutorial81_W,'Tutorial81');
@@ -3605,6 +3616,8 @@ begin
     RegisterMethod(@TMaxForm1.ShellStyle1Click, 'ShellStyle1Click');
 
     RegisterMethod(@TMaxForm1.Console1Click,'Console1Click');     //3.2
+    RegisterMethod(@TMaxForm1.Console1Click,'SetConsole');     //5.0.2
+    RegisterMethod(@TMaxForm1.Console1Click,'Consolecode');     //5.0.2
     RegisterMethod(@TMaxForm1.BigScreen1Click,'BigScreen1Click');
     RegisterMethod(@TMaxForm1.Tutorial91Click,'Tutorial91Click');
     RegisterMethod(@TMaxForm1.SaveScreenshotClick,'SaveScreenshotClick');
@@ -3776,8 +3789,10 @@ begin
     RegisterMethod(@TMaxForm1.SaveByteCode, 'SaveByteCode');
     RegisterMethod(@TMaxForm1.Chess41Click, 'Chess41Click');
     RegisterMethod(@TMaxForm1.OrangeStyle1Click, 'OrangeStyle1Click');
+    RegisterMethod(@TMaxForm1.OrangeStyle1Click, 'Orangecode');
     RegisterMethod(@TMaxForm1.Tutorial361Click, 'Tutorial361Click');
     RegisterMethod(@TMaxForm1.Darkcolor1Click, 'Darkcolor1Click');
+    RegisterMethod(@TMaxForm1.Darkcolor1Click, 'Darkcode');
      RegisterMethod(@TMaxForm1.ShowIndent1Click, 'ShowIndent1Click');
      RegisterMethod(@TMaxForm1.InternetRadio1Click, 'InternetRadio1Click');
      RegisterMethod(@TMaxForm1.MyScript2Click, 'MyScript2Click');
@@ -3785,6 +3800,9 @@ begin
      RegisterMethod(@TMaxForm1.JumptoOutput1Click, 'JumptoOutput1Click');
      RegisterMethod(@Tmaxform1.Collapse1Click, 'Collapse1Click');
        RegisterMethod(@Tmaxform1.Collapse1Click, 'Folding');
+       RegisterMethod(@Tmaxform1.SaveasUnicode1Click, 'SaveasUnicode1Click');
+       RegisterMethod(@Tmaxform1.PacManX51Click, 'PacManX51Click');
+     RegisterMethod(@Tmaxform1.Tutorial71Click, 'Gameoflife');
 
     //procedure Darkcolor1Click(Sender: TObject);
         //procedure OrangeStyle1Click(Sender: TObject);

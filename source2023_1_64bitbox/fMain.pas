@@ -210,7 +210,7 @@
           12937   5.0.2.95 IOHandler Indy10, udpserver, bindings, idmessager, DNSResolver, arcade5
           12938   5.0.3.40 IOHandler Indy10, streaming resources, DNSResolver2, CastBaseServer
           12945   5.0.3.60 tDict2, umakecitylocations, UTF32Resolver2, PM2, CastBaseServer
-          12975   5.0.4.60 +resource library PM.2 res, pacMAIN, pacscores, loadjpegres
+          12985   5.0.4.70 +resource library PM.2 res, pacMAIN, pacscores, loadjpegres, GOL
 
   ************************************************************************************* }
 
@@ -262,9 +262,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.4.60';
+   MBVERSION = '5.0.4.70';
    MBVER = '504';              //for checking!
-   MBVER2 = '50460';              //for checking!
+   MBVER2 = '50470';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1916,7 +1916,7 @@ uses
  // uPSI_IdIMAP4Server,
   uPSI_VariantSymbolTable, //3.9.9.92   *)
   uPSI_udf_glob,
-  //uPSI_TabGrid,
+  uPSI_TabGrid,
   uPSI_JsDBTreeView,
   uPSI_JsSendMail, //*)
   //uPSI_dbTvRecordList,  *)
@@ -1925,7 +1925,7 @@ uses
 (*  uPSI_dbTree,      //properties     *)
  // uPSI_dbTreeCBox,   *)
   uPSI_Debug,  //3.9.9.92
-  // uPSI_FileIntf,
+  // uPSI_FileIntf,    file not found
   //uPSI_SockTransport,   *)
   uPSI_WinInet,
   uPSI_Wwstr,
@@ -2010,7 +2010,7 @@ uses
   uPSI_WavePlay,
   uPSI_WaveTimer,
   uPSI_WaveUtils,  ////3.9.9.96_3   *)
-  dlgMain,  //CHECKERS GAME
+  dlgMain,  //CHECKERS GAME    dlgmain2 needs register gameboard bpl
   uPSI_NamedPipes,
   uPSI_NamedPipeServer, //*)
   uPSI_process,
@@ -2686,7 +2686,9 @@ uses
   reversiMain,
  // SynEditMarkupHighAll,  //3.9.8.9 beta   *)
   uHighlighterProcs,
-  uPSI_ufft,
+  uPSI_ufft, snakeU,
+  GameofLife,
+  uPSI_GameOfLife,
  // uPSI_DBXChannel,
   //uPSI_DBXIndyChannel, *)
   VCLScannerIntf,
@@ -2993,6 +2995,7 @@ begin
 (*  SIRegister_EncdDecd(X);
   SIRegister_SockAppReg(X);    *)
   SIRegister_Reversi(X);  //*)
+  SIRegister_GameOfLife(X);
   SIRegister_Textures(X);
  SIRegister_MyGrids(X);
   SIRegister_SortGrid(X);
@@ -3512,7 +3515,7 @@ begin
   //SIRegister_IdIMAP4Server(X);
   SIRegister_VariantSymbolTable(X);   //*)
   SIRegister_udf_glob(X);
- (* SIRegister_TabGrid(X);  *)
+  SIRegister_TabGrid(X); // *)
   SIRegister_JsDBTreeView(X);
   SIRegister_JsSendMail(X);         //3.9.9.92     *)
   SIRegister_Wwstr(X);
@@ -5211,6 +5214,7 @@ begin
   RIRegister_DBXClient(X);  //*)
   RIRegister_IdLogEvent(X);
   RIRegister_Reversi_Routines(Exec);
+  RIRegister_GameOfLife(X);
  (* RIRegister_IdSMTPServer(X);     *)
   RIRegister_Geometry_Routines(Exec);  //*)
   RIRegister_Textures(X);        //3.9.9.81
@@ -5460,7 +5464,7 @@ RIRegister_DSUtil_Routines(Exec);
  // RIRegister_IdIMAP4Server(X);
   RIRegister_VariantSymbolTable(X);  //*)
   RIRegister_udf_glob(X);
-  //RIRegister_TabGrid(X);
+  RIRegister_TabGrid(X);
   RIRegister_udf_glob_Routines(Exec);
   RIRegister_JsDBTreeView(X);
   RIRegister_JsSendMail(X);         //3.9.9.92     *)
@@ -6436,7 +6440,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean740 mX504 Rheingold+++++ beta165!';
+   maxform1.Caption:= 'maXbox5 Ocean750 mX504 Rheingold+++++ beta170!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -10843,7 +10847,12 @@ end;
 
 procedure Tmaxform1.Tutorial71Click(Sender: TObject);
 begin
-  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter7.pdf');
+  //Snake small - GameofLife
+   //Application.CreateForm(TsnakeForm1, snakeForm1);
+   //snakeForm1.Show ;
+   Application.CreateForm(TGOLMainForm, GOLMainForm);
+   GOLMainForm.Show ;
+  //searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter7.pdf');
 end;
 
 procedure Tmaxform1.Tutorial81Click(Sender: TObject);
@@ -12971,5 +12980,6 @@ end;
   //CL.AddTypeS('TIdAuthenticationClass', 'class of TIdAuthentication');
   //TVC_RedistVersion = (VC_Redist2013X86, VC_Redist2013X64, VC_Redist2019X64);
   //RIRegister_ALHttpClient2_Routines(S: TPSExec);
+  //https://github.com/DeveloppeurPascal/Delphi-samples
 
 End.
