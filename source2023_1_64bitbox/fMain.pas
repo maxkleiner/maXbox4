@@ -210,7 +210,8 @@
           12937   5.0.2.95 IOHandler Indy10, udpserver, bindings, idmessager, DNSResolver, arcade5
           12938   5.0.3.40 IOHandler Indy10, streaming resources, DNSResolver2, CastBaseServer
           12945   5.0.3.60 tDict2, umakecitylocations, UTF32Resolver2, PM2, CastBaseServer
-          12985   5.0.4.70 +resource library PM.2 res, pacMAIN, pacscores, loadjpegres, GOL
+          12998   5.0.4.70 +resource explorer library PM.2 res, pacMAIN, pacscores, loadjpegres, GOL
+          12999   5.1.4.70 +XN Resource Editor , RSH Server, image Preview
 
   ************************************************************************************* }
 
@@ -262,9 +263,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.0.4.70';
-   MBVER = '504';              //for checking!
-   MBVER2 = '50470';              //for checking!
+   MBVERSION = '5.1.4.70';
+   MBVER = '514';              //for checking!
+   MBVER2 = '51470';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1327,8 +1328,8 @@ uses
   uPSI_xrtl_util_COMUtils,
   uPSI_CmAdmCtl, //*)
   //uPSI_ValEdit,    redeclared
- (* uPSI_GR32,
-  uPSI_GR32_Image,
+  //uPSI_GR32,
+ (*ç uPSI_GR32_Image,
   uPSI_GR32_System, *)
   uPSI_CPortMonitor,
   uPSI_StIniStm,
@@ -1380,7 +1381,7 @@ uses
   uPSI_JvObjStr,
   uPSI_xrtl_math_Integer,
   uPSI_JvPicClip,
-  //uPSI_JvImagPrvw,
+  uPSI_JvImagPrvw,
   uPSI_JvFormPatch,  //((*)
   uPSI_JvDataConv,
   uPSI_JvCpuUsage,
@@ -1391,6 +1392,7 @@ uses
   uPSI_JvMarkupCommon,   //*)
   uPSI_JvChart,  //*)
   uPSI_JvXPCore,  //add resource rc files!  res file
+  resMainForm2,                  //XN resource workshop from wilson!
   uPSI_JvXPCoreUtils,
   uPSI_JvSearchFiles,
   uPSI_JvSpeedbar,
@@ -1473,7 +1475,7 @@ uses
   uPSI_IdTunnelMaster, *)
   //uPSI_IdTunnelSlave, //*)
   uPSI_IdRSH,
-  //uPSI_IdRSHServer,  *)
+  uPSI_IdRSHServer,  //*)
   uPSI_Spring_Cryptography_Utils,
   uPSI_MapReader,
   uPSI_LibTar,      //FileTimeGMT
@@ -2864,7 +2866,7 @@ begin
   SIRegister_TlHelp32(X);
   SIRegister_RunElevatedSupport(X);
   SIRegister_JclRegistry(X);
- //  SIRegister_TJvGradient(X);
+  // SIRegister_TJvGradient(X);      from JVGraph
   SIRegister_JvLogFile(X);   //*)
   SIRegister_JvComCtrls(X);
   SIRegister_JvCtrls(X);   //*)
@@ -3117,7 +3119,7 @@ begin
   SIRegister_JvObjStr(X);
 (*  SIRegister_JvMemTable(X);   *)
   SIRegister_JvPicClip(X);
-  //SIRegister_JvImagPrvw(X);
+  SIRegister_JvImagPrvw(X);
   SIRegister_JvFormPatch(X);  //*)
   SIRegister_JvDataConv(X);
   SIRegister_JvCpuUsage(X);
@@ -3285,9 +3287,9 @@ begin
  //SIRegister_IdHostnameServer(X);
  (* SIRegister_IdTunnelCommon(X);
   SIRegister_IdTunnelMaster(X);
-  SIRegister_IdTunnelSlave(X);
-  SIRegister_IdRSHServer(X);    *)
+  SIRegister_IdTunnelSlave(X);  *)
   SIRegister_IdRSH(X);   //*)
+   SIRegister_IdRSHServer(X);    //*)
   SIRegister_LibTar(X);
   SIRegister_IdQOTDUDP(X);
   SIRegister_IdQOTDUDPServer(X);
@@ -4672,8 +4674,8 @@ begin
 (*  RIRegister_IdHostnameServer(X);
   RIRegister_IdTunnelCommon(X);
   RIRegister_IdTunnelMaster(X);
-  RIRegister_IdTunnelSlave(X);
-  RIRegister_IdRSHServer(X);   *)
+  RIRegister_IdTunnelSlave(X);  *)
+  RIRegister_IdRSHServer(X);   //*)
   RIRegister_IdRSH(X);    //*)
   RIRegister_MapReader_Routines(Exec);
   RIRegister_LibTar(X);
@@ -4753,8 +4755,8 @@ begin
   RIRegister_StWmDCpy(X);
   RIRegister_StText_Routines(Exec);
   RIRegister_StNTLog(X);
-(*  RIRegister_JvImagPrvw_Routines(Exec);
-  RIRegister_JvImagPrvw(X); *)
+  RIRegister_JvImagPrvw_Routines(Exec);
+  RIRegister_JvImagPrvw(X); //*)
   RIRegister_JvFormPatch(X);  //((*)
   RIRegister_JvDataConv(X); // *)
   RIRegister_JvPicClip(X);
@@ -4847,9 +4849,9 @@ begin
   RIRegister_xrtl_util_COMUtils(X);
   RIRegister_xrtl_util_COMUtils_Routines(Exec);
  RIRegister_CmAdmCtl(X);
-(*  RIRegister_GR32(X);
-  RIRegister_GR32_Routines(Exec);
-  RIRegister_GR32_Rasterizers(X);
+ // RIRegister_GR32(X);  //*)
+ // RIRegister_GR32_Routines(Exec);
+ (* RIRegister_GR32_Rasterizers(X);
   RIRegister_GR32_Rasterizers_Routines(Exec);
   RIRegister_GR32_Image(X);
   RIRegister_GR32_ExtImage(X);
@@ -6440,7 +6442,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean750 mX504 Rheingold+++++ beta170!';
+   maxform1.Caption:= 'maXbox5 Ocean770 mX514 Rheingold+++++ beta180!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -12589,11 +12591,23 @@ end;
 procedure Tmaxform1.tbtn6resClick(Sender: TObject);
 var
  TmpExeFile: TExeImage;
- rcfrm: TRCMainForm;
+ //rcfrm: TresFormMain2; //TRCMainForm;
 begin
- rcFrm:= TRCMainForm.Create(NIL);
- with rcFrm do begin
+ //rcFrm:= TresFormMain2.Create(nil); //TRCMainForm.Create(NIL);
+ //with rcFrm do begin
    try
+   { Application.CreateForm(TRCMainForm, rcmainform);
+    TmpexeFile:= TExeImage.CreateImage(rcmainform, ExePath+'maxbox5.exe');
+    rcmainform.FExeFile:= tmpexefile;
+    //rcmainform.DisplayResources;
+    rcmainform.Showmodal;    }
+
+     Application.CreateForm(TresFormMain2, resFormMain2);
+
+    //resFormMain2.filename:= application.ExeName;
+    // resFormMain2.OpenFile(application.ExeName);
+    resFormMain2.StatusBarMain.Panels [1].Text := 'maXbox5 loaded';
+    resFormMain2.Showmodal;
   { with FileOpenDialog do begin
       if not Execute then Exit;
       TmpExeFile:= TExeImage.CreateImage(Self, ExePath+'maxbox3.exe');
@@ -12603,19 +12617,19 @@ begin
      //FExeFile:= TExeImage.CreateImage(rcFrm, ExePath+'maxbox5.exe');
      try
       //DisplayResources;
-      showModal;
+      //showModal;
       statusBar1.panels[0].text:= ' mX5 Resources loaded!';
       //end;
      finally
-      Release;
-      Free;
+        resFormMain2.Release;
+       resFormMain2.Free;
       statusBar1.panels[0].text:= 'Resource Explorer closed';
      end;
     except
       statusBar1.panels[0].text:= 'Resource Explorer not yet ready!'
     end;
   end; //*)
-end;
+//end;
 
 procedure Tmaxform1.tbtnUseCaseClick(Sender: TObject);
 var newNameExt, ucFile: string;
