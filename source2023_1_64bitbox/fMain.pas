@@ -211,7 +211,7 @@
           12938   5.0.3.40 IOHandler Indy10, streaming resources, DNSResolver2, CastBaseServer
           12945   5.0.3.60 tDict2, umakecitylocations, UTF32Resolver2, PM2, CastBaseServer
           12998   5.0.4.70 +resource explorer library PM.2 res, pacMAIN, pacscores, loadjpegres, GOL
-          12999   5.1.4.70 +XN Resource Editor , RSH Server, image Preview
+          13004   5.1.4.80 +XN Resource Editor , RSH Server, image Preview, BCD, PaC Analyzer
 
   ************************************************************************************* }
 
@@ -263,9 +263,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.1.4.70';
+   MBVERSION = '5.1.4.80';
    MBVER = '514';              //for checking!
-   MBVER2 = '51470';              //for checking!
+   MBVER2 = '51480';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -2093,10 +2093,10 @@ uses
   uPSI_LrtPoTools,
   uPSI_Laz_DOM,  //3*)
   uPSI_hhAvComp,          //3.9.9.101   *)
- // uPSI_GPS2,
-  //uPSI_GPS,  //*)
+  uPSI_GPS2,
+  uPSI_GPS,  //*)
   //uPSI_GPSUDemo,      internal erros!
-  //GPSUDemo, //for form call; *)
+  GPSUDemo, //for form call; *)
   uPSI_NMEA,        //3.9.9.101
   uPSI_ScreenThreeDLab,
   ScreenThreeDLab,   //form call  *)
@@ -2338,7 +2338,7 @@ uses
   //SI_idCGIRunner,  //*
   //uPSI_cTCPConnection,
   //uPSI_cHTTPTests, *)
-  //uPSI_cSocksUtils,
+  uPSI_cSocksUtils,        // need ctrings
   //uPSI_ZSqlProcessor,
   //uPSI_ZSqlTestForm,
   uPSI_DrBobCGI,             //4.7.1.20    compile test
@@ -2663,7 +2663,6 @@ uses
   uPSI_IdTimeServer,
   uPSI_IdTimeUDP,
   uPSI_IdTimeUDPServer,   //*)
-
   uPSI_IdDayTime,
   uPSI_IdEMailAddress,   //*)
   uPSI_IdMessage,
@@ -3680,8 +3679,8 @@ SIRegister_cySearchFiles(X);
  SIRegister_LrtPoTools(X);
  SIRegister_Laz_DOM(X);   //*)
  SIRegister_hhAvComp(X);// *)
- //SIRegister_GPS2(X);
- //SIRegister_GPS(X);
+ SIRegister_GPS2(X);
+ SIRegister_GPS(X);
  //SIRegister_GPSUDemo(X);  *)
  SIRegister_NMEA(X);        //3.9.9.101
  SIRegister_ScreenThreeDLab(X);
@@ -4094,6 +4093,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_OverbyteIcsMimeUtils(X);   //*)
   SIRegister_OverbyteIcsUrl(X);
  // SIRegister_uWebSocket(X);
+  SIRegister_cSocksUtils(X);
   SIRegister_KhFunction(X);
   SIRegister_ALOpenOffice(X);
   //SIRegister_ALLibPhoneNumber(X);
@@ -4509,6 +4509,7 @@ begin
   RIRegister_OverbyteIcsMimeUtils_Routines(Exec);  //*)
   RIRegister_OverbyteIcsUrl_Routines(Exec);
   //RIRegister_uWebSocket(X);
+  RIRegister_cSocksUtils_Routines(Exec);
   RIRegister_KhFunction_Routines(exec);
   RIRegister_KhFunction(X);
   RIRegister_ALOpenOffice_Routines(Exec);
@@ -5051,8 +5052,8 @@ begin
   RIRegister_Dialogs_Routines(Exec);
   RIRegister_ExtDlgs(X);
   RIRegister_ValEdit(X);  //*)
-// RIRegister_FMTBcd(X);
-//  RIRegister_FMTBcd_Routines(Exec);
+  RIRegister_FMTBcd(X);
+  RIRegister_FMTBcd_Routines(Exec);
 
   RIRegister_Provider_Routines(Exec); //3.6
   RIRegister_Provider(X); //*)
@@ -5667,9 +5668,9 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_Laz_DOM(X);
   RIRegister_hhAvComp(X);
   RIRegister_hhAvComp_Routines(Exec);    //*)
-//7/  RIRegister_GPS2(X);
-  //RIRegister_GPS(X);  redeclare
-  //RIRegister_GPS_Routines(Exec);
+  RIRegister_GPS2(X);
+  RIRegister_GPS(X);  //redeclare ?
+  RIRegister_GPS_Routines(Exec);
   //RIRegister_GPSUDemo(X);    *)
   RIRegister_NMEA_Routines(Exec); //3.9.9.101
   RIRegister_ScreenThreeDLab(X);  //*)
@@ -6442,7 +6443,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean770 mX514 Rheingold+++++ beta180!';
+   maxform1.Caption:= 'maXbox5 Ocean780 mX514 Rheingold+++++ beta180!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -11166,7 +11167,7 @@ end;
 
 procedure Tmaxform1.DependencyWalker1Click(Sender: TObject);
 begin
-// go to dependency walker
+// go to dependency walker  unit explorer  - pansichar to widestring!
    DependencyWalkerDemoMainFrm:= TDependencyWalkerDemoMainFrm.Create(self);
    try
      DependencyWalkerDemoMainFrm.ShowModal;
@@ -11502,14 +11503,14 @@ begin
 end;
 
 procedure Tmaxform1.GPSSatView1Click(Sender: TObject);
-  //FDemo: TFDemo;
+var  FDemo: TFDemo;
 begin
- { FDemo:= TFDemo.Create(self);
+ FDemo:= TFDemo.Create(self);
   try
     FDemo.ShowModal;
   finally
     FDemo.Free;
-  end; }
+  end; //}
   //the view
 end;
 
@@ -12575,10 +12576,14 @@ end;
 
 procedure Tmaxform1.Oscilloscope1Click(Sender: TObject);
 begin
+try
   Application.CreateForm(TOscfrmMain, oscfrmMain);
   oscfrmMain.Show;
-  Application.CreateForm(TForm2, Form2);
+  //Application.CreateForm(TForm2, Form2);
   //Form2.Show;
+  except; showmessage('Please run maXbox4 or wait till V5.2 '); end;
+  Application.CreateForm(TForm2, Form2);
+  Form2.Show;
 end;
 
 procedure Tmaxform1.procMessClick(Sender: TObject);
