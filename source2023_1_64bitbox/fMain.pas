@@ -211,7 +211,7 @@
           12938   5.0.3.40 IOHandler Indy10, streaming resources, DNSResolver2, CastBaseServer
           12945   5.0.3.60 tDict2, umakecitylocations, UTF32Resolver2, PM2, CastBaseServer
           12998   5.0.4.70 +resource explorer library PM.2 res, pacMAIN, pacscores, loadjpegres, GOL
-          13004   5.1.4.80 +XN Resource Editor , RSH Server, image Preview, BCD, PaC Analyzer
+          13008   5.1.4.80 +XN Resource Editor , RSH Server, image Preview, BCD, PaC Analyzer, NavUtils
 
   ************************************************************************************* }
 
@@ -2097,6 +2097,7 @@ uses
   uPSI_GPS,  //*)
   //uPSI_GPSUDemo,      internal erros!
   GPSUDemo, //for form call; *)
+  uPSI_IsNavUtils2,
   uPSI_NMEA,        //3.9.9.101
   uPSI_ScreenThreeDLab,
   ScreenThreeDLab,   //form call  *)
@@ -2532,7 +2533,7 @@ uses
   uPSI_uTPLb_Asymetric,
   uPSI_uTPLb_CodecIntf,
   uPSI_uTPLb_Codec,
- // uPSI_ADOInt,//*)
+  uPSI_ADOInt,//*)
   uPSI_MidasCon,
   uPSI_XMLIntf,
   //uPSI_XMLDoc, * local unit mismatch)
@@ -2794,7 +2795,7 @@ begin
   SIRegister_Buttons(X);
   SIRegister_Clipbrd(X);
  (* SIRegister_SqlExpr(X); *)
-  //SIRegister_ADOInt(X);   //4.2.8.10  *)
+  SIRegister_ADOInt(X);   //4.2.8.10  *)
 
   SIRegister_ADODB(X);
   SIRegister_DBGrids(X); //*)
@@ -3682,6 +3683,7 @@ SIRegister_cySearchFiles(X);
  SIRegister_GPS2(X);
  SIRegister_GPS(X);
  //SIRegister_GPSUDemo(X);  *)
+ SIRegister_IsNavUtils2(X);    //V5.1.4.80
  SIRegister_NMEA(X);        //3.9.9.101
  SIRegister_ScreenThreeDLab(X);
  SIRegister_DynaZip(X);  //*)
@@ -5672,6 +5674,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_GPS(X);  //redeclare ?
   RIRegister_GPS_Routines(Exec);
   //RIRegister_GPSUDemo(X);    *)
+  RIRegister_IsNavUtils2_Routines(Exec);
+  RIRegister_IsNavUtils2(X);                 //V5.1.4.80
   RIRegister_NMEA_Routines(Exec); //3.9.9.101
   RIRegister_ScreenThreeDLab(X);  //*)
   RIRegister_Spin(X);
@@ -6024,7 +6028,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_UTime_Routines(Exec);
   RIRegister_uTPLb_Codec(X);    //4.2.8.10
   RIRegister_uTPLb_BlockCipher(X);
-  //RIRegister_ADOInt(X);
+  RIRegister_ADOInt(X);
   RIRegister_XMLIntf(X);
  (* RIRegister_XMLDoc(X);
   RIRegister_XMLDoc_Routines(Exec);  *)
@@ -6443,7 +6447,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean780 mX514 Rheingold+++++ beta180!';
+   maxform1.Caption:= 'maXbox5 Ocean800 mX514 Rheingold+++++ beta190!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
