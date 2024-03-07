@@ -211,7 +211,7 @@
           12938   5.0.3.40 IOHandler Indy10, streaming resources, DNSResolver2, CastBaseServer
           12945   5.0.3.60 tDict2, umakecitylocations, UTF32Resolver2, PM2, CastBaseServer
           12998   5.0.4.70 +resource explorer library PM.2 res, pacMAIN, pacscores, loadjpegres, GOL
-          13008   5.1.4.80 +XN Resource Editor , RSH Server, image Preview, BCD, PaC Analyzer, NavUtils
+          13010   5.1.4.80 +XN Resource Editor , RSH Server, image Preview, BCD, PaC Analyzer, NavUtils
 
   ************************************************************************************* }
 
@@ -2417,7 +2417,7 @@ uses
   uPSI_SimpleRSSUtils, //*)
   uPSI_StrUtil,
   uPSI_Pas2JSUtils,      //++
-  //uPSI_TAChartUtils,  // *)
+  uPSI_TAChartUtils,  // *)
    //Python Section
   uPSI_PythonEngine,        //change to 1.12
   uPSI_VclPythonGUIInputOutput,
@@ -3767,7 +3767,7 @@ SIRegister_cySearchFiles(X);
   //SIRegister_SvrHTTPIndy(X);   //*)
   SIRegister_CPortTrmSet(X);
   SIRegister_HTTPProd(X);                    //V4   mX4  - 44 units
-
+  SIRegister_TAChartUtils(X);
  //uPSI_SockHTTP.pas
   //SIRegister_SockHTTP(X); //based on webrequest & httpapp
  // SIRegister_IndySockTransport(X);      *)
@@ -5844,7 +5844,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_SvrHTTPIndy_Routines(Exec);  *)
   RIRegister_CPortTrmSet(X);
   RIRegister_CPortTrmSet_Routines(Exec); //3.9.9.195
-
+  RIRegister_TIntervalList(X);   //single class of TAChartutils
+  RIRegister_TAChartUtils_Routines(Exec);
   RIRegister_HTTPProd(X);                      //V4
   RIRegister_HTTPProd_Routines(Exec);
  (* RIRegister_SockHTTP(X);
@@ -5895,7 +5896,6 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_synadbg(X);
   RIRegister_synadbg_Routines(Exec);  //*)
   RIRegister_xrtl_util_FileVersion(X);
-
   RIRegister_Streams(X);
   RIRegister_Streams_Routines(Exec);
   RIRegister_BitStream(X);
@@ -6447,7 +6447,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean800 mX514 Rheingold+++++ beta190!';
+   maxform1.Caption:= 'maXbox5 Ocean820 mX514 Rheingold+++++ beta190!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -7630,7 +7630,9 @@ begin
   Sender.AddFunction(@GetMapXGeoReverse, 'function GetMapXGeoReverse(C_form: string; const lat,long: string): string;');
   Sender.AddFunction(@GetGeoCodeCoord, 'function GetGeocodeCoord(C_form: string; const data:string; atxt: boolean): string;');
   Sender.AddFunction(@GetGeoCodeCoord, 'function GetGeoCoord(C_form: string; const data:string; atxt: boolean): string;');
-  Sender.AddFunction(@GetGeoCodeCoord, 'function GetGeoCode(C_form: string; const data:string; atxt: boolean): string;');
+  Sender.AddFunction(@GetGeoCodeCoord, 'function GetGeoCode2(C_form: string; const data:string; atxt: boolean): string;');
+  Sender.AddFunction(@EncodeURIComponent2, 'function EncodeURIComponent2(const ASrc: string): UTF8String;');
+  Sender.AddFunction(@TAddressGeoCodeOSM5, 'function TAddressGeoCodeOSM5(faddress: string): tlatlong;');
 
   Sender.AddFunction(@OpenMap, 'function OpenMap(const Data: string): boolean;');
   Sender.AddFunction(@OpenMap, 'function OpenMapX(const Data: string): boolean;');
