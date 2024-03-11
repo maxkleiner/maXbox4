@@ -1170,7 +1170,7 @@ uses
   uPSI_Printers, //3.1  *)
   //uPSI_SqlExpr, //3.2  incompatible *)
    uPSI_ADODB,
- //  uPSI_ADODButils,                       //( a//adosbtest   vardatasize
+ // uPSI_ADODButils,                       //( a//adosbtest   vardatasize
  uPSI_DBGrids,  //3.5.1   local fork of vcl.dbgrids
   uPSI_DBCtrls, //*)
   uPSI_DBCGrids,   //*)
@@ -2024,7 +2024,7 @@ uses
   uPSI_ProcessUnit,
   uPSI_pipes,
   uPSI_adgsm,   //*)
-  //uPSI_BetterADODataSet,
+  uPSI_BetterADODataSet,
   uPSI_AdSelCom,      ////3.9.9.98_1    *)
   uPSI_dwsXPlatform,
   uPSI_AdSocket,
@@ -2786,7 +2786,7 @@ begin
   SIRegister_JvFunctions(X);   //*)
   SIRegister_Grids(X);
   SIRegister_Menus(X); //3.1  up  *)
-  SIRegister_ComObj(X);
+  SIRegister_ComObj(X);      //uPSC_comobj
   SIRegister_Printers(X);
   SIRegister_Dialogs(X); //remove 3.9.6.1   *)
 
@@ -3609,7 +3609,7 @@ SIRegister_cyDocER(X);
  SIRegister_D2_VistaHelperU(X);  // *)
  SIRegister_ProcessUnit(X);
  //SIRegister_adgsm(X);
-(* SIRegister_BetterADODataSet(X);   *)
+ SIRegister_BetterADODataSet(X);   //*)
  SIRegister_AdSelCom(X);  //*)
  SIRegister_dwsXPlatform(X);
  SIRegister_AdSocket(X);
@@ -5582,8 +5582,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_pipes(X);  //*)
   RIRegister_ProcessUnit(X);
   RIRegister_adgsm_Routines(Exec);
- (* RIRegister_BetterADODataSet_Routines(Exec);
-  RIRegister_BetterADODataSet(X);  *)
+ RIRegister_BetterADODataSet_Routines(Exec);
+  RIRegister_BetterADODataSet(X);  //*)
   RIRegister_AdSelCom_Routines(Exec);
   RIRegister_AdSelCom(X);       //*)
   RIRegister_dwsXPlatform_Routines(Exec);
@@ -5817,7 +5817,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_JvWinHelp(X);
   RIRegister_WaveConverter(X);
   RIRegister_ACMConvertor(X);  //*)
-  RIRegister_ComObj2(X);
+  RIRegister_ComObj2(X);        //uPSI_ComObjOleDB_utils
   RIRegister_ComObj2_Routines(Exec);   //*)
   RIRegister_SMScript(X);
   RIRegister_CompFileIo_Routines(Exec);
@@ -6447,7 +6447,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean820 mX514 Rheingold+++++ beta190!';
+   maxform1.Caption:= 'maXbox5 Ocean840 mX514 Rheingold+++++ beta200!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
