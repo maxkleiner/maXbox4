@@ -212,6 +212,7 @@
           12945   5.0.3.60 tDict2, umakecitylocations, UTF32Resolver2, PM2, CastBaseServer
           12998   5.0.4.70 +resource explorer library PM.2 res, pacMAIN, pacscores, loadjpegres, GOL
           13010   5.1.4.80 +XN Resource Editor , RSH Server, image Preview, BCD, PaC Analyzer, NavUtils
+          13026   5.1.4.90 +XN Resource Editor1 , adoquery SQL, geocode V, Unicode/ANSI Save
 
   ************************************************************************************* }
 
@@ -263,9 +264,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.1.4.80';
+   MBVERSION = '5.1.4.90';
    MBVER = '514';              //for checking!
-   MBVER2 = '51480';              //for checking!
+   MBVER2 = '51490';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -2472,7 +2473,7 @@ uses
   uPSI_KLibWindows,   //*)
   uPSI_AzuliaUtils,           //httpget
   uPSI_HttpConnection,
-  uPSI_HttpConnectionWinInet,
+  uPSI_HttpConnectionWinInet,   //Interface to GUID TEch !
   uPSI_RestUtils,
   uPSI_PSResources,         //4.7.6.20
   uPSI_RestClient,
@@ -7638,7 +7639,8 @@ begin
   Sender.AddFunction(@OpenMap, 'function OpenMapX(const Data: string): boolean;');
   Sender.AddFunction(@OpenMap, 'function OpenStreetMap(const Data: string): boolean;');
   Sender.AddFunction(@GetGeoCode, 'function GetGeoCode(C_form,apath: string; const data: string; sfile: boolean): string;');
-  Sender.AddFunction(@getFileCount, 'Function getFileCount(amask: string): integer;');
+  Sender.AddFunction(@GetGeoCode5, 'function GetGeoCode5(C_form,apath: string; const data: string; sfile: boolean): string;');
+   Sender.AddFunction(@getFileCount, 'Function getFileCount(amask: string): integer;');
   Sender.AddFunction(@CoordinateStr, 'function CoordinateStr(Idx: Integer; PosInSec: Double; PosLn: TNavPos): string;');
   Sender.AddFunction(@Debugln, 'procedure Debugln(DebugLOGFILE: string; E: string);');
   Sender.AddFunction(@IntToFloat, 'function IntToFloat(i: Integer): double;');
@@ -8263,10 +8265,24 @@ procedure Tmaxform1.SaveasUnicode1Click(Sender: TObject);
 begin
   Saveasunicode1.Checked:= not saveasunicode1.Checked;
    if Saveasunicode1.Checked then begin saveasunicode;
-     memo2.lines.Add('----saveasunicode() click - now saved!----')
+     memo2.lines.Add('----saveasunicode() click - now utf8 saved!----')
    end;
-   if not Saveasunicode1.Checked then begin saveasansi;
-       memo2.lines.Add('----saveasansi() click - now saved!----');
+   if not Saveasunicode1.Checked then begin
+    //saveasansi;
+    case MessageDlg(Format(RCSTRMB+': '+'ANSI Save - all Unicode/UTF8 signs will be lost!',
+                   [act_filename]),mtConfirmation,
+    [mbYes,mbNo,mbcancel], 0) of
+      idYes: begin
+              saveasAnsi;
+              //memo1.Lines.Clear;
+               memo2.lines.Add('----saveasansi() click - now saved as ANSI!----');
+            end;
+      idCancel: begin
+                 memo2.lines.Add('Cancel Clicked - Try again to save now as Unicode');
+                 //CanClose := False;  //Action:= caNone;
+               end;
+      idNo: memo2.lines.Add('No Clicked - back to mX5') //   Action:= caFree;
+    end;
    end;
 end;
 
@@ -10469,7 +10485,7 @@ begin
               memo1.Lines.Clear;
             end;
       idCancel: begin
-                 memo2.lines.Add('Cancel Clicked - back to mX4');
+                 memo2.lines.Add('Cancel Clicked - back to mX5');
                  CanClose := False;  //Action:= caNone;
                end;
       idNo: CanClose:= True; //   Action:= caFree;
