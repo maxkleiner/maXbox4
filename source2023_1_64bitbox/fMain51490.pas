@@ -212,7 +212,7 @@
           12945   5.0.3.60 tDict2, umakecitylocations, UTF32Resolver2, PM2, CastBaseServer
           12998   5.0.4.70 +resource explorer library PM.2 res, pacMAIN, pacscores, loadjpegres, GOL
           13010   5.1.4.80 +XN Resource Editor , RSH Server, image Preview, BCD, PaC Analyzer, NavUtils
-          13026   5.1.4.90 +XN Resource Editor1 , adoquery SQL, geocode V, Unicode/ANSI Save
+          13030   5.1.4.90 +OAuth O ,(@)GetGeoInfoMap5save, TBytes Viewer, bigfixing
 
   ************************************************************************************* }
 
@@ -1229,6 +1229,7 @@ uses
   uPSI_SyncObjs,
   uPSI_AsyncCalls,
   //uPSI_ParallelJobs,  AV Crash//*)
+  uPSI_OAuth,  //mX51490
   uPSI_Variants,       //olestream with IStream   regextest
   uPSI_VarCmplx,
   uPSI_DTDSchema, //*)
@@ -2858,6 +2859,7 @@ begin
   SIRegister_AsyncCalls(X);
   //SIRegister_ParallelJobs(X);  //*)
   SIRegister_Variants(X);
+  SIRegister_OAuth(X);
   SIRegister_VarCmplx(X);
   SIRegister_DTDSchema(X);  //*)
   SIRegister_ShLwApi(X);
@@ -4925,6 +4927,7 @@ begin
   RIRegister_AsyncCalls_Routines(Exec);
    //RIRegister_ParallelJobs(X);
   //RIRegister_ParallelJobs_Routines(Exec);  //*)
+  RIRegister_OAuth(X);
   RIRegister_Variants_Routines(Exec);
   RIRegister_VarCmplx_Routines(Exec);
   RIRegister_DTDSchema(X);   //*)
@@ -6448,7 +6451,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean840 mX514 Rheingold+++++ beta200!';
+   maxform1.Caption:= 'maXbox5 Ocean860 mX514 Rheingold+++++ beta220!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -7634,12 +7637,13 @@ begin
   Sender.AddFunction(@GetGeoCodeCoord, 'function GetGeoCode2(C_form: string; const data:string; atxt: boolean): string;');
   Sender.AddFunction(@EncodeURIComponent2, 'function EncodeURIComponent2(const ASrc: string): UTF8String;');
   Sender.AddFunction(@TAddressGeoCodeOSM5, 'function TAddressGeoCodeOSM5(faddress: string): tlatlong;');
-
   Sender.AddFunction(@OpenMap, 'function OpenMap(const Data: string): boolean;');
   Sender.AddFunction(@OpenMap, 'function OpenMapX(const Data: string): boolean;');
   Sender.AddFunction(@OpenMap, 'function OpenStreetMap(const Data: string): boolean;');
   Sender.AddFunction(@GetGeoCode, 'function GetGeoCode(C_form,apath: string; const data: string; sfile: boolean): string;');
   Sender.AddFunction(@GetGeoCode5, 'function GetGeoCode5(C_form,apath: string; const data: string; sfile: boolean): string;');
+  Sender.AddFunction(@GetGeoInfoMap5save, 'function GetGeoInfoMap5(const lat,lon, zoom: double; asize: integer; UrlGeoLookupInfo, apath: string; showfile: boolean): string;');
+  Sender.AddFunction(@GetGeoInfoMap5save, 'function GetGeoInfoMap5save(const lat,lon, zoom: double; asize: integer; UrlGeoLookupInfo, apath: string; showfile: boolean): string;');
    Sender.AddFunction(@getFileCount, 'Function getFileCount(amask: string): integer;');
   Sender.AddFunction(@CoordinateStr, 'function CoordinateStr(Idx: Integer; PosInSec: Double; PosLn: TNavPos): string;');
   Sender.AddFunction(@Debugln, 'procedure Debugln(DebugLOGFILE: string; E: string);');
