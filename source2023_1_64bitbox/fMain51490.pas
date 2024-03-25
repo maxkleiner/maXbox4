@@ -1704,7 +1704,7 @@ uses
   //uPSI_IdSMTPServer,
   uPSI_IB,
   uPSI_IBX,
-  //uPSI_IWDBCommon,
+ // uPSI_IWDBCommon,  not found
   uPSI_MyGrids,  //*)
   uPSI_SortGrid,
   uPSI_IBScript,
@@ -1720,7 +1720,7 @@ uses
   uPSI_JvDialogs,
   uPSI_JvDBTreeView,   // *)
   //uPSI_JvDBUltimGrid,  redeclare
- (* uPSI_JvDBQueryParamsForm, *)
+  uPSI_JvDBQueryParamsForm, //*)
   uPSI_JvExControls,
   //uPSI_JvBDEMemTable,   *)
   uPSI_JvCommStatus,
@@ -2271,7 +2271,7 @@ uses
   uPSI_Tooltips, //*)
   uPSI_StringGridLibrary,
   uPSI_ChronCheck,
-  //uPSI_REXX,
+  uPSI_REXX,           //mX5.1.4.90
   uPSI_SysImg,
   uPSI_Tokens,   //*)
   uPSI_KFunctions,   //func pac campbell
@@ -3344,7 +3344,7 @@ begin
   SIRegister_JvDialogs(X);
   SIRegister_JvDBTreeView(X);  //*)
   SIRegister_JvDBUltimGrid(X);
- (* SIRegister_JvDBQueryParamsForm(X);   //3.9.9.82   *)
+  SIRegister_JvDBQueryParamsForm(X);   //3.9.9.82   plus mX51*)
   SIRegister_JvCommStatus(X);    //*)
   SIRegister_JvgWinMask(X);
   //SIRegister_StStrS(X);
@@ -3856,7 +3856,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_Tooltips(X);  //*)
   SIRegister_StringGridLibrary(X);    //mX 4.2.0
   SIRegister_ChronCheck(X);
-  //SIRegister_REXX(X);
+  SIRegister_REXX(X);
   SIRegister_SysImg(X);
   SIRegister_Tokens(X); //*)
   SIRegister_KFunctions(X);
@@ -4273,7 +4273,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_JclHookExcept(X);
   //SIRegister_StStrS(X);    //ansi char   shortstring
    SIRegister_EncdDecd(X);
-  //SIRegister_SockAppReg(X);  *)
+  //SIRegister_SockAppReg(X);   nort found*)
    SIRegister_xrtl_util_TimeStamp(X);
   SIRegister_xrtl_util_TimeUtils(X);
   SIRegister_xrtl_util_TimeZone(X);
@@ -5247,8 +5247,8 @@ begin
   RIRegister_JvDialogs(X);
   RIRegister_JvDBTreeView(X);  // *)
   RIRegister_JvDBUltimGrid(X);
- (* RIRegister_JvDBQueryParamsForm(X);
-  RIRegister_JvDBQueryParamsForm_Routines(Exec);  *)
+  RIRegister_JvDBQueryParamsForm(X);
+  RIRegister_JvDBQueryParamsForm_Routines(Exec); // *)
   RIRegister_JvExControls(X);
   RIRegister_JvExControls_Routines(Exec);
  // RIRegister_JvBDEMemTable(X);    *)
@@ -5953,7 +5953,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_Tooltips(X);  //*)
   RIRegister_StringGridLibrary_Routines(exec);
   RIRegister_ChronCheck(X);
-  //RIRegister_REXX_Routines(exec);
+  RIRegister_REXX_Routines(exec);
   RIRegister_SysImg(X);
   RIRegister_SysImg_Routines(exec);
   RIRegister_Tokens(X);    //*)
