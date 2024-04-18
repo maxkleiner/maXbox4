@@ -213,6 +213,7 @@
           12998   5.0.4.70 +resource explorer library PM.2 res, pacMAIN, pacscores, loadjpegres, GOL
           13010   5.1.4.80 +XN Resource Editor , RSH Server, image Preview, BCD, PaC Analyzer, NavUtils
           13030   5.1.4.90 +OAuth O ,(@)GetGeoInfoMap5save, TBytes Viewer, bigfixing
+          13035   5.1.4.95 SynCrtSock.pas, bigfixing, ALMultipartformdata , TIdMultiPartFormDataStream, modbus_indy10
 
   ************************************************************************************* }
 
@@ -264,9 +265,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.1.4.90';
+   MBVERSION = '5.1.4.95';
    MBVER = '514';              //for checking!
-   MBVER2 = '51490';              //for checking!
+   MBVER2 = '51495';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1180,6 +1181,7 @@ uses
  uPSI_Clipbrd,  //*)
   uPSI_MPlayer,
   uPSI_RunElevatedSupport,
+  uPSI_SynCrtSock,
 //  uPSI_StrUtils,    move  down
   uPSI_StrHlpr, //3.2
  uPSI_FileUtils, //3.2
@@ -1268,7 +1270,7 @@ uses
   uPSI_usimann,
   uPSI_JvHighlighter, //*)
   uPSI_Diff,   //*)
- // uPSI_cJSON,
+ // uPSI_cJSON,  fundamentals
   uPSI_StBits,
   uPSI_StAstroP,
   uPSI_StStat,
@@ -1317,7 +1319,7 @@ uses
   uPSI_actionMain,
   uPSI_CtlPanel,          //          DragQueryFile( Drop : HDROP;  *)
   uPSI_LongIntList,
-  //uPSI_xrtl_util_CPUUtils,
+  uPSI_xrtl_util_CPUUtils,
   uPSI_xrtl_net_URI,
   uPSI_xrtl_net_URIUtils,
   uPSI_xrtl_util_StrUtils,
@@ -1472,9 +1474,9 @@ uses
   uPSI_IdSocks,
   uPSI_IdTelnetServer,
   uPSI_IdAntiFreezeBase,
- // uPSI_IdHostnameServer,
- (* uPSI_IdTunnelCommon,
-  uPSI_IdTunnelMaster, *)
+  //uPSI_IdHostnameServer,  nit found
+  //uPSI_IdTunnelCommon,
+  //uPSI_IdTunnelMaster, //*)
   //uPSI_IdTunnelSlave, //*)
   uPSI_IdRSH,
   uPSI_IdRSHServer,  //*)
@@ -1593,7 +1595,7 @@ uses
   uPSI_IdServerIOHandlerSocket,   //*)
   uPSI_IdMessageCoder,
   uPSI_IdMessageCoderMIME,
-  uPSI_IdMultipartFormData, //cause of http post;    *)
+  uPSI_IdMultipartFormData, //cause of http post; TIdMultiPartFormDataStream   *)
   uPSI_IdRawBase,
   //uPSI_IdNTLM,  *)
   uPSI_IdNNTP,
@@ -1642,7 +1644,7 @@ uses
   IFSI_IdTCPClient,  //*)
   uPSI_IdHeaderList,     //3.9.6
   uPSI_IdHTTPHeaderInfo,     //user agent compatible    *)
-  IFSI_IdHTTP,
+  IFSI_IdHTTP,               //getStream
   uPSI_HTTPParse, //3.2
   uPSI_HTTPUtil, //3.2  *)
   uPSI_HTTPApp, //3.7
@@ -1704,7 +1706,7 @@ uses
   //uPSI_IdSMTPServer,
   uPSI_IB,
   uPSI_IBX,
-  //uPSI_IWDBCommon,
+ // uPSI_IWDBCommon,  not found
   uPSI_MyGrids,  //*)
   uPSI_SortGrid,
   uPSI_IBScript,
@@ -1713,14 +1715,14 @@ uses
   uPSI_JvHLEditor,
   uPSI_JvHLEditorPropertyForm,
   uPSI_JvFullColorForm,
-  //uPSI_JvSegmentedLEDDisplayMapperFrame,  //*)
+  uPSI_JvSegmentedLEDDisplayMapperFrame,  //*)
   uPSI_JvShellHook,    //*)
   uPSI_JvSHFileOperation,     //3.9.9.82
   uPSI_uFilexport,
   uPSI_JvDialogs,
   uPSI_JvDBTreeView,   // *)
   //uPSI_JvDBUltimGrid,  redeclare
- (* uPSI_JvDBQueryParamsForm, *)
+  uPSI_JvDBQueryParamsForm, //*)
   uPSI_JvExControls,
   //uPSI_JvBDEMemTable,   *)
   uPSI_JvCommStatus,
@@ -1940,7 +1942,7 @@ uses
  //&& uPSI_DrTable,   bde *)
   uPSI_TConnect,
   uPSI_DataBkr,  //*)
-  uPSI_HTTPIntr,
+  uPSI_HTTPIntr,        //httpserver
   uPSI_Mathbox,  //3.9.9.94
   uPSI_cyIndy,  //*)
   uPSI_cySysUtils,
@@ -2140,8 +2142,8 @@ uses
   uPSI_ubigFloatV3,  //*)
   uPSI_UBigIntsV4,
   uPSI_UP10Build, //3.9.9.180
-  //uPSI_IdModBusServer,
-  //uPSI_IdModBusClient,
+  uPSI_IdModBusServer,
+  uPSI_IdModBusClient,
   uPSI_ModbusUtils,
   uPSI_ColorGrd,
   uPSI_DirOutln,
@@ -2156,7 +2158,7 @@ uses
   uPSI_CTSVendorUtils,
   uPSI_VendorTestFramework,
   uPSI_JvAnimate,
- //uPSI_DBXCharDecoder,
+  uPSI_DBXCharDecoder,
   //uPSI_JvDBLists,
   uPSI_JvFileInfo,
   uPSI_SOAPConn,
@@ -2271,7 +2273,7 @@ uses
   uPSI_Tooltips, //*)
   uPSI_StringGridLibrary,
   uPSI_ChronCheck,
-  //uPSI_REXX,
+  uPSI_REXX,           //mX5.1.4.90
   uPSI_SysImg,
   uPSI_Tokens,   //*)
   uPSI_KFunctions,   //func pac campbell
@@ -2868,6 +2870,7 @@ begin
   SIRegister_Registry(X);
   SIRegister_TlHelp32(X);
   SIRegister_RunElevatedSupport(X);
+  SIRegister_SynCrtSock(X);
   SIRegister_JclRegistry(X);
   // SIRegister_TJvGradient(X);      from JVGraph
   SIRegister_JvLogFile(X);   //*)
@@ -3336,7 +3339,7 @@ begin
   SIRegister_IBScript(X);   //*)
   SIRegister_JvCSVBaseControls(X);      //*)
  SIRegister_JvFullColorForm(X);
-//SIRegister_JvSegmentedLEDDisplayMapperFrame(X);
+  SIRegister_JvSegmentedLEDDisplayMapperFrame(X);
   SIRegister_JvShellHook(X);
   SIRegister_Jvg3DColors(X);
   SIRegister_JvSHFileOperation(X);
@@ -3344,7 +3347,7 @@ begin
   SIRegister_JvDialogs(X);
   SIRegister_JvDBTreeView(X);  //*)
   SIRegister_JvDBUltimGrid(X);
- (* SIRegister_JvDBQueryParamsForm(X);   //3.9.9.82   *)
+  SIRegister_JvDBQueryParamsForm(X);   //3.9.9.82   plus mX51*)
   SIRegister_JvCommStatus(X);    //*)
   SIRegister_JvgWinMask(X);
   //SIRegister_StStrS(X);
@@ -3724,7 +3727,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_ubigFloatV3(X);
   SIRegister_UBigIntsV4(X);
   SIRegister_UP10Build(X);
-(*  SIRegister_IdModBusServer(X);
+  SIRegister_IdModBusServer(X); //*)
   SIRegister_IdModBusClient(X);    //3.9.9.180   *)
   SIRegister_ModbusUtils(X);
   SIRegister_ColorGrd(X);
@@ -3737,8 +3740,8 @@ SIRegister_cySearchFiles(X);
   SIRegister_VendorTestFramework(X);
   SIRegister_CTSVendorUtils(X);
   SIRegister_JvAnimate(X);
-(*  SIRegister_DBXCharDecoder(X);
-  SIRegister_JvDBLists(X);  *)
+  SIRegister_DBXCharDecoder(X);
+  //SIRegister_JvDBLists(X);  *)
   SIRegister_JvFileInfo(X);
   SIRegister_SOAPConn(X);
   SIRegister_SOAPLinked(X); //*)
@@ -3856,7 +3859,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_Tooltips(X);  //*)
   SIRegister_StringGridLibrary(X);    //mX 4.2.0
   SIRegister_ChronCheck(X);
-  //SIRegister_REXX(X);
+  SIRegister_REXX(X);
   SIRegister_SysImg(X);
   SIRegister_Tokens(X); //*)
   SIRegister_KFunctions(X);
@@ -4120,7 +4123,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_JvSimPID(X);
   SIRegister_JvSimPIDLinker(X);
   SIRegister_JclPeImage(X);
-  //SIRegister_xrtl_util_CPUUtils(X);   *)
+  SIRegister_xrtl_util_CPUUtils(X);   //*)
   SIRegister_CompilersURunner(X);
   SIRegister_xrtl_net_URI(X);
   SIRegister_xrtl_net_URIUtils(X);
@@ -4273,7 +4276,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_JclHookExcept(X);
   //SIRegister_StStrS(X);    //ansi char   shortstring
    SIRegister_EncdDecd(X);
-  //SIRegister_SockAppReg(X);  *)
+  //SIRegister_SockAppReg(X);   nort found*)
    SIRegister_xrtl_util_TimeStamp(X);
   SIRegister_xrtl_util_TimeUtils(X);
   SIRegister_xrtl_util_TimeZone(X);
@@ -4790,6 +4793,8 @@ begin
  RIRegister_Registry(X);
   RIRegister_TlHelp32_Routines(Exec);
  RIRegister_RunElevatedSupport_Routines(Exec);
+ RIRegister_SynCrtSock(X);
+  RIRegister_SynCrtSock_Routines(Exec);
   RIRegister_devcutils_Routines(Exec);
  RIRegister_JclRegistry_Routines(Exec);  //*)
  // SIRegister_JvXPCoreUtils(X);
@@ -4842,7 +4847,7 @@ begin
   RIRegister_JvSimIndicator(X);
   RIRegister_JvSimPID(X);
   RIRegister_JvSimPIDLinker(X);
-  //RIRegister_xrtl_util_CPUUtils_Routines(Exec);    *)
+  RIRegister_xrtl_util_CPUUtils_Routines(Exec);   // *)
   RIRegister_xrtl_net_URIUtils_Routines(Exec);
   RIRegister_xrtl_net_URI(X);
   RIRegister_xrtl_util_StrUtils_Routines(Exec);
@@ -4938,7 +4943,7 @@ begin
   RIRegister_JclSimpleXml_Routines(Exec); //*)
   RIRegister_JvLogFile(X);
   RIRegister_JvGraph_Routines(Exec);
-  //RIRegister_TJvGradient(X);   //*)
+  RIRegister_TJvGradient(X);   //*)
   RIRegister_JvComCtrls(X);
   RIRegister_JvCtrls(X);  //*)
   RIRegister_CPort(X);
@@ -5240,15 +5245,15 @@ begin
   RIRegister_JvShellHook(X);
   RIRegister_JvShellHook_Routines(Exec);
   RIRegister_JvFullColorForm(X);
-  //RIRegister_JvSegmentedLEDDisplayMapperFrame(X);
+  RIRegister_JvSegmentedLEDDisplayMapperFrame(X);
   RIRegister_Jvg3DColors(X);
   RIRegister_JvSHFileOperation(X);
   RIRegister_uFilexport(X);
   RIRegister_JvDialogs(X);
   RIRegister_JvDBTreeView(X);  // *)
   RIRegister_JvDBUltimGrid(X);
- (* RIRegister_JvDBQueryParamsForm(X);
-  RIRegister_JvDBQueryParamsForm_Routines(Exec);  *)
+  RIRegister_JvDBQueryParamsForm(X);
+  RIRegister_JvDBQueryParamsForm_Routines(Exec); // *)
   RIRegister_JvExControls(X);
   RIRegister_JvExControls_Routines(Exec);
  // RIRegister_JvBDEMemTable(X);    *)
@@ -5790,8 +5795,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_UBigIntsV4(X);
   RIRegister_UBigIntsV4_Routines(Exec);  //last 180
   RIRegister_UP10Build_Routines(Exec);
- (* RIRegister_IdModBusServer(X);
-  RIRegister_IdModBusClient(X);   *)
+  RIRegister_IdModBusServer(X); //*)
+  RIRegister_IdModBusClient(X);   //*)
   RIRegister_ModbusUtils_Routines(Exec);
   RIRegister_ColorGrd(X);
   RIRegister_DirOutln(X);
@@ -5806,8 +5811,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_VendorTestFramework(X);
   RIRegister_CTSVendorUtils(X);   //last 180_3
   RIRegister_JvAnimate(X);
- (* RIRegister_DBXCharDecoder(X);
-  RIRegister_JvDBLists(X);   *)
+  RIRegister_DBXCharDecoder(X);
+ // RIRegister_JvDBLists(X);   *)
   RIRegister_JvFileInfo(X);
   RIRegister_SOAPConn(X);
   RIRegister_SOAPLinked(X);  //*)
@@ -5860,7 +5865,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_CodeCompletion(X);
   RIRegister_U_IntList2(X);
  // RIRegister_SockAppNotify(X);
-  //RIRegister_NSToIS_Routines(Exec);
+ // RIRegister_NSToIS_Routines(Exec);
   //RIRegister_NSToIS(X);
   RIRegister_DBOleCtl(X);
   //RIRegister_xercesxmldom(X);  *)
@@ -5953,7 +5958,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_Tooltips(X);  //*)
   RIRegister_StringGridLibrary_Routines(exec);
   RIRegister_ChronCheck(X);
-  //RIRegister_REXX_Routines(exec);
+  RIRegister_REXX_Routines(exec);
   RIRegister_SysImg(X);
   RIRegister_SysImg_Routines(exec);
   RIRegister_Tokens(X);    //*)
@@ -6054,7 +6059,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_IdIPMCastBase(X);
   RIRegister_IdIPMCastServer(X);
   RIRegister_IdIPMCastClient(X);   //*)
- // RIRegister_IdRawHeaders(X);
+  //RIRegister_IdRawHeaders(X);
   RIRegister_IdRawClient(X);
   RIRegister_IdRawFunctions_Routines(Exec);
   RIRegister_IdTCPStream(X);
@@ -6451,7 +6456,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean860 mX514 Rheingold+++++ beta220!';
+   maxform1.Caption:= 'maXbox5 Ocean870 mX514 Rheingold+++++ beta225!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
