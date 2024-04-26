@@ -214,6 +214,7 @@
           13010   5.1.4.80 +XN Resource Editor , RSH Server, image Preview, BCD, PaC Analyzer, NavUtils
           13030   5.1.4.90 +OAuth O ,(@)GetGeoInfoMap5save, TBytes Viewer, bigfixing
           13035   5.1.4.95 SynCrtSock.pas, bigfixing, ALMultipartformdata , TIdMultiPartFormDataStream, modbus_indy10
+          13044   5.1.4.98 HTTPUtils , HttpComponent, TIdMultiPartFormDataStream, modbus_indy10_2, stringstream savetofile(stream)
 
   ************************************************************************************* }
 
@@ -265,9 +266,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.1.4.95';
+   MBVERSION = '5.1.4.98';
    MBVER = '514';              //for checking!
-   MBVER2 = '51495';              //for checking!
+   MBVER2 = '51498';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -1232,7 +1233,7 @@ uses
   uPSI_AsyncCalls,
   //uPSI_ParallelJobs,  AV Crash//*)
   uPSI_OAuth,  //mX51490
-  uPSI_Variants,       //olestream with IStream   regextest
+  uPSI_Variants,       //olestream with IStream   regextest  res functions parsejsonvalue2
   uPSI_VarCmplx,
   uPSI_DTDSchema, //*)
   uPSI_ShLwApi,
@@ -2492,6 +2493,8 @@ uses
   uPSI_NovusWebUtils,
   pacMAIN, pacscores,          //V50460
   uPSI_pacMain,
+  uPSI_HttpUtils,             //51498
+  uPSI_HttpClasses,
 
   //uPSI_IdNNTPServer,        //4.2.4.25  *)
   uPSI_UWANTUtils,
@@ -2769,6 +2772,9 @@ begin
    SIRegister_SysUtils(X);   //3.2   --> sysutils_max also unit down  , TBytes
   SIRegister_Pas2JSUtils(X);         //++
   SIRegister_pacMain(X);
+  SIRegister_HttpUtils(X);
+  SIRegister_HttpClasses(X);
+
   SIRegister_EInvalidArgument(x);
   SIRegister_MathMax(x);  //*)
  SIRegister_WideStrUtils(X);
@@ -4356,6 +4362,9 @@ begin
   RIRegister_StrUtils_Routines(exec);
   RIRegister_Pas2JSUtils_Routines(Exec);    //++
   RIRegister_pacMain(X);
+  RIRegister_HttpUtils_Routines(Exec);
+  RIRegister_HttpClasses(X);
+  RIRegister_HttpClasses_Routines(Exec);   //5.1.4.98
 
   RIRegister_MPlayer(X);
   RIRegister_ImgList(X);
@@ -6456,7 +6465,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean880 mX514 Rheingold+++++ beta230!';
+   maxform1.Caption:= 'maXbox5 Ocean890 mX514 Rheingold+++++ beta240!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
