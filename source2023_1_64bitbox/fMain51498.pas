@@ -215,6 +215,7 @@
           13030   5.1.4.90 +OAuth O ,(@)GetGeoInfoMap5save, TBytes Viewer, bigfixing
           13035   5.1.4.95 SynCrtSock.pas, bigfixing, ALMultipartformdata , TIdMultiPartFormDataStream, modbus_indy10
           13044   5.1.4.98 HTTPUtils , HttpComponent, TIdMultiPartFormDataStream, modbus_indy10_2, stringstream savetofile(stream)
+          13054   5.1.4.98 II XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap
 
   ************************************************************************************* }
 
@@ -1841,37 +1842,39 @@ uses
   uPSI_Joystick,  //*)
   uPSI_ScreenSaver,
   uPSI_XCollection,
-  //uPSI_Polynomials,   //*)
+  uPSI_Polynomials,   //*)
   uPSI_PersistentClasses, //9.86
- (* uPSI_XOpenGL,  *)
- //uPSI_VectorLists,
-  //uPSI_MeshUtils,  //  vector geo*)
+  uPSI_XOpenGL,  //*)
+  uPSI_VectorLists_,
+  uPSI_MeshUtils,  //  vector geo*)
   uPSI_JclSysUtils,
   uPSI_JclBorlandTools,
  uPSI_JclFileUtils_max,    //*)
   uPSI_AfDataControls,
- (* uPSI_GLSilhouette,
+ (* uPSI_GLSilhouette,  *)
   uPSI_VRMLParser,
-  uPSI_GLFileVRML, *)
-//  uPSI_Octree,
-  //uPSI_GLPolyhedron, //*)
+  uPSI_GLFileVRML, //*)
+  uPSI_Octree,
+  uPSI_GLPolyhedron, //*)
   uPSI_GLCrossPlatform,
  (* uPSI_GLParticles,
   uPSI_GLNavigator,
   uPSI_GLStarRecord,
   uPSI_GLCanvas, *)
- // uPSI_GeometryBB, *)
-  //uPSI_GeometryCoordinates,  //*)
-  //uPSI_VectorGeometry, *)
+  uPSI_GeometryBB, //*)
+  uPSI_GeometryCoordinates,  //*)
+  uPSI_VectorGeometry, //*)
+  uPSI_unitCharsetMap,
+  uPSI_XnClasses,                 //51498 II
   uPSI_TGA,
-  //uPSI_GLScriptPython;
+  uPSI_GLScriptPython,
   //uPSI_GLVectorFileObjects,  //3.9.9.88   *)
   uPSI_ButtonGroup,
   uPSI_CategoryButtons,
   //uPSI_DbExcept,
-  //gl_actorUnit1, // open gl demo for I := 0 to List.Count - 1 do   *)
+  gl_actorUnit1, // open gl demo for I := 0 to List.Count - 1 do   *)
   uPSI_AxCtrls,
- // uPSI_gl_actorUnit1,
+  uPSI_gl_actorUnit1,
   uPSI_StdVCL,     //only in^terfaces
   uPSI_DataAwareMain,  //3.9.9.88
   uPSI_TabNotBk, // *)
@@ -2118,14 +2121,14 @@ uses
   uPSI_JvFtpGrabber,    // *)
   uPSI_NeuralNetwork,
   uPSI_StExpr,
-  //panUnit1,      //panorama Viewer
+  panUnit1,      //panorama Viewer
  (* uPSI_GR32_Geometry,
   uPSI_GR32_Containers,
   uPSI_GR32_Backends_VCL,   *)
   uPSI_StSaturn,    //all other planets!
   uPSI_JclParseUses,
   uPSI_JvFinalize,    //3.9.9.120
- // uPSI_panUnit1,
+  uPSI_panUnit1,
   uPSI_DD83u1, //*)
   uPSI_BigIni, //*)
   uPSI_ShellCtrls,
@@ -3454,40 +3457,43 @@ begin
   SIRegister_ovccalc(X);
  (* SIRegister_Joystick(X);   *)
   SIRegister_ScreenSaver(X);
-  //SIRegister_Polynomials(X);
+  SIRegister_Polynomials(X);
   SIRegister_XCollection(X);
   //RIRegister_XCollection_Routines(Exec);  *)
   SIRegister_PersistentClasses(X);
   //SIRegister_DSUtil( X);
-(* SIRegister_XOpenGL(X);
+  SIRegister_XOpenGL(X);  //*)
   SIRegister_VectorLists(X);
-  SIRegister_MeshUtils(X);   *)
+  SIRegister_MeshUtils(X);   //*)
   SIRegister_JclBorlandTools(X); //3.9.9.86    *)
   SIRegister_JclFileUtils_max(X);
  // SIRegister_GLSilhouette(X);  *)
   SIRegister_changefind(X);
   SIRegister_cmdIntf(X);
   SIRegister_Keyboard(X);
- (* SIRegister_Octree(X);
+  SIRegister_Octree(X);   //*)
   SIRegister_VRMLParser(X);
-  SIRegister_GLFileVRML(X); *)
+  SIRegister_GLFileVRML(X); //*)
   SIRegister_GLCrossPlatform(X);
- (* SIRegister_GLPolyhedron(X);
-  SIRegister_GLParticles(X);
+  SIRegister_GLPolyhedron(X);
+ (* SIRegister_GLParticles(X);
   SIRegister_GLNavigator(X);
   SIRegister_GLStarRecord(X);
-  SIRegister_GLCanvas(X);
+  SIRegister_GLCanvas(X);  *)
   SIRegister_GeometryBB(X);
   SIRegister_GeometryCoordinates(X);
-  SIRegister_VectorGeometry(X);  *)
+  SIRegister_VectorGeometry(X);  //*)
+  SIRegister_unitCharsetMap(X);
+  SIRegister_XnClasses(X);
   SIRegister_TGA(X);
+  SIRegister_GLScriptPython(X);      //5.1.4.98 II
   //SIRegister_GLVectorFileObjects(X); //3.9.9.88   *)
   SIRegister_CategoryButtons(X);
   SIRegister_ButtonGroup(X);
  // SIRegister_DbExcept(X);  *)
   SIRegister_StdVCL(X);
   SIRegister_AxCtrls(X);
- (* SIRegister_gl_actorUnit1(X);  //3.9.9.88    *)
+  SIRegister_gl_actorUnit1(X);  //3.9.9.88    *)
   SIRegister_DataAwareMain(X);
   SIRegister_TabNotBk(X);
   SIRegister_udwsfiler(X);  //*)
@@ -3714,7 +3720,7 @@ SIRegister_cySearchFiles(X);
  SIRegister_StSaturn(X);
  SIRegister_JclParseUses(X);
  SIRegister_JvFinalize(X);     //3.9.9.120
-(* SIRegister_panUnit1(X);   *)
+ SIRegister_panUnit1(X);  //*)
  SIRegister_DD83u1(X);   //*)
  SIRegister_BigIni(X);  //*)
  SIRegister_ShellCtrls(X);
@@ -5392,15 +5398,15 @@ RIRegister_DXPUtils_Routines(Exec);
  (* RIRegister_Joystick(X);  *)
   RIRegister_ScreenSaver(X);
   RIRegister_ScreenSaver_Routines(Exec);
-  //RIRegister_Polynomials_Routines(Exec);
+  RIRegister_Polynomials_Routines(Exec);
   RIRegister_XCollection(X);
   RIRegister_XCollection_Routines(Exec);    // *)
   RIRegister_PersistentClasses(X);
 RIRegister_DSUtil_Routines(Exec);
-(*  RIRegister_XOpenGL_Routines(Exec);
+  RIRegister_XOpenGL_Routines(Exec);  //*)
   RIRegister_VectorLists_Routines(Exec);
   RIRegister_VectorLists(X);
-  RIRegister_MeshUtils_Routines(Exec);*)
+  RIRegister_MeshUtils_Routines(Exec);  //*)
   RIRegister_JclSysUtils(X);
   RIRegister_JclSysUtils_Routines(Exec);
   RIRegister_JclBorlandTools(X);
@@ -5412,18 +5418,22 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_changefind(X);
   RIRegister_cmdIntf(X);   //*)
   RIRegister_Keyboard_Routines(Exec);
- (* RIRegister_VRMLParser(X);
-  RIRegister_GLFileVRML(X);
-  RIRegister_Octree(X);    *)
+  RIRegister_VRMLParser(X);
+  RIRegister_GLFileVRML(X); //*)
+  RIRegister_Octree(X);    //*)
   RIRegister_GLCrossPlatform_Routines(eXec);
- (* RIRegister_GLPolyhedron(X);
-  RIRegister_GLParticles(X);
+  RIRegister_GLPolyhedron(X);
+ (* RIRegister_GLParticles(X);
   RIRegister_GLNavigator(X);
   RIRegister_GLStarRecord_Routines(eXec);
-  RIRegister_GLCanvas(X);
+  RIRegister_GLCanvas(X);    *)
   RIRegister_GeometryBB_Routines(eXec);
   RIRegister_GeometryCoordinates_Routines(eXec);
-  RIRegister_VectorGeometry_Routines(Exec);  *)
+  RIRegister_VectorGeometry_Routines(Exec);  //*)
+  RIRegister_unitCharsetMap_Routines(Exec);
+  RIRegister_unitCharsetMap(X);
+  RIRegister_XnClasses(X);
+  RIRegister_GLScriptPython(X);
   RIRegister_TGA(X);
  (* RIRegister_GLVectorFileObjects_Routines(Exec);
   RIRegister_GLVectorFileObjects(X);   //3.9.9.88     *)
@@ -5431,7 +5441,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_CategoryButtons(X);
  //RIRegister_DbExcept(X);  *)
   RIRegister_AxCtrls(X);
-  //RIRegister_gl_actorUnit1(X);  //3.9.9.88    *)
+  RIRegister_gl_actorUnit1(X);  //3.9.9.88    *)
   RIRegister_AxCtrls_Routines(Exec);
  RIRegister_DataAwareMain(X);
   RIRegister_TabNotBk(X);
@@ -5782,7 +5792,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_JclParseUses(X);
   RIRegister_JclParseUses_Routines(Exec);
   RIRegister_JvFinalize_Routines(Exec);  //3.9.9.120
- (* RIRegister_panUnit1(X);    *)
+  RIRegister_panUnit1(X);   //*)
   RIRegister_DD83u1(X);   //*)
   RIRegister_BigIni(X);
   RIRegister_BigIni_Routines(Exec);   //*)
@@ -6465,7 +6475,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean890 mX514 Rheingold+++++ beta240!';
+   maxform1.Caption:= 'maXbox5 Ocean900 mX514 Rheingold+++++ beta250!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -11034,8 +11044,8 @@ end;
 procedure Tmaxform1.PANView1Click(Sender: TObject);
 begin
  //start the pan view
-   //panForm1:= TpanForm1.Create(self);
-  {try
+   panForm1:= TpanForm1.Create(self);
+  try
     panForm1.Cursor:= CRHandpoint;
     if fileExists(ExtractFilePath(ParamStr(0))+'\examples\sejour2048.jpg') then
       panForm1.GLMaterialLibrary1.Materials[0].Material.Texture.Image.LoadFromFile(ExtractFilePath(ParamStr(0))+'\examples\sejour2048.jpg');
@@ -11045,7 +11055,7 @@ begin
    finally
     panForm1.Cursor:= CRDefault;
     panForm1.Free;
-  end;  }
+  end;  //}
 end;
 
 function Tmaxform1.ParseMacros(Str: String): String;
@@ -12569,7 +12579,7 @@ begin
  {if ShellExecute(0,'open','Actor.exe',PChar(ExePath+'\exercices\model'),
             PChar(ExePath+'\exercices\'),SW_SHOWNORMAL) <= 32 then
     showMessage('No OPen GL Exercices\Model Path found...');}
- { if DirectoryExists(ExePath+'exercices\model\') then begin
+  if DirectoryExists(ExePath+'exercices\model\') then begin
   glActorForm1:= TglActorForm1.Create(self);
   try
     glActorForm1.Cursor:= CRHandpoint;
@@ -12580,7 +12590,7 @@ begin
     glActorForm1.Free;
   end;
    end else
-    showMessage('No ..\exercices\model\*.* Data found..., please copy');  }
+    showMessage('No ..\exercices\model\*.* Data found..., please copy');  //}
 end;
 
 procedure Tmaxform1.OrangeStyle1Click(Sender: TObject);
