@@ -215,7 +215,7 @@
           13030   5.1.4.90 +OAuth O ,(@)GetGeoInfoMap5save, TBytes Viewer, bigfixing
           13035   5.1.4.95 SynCrtSock.pas, bigfixing, ALMultipartformdata , TIdMultiPartFormDataStream, modbus_indy10
           13044   5.1.4.98 HTTPUtils , HttpComponent, TIdMultiPartFormDataStream, modbus_indy10_2, stringstream savetofile(stream)
-          13054   5.1.4.98 IV XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX
+          13055   5.1.4.98 IV XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX, MySQL
 
   ************************************************************************************* }
 
@@ -1770,7 +1770,7 @@ uses
  uPSI_ALWinHttpClient,
   uPSI_ALFcnWinSock,
   //uPSI_ALFcnSQL,   *)
-  //uPSI_ALFcnCGI,  //*)
+  uPSI_ALFcnCGI,  //*)
   uPSI_ALFcnExecute,  //*)
   uPSI_ALHttpClient2,          //PostUrlEncoded0, PostUrlEncoded1
 
@@ -1815,10 +1815,10 @@ uses
   uPSI_ovcclock,
   uPSI_o32intlst,
   uPSI_o32ledlabel,
- (* uPSI_AlMySqlClient,   *)
+  uPSI_AlMySqlClient,  // V 5.1.4.98 V//*)
   uPSI_ALFBXLib,
   uPSI_ALFBXClient,
-  //uPSI_ALFcnSQL,
+  uPSI_ALFcnSQL,
   uPSI_AsyncTimer,
   uPSI_ApplicationFileIO,  //9.85  *)
   uPSI_PsAPI,      //processmemory , createprocess, exitthread  , addspeed
@@ -3393,9 +3393,9 @@ begin
   SIRegister_ALWinHttpClient(X);
   SIRegister_ALFcnWinSock(X);
   SIRegister_ALIsapiHTTP(X);    //4.7.1.80
-  //SIRegister_ALFcnSQL(X);  *)
+  SIRegister_ALFcnSQL(X);  //  5.1.4.98 V*)
   SIRegister_ALFcnHTML(X);
-//  SIRegister_ALFcnCGI(X);  *)
+  SIRegister_ALFcnCGI(X);  // 5.1.4.98 V**)
 
   SIRegister_ALFcnExecute(X);
   SIRegister_ALFcnFile(X);
@@ -3440,9 +3440,9 @@ begin
   SIRegister_ovcclock(x);
   SIRegister_o32intlst(x);
   SIRegister_ALFBXLib(X);
-  //SIRegister_AlMySqlClient(X);
+  SIRegister_AlMySqlClient(X);
   SIRegister_ALFBXClient(X);
- // SIRegister_ALFcnSQL(X);     *)
+  //SIRegister_ALFcnSQL(X);     redeclare//*)
   SIRegister_AsyncTimer(X);  //*)
   SIRegister_ApplicationFileIO(X);  //*)
   SIRegister_ovcmeter(X);
@@ -5314,13 +5314,13 @@ begin
   RIRegister_ALWinInetFTPClient(X);  //*)
   RIRegister_ALWinHttpWrapper_Routines(eXec);
   RIRegister_ALWinHttpClient(X);
-  //RIRegister_ALFcnSQL(X);
+  RIRegister_ALFcnSQL(X);
   RIRegister_ALFcnWinSock_Routines(Exec);   //*)
   RIRegister_ALFcnHTML_Routines(Exec);
   RIRegister_ALIsapiHTTP_Routines(Exec);
   RIRegister_ALIsapiHTTP(X);
 
-  //RIRegister_ALFcnCGI_Routines(Exec);  *)
+  RIRegister_ALFcnCGI_Routines(Exec); // 5.1.4.98 V* *)
   RIRegister_ALFcnExecute_Routines(Exec);
   RIRegister_ALFcnFile_Routines(Exec);
   RIRegister_ALFcnMime_Routines(Exec);
@@ -5370,10 +5370,10 @@ begin
   RIRegister_ovcclock(x);
   RIRegister_o32intlst(x);
   RIRegister_o32ledlabel(X);
-  (*RIRegister_AlMySqlClient(X);
-  RIRegister_AlMySqlClient_Routines(Exec);  *)
+  RIRegister_AlMySqlClient(X);
+  RIRegister_AlMySqlClient_Routines(Exec); // V5.1.4.98 V *)
   RIRegister_ALFBXClient(X);
-  //RIRegister_ALFcnSQL(X);   *)
+  //RIRegister_ALFcnSQL(X);   redeclare*)
   RIRegister_AsyncTimer(X);  //*)
   RIRegister_ApplicationFileIO(X);
   RIRegister_ApplicationFileIO_Routines(Exec);
@@ -13050,5 +13050,6 @@ end;
   //TVC_RedistVersion = (VC_Redist2013X86, VC_Redist2013X64, VC_Redist2019X64);
   //RIRegister_ALHttpClient2_Routines(S: TPSExec);
   //https://github.com/DeveloppeurPascal/Delphi-samples
+  //https://github.com/MagicFoundation/Alcinoe/blob/master/Source/Alcinoe.CGI.pas
 
 End.

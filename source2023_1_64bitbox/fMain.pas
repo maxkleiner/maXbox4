@@ -215,7 +215,7 @@
           13030   5.1.4.90 +OAuth O ,(@)GetGeoInfoMap5save, TBytes Viewer, bigfixing
           13035   5.1.4.95 SynCrtSock.pas, bigfixing, ALMultipartformdata , TIdMultiPartFormDataStream, modbus_indy10
           13044   5.1.4.98 HTTPUtils , HttpComponent, TIdMultiPartFormDataStream, modbus_indy10_2, stringstream savetofile(stream)
-          13054   5.1.4.98 II XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap
+          13055   5.1.4.98 IV XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX, MySQL
 
   ************************************************************************************* }
 
@@ -917,7 +917,7 @@ type
     procedure TaskMgr1Click(Sender: TObject);
     procedure WebCam1Click(Sender: TObject);
     procedure Tutorial31Closure1Click(Sender: TObject);
-    procedure GEOMapView1Click(Sender: TObject);                                      //    webspider
+    procedure GEOMapView1Click(Sender: TObject);                 //    webspider
     procedure Run1Click(Sender: TObject);
     procedure GPSSatView1Click(Sender: TObject);
     procedure N3DLab1Click(Sender: TObject);
@@ -1091,7 +1091,7 @@ uses
   uPSR_forms,
   uPSC_forms,
   uPSI_Types, //3.5+3.6  dword-longword
-  uPSC_graphics,
+  uPSC_graphics,          //canvas
   uPSC_controls_orig,   //tcontrol & twincontrol thackclass
   //uPSC_classes,
   //uPSR_classes,
@@ -1416,7 +1416,7 @@ uses
   ShellZipTool, //numprocessthreads
   uPSI_JvJoystick,
   uPSI_JvMailSlots,
- // uPSI_JclComplex,  *)
+  uPSI_JclComplex,  //*)
   uPSI_SynPdf,          //3.9.8.8
   uPSI_Registry,
  uPSI_TlHelp32,
@@ -1758,7 +1758,7 @@ uses
   uPSI_ALMultiPartAlternativeParser,  //*)
   uPSI_ALHttpCommon,
   uPSI_ALHttpClient,
-  //uPSI_ALWebSpider,
+  uPSI_ALWebSpider,
   //uPSI_ALHttpClient,  redelare
   uPSI_ALFcnHTML,  //*)
   uPSI_ALFTPClient,
@@ -1770,7 +1770,7 @@ uses
  uPSI_ALWinHttpClient,
   uPSI_ALFcnWinSock,
   //uPSI_ALFcnSQL,   *)
-  //uPSI_ALFcnCGI,  //*)
+  uPSI_ALFcnCGI,  //*)
   uPSI_ALFcnExecute,  //*)
   uPSI_ALHttpClient2,          //PostUrlEncoded0, PostUrlEncoded1
 
@@ -1815,10 +1815,10 @@ uses
   uPSI_ovcclock,
   uPSI_o32intlst,
   uPSI_o32ledlabel,
- (* uPSI_AlMySqlClient,   *)
- // uPSI_ALFBXLib,
- // uPSI_ALFBXClient,
-  //uPSI_ALFcnSQL,
+  uPSI_AlMySqlClient,  // V 5.1.4.98 V//*)
+  uPSI_ALFBXLib,
+  uPSI_ALFBXClient,
+  uPSI_ALFcnSQL,
   uPSI_AsyncTimer,
   uPSI_ApplicationFileIO,  //9.85  *)
   uPSI_PsAPI,      //processmemory , createprocess, exitthread  , addspeed
@@ -1851,16 +1851,16 @@ uses
   uPSI_JclBorlandTools,
  uPSI_JclFileUtils_max,    //*)
   uPSI_AfDataControls,
- (* uPSI_GLSilhouette,  *)
+  uPSI_GLSilhouette, // *)
   uPSI_VRMLParser,
   uPSI_GLFileVRML, //*)
   uPSI_Octree,
   uPSI_GLPolyhedron, //*)
   uPSI_GLCrossPlatform,
- (* uPSI_GLParticles,
+  uPSI_GLParticles,  //*)
   uPSI_GLNavigator,
-  uPSI_GLStarRecord,
-  uPSI_GLCanvas, *)
+  uPSI_GLStarRecord, //*)
+  uPSI_GLCanvas, //*)
   uPSI_GeometryBB, //*)
   uPSI_GeometryCoordinates,  //*)
   uPSI_VectorGeometry, //*)
@@ -3113,7 +3113,7 @@ begin
   SIRegister_ShellZipTool(X);
  SIRegister_JvJoystick(X);
   SIRegister_JvMailSlots(X);
-//  SIRegister_JclComplex(X);   *)
+  SIRegister_JclComplex(X);  // *)
   SIRegister_SynPdf(X);
   SIRegister_JvAirBrush(X);   //*)
   SIRegister_mORMotReport(X);    //*)
@@ -3383,7 +3383,7 @@ begin
   SIRegister_ALMultiPartAlternativeParser(X);  //*)
   SIRegister_ALHttpCommon(X);
   SIRegister_ALHttpClient(X);
-  //SIRegister_ALWebSpider(X);
+  SIRegister_ALWebSpider(X);
   //SIRegister_ALHttpClient(X);
   SIRegister_ALFTPClient(X);
   SIRegister_ALInternetMessageCommon(X);
@@ -3393,9 +3393,9 @@ begin
   SIRegister_ALWinHttpClient(X);
   SIRegister_ALFcnWinSock(X);
   SIRegister_ALIsapiHTTP(X);    //4.7.1.80
-  //SIRegister_ALFcnSQL(X);  *)
+  SIRegister_ALFcnSQL(X);  //  5.1.4.98 V*)
   SIRegister_ALFcnHTML(X);
-//  SIRegister_ALFcnCGI(X);  *)
+  SIRegister_ALFcnCGI(X);  // 5.1.4.98 V**)
 
   SIRegister_ALFcnExecute(X);
   SIRegister_ALFcnFile(X);
@@ -3439,10 +3439,10 @@ begin
   SIRegister_o32ledlabel(X);
   SIRegister_ovcclock(x);
   SIRegister_o32intlst(x);
- (* SIRegister_ALFBXLib(X);
+  SIRegister_ALFBXLib(X);
   SIRegister_AlMySqlClient(X);
   SIRegister_ALFBXClient(X);
-  SIRegister_ALFcnSQL(X);     *)
+  //SIRegister_ALFcnSQL(X);     redeclare//*)
   SIRegister_AsyncTimer(X);  //*)
   SIRegister_ApplicationFileIO(X);  //*)
   SIRegister_ovcmeter(X);
@@ -3467,7 +3467,7 @@ begin
   SIRegister_MeshUtils(X);   //*)
   SIRegister_JclBorlandTools(X); //3.9.9.86    *)
   SIRegister_JclFileUtils_max(X);
- // SIRegister_GLSilhouette(X);  *)
+   SIRegister_GLSilhouette(X);  //*)
   SIRegister_changefind(X);
   SIRegister_cmdIntf(X);
   SIRegister_Keyboard(X);
@@ -3476,10 +3476,10 @@ begin
   SIRegister_GLFileVRML(X); //*)
   SIRegister_GLCrossPlatform(X);
   SIRegister_GLPolyhedron(X);
- (* SIRegister_GLParticles(X);
+  SIRegister_GLParticles(X);   //*)
   SIRegister_GLNavigator(X);
-  SIRegister_GLStarRecord(X);
-  SIRegister_GLCanvas(X);  *)
+  SIRegister_GLStarRecord(X);  //*)
+  SIRegister_GLCanvas(X);  //*)
   SIRegister_GeometryBB(X);
   SIRegister_GeometryCoordinates(X);
   SIRegister_VectorGeometry(X);  //*)
@@ -4818,7 +4818,7 @@ begin
   RIRegister_ShellZipTool(X);
   RIRegister_JvJoystick(X);
   RIRegister_JvMailSlots(X);
-//  RIRegister_JclComplex(X);   *)
+  RIRegister_JclComplex(X);   //*)
   RIRegister_SynPdf(X);
   RIRegister_SynPdf_Routines(Exec);
   RIRegister_JvAirBrush(X);   //*)
@@ -5304,8 +5304,8 @@ begin
   RIRegister_ALMultiPartFormDataParser(X);      //*)
   RIRegister_ALHttpCommon(X);
   RIRegister_ALHttpCommon_Routines(Exec);
-  //RIRegister_ALWebSpider(X);
-(*  RIRegister_TAlTrivialWebSpider_Routines(Exec);    //4.7.1.82   *)
+  RIRegister_ALWebSpider(X);
+  RIRegister_TAlTrivialWebSpider_Routines(Exec);    //4.7.1.82   *)
   RIRegister_ALHttpClient(X);
   RIRegister_ALFTPClient(X);
  RIRegister_ALInternetMessageCommon(X);
@@ -5314,13 +5314,13 @@ begin
   RIRegister_ALWinInetFTPClient(X);  //*)
   RIRegister_ALWinHttpWrapper_Routines(eXec);
   RIRegister_ALWinHttpClient(X);
-  //RIRegister_ALFcnSQL(X);
+  RIRegister_ALFcnSQL(X);
   RIRegister_ALFcnWinSock_Routines(Exec);   //*)
   RIRegister_ALFcnHTML_Routines(Exec);
   RIRegister_ALIsapiHTTP_Routines(Exec);
   RIRegister_ALIsapiHTTP(X);
 
-  //RIRegister_ALFcnCGI_Routines(Exec);  *)
+  RIRegister_ALFcnCGI_Routines(Exec); // 5.1.4.98 V* *)
   RIRegister_ALFcnExecute_Routines(Exec);
   RIRegister_ALFcnFile_Routines(Exec);
   RIRegister_ALFcnMime_Routines(Exec);
@@ -5370,10 +5370,10 @@ begin
   RIRegister_ovcclock(x);
   RIRegister_o32intlst(x);
   RIRegister_o32ledlabel(X);
-  (*RIRegister_AlMySqlClient(X);
-  RIRegister_AlMySqlClient_Routines(Exec);
+  RIRegister_AlMySqlClient(X);
+  RIRegister_AlMySqlClient_Routines(Exec); // V5.1.4.98 V *)
   RIRegister_ALFBXClient(X);
-  RIRegister_ALFcnSQL(X);   *)
+  //RIRegister_ALFcnSQL(X);   redeclare*)
   RIRegister_AsyncTimer(X);  //*)
   RIRegister_ApplicationFileIO(X);
   RIRegister_ApplicationFileIO_Routines(Exec);
@@ -5382,8 +5382,8 @@ begin
   RIRegister_ovcuser(X);
  (* RIRegister_ovcvlb(X);   *)
   RIRegister_ovccolor(X);
- (* RIRegister_ALFBXLib(X);
-  RIRegister_ALFBXLib_Routines(Exec);      *)
+  RIRegister_ALFBXLib(X);
+  RIRegister_ALFBXLib_Routines(Exec);      //*)
   RIRegister_ovcmeter(X);
   RIRegister_ovcpeakm(X);
   RIRegister_ovcBidi_Routines(EXec);
@@ -5414,7 +5414,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_JclFileUtils_max_Routines(Exec);
   RIRegister_JclFileUtils_max(X);   //*)
   RIRegister_AfDataControls(X);
- (* RIRegister_GLSilhouette(X);   *)
+  RIRegister_GLSilhouette(X);  // *)
   RIRegister_changefind(X);
   RIRegister_cmdIntf(X);   //*)
   RIRegister_Keyboard_Routines(Exec);
@@ -5423,10 +5423,10 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_Octree(X);    //*)
   RIRegister_GLCrossPlatform_Routines(eXec);
   RIRegister_GLPolyhedron(X);
- (* RIRegister_GLParticles(X);
+   RIRegister_GLParticles(X); //*)
   RIRegister_GLNavigator(X);
-  RIRegister_GLStarRecord_Routines(eXec);
-  RIRegister_GLCanvas(X);    *)
+  RIRegister_GLStarRecord_Routines(eXec);  //*)
+  RIRegister_GLCanvas(X);    //*)
   RIRegister_GeometryBB_Routines(eXec);
   RIRegister_GeometryCoordinates_Routines(eXec);
   RIRegister_VectorGeometry_Routines(Exec);  //*)
@@ -6475,7 +6475,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean900 mX514 Rheingold+++++ beta250!';
+   maxform1.Caption:= 'maXbox5 Ocean920 mX514 Rheingold+++++ beta280!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -13050,5 +13050,6 @@ end;
   //TVC_RedistVersion = (VC_Redist2013X86, VC_Redist2013X64, VC_Redist2019X64);
   //RIRegister_ALHttpClient2_Routines(S: TPSExec);
   //https://github.com/DeveloppeurPascal/Delphi-samples
+  //https://github.com/MagicFoundation/Alcinoe/blob/master/Source/Alcinoe.CGI.pas
 
 End.
