@@ -191,8 +191,15 @@
           12275   4.7.6.10 IX unit ALHttpClient2 ils    OpenAPI Extensions for EKON26  ALWininetHttpClient2
           12280   4.7.6.10 X unit unit uPSI_RestUtils;   TEEChart extensions , WGet3()
           12298   4.7.6.20 bugfixing teEngine, tecanvas , PSResources TFEditorBuildRegFuncList(Sender: TPSScript);
-            try   5.0.1.10  could not run - alpha state
-          12481   5.0.1.11 first time 24/08/2023 double compile - py64 test
+          12312   4.7.6.20 V bugfixing teEngine, TChart , neuralfit, INet, elevated support, webpostdata2, synCrtSock;
+          12316   4.7.6.20 VIII httpsender - uPSI_HttpConnection;, interface support RESt client
+          12320   4.7.6.20 IX restclient, jsonconverter, jazzsound, superobject
+          12410   4.7.6.50 I internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core  -superobject
+          12414   4.7.6.50 II internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core  -superobject
+          12420   4.7.6.50 III internals  - TJvCreateProcess2 - syscomp  -  -superobject fix teebar jpeg res ocean330
+          12430   4.7.6.50 IV collusive outcome, TExporter , SIRegister_uExporterDestinationCSV, TRexporter
+          - try   5.0.1.10  could not run - pre alpha state  - 20.8.2023
+          12481   5.0.1.11 first time 24/08/2023 double compile - py64 test passed!!
           12506   5.0.1.12 re register and import std, stdctrsl, classes, forms & graphics, bccompatible
           12518   5.0.1.13 x64 string return works, create CreateOleObject and variant from IDispatch works
           12541   5.0.1.14 maxform1. reflection utf8decode for loadfile, umath, getwebscript, jvchart
@@ -215,7 +222,7 @@
           13030   5.1.4.90 +OAuth O ,(@)GetGeoInfoMap5save, TBytes Viewer, bigfixing
           13035   5.1.4.95 SynCrtSock.pas, bigfixing, ALMultipartformdata , TIdMultiPartFormDataStream, modbus_indy10
           13044   5.1.4.98 HTTPUtils , HttpComponent, TIdMultiPartFormDataStream, modbus_indy10_2, stringstream savetofile(stream)
-          13055   5.1.4.98 IV XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX, MySQL
+          13070   5.1.4.98 VII XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX, MySQL
 
   ************************************************************************************* }
 
@@ -1433,7 +1440,7 @@ uses
   //uPSI_JvXmlDatabase,  // redeclared *)
   uPSI_WinAPI,    //register simple upsi_windows
   uPSI_HyperLabel,
-
+  uPSI_hhAvALT,
   uPSI_MultilangTranslator,
   //uPSI_TomDBQue,   *)
   uPSI_Starter,
@@ -1966,7 +1973,7 @@ uses
   uPSI_WinSvc2,   //*)
   uPSI_SvcMgr,
  uPSI_JvPickDate,
- //uPSI_JvNotify,     errors
+  //uPSI_JvNotify,     errors
   uPSI_JvStrHlder,   //*)
   uPSI_JclNTFS2,
   uPSI_Jcl8087, //3.9.9.94_3
@@ -2220,6 +2227,8 @@ uses
   uPSI_SynEditAutoComplete,
   //uPSI_SynEditTextBuffer,
   uPSI_JclPCRE,
+  uPSI_JclPCRE2,
+  uPSI_GpTimezone,
   //uPSI_ZConnection,
   //uPSI_ZSequence, *)
   chessPrg,
@@ -2230,7 +2239,7 @@ uses
   uPSI_RegUtils,  //*)
   uPSI_StdFuncs,      // wrong iintit   - missing comp
   uPSI_VariantRtn,
-  //uPSI_SqlTxtRtns,    //*)
+  uPSI_SqlTxtRtns,    //*)
   uPSI_BSpectrum,
  uPSI_IPAddressControl,
   uPSI_Paradox,  //*)
@@ -3215,6 +3224,7 @@ begin
   SIRegister_StBits(X);    //*)
   SIRegister_MultilangTranslator(X);
  SIRegister_HyperLabel(X);
+ SIRegister_hhAvALT(X);
   //SIRegister_TomDBQue(X);
   SIRegister_Starter(X);
   SIRegister_FileAssocs(X);
@@ -3312,8 +3322,7 @@ begin
   SIRegister_IdBlockCipherIntercept(X);
   //SIRegister_IdFTPList(X);                //4.2.5.10   *)
   SIRegister_IdCoderHeader(X);
-  (*
-  SIRegister_IdFTPServer(X);  *)
+  (* SIRegister_IdFTPServer(X);  *)
   SIRegister_IdFingerServer(X);    //*)
   SIRegister_StNet(X);
   SIRegister_StNetPfm(X);
@@ -3808,6 +3817,8 @@ SIRegister_cySearchFiles(X);
   //SIRegister_SynEditTextBuffer(X);
   SIRegister_JclPCRE(X);
   //RIRegister_JclPCRE_Routines(Exec);  *)
+  SIRegister_JclPCRE2(X);
+  SIRegister_GpTimezone(X);
   SIRegister_ChessBrd(X);
   SIRegister_ChessPrg(X);
   SIRegister_Graph3D(X);   //*)
@@ -3815,7 +3826,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_StdFuncs(X);   //this whole shot shit!è
   SIRegister_RegUtils(X);
   SIRegister_VariantRtn(X);
-// SIRegister_SqlTxtRtns(X);    //*)
+  SIRegister_SqlTxtRtns(X);    //*)
   SIRegister_BSpectrum(X);
   SIRegister_IPAddressControl(X);  //*)
   SIRegister_Paradox(X);
@@ -5004,6 +5015,7 @@ begin
   RIRegister_MultilangTranslator(X);
   RIRegister_HyperLabel(X);
  (* RIRegister_TomDBQue(X);    *)
+  RIRegister_hhAvALT(X);
   RIRegister_Starter(X);
   RIRegister_FileAssocs_Routines(Exec);
   RIRegister_devFileMonitorX(X);  //*)
@@ -5080,7 +5092,6 @@ begin
   RIRegister_ValEdit(X);  //*)
   RIRegister_FMTBcd(X);
   RIRegister_FMTBcd_Routines(Exec);
-
   RIRegister_Provider_Routines(Exec); //3.6
   RIRegister_Provider(X); //*)
   RIRegister_DBClient_Routines(Exec);
@@ -5903,6 +5914,11 @@ RIRegister_DSUtil_Routines(Exec);
   //RIRegister_SynEditTextBuffer(X);
   RIRegister_JclPCRE(X);
   RIRegister_JclPCRE_Routines(Exec);   // *)
+  RIRegister_JclPCRE2(X);
+  RIRegister_JclPCRE2_Routines(Exec);   // *)
+  RIRegister_GpTimezone(X);
+  RIRegister_GpTimezone_Routines(Exec);
+
   RIRegister_ChessBrd(X);
   RIRegister_ChessPrg(X);    //Form
    RIRegister_Graph3D(X);
@@ -5912,7 +5928,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_StdFuncs_Routines(Exec);
   RIRegister_RegUtils_Routines(Exec);
   RIRegister_VariantRtn_Routines(Exec);
- // RIRegister_SqlTxtRtns_Routines(Exec); //*)
+  RIRegister_SqlTxtRtns_Routines(Exec); //*)
   RIRegister_BSpectrum(X);
  RIRegister_IPAddressControl(X);
   RIRegister_Paradox(X);
@@ -6475,7 +6491,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean920 mX514 Rheingold+++++ beta280!';
+   maxform1.Caption:= 'maXbox5 Ocean940 mX514 Rheingold+++++ beta300!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -13042,7 +13058,6 @@ end;
          RegisterPublishedProperties;}  //RIRegister_KMessageBox_Routines
    // CL.AddConstantN('MBVERSION','String').SetString('5.0.2.40');
    //https://github.com/maxkleiner/maXbox4/blob/master/fMain_47650.pas
-
    //unit SystemRegularExpressions2;  - unit uPSI_RegularExpressions;
    //  with CL.AddClassN(CL.FindClass('TObjectList'),'TKObjectList') do
    //{ CL.AddClassN(CL.FindClass('Class of TIdAuthentication'),'TIdAuthenticationClass');   //3.8
