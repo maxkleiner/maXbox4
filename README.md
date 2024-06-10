@@ -1,7 +1,12 @@
 # maXbox4
+# maXbox5
 byte-code compiler script studio
 *****************************************************************
 Release Notes maXbox 4.7.6.50 June 2023 mX476 Latest
+Release Notes maXbox 5.1.4.98 XI June 2024 mX514 beta64-bit uc25 XN Resource Editor🐞
+
+![GUI_2_Screenshot2024-06-09225630](https://github.com/maxkleiner/maXbox4/assets/3393121/28439532-4d12-463e-a95f-191c5248ae94)
+
 Add 54 Units + 14 Tutorials
 https://github.com/maxkleiner/maXbox4/releases/tag/V4.2.4.80
 *****************************************************************
