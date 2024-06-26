@@ -1,0 +1,4407 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="fMain">
+  <const name="BYTECODE" type="string">
+    <value>
+      bytecode.psb
+    </value>
+  </const>
+  <const name="PSTEXT" type="string">
+    <value>
+      PS Scriptfiles (*.txt;*.pas)|*.TXT;*.PAS
+    </value>
+  </const>
+  <const name="PSMODEL" type="string">
+    <value>
+      PS Modelfiles (*.uc)|*.UC
+    </value>
+  </const>
+  <const name="PSPASCAL" type="string">
+    <value>
+      PS Pascalfiles (*.pas)|*.PAS
+    </value>
+  </const>
+  <const name="PSINC" type="string">
+    <value>
+      PS Includes (*.inc)|*.INC
+    </value>
+  </const>
+  <const name="PSALL" type="string">
+    <value>
+      All files (*.*)|*.*
+    </value>
+  </const>
+  <const name="DEFFILENAME" type="string">
+    <value>
+      firstdemo.txt
+    </value>
+  </const>
+  <const name="DEFINIFILE" type="string">
+    <value>
+      maxboxdef.ini
+    </value>
+  </const>
+  <const name="FTD2XX" type="string">
+    <value>
+      ftd2xx.dll
+    </value>
+  </const>
+  <const name="EXCEPTLOGFILE" type="string">
+    <value>
+      maxboxerrorlog.txt
+    </value>
+  </const>
+  <const name="LOGFILE" type="string">
+    <value>
+      maxboxlog.log
+    </value>
+  </const>
+  <const name="ALLFUNCTIONSLIST" type="string">
+    <value>
+      upsi_allfunctionslist.txt
+    </value>
+  </const>
+  <const name="ALLFUNCTIONSLISTPDF" type="string">
+    <value>
+      maxbox_functions.pdf
+    </value>
+  </const>
+  <const name="ALLFUNCTIONSLISTWEB" type="string">
+    <value>
+      http://www.softwareschule.ch/maxbox_functions.txt
+    </value>
+  </const>
+  <const name="ALLOBJECTSLIST" type="string">
+    <value>
+      docs\VCL.pdf
+    </value>
+  </const>
+  <const name="ALLRESOURCELIST" type="string">
+    <value>
+      docs\upsi_allresourcelist.txt
+    </value>
+  </const>
+  <const name="ALLTYPELIST" type="string">
+    <value>
+      maxbox_types.pdf
+    </value>
+  </const>
+  <const name="ALLUNITLIST" type="string">
+    <value>
+      docs\maxbox4_0.xml
+    </value>
+  </const>
+  <const name="INCLUDEBOX" type="string">
+    <value>
+      pas_includebox.inc
+    </value>
+  </const>
+  <const name="BOOTSCRIPT" type="string">
+    <value>
+      maxbootscript.txt
+    </value>
+  </const>
+  <const name="MBVERSION" type="string">
+    <value>
+      4.7.6.20
+    </value>
+  </const>
+  <const name="MBVER" type="string">
+    <value>
+      476
+    </value>
+  </const>
+  <const name="MBVER2" type="string">
+    <value>
+      47620
+    </value>
+  </const>
+  <const name="EXENAME" type="string">
+    <value>
+      maXbox4.exe
+    </value>
+  </const>
+  <const name="MXSITE" type="string">
+    <value>
+      http://www.softwareschule.ch/maxbox.htm
+    </value>
+  </const>
+  <const name="MXVERSIONFILE" type="string">
+    <value>
+      http://www.softwareschule.ch/maxvfile.txt
+    </value>
+  </const>
+  <const name="MXVERSIONFILE2" type="string">
+    <value>
+      http://www.softwareschule.ch/maxvfile2.txt
+    </value>
+  </const>
+  <const name="MXINTERNETCHECK" type="string">
+    <value>
+      www.ask.com
+    </value>
+  </const>
+  <const name="MXMAIL" type="string">
+    <value>
+      max@kleiner.com
+    </value>
+  </const>
+  <const name="TAB" type="Char">
+    <value>
+      $9
+    </value>
+  </const>
+  <const name="CODECOMPLETION" type="string">
+    <value>
+      bds_delphi.dci
+    </value>
+  </const>
+  <const name="ENDSIGN" type="string">
+    <value>
+      end.
+    </value>
+  </const>
+  <class name="TMaxForm1">
+    <ancestor name="TForm" namespace="Forms">
+      <methodref name="ArrangeIcons" visibility="public">
+      </methodref>
+      <methodref name="Cascade" visibility="public">
+      </methodref>
+      <methodref name="Next" visibility="public">
+      </methodref>
+      <methodref name="Previous" visibility="public">
+      </methodref>
+      <methodref name="Tile" visibility="public">
+      </methodref>
+      <propertyref name="ActiveMDIChild" visibility="public">
+      </propertyref>
+      <propertyref name="ClientHandle" visibility="public">
+      </propertyref>
+      <propertyref name="DockManager" visibility="public">
+      </propertyref>
+      <propertyref name="MDIChildCount" visibility="public">
+      </propertyref>
+      <propertyref name="MDIChildren" visibility="public">
+      </propertyref>
+      <propertyref name="TileMode" visibility="public">
+      </propertyref>
+      <propertyref name="Action" visibility="published">
+      </propertyref>
+      <propertyref name="ActiveControl" visibility="published">
+      </propertyref>
+      <propertyref name="Align" visibility="published">
+      </propertyref>
+      <propertyref name="AlphaBlend" visibility="published">
+      </propertyref>
+      <propertyref name="AlphaBlendValue" visibility="published">
+      </propertyref>
+      <propertyref name="Anchors" visibility="published">
+      </propertyref>
+      <propertyref name="AutoScroll" visibility="published">
+      </propertyref>
+      <propertyref name="AutoSize" visibility="published">
+      </propertyref>
+      <propertyref name="BiDiMode" visibility="published">
+      </propertyref>
+      <propertyref name="BorderIcons" visibility="published">
+      </propertyref>
+      <propertyref name="BorderStyle" visibility="published">
+      </propertyref>
+      <propertyref name="BorderWidth" visibility="published">
+      </propertyref>
+      <propertyref name="Caption" visibility="published">
+      </propertyref>
+      <propertyref name="ClientHeight" visibility="published">
+      </propertyref>
+      <propertyref name="ClientWidth" visibility="published">
+      </propertyref>
+      <propertyref name="Color" visibility="published">
+      </propertyref>
+      <propertyref name="TransparentColor" visibility="published">
+      </propertyref>
+      <propertyref name="TransparentColorValue" visibility="published">
+      </propertyref>
+      <propertyref name="Constraints" visibility="published">
+      </propertyref>
+      <propertyref name="Ctl3D" visibility="published">
+      </propertyref>
+      <propertyref name="UseDockManager" visibility="published">
+      </propertyref>
+      <propertyref name="DefaultMonitor" visibility="published">
+      </propertyref>
+      <propertyref name="DockSite" visibility="published">
+      </propertyref>
+      <propertyref name="DragKind" visibility="published">
+      </propertyref>
+      <propertyref name="DragMode" visibility="published">
+      </propertyref>
+      <propertyref name="Enabled" visibility="published">
+      </propertyref>
+      <propertyref name="ParentFont" visibility="published">
+      </propertyref>
+      <propertyref name="Font" visibility="published">
+      </propertyref>
+      <propertyref name="FormStyle" visibility="published">
+      </propertyref>
+      <propertyref name="Height" visibility="published">
+      </propertyref>
+      <propertyref name="HelpFile" visibility="published">
+      </propertyref>
+      <propertyref name="HorzScrollBar" visibility="published">
+      </propertyref>
+      <propertyref name="Icon" visibility="published">
+      </propertyref>
+      <propertyref name="KeyPreview" visibility="published">
+      </propertyref>
+      <propertyref name="Padding" visibility="published">
+      </propertyref>
+      <propertyref name="Menu" visibility="published">
+      </propertyref>
+      <propertyref name="OldCreateOrder" visibility="published">
+      </propertyref>
+      <propertyref name="ObjectMenuItem" visibility="published">
+      </propertyref>
+      <propertyref name="ParentBiDiMode" visibility="published">
+      </propertyref>
+      <propertyref name="PixelsPerInch" visibility="published">
+      </propertyref>
+      <propertyref name="PopupMenu" visibility="published">
+      </propertyref>
+      <propertyref name="PopupMode" visibility="published">
+      </propertyref>
+      <propertyref name="PopupParent" visibility="published">
+      </propertyref>
+      <propertyref name="Position" visibility="published">
+      </propertyref>
+      <propertyref name="PrintScale" visibility="published">
+      </propertyref>
+      <propertyref name="Scaled" visibility="published">
+      </propertyref>
+      <propertyref name="ScreenSnap" visibility="published">
+      </propertyref>
+      <propertyref name="ShowHint" visibility="published">
+      </propertyref>
+      <propertyref name="SnapBuffer" visibility="published">
+      </propertyref>
+      <propertyref name="VertScrollBar" visibility="published">
+      </propertyref>
+      <propertyref name="Visible" visibility="published">
+      </propertyref>
+      <propertyref name="Width" visibility="published">
+      </propertyref>
+      <propertyref name="WindowState" visibility="published">
+      </propertyref>
+      <propertyref name="WindowMenu" visibility="published">
+      </propertyref>
+      <propertyref name="OnActivate" visibility="published">
+      </propertyref>
+      <propertyref name="OnAlignInsertBefore" visibility="published">
+      </propertyref>
+      <propertyref name="OnAlignPosition" visibility="published">
+      </propertyref>
+      <propertyref name="OnCanResize" visibility="published">
+      </propertyref>
+      <propertyref name="OnClick" visibility="published">
+      </propertyref>
+      <propertyref name="OnClose" visibility="published">
+      </propertyref>
+      <propertyref name="OnCloseQuery" visibility="published">
+      </propertyref>
+      <propertyref name="OnConstrainedResize" visibility="published">
+      </propertyref>
+      <propertyref name="OnContextPopup" visibility="published">
+      </propertyref>
+      <propertyref name="OnCreate" visibility="published">
+      </propertyref>
+      <propertyref name="OnDblClick" visibility="published">
+      </propertyref>
+      <propertyref name="OnDestroy" visibility="published">
+      </propertyref>
+      <propertyref name="OnDeactivate" visibility="published">
+      </propertyref>
+      <propertyref name="OnDockDrop" visibility="published">
+      </propertyref>
+      <propertyref name="OnDockOver" visibility="published">
+      </propertyref>
+      <propertyref name="OnDragDrop" visibility="published">
+      </propertyref>
+      <propertyref name="OnDragOver" visibility="published">
+      </propertyref>
+      <propertyref name="OnEndDock" visibility="published">
+      </propertyref>
+      <propertyref name="OnGetSiteInfo" visibility="published">
+      </propertyref>
+      <propertyref name="OnHide" visibility="published">
+      </propertyref>
+      <propertyref name="OnHelp" visibility="published">
+      </propertyref>
+      <propertyref name="OnKeyDown" visibility="published">
+      </propertyref>
+      <propertyref name="OnKeyPress" visibility="published">
+      </propertyref>
+      <propertyref name="OnKeyUp" visibility="published">
+      </propertyref>
+      <propertyref name="OnMouseActivate" visibility="published">
+      </propertyref>
+      <propertyref name="OnMouseDown" visibility="published">
+      </propertyref>
+      <propertyref name="OnMouseEnter" visibility="published">
+      </propertyref>
+      <propertyref name="OnMouseLeave" visibility="published">
+      </propertyref>
+      <propertyref name="OnMouseMove" visibility="published">
+      </propertyref>
+      <propertyref name="OnMouseUp" visibility="published">
+      </propertyref>
+      <propertyref name="OnMouseWheel" visibility="published">
+      </propertyref>
+      <propertyref name="OnMouseWheelDown" visibility="published">
+      </propertyref>
+      <propertyref name="OnMouseWheelUp" visibility="published">
+      </propertyref>
+      <propertyref name="OnPaint" visibility="published">
+      </propertyref>
+      <propertyref name="OnResize" visibility="published">
+      </propertyref>
+      <propertyref name="OnShortCut" visibility="published">
+      </propertyref>
+      <propertyref name="OnShow" visibility="published">
+      </propertyref>
+      <propertyref name="OnStartDock" visibility="published">
+      </propertyref>
+      <propertyref name="OnUnDock" visibility="published">
+      </propertyref>
+      <ancestor name="TCustomForm" namespace="Forms">
+        <methodref name="RefreshMDIMenu" visibility="private">
+        </methodref>
+        <methodref name="ClientWndProc" visibility="private">
+        </methodref>
+        <methodref name="GetActiveMDIChild" visibility="private">
+        </methodref>
+        <methodref name="GetCanvas" visibility="private">
+        </methodref>
+        <methodref name="GetIconHandle" visibility="private">
+        </methodref>
+        <methodref name="GetLeft" visibility="private">
+        </methodref>
+        <methodref name="GetMDIChildCount" visibility="private">
+        </methodref>
+        <methodref name="GetMDIChildren" visibility="private">
+        </methodref>
+        <methodref name="GetMonitor" visibility="private">
+        </methodref>
+        <methodref name="GetPixelsPerInch" visibility="private">
+        </methodref>
+        <methodref name="GetPopupChildren" visibility="private">
+        </methodref>
+        <methodref name="GetRecreateChildren" visibility="private">
+        </methodref>
+        <methodref name="GetScaled" visibility="private">
+        </methodref>
+        <methodref name="GetTextHeight" visibility="private">
+        </methodref>
+        <methodref name="GetTop" visibility="private">
+        </methodref>
+        <methodref name="IconChanged" visibility="private">
+        </methodref>
+        <methodref name="IsAutoScrollStored" visibility="private">
+        </methodref>
+        <methodref name="IsClientSizeStored" visibility="private">
+        </methodref>
+        <methodref name="IsForm" visibility="private">
+        </methodref>
+        <methodref name="IsFormSizeStored" visibility="private">
+        </methodref>
+        <methodref name="IsIconStored" visibility="private">
+        </methodref>
+        <methodref name="MergeMenu" visibility="private">
+        </methodref>
+        <methodref name="ReadIgnoreFontProperty" visibility="private">
+        </methodref>
+        <methodref name="ReadTextHeight" visibility="private">
+        </methodref>
+        <methodref name="SetActive" visibility="private">
+        </methodref>
+        <methodref name="SetActiveControl" visibility="private">
+        </methodref>
+        <methodref name="SetActiveOleControl" visibility="private">
+        </methodref>
+        <methodref name="SetBorderIcons" visibility="private">
+        </methodref>
+        <methodref name="SetBorderStyle" visibility="private">
+        </methodref>
+        <methodref name="SetClientHeight" visibility="private">
+        </methodref>
+        <methodref name="SetClientWidth" visibility="private">
+        </methodref>
+        <methodref name="SetDesigner" visibility="private">
+        </methodref>
+        <methodref name="SetFormStyle" visibility="private">
+        </methodref>
+        <methodref name="SetIcon" visibility="private">
+        </methodref>
+        <methodref name="SetLeft" visibility="private">
+        </methodref>
+        <methodref name="SetMenu" visibility="private">
+        </methodref>
+        <methodref name="SetPixelsPerInch" visibility="private">
+        </methodref>
+        <methodref name="SetPosition" visibility="private">
+        </methodref>
+        <methodref name="SetPopupMode" visibility="private">
+        </methodref>
+        <methodref name="SetPopupParent" visibility="private">
+        </methodref>
+        <methodref name="SetScaled" visibility="private">
+        </methodref>
+        <methodref name="SetTop" visibility="private">
+        </methodref>
+        <methodref name="SetVisible" visibility="private">
+        </methodref>
+        <methodref name="SetWindowFocus" visibility="private">
+        </methodref>
+        <methodref name="SetWindowMenu" visibility="private">
+        </methodref>
+        <methodref name="SetObjectMenuItem" visibility="private">
+        </methodref>
+        <methodref name="SetWindowState" visibility="private">
+        </methodref>
+        <methodref name="SetWindowToMonitor" visibility="private">
+        </methodref>
+        <methodref name="WritePixelsPerInch" visibility="private">
+        </methodref>
+        <methodref name="WriteTextHeight" visibility="private">
+        </methodref>
+        <methodref name="NormalColor" visibility="private">
+        </methodref>
+        <methodref name="WMPaint" visibility="public">
+        </methodref>
+        <methodref name="WMNCPaint" visibility="public">
+        </methodref>
+        <methodref name="WMEraseBkgnd" visibility="public">
+        </methodref>
+        <methodref name="WMIconEraseBkgnd" visibility="public">
+        </methodref>
+        <methodref name="WMQueryDragIcon" visibility="public">
+        </methodref>
+        <methodref name="WMNCCreate" visibility="public">
+        </methodref>
+        <methodref name="WMNCHitTest" visibility="public">
+        </methodref>
+        <methodref name="WMNCLButtonDown" visibility="public">
+        </methodref>
+        <methodref name="WMDestroy" visibility="public">
+        </methodref>
+        <methodref name="WMCommand" visibility="public">
+        </methodref>
+        <methodref name="WMInitMenuPopup" visibility="public">
+        </methodref>
+        <methodref name="WMMenuChar" visibility="public">
+        </methodref>
+        <methodref name="WMMenuSelect" visibility="public">
+        </methodref>
+        <methodref name="WMActivate" visibility="public">
+        </methodref>
+        <methodref name="WMClose" visibility="public">
+        </methodref>
+        <methodref name="WMQueryEndSession" visibility="public">
+        </methodref>
+        <methodref name="WMSysCommand" visibility="public">
+        </methodref>
+        <methodref name="WMShowWindow" visibility="public">
+        </methodref>
+        <methodref name="WMMDIActivate" visibility="public">
+        </methodref>
+        <methodref name="WMNextDlgCtl" visibility="public">
+        </methodref>
+        <methodref name="WMEnterMenuLoop" visibility="public">
+        </methodref>
+        <methodref name="WMHelp" visibility="public">
+        </methodref>
+        <methodref name="WMGetMinMaxInfo" visibility="public">
+        </methodref>
+        <methodref name="WMSettingChange" visibility="public">
+        </methodref>
+        <methodref name="WMWindowPosChanging" visibility="public">
+        </methodref>
+        <methodref name="WMNCCalcSize" visibility="public">
+        </methodref>
+        <methodref name="CMActionExecute" visibility="public">
+        </methodref>
+        <methodref name="CMActionUpdate" visibility="public">
+        </methodref>
+        <methodref name="CMActivate" visibility="public">
+        </methodref>
+        <methodref name="CMAppSysCommand" visibility="public">
+        </methodref>
+        <methodref name="CMBiDiModeChanged" visibility="public">
+        </methodref>
+        <methodref name="CMDeactivate" visibility="public">
+        </methodref>
+        <methodref name="CMDialogKey" visibility="public">
+        </methodref>
+        <methodref name="CMColorChanged" visibility="public">
+        </methodref>
+        <methodref name="CMCtl3DChanged" visibility="public">
+        </methodref>
+        <methodref name="CMFontChanged" visibility="public">
+        </methodref>
+        <methodref name="CMMenuChanged" visibility="public">
+        </methodref>
+        <methodref name="CMShowingChanged" visibility="public">
+        </methodref>
+        <methodref name="CMIconChanged" visibility="public">
+        </methodref>
+        <methodref name="CMRelease" visibility="public">
+        </methodref>
+        <methodref name="CMTextChanged" visibility="public">
+        </methodref>
+        <methodref name="CMUIActivate" visibility="public">
+        </methodref>
+        <methodref name="CMParentBiDiModeChanged" visibility="public">
+        </methodref>
+        <methodref name="CMParentFontChanged" visibility="public">
+        </methodref>
+        <methodref name="CMPopupHwndDestroy" visibility="public">
+        </methodref>
+        <methodref name="CMIsShortCut" visibility="public">
+        </methodref>
+        <methodref name="SetLayeredAttribs" visibility="private">
+        </methodref>
+        <methodref name="SetAlphaBlend" visibility="private">
+        </methodref>
+        <methodref name="SetAlphaBlendValue" visibility="private">
+        </methodref>
+        <methodref name="SetTransparentColor" visibility="private">
+        </methodref>
+        <methodref name="SetTransparentColorValue" visibility="private">
+        </methodref>
+        <methodref name="InitAlphaBlending" visibility="private">
+        </methodref>
+        <methodref name="Activate" visibility="protected">
+        </methodref>
+        <methodref name="ActiveChanged" visibility="protected">
+        </methodref>
+        <methodref name="AlignControls" visibility="public">
+        </methodref>
+        <methodref name="BeginAutoDrag" visibility="protected">
+        </methodref>
+        <methodref name="ChangeScale" visibility="protected">
+        </methodref>
+        <methodref name="CloseModal" visibility="protected">
+        </methodref>
+        <methodref name="CreateParams" visibility="public">
+        </methodref>
+        <methodref name="CreateWindowHandle" visibility="public">
+        </methodref>
+        <methodref name="CreateWnd" visibility="public">
+        </methodref>
+        <methodref name="Deactivate" visibility="protected">
+        </methodref>
+        <methodref name="DefineProperties" visibility="public">
+        </methodref>
+        <methodref name="DestroyHandle" visibility="public">
+        </methodref>
+        <methodref name="DestroyWindowHandle" visibility="public">
+        </methodref>
+        <methodref name="DoClose" visibility="protected">
+        </methodref>
+        <methodref name="DoCreate" visibility="public">
+        </methodref>
+        <methodref name="DoDestroy" visibility="public">
+        </methodref>
+        <methodref name="DoHide" visibility="protected">
+        </methodref>
+        <methodref name="DoShow" visibility="protected">
+        </methodref>
+        <methodref name="GetBorderIconStyles" visibility="protected">
+        </methodref>
+        <methodref name="GetBorderStyles" visibility="protected">
+        </methodref>
+        <methodref name="GetClientRect" visibility="public">
+        </methodref>
+        <methodref name="GetChildren" visibility="protected">
+        </methodref>
+        <methodref name="GetFloating" visibility="public">
+        </methodref>
+        <methodref name="GetOwnerWindow" visibility="protected">
+        </methodref>
+        <methodref name="HandleCreateException" visibility="protected">
+        </methodref>
+        <methodref name="Loaded" visibility="public">
+        </methodref>
+        <methodref name="Notification" visibility="public">
+        </methodref>
+        <methodref name="Paint" visibility="protected">
+        </methodref>
+        <methodref name="PaintWindow" visibility="public">
+        </methodref>
+        <methodref name="PaletteChanged" visibility="protected">
+        </methodref>
+        <methodref name="QueryInterface" visibility="public">
+        </methodref>
+        <methodref name="ReadState" visibility="public">
+        </methodref>
+        <methodref name="RequestAlign" visibility="public">
+        </methodref>
+        <methodref name="SetChildOrder" visibility="protected">
+        </methodref>
+        <methodref name="SetParentBiDiMode" visibility="public">
+        </methodref>
+        <methodref name="DoDock" visibility="protected">
+        </methodref>
+        <methodref name="SetParent" visibility="public">
+        </methodref>
+        <methodref name="UpdateActions" visibility="public">
+        </methodref>
+        <methodref name="UpdateWindowState" visibility="protected">
+        </methodref>
+        <methodref name="ValidateRename" visibility="public">
+        </methodref>
+        <methodref name="VisibleChanging" visibility="protected">
+        </methodref>
+        <methodref name="WndProc" visibility="public">
+        </methodref>
+        <methodref name="Resizing" visibility="public">
+        </methodref>
+        <propertyref name="ActiveMDIChild" visibility="protected">
+        </propertyref>
+        <propertyref name="AlphaBlend" visibility="protected">
+        </propertyref>
+        <propertyref name="AlphaBlendValue" visibility="protected">
+        </propertyref>
+        <propertyref name="BorderIcons" visibility="protected">
+        </propertyref>
+        <propertyref name="AutoScroll" visibility="protected">
+        </propertyref>
+        <propertyref name="ClientHandle" visibility="protected">
+        </propertyref>
+        <propertyref name="ClientHeight" visibility="protected">
+        </propertyref>
+        <propertyref name="ClientWidth" visibility="protected">
+        </propertyref>
+        <propertyref name="TransparentColor" visibility="protected">
+        </propertyref>
+        <propertyref name="TransparentColorValue" visibility="protected">
+        </propertyref>
+        <propertyref name="Ctl3D" visibility="protected">
+        </propertyref>
+        <propertyref name="DefaultMonitor" visibility="protected">
+        </propertyref>
+        <propertyref name="FormStyle" visibility="protected">
+        </propertyref>
+        <propertyref name="Height" visibility="protected">
+        </propertyref>
+        <propertyref name="HorzScrollBar" visibility="protected">
+        </propertyref>
+        <propertyref name="Icon" visibility="protected">
+        </propertyref>
+        <propertyref name="MDIChildCount" visibility="protected">
+        </propertyref>
+        <propertyref name="MDIChildren" visibility="protected">
+        </propertyref>
+        <propertyref name="OldCreateOrder" visibility="protected">
+        </propertyref>
+        <propertyref name="ObjectMenuItem" visibility="protected">
+        </propertyref>
+        <propertyref name="PixelsPerInch" visibility="protected">
+        </propertyref>
+        <propertyref name="ParentFont" visibility="protected">
+        </propertyref>
+        <propertyref name="PopupMenu" visibility="protected">
+        </propertyref>
+        <propertyref name="PopupChildren" visibility="protected">
+        </propertyref>
+        <propertyref name="Position" visibility="protected">
+        </propertyref>
+        <propertyref name="PrintScale" visibility="protected">
+        </propertyref>
+        <propertyref name="Scaled" visibility="protected">
+        </propertyref>
+        <propertyref name="TileMode" visibility="protected">
+        </propertyref>
+        <propertyref name="VertScrollBar" visibility="protected">
+        </propertyref>
+        <propertyref name="Visible" visibility="protected">
+        </propertyref>
+        <propertyref name="Width" visibility="protected">
+        </propertyref>
+        <propertyref name="WindowMenu" visibility="protected">
+        </propertyref>
+        <eventref name="OnActivate" visibility="protected">
+        </eventref>
+        <propertyref name="OnCanResize" visibility="protected">
+        </propertyref>
+        <propertyref name="OnClick" visibility="protected">
+        </propertyref>
+        <eventref name="OnClose" visibility="protected">
+        </eventref>
+        <eventref name="OnCloseQuery" visibility="protected">
+        </eventref>
+        <eventref name="OnCreate" visibility="protected">
+        </eventref>
+        <propertyref name="OnDblClick" visibility="protected">
+        </propertyref>
+        <eventref name="OnDestroy" visibility="protected">
+        </eventref>
+        <eventref name="OnDeactivate" visibility="protected">
+        </eventref>
+        <propertyref name="OnDragDrop" visibility="protected">
+        </propertyref>
+        <propertyref name="OnDragOver" visibility="protected">
+        </propertyref>
+        <eventref name="OnHelp" visibility="protected">
+        </eventref>
+        <eventref name="OnHide" visibility="protected">
+        </eventref>
+        <propertyref name="OnKeyDown" visibility="protected">
+        </propertyref>
+        <propertyref name="OnKeyPress" visibility="protected">
+        </propertyref>
+        <propertyref name="OnKeyUp" visibility="protected">
+        </propertyref>
+        <propertyref name="OnMouseActivate" visibility="protected">
+        </propertyref>
+        <propertyref name="OnMouseDown" visibility="protected">
+        </propertyref>
+        <propertyref name="OnMouseMove" visibility="protected">
+        </propertyref>
+        <propertyref name="OnMouseUp" visibility="protected">
+        </propertyref>
+        <eventref name="OnPaint" visibility="protected">
+        </eventref>
+        <propertyref name="OnResize" visibility="protected">
+        </propertyref>
+        <eventref name="OnShortCut" visibility="protected">
+        </eventref>
+        <eventref name="OnShow" visibility="protected">
+        </eventref>
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="CreateNew" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Close" visibility="public">
+        </methodref>
+        <methodref name="CloseQuery" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="DefocusControl" visibility="public">
+        </methodref>
+        <methodref name="Dock" visibility="public">
+        </methodref>
+        <methodref name="FocusControl" visibility="public">
+        </methodref>
+        <methodref name="GetFormImage" visibility="public">
+        </methodref>
+        <methodref name="Hide" visibility="public">
+        </methodref>
+        <methodref name="IsShortCut" visibility="public">
+        </methodref>
+        <methodref name="MakeFullyVisible" visibility="public">
+        </methodref>
+        <methodref name="MouseWheelHandler" visibility="public">
+        </methodref>
+        <methodref name="Print" visibility="public">
+        </methodref>
+        <methodref name="RecreateAsPopup" visibility="public">
+        </methodref>
+        <methodref name="Release" visibility="public">
+        </methodref>
+        <methodref name="SendCancelMode" visibility="public">
+        </methodref>
+        <methodref name="SetFocus" visibility="public">
+        </methodref>
+        <methodref name="SetFocusedControl" visibility="public">
+        </methodref>
+        <methodref name="Show" visibility="public">
+        </methodref>
+        <methodref name="ShowModal" visibility="public">
+        </methodref>
+        <methodref name="WantChildKey" visibility="public">
+        </methodref>
+        <propertyref name="Active" visibility="public">
+        </propertyref>
+        <propertyref name="ActiveControl" visibility="public">
+        </propertyref>
+        <propertyref name="Action" visibility="public">
+        </propertyref>
+        <propertyref name="ActiveOleControl" visibility="public">
+        </propertyref>
+        <propertyref name="BorderStyle" visibility="public">
+        </propertyref>
+        <propertyref name="Canvas" visibility="public">
+        </propertyref>
+        <propertyref name="Caption" visibility="public">
+        </propertyref>
+        <propertyref name="Color" visibility="public">
+        </propertyref>
+        <propertyref name="Designer" visibility="public">
+        </propertyref>
+        <propertyref name="DropTarget" visibility="public">
+        </propertyref>
+        <propertyref name="Font" visibility="public">
+        </propertyref>
+        <propertyref name="FormState" visibility="public">
+        </propertyref>
+        <propertyref name="HelpFile" visibility="public">
+        </propertyref>
+        <propertyref name="KeyPreview" visibility="public">
+        </propertyref>
+        <propertyref name="Menu" visibility="public">
+        </propertyref>
+        <propertyref name="ModalResult" visibility="public">
+        </propertyref>
+        <propertyref name="Monitor" visibility="public">
+        </propertyref>
+        <propertyref name="OleFormObject" visibility="public">
+        </propertyref>
+        <propertyref name="PopupMode" visibility="public">
+        </propertyref>
+        <propertyref name="PopupParent" visibility="public">
+        </propertyref>
+        <propertyref name="ScreenSnap" visibility="public">
+        </propertyref>
+        <propertyref name="SnapBuffer" visibility="public">
+        </propertyref>
+        <propertyref name="WindowState" visibility="public">
+        </propertyref>
+        <propertyref name="Left" visibility="published">
+        </propertyref>
+        <propertyref name="Top" visibility="published">
+        </propertyref>
+        <ancestor name="TScrollingWinControl" namespace="Forms">
+          <methodref name="CalcAutoRange" visibility="private">
+          </methodref>
+          <methodref name="ScaleScrollBars" visibility="private">
+          </methodref>
+          <methodref name="SetAutoScroll" visibility="private">
+          </methodref>
+          <methodref name="SetHorzScrollBar" visibility="private">
+          </methodref>
+          <methodref name="SetVertScrollBar" visibility="private">
+          </methodref>
+          <methodref name="UpdateScrollBars" visibility="private">
+          </methodref>
+          <methodref name="WMSize" visibility="public">
+          </methodref>
+          <methodref name="WMHScroll" visibility="public">
+          </methodref>
+          <methodref name="WMVScroll" visibility="public">
+          </methodref>
+          <methodref name="CMBiDiModeChanged" visibility="public">
+          </methodref>
+          <methodref name="AdjustClientRect" visibility="public">
+          </methodref>
+          <methodref name="AlignControls" visibility="public">
+          </methodref>
+          <methodref name="AutoScrollEnabled" visibility="public">
+          </methodref>
+          <methodref name="AutoScrollInView" visibility="public">
+          </methodref>
+          <methodref name="ChangeScale" visibility="protected">
+          </methodref>
+          <methodref name="CreateParams" visibility="public">
+          </methodref>
+          <methodref name="CreateWnd" visibility="public">
+          </methodref>
+          <methodref name="DoFlipChildren" visibility="protected">
+          </methodref>
+          <propertyref name="AutoScroll" visibility="protected">
+          </propertyref>
+          <methodref name="Resizing" visibility="public">
+          </methodref>
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+          <methodref name="DisableAutoRange" visibility="public">
+          </methodref>
+          <methodref name="EnableAutoRange" visibility="public">
+          </methodref>
+          <methodref name="ScrollInView" visibility="public">
+          </methodref>
+          <propertyref name="OnAlignInsertBefore" visibility="published">
+          </propertyref>
+          <propertyref name="OnAlignPosition" visibility="published">
+          </propertyref>
+          <propertyref name="HorzScrollBar" visibility="published">
+          </propertyref>
+          <propertyref name="VertScrollBar" visibility="published">
+          </propertyref>
+          <ancestor name="TWinControl" namespace="Controls">
+            <methodref name="AlignControl" visibility="private">
+            </methodref>
+            <methodref name="CalcConstraints" visibility="private">
+            </methodref>
+            <methodref name="DoPaddingChange" visibility="private">
+            </methodref>
+            <methodref name="GetAlignDisabled" visibility="private">
+            </methodref>
+            <methodref name="GetControl" visibility="private">
+            </methodref>
+            <methodref name="GetControlCount" visibility="private">
+            </methodref>
+            <methodref name="GetDockClientCount" visibility="private">
+            </methodref>
+            <methodref name="GetDockClients" visibility="private">
+            </methodref>
+            <methodref name="GetHandle" visibility="private">
+            </methodref>
+            <methodref name="GetParentBackground" visibility="private">
+            </methodref>
+            <methodref name="GetTabOrder" visibility="private">
+            </methodref>
+            <methodref name="GetVisibleDockClientCount" visibility="private">
+            </methodref>
+            <methodref name="Insert" visibility="private">
+            </methodref>
+            <methodref name="InvalidateFrame" visibility="private">
+            </methodref>
+            <methodref name="InvokeHelp" visibility="private">
+            </methodref>
+            <methodref name="IsCtl3DStored" visibility="private">
+            </methodref>
+            <methodref name="PrecedingWindow" visibility="private">
+            </methodref>
+            <methodref name="ReadDesignSize" visibility="private">
+            </methodref>
+            <methodref name="Remove" visibility="private">
+            </methodref>
+            <methodref name="RemoveFocus" visibility="private">
+            </methodref>
+            <methodref name="SetBevelCut" visibility="private">
+            </methodref>
+            <methodref name="SetBevelEdges" visibility="private">
+            </methodref>
+            <methodref name="SetBevelKind" visibility="private">
+            </methodref>
+            <methodref name="SetBevelWidth" visibility="private">
+            </methodref>
+            <methodref name="SetBorderWidth" visibility="private">
+            </methodref>
+            <methodref name="SetCtl3D" visibility="private">
+            </methodref>
+            <methodref name="SetDockSite" visibility="private">
+            </methodref>
+            <methodref name="SetPadding" visibility="private">
+            </methodref>
+            <methodref name="SetParentCtl3D" visibility="private">
+            </methodref>
+            <methodref name="SetParentWindow" visibility="private">
+            </methodref>
+            <methodref name="SetTabOrder" visibility="private">
+            </methodref>
+            <methodref name="SetTabStop" visibility="private">
+            </methodref>
+            <methodref name="SetUseDockManager" visibility="private">
+            </methodref>
+            <methodref name="SetZOrderPosition" visibility="private">
+            </methodref>
+            <methodref name="UpdateTabOrder" visibility="private">
+            </methodref>
+            <methodref name="UpdateShowing" visibility="private">
+            </methodref>
+            <methodref name="WriteDesignSize" visibility="private">
+            </methodref>
+            <methodref name="IsMenuKey" visibility="private">
+            </methodref>
+            <methodref name="WMPaint" visibility="public">
+            </methodref>
+            <methodref name="WMCommand" visibility="public">
+            </methodref>
+            <methodref name="WMNotify" visibility="public">
+            </methodref>
+            <methodref name="WMSysColorChange" visibility="public">
+            </methodref>
+            <methodref name="WMHScroll" visibility="public">
+            </methodref>
+            <methodref name="WMVScroll" visibility="public">
+            </methodref>
+            <methodref name="WMCompareItem" visibility="public">
+            </methodref>
+            <methodref name="WMDeleteItem" visibility="public">
+            </methodref>
+            <methodref name="WMDrawItem" visibility="public">
+            </methodref>
+            <methodref name="WMMeasureItem" visibility="public">
+            </methodref>
+            <methodref name="WMEraseBkgnd" visibility="public">
+            </methodref>
+            <methodref name="WMWindowPosChanged" visibility="public">
+            </methodref>
+            <methodref name="WMWindowPosChanging" visibility="public">
+            </methodref>
+            <methodref name="WMSize" visibility="public">
+            </methodref>
+            <methodref name="WMMove" visibility="public">
+            </methodref>
+            <methodref name="WMSetCursor" visibility="public">
+            </methodref>
+            <methodref name="WMKeyDown" visibility="public">
+            </methodref>
+            <methodref name="WMSysKeyDown" visibility="public">
+            </methodref>
+            <methodref name="WMKeyUp" visibility="public">
+            </methodref>
+            <methodref name="WMSysKeyUp" visibility="public">
+            </methodref>
+            <methodref name="WMChar" visibility="public">
+            </methodref>
+            <methodref name="WMSysCommand" visibility="public">
+            </methodref>
+            <methodref name="WMCharToItem" visibility="public">
+            </methodref>
+            <methodref name="WMParentNotify" visibility="public">
+            </methodref>
+            <methodref name="WMVKeyToItem" visibility="public">
+            </methodref>
+            <methodref name="WMDestroy" visibility="public">
+            </methodref>
+            <methodref name="WMMouseActivate" visibility="public">
+            </methodref>
+            <methodref name="WMNCCalcSize" visibility="public">
+            </methodref>
+            <methodref name="WMNCDestroy" visibility="public">
+            </methodref>
+            <methodref name="WMNCHitTest" visibility="public">
+            </methodref>
+            <methodref name="WMNCPaint" visibility="public">
+            </methodref>
+            <methodref name="WMQueryNewPalette" visibility="public">
+            </methodref>
+            <methodref name="WMPaletteChanged" visibility="public">
+            </methodref>
+            <methodref name="WMWinIniChange" visibility="public">
+            </methodref>
+            <methodref name="WMFontChange" visibility="public">
+            </methodref>
+            <methodref name="WMTimeChange" visibility="public">
+            </methodref>
+            <methodref name="WMSetFocus" visibility="public">
+            </methodref>
+            <methodref name="WMKillFocus" visibility="public">
+            </methodref>
+            <methodref name="WMIMEStartComp" visibility="public">
+            </methodref>
+            <methodref name="WMIMEEndComp" visibility="public">
+            </methodref>
+            <methodref name="WMContextMenu" visibility="public">
+            </methodref>
+            <methodref name="CMChanged" visibility="public">
+            </methodref>
+            <methodref name="CMChildKey" visibility="public">
+            </methodref>
+            <methodref name="CMDialogKey" visibility="public">
+            </methodref>
+            <methodref name="CMDialogChar" visibility="public">
+            </methodref>
+            <methodref name="CMFocusChanged" visibility="public">
+            </methodref>
+            <methodref name="CMVisibleChanged" visibility="public">
+            </methodref>
+            <methodref name="CMEnabledChanged" visibility="public">
+            </methodref>
+            <methodref name="CMColorChanged" visibility="public">
+            </methodref>
+            <methodref name="CMFontChanged" visibility="public">
+            </methodref>
+            <methodref name="CMBorderChanged" visibility="public">
+            </methodref>
+            <methodref name="CMCursorChanged" visibility="public">
+            </methodref>
+            <methodref name="CMCtl3DChanged" visibility="public">
+            </methodref>
+            <methodref name="CMParentCtl3DChanged" visibility="public">
+            </methodref>
+            <methodref name="CMShowingChanged" visibility="public">
+            </methodref>
+            <methodref name="CMShowHintChanged" visibility="public">
+            </methodref>
+            <methodref name="CMEnter" visibility="public">
+            </methodref>
+            <methodref name="CMExit" visibility="public">
+            </methodref>
+            <methodref name="CMDesignHitTest" visibility="public">
+            </methodref>
+            <methodref name="CMSysColorChange" visibility="public">
+            </methodref>
+            <methodref name="CMSysFontChanged" visibility="public">
+            </methodref>
+            <methodref name="CMWinIniChange" visibility="public">
+            </methodref>
+            <methodref name="CMFontChange" visibility="public">
+            </methodref>
+            <methodref name="CMTimeChange" visibility="public">
+            </methodref>
+            <methodref name="CMDrag" visibility="public">
+            </methodref>
+            <methodref name="CNKeyDown" visibility="public">
+            </methodref>
+            <methodref name="CNKeyUp" visibility="public">
+            </methodref>
+            <methodref name="CNChar" visibility="public">
+            </methodref>
+            <methodref name="CNSysKeyDown" visibility="public">
+            </methodref>
+            <methodref name="CNSysChar" visibility="public">
+            </methodref>
+            <methodref name="CMControlListChange" visibility="public">
+            </methodref>
+            <methodref name="CMControlListChanging" visibility="public">
+            </methodref>
+            <methodref name="CMRecreateWnd" visibility="public">
+            </methodref>
+            <methodref name="CMInvalidate" visibility="public">
+            </methodref>
+            <methodref name="CMDockClient" visibility="public">
+            </methodref>
+            <methodref name="CMUnDockClient" visibility="public">
+            </methodref>
+            <methodref name="CMFloat" visibility="public">
+            </methodref>
+            <methodref name="CMBiDiModeChanged" visibility="public">
+            </methodref>
+            <methodref name="CMTextChanged" visibility="public">
+            </methodref>
+            <methodref name="WMPrintClient" visibility="public">
+            </methodref>
+            <methodref name="ActionChange" visibility="protected">
+            </methodref>
+            <methodref name="AddBiDiModeExStyle" visibility="protected">
+            </methodref>
+            <methodref name="AssignTo" visibility="public">
+            </methodref>
+            <methodref name="AdjustClientRect" visibility="public">
+            </methodref>
+            <methodref name="AdjustSize" visibility="protected">
+            </methodref>
+            <methodref name="AlignControls" visibility="public">
+            </methodref>
+            <methodref name="ArrangeControl" visibility="protected">
+            </methodref>
+            <methodref name="CanAutoSize" visibility="public">
+            </methodref>
+            <methodref name="CanResize" visibility="public">
+            </methodref>
+            <methodref name="ChangeScale" visibility="protected">
+            </methodref>
+            <methodref name="ConstrainedResize" visibility="public">
+            </methodref>
+            <methodref name="ControlsAligned" visibility="protected">
+            </methodref>
+            <methodref name="CreateDockManager" visibility="protected">
+            </methodref>
+            <methodref name="CreateHandle" visibility="public">
+            </methodref>
+            <methodref name="CreateParams" visibility="public">
+            </methodref>
+            <methodref name="CreateSubClass" visibility="protected">
+            </methodref>
+            <methodref name="CreateWindowHandle" visibility="public">
+            </methodref>
+            <methodref name="CreateWnd" visibility="public">
+            </methodref>
+            <methodref name="CustomAlignInsertBefore" visibility="public">
+            </methodref>
+            <methodref name="CustomAlignPosition" visibility="public">
+            </methodref>
+            <methodref name="DefineProperties" visibility="public">
+            </methodref>
+            <methodref name="DestroyHandle" visibility="public">
+            </methodref>
+            <methodref name="DestroyWindowHandle" visibility="public">
+            </methodref>
+            <methodref name="DestroyWnd" visibility="public">
+            </methodref>
+            <methodref name="DoAddDockClient" visibility="protected">
+            </methodref>
+            <methodref name="DockOver" visibility="protected">
+            </methodref>
+            <methodref name="DockReplaceDockClient" visibility="public">
+            </methodref>
+            <methodref name="DoDockOver" visibility="protected">
+            </methodref>
+            <methodref name="DoEnter" visibility="protected">
+            </methodref>
+            <methodref name="DoExit" visibility="protected">
+            </methodref>
+            <methodref name="DoFlipChildren" visibility="protected">
+            </methodref>
+            <methodref name="DoKeyDown" visibility="protected">
+            </methodref>
+            <methodref name="DoKeyPress" visibility="protected">
+            </methodref>
+            <methodref name="DoKeyUp" visibility="protected">
+            </methodref>
+            <methodref name="DoRemoveDockClient" visibility="protected">
+            </methodref>
+            <methodref name="DoUnDock" visibility="protected">
+            </methodref>
+            <methodref name="FindNextControl" visibility="protected">
+            </methodref>
+            <methodref name="FixupTabList" visibility="protected">
+            </methodref>
+            <methodref name="GetActionLinkClass" visibility="protected">
+            </methodref>
+            <methodref name="GetChildren" visibility="protected">
+            </methodref>
+            <methodref name="GetClientOrigin" visibility="public">
+            </methodref>
+            <methodref name="GetClientRect" visibility="public">
+            </methodref>
+            <methodref name="GetControlExtents" visibility="public">
+            </methodref>
+            <methodref name="GetDeviceContext" visibility="public">
+            </methodref>
+            <methodref name="GetParentHandle" visibility="protected">
+            </methodref>
+            <methodref name="GetSiteInfo" visibility="protected">
+            </methodref>
+            <methodref name="GetTopParentHandle" visibility="protected">
+            </methodref>
+            <methodref name="InvalidateDockHostSite" visibility="protected">
+            </methodref>
+            <methodref name="IsControlMouseMsg" visibility="protected">
+            </methodref>
+            <methodref name="IsControlActivateMsg" visibility="protected">
+            </methodref>
+            <methodref name="IsQualifyingSite" visibility="protected">
+            </methodref>
+            <methodref name="KeyDown" visibility="protected">
+            </methodref>
+            <methodref name="KeyUp" visibility="protected">
+            </methodref>
+            <methodref name="KeyPress" visibility="protected">
+            </methodref>
+            <methodref name="MainWndProc" visibility="protected">
+            </methodref>
+            <methodref name="Notification" visibility="public">
+            </methodref>
+            <methodref name="NotifyControls" visibility="protected">
+            </methodref>
+            <methodref name="PaintControls" visibility="protected">
+            </methodref>
+            <methodref name="PaintHandler" visibility="protected">
+            </methodref>
+            <methodref name="PaintWindow" visibility="public">
+            </methodref>
+            <methodref name="PaletteChanged" visibility="protected">
+            </methodref>
+            <methodref name="ReadState" visibility="public">
+            </methodref>
+            <methodref name="RecreateWnd" visibility="protected">
+            </methodref>
+            <methodref name="ReloadDockedControl" visibility="protected">
+            </methodref>
+            <methodref name="ResetIme" visibility="protected">
+            </methodref>
+            <methodref name="ResetImeComposition" visibility="protected">
+            </methodref>
+            <methodref name="RemoveWindowProps" visibility="protected">
+            </methodref>
+            <methodref name="ScaleControls" visibility="protected">
+            </methodref>
+            <methodref name="SelectFirst" visibility="protected">
+            </methodref>
+            <methodref name="SelectNext" visibility="protected">
+            </methodref>
+            <methodref name="SetChildOrder" visibility="protected">
+            </methodref>
+            <methodref name="SetIme" visibility="protected">
+            </methodref>
+            <methodref name="SetImeCompositionWindow" visibility="protected">
+            </methodref>
+            <methodref name="SetParent" visibility="public">
+            </methodref>
+            <methodref name="SetParentBackground" visibility="public">
+            </methodref>
+            <methodref name="SetZOrder" visibility="protected">
+            </methodref>
+            <methodref name="ShowControl" visibility="public">
+            </methodref>
+            <methodref name="UpdateBounds" visibility="protected">
+            </methodref>
+            <methodref name="UpdateControlOriginalParentSize" visibility="public">
+            </methodref>
+            <methodref name="UpdateRecreatingFlag" visibility="protected">
+            </methodref>
+            <methodref name="UpdateUIState" visibility="protected">
+            </methodref>
+            <methodref name="WndProc" visibility="public">
+            </methodref>
+            <propertyref name="BevelEdges" visibility="protected">
+            </propertyref>
+            <propertyref name="BevelInner" visibility="protected">
+            </propertyref>
+            <propertyref name="BevelOuter" visibility="protected">
+            </propertyref>
+            <propertyref name="BevelKind" visibility="protected">
+            </propertyref>
+            <propertyref name="BevelWidth" visibility="protected">
+            </propertyref>
+            <propertyref name="BorderWidth" visibility="protected">
+            </propertyref>
+            <propertyref name="Ctl3D" visibility="protected">
+            </propertyref>
+            <propertyref name="DefWndProc" visibility="protected">
+            </propertyref>
+            <propertyref name="ImeMode" visibility="protected">
+            </propertyref>
+            <propertyref name="ImeName" visibility="protected">
+            </propertyref>
+            <propertyref name="ParentBackground" visibility="protected">
+            </propertyref>
+            <propertyref name="ParentCtl3D" visibility="protected">
+            </propertyref>
+            <propertyref name="WindowHandle" visibility="protected">
+            </propertyref>
+            <eventref name="OnAlignInsertBefore" visibility="protected">
+            </eventref>
+            <eventref name="OnAlignPosition" visibility="protected">
+            </eventref>
+            <eventref name="OnDockDrop" visibility="protected">
+            </eventref>
+            <eventref name="OnDockOver" visibility="protected">
+            </eventref>
+            <eventref name="OnEnter" visibility="protected">
+            </eventref>
+            <eventref name="OnExit" visibility="protected">
+            </eventref>
+            <eventref name="OnGetSiteInfo" visibility="protected">
+            </eventref>
+            <eventref name="OnKeyDown" visibility="protected">
+            </eventref>
+            <eventref name="OnKeyPress" visibility="protected">
+            </eventref>
+            <eventref name="OnKeyUp" visibility="protected">
+            </eventref>
+            <eventref name="OnUnDock" visibility="protected">
+            </eventref>
+            <methodref name="Create" visibility="public">
+            </methodref>
+            <methodref name="CreateParented" visibility="public">
+            </methodref>
+            <methodref name="CreateParentedControl" visibility="public">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+            <methodref name="Broadcast" visibility="public">
+            </methodref>
+            <methodref name="CanFocus" visibility="public">
+            </methodref>
+            <methodref name="ContainsControl" visibility="public">
+            </methodref>
+            <methodref name="ControlAtPos" visibility="public">
+            </methodref>
+            <methodref name="DefaultHandler" visibility="public">
+            </methodref>
+            <methodref name="DisableAlign" visibility="public">
+            </methodref>
+            <propertyref name="DockClientCount" visibility="public">
+            </propertyref>
+            <propertyref name="DockClients" visibility="public">
+            </propertyref>
+            <methodref name="DockDrop" visibility="public">
+            </methodref>
+            <propertyref name="DockSite" visibility="public">
+            </propertyref>
+            <propertyref name="DockManager" visibility="public">
+            </propertyref>
+            <propertyref name="DoubleBuffered" visibility="public">
+            </propertyref>
+            <methodref name="EnableAlign" visibility="public">
+            </methodref>
+            <methodref name="FindChildControl" visibility="public">
+            </methodref>
+            <methodref name="FlipChildren" visibility="public">
+            </methodref>
+            <methodref name="Focused" visibility="public">
+            </methodref>
+            <methodref name="GetTabOrderList" visibility="public">
+            </methodref>
+            <methodref name="HandleAllocated" visibility="public">
+            </methodref>
+            <methodref name="HandleNeeded" visibility="public">
+            </methodref>
+            <methodref name="InsertControl" visibility="public">
+            </methodref>
+            <methodref name="Invalidate" visibility="public">
+            </methodref>
+            <methodref name="PaintTo" visibility="public">
+            </methodref>
+            <methodref name="PaintTo" visibility="public">
+            </methodref>
+            <methodref name="PreProcessMessage" visibility="public">
+            </methodref>
+            <methodref name="RemoveControl" visibility="public">
+            </methodref>
+            <methodref name="Realign" visibility="public">
+            </methodref>
+            <methodref name="Repaint" visibility="public">
+            </methodref>
+            <methodref name="ScaleBy" visibility="public">
+            </methodref>
+            <methodref name="ScrollBy" visibility="public">
+            </methodref>
+            <methodref name="SetBounds" visibility="public">
+            </methodref>
+            <methodref name="SetDesignVisible" visibility="public">
+            </methodref>
+            <methodref name="SetFocus" visibility="public">
+            </methodref>
+            <methodref name="Update" visibility="public">
+            </methodref>
+            <methodref name="UpdateControlState" visibility="public">
+            </methodref>
+            <propertyref name="AlignDisabled" visibility="public">
+            </propertyref>
+            <propertyref name="MouseInClient" visibility="public">
+            </propertyref>
+            <propertyref name="VisibleDockClientCount" visibility="public">
+            </propertyref>
+            <propertyref name="Brush" visibility="public">
+            </propertyref>
+            <propertyref name="Controls" visibility="public">
+            </propertyref>
+            <propertyref name="ControlCount" visibility="public">
+            </propertyref>
+            <propertyref name="Handle" visibility="public">
+            </propertyref>
+            <propertyref name="Padding" visibility="public">
+            </propertyref>
+            <propertyref name="ParentWindow" visibility="public">
+            </propertyref>
+            <propertyref name="Showing" visibility="public">
+            </propertyref>
+            <propertyref name="TabOrder" visibility="public">
+            </propertyref>
+            <propertyref name="TabStop" visibility="public">
+            </propertyref>
+            <propertyref name="UseDockManager" visibility="public">
+            </propertyref>
+            <ancestor name="TControl" namespace="Controls">
+              <methodref name="CalcDockSizes" visibility="private">
+              </methodref>
+              <methodref name="CheckNewSize" visibility="private">
+              </methodref>
+              <methodref name="CreateFloatingDockSite" visibility="private">
+              </methodref>
+              <methodref name="DoActionChange" visibility="private">
+              </methodref>
+              <methodref name="DoCanAutoSize" visibility="private">
+              </methodref>
+              <methodref name="DoCanResize" visibility="private">
+              </methodref>
+              <methodref name="DoConstraintsChange" visibility="private">
+              </methodref>
+              <methodref name="DoConstrainedResize" visibility="private">
+              </methodref>
+              <methodref name="DoDragMsg" visibility="private">
+              </methodref>
+              <methodref name="DoMouseActivate" visibility="private">
+              </methodref>
+              <methodref name="DoMouseDown" visibility="private">
+              </methodref>
+              <methodref name="DoMouseUp" visibility="private">
+              </methodref>
+              <methodref name="DoMarginChange" visibility="private">
+              </methodref>
+              <methodref name="FontChanged" visibility="private">
+              </methodref>
+              <methodref name="GetAlignWithMargins" visibility="private">
+              </methodref>
+              <methodref name="GetBoundsRect" visibility="private">
+              </methodref>
+              <methodref name="GetClientHeight" visibility="private">
+              </methodref>
+              <methodref name="GetClientWidth" visibility="private">
+              </methodref>
+              <methodref name="GetLRDockWidth" visibility="private">
+              </methodref>
+              <methodref name="GetMouseCapture" visibility="private">
+              </methodref>
+              <methodref name="GetText" visibility="private">
+              </methodref>
+              <methodref name="GetTBDockHeight" visibility="private">
+              </methodref>
+              <methodref name="GetUndockWidth" visibility="private">
+              </methodref>
+              <methodref name="GetUndockHeight" visibility="private">
+              </methodref>
+              <methodref name="InvalidateControl" visibility="private">
+              </methodref>
+              <methodref name="IsAnchorsStored" visibility="private">
+              </methodref>
+              <methodref name="IsBiDiModeStored" visibility="private">
+              </methodref>
+              <methodref name="IsCaptionStored" visibility="private">
+              </methodref>
+              <methodref name="IsColorStored" visibility="private">
+              </methodref>
+              <methodref name="IsEnabledStored" visibility="private">
+              </methodref>
+              <methodref name="IsFontStored" visibility="private">
+              </methodref>
+              <methodref name="IsHintStored" visibility="private">
+              </methodref>
+              <methodref name="IsHelpContextStored" visibility="private">
+              </methodref>
+              <methodref name="IsOnClickStored" visibility="private">
+              </methodref>
+              <methodref name="IsShowHintStored" visibility="private">
+              </methodref>
+              <methodref name="IsVisibleStored" visibility="private">
+              </methodref>
+              <methodref name="ReadIsControl" visibility="private">
+              </methodref>
+              <methodref name="ReadExplicitLeft" visibility="private">
+              </methodref>
+              <methodref name="ReadExplicitTop" visibility="private">
+              </methodref>
+              <methodref name="ReadExplicitWidth" visibility="private">
+              </methodref>
+              <methodref name="ReadExplicitHeight" visibility="private">
+              </methodref>
+              <methodref name="SetAlignWithMargins" visibility="private">
+              </methodref>
+              <methodref name="SetAnchors" visibility="private">
+              </methodref>
+              <methodref name="SetAction" visibility="private">
+              </methodref>
+              <methodref name="SetAlign" visibility="private">
+              </methodref>
+              <methodref name="SetBoundsRect" visibility="private">
+              </methodref>
+              <methodref name="SetClientHeight" visibility="private">
+              </methodref>
+              <methodref name="SetClientSize" visibility="private">
+              </methodref>
+              <methodref name="SetClientWidth" visibility="private">
+              </methodref>
+              <methodref name="SetColor" visibility="private">
+              </methodref>
+              <methodref name="SetCursor" visibility="private">
+              </methodref>
+              <methodref name="SetDesktopFont" visibility="private">
+              </methodref>
+              <methodref name="SetFont" visibility="private">
+              </methodref>
+              <methodref name="SetHeight" visibility="private">
+              </methodref>
+              <methodref name="SetHelpContext" visibility="private">
+              </methodref>
+              <methodref name="SetHelpKeyword" visibility="private">
+              </methodref>
+              <methodref name="SetHostDockSite" visibility="private">
+              </methodref>
+              <methodref name="SetLeft" visibility="private">
+              </methodref>
+              <methodref name="SetMouseCapture" visibility="private">
+              </methodref>
+              <methodref name="SetParentColor" visibility="private">
+              </methodref>
+              <methodref name="SetParentFont" visibility="private">
+              </methodref>
+              <methodref name="SetShowHint" visibility="private">
+              </methodref>
+              <methodref name="SetParentShowHint" visibility="private">
+              </methodref>
+              <methodref name="SetPopupMenu" visibility="private">
+              </methodref>
+              <methodref name="SetText" visibility="private">
+              </methodref>
+              <methodref name="SetTop" visibility="private">
+              </methodref>
+              <methodref name="SetVisible" visibility="private">
+              </methodref>
+              <methodref name="SetWidth" visibility="private">
+              </methodref>
+              <methodref name="SetZOrderPosition" visibility="private">
+              </methodref>
+              <methodref name="UpdateAnchorRules" visibility="private">
+              </methodref>
+              <methodref name="WriteIsControl" visibility="private">
+              </methodref>
+              <methodref name="WriteExplicitLeft" visibility="private">
+              </methodref>
+              <methodref name="WriteExplicitTop" visibility="private">
+              </methodref>
+              <methodref name="WriteExplicitWidth" visibility="private">
+              </methodref>
+              <methodref name="WriteExplicitHeight" visibility="private">
+              </methodref>
+              <methodref name="WMLButtonDown" visibility="public">
+              </methodref>
+              <methodref name="WMNCLButtonDown" visibility="public">
+              </methodref>
+              <methodref name="WMRButtonDown" visibility="public">
+              </methodref>
+              <methodref name="WMMButtonDown" visibility="public">
+              </methodref>
+              <methodref name="WMLButtonDblClk" visibility="public">
+              </methodref>
+              <methodref name="WMRButtonDblClk" visibility="public">
+              </methodref>
+              <methodref name="WMMButtonDblClk" visibility="public">
+              </methodref>
+              <methodref name="WMMouseMove" visibility="public">
+              </methodref>
+              <methodref name="WMLButtonUp" visibility="public">
+              </methodref>
+              <methodref name="WMRButtonUp" visibility="public">
+              </methodref>
+              <methodref name="WMMButtonUp" visibility="public">
+              </methodref>
+              <methodref name="WMMouseWheel" visibility="public">
+              </methodref>
+              <methodref name="WMCancelMode" visibility="public">
+              </methodref>
+              <methodref name="WMWindowPosChanged" visibility="public">
+              </methodref>
+              <methodref name="CMVisibleChanged" visibility="public">
+              </methodref>
+              <methodref name="CMEnabledChanged" visibility="public">
+              </methodref>
+              <methodref name="CMFontChanged" visibility="public">
+              </methodref>
+              <methodref name="CMColorChanged" visibility="public">
+              </methodref>
+              <methodref name="CMMouseActivate" visibility="public">
+              </methodref>
+              <methodref name="CMParentFontChanged" visibility="public">
+              </methodref>
+              <methodref name="CMSysFontChanged" visibility="public">
+              </methodref>
+              <methodref name="CMParentColorChanged" visibility="public">
+              </methodref>
+              <methodref name="CMParentShowHintChanged" visibility="public">
+              </methodref>
+              <methodref name="CMHintShow" visibility="public">
+              </methodref>
+              <methodref name="CMHitTest" visibility="public">
+              </methodref>
+              <methodref name="CMMouseEnter" visibility="public">
+              </methodref>
+              <methodref name="CMMouseLeave" visibility="public">
+              </methodref>
+              <methodref name="CMDesignHitTest" visibility="public">
+              </methodref>
+              <methodref name="CMFloat" visibility="public">
+              </methodref>
+              <methodref name="CMBiDiModeChanged" visibility="public">
+              </methodref>
+              <methodref name="CMParentBiDiModeChanged" visibility="public">
+              </methodref>
+              <methodref name="CMMouseWheel" visibility="public">
+              </methodref>
+              <methodref name="WMContextMenu" visibility="public">
+              </methodref>
+              <methodref name="SetConstraints" visibility="private">
+              </methodref>
+              <methodref name="SetMargins" visibility="private">
+              </methodref>
+              <methodref name="ActionChange" visibility="protected">
+              </methodref>
+              <methodref name="AdjustSize" visibility="protected">
+              </methodref>
+              <methodref name="AssignTo" visibility="public">
+              </methodref>
+              <methodref name="BeginAutoDrag" visibility="protected">
+              </methodref>
+              <methodref name="CanResize" visibility="public">
+              </methodref>
+              <methodref name="CanAutoSize" visibility="public">
+              </methodref>
+              <methodref name="Changed" visibility="protected">
+              </methodref>
+              <methodref name="ChangeScale" visibility="protected">
+              </methodref>
+              <methodref name="Click" visibility="protected">
+              </methodref>
+              <methodref name="ConstrainedResize" visibility="public">
+              </methodref>
+              <methodref name="CalcCursorPos" visibility="protected">
+              </methodref>
+              <methodref name="DesignWndProc" visibility="protected">
+              </methodref>
+              <methodref name="DblClick" visibility="protected">
+              </methodref>
+              <methodref name="DefaultDockImage" visibility="protected">
+              </methodref>
+              <methodref name="DefineProperties" visibility="public">
+              </methodref>
+              <methodref name="DockTrackNoTarget" visibility="protected">
+              </methodref>
+              <methodref name="DoContextPopup" visibility="protected">
+              </methodref>
+              <methodref name="DoEndDock" visibility="protected">
+              </methodref>
+              <methodref name="DoDock" visibility="protected">
+              </methodref>
+              <methodref name="DoStartDock" visibility="protected">
+              </methodref>
+              <methodref name="DoMouseWheel" visibility="protected">
+              </methodref>
+              <methodref name="DoMouseWheelDown" visibility="protected">
+              </methodref>
+              <methodref name="DoMouseWheelUp" visibility="protected">
+              </methodref>
+              <methodref name="DragCanceled" visibility="protected">
+              </methodref>
+              <methodref name="DragOver" visibility="protected">
+              </methodref>
+              <methodref name="DoEndDrag" visibility="protected">
+              </methodref>
+              <methodref name="DoStartDrag" visibility="protected">
+              </methodref>
+              <methodref name="DrawDragDockImage" visibility="protected">
+              </methodref>
+              <methodref name="EraseDragDockImage" visibility="protected">
+              </methodref>
+              <methodref name="GetAction" visibility="public">
+              </methodref>
+              <methodref name="GetActionLinkClass" visibility="protected">
+              </methodref>
+              <methodref name="GetClientOrigin" visibility="public">
+              </methodref>
+              <methodref name="GetClientRect" visibility="public">
+              </methodref>
+              <methodref name="GetDeviceContext" visibility="public">
+              </methodref>
+              <methodref name="GetDockEdge" visibility="protected">
+              </methodref>
+              <methodref name="GetDragImages" visibility="public">
+              </methodref>
+              <methodref name="GetEnabled" visibility="public">
+              </methodref>
+              <methodref name="GetFloating" visibility="public">
+              </methodref>
+              <methodref name="GetFloatingDockSiteClass" visibility="public">
+              </methodref>
+              <methodref name="GetPalette" visibility="protected">
+              </methodref>
+              <methodref name="GetPopupMenu" visibility="protected">
+              </methodref>
+              <methodref name="Loaded" visibility="public">
+              </methodref>
+              <methodref name="MouseActivate" visibility="protected">
+              </methodref>
+              <methodref name="MouseDown" visibility="protected">
+              </methodref>
+              <methodref name="MouseMove" visibility="protected">
+              </methodref>
+              <methodref name="MouseUp" visibility="protected">
+              </methodref>
+              <methodref name="Notification" visibility="public">
+              </methodref>
+              <methodref name="PositionDockRect" visibility="protected">
+              </methodref>
+              <methodref name="PaletteChanged" visibility="protected">
+              </methodref>
+              <methodref name="ReadState" visibility="public">
+              </methodref>
+              <methodref name="RequestAlign" visibility="public">
+              </methodref>
+              <methodref name="Resize" visibility="protected">
+              </methodref>
+              <methodref name="ScaleConstraints" visibility="protected">
+              </methodref>
+              <methodref name="SendCancelMode" visibility="protected">
+              </methodref>
+              <methodref name="SendDockNotification" visibility="protected">
+              </methodref>
+              <methodref name="SetAutoSize" visibility="public">
+              </methodref>
+              <methodref name="SetDragMode" visibility="public">
+              </methodref>
+              <methodref name="SetEnabled" visibility="public">
+              </methodref>
+              <methodref name="SetName" visibility="public">
+              </methodref>
+              <methodref name="SetParent" visibility="public">
+              </methodref>
+              <methodref name="SetParentComponent" visibility="protected">
+              </methodref>
+              <methodref name="SetParentBiDiMode" visibility="public">
+              </methodref>
+              <methodref name="SetBiDiMode" visibility="public">
+              </methodref>
+              <methodref name="SetZOrder" visibility="protected">
+              </methodref>
+              <methodref name="UpdateExplicitBounds" visibility="protected">
+              </methodref>
+              <methodref name="UpdateBoundsRect" visibility="protected">
+              </methodref>
+              <methodref name="VisibleChanging" visibility="protected">
+              </methodref>
+              <methodref name="WndProc" visibility="public">
+              </methodref>
+              <propertyref name="ActionLink" visibility="protected">
+              </propertyref>
+              <propertyref name="AutoSize" visibility="protected">
+              </propertyref>
+              <propertyref name="Caption" visibility="protected">
+              </propertyref>
+              <propertyref name="Color" visibility="protected">
+              </propertyref>
+              <propertyref name="DesktopFont" visibility="protected">
+              </propertyref>
+              <propertyref name="DragKind" visibility="protected">
+              </propertyref>
+              <propertyref name="DragCursor" visibility="protected">
+              </propertyref>
+              <propertyref name="DragMode" visibility="protected">
+              </propertyref>
+              <propertyref name="Font" visibility="protected">
+              </propertyref>
+              <propertyref name="IsControl" visibility="protected">
+              </propertyref>
+              <propertyref name="MouseCapture" visibility="protected">
+              </propertyref>
+              <propertyref name="ParentBiDiMode" visibility="protected">
+              </propertyref>
+              <propertyref name="ParentColor" visibility="protected">
+              </propertyref>
+              <propertyref name="ParentFont" visibility="protected">
+              </propertyref>
+              <propertyref name="ParentShowHint" visibility="protected">
+              </propertyref>
+              <propertyref name="PopupMenu" visibility="protected">
+              </propertyref>
+              <propertyref name="ScalingFlags" visibility="protected">
+              </propertyref>
+              <propertyref name="Text" visibility="protected">
+              </propertyref>
+              <propertyref name="WheelAccumulator" visibility="protected">
+              </propertyref>
+              <propertyref name="WindowText" visibility="protected">
+              </propertyref>
+              <eventref name="OnCanResize" visibility="protected">
+              </eventref>
+              <eventref name="OnClick" visibility="protected">
+              </eventref>
+              <eventref name="OnConstrainedResize" visibility="protected">
+              </eventref>
+              <eventref name="OnContextPopup" visibility="protected">
+              </eventref>
+              <eventref name="OnDblClick" visibility="protected">
+              </eventref>
+              <eventref name="OnDragDrop" visibility="protected">
+              </eventref>
+              <eventref name="OnDragOver" visibility="protected">
+              </eventref>
+              <eventref name="OnEndDock" visibility="protected">
+              </eventref>
+              <eventref name="OnEndDrag" visibility="protected">
+              </eventref>
+              <eventref name="OnMouseActivate" visibility="protected">
+              </eventref>
+              <eventref name="OnMouseDown" visibility="protected">
+              </eventref>
+              <eventref name="OnMouseEnter" visibility="protected">
+              </eventref>
+              <eventref name="OnMouseLeave" visibility="protected">
+              </eventref>
+              <eventref name="OnMouseMove" visibility="protected">
+              </eventref>
+              <eventref name="OnMouseUp" visibility="protected">
+              </eventref>
+              <eventref name="OnMouseWheel" visibility="protected">
+              </eventref>
+              <eventref name="OnMouseWheelDown" visibility="protected">
+              </eventref>
+              <eventref name="OnMouseWheelUp" visibility="protected">
+              </eventref>
+              <eventref name="OnResize" visibility="protected">
+              </eventref>
+              <eventref name="OnStartDock" visibility="protected">
+              </eventref>
+              <eventref name="OnStartDrag" visibility="protected">
+              </eventref>
+              <methodref name="Create" visibility="public">
+              </methodref>
+              <methodref name="Destroy" visibility="public">
+              </methodref>
+              <methodref name="BeginDrag" visibility="public">
+              </methodref>
+              <methodref name="BringToFront" visibility="public">
+              </methodref>
+              <methodref name="ClientToScreen" visibility="public">
+              </methodref>
+              <methodref name="ClientToParent" visibility="public">
+              </methodref>
+              <methodref name="Dock" visibility="public">
+              </methodref>
+              <methodref name="DefaultHandler" visibility="public">
+              </methodref>
+              <methodref name="Dragging" visibility="public">
+              </methodref>
+              <methodref name="DragDrop" visibility="public">
+              </methodref>
+              <methodref name="DrawTextBiDiModeFlags" visibility="public">
+              </methodref>
+              <methodref name="DrawTextBiDiModeFlagsReadingOnly" visibility="public">
+              </methodref>
+              <propertyref name="Enabled" visibility="public">
+              </propertyref>
+              <methodref name="EndDrag" visibility="public">
+              </methodref>
+              <methodref name="GetControlsAlignment" visibility="public">
+              </methodref>
+              <methodref name="GetParentComponent" visibility="public">
+              </methodref>
+              <methodref name="GetTextBuf" visibility="public">
+              </methodref>
+              <methodref name="GetTextLen" visibility="public">
+              </methodref>
+              <methodref name="HasParent" visibility="public">
+              </methodref>
+              <methodref name="Hide" visibility="public">
+              </methodref>
+              <methodref name="InitiateAction" visibility="public">
+              </methodref>
+              <methodref name="Invalidate" visibility="public">
+              </methodref>
+              <methodref name="MouseWheelHandler" visibility="public">
+              </methodref>
+              <methodref name="IsRightToLeft" visibility="public">
+              </methodref>
+              <methodref name="ManualDock" visibility="public">
+              </methodref>
+              <methodref name="ManualFloat" visibility="public">
+              </methodref>
+              <methodref name="Perform" visibility="public">
+              </methodref>
+              <methodref name="Refresh" visibility="public">
+              </methodref>
+              <methodref name="Repaint" visibility="public">
+              </methodref>
+              <methodref name="ReplaceDockedControl" visibility="public">
+              </methodref>
+              <methodref name="ScreenToClient" visibility="public">
+              </methodref>
+              <methodref name="ParentToClient" visibility="public">
+              </methodref>
+              <methodref name="SendToBack" visibility="public">
+              </methodref>
+              <methodref name="SetBounds" visibility="public">
+              </methodref>
+              <methodref name="SetDesignVisible" visibility="public">
+              </methodref>
+              <methodref name="SetTextBuf" visibility="public">
+              </methodref>
+              <methodref name="Show" visibility="public">
+              </methodref>
+              <methodref name="Update" visibility="public">
+              </methodref>
+              <methodref name="UseRightToLeftAlignment" visibility="public">
+              </methodref>
+              <methodref name="UseRightToLeftReading" visibility="public">
+              </methodref>
+              <methodref name="UseRightToLeftScrollBar" visibility="public">
+              </methodref>
+              <propertyref name="Action" visibility="public">
+              </propertyref>
+              <propertyref name="Align" visibility="public">
+              </propertyref>
+              <propertyref name="Anchors" visibility="public">
+              </propertyref>
+              <propertyref name="BiDiMode" visibility="public">
+              </propertyref>
+              <propertyref name="BoundsRect" visibility="public">
+              </propertyref>
+              <propertyref name="ClientHeight" visibility="public">
+              </propertyref>
+              <propertyref name="ClientOrigin" visibility="public">
+              </propertyref>
+              <propertyref name="ClientRect" visibility="public">
+              </propertyref>
+              <propertyref name="ClientWidth" visibility="public">
+              </propertyref>
+              <propertyref name="Constraints" visibility="public">
+              </propertyref>
+              <propertyref name="ControlState" visibility="public">
+              </propertyref>
+              <propertyref name="ControlStyle" visibility="public">
+              </propertyref>
+              <propertyref name="DockOrientation" visibility="public">
+              </propertyref>
+              <propertyref name="ExplicitLeft" visibility="public">
+              </propertyref>
+              <propertyref name="ExplicitTop" visibility="public">
+              </propertyref>
+              <propertyref name="ExplicitWidth" visibility="public">
+              </propertyref>
+              <propertyref name="ExplicitHeight" visibility="public">
+              </propertyref>
+              <propertyref name="Floating" visibility="public">
+              </propertyref>
+              <propertyref name="FloatingDockSiteClass" visibility="public">
+              </propertyref>
+              <propertyref name="HostDockSite" visibility="public">
+              </propertyref>
+              <propertyref name="LRDockWidth" visibility="public">
+              </propertyref>
+              <propertyref name="Parent" visibility="public">
+              </propertyref>
+              <propertyref name="ShowHint" visibility="public">
+              </propertyref>
+              <propertyref name="TBDockHeight" visibility="public">
+              </propertyref>
+              <propertyref name="UndockHeight" visibility="public">
+              </propertyref>
+              <propertyref name="UndockWidth" visibility="public">
+              </propertyref>
+              <propertyref name="Visible" visibility="public">
+              </propertyref>
+              <eventref name="WindowProc" visibility="public">
+              </eventref>
+              <propertyref name="AlignWithMargins" visibility="published">
+              </propertyref>
+              <propertyref name="Left" visibility="published">
+              </propertyref>
+              <propertyref name="Top" visibility="published">
+              </propertyref>
+              <propertyref name="Width" visibility="published">
+              </propertyref>
+              <propertyref name="Height" visibility="published">
+              </propertyref>
+              <propertyref name="Cursor" visibility="published">
+              </propertyref>
+              <propertyref name="Hint" visibility="published">
+              </propertyref>
+              <propertyref name="HelpType" visibility="published">
+              </propertyref>
+              <propertyref name="HelpKeyword" visibility="published">
+              </propertyref>
+              <propertyref name="HelpContext" visibility="published">
+              </propertyref>
+              <propertyref name="Margins" visibility="published">
+              </propertyref>
+              <ancestor name="TComponent" namespace="Classes">
+                <methodref name="GetComObject" visibility="private">
+                </methodref>
+                <methodref name="GetComponent" visibility="private">
+                </methodref>
+                <methodref name="GetComponentCount" visibility="private">
+                </methodref>
+                <methodref name="GetComponentIndex" visibility="private">
+                </methodref>
+                <methodref name="Insert" visibility="private">
+                </methodref>
+                <methodref name="ReadLeft" visibility="private">
+                </methodref>
+                <methodref name="ReadTop" visibility="private">
+                </methodref>
+                <methodref name="Remove" visibility="private">
+                </methodref>
+                <methodref name="RemoveNotification" visibility="private">
+                </methodref>
+                <methodref name="SetComponentIndex" visibility="private">
+                </methodref>
+                <methodref name="SetReference" visibility="private">
+                </methodref>
+                <methodref name="WriteLeft" visibility="private">
+                </methodref>
+                <methodref name="WriteTop" visibility="private">
+                </methodref>
+                <methodref name="IntfGetComponent" visibility="private">
+                </methodref>
+                <methodref name="ChangeName" visibility="protected">
+                </methodref>
+                <methodref name="DefineProperties" visibility="public">
+                </methodref>
+                <methodref name="GetChildren" visibility="protected">
+                </methodref>
+                <methodref name="GetChildOwner" visibility="protected">
+                </methodref>
+                <methodref name="GetChildParent" visibility="protected">
+                </methodref>
+                <methodref name="GetOwner" visibility="protected">
+                </methodref>
+                <methodref name="Loaded" visibility="public">
+                </methodref>
+                <methodref name="Notification" visibility="public">
+                </methodref>
+                <methodref name="PaletteCreated" visibility="protected">
+                </methodref>
+                <methodref name="ReadState" visibility="public">
+                </methodref>
+                <methodref name="SetAncestor" visibility="protected">
+                </methodref>
+                <methodref name="SetDesigning" visibility="protected">
+                </methodref>
+                <methodref name="SetInline" visibility="protected">
+                </methodref>
+                <methodref name="SetDesignInstance" visibility="protected">
+                </methodref>
+                <methodref name="SetName" visibility="public">
+                </methodref>
+                <methodref name="SetChildOrder" visibility="protected">
+                </methodref>
+                <methodref name="SetParentComponent" visibility="protected">
+                </methodref>
+                <methodref name="Updating" visibility="protected">
+                </methodref>
+                <methodref name="Updated" visibility="protected">
+                </methodref>
+                <methodref name="UpdateRegistry" visibility="public">
+                </methodref>
+                <methodref name="ValidateRename" visibility="public">
+                </methodref>
+                <methodref name="ValidateContainer" visibility="protected">
+                </methodref>
+                <methodref name="ValidateInsert" visibility="protected">
+                </methodref>
+                <methodref name="WriteState" visibility="public">
+                </methodref>
+                <methodref name="QueryInterface" visibility="public">
+                </methodref>
+                <methodref name="_AddRef" visibility="protected">
+                </methodref>
+                <methodref name="_Release" visibility="protected">
+                </methodref>
+                <methodref name="GetTypeInfoCount" visibility="protected">
+                </methodref>
+                <methodref name="GetTypeInfo" visibility="protected">
+                </methodref>
+                <methodref name="GetIDsOfNames" visibility="protected">
+                </methodref>
+                <methodref name="Invoke" visibility="protected">
+                </methodref>
+                <methodref name="Create" visibility="public">
+                </methodref>
+                <methodref name="Destroy" visibility="public">
+                </methodref>
+                <methodref name="BeforeDestruction" visibility="public">
+                </methodref>
+                <methodref name="DestroyComponents" visibility="public">
+                </methodref>
+                <methodref name="Destroying" visibility="public">
+                </methodref>
+                <methodref name="ExecuteAction" visibility="public">
+                </methodref>
+                <methodref name="FindComponent" visibility="public">
+                </methodref>
+                <methodref name="FreeNotification" visibility="public">
+                </methodref>
+                <methodref name="RemoveFreeNotification" visibility="public">
+                </methodref>
+                <methodref name="FreeOnRelease" visibility="public">
+                </methodref>
+                <methodref name="GetEnumerator" visibility="public">
+                </methodref>
+                <methodref name="GetParentComponent" visibility="public">
+                </methodref>
+                <methodref name="GetNamePath" visibility="public">
+                </methodref>
+                <methodref name="HasParent" visibility="public">
+                </methodref>
+                <methodref name="InsertComponent" visibility="public">
+                </methodref>
+                <methodref name="RemoveComponent" visibility="public">
+                </methodref>
+                <methodref name="SetSubComponent" visibility="public">
+                </methodref>
+                <methodref name="SafeCallException" visibility="public">
+                </methodref>
+                <methodref name="UpdateAction" visibility="public">
+                </methodref>
+                <methodref name="IsImplementorOf" visibility="public">
+                </methodref>
+                <methodref name="ReferenceInterface" visibility="public">
+                </methodref>
+                <propertyref name="ComObject" visibility="public">
+                </propertyref>
+                <propertyref name="Components" visibility="public">
+                </propertyref>
+                <propertyref name="ComponentCount" visibility="public">
+                </propertyref>
+                <propertyref name="ComponentIndex" visibility="public">
+                </propertyref>
+                <propertyref name="ComponentState" visibility="public">
+                </propertyref>
+                <propertyref name="ComponentStyle" visibility="public">
+                </propertyref>
+                <propertyref name="DesignInfo" visibility="public">
+                </propertyref>
+                <propertyref name="Owner" visibility="public">
+                </propertyref>
+                <propertyref name="VCLComObject" visibility="public">
+                </propertyref>
+                <propertyref name="Name" visibility="published">
+                </propertyref>
+                <propertyref name="Tag" visibility="published">
+                </propertyref>
+                <ancestor name="TPersistent" namespace="Classes">
+                  <methodref name="AssignError" visibility="private">
+                  </methodref>
+                  <methodref name="AssignTo" visibility="public">
+                  </methodref>
+                  <methodref name="DefineProperties" visibility="public">
+                  </methodref>
+                  <methodref name="GetOwner" visibility="protected">
+                  </methodref>
+                  <methodref name="Destroy" visibility="public">
+                  </methodref>
+                  <methodref name="Assign" visibility="public">
+                  </methodref>
+                  <methodref name="GetNamePath" visibility="public">
+                  </methodref>
+                  <ancestor name="TObject" namespace="System">
+                    <methodref name="Create" visibility="public">
+                    </methodref>
+                    <methodref name="Free" visibility="public">
+                    </methodref>
+                    <methodref name="InitInstance" visibility="public">
+                    </methodref>
+                    <methodref name="CleanupInstance" visibility="public">
+                    </methodref>
+                    <methodref name="ClassType" visibility="public">
+                    </methodref>
+                    <methodref name="ClassName" visibility="public">
+                    </methodref>
+                    <methodref name="ClassNameIs" visibility="public">
+                    </methodref>
+                    <methodref name="ClassParent" visibility="public">
+                    </methodref>
+                    <methodref name="ClassInfo" visibility="public">
+                    </methodref>
+                    <methodref name="InstanceSize" visibility="public">
+                    </methodref>
+                    <methodref name="InheritsFrom" visibility="public">
+                    </methodref>
+                    <methodref name="MethodAddress" visibility="public">
+                    </methodref>
+                    <methodref name="MethodName" visibility="public">
+                    </methodref>
+                    <methodref name="FieldAddress" visibility="public">
+                    </methodref>
+                    <methodref name="GetInterface" visibility="public">
+                    </methodref>
+                    <methodref name="GetInterfaceEntry" visibility="public">
+                    </methodref>
+                    <methodref name="GetInterfaceTable" visibility="public">
+                    </methodref>
+                    <methodref name="SafeCallException" visibility="public">
+                    </methodref>
+                    <methodref name="AfterConstruction" visibility="public">
+                    </methodref>
+                    <methodref name="BeforeDestruction" visibility="public">
+                    </methodref>
+                    <methodref name="Dispatch" visibility="public">
+                    </methodref>
+                    <methodref name="DefaultHandler" visibility="public">
+                    </methodref>
+                    <methodref name="NewInstance" visibility="public">
+                    </methodref>
+                    <methodref name="FreeInstance" visibility="public">
+                    </methodref>
+                    <methodref name="Destroy" visibility="public">
+                    </methodref>
+                  </ancestor>
+                </ancestor>
+              </ancestor>
+            </ancestor>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="memo2" type="TMemo" visibility="published" />
+      <field name="Splitter1" type="TSplitter" visibility="published" />
+      <field name="PSScript" type="TPSScript" visibility="published" />
+      <field name="PS3DllPlugin" type="TPSDllPlugin" visibility="published" />
+      <field name="MainMenu1" type="TMainMenu" visibility="published" />
+      <field name="Program1" type="TMenuItem" visibility="published" />
+      <field name="Compile1" type="TMenuItem" visibility="published" />
+      <field name="Files1" type="TMenuItem" visibility="published" />
+      <field name="open1" type="TMenuItem" visibility="published" />
+      <field name="Save2" type="TMenuItem" visibility="published" />
+      <field name="Options1" type="TMenuItem" visibility="published" />
+      <field name="Savebefore1" type="TMenuItem" visibility="published" />
+      <field name="Largefont1" type="TMenuItem" visibility="published" />
+      <field name="sBytecode1" type="TMenuItem" visibility="published" />
+      <field name="Saveas3" type="TMenuItem" visibility="published" />
+      <field name="Clear1" type="TMenuItem" visibility="published" />
+      <field name="Slinenumbers1" type="TMenuItem" visibility="published" />
+      <field name="About1" type="TMenuItem" visibility="published" />
+      <field name="Search1" type="TMenuItem" visibility="published" />
+      <field name="SynPasSyn1" type="TSynPasSyn" visibility="published" />
+      <field name="memo1" type="TSynMemo" visibility="published" />
+      <field name="SynEditSearch1" type="TSynEditSearch" visibility="published" />
+      <field name="WordWrap1" type="TMenuItem" visibility="published" />
+      <field name="XPManifest1" type="TXPManifest" visibility="published" />
+      <field name="SearchNext1" type="TMenuItem" visibility="published" />
+      <field name="Replace1" type="TMenuItem" visibility="published" />
+      <field name="PSImport_Controls1" type="TPSImport_Controls" visibility="published" />
+      <field name="PSImport_Classes1" type="TPSImport_Classes" visibility="published" />
+      <field name="ShowInclude1" type="TMenuItem" visibility="published" />
+      <field name="SynEditPrint1" type="TSynEditPrint" visibility="published" />
+      <field name="Printout1" type="TMenuItem" visibility="published" />
+      <field name="mnPrintColors1" type="TMenuItem" visibility="published" />
+      <field name="dlgFilePrint" type="TPrintDialog" visibility="published" />
+      <field name="dlgPrintFont1" type="TFontDialog" visibility="published" />
+      <field name="mnuPrintFont1" type="TMenuItem" visibility="published" />
+      <field name="Include1" type="TMenuItem" visibility="published" />
+      <field name="CodeCompletionList1" type="TMenuItem" visibility="published" />
+      <field name="IncludeList1" type="TMenuItem" visibility="published" />
+      <field name="ImageList1" type="TImageList" visibility="published" />
+      <field name="ImageList2" type="TImageList" visibility="published" />
+      <field name="CoolBar1" type="TCoolBar" visibility="published" />
+      <field name="ToolBar1" type="TToolBar" visibility="published" />
+      <field name="tbtnLoad" type="TToolButton" visibility="published" />
+      <field name="ToolButton2" type="TToolButton" visibility="published" />
+      <field name="tbtnFind" type="TToolButton" visibility="published" />
+      <field name="tbtnCompile" type="TToolButton" visibility="published" />
+      <field name="tbtnTrans" type="TToolButton" visibility="published" />
+      <field name="ToolButton5" type="TToolButton" visibility="published" />
+      <field name="ToolButton1" type="TToolButton" visibility="published" />
+      <field name="ToolButton3" type="TToolButton" visibility="published" />
+      <field name="statusBar1" type="TStatusBar" visibility="published" />
+      <field name="SaveOutput1" type="TMenuItem" visibility="published" />
+      <field name="ExportClipboard1" type="TMenuItem" visibility="published" />
+      <field name="Close1" type="TMenuItem" visibility="published" />
+      <field name="Manual1" type="TMenuItem" visibility="published" />
+      <field name="About2" type="TMenuItem" visibility="published" />
+      <field name="loadLastfile1" type="TMenuItem" visibility="published" />
+      <field name="imglogo" type="TImage" visibility="published" />
+      <field name="cedebug" type="TPSScriptDebugger" visibility="published" />
+      <field name="debugPopupMenu1" type="TPopupMenu" visibility="published" />
+      <field name="BreakPointMenu" type="TMenuItem" visibility="published" />
+      <field name="Decompile1" type="TMenuItem" visibility="published" />
+      <field name="N2" type="TMenuItem" visibility="published" />
+      <field name="StepInto1" type="TMenuItem" visibility="published" />
+      <field name="StepOut1" type="TMenuItem" visibility="published" />
+      <field name="Reset1" type="TMenuItem" visibility="published" />
+      <field name="N3" type="TMenuItem" visibility="published" />
+      <field name="DebugRun1" type="TMenuItem" visibility="published" />
+      <field name="PSImport_ComObj1" type="TPSImport_ComObj" visibility="published" />
+      <field name="PSImport_StdCtrls1" type="TPSImport_StdCtrls" visibility="published" />
+      <field name="PSImport_Forms1" type="TPSImport_Forms" visibility="published" />
+      <field name="PSImport_DateUtils1" type="TPSImport_DateUtils" visibility="published" />
+      <field name="tutorial4" type="TMenuItem" visibility="published" />
+      <field name="ExporttoClipboard1" type="TMenuItem" visibility="published" />
+      <field name="ImportfromClipboard1" type="TMenuItem" visibility="published" />
+      <field name="N4" type="TMenuItem" visibility="published" />
+      <field name="N5" type="TMenuItem" visibility="published" />
+      <field name="N6" type="TMenuItem" visibility="published" />
+      <field name="ImportfromClipboard2" type="TMenuItem" visibility="published" />
+      <field name="tutorial1" type="TMenuItem" visibility="published" />
+      <field name="N7" type="TMenuItem" visibility="published" />
+      <field name="ShowSpecChars1" type="TMenuItem" visibility="published" />
+      <field name="OpenDirectory1" type="TMenuItem" visibility="published" />
+      <field name="procMess" type="TMenuItem" visibility="published" />
+      <field name="tbtnUseCase" type="TToolButton" visibility="published" />
+      <field name="ToolButton7" type="TToolButton" visibility="published" />
+      <field name="EditFont1" type="TMenuItem" visibility="published" />
+      <field name="UseCase1" type="TMenuItem" visibility="published" />
+      <field name="tutorial21" type="TMenuItem" visibility="published" />
+      <field name="OpenUseCase1" type="TMenuItem" visibility="published" />
+      <field name="PSImport_DB1" type="TPSImport_DB" visibility="published" />
+      <field name="tutorial31" type="TMenuItem" visibility="published" />
+      <field name="SynHtmlSyn1" type="TSynHTMLSyn" visibility="published" />
+      <field name="HTMLSyntax1" type="TMenuItem" visibility="published" />
+      <field name="ShowInterfaces1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial5" type="TMenuItem" visibility="published" />
+      <field name="AllFunctionsList1" type="TMenuItem" visibility="published" />
+      <field name="ShowLastException1" type="TMenuItem" visibility="published" />
+      <field name="PlayMP31" type="TMenuItem" visibility="published" />
+      <field name="SynTeXSyn1" type="TSynTeXSyn" visibility="published" />
+      <field name="texSyntax1" type="TMenuItem" visibility="published" />
+      <field name="N8" type="TMenuItem" visibility="published" />
+      <field name="GetEMails1" type="TMenuItem" visibility="published" />
+      <field name="SynCppSyn1" type="TSynCppSyn" visibility="published" />
+      <field name="CSyntax1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial6" type="TMenuItem" visibility="published" />
+      <field name="New1" type="TMenuItem" visibility="published" />
+      <field name="AllObjectsList1" type="TMenuItem" visibility="published" />
+      <field name="LoadBytecode1" type="TMenuItem" visibility="published" />
+      <field name="CipherFile1" type="TMenuItem" visibility="published" />
+      <field name="N9" type="TMenuItem" visibility="published" />
+      <field name="N10" type="TMenuItem" visibility="published" />
+      <field name="Tutorial11" type="TMenuItem" visibility="published" />
+      <field name="Tutorial71" type="TMenuItem" visibility="published" />
+      <field name="UpdateService1" type="TMenuItem" visibility="published" />
+      <field name="PascalSchool1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial81" type="TMenuItem" visibility="published" />
+      <field name="DelphiSite1" type="TMenuItem" visibility="published" />
+      <field name="Output1" type="TMenuItem" visibility="published" />
+      <field name="TerminalStyle1" type="TMenuItem" visibility="published" />
+      <field name="ReadOnly1" type="TMenuItem" visibility="published" />
+      <field name="ShellStyle1" type="TMenuItem" visibility="published" />
+      <field name="BigScreen1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial91" type="TMenuItem" visibility="published" />
+      <field name="SaveOutput2" type="TMenuItem" visibility="published" />
+      <field name="N11" type="TMenuItem" visibility="published" />
+      <field name="SaveScreenshot" type="TMenuItem" visibility="published" />
+      <field name="Tutorial101" type="TMenuItem" visibility="published" />
+      <field name="SQLSyntax1" type="TMenuItem" visibility="published" />
+      <field name="SynSQLSyn1" type="TSynSQLSyn" visibility="published" />
+      <field name="Console1" type="TMenuItem" visibility="published" />
+      <field name="SynXMLSyn1" type="TSynXMLSyn" visibility="published" />
+      <field name="XMLSyntax1" type="TMenuItem" visibility="published" />
+      <field name="ComponentCount1" type="TMenuItem" visibility="published" />
+      <field name="NewInstance1" type="TMenuItem" visibility="published" />
+      <field name="toolbtnTutorial" type="TToolButton" visibility="published" />
+      <field name="Memory1" type="TMenuItem" visibility="published" />
+      <field name="SynJavaSyn1" type="TSynJavaSyn" visibility="published" />
+      <field name="JavaSyntax1" type="TMenuItem" visibility="published" />
+      <field name="SyntaxCheck1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial10Statistics1" type="TMenuItem" visibility="published" />
+      <field name="ScriptExplorer1" type="TMenuItem" visibility="published" />
+      <field name="FormOutput1" type="TMenuItem" visibility="published" />
+      <field name="ArduinoDump1" type="TMenuItem" visibility="published" />
+      <field name="AndroidDump1" type="TMenuItem" visibility="published" />
+      <field name="GotoEnd1" type="TMenuItem" visibility="published" />
+      <field name="AllResourceList1" type="TMenuItem" visibility="published" />
+      <field name="ToolButton4" type="TToolButton" visibility="published" />
+      <field name="tbtn6res" type="TToolButton" visibility="published" />
+      <field name="Tutorial11Forms1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial12SQL1" type="TMenuItem" visibility="published" />
+      <field name="ResourceExplore1" type="TMenuItem" visibility="published" />
+      <field name="Info1" type="TMenuItem" visibility="published" />
+      <field name="N12" type="TMenuItem" visibility="published" />
+      <field name="CryptoBox1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial13Ciphering1" type="TMenuItem" visibility="published" />
+      <field name="CipherFile2" type="TMenuItem" visibility="published" />
+      <field name="N13" type="TMenuItem" visibility="published" />
+      <field name="ModulesCount1" type="TMenuItem" visibility="published" />
+      <field name="AddOns2" type="TMenuItem" visibility="published" />
+      <field name="N4GewinntGame1" type="TMenuItem" visibility="published" />
+      <field name="DocuforAddOns1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial14Async1" type="TMenuItem" visibility="published" />
+      <field name="Lessons15Review1" type="TMenuItem" visibility="published" />
+      <field name="SynPHPSyn1" type="TSynPHPSyn" visibility="published" />
+      <field name="PHPSyntax1" type="TMenuItem" visibility="published" />
+      <field name="Breakpoint1" type="TMenuItem" visibility="published" />
+      <field name="SerialRS2321" type="TMenuItem" visibility="published" />
+      <field name="N14" type="TMenuItem" visibility="published" />
+      <field name="SynCSSyn1" type="TSynCSSyn" visibility="published" />
+      <field name="CSyntax2" type="TMenuItem" visibility="published" />
+      <field name="Calculator1" type="TMenuItem" visibility="published" />
+      <field name="tbtnSerial" type="TToolButton" visibility="published" />
+      <field name="ToolButton8" type="TToolButton" visibility="published" />
+      <field name="Tutorial151" type="TMenuItem" visibility="published" />
+      <field name="N15" type="TMenuItem" visibility="published" />
+      <field name="N16" type="TMenuItem" visibility="published" />
+      <field name="ControlBar1" type="TControlBar" visibility="published" />
+      <field name="ToolBar2" type="TToolBar" visibility="published" />
+      <field name="BtnOpen" type="TToolButton" visibility="published" />
+      <field name="BtnSave" type="TToolButton" visibility="published" />
+      <field name="BtnPrint" type="TToolButton" visibility="published" />
+      <field name="BtnColors" type="TToolButton" visibility="published" />
+      <field name="btnClassReport" type="TToolButton" visibility="published" />
+      <field name="BtnRotateRight" type="TToolButton" visibility="published" />
+      <field name="BtnFullSize" type="TToolButton" visibility="published" />
+      <field name="BtnFitToWindowSize" type="TToolButton" visibility="published" />
+      <field name="BtnZoomMinus" type="TToolButton" visibility="published" />
+      <field name="BtnZoomPlus" type="TToolButton" visibility="published" />
+      <field name="Panel1" type="TPanel" visibility="published" />
+      <field name="CB1SCList" type="TComboBox" visibility="published" />
+      <field name="ImageListNormal" type="TImageList" visibility="published" />
+      <field name="spbtnexplore" type="TSpeedButton" visibility="published" />
+      <field name="spbtnexample" type="TSpeedButton" visibility="published" />
+      <field name="spbsaveas" type="TSpeedButton" visibility="published" />
+      <field name="imglogobox" type="TImage" visibility="published" />
+      <field name="EnlargeFont1" type="TMenuItem" visibility="published" />
+      <field name="EnlargeFont2" type="TMenuItem" visibility="published" />
+      <field name="ShrinkFont1" type="TMenuItem" visibility="published" />
+      <field name="ThreadDemo1" type="TMenuItem" visibility="published" />
+      <field name="HEXEditor1" type="TMenuItem" visibility="published" />
+      <field name="HEXView1" type="TMenuItem" visibility="published" />
+      <field name="HEXInspect1" type="TMenuItem" visibility="published" />
+      <field name="SynExporterHTML1" type="TSynExporterHTML" visibility="published" />
+      <field name="ExporttoHTML1" type="TMenuItem" visibility="published" />
+      <field name="ClassCount1" type="TMenuItem" visibility="published" />
+      <field name="HTMLOutput1" type="TMenuItem" visibility="published" />
+      <field name="HEXEditor2" type="TMenuItem" visibility="published" />
+      <field name="Minesweeper1" type="TMenuItem" visibility="published" />
+      <field name="N17" type="TMenuItem" visibility="published" />
+      <field name="PicturePuzzle1" type="TMenuItem" visibility="published" />
+      <field name="sbvclhelp" type="TSpeedButton" visibility="published" />
+      <field name="DependencyWalker1" type="TMenuItem" visibility="published" />
+      <field name="WebScanner1" type="TMenuItem" visibility="published" />
+      <field name="View1" type="TMenuItem" visibility="published" />
+      <field name="mnToolbar1" type="TMenuItem" visibility="published" />
+      <field name="mnStatusbar2" type="TMenuItem" visibility="published" />
+      <field name="mnConsole2" type="TMenuItem" visibility="published" />
+      <field name="mnCoolbar2" type="TMenuItem" visibility="published" />
+      <field name="mnSplitter2" type="TMenuItem" visibility="published" />
+      <field name="WebServer1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial17Server1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial18Arduino1" type="TMenuItem" visibility="published" />
+      <field name="SynPerlSyn1" type="TSynPerlSyn" visibility="published" />
+      <field name="PerlSyntax1" type="TMenuItem" visibility="published" />
+      <field name="SynPythonSyn1" type="TSynPythonSyn" visibility="published" />
+      <field name="PythonSyntax1" type="TMenuItem" visibility="published" />
+      <field name="DMathLibrary1" type="TMenuItem" visibility="published" />
+      <field name="IntfNavigator1" type="TMenuItem" visibility="published" />
+      <field name="EnlargeFontConsole1" type="TMenuItem" visibility="published" />
+      <field name="ShrinkFontConsole1" type="TMenuItem" visibility="published" />
+      <field name="SetInterfaceList1" type="TMenuItem" visibility="published" />
+      <field name="popintfList" type="TPopupMenu" visibility="published" />
+      <field name="intfAdd1" type="TMenuItem" visibility="published" />
+      <field name="intfDelete1" type="TMenuItem" visibility="published" />
+      <field name="intfRefactor1" type="TMenuItem" visibility="published" />
+      <field name="Defactor1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial19COMArduino1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial20Regex" type="TMenuItem" visibility="published" />
+      <field name="N18" type="TMenuItem" visibility="published" />
+      <field name="ManualE1" type="TMenuItem" visibility="published" />
+      <field name="FullTextFinder1" type="TMenuItem" visibility="published" />
+      <field name="Move1" type="TMenuItem" visibility="published" />
+      <field name="FractalDemo1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial21Android1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial0Function1" type="TMenuItem" visibility="published" />
+      <field name="SimuLogBox1" type="TMenuItem" visibility="published" />
+      <field name="OpenExamples1" type="TMenuItem" visibility="published" />
+      <field name="SynJScriptSyn1" type="TSynJScriptSyn" visibility="published" />
+      <field name="JavaScriptSyntax1" type="TMenuItem" visibility="published" />
+      <field name="Halt1" type="TMenuItem" visibility="published" />
+      <field name="CodeSearch1" type="TMenuItem" visibility="published" />
+      <field name="SynRubySyn1" type="TSynRubySyn" visibility="published" />
+      <field name="RubySyntax1" type="TMenuItem" visibility="published" />
+      <field name="Undo1" type="TMenuItem" visibility="published" />
+      <field name="SynUNIXShellScriptSyn1" type="TSynUNIXShellScriptSyn" visibility="published" />
+      <field name="LinuxShellScript1" type="TMenuItem" visibility="published" />
+      <field name="Rename1" type="TMenuItem" visibility="published" />
+      <field name="spdcodesearch" type="TSpeedButton" visibility="published" />
+      <field name="Preview1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial22Services1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial23RealTime1" type="TMenuItem" visibility="published" />
+      <field name="Configuration1" type="TMenuItem" visibility="published" />
+      <field name="MP3Player1" type="TMenuItem" visibility="published" />
+      <field name="DLLSpy1" type="TMenuItem" visibility="published" />
+      <field name="SynURIOpener1" type="TSynURIOpener" visibility="published" />
+      <field name="SynURISyn1" type="TSynURISyn" visibility="published" />
+      <field name="URILinksClicks1" type="TMenuItem" visibility="published" />
+      <field name="EditReplace1" type="TMenuItem" visibility="published" />
+      <field name="GotoLine1" type="TMenuItem" visibility="published" />
+      <field name="ActiveLineColor1" type="TMenuItem" visibility="published" />
+      <field name="ConfigFile1" type="TMenuItem" visibility="published" />
+      <field name="Sort1Intflist" type="TMenuItem" visibility="published" />
+      <field name="Redo1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial24CleanCode1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial25Configuration1" type="TMenuItem" visibility="published" />
+      <field name="IndentSelection1" type="TMenuItem" visibility="published" />
+      <field name="UnindentSection1" type="TMenuItem" visibility="published" />
+      <field name="SkyStyle1" type="TMenuItem" visibility="published" />
+      <field name="N19" type="TMenuItem" visibility="published" />
+      <field name="CountWords1" type="TMenuItem" visibility="published" />
+      <field name="imbookmarkimages" type="TImageList" visibility="published" />
+      <field name="Bookmark11" type="TMenuItem" visibility="published" />
+      <field name="N20" type="TMenuItem" visibility="published" />
+      <field name="Bookmark21" type="TMenuItem" visibility="published" />
+      <field name="Bookmark31" type="TMenuItem" visibility="published" />
+      <field name="Bookmark41" type="TMenuItem" visibility="published" />
+      <field name="SynMultiSyn1" type="TSynMultiSyn" visibility="published" />
+      <field name="ScriptListbox1" type="TMenuItem" visibility="published" />
+      <field name="CountWords2" type="TMenuItem" visibility="published" />
+      <field name="Bookmark51" type="TMenuItem" visibility="published" />
+      <field name="EnlargeGutter1" type="TMenuItem" visibility="published" />
+      <field name="Tetris1" type="TMenuItem" visibility="published" />
+      <field name="ToDoList1" type="TMenuItem" visibility="published" />
+      <field name="ProcessList1" type="TMenuItem" visibility="published" />
+      <field name="MetricReport1" type="TMenuItem" visibility="published" />
+      <field name="InternetRadio1" type="TMenuItem" visibility="published" />
+      <field name="TCPSockets1" type="TMenuItem" visibility="published" />
+      <field name="ConfigUpdate1" type="TMenuItem" visibility="published" />
+      <field name="ADOWorkbench1" type="TMenuItem" visibility="published" />
+      <field name="SocketServer1" type="TMenuItem" visibility="published" />
+      <field name="FormDemo1" type="TMenuItem" visibility="published" />
+      <field name="Richedit1" type="TMenuItem" visibility="published" />
+      <field name="SimpleBrowser1" type="TMenuItem" visibility="published" />
+      <field name="Tools1" type="TMenuItem" visibility="published" />
+      <field name="Richedit2" type="TMenuItem" visibility="published" />
+      <field name="Browser1" type="TMenuItem" visibility="published" />
+      <field name="UnitAnalyzer1" type="TMenuItem" visibility="published" />
+      <field name="SynExport1" type="TMenuItem" visibility="published" />
+      <field name="DOSShell1" type="TMenuItem" visibility="published" />
+      <field name="ExporttoRTF1" type="TMenuItem" visibility="published" />
+      <field name="SynExporterRTF1" type="TSynExporterRTF" visibility="published" />
+      <field name="FindFunction1" type="TMenuItem" visibility="published" />
+      <field name="SOAPTester1" type="TMenuItem" visibility="published" />
+      <field name="Sniffer1" type="TMenuItem" visibility="published" />
+      <field name="AutoDetectSyntax1" type="TMenuItem" visibility="published" />
+      <field name="SynCssSyn1" type="TSynCssSyn" visibility="published" />
+      <field name="SynEiffelSyn1" type="TSynEiffelSyn" visibility="published" />
+      <field name="FPlot1" type="TMenuItem" visibility="published" />
+      <field name="N21" type="TMenuItem" visibility="published" />
+      <field name="PasStyle1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial183RGBLED1" type="TMenuItem" visibility="published" />
+      <field name="Reversi1" type="TMenuItem" visibility="published" />
+      <field name="ManualmaXbox1" type="TMenuItem" visibility="published" />
+      <field name="BlaisePascalMagazine1" type="TMenuItem" visibility="published" />
+      <field name="SynAsmSyn1" type="TSynAsmSyn" visibility="published" />
+      <field name="AddToDo1" type="TMenuItem" visibility="published" />
+      <field name="CreateGUID1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial27XML1" type="TMenuItem" visibility="published" />
+      <field name="SynDfmSyn1" type="TSynDfmSyn" visibility="published" />
+      <field name="SynVBSyn1" type="TSynVBSyn" visibility="published" />
+      <field name="CreateDLLStub1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial28DLL1" type="TMenuItem" visibility="published" />
+      <field name="FileChanges1" type="TMenuItem" visibility="published" />
+      <field name="OpenGLTry1" type="TMenuItem" visibility="published" />
+      <field name="AllUnitList1" type="TMenuItem" visibility="published" />
+      <field name="spdbrowse" type="TSpeedButton" visibility="published" />
+      <field name="Tutorial29UML" type="TMenuItem" visibility="published" />
+      <field name="CreateHeader1" type="TMenuItem" visibility="published" />
+      <field name="Oscilloscope1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial30WOT1" type="TMenuItem" visibility="published" />
+      <field name="SynIniSyn1" type="TSynIniSyn" visibility="published" />
+      <field name="GetWebScript1" type="TMenuItem" visibility="published" />
+      <field name="SynBatSyn1" type="TSynBatSyn" visibility="published" />
+      <field name="Checkers1" type="TMenuItem" visibility="published" />
+      <field name="TaskMgr1" type="TMenuItem" visibility="published" />
+      <field name="WebCam1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial31Closure1" type="TMenuItem" visibility="published" />
+      <field name="GEOMapView1" type="TMenuItem" visibility="published" />
+      <field name="SynIdlSyn1" type="TSynIdlSyn" visibility="published" />
+      <field name="Run1" type="TMenuItem" visibility="published" />
+      <field name="GPSSatView1" type="TMenuItem" visibility="published" />
+      <field name="N3DLab1" type="TMenuItem" visibility="published" />
+      <field name="ExternalApp1" type="TMenuItem" visibility="published" />
+      <field name="PANView1" type="TMenuItem" visibility="published" />
+      <field name="Tutorial39GEOMaps1" type="TMenuItem" visibility="published" />
+      <field name="UnitConverter1" type="TMenuItem" visibility="published" />
+      <field name="SynVBScriptSyn1" type="TSynVBScriptSyn" visibility="published" />
+      <field name="MyScript1" type="TMenuItem" visibility="published" />
+      <field name="Terminal1" type="TMenuItem" visibility="published" />
+      <field name="SynMsgSyn1" type="TSynMsgSyn" visibility="published" />
+      <field name="Tutorial361" type="TMenuItem" visibility="published" />
+      <field name="ArduinoIOT1" type="TMenuItem" visibility="published" />
+      <field name="TrainingArduino1" type="TMenuItem" visibility="published" />
+      <field name="Chess41" type="TMenuItem" visibility="published" />
+      <field name="OrangeStyle1" type="TMenuItem" visibility="published" />
+      <field name="Darkcolor1" type="TMenuItem" visibility="published" />
+      <field name="MyScript21" type="TMenuItem" visibility="published" />
+      <field name="ExternalApp22" type="TMenuItem" visibility="published" />
+      <field name="ShowIndent1" type="TMenuItem" visibility="published" />
+      <field name="JumptoTerminal1" type="TMenuItem" visibility="published" />
+      <field name="JumptoOutput1" type="TMenuItem" visibility="published" />
+      <procedure name="IFPS3ClassesPlugin1CompImport" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="x" type="TPSPascalCompiler" />
+        </parameters>
+      </procedure>
+      <procedure name="IFPS3ClassesPlugin1ExecImport" visibility="published">
+        <devnotes>
+          uPSI_uTPLb_CodecIntf.pas
+          uPSI_neuralgeneric,        //4.7.6.10
+        </devnotes>
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Exec" type="TPSExec" />
+          <parameter name="x" type="TPSRuntimeClassImporter" />
+        </parameters>
+      </procedure>
+      <procedure name="PSScriptCompile" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TPSScript" />
+        </parameters>
+      </procedure>
+      <procedure name="Compile1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="PSScriptExecute" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TPSScript" />
+        </parameters>
+      </procedure>
+      <procedure name="open1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Save2Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Savebefore1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Largefont1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FormActivate" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SBytecode1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FormKeyPress" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Key" type="Char" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="Saveas3Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Clear1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Slinenumbers1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="About1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Search1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FormCreate" visibility="published">
+        <devnotes>
+          /4.7.5.20  ----47520
+          /3.9.2.2 fin -3.9.3
+        </devnotes>
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Memo1ReplaceText" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="ASearch" type="string" paramflags="const" />
+          <parameter name="AReplace" type="string" paramflags="const" />
+          <parameter name="Line" type="Integer" />
+          <parameter name="Column" type="Integer" />
+          <parameter name="Action" type="TSynReplaceAction" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="Memo1StatusChange" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Changes" type="TSynStatusChanges" />
+        </parameters>
+      </procedure>
+      <procedure name="WordWrap1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SearchNext1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Replace1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <function name="PSScriptNeedFile" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="OrginFileName" type="string" paramflags="const" />
+          <parameter name="FileName" type="string" paramflags="var" />
+          <parameter name="Output" type="string" paramflags="var" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="ShowInclude1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Printout1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="mnuPrintFont1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Include1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FormDestroy" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FormClose" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Action" type="TCloseAction" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="UpdateView1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CodeCompletionList1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SaveOutput1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ExportClipboard1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Close1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Manual1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadLastFile1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Memo1Change" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Decompile1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="StepInto1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="StepOut1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Reset1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="cedebugAfterExecute" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TPSScript" />
+        </parameters>
+      </procedure>
+      <procedure name="cedebugBreakpoint" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="FileName" type="string" paramflags="const" />
+          <parameter name="Position" type="Cardinal" />
+          <parameter name="Row" type="Cardinal" />
+          <parameter name="Col" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="cedebugCompile" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TPSScript" />
+        </parameters>
+      </procedure>
+      <procedure name="cedebugExecute" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TPSScript" />
+        </parameters>
+      </procedure>
+      <procedure name="cedebugIdle" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="cedebugLineInfo" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="FileName" type="string" paramflags="const" />
+          <parameter name="Position" type="Cardinal" />
+          <parameter name="Row" type="Cardinal" />
+          <parameter name="Col" type="Cardinal" />
+        </parameters>
+      </procedure>
+      <procedure name="Memo1SpecialLineColors" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Line" type="Integer" />
+          <parameter name="Special" type="Boolean" paramflags="var" />
+          <parameter name="FG" type="TColor" paramflags="var" />
+          <parameter name="BG" type="TColor" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="BreakPointMenuClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="DebugRun1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="tutorial4Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ImportfromClipboard1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ImportfromClipboard2Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="tutorial1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ShowSpecChars1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="StatusBar1DblClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="PSScriptLine" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="OpenDirectory1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="procMessClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="tbtnUseCaseClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="EditFont1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="tutorial21Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="tutorial31Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="HTMLSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ShowInterfaces1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial5Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ShowLastException1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="PlayMP31Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="AllFunctionsList1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="texSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="GetEMails1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial6Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="New1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="AllObjectsList1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadBytecode1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CipherFile1Click" visibility="published">
+        <devnotes>
+          chessbrd.Register;
+        </devnotes>
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial71Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="UpdateService1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="PascalSchool1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial81Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="DelphiSite1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="TerminalStyle1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ReadOnly1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ShellStyle1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="BigScreen1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial91Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SaveScreenshotClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial101Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SQLSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Console1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="XMLSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ComponentCount1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="NewInstance1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="toolbtnTutorialClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Memory1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="JavaSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SyntaxCheck1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial10Statistics1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ScriptExplorer1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FormOutput1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ArduinoDump1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="AndroidDump1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="GotoEnd1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="AllResourceList1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="tbtn6resClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial11Forms1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial12SQL1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ResourceExplore1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Info1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CryptoBox1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial13Ciphering1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ModulesCount1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="N4GewinntGame1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="DocuforAddOns1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial14Async1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Lessons15Review1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="PHPSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SerialRS2321Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CSyntax2Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Calculator1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial151Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="BtnZoomPlusClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="BtnZoomMinusClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="btnClassReportClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CB1SCListChange" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ThreadDemo1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="HEXView1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ExporttoHTML1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="HEXEditor2Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Minesweeper1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="PicturePuzzle1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="sbvclhelpClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="DependencyWalker1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CB1SCListDrawItem" visibility="published">
+        <parameters>
+          <parameter name="Control" type="TWinControl" />
+          <parameter name="Index" type="Integer" />
+          <parameter name="aRect" type="TRect" />
+          <parameter name="State" type="TOwnerDrawState" />
+        </parameters>
+      </procedure>
+      <procedure name="WebScanner1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="mnToolbar1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="mnStatusbar2Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="mnConsole2Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="mnCoolbar2Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="mnSplitter2Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="WebServer1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial17Server1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial18Arduino1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="PerlSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="PythonSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="DMathLibrary1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="IntfNavigator1Click" visibility="published">
+        <devnotes>
+          
+        </devnotes>
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="EnlargeFontConsole1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ShrinkFontConsole1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="intfAdd1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="intfDelete1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="intfRefactor1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Defactor1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial19COMArduino1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial20RegexClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ManualE1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FullTextFinder1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Move1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FractalDemo1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial21Android1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial0Function1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SimuLogBox1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="OpenExamples1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="JavaScriptSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Halt1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CodeSearch1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="RubySyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Undo1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="LinuxShellScript1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Rename1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SynEditPrint1PrintLine" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="LineNumber" type="Integer" />
+          <parameter name="PageNumber" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="Preview1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SynEditPrint1PrintStatus" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Status" type="TSynPrintStatus" />
+          <parameter name="PageNumber" type="Integer" />
+          <parameter name="Abort" type="Boolean" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial22Services1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial23RealTime1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Configuration1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="MP3Player1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="DLLSpy1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Memo1DblClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="URILinksClicks1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="EditReplace1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="GotoLine1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ActiveLineColor1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ConfigFile1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Sort1IntflistClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Redo1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial24CleanCode1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="IndentSelection1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="UnindentSection1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SkyStyle1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CountWords1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Memo1PlaceBookmark" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Mark" type="TSynEditMark" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="Memo1GutterClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Button" type="TMouseButton" />
+          <parameter name="X" type="Integer" />
+          <parameter name="Y" type="Integer" />
+          <parameter name="Line" type="Integer" />
+          <parameter name="Mark" type="TSynEditMark" />
+        </parameters>
+      </procedure>
+      <procedure name="Bookmark11Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Bookmark21Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Bookmark31Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Bookmark41Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SynMultiSyn1CustomRange" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TSynMultiSyn" />
+          <parameter name="Operation" type="TRangeOperation" />
+          <parameter name="Range" type="Pointer" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="ScriptListbox1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Memo2KeyPress" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Key" type="Char" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="Bookmark51Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="EnlargeGutter1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tetris1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ToDoList1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ProcessList1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="MetricReport1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="InternetRadio1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="TCPSockets1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ConfigUpdate1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ADOWorkbench1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SocketServer1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FormDemo1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Richedit1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SimpleBrowser1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="HEXEditor1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="DOSShell1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SynExport1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ExporttoRTF1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FormCloseQuery" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="CanClose" type="Boolean" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="FindFunction1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="SOAPTester1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Sniffer1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="AutoDetectSyntax1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FPlot1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="PasStyle1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial183RGBLED1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Reversi1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ManualmaXbox1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="BlaisePascalMagazine1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="AddToDo1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CreateGUID1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial27XML1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CreateDLLStub1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial28DLL1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="FileChanges1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="OpenGLTry1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="AllUnitList1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial29UMLClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="CreateHeader1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Oscilloscope1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial30WOT1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="GetWebScript1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Checkers1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="TaskMgr1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="WebCam1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial31Closure1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="GEOMapView1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Run1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="GPSSatView1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="N3DLab1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ExternalApp1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="PANView1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial39GEOMaps1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="UnitConverter1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="MyScript1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Terminal1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Tutorial361Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="TrainingArduino1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Chess41Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="OrangeStyle1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Darkcolor1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="MyScript2Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ExternalApp22Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ShowIndent1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="JumptoTerminal1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="JumptoOutput1Click" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <field name="STATSavebefore" type="Boolean" visibility="private" />
+      <field name="STATShowBytecode" type="Boolean" visibility="private" />
+      <field name="STATInclude" type="Boolean" visibility="private" />
+      <field name="STATEdchanged" type="Boolean" visibility="private" />
+      <field name="STATExceptionLog" type="Boolean" visibility="private" />
+      <field name="STATWriteFirst" type="Boolean" visibility="private" />
+      <field name="STATExecuteBoot" type="Boolean" visibility="private" />
+      <field name="STATLastfile" type="Boolean" visibility="private" />
+      <field name="STATMacro" type="Boolean" visibility="private" />
+      <field name="STATExecuteShell" type="Boolean" visibility="private" />
+      <field name="STATActiveyellow" type="Boolean" visibility="private" />
+      <field name="STATVersionCheck" type="Boolean" visibility="private" />
+      <field name="STATOtherHL" type="Boolean" visibility="private" />
+      <field name="STATAutoBookmark" type="Boolean" visibility="private" />
+      <field name="STATCodefolding" type="Boolean" visibility="private" />
+      <field name="Act_Filename" visibility="private">
+        <type name="Act_Filename" type="ShortString" />
+      </field>
+      <field name="ExternalApp" visibility="private">
+        <type name="ExternalApp" type="ShortString" />
+      </field>
+      <field name="ExternalApp2" visibility="private">
+        <type name="ExternalApp2" type="ShortString" />
+      </field>
+      <field name="Act_Filestring" type="string" visibility="private" />
+      <field name="Def_FName" visibility="private">
+        <type name="Def_FName" type="ShortString" />
+      </field>
+      <field name="Last_fName" visibility="private">
+        <type name="Last_fName" type="ShortString" />
+      </field>
+      <field name="Last_fName1" visibility="private">
+        <type name="Last_fName1" type="ShortString" />
+      </field>
+      <field name="Last_fName2" visibility="private">
+        <type name="Last_fName2" type="ShortString" />
+      </field>
+      <field name="Last_fName3" visibility="private">
+        <type name="Last_fName3" type="ShortString" />
+      </field>
+      <field name="Last_fName4" visibility="private">
+        <type name="Last_fName4" type="ShortString" />
+      </field>
+      <field name="Last_fName5" visibility="private">
+        <type name="Last_fName5" type="ShortString" />
+      </field>
+      <field name="Last_fName6" visibility="private">
+        <type name="Last_fName6" type="ShortString" />
+      </field>
+      <field name="Last_fName7" visibility="private">
+        <type name="Last_fName7" type="ShortString" />
+      </field>
+      <field name="Last_fName8" visibility="private">
+        <type name="Last_fName8" type="ShortString" />
+      </field>
+      <field name="Last_fName9" visibility="private">
+        <type name="Last_fName9" type="ShortString" />
+      </field>
+      <field name="Last_fName10" visibility="private">
+        <type name="Last_fName10" type="ShortString" />
+      </field>
+      <field name="ledimage" type="TImage" visibility="private" />
+      <field name="last_fontsize" type="Byte" visibility="private" />
+      <field name="fileextension" visibility="private">
+        <type name="fileextension" type="ShortString" />
+      </field>
+      <field name="fPrintOut" type="TSynEditPrint" visibility="private" />
+      <field name="fAutoComplete" type="TSynAutoComplete" visibility="private" />
+      <field name="fActiveLine" type="Integer" visibility="private" />
+      <field name="fResume" type="Boolean" visibility="private" />
+      <field name="fdebuginst" type="Boolean" visibility="private" />
+      <field name="debugoutform" type="Tdebugoutput" visibility="private" />
+      <field name="STATformOutput" type="Boolean" visibility="private" />
+      <field name="tmpcodestr" type="string" visibility="private" />
+      <field name="fmemoclick" type="Boolean" visibility="private" />
+      <field name="perftime" type="string" visibility="private" />
+      <field name="lbintflistwidth" type="Integer" visibility="private" />
+      <field name="Mark" type="TSynEditMark" visibility="private" />
+      <field name="bookmarkimage" type="Byte" visibility="private" />
+      <field name="factivelinecolor" type="TColor" visibility="private" />
+      <field name="fkeypressed" type="Boolean" visibility="private" />
+      <function name="CompileDebug" visibility="private">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="ExecuteDebug" visibility="private">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="RunCompiledScript" visibility="private">
+        <parameters>
+          <parameter name="bytecode" type="string" />
+          <parameter name="RTErrors" type="string" paramflags="out" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="showandSaveBCode" visibility="private">
+        <parameters>
+          <parameter name="bdata" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="lineToNumber" visibility="private">
+        <parameters>
+          <parameter name="met" type="Boolean" />
+        </parameters>
+      </procedure>
+      <procedure name="defFileread" visibility="private">
+      </procedure>
+      <procedure name="SaveFileOptionsToIni" visibility="private">
+        <parameters>
+          <parameter name="filen" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadFileNameFromIni" visibility="private">
+      </procedure>
+      <function name="GetClientTop" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="UpdateFindtext" visibility="private">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="FindNextText" visibility="private">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ReplaceNextText" visibility="private">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="WMDROP_THEFILES" visibility="public" procflags="message">
+        <parameters>
+          <parameter name="message" type="TWMDropFiles" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="ShowInterfaces" visibility="private">
+        <parameters>
+          <parameter name="myFile" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="AppOnException" visibility="private">
+        <parameters>
+          <parameter name="sender" type="TObject" />
+          <parameter name="E" type="Exception" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadBootScript" visibility="private">
+      </procedure>
+      <procedure name="LoadInterfaceList" visibility="private">
+      </procedure>
+      <procedure name="ClickinListbox" visibility="private">
+        <parameters>
+          <parameter name="sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="Expand_Macro" visibility="private">
+      </procedure>
+      <procedure name="FormMarkup" visibility="private">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <function name="getCodeEnd" visibility="private">
+        <parameters>
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <procedure name="GetWidth" visibility="private">
+        <parameters>
+          <parameter name="sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="GetIntflistWidth" visibility="private">
+        <parameters>
+          <parameter name="sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="ShowWords" visibility="private">
+        <parameters>
+          <parameter name="mystring" type="string" />
+        </parameters>
+      </procedure>
+      <function name="ParseMacros" visibility="private">
+        <parameters>
+          <parameter name="Str" type="string" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetInterfacesMarks" visibility="private">
+        <parameters>
+          <parameter name="myFile" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="SetInterfacesMarks2" visibility="private">
+        <parameters>
+          <parameter name="myFile" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="SetInterfacesMarksMemo3" visibility="private">
+      </procedure>
+      <procedure name="ClickinListbox2" visibility="private">
+        <parameters>
+          <parameter name="sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="defFilereadUpdate" visibility="private">
+      </procedure>
+      <function name="RunCompiledScript2" visibility="private">
+        <parameters>
+          <parameter name="Bytecode" type="string" />
+          <parameter name="RuntimeErrors" type="string" paramflags="out" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="SetTodoMarks" visibility="private">
+        <parameters>
+          <parameter name="myFile" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="WMCopyData" visibility="public" procflags="message">
+        <parameters>
+          <parameter name="Msg" type="TWMCopyData" paramflags="var" />
+        </parameters>
+      </procedure>
+      <field name="STATMemoryReport" type="Boolean" visibility="public" />
+      <field name="IPHost" visibility="public">
+        <type name="IPHost" type="ShortString" />
+      </field>
+      <field name="IPPort" type="Integer" visibility="public" />
+      <field name="COMPort" type="Integer" visibility="public" />
+      <field name="lbintflist" type="TListBox" visibility="public" />
+      <function name="GetStatChange" visibility="public">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="SetStatChange" visibility="public">
+        <parameters>
+          <parameter name="vstat" type="Boolean" />
+        </parameters>
+      </procedure>
+      <function name="GetActFileName" visibility="public">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <function name="GetScriptPath" visibility="public">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetActFileName" visibility="public">
+        <parameters>
+          <parameter name="vname" type="string" />
+        </parameters>
+      </procedure>
+      <function name="GetLastFileName" visibility="public">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetLastFileName" visibility="public">
+        <parameters>
+          <parameter name="vname" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="WebScannerDirect" visibility="public">
+        <parameters>
+          <parameter name="urls" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="LoadInterfaceList2" visibility="public">
+      </procedure>
+      <function name="GetStatExecuteShell" visibility="public">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="DoEditorExecuteCommand" visibility="public">
+        <parameters>
+          <parameter name="EditorCommand" type="Word" />
+        </parameters>
+      </procedure>
+      <function name="GetActiveLineColor" visibility="public">
+        <parameters>
+          <retval type="TColor" />
+        </parameters>
+      </function>
+      <procedure name="SetActiveLineColor" visibility="public">
+        <parameters>
+          <parameter name="acolor" type="TColor" />
+        </parameters>
+      </procedure>
+      <function name="GetPerftime" visibility="public">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="ResetKeyPressed" visibility="public">
+      </procedure>
+      <procedure name="SetKeyPressed" visibility="public">
+      </procedure>
+      <procedure name="SaveByteCode" visibility="public">
+      </procedure>
+      <function name="GetPSScript" visibility="public">
+        <parameters>
+          <retval type="TPSScript" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <variable name="maxForm1" type="TMaxForm1" />
+</namespace>

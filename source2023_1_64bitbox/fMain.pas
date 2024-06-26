@@ -191,8 +191,15 @@
           12275   4.7.6.10 IX unit ALHttpClient2 ils    OpenAPI Extensions for EKON26  ALWininetHttpClient2
           12280   4.7.6.10 X unit unit uPSI_RestUtils;   TEEChart extensions , WGet3()
           12298   4.7.6.20 bugfixing teEngine, tecanvas , PSResources TFEditorBuildRegFuncList(Sender: TPSScript);
-            try   5.0.1.10  could not run - alpha state
-          12481   5.0.1.11 first time 24/08/2023 double compile - py64 test
+          12312   4.7.6.20 V bugfixing teEngine, TChart , neuralfit, INet, elevated support, webpostdata2, synCrtSock;
+          12316   4.7.6.20 VIII httpsender - uPSI_HttpConnection;, interface support RESt client
+          12320   4.7.6.20 IX restclient, jsonconverter, jazzsound, superobject
+          12410   4.7.6.50 I internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core  -superobject
+          12414   4.7.6.50 II internals  - TProcess2 dprocess - xmlstorage  -AsphyreTimer -pacman core  -superobject
+          12420   4.7.6.50 III internals  - TJvCreateProcess2 - syscomp  -  -superobject fix teebar jpeg res ocean330
+          12430   4.7.6.50 IV collusive outcome, TExporter , SIRegister_uExporterDestinationCSV, TRexporter
+          - try   5.0.1.10  could not run - pre alpha state  - 20.8.2023
+          12481   5.0.1.11 first time 24/08/2023 double compile - py64 test passed!!
           12506   5.0.1.12 re register and import std, stdctrsl, classes, forms & graphics, bccompatible
           12518   5.0.1.13 x64 string return works, create CreateOleObject and variant from IDispatch works
           12541   5.0.1.14 maxform1. reflection utf8decode for loadfile, umath, getwebscript, jvchart
@@ -215,9 +222,11 @@
           13030   5.1.4.90 +OAuth O ,(@)GetGeoInfoMap5save, TBytes Viewer, bigfixing
           13035   5.1.4.95 SynCrtSock.pas, bigfixing, ALMultipartformdata , TIdMultiPartFormDataStream, modbus_indy10
           13044   5.1.4.98 HTTPUtils , HttpComponent, TIdMultiPartFormDataStream, modbus_indy10_2, stringstream savetofile(stream)
-          13055   5.1.4.98 IV XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX, MySQL
+          13070   5.1.4.98 VII XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX, MySQL
+          13088   5.1.4.98 VIII-IX uWebUI, RegexIII, Charsetmap+, truncate, uPSI_ComObjOleDB_utils2, idwebsocketclient, uwebsocket
+          13115   5.1.4.98 XIV uwebsocket2, nDoneWithPostStream , chartcolormap, customtcpserver, WebString, McJSON, codemap
 
-  ************************************************************************************* }
+************************************************************************************* }
 
 unit fMain;
 
@@ -1040,7 +1049,7 @@ type
   //  procedure WebScannerDirect(urls: string);
      procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
   public
-    STATMemoryReport: boolean;
+    STATMemoryReport, codemap: boolean;
     IPHost: string[255];
     IPPort: integer;
     COMPort: integer;
@@ -1236,6 +1245,8 @@ uses
   uPSI_OAuth,  //mX51490
   uPSI_Variants,       //olestream with IStream   regextest  res functions parsejsonvalue2
   uPSI_VarCmplx,
+  uPSI_WebString,
+  uPSI_McJSON, //V5.1.4.98 XII
   uPSI_DTDSchema, //*)
   uPSI_ShLwApi,
  uPSI_IBUtils,    //3.9.2.2 fin   *)
@@ -1433,7 +1444,7 @@ uses
   //uPSI_JvXmlDatabase,  // redeclared *)
   uPSI_WinAPI,    //register simple upsi_windows
   uPSI_HyperLabel,
-
+  uPSI_hhAvALT,
   uPSI_MultilangTranslator,
   //uPSI_TomDBQue,   *)
   uPSI_Starter,
@@ -1444,7 +1455,7 @@ uses
   ProcessListFrm,
   dprocess3,         //as TProcess2  --> TProcess
   uPSI_dpipes,
-  uPSI_dprocess,
+  uPSI_dprocess,       //parameters2 valid chaine
   //uPSI_cDictionaries,
   uPSI_oysUtils,
   tetris1,
@@ -1543,6 +1554,7 @@ uses
   uPSI_SynEdit,
   uPSI_SynEditRegexSearch,
   uPSI_SynMacroRecorder,  //*)
+  SynMiniMap,               //5.1.4.98 XIV
   //uPSI_SynHighlighterAny,
   //SynHighlighterAny,
   uPSI_SynEditKbdHandler,
@@ -1556,6 +1568,7 @@ uses
   uPSI_BlockSocket,
   //uPSI_IdExtHTTPServer,   //filetypetomimetype
    uPSI_JclMath,
+   uPSI_uWebUIMiscFunctions,      //5.1.4.98 VIII -IX
 
   ScktMain, //SocketServer   *)
   SvcMgr,       //fix application namespace  to svcmgr.sapplication
@@ -1651,8 +1664,9 @@ uses
   uPSI_HTTPUtil, //3.2  *)
   uPSI_HTTPApp, //3.7
   uPSI_IdSocketHandle,
+  uPSI_IdCustomTCPServer, //V51498 X
   uPSI_IdTCPServer, //  for bindings 5.0.2.90*)
-  uPSI_IdCustomHTTPServer, //*)
+  uPSI_IdCustomHTTPServer, //TIdHTTPServer   *)
   uPSI_U_MakeCityLocations2,  // for demo 5.0.3.60
   uPSI_UDict2,
   IFSI_IdURI,
@@ -1966,7 +1980,7 @@ uses
   uPSI_WinSvc2,   //*)
   uPSI_SvcMgr,
  uPSI_JvPickDate,
- //uPSI_JvNotify,     errors
+  //uPSI_JvNotify,     errors
   uPSI_JvStrHlder,   //*)
   uPSI_JclNTFS2,
   uPSI_Jcl8087, //3.9.9.94_3
@@ -2176,7 +2190,7 @@ uses
   uPSI_JvWinHelp,
   uPSI_WaveConverter,
   uPSI_ACMConvertor,    //*)
-  uPSI_ComObjOleDB_utils, //3.9.9.191
+  uPSI_ComObjOleDB_utils, //3.9.9.191     vardatasize!
   uPSI_SMScript,
   uPSI_CompFileIo,
  (* uPSI_SynHighlighterGeneral,  //3.9.9.192   *)
@@ -2220,6 +2234,8 @@ uses
   uPSI_SynEditAutoComplete,
   //uPSI_SynEditTextBuffer,
   uPSI_JclPCRE,
+  uPSI_JclPCRE2,
+  uPSI_GpTimezone,
   //uPSI_ZConnection,
   //uPSI_ZSequence, *)
   chessPrg,
@@ -2230,7 +2246,7 @@ uses
   uPSI_RegUtils,  //*)
   uPSI_StdFuncs,      // wrong iintit   - missing comp
   uPSI_VariantRtn,
-  //uPSI_SqlTxtRtns,    //*)
+  uPSI_SqlTxtRtns,    //*)
   uPSI_BSpectrum,
  uPSI_IPAddressControl,
   uPSI_Paradox,  //*)
@@ -2357,6 +2373,9 @@ uses
   uPSI_OverbyteIcsMimeUtils,    //*)
   uPSI_OverbyteIcsUrl,
   //uPSI_uWebSocket,
+  uPSI_IdWebSocketSimpleClient,   //5.1.4.98 IX
+  uPSI_ExecuteidWebSocket,
+  uPSI_ExecuteGLPanel, // ExecuteGLPanel;
   uPSI_KhFunction,
   uPSI_ALOpenOffice,
   //uPSI_ALLibPhoneNumber,    need dll
@@ -2388,6 +2407,7 @@ uses
    uPSI_Jsons,
    uPSI_Bricks,  //*)
    uPSI_lifeblocks,           //4.7.4.64
+   uPSI_AsciiShapes,
    //uPSI_SystemsDiagram,       //4.7.5.20 -----  47520
   //uPSI_qsFoundation,    *)
   //uPSI_Prediction,
@@ -2613,7 +2633,7 @@ uses
  uPSI_IdSimpleServer,
   //uPSI_OpenSSLUtils,   libeay
 //  uPSI_IdSSLOpenSSL,     //3.9.4    *)
-  uPSI_PerlRegEx,     //3.9.6
+  uPSI_PerlRegEx,     //3.9.6   getmatchstring
   uPSI_Masks,
   uPSI_Contnrs,
   uPSI_MyBigInt,
@@ -2809,6 +2829,7 @@ begin
   SIRegister_Clipbrd(X);
  (* SIRegister_SqlExpr(X); *)
   SIRegister_ADOInt(X);   //4.2.8.10  *)
+  SIRegister_uWebUIMiscFunctions(X);      //51498
 
   SIRegister_ADODB(X);
   SIRegister_DBGrids(X); //*)
@@ -2991,10 +3012,12 @@ begin
   //SIRegister_IdIOHandlerThrottle(X);    *)
   SIRegister_IdIOHandler(X);
   SIRegister_IdSocketHandle(X);
+  //SIRegister_IdCustomTCPServer(X);  //V51498 X
   SIRegister_IdIntercept(X);
   SIRegister_IdIOHandlerSocket(X);       //V5.0.2.90
   SIRegister_IdServerIOHandler(X);
   SIRegister_IdServerIOHandlerSocket(X); //7*)
+  SIRegister_IdCustomTCPServer(X);  //V51498 X
   SIRegister_IdCoder(X);
   SIRegister_IdRawBase(X);
   //SIRegister_IdNTLM(X);  *)
@@ -3215,6 +3238,7 @@ begin
   SIRegister_StBits(X);    //*)
   SIRegister_MultilangTranslator(X);
  SIRegister_HyperLabel(X);
+ SIRegister_hhAvALT(X);
   //SIRegister_TomDBQue(X);
   SIRegister_Starter(X);
   SIRegister_FileAssocs(X);
@@ -3312,8 +3336,7 @@ begin
   SIRegister_IdBlockCipherIntercept(X);
   //SIRegister_IdFTPList(X);                //4.2.5.10   *)
   SIRegister_IdCoderHeader(X);
-  (*
-  SIRegister_IdFTPServer(X);  *)
+  (* SIRegister_IdFTPServer(X);  *)
   SIRegister_IdFingerServer(X);    //*)
   SIRegister_StNet(X);
   SIRegister_StNetPfm(X);
@@ -3808,6 +3831,8 @@ SIRegister_cySearchFiles(X);
   //SIRegister_SynEditTextBuffer(X);
   SIRegister_JclPCRE(X);
   //RIRegister_JclPCRE_Routines(Exec);  *)
+  SIRegister_JclPCRE2(X);
+  SIRegister_GpTimezone(X);
   SIRegister_ChessBrd(X);
   SIRegister_ChessPrg(X);
   SIRegister_Graph3D(X);   //*)
@@ -3815,7 +3840,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_StdFuncs(X);   //this whole shot shit!è
   SIRegister_RegUtils(X);
   SIRegister_VariantRtn(X);
-// SIRegister_SqlTxtRtns(X);    //*)
+  SIRegister_SqlTxtRtns(X);    //*)
   SIRegister_BSpectrum(X);
   SIRegister_IPAddressControl(X);  //*)
   SIRegister_Paradox(X);
@@ -3959,6 +3984,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_Jsons(X);
   SIRegister_Bricks(X);
   SIRegister_lifeblocks(X);       //4.7.4.64       *)
+  SIRegister_AsciiShapes(X);
   SIRegister_cInternetUtils(X);    //4.7.5.20 -----  47520
   SIRegister_cWindows(X);
   SIRegister_flcSysUtils(X);      //*)
@@ -4113,6 +4139,11 @@ SIRegister_cySearchFiles(X);
   SIRegister_OverbyteIcsMimeUtils(X);   //*)
   SIRegister_OverbyteIcsUrl(X);
  // SIRegister_uWebSocket(X);
+ SIRegister_IdWebSocketSimpleClient(X);
+ SIRegister_ExecuteidWebSocket(X);
+ SIRegister_WebString(X);
+ SIRegister_McJSON(X);
+ SIRegister_ExecuteGLPanel(X);
   SIRegister_cSocksUtils(X);
   SIRegister_KhFunction(X);
   SIRegister_ALOpenOffice(X);
@@ -4532,7 +4563,16 @@ begin
   RIRegister_OverbyteIcsMimeUtils_Routines(Exec);  //*)
   RIRegister_OverbyteIcsUrl_Routines(Exec);
   //RIRegister_uWebSocket(X);
+  RIRegister_IdWebSocketSimpleClient(X);   //5.1.4.98 IX
+  RIRegister_ExecuteidWebSocket(X);
+  RIRegister_ExecuteWebsocket_Routines(Exec);
+  RIRegister_WebString(x);
+  RIRegister_WebString_Routines(Exec);
+  RIRegister_McJSON(X);
+  RIRegister_McJSON_Routines(Exec);
   RIRegister_cSocksUtils_Routines(Exec);
+  RIRegister_ExecuteGLPanel_Routines(Exec);
+  RIRegister_ExecuteGLPanel(X);
   RIRegister_KhFunction_Routines(exec);
   RIRegister_KhFunction(X);
   RIRegister_ALOpenOffice_Routines(Exec);
@@ -4567,6 +4607,7 @@ begin
   RIRegister_JsonsUtilsEx_Routines(Exec);
   RIRegister_Bricks(X);
   RIRegister_lifeblocks(X);  //*)
+  RIRegister_AsciiShapes(X);
   RIRegister_cInternetUtils_Routines(Exec);  ////4.7.5.20  ----47520
   RIRegister_cInternetUtils(X);   //*)
   RIRegister_cWindows_Routines(Exec);
@@ -4667,6 +4708,7 @@ begin
   RIRegister_IdSocks(X); //ZZ*)
   RIRegister_IdIOHandler(X);
   RIRegister_IdSocketHandle(X);
+  RIRegister_IdCustomTCPServer(X);
   RIRegister_IdMessageCoder(X);
   RIRegister_IdMessageCoderMIME(X);
   RIRegister_IdServerIOHandler(X);
@@ -5004,6 +5046,7 @@ begin
   RIRegister_MultilangTranslator(X);
   RIRegister_HyperLabel(X);
  (* RIRegister_TomDBQue(X);    *)
+  RIRegister_hhAvALT(X);
   RIRegister_Starter(X);
   RIRegister_FileAssocs_Routines(Exec);
   RIRegister_devFileMonitorX(X);  //*)
@@ -5080,7 +5123,6 @@ begin
   RIRegister_ValEdit(X);  //*)
   RIRegister_FMTBcd(X);
   RIRegister_FMTBcd_Routines(Exec);
-
   RIRegister_Provider_Routines(Exec); //3.6
   RIRegister_Provider(X); //*)
   RIRegister_DBClient_Routines(Exec);
@@ -5903,6 +5945,11 @@ RIRegister_DSUtil_Routines(Exec);
   //RIRegister_SynEditTextBuffer(X);
   RIRegister_JclPCRE(X);
   RIRegister_JclPCRE_Routines(Exec);   // *)
+  RIRegister_JclPCRE2(X);
+  RIRegister_JclPCRE2_Routines(Exec);   // *)
+  RIRegister_GpTimezone(X);
+  RIRegister_GpTimezone_Routines(Exec);
+
   RIRegister_ChessBrd(X);
   RIRegister_ChessPrg(X);    //Form
    RIRegister_Graph3D(X);
@@ -5912,7 +5959,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_StdFuncs_Routines(Exec);
   RIRegister_RegUtils_Routines(Exec);
   RIRegister_VariantRtn_Routines(Exec);
- // RIRegister_SqlTxtRtns_Routines(Exec); //*)
+  RIRegister_SqlTxtRtns_Routines(Exec); //*)
   RIRegister_BSpectrum(X);
  RIRegister_IPAddressControl(X);
   RIRegister_Paradox(X);
@@ -6064,6 +6111,7 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_xrtl_util_ValueImpl(X);  // *)
   RIRegister_ProxyUtils_Routines(Exec);
   RIRegister_OmniXMLUtils_Routines(Exec); //type real to test*)
+  RIRegister_uWebUIMiscFunctions_Routines(Exec);
 
   RIRegister_DebugBox(X); //*)
   RIRegister_HotLog(X);
@@ -6475,7 +6523,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean920 mX514 Rheingold+++++ beta280!';
+   maxform1.Caption:= 'maXbox5 Ocean980 mX514 XIVRheingold+++++ beta340!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -10425,9 +10473,12 @@ end;
 
 procedure Tmaxform1.FormDemo1Click(Sender: TObject);
 begin
+ //SynMiniMap;
   // actionMain unit;
-  // Application.CreateForm(TActionForm, ActionForm);
-  // ActionForm.Show;
+   Application.CreateForm(TActionForm, ActionForm);
+   ActionForm.Show;
+   Application.CreateForm(TFormSynEditMinimap, FormSynEditMinimap);
+   FormSynEditMinimap.Show;
 end;
 
 procedure Tmaxform1.FormDestroy(Sender: TObject);
@@ -10592,7 +10643,8 @@ end;
 
 procedure Tmaxform1.Tutorial20RegexClick(Sender: TObject);
 begin
-  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter20.pdf');
+  //searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter20.pdf');
+  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter125_modern_regex_medium.pdf');
 end;
 
 procedure Tmaxform1.Tutorial21Android1Click(Sender: TObject);
@@ -10662,7 +10714,9 @@ end;
 
 procedure Tmaxform1.Tutorial0Function1Click(Sender: TObject);
 begin
-  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter0.pdf');
+   Application.CreateForm(TFormSynEditMinimap, FormSynEditMinimap);
+   FormSynEditMinimap.Show;
+  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter7.pdf');
 end;
 
 procedure Tmaxform1.Tutorial101Click(Sender: TObject);
@@ -10681,12 +10735,15 @@ end;
 procedure Tmaxform1.CodeSearch1Click(Sender: TObject);
  var S: string;
 begin
+ codemap:= true;
+ Application.CreateForm(TFormSynEditMinimap, FormSynEditMinimap);
+   FormSynEditMinimap.Show;
   S:= '';
   S:= 'StringReplace(';
   if InputQuery('CodeSearchEngine2', 'Enter your code search for examples:', S) and (S <> '') then
     StartCodeFinder(S);
   //code searchforall
-end;
+  end;
 
 procedure Tmaxform1.Collapse1Click(Sender: TObject);
 begin
@@ -10861,6 +10918,7 @@ end;
 procedure Tmaxform1.tutorial21Click(Sender: TObject);
 begin
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter2.pdf');
+  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\VCLHierarchyPoster.pdf');
 end;
 
 procedure Tmaxform1.tutorial31Click(Sender: TObject);
@@ -12660,7 +12718,7 @@ begin
      Application.CreateForm(TresFormMain2, resFormMain2);
 
     //resFormMain2.filename:= application.ExeName;
-    // resFormMain2.OpenFile(application.ExeName);
+    // resFormMain2.OpenFilefil(application.ExeName);
     resFormMain2.StatusBarMain.Panels [1].Text := 'maXbox5 loaded';
     resFormMain2.Showmodal;
   { with FileOpenDialog do begin
@@ -12795,7 +12853,7 @@ begin
   if DirectoryExists((ExePath+'docs\')) then begin
     sOName:= ExePath+'docs\' + #0;
     sEName:= 'explorer.exe';
-   // ShellExecute(0, NIL, @sEName[1], @sOName[1], NIL, SW_SHOW);
+    ShellExecute(0, NIL, @sEName[1], @sOName[1], NIL, SW_SHOW);
   end else
     showMessage('No Tutorials Directory found...');
 end;
@@ -12903,7 +12961,6 @@ procedure Tmaxform1.JumptoTerminal1Click(Sender: TObject);
 begin
   memo2.setfocus;
 end;
-
 
 function Tmaxform1.getCodeEnd: integer;
 var i: integer;
@@ -13036,13 +13093,11 @@ end;
      //kh_function demo with graph plot  //to set to late
    { RegisterMethod('Constructor Create(AOwner: TComponent)');
     RegisterConstructor(@TJvMail.Create, 'Create');
-     RegisterMethod('Procedure Free');
-    RegisterMethod(@TJvMail.Destroy, 'Free');
+     RegisterMethod('Procedure Free');  RegisterMethod(@TJvMail.Destroy, 'Free');
      RegisterMethod(@TKCustomColors.Assign, 'Assign');
          RegisterPublishedProperties;}  //RIRegister_KMessageBox_Routines
    // CL.AddConstantN('MBVERSION','String').SetString('5.0.2.40');
    //https://github.com/maxkleiner/maXbox4/blob/master/fMain_47650.pas
-
    //unit SystemRegularExpressions2;  - unit uPSI_RegularExpressions;
    //  with CL.AddClassN(CL.FindClass('TObjectList'),'TKObjectList') do
    //{ CL.AddClassN(CL.FindClass('Class of TIdAuthentication'),'TIdAuthenticationClass');   //3.8
@@ -13051,5 +13106,10 @@ end;
   //RIRegister_ALHttpClient2_Routines(S: TPSExec);
   //https://github.com/DeveloppeurPascal/Delphi-samples
   //https://github.com/MagicFoundation/Alcinoe/blob/master/Source/Alcinoe.CGI.pas
+  //https://github.com/salvadordf/WebUI4Delphi/tree/main
+  //https://github.com/arvanus/Indy/blob/WebSocketImpl/Lib/Core/IdWebSocketSimpleClient.pas
+  //https://github.com/adaloveless/commonx/blob/master/PSoCProgrammerCOMLib_TLB.pas
+ // https://github.com/adaloveless/commonx/blob/master/webstring.pas
+ //https://github.com/maxkleiner/McJSON/tree/main
 
 End.
