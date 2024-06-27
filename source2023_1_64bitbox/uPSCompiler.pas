@@ -1,9 +1,17 @@
 unit uPSCompiler;
+
+
+//Reengine for mX38 compiler mX4
+// change at2ut(AddType('___Pointer', btPointer));   at mX4.2.2.90 II
+// mX4.2.4.25    - mX4.7.1.80   - mX4.7.2.82   - mX4.7.6.10  - mX4.7.6.20 - mX5.1.4.98
+
 {$I PascalScript.inc}
 interface
 uses
   {$IFNDEF DELPHI3UP}{$IFNDEF PS_NOINTERFACES}{$IFNDEF LINUX}Windows, Ole2,{$ENDIF}
   {$ENDIF}{$ENDIF}SysUtils, uPSUtils;
+
+const mx5vers = 'mX51498_XIV';
 
 
 type

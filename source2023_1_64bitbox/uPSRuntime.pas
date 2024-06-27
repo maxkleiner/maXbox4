@@ -2,17 +2,22 @@ unit uPSRuntime;
 {$I PascalScript.inc}
 {
 
-RemObjects Pascal Script III
+RemObjects Pascal Script III  -  V
 Copyright (C) 2000-2009 by Carlo Kok (ck@carlo-kok.com)
 add bo2str()
 
 { The following needs to be in synch in these 3 functions:
     -UPSCompiler.TPSPascalCompiler.DefineStandardProcedures
     -UPSRuntime.DefProc
-    -UPSRuntime.TPSExec.RegisterStandardProcs
+    -UPSRuntime.TPSExec.RegisterStandardProcs     - check line 9000
+    build for D11.3 on W11  for mX502
+    - function GetStatDebugcheck: boolean;
+   V5.0.2.24     real except - V 5.1.4.98
   }
 
 //}
+
+{$DEFINE LOG}
 
 interface
 uses
@@ -1111,11 +1116,13 @@ function IDispatchInvoke(Self: IDispatch; PropertySet: Boolean; const Name: tbtS
 
 implementation
 uses
-  TypInfo {$IFDEF DELPHI3UP}
-  {$IFNDEF FPC}{$IFDEF MSWINDOWS} , ComObj, MSysUtils {$ENDIF}{$ENDIF}{$ENDIF}
+  TypInfo, fmain {$IFDEF DELPHI3UP}     //fmain
+  {$IFNDEF FPC}{$IFDEF MSWINDOWS} , ComObj, MSysUtils, Dialogs {$ENDIF}{$ENDIF}{$ENDIF}
   {$IFDEF PS_FPC_HAS_COM}, ComObj{$ENDIF}
   {$IF NOT DEFINED (NEXTGEN) AND NOT DEFINED (MACOS) AND  DEFINED (DELPHI_TOKYO_UP)}, AnsiStrings{$IFEND};
 
+//{$DEFINE LOG}
+//{$DEFINE uPSRuntime_DEBUG}
 {$UNDEF LOG}
 {$IFDEF uPSRuntime_DEBUG}{$DEFINE LOG}{$ENDIF}
 {$IFDEF LOG}
@@ -2160,19 +2167,34 @@ begin
   inherited Destroy;
 end;
 
+var debcnt: integer;
+
 procedure TPSExec.ExceptionProc(proc, Position: Cardinal; Ex: TPSError; const s: tbtString; NewObject: TObject);
 var
   d, l: Longint;
-  pp: TPSExceptionHandler;
+  pp: TPSExceptionHandler;   //debcnt: integer
 begin
   ExProc := proc;
   ExPos := Position;
   ExEx := Ex;
   ExParam := s;
+  inc(debcnt);
+  if maxform1.GetStatDebugCheck then
+     maxform1.memo2.lines.add('debug: '+inttostr(debcnt)+'-'+s+' '+inttostr(proc)+' err:'+inttostr(ord(ex)));     //fmain
+   // halt(1);
+   //pause;
+   //ShowMessage('We do not get this far');
   if ExObject <> nil then
     ExObject.Free;
   ExObject := NewObject;
+  //ShowMessage('We do not get this far: '+exparam);
+
   if Ex = eNoError then Exit;
+  //maxform1.memo2.lines.add(s);
+   // halt(1);
+   //pause;
+  // ShowMessage('We do not get this far');
+
   for d := FExceptionStack.Count -1 downto 0 do
   begin
     pp := FExceptionStack[d];
@@ -2181,6 +2203,8 @@ begin
       for l := Longint(FStack.count) -1 downto Longint(pp.StackSize) do
         FStack.Pop;
     end;
+   //ShowMessage('We do not get this far');
+
     if pp.CurrProc = nil then // no point in continuing
     begin
       pp.Free;
@@ -2218,9 +2242,13 @@ begin
     end;
     pp.Free;
     FExceptionStack.DeleteLast;
+    //maxform1.memo2.lines.add(s);
+    //halt(1);
   end;
   if FStatus <> isNotLoaded then
     FStatus := isPaused;
+    //ShowMessage('We do not get this far');
+
 end;
 
 function LookupProc(List: TPSList; const Name: ShortString): PProcRec;
@@ -2300,7 +2328,7 @@ begin
   Result := P;
 end;
 
-function TPSExec.LoadData(const s: tbtString): Boolean;
+function TPSExec.LoadData(const s: tbtString): Boolean;         //check date mate
 var
   HDR: TPSHeader;
   Pos: Cardinal;
@@ -2308,7 +2336,7 @@ var
   function read(var Data; Len: Cardinal): Boolean;
   begin
     if Longint(Pos + Len) <= Length(s) then begin
-      Move(s[Pos + 1], Data, Len);
+      System.Move(s[Pos + 1], Data, Len);
       Pos := Pos + Len;
       read := True;
     end
@@ -2543,7 +2571,7 @@ var
 
 
   begin
-    if not Read(Count, 4) then
+    if not Read(Count, 4) then           //checkpoint
     begin
       CMD_Err(erOutofRange);
       Result := false;
@@ -2904,7 +2932,7 @@ var
         end;
 
         GetMem(TPSInternalProcRec(Curr).FData, L3);
-        Move(s[L2 + 1], TPSInternalProcRec(Curr).FData^, L3);
+        System.Move(s[L2 + 1], TPSInternalProcRec(Curr).FData^, L3);
         TPSInternalProcRec(Curr).FLength := L3;
         if (Rec.Flags and 2) <> 0 then begin // exported
           if not read(L3, 4) then begin
@@ -3040,7 +3068,7 @@ begin
     Clear;
     exit;
   end;
-  if not LoadProcs then
+  if not LoadProcs then   // be problem
   begin
     Clear;
     exit;
@@ -3071,7 +3099,7 @@ end;
 function TPSExec.ReadData(var Data; Len: Cardinal): Boolean;
 begin
   if FCurrentPosition + Len <= FDataLength then begin
-    Move(FData^[FCurrentPosition], Data, Len);
+    System.Move(FData^[FCurrentPosition], Data, Len);
     FCurrentPosition := FCurrentPosition + Len;
     Result := True;
   end
@@ -4110,7 +4138,7 @@ begin
           elSize := aType.RealSize;
           for i := 0 to Len -1 do
           begin
-            Move(Src^, Dest^, elSize);
+            System.Move(Src^, Dest^, elSize);
             Dest := Pointer(IPointer(Dest) + elsize);
             Src := Pointer(IPointer(Src) + elsize);
           end;
@@ -4385,7 +4413,7 @@ begin
       btSet:
         begin
           if desttype = srctype then
-            Move(Src^, Dest^, TPSTypeRec_Set(desttype).aByteSize)
+            System.Move(Src^, Dest^, TPSTypeRec_Set(desttype).aByteSize)
           else
             Result := False;
         end;
@@ -5950,6 +5978,8 @@ begin
           end;
         end;
       3: begin { / }
+          //pause;
+          //ShowMessage('We do not get this far: '+'param');
           case var1Type.BaseType of
             btU8: tbtU8(var1^) := tbtU8(var1^) div PSGetUInt(Var2, var2type);
             btS8: tbts8(var1^) := tbts8(var1^) div PSGetInt(Var2, var2type);
@@ -7534,9 +7564,16 @@ begin
       break;
     end;
   end;
+  //ShowMessage('We do not get this far: '+Param);
+  //Pause;
+ // Application.ProcessMessages;
   if @FOnException <> nil then
     FOnException(Self, Ec, Param, ExObject, C, FCurrentPosition);
   ExceptionProc(C, FCurrentPosition, EC, Param, ExObject);
+  //Pause;
+  // ShowMessage('We do not get this far: '+param);
+  //maxform1.memo2.lines.add(param);         //mX5
+  //halt;
 end;
 
 procedure TPSExec.AddSpecialProcImport(const FName: tbtString;
@@ -7709,6 +7746,8 @@ begin
     FExceptionStack.Clear;
   end;
   ExceptionProc(InvalidVal, InvalidVal, erNoError, '', nil);
+  //FUseDebugInfo
+  //ShowMessage('We do not get this far: '+'param');
   RunScript := True;
   FOldStatus := FStatus;
   case FStatus of
@@ -7738,6 +7777,7 @@ begin
       exit;
     end;
   end;
+  //ShowMessage('We do not get this far: '+'param');
   CallRunLine := GetRunLine(FOnRunLine, Self.RunLine);
   repeat
     FStatus := isRunning;
@@ -7754,6 +7794,7 @@ begin
       cmd := FData^[FCurrentPosition];
 //      ProfilerEnterProc(Cmd+1);
       Inc(FCurrentPosition);
+      //ShowMessage('We do not get this far: '+'param');
         case Cmd of
           CM_A:
               { Script internal command: Assign command<br>
@@ -7833,6 +7874,7 @@ begin
               ODSvar('  = dest', vd);
               {$ENDIF}
             end;
+            //ShowMessage('We do not get this far: '+'param');
           CM_CA:
             { Script internal command: Calculate Command<br>
                 Command: TPSCommand; <br>
@@ -8112,6 +8154,7 @@ begin
                 FData := FCurrProc.Data;
                 FDataLength := FCurrProc.Length;
                 FCurrentPosition := 0;
+                //ShowMessage('We do not get this far: '+'param');
               end;
             end;
           CM_PG:
@@ -8265,6 +8308,7 @@ begin
               P2 := 0;
               if FExceptionStack.Count > 0 then
               begin
+               //ShowMessage('We do not get this far: '+'param');
                 pp := FExceptionStack.Data[FExceptionStack.Count -1];
                 while (pp.BasePtr = FCurrStackBase) or ((pp.BasePtr > FCurrStackBase) and (pp.BasePtr <> InvalidVal)) do
                 begin
@@ -8455,7 +8499,7 @@ begin
                 FCurrentPosition := FCurrentPosition + p;
             end;
           cm_puexh:
-              { Script internal command: Pop Exception Handler<br>
+              { Script internal command: Push Pop Exception Handler<br>
                   Command:TPSCommand; <br>
                   Position: Byte;<br>
                   <i> 0 = end of try/finally/exception block;<br>
@@ -8465,6 +8509,7 @@ begin
                   </i><br>
               }
             begin
+            //ShowMessage('We do not get this far: '+'param');
               pp := TPSExceptionHandler.Create;
               pp.CurrProc := FCurrProc;
               pp.BasePtr :=FCurrStackBase;
@@ -8507,6 +8552,7 @@ begin
                   Break;
                 end;
                 FExceptionStack.Add(pp);
+                //ShowMessage('We do not get this far: '+pp.ExceptionParam);
             end;
           cm_poexh:
             { Script internal command: Pop Exception Handler<br>
@@ -8519,6 +8565,7 @@ begin
                 </i><br>
             }
             begin
+            //ShowMessage('We do not get this far just mX5: '+pp.ExceptionParam);
               if FCurrentPosition >= FDataLength then
               begin
                 CMD_Err(erOutOfRange); // Error
@@ -8589,6 +8636,7 @@ begin
                       end;
                     end;
                   end;
+                  //ShowMessage('We do not get this far: '+pp.ExceptionParam);
                 1:
                   begin
                     pp := FExceptionStack.Data^[FExceptionStack.Count -1];
@@ -8651,7 +8699,9 @@ begin
                     end;
                  end;
               end;
+              //ShowMessage('We do not get this far: '+pp.ExceptionParam);
             end;
+            //ShowMessage('We do not get this far: '+pp.ExceptionParam);
           cm_spc:
             {Script internal command: Set Stack Pointer To Copy<br>
                 Command: TPSCommand; <br>
@@ -8820,6 +8870,7 @@ begin
                 Var: TPSVariable;<br>
             }
             begin
+            //ShowMessage('We do not get this far: '+pp.ExceptionParam);
               if not ReadVariable(vd, True) then
                 Break;
               if vd.aType.BaseType <> btProcPtr then
@@ -8850,13 +8901,16 @@ begin
                       Break;
                     end;
                   except
+                  //ShowMessage('We do not get this far: '+pp.ExceptionParam);
                     {$IFDEF DELPHI6UP}
                     Tmp := AcquireExceptionObject;
+                    //ShowMessage('We do not get this far: '+pp.ExceptionParam);
                     {$ELSE}
                     if RaiseList <> nil then
                     begin
                       Tmp := Exception(PRaiseFrame(RaiseList)^.ExceptObject);
                       PRaiseFrame(RaiseList)^.ExceptObject := nil;
+                      //ShowMessage('We do not get this far: '+pp.ExceptionParam);
                     end else
                       Tmp := nil;
                     {$ENDIF}
@@ -8874,7 +8928,9 @@ begin
                       end;
                       if Tmp is EZeroDivide then
                       begin
+                        //ShowMessage('We do not get this far: '+pp.ExceptionParam);
                         CMD_Err3(erDivideByZero, tbtString(Exception(Tmp).Message), Tmp);
+                        //ShowMessage('We do not get this far: '+pp.ExceptionParam);
                         break;
                       end;
                       if Tmp is EMathError then
@@ -8996,6 +9052,7 @@ begin
     end;
 //    if cmd <> invalidval then ProfilerExitProc(Cmd+1);
 //    if ExEx <> erNoError then FStatus := FOldStatus;
+   //ShowMessage('We do not get this far: '+pp.ExceptionParam);
   until (FExceptionStack.Count = 0) or (Fstatus <> IsRunning);
   if FStatus = isLoaded then begin
     for I := Longint(FStack.Count) - 1 downto 0 do
@@ -10242,6 +10299,44 @@ end;
 
 { fix to get all the strings back without AV}
 
+//{$DEFINE USEINVOKECALL}
+
+(*
+{$ifndef FPC}
+{$IFDEF USEINVOKECALL}
+    {$include InvokeCall.inc}
+    {$DEFINE _INVOKECALL_INC_}
+  {$ELSE}
+{$IFDEF Delphi6UP}
+  {$IFDEF CPUX64}
+    {$include x64.inc}
+  {$ELSE}
+  {$include x86.inc}
+  {$ENDIF}
+{$ELSE}
+  {$include x86.inc}
+{$ENDIF}
+{$else}
+{$IFDEF Delphi6UP}
+  {$if defined(cpu86)}
+    {$include x86.inc}
+  {$elseif defined(cpupowerpc)}
+    {$include powerpc.inc}
+  {$elseif defined(cpuarm)}
+    {$include arm.inc}
+  {$elseif defined(CPUX86_64)}
+    {$include x64.inc}
+  {$else}
+    {$fatal Pascal Script is not supported for your architecture at the moment!}
+  {$ifend}
+{$ELSE}
+{$include x86.inc}
+{$ENDIF}
+{$endif}
+{$ENDIF}      //*)
+
+//https://github.com/pult/pascalscript/blob/fix_20170321_x64call/Source/uPSRuntime.pas
+
 {$ifndef FPC}
 {$IFDEF Delphi6UP}
   {$IFDEF CPUX64}
@@ -10268,7 +10363,7 @@ end;
 {$ELSE}
 {$include x86.inc}
 {$ENDIF}
-{$endif}        //*)
+{$endif}
 
 type
   PScriptMethodInfo = ^TScriptMethodInfo;
@@ -11058,7 +11153,7 @@ begin
         btSet:
           begin
             ltemp := 0;
-            move(Byte(n.Dta^), ltemp, TPSTypeRec_Set(n.aType).aByteSize);
+            system.move(Byte(n.Dta^), ltemp, TPSTypeRec_Set(n.aType).aByteSize);
             SetOrdProp(TObject(FSelf), PPropInfo(p.Ext1), ltemp);
           end;
         btChar, btU8: SetOrdProp(TObject(FSelf), PPropInfo(p.Ext1), tbtu8(n.Dta^));
@@ -11122,7 +11217,7 @@ begin
         btSet:
           begin
             ltemp := GetOrdProp(TObject(FSelf), PPropInfo(p.Ext1));
-            move(ltemp, Byte(n.Dta^), TPSTypeRec_Set(n.aType).aByteSize);
+            system.move(ltemp, Byte(n.Dta^), TPSTypeRec_Set(n.aType).aByteSize);
           end;
         btU8: tbtu8(n.Dta^) := GetOrdProp(TObject(FSelf), p.Ext1);
         btS8: tbts8(n.Dta^) := GetOrdProp(TObject(FSelf), p.Ext1);
@@ -13064,7 +13159,7 @@ begin
       OOFS := FCapacity
     else
       OOFS := FLength;
-    Move(FDataPtr^, p^, OOFS);
+    system.Move(FDataPtr^, p^, OOFS);
     OOFS := IPointer(P) - IPointer(FDataPtr);
 
     for i := Count -1 downto 0 do begin
@@ -13311,7 +13406,7 @@ begin
           {$ENDIF}
            (DispParam.rgvarg[i].pvarVal)^ := Par[High(Par)-i];
           *)
-          Move(Par[High(Par)-i],Pointer(DispParam.rgvarg[i].pvarVal)^,
+          system.Move(Par[High(Par)-i],Pointer(DispParam.rgvarg[i].pvarVal)^,
            Sizeof({$IFDEF DELPHI4UP}OleVariant{$ELSE}Variant{$ENDIF}));
 
         end;
