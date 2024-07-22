@@ -9,7 +9,8 @@ as an OpenToolsAPI to modify the maXbox GUI - V3.5 -V3.8.6 , version check
   Updated to 3.9.9.85 /80/82/91/94/95/96/98/100/101/110/120/160/190/195 ,420 locs=3808,
   MBVERIALL, ResetKeyPressed, arduino items, terminal;    4.2.2.90  /95  /98  42425 4.2.4.60  4.2.5.10 42610 42810
                       45810 46210 46310 47110 47120 47180 47182 47282 47360 47460 47462 47464 47520 47580 47590 47620 502028 503 504}
-  //locs V5.0.2.28 = 3815   locs V5.0.2.80 = 3821  3825  V50360   3827    V50470
+
+  //locs V5.0.2.28 = 3815   locs V5.0.2.80 = 3821  3825  V50360   3827   V50470  3837- V51470 V51480  V51498 - 3842  - 51698
 
 interface
 
@@ -559,6 +560,7 @@ begin
     RegisterMethod('procedure Tutorial12SQL1Click(Sender: TObject);');
     //V3.8
     RegisterMethod('procedure ResourceExplore1Click(Sender: TObject);');
+    RegisterMethod('procedure XNEditor(Sender: TObject);');
     RegisterMethod('procedure Info1Click(Sender: TObject);');
     RegisterMethod('procedure CryptoBox1Click(Sender: TObject);');
     RegisterMethod('procedure ModulesCount1Click(Sender: TObject);');
@@ -581,6 +583,7 @@ begin
    //V3.9
     RegisterMethod('procedure sbvclhelpClick(Sender: TObject);');
     RegisterMethod('procedure DependencyWalker1Click(Sender: TObject);');
+    RegisterMethod('procedure Unitexplorer(Sender: TObject);');
     RegisterMethod('procedure CB1SCListDrawItem(Control: TWinControl; Index: Integer; aRect: TRect; State: TOwnerDrawState);');
     RegisterMethod('procedure WebScanner1Click(Sender: TObject);');
     RegisterMethod('procedure mnToolbar1Click(Sender: TObject);');
@@ -603,6 +606,7 @@ begin
     RegisterMethod('procedure Halt1Click(Sender: TObject);');
     RegisterMethod('procedure Stop;');
     RegisterMethod('procedure CodeSearch1Click(Sender: TObject);');
+    RegisterMethod('procedure CodeSearch;');                  //alias
     RegisterMethod('procedure RubySyntax1Click(Sender: TObject);');
     RegisterMethod('procedure Undo1Click(Sender: TObject);');
     RegisterMethod('procedure LinuxShellScript1Click(Sender: TObject);');
@@ -649,6 +653,7 @@ begin
     RegisterMethod('procedure SocketServer1Click(Sender: TObject);');
     RegisterMethod('procedure FormDemo1Click(Sender: TObject);');
     RegisterMethod('procedure Richedit1Click(Sender: TObject);');
+    RegisterMethod('procedure Richedit5Click(Sender: TObject);');
     RegisterMethod('procedure SimpleBrowser1Click(Sender: TObject);');
     RegisterMethod('procedure DOSShell1Click(Sender: TObject);');
     RegisterMethod('procedure SynExport1Click(Sender: TObject);');
@@ -739,14 +744,14 @@ begin
 
  CL.AddConstantN('INCLUDEBOX','String').SetString('pas_includebox.inc');
  CL.AddConstantN('BOOTSCRIPT','String').SetString('maxbootscript.txt');
- CL.AddConstantN('MBVERSION','String').SetString('5.0.4.70');
- CL.AddConstantN('VERSION','String').SetString('5.0.4.70');
- CL.AddConstantN('MBVERIALL','Integer').SetInt(50470);
- CL.AddConstantN('MBVER2','String').SetString('50470');
+ CL.AddConstantN('MBVERSION','String').SetString('5.1.6.98');
+ CL.AddConstantN('VERSION','String').SetString('5.1.6.98');
+ CL.AddConstantN('MBVERIALL','Integer').SetInt(51698);
+ CL.AddConstantN('MBVER2','String').SetString('51698');
  CL.AddConstantN('EXENAME','String').SetString('maXbox5.exe');
  CL.AddConstantN('MXINTERNETCHECK','String').SetString('www.ask.com');
- CL.AddConstantN('MBVER','String').SetString('504');
- CL.AddConstantN('MBVERI','Integer').SetInt(504);
+ CL.AddConstantN('MBVER','String').SetString('516');
+ CL.AddConstantN('MBVERI','Integer').SetInt(516);
  CL.AddConstantN('MXVERSIONFILE','String').SetString('http://www.softwareschule.ch/maxvfile.txt');
  CL.AddConstantN('MXVERSIONFILE2','String').SetString('http://www.softwareschule.ch/maxvfile2.txt');
 
@@ -3647,6 +3652,7 @@ begin
     RegisterMethod(@TMaxForm1.Tutorial11Forms1Click, 'Tutorial11Forms1Click');
     RegisterMethod(@TMaxForm1.Tutorial12SQL1Click, 'Tutorial12SQL1Click');
     RegisterMethod(@TMaxForm1.ResourceExplore1Click, 'ResourceExplore1Click');
+    RegisterMethod(@TMaxForm1.ResourceExplore1Click, 'XNEditor');
     RegisterMethod(@TMaxForm1.Info1Click, 'Info1Click');
     RegisterMethod(@TMaxForm1.CryptoBox1Click, 'CryptoBox1Click');
     RegisterMethod(@TMaxForm1.ModulesCount1Click, 'ModulesCount1Click');
@@ -3670,6 +3676,7 @@ begin
 
     RegisterMethod(@TMaxForm1.sbvclhelpClick, 'sbvclhelpClick');
     RegisterMethod(@TMaxForm1.DependencyWalker1Click, 'DependencyWalker1Click');
+    RegisterMethod(@TMaxForm1.DependencyWalker1Click, 'UnitExplorer');
     RegisterMethod(@TMaxForm1.CB1SCListDrawItem, 'CB1SCListDrawItem');
     RegisterMethod(@TMaxForm1.WebScanner1Click, 'WebScanner1Click');
     RegisterMethod(@TMaxForm1.mnToolbar1Click, 'mnToolbar1Click');
@@ -3691,7 +3698,8 @@ begin
     RegisterMethod(@TMaxForm1.Halt1Click , 'Halt1Click');
     RegisterMethod(@TMaxForm1.Halt1Click , 'Stop');        //Alias
     RegisterMethod(@TMaxForm1.CodeSearch1Click, 'CodeSearch');        //Alias
-    RegisterMethod(@TMaxForm1.RubySyntax1Click, 'RubySyntax1Click');
+     RegisterMethod(@TMaxForm1.CodeSearch1Click, 'CodeSearch1Click');        //Alias
+     RegisterMethod(@TMaxForm1.RubySyntax1Click, 'RubySyntax1Click');
     RegisterMethod(@TMaxForm1.Undo1Click, 'Undo1Click');
     RegisterMethod(@TMaxForm1.LinuxShellScript1Click, 'LinuxShellScript1Click');
     RegisterPropertyHelper(@TMaxForm1IPhost_R,@TMaxForm1IPhost_W,'IPHost');
@@ -3743,6 +3751,7 @@ begin
     RegisterMethod(@TMaxForm1.SocketServer1Click, 'SocketServer1Click');
     RegisterMethod(@TMaxForm1.FormDemo1Click, 'FormDemo1Click');
     RegisterMethod(@TMaxForm1.Richedit1Click, 'Richedit1Click');
+    RegisterMethod(@TMaxForm1.Richedit5Click, 'Richedit5Click');
     RegisterMethod(@TMaxForm1.SimpleBrowser1Click, 'SimpleBrowser1Click');
     RegisterMethod(@TMaxForm1.DOSShell1Click, 'DOSShell1Click');
     RegisterMethod(@TMaxForm1.SynExport1Click, 'SynExport1Click');
