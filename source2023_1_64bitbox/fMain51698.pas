@@ -225,7 +225,7 @@
           13070   5.1.4.98 VII XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX, MySQL
           13088   5.1.4.98 VIII-IX uWebUI, RegexIII, Charsetmap+, truncate, uPSI_ComObjOleDB_utils2, idwebsocketclient, uwebsocket
           13115   5.1.4.98 XIV uwebsocket2, nDoneWithPostStream , chartcolormap, customtcpserver, WebString, McJSON, codemap
-          13132   5.1.6.98 XVI regularexpression2, edgeview2 runtime kit VCL.Edge - TEdgeViewForm, RichEdit5, minor fixes
+          13138   5.1.6.98 XVII regularexpression2, edgeview2 runtime kit VCL.Edge - TEdgeViewForm, RichEdit5, minor fixes
 
 ************************************************************************************* }
 
@@ -1241,6 +1241,8 @@ uses
   uPSI_SynURIOpener,
   uPSI_EdgeMain,      // //5.1.6.98
   remain, // for richedit5
+  uPSI_remain,
+
   uPSI_StBase,
   uPSI_StUtils,   //SysTools4 -3.9.1
   uPSI_IMouse,  //*)
@@ -2892,6 +2894,8 @@ begin
   SIRegister_RegularExpressions(X);
   SIRegister_SynURIOpener(X);           //5.1.6.98
   SIRegister_EdgeMain(X);
+  SIRegister_remain(X);
+
   SIRegister_StUtils(X);  //SysTools4
   SIRegister_IMouse(X); //*)
   SIRegister_SyncObjs(X);
@@ -4484,7 +4488,8 @@ begin
   RIRegister_JvExprParser(X);   //*)
   RIRegister_SynRegExpr(X);
   RIRegister_SynRegExpr_Routines(Exec);
-  RIRegister_RegularExpressions(X);
+  RIRegister_RegularExpressions(X);   //Delphi PCRE16
+  RIRegister_RegularExpressions_Routines(Exec);
   RIRegister_JvHtmlParser(X);
   RIRegister_JvgXMLSerializer(X);   //*)
   RIRegister_JvStrings_Routines(Exec);   //*)
@@ -4704,6 +4709,7 @@ begin
   RIRegister_STSystem_Routines(Exec);
   RIRegister_SynURIOpener(X);
   RIRegister_EdgeMain(X);            //5.1.6.98
+  RIRegister_remain(X);
  RIRegister_JvKeyboardStates(X);
   RIRegister_JclMapi(X);
   RIRegister_JclMapi_Routines(Exec); //3.9.9.6
@@ -6531,7 +6537,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean1000 mX516 XVIRheingold+++++ beta360!';
+   maxform1.Caption:= 'maXbox5 Ocean1010 mX516 XVIIRheingold+++++ beta370!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
