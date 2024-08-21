@@ -225,7 +225,7 @@
           13070   5.1.4.98 VII XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX, MySQL
           13088   5.1.4.98 VIII-IX uWebUI, RegexIII, Charsetmap+, truncate, uPSI_ComObjOleDB_utils2, idwebsocketclient, uwebsocket
           13115   5.1.4.98 XIV uwebsocket2, nDoneWithPostStream , chartcolormap, customtcpserver, WebString, McJSON, codemap
-          13138   5.1.6.98 XVII regularexpression2, edgeview2 runtime kit VCL.Edge - TEdgeViewForm, RichEdit5, minor fixes
+          13165   5.1.6.98 XIX -XVIII regularexpression2, edgeview2 runtime kit VCL.Edge - TEdgeViewForm, RichEdit5, minor fixes, MIDI Keys
 
 ************************************************************************************* }
 
@@ -669,7 +669,8 @@ type
     ImageList3: TImageList;
     SaveasUnicode1: TMenuItem;
     PacManX51: TMenuItem;
-    Richedit5: TMenuItem;      //SynEdit1
+    Richedit5: TMenuItem;
+    midikey: TMenuItem;      //SynEdit1
     procedure IFPS3ClassesPlugin1CompImport(Sender: TObject; x: TPSPascalCompiler);
     procedure IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TPSExec; x: TPSRuntimeClassImporter);
     procedure PSScriptCompile(Sender: TPSScript);
@@ -952,6 +953,7 @@ type
     procedure SaveasUnicode1Click(Sender: TObject);
     procedure PacManX51Click(Sender: TObject);
     procedure Richedit5Click(Sender: TObject);
+    procedure midikeyClick(Sender: TObject);
     //function PSScriptNeedFile(Sender: TObject; const OrginFileName: AnsiString;
       //var FileName, Output: AnsiString): Boolean;
     //procedure Memo1DropFiles(Sender: TObject; X,Y: Integer; AFiles: TStrings);
@@ -1373,6 +1375,8 @@ uses
   uPSI_JvgDigits, //*)
   uPSI_JclMIDI,
   uPSI_JclWinMidi,
+  aide_clavier,       //for midi controller
+  midimain,          //midi virtual keyboard
   uPSI_JclNTFS,
   uPSI_JclAppInst,
   uPSI_JvRle,
@@ -2165,9 +2169,10 @@ uses
   //uPSI_TypInfo,
   uPSI_ServiceMgr,
   uPSI_UDict,
-  uPSI_ubigFloatV3,  //*)
-  uPSI_UBigIntsV4,
+  uPSI_ubigFloatV3,  //*  cut the dec sign bug)
+  uPSI_UBigIntsV4,   //bigpow bigfloat
   uPSI_UP10Build, //3.9.9.180
+  U_BigFloatTest, //5.1.6.98   for Tutorial 36 testing
   uPSI_IdModBusServer,
   uPSI_IdModBusClient,
   uPSI_ModbusUtils,
@@ -2380,6 +2385,7 @@ uses
   uPSI_OverbyteIcsCharsetUtils,
   uPSI_OverbyteIcsMimeUtils,    //*)
   uPSI_OverbyteIcsUrl,
+  uPSI_JclCharsets,           //5.1.6.98 XIX
   //uPSI_uWebSocket,
   uPSI_IdWebSocketSimpleClient,   //5.1.4.98 IX
   uPSI_ExecuteidWebSocket,
@@ -3518,6 +3524,7 @@ begin
   SIRegister_GeometryCoordinates(X);
   SIRegister_VectorGeometry(X);  //*)
   SIRegister_unitCharsetMap(X);
+  SIRegister_JclCharsets(X);
   SIRegister_XnClasses(X);
   SIRegister_TGA(X);
   SIRegister_GLScriptPython(X);      //5.1.4.98 II
@@ -5488,6 +5495,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_VectorGeometry_Routines(Exec);  //*)
   RIRegister_unitCharsetMap_Routines(Exec);
   RIRegister_unitCharsetMap(X);
+  RIRegister_JclCharsets_Routines(Exec);
+  RIRegister_JclCharsets(X);
   RIRegister_XnClasses(X);
   RIRegister_GLScriptPython(X);
   RIRegister_TGA(X);
@@ -6537,7 +6546,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean1010 mX516 XVIIRheingold+++++ beta370!';
+   maxform1.Caption:= 'maXbox5 Ocean1020 mX516 XIXRheingold+++++ beta410!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -9421,6 +9430,14 @@ begin
   ShowMessage('Add On available in V5.2')
 end;
 
+procedure Tmaxform1.midikeyClick(Sender: TObject);
+begin
+  Application.CreateForm(TForm2clavier, Form2clavier);
+  //Form2clavier.Show;
+   Application.CreateForm(TmidiForm1, midiForm1);
+  midiForm1.Show;
+end;
+
 procedure Tmaxform1.Minesweeper1Click(Sender: TObject);
 begin
   ShowMessage('Add On available in V5.2 - start script 285_minesweeper2.TXT')
@@ -10623,6 +10640,11 @@ end;
 
 procedure Tmaxform1.Tutorial22Services1Click(Sender: TObject);
 begin
+  //for a midi controller keyboard with jclmidi interface and usbtomidi
+  Application.CreateForm(TForm2clavier, Form2clavier);
+  //Form2clavier.Show;
+   Application.CreateForm(TmidiForm1, midiForm1);
+  midiForm1.Show;
  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter22.pdf');
 end;
 
@@ -10955,6 +10977,10 @@ end;
 
 procedure Tmaxform1.Tutorial361Click(Sender: TObject);
 begin
+   Application.CreateForm(TOpBox, OpBox);
+  //Form2clavier.Show;
+   //Application.CreateForm(TmidiForm1, midiForm1);
+  OpBox.Show;
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter36.pdf');
 end;
 
@@ -12444,11 +12470,11 @@ end;
 procedure Tmaxform1.Calculator1Click(Sender: TObject);
 begin
   SearchAndOpenDoc('C:\WINDOWS\System32\calc.exe');
+  Tutorial361Click(self);
 end;
 
 procedure Tmaxform1.CB1SCListChange(Sender: TObject);
-var idx, old: integer;
-   temps: string;
+var idx, old: integer; temps: string;
 begin
   //test the prototype    for mX3.9.3        //mX3.8.6.2
     if STATedchanged then begin        //bugfix 3.8
@@ -13134,5 +13160,6 @@ end;
  // https://github.com/adaloveless/commonx/blob/master/webstring.pas
  //https://github.com/maxkleiner/McJSON/tree/main
  //https://regex101.com/
+ //https://github.com/project-jedi/jcl/blob/master/jcl/source/common/JclCharsets.pas
 
 End.
