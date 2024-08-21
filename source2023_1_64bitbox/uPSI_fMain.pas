@@ -10,7 +10,7 @@ as an OpenToolsAPI to modify the maXbox GUI - V3.5 -V3.8.6 , version check
   MBVERIALL, ResetKeyPressed, arduino items, terminal;    4.2.2.90  /95  /98  42425 4.2.4.60  4.2.5.10 42610 42810
                       45810 46210 46310 47110 47120 47180 47182 47282 47360 47460 47462 47464 47520 47580 47590 47620 502028 503 504}
 
-  //locs V5.0.2.28 = 3815   locs V5.0.2.80 = 3821  3825  V50360   3827   V50470  3837- V51470 V51480  V51498 - 3842  - 51698
+  //locs V5.0.2.28 = 3815   locs V5.0.2.80 = 3821  3825  V50360   3827   V50470  3837- V51470 V51480  V51498 - 3856  - 51698 XVIII-XIX
 
 interface
 
@@ -673,6 +673,8 @@ begin
     RegisterMethod('procedure Tutorial27XML1Click(Sender: TObject);');
     RegisterMethod('procedure CreateDLLStub1Click(Sender: TObject);');
     RegisterMethod('procedure Tutorial28DLL1Click(Sender: TObject);');
+    RegisterMethod('procedure Tutorial22Services1Click(Sender: TObject);');
+    RegisterMethod('procedure ShowMIDIForm(Sender: TObject);');
     RegisterMethod('procedure ResetKeyPressed;');
     RegisterMethod('procedure SaveByteCode;');
     RegisterMethod('procedure KeyPressedFalse;');
@@ -702,6 +704,8 @@ begin
     RegisterMethod('procedure OrangeStyle1Click(Sender: TObject);');
     RegisterMethod('procedure Orangecode');
     RegisterMethod('procedure Tutorial361Click(Sender: TObject);');
+    RegisterMethod('procedure BigFloatTest(Sender: TObject);');
+    RegisterMethod('procedure BigFloatDemo(Sender: TObject);');
     RegisterMethod('procedure Darkcolor1Click(Sender: TObject);');
     RegisterMethod('procedure Darkcode;');
     RegisterMethod('procedure ShowIndent1Click(Sender: TObject);');
@@ -715,6 +719,8 @@ begin
      RegisterMethod('procedure PacManX51Click(Sender: TObject);');
      RegisterMethod('procedure Tutorial71Click(Sender: TObject);');
      RegisterMethod('procedure GameofLife(Sender: TObject);');
+     RegisterMethod('procedure midikeyClick(Sender: TObject);');
+      RegisterMethod('procedure MidikeyBoard;');
 
       //RegisterMethod('procedure defFilereadUpdate;');
       //  procedure defFilereadUpdate;
@@ -759,12 +765,13 @@ begin
   // MXVERSIONFILE2 = 'http://www.softwareschule.ch/maxvfile2.txt';
   //CL.AddConstantN('MBVERIALL','Integer').SetInt(39996);
  CL.AddConstantN('MXSITE','String').SetString( 'http://www.softwareschule.ch/maxbox.htm');
- CL.AddConstantN('MXMAIL','String').SetString( 'max@kleiner.com');
+ CL.AddConstantN('MXMAIL','String').SetString( 'maxkleiner1@gmail.com');
  CL.AddConstantN('TAB','Char').SetString( #$09);
  CL.AddConstantN('CODECOMPLETION','String').SetString('bds_delphi.dci');
  CL.AddConstantN('ASKBOX','String').SetString( 'maXbox is a powerful script engine which generates interactive apps on-the-fly.');
  CL.AddConstantN('ASKBOX2','String').SetString( 'It allows you to dig as deep into your code files as you need to.');
  CL.AddConstantN('IMPORTTHIS','String').SetString( 'Coding like ShellBoy with the best HellToy 4 You.');
+ CL.AddConstantN('MXSITE2','String').SetString( 'https://maxbox5.wordpress.com/');
 
   SIRegister_TMaxForm1(CL);
 end;
@@ -3771,6 +3778,9 @@ begin
     RegisterMethod(@TMaxForm1.Tutorial27XML1Click, 'Tutorial27XML1Click');
     RegisterMethod(@TMaxForm1.CreateDLLStub1Click, 'CreateDLLStub1Click');
     RegisterMethod(@TMaxForm1.Tutorial28DLL1Click, 'Tutorial28DLL1Click');
+    RegisterMethod(@TMaxForm1.Tutorial22Services1Click, 'Tutorial22Services1Click');
+    RegisterMethod(@TMaxForm1.Tutorial22Services1Click, 'ShowMIDIForm');
+
     RegisterMethod(@TMaxForm1.ResetKeyPressed, 'ResetKeyPressed');
     RegisterMethod(@TMaxForm1.ResetKeyPressed, 'KeyPressedFalse');
     RegisterMethod(@TMaxForm1.FileChanges1Click, 'FileChanges1Click');
@@ -3800,6 +3810,8 @@ begin
     RegisterMethod(@TMaxForm1.OrangeStyle1Click, 'OrangeStyle1Click');
     RegisterMethod(@TMaxForm1.OrangeStyle1Click, 'Orangecode');
     RegisterMethod(@TMaxForm1.Tutorial361Click, 'Tutorial361Click');
+    RegisterMethod(@TMaxForm1.Tutorial361Click, 'BigFloatTest');
+    RegisterMethod(@TMaxForm1.Tutorial361Click, 'BigFloatDemo');
     RegisterMethod(@TMaxForm1.Darkcolor1Click, 'Darkcolor1Click');
     RegisterMethod(@TMaxForm1.Darkcolor1Click, 'Darkcode');
      RegisterMethod(@TMaxForm1.ShowIndent1Click, 'ShowIndent1Click');
@@ -3812,6 +3824,8 @@ begin
        RegisterMethod(@Tmaxform1.SaveasUnicode1Click, 'SaveasUnicode1Click');
        RegisterMethod(@Tmaxform1.PacManX51Click, 'PacManX51Click');
      RegisterMethod(@Tmaxform1.Tutorial71Click, 'Gameoflife');
+      RegisterMethod(@Tmaxform1.midikeyClick, 'MIDIKeyClick');
+        RegisterMethod(@Tmaxform1.midikeyClick, 'MIDIKeyBoard');
 
     //procedure Darkcolor1Click(Sender: TObject);
         //procedure OrangeStyle1Click(Sender: TObject);
