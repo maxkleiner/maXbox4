@@ -2,7 +2,20 @@
 # maXbox5
 byte-code compiler script studio
 *****************************************************************
+*****************************************************************
+Release Notes maXbox 5.1.6.98 August 2024 mX516 beta64-bit🐞
+*****************************************************************
+Add 60 Units (of 3745) + 23 Tutorials
+- install or update certificate maXboxCertAuth3.cer
+- for https Indy SSL unpack ./crypt/openssl-1.0.2u-x64_86-win64.zip
+- for python4maxbox install Python 3.11.9 or 3.12.4 64-bit
+- test with ./maxbox_starter_testsequence51.bat
+- optional: on 2880 x 1800 set scale 150% (140 DPI)
+- edgeview2 runtime kit VCL.Edge, RichEdit Control5
+- root: add file WebView2Loader.dll and reoverview.rtf  
+- core: MIDI Keybord compatible: Microsoft GS Wavetable Synth
 Release Notes maXbox 4.7.6.50 June 2023 mX476 Latest
+
 Release Notes maXbox 5.1.4.98 XI June 2024 mX514 beta64-bit uc25 XN Resource Editor🐞
 
 ![GUI_2_Screenshot2024-06-09225630](https://github.com/maxkleiner/maXbox4/assets/3393121/28439532-4d12-463e-a95f-191c5248ae94)
