@@ -225,6 +225,7 @@
           13070   5.1.4.98 VII XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX, MySQL
           13088   5.1.4.98 VIII-IX uWebUI, RegexIII, Charsetmap+, truncate, uPSI_ComObjOleDB_utils2, idwebsocketclient, uwebsocket
           13115   5.1.4.98 XIV uwebsocket2, nDoneWithPostStream , chartcolormap, customtcpserver, WebString, McJSON, codemap
+          13180   5.1.6.98 XX-XIX -XVIII regularexpression2, edgeview2 runtime kit VCL.Edge - TEdgeViewForm, RichEdit5, minor fixes, MIDI Keys
 
 ************************************************************************************* }
 
@@ -276,9 +277,9 @@ const
    ALLUNITLIST = 'docs\maxbox5_0.xml'; //'in /docs;
    INCLUDEBOX = 'pas_includebox.inc';
    BOOTSCRIPT = 'maxbootscript.txt';
-   MBVERSION = '5.1.4.98';
-   MBVER = '514';              //for checking!
-   MBVER2 = '51498';              //for checking!
+   MBVERSION = '5.1.6.98';
+   MBVER = '516';              //for checking!
+   MBVER2 = '51698';              //for checking!
    EXENAME ='maXbox5.exe';
    MXSITE = 'http://www.softwareschule.ch/maxbox.htm';
    MXVERSIONFILE = 'http://www.softwareschule.ch/maxvfile64.txt';
@@ -667,7 +668,9 @@ type
     Collapse1: TMenuItem;
     ImageList3: TImageList;
     SaveasUnicode1: TMenuItem;
-    PacManX51: TMenuItem;      //SynEdit1
+    PacManX51: TMenuItem;
+    Richedit5: TMenuItem;
+    midikey: TMenuItem;      //SynEdit1
     procedure IFPS3ClassesPlugin1CompImport(Sender: TObject; x: TPSPascalCompiler);
     procedure IFPS3ClassesPlugin1ExecImport(Sender: TObject; Exec: TPSExec; x: TPSRuntimeClassImporter);
     procedure PSScriptCompile(Sender: TPSScript);
@@ -949,6 +952,8 @@ type
     procedure Collapse1Click(Sender: TObject);
     procedure SaveasUnicode1Click(Sender: TObject);
     procedure PacManX51Click(Sender: TObject);
+    procedure Richedit5Click(Sender: TObject);
+    procedure midikeyClick(Sender: TObject);
     //function PSScriptNeedFile(Sender: TObject; const OrginFileName: AnsiString;
       //var FileName, Output: AnsiString): Boolean;
     //procedure Memo1DropFiles(Sender: TObject; X,Y: Integer; AFiles: TStrings);
@@ -1236,6 +1241,14 @@ uses
   uPSI_SynRegExpr,    //RegExprStudio! .$DEFINE reRealExceptionAddr undefine
   uPSI_RegularExpressions,  //delphi ones based on perlregex
   uPSI_SynURIOpener,
+  uPSI_EdgeMain,      // //5.1.6.98
+  remain, // for richedit5
+  uPSI_remain,
+  uPSI_VclGoogleMap,
+  gMainForm,         //googlemapedgeviewr
+  SecondaryForm,
+  HealthSystem_Unit1,
+
   uPSI_StBase,
   uPSI_StUtils,   //SysTools4 -3.9.1
   uPSI_IMouse,  //*)
@@ -1312,6 +1325,7 @@ uses
   IdGlobal_max,   //3.7 for file information    *)
   StrUtils, uPSI_StrUtils,       // dupestring
   uPSI_dwsWebUtils,
+  edgemain,
 
   uPSI_FileCtrl,    //3.5.1
   uPSI_Outline,
@@ -1365,6 +1379,8 @@ uses
   uPSI_JvgDigits, //*)
   uPSI_JclMIDI,
   uPSI_JclWinMidi,
+  aide_clavier,       //for midi controller
+  midimain,          //midi virtual keyboard
   uPSI_JclNTFS,
   uPSI_JclAppInst,
   uPSI_JvRle,
@@ -2157,9 +2173,10 @@ uses
   //uPSI_TypInfo,
   uPSI_ServiceMgr,
   uPSI_UDict,
-  uPSI_ubigFloatV3,  //*)
-  uPSI_UBigIntsV4,
+  uPSI_ubigFloatV3,  //*  cut the dec sign bug)
+  uPSI_UBigIntsV4,   //bigpow bigfloat
   uPSI_UP10Build, //3.9.9.180
+  U_BigFloatTest, //5.1.6.98   for Tutorial 36 testing
   uPSI_IdModBusServer,
   uPSI_IdModBusClient,
   uPSI_ModbusUtils,
@@ -2372,6 +2389,7 @@ uses
   uPSI_OverbyteIcsCharsetUtils,
   uPSI_OverbyteIcsMimeUtils,    //*)
   uPSI_OverbyteIcsUrl,
+  uPSI_JclCharsets,           //5.1.6.98 XIX
   //uPSI_uWebSocket,
   uPSI_IdWebSocketSimpleClient,   //5.1.4.98 IX
   uPSI_ExecuteidWebSocket,
@@ -2517,7 +2535,7 @@ uses
   pacMAIN, pacscores,          //V50460
   uPSI_pacMain,
   uPSI_HttpUtils,             //51498
-  uPSI_HttpClasses,
+  uPSI_HttpClasses,           //THttpRequestC = class(TComponent)
 
   //uPSI_IdNNTPServer,        //4.2.4.25  *)
   uPSI_UWANTUtils,
@@ -2884,7 +2902,11 @@ begin
   SIRegister_JvExprParser(X);   //*)
   SIRegister_SynRegExpr(X);
   SIRegister_RegularExpressions(X);
-  SIRegister_SynURIOpener(X);
+  SIRegister_SynURIOpener(X);           //5.1.6.98
+  SIRegister_EdgeMain(X);
+  SIRegister_remain(X);      //richedit
+  SIRegister_VclGoogleMap(X);
+
   SIRegister_StUtils(X);  //SysTools4
   SIRegister_IMouse(X); //*)
   SIRegister_SyncObjs(X);
@@ -3507,6 +3529,7 @@ begin
   SIRegister_GeometryCoordinates(X);
   SIRegister_VectorGeometry(X);  //*)
   SIRegister_unitCharsetMap(X);
+  SIRegister_JclCharsets(X);
   SIRegister_XnClasses(X);
   SIRegister_TGA(X);
   SIRegister_GLScriptPython(X);      //5.1.4.98 II
@@ -4477,7 +4500,8 @@ begin
   RIRegister_JvExprParser(X);   //*)
   RIRegister_SynRegExpr(X);
   RIRegister_SynRegExpr_Routines(Exec);
-  RIRegister_RegularExpressions(X);
+  RIRegister_RegularExpressions(X);   //Delphi PCRE16
+  RIRegister_RegularExpressions_Routines(Exec);
   RIRegister_JvHtmlParser(X);
   RIRegister_JvgXMLSerializer(X);   //*)
   RIRegister_JvStrings_Routines(Exec);   //*)
@@ -4696,6 +4720,10 @@ begin
   RIRegister_StMoney(X);    //*)
   RIRegister_STSystem_Routines(Exec);
   RIRegister_SynURIOpener(X);
+  RIRegister_EdgeMain(X);            //5.1.6.98
+  RIRegister_remain(X);
+  RIRegister_VclGoogleMap(X);
+
  RIRegister_JvKeyboardStates(X);
   RIRegister_JclMapi(X);
   RIRegister_JclMapi_Routines(Exec); //3.9.9.6
@@ -5474,6 +5502,8 @@ RIRegister_DSUtil_Routines(Exec);
   RIRegister_VectorGeometry_Routines(Exec);  //*)
   RIRegister_unitCharsetMap_Routines(Exec);
   RIRegister_unitCharsetMap(X);
+  RIRegister_JclCharsets_Routines(Exec);
+  RIRegister_JclCharsets(X);
   RIRegister_XnClasses(X);
   RIRegister_GLScriptPython(X);
   RIRegister_TGA(X);
@@ -6523,7 +6553,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean980 mX514 XIVRheingold+++++ beta340!';
+   maxform1.Caption:= 'maXbox5 Ocean1030 mX516 XXRheingold+++++ beta420!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -9407,6 +9437,14 @@ begin
   ShowMessage('Add On available in V5.2')
 end;
 
+procedure Tmaxform1.midikeyClick(Sender: TObject);
+begin
+  Application.CreateForm(TForm2clavier, Form2clavier);
+  //Form2clavier.Show;
+   Application.CreateForm(TmidiForm1, midiForm1);
+  midiForm1.Show;
+end;
+
 procedure Tmaxform1.Minesweeper1Click(Sender: TObject);
 begin
   ShowMessage('Add On available in V5.2 - start script 285_minesweeper2.TXT')
@@ -9526,8 +9564,10 @@ end;
 
 procedure Tmaxform1.SimpleBrowser1Click(Sender: TObject);
 begin
-    Application.CreateForm(TwebMainForm, webMainForm);
-    memo1.lines.Add('----Simple Browser started----');
+    Application.CreateForm(TEdgeViewForm, EdgeViewForm);
+    edgeviewform.Show;
+    //Application.CreateForm(TwebMainForm, webMainForm);
+    memo2.lines.Add('----Simple EdgeView Browser started----');
 end;
 
 procedure Tmaxform1.SimuLogBox1Click(Sender: TObject);
@@ -9906,6 +9946,12 @@ procedure Tmaxform1.CountWords1Click(Sender: TObject);
 begin
   //jumps to highlightning of words
   Memo1DblClick(self);
+end;
+
+procedure Tmaxform1.Richedit5Click(Sender: TObject);
+begin
+   Application.CreateForm(TREMainForm, REMainForm);
+  REMainForm.Show;
 end;
 
 procedure Tmaxform1.ReadOnly1Click(Sender: TObject);
@@ -10601,6 +10647,11 @@ end;
 
 procedure Tmaxform1.Tutorial22Services1Click(Sender: TObject);
 begin
+  //for a midi controller keyboard with jclmidi interface and usbtomidi
+  Application.CreateForm(TForm2clavier, Form2clavier);
+  //Form2clavier.Show;
+   Application.CreateForm(TmidiForm1, midiForm1);
+  midiForm1.Show;
  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter22.pdf');
 end;
 
@@ -10933,6 +10984,10 @@ end;
 
 procedure Tmaxform1.Tutorial361Click(Sender: TObject);
 begin
+   Application.CreateForm(TOpBox, OpBox);
+  //Form2clavier.Show;
+   //Application.CreateForm(TmidiForm1, midiForm1);
+  OpBox.Show;
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter36.pdf');
 end;
 
@@ -10943,12 +10998,19 @@ end;
 
 procedure Tmaxform1.tutorial4Click(Sender: TObject);
 begin
+   Application.CreateForm(ThealthForm1, healthForm1);
+  healthForm1.Show;
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter4.pdf');
 end;
 
 procedure Tmaxform1.Tutorial5Click(Sender: TObject);
+// LFormSecondary: TFormSecondary;
 begin
-  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter5.pdf');
+ //Application.CreateForm(TFormSecondary, LFormSecondary);
+  //Form2clavier.Show;
+   Application.CreateForm(TgformMain, gformMain);
+  gformMain.Show;
+  //searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter5.pdf');
 end;
 
 procedure Tmaxform1.Tutorial6Click(Sender: TObject);
@@ -12422,11 +12484,11 @@ end;
 procedure Tmaxform1.Calculator1Click(Sender: TObject);
 begin
   SearchAndOpenDoc('C:\WINDOWS\System32\calc.exe');
+  Tutorial361Click(self);
 end;
 
 procedure Tmaxform1.CB1SCListChange(Sender: TObject);
-var idx, old: integer;
-   temps: string;
+var idx, old: integer; temps: string;
 begin
   //test the prototype    for mX3.9.3        //mX3.8.6.2
     if STATedchanged then begin        //bugfix 3.8
@@ -13111,5 +13173,8 @@ end;
   //https://github.com/adaloveless/commonx/blob/master/PSoCProgrammerCOMLib_TLB.pas
  // https://github.com/adaloveless/commonx/blob/master/webstring.pas
  //https://github.com/maxkleiner/McJSON/tree/main
+ //https://regex101.com/
+ //https://github.com/project-jedi/jcl/blob/master/jcl/source/common/JclCharsets.pas
+ //https://github.com/maxkleiner/DelphiGoogleMap/tree/main/Demo
 
 End.
