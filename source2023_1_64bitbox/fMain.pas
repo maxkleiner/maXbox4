@@ -225,7 +225,7 @@
           13070   5.1.4.98 VII XNClasses, XOpenGL, VectorGeometry, GLScriptPython, Charsetmap, FBX, MySQL
           13088   5.1.4.98 VIII-IX uWebUI, RegexIII, Charsetmap+, truncate, uPSI_ComObjOleDB_utils2, idwebsocketclient, uwebsocket
           13115   5.1.4.98 XIV uwebsocket2, nDoneWithPostStream , chartcolormap, customtcpserver, WebString, McJSON, codemap
-          13165   5.1.6.98 XIX -XVIII regularexpression2, edgeview2 runtime kit VCL.Edge - TEdgeViewForm, RichEdit5, minor fixes, MIDI Keys
+          13180   5.1.6.98 XX-XIX -XVIII regularexpression2, edgeview2 runtime kit VCL.Edge - TEdgeViewForm, RichEdit5, minor fixes, MIDI Keys
 
 ************************************************************************************* }
 
@@ -1244,6 +1244,10 @@ uses
   uPSI_EdgeMain,      // //5.1.6.98
   remain, // for richedit5
   uPSI_remain,
+  uPSI_VclGoogleMap,
+  gMainForm,         //googlemapedgeviewr
+  SecondaryForm,
+  HealthSystem_Unit1,
 
   uPSI_StBase,
   uPSI_StUtils,   //SysTools4 -3.9.1
@@ -2900,7 +2904,8 @@ begin
   SIRegister_RegularExpressions(X);
   SIRegister_SynURIOpener(X);           //5.1.6.98
   SIRegister_EdgeMain(X);
-  SIRegister_remain(X);
+  SIRegister_remain(X);      //richedit
+  SIRegister_VclGoogleMap(X);
 
   SIRegister_StUtils(X);  //SysTools4
   SIRegister_IMouse(X); //*)
@@ -4717,6 +4722,8 @@ begin
   RIRegister_SynURIOpener(X);
   RIRegister_EdgeMain(X);            //5.1.6.98
   RIRegister_remain(X);
+  RIRegister_VclGoogleMap(X);
+
  RIRegister_JvKeyboardStates(X);
   RIRegister_JclMapi(X);
   RIRegister_JclMapi_Routines(Exec); //3.9.9.6
@@ -6546,7 +6553,7 @@ begin
      FileCreate(ExePath+LOGFILE);
      sleep(200);
    end;
-   maxform1.Caption:= 'maXbox5 Ocean1020 mX516 XIXRheingold+++++ beta410!';
+   maxform1.Caption:= 'maXbox5 Ocean1030 mX516 XXRheingold+++++ beta420!';
    //GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, formatSettings);
    //showmessage(formatsettings.ShortDateFormat);
         //FFileStream := TFileStream.Create(Filename, fmCreate);
@@ -10991,12 +10998,19 @@ end;
 
 procedure Tmaxform1.tutorial4Click(Sender: TObject);
 begin
+   Application.CreateForm(ThealthForm1, healthForm1);
+  healthForm1.Show;
   searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter4.pdf');
 end;
 
 procedure Tmaxform1.Tutorial5Click(Sender: TObject);
+// LFormSecondary: TFormSecondary;
 begin
-  searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter5.pdf');
+ //Application.CreateForm(TFormSecondary, LFormSecondary);
+  //Form2clavier.Show;
+   Application.CreateForm(TgformMain, gformMain);
+  gformMain.Show;
+  //searchAndOpenDoc(ExtractFilePath(ParamStr(0))+'docs\maxbox_starter5.pdf');
 end;
 
 procedure Tmaxform1.Tutorial6Click(Sender: TObject);
@@ -13161,5 +13175,6 @@ end;
  //https://github.com/maxkleiner/McJSON/tree/main
  //https://regex101.com/
  //https://github.com/project-jedi/jcl/blob/master/jcl/source/common/JclCharsets.pas
+ //https://github.com/maxkleiner/DelphiGoogleMap/tree/main/Demo
 
 End.
