@@ -452,6 +452,7 @@ SHA1: of 4.2.4.80 15565A557B0F9576AA5F23F2A1D06BE9699A757B
 CRC32: FA1F1F25 26.4 MB (27,720,144 bytes)
 
 Release Notes maXbox 5.1.6.98 August 2024 mX516 beta64-bit🐞
+*****************************************************************
 
 Add 65 Units (of 3750) + 25 Tutorials
 
