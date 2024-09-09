@@ -450,3 +450,20 @@ add 20 units + 442 functions- WMI Script Type Library - webbox
 
 SHA1: of 4.2.4.80 15565A557B0F9576AA5F23F2A1D06BE9699A757B
 CRC32: FA1F1F25 26.4 MB (27,720,144 bytes)
+
+Release Notes maXbox 5.1.6.98 August 2024 mX516 beta64-bit🐞
+
+Add 65 Units (of 3750) + 25 Tutorials
+
+install or update certificate maXboxCertAuth3.cer
+for https Indy SSL unpack ./crypt/openssl-1.0.2u-x64_86-win64.zip
+for python4maxbox install Python 3.11.9 or 3.12.4 64-bit
+test with ./maxbox_starter_testsequence51.bat
+optional: on 2880 x 1800 set scale 150% (140 DPI)
+edgeview2 runtime kit VCL.Edge, RichEdit Control5, Vcl.GoogleMap;
+root: add file WebView2Loader.dll and reoverview.rtf
+core: MIDI Keybord compatible: Microsoft GS Wavetable Synth
+
+![sourcelist_lastbuild_2024-09-07080347](https://github.com/user-attachments/assets/74729b0c-f18e-4be9-b920-c0bd3263d8d4)
+
+
