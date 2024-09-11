@@ -475,6 +475,11 @@ Catalog Repository D290 /23.0
 
 ![mX51_Search_Catalogworks_Rep_D12_2024-09-11_142356](https://github.com/user-attachments/assets/5e1507cf-fc96-49a1-81e5-c9b709852e2c)
 
+Directories Lang D290 /23.0
+
+![mX51_Searchpath_Lang_catalogbase2024-09-11_160010](https://github.com/user-attachments/assets/3e19dc1e-45b2-4c34-b649-9506f85091f4)
+
+
 
 
 
