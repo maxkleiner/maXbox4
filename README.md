@@ -467,4 +467,9 @@ core: MIDI Keybord compatible: Microsoft GS Wavetable Synth
 
 ![sourcelist_lastbuild_2024-09-07080347](https://github.com/user-attachments/assets/74729b0c-f18e-4be9-b920-c0bd3263d8d4)
 
+An Updated List on Delphi 12.1 D290 maXbox5_17beta120
+
+![mX51_Searchpath_RAD12_1_2024-09-11_151750](https://github.com/user-attachments/assets/86c7ce65-b69e-46a9-826d-807425455e35)
+
+
 
