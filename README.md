@@ -2,6 +2,27 @@
 # maXbox5
 byte-code compiler script studio
 *****************************************************************
+
+*****************************************************************
+Release Notes maXbox 5.2.7.120 May 2025 mX527 beta64-bit🐞
+*****************************************************************
+Add 21 Units (of 3771) + 15 Tutorials
+
+- py2,py3,py4,py5 (python3) enhanced template in bds_delphi.dci
+- now 142 Tutorials last: Geocode Distance maxbox_starter142.pdf
+- dmath64.dll renew functions data science package
+- maxbox_starter_testsequence51.bat added
+- new examples on https://sourceforge.net/projects/maxbox5/files/
+- ESC song available: examples/Sternenhaufen_Max_SunoAI.mp3
+- Issue BPM 123/124 has been released May 2025
+- source compatible with previous Version (see below)
+- update compatible for Python3.13 and Python3.14 use
+
+15.05.2025 12:08
+Release Notes maXbox 5.2.7.120 May 2025 
+SHA1: 5.2.7.120 maXbox5.exe e4568ca730781118bb5c16860c5872990ca35175
+SHA1: ZIP file maxbox52.zip 1A89639AF491F6CF2AFE661C4E08EECDEDF95A7B
+
 *****************************************************************
 Release Notes maXbox 5.1.6.98 August 2024 mX516 beta64-bit🐞
 *****************************************************************
@@ -478,6 +499,11 @@ Catalog Repository D290 /23.0
 Directories Lang D290 /23.0
 
 ![mX51_Searchpath_Lang_catalogbase2024-09-11_160010](https://github.com/user-attachments/assets/3e19dc1e-45b2-4c34-b649-9506f85091f4)
+
+and the new issue:
+
+![image](https://github.com/user-attachments/assets/287e577e-7e5f-497c-8fd4-8140d9b6f96a)
+
 
 
 
