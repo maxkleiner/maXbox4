@@ -8,6 +8,26 @@ Release Notes maXbox 5.2.8.160 June 2025 mX528 beta64-bit🐞
 *****************************************************************
 
 py2,py3,py4,py5,py6,py7,py8(python3) enhanced template bds_delphi.dci
+now 144 Tutorials ex.: Geocode Distance maxbox_starter142.pdf
+dmath64.dll renew functions data science package
+maxbox_starter_testsequence51.bat added listview events
+new examples on https://sourceforge.net/projects/maxbox5/files/
+ESC song available: examples/Sternenhaufen_Max_SunoAI.mp3
+Issue BPM 123/124 released May 2025
+source compatible of previous Version (see below)
+update compatible for Python3.13 and Python3.14 P4D Export
+GO game menu/view/GoGame5 -TGoForm1-TGoBlock-TGoBoard
+06.06.2025 17:47
+Release Notes maXbox 5.2.8.160 June 2025
+SHA1: 5.2.8.160 maXbox5.exe 46f17ee3746e69f7eb841daeb155b9276a0ebd48
+SHA1: ZIP maxbox52.zip 49D49E9DF0E5FFF01D03C91AF4D63365F3BCCC95
+https://metadefender.com/results/file/bzI1MDYwNnZ3anRnZlozX18yczFPaV9nZ244_mdaas
+
+*****************************************************************
+Release Notes maXbox 5.2.8.160 June 2025 mX528 beta64-bit🐞
+*****************************************************************
+
+py2,py3,py4,py5,py6,py7,py8(python3) enhanced template bds_delphi.dci
 now 142 Tutorials last: Geocode Distance maxbox_starter142.pdf
 dmath64.dll renew functions data science package
 maxbox_starter_testsequence51.bat added listview events
