@@ -6,22 +6,26 @@ byte-code compiler script studio
 *****************************************************************
 Release Notes maXbox 5.2.8.160 June 2025 mX528 beta64-bit🐞
 *****************************************************************
+- py2,py3,py4,py5-py9(python3) enhanced template bds_delphi.dci
+- now 144 Tutorials ex.: Geocode Distance maxbox_starter142.pdf
+- dmath64.dll renew functions data science package
+- maxbox_starter_testsequence51.bat added listview events
+- new examples on https://sourceforge.net/projects/maxbox5/files/
+- ESC song available: examples/Sternenhaufen_Max_SunoAI.mp3
+- Issue BPM 123/124 released May 2025
+- source compatible of previous Version (see below)
+- update compatible for Python3.13 and Python3.14 P4D Export
+- GO game menu/view/GoGame5 -TGoForm1-TGoBlock-TGoBoard
+- Modules Count_: 3777 Units maXbox5_28beta160.xml
 
-py2,py3,py4,py5,py6,py7,py8(python3) enhanced template bds_delphi.dci
-now 144 Tutorials ex.: Geocode Distance maxbox_starter142.pdf
-dmath64.dll renew functions data science package
-maxbox_starter_testsequence51.bat added listview events
-new examples on https://sourceforge.net/projects/maxbox5/files/
-ESC song available: examples/Sternenhaufen_Max_SunoAI.mp3
-Issue BPM 123/124 released May 2025
-source compatible of previous Version (see below)
-update compatible for Python3.13 and Python3.14 P4D Export
-GO game menu/view/GoGame5 -TGoForm1-TGoBlock-TGoBoard
-06.06.2025 17:47
-Release Notes maXbox 5.2.8.160 June 2025
-SHA1: 5.2.8.160 maXbox5.exe 46f17ee3746e69f7eb841daeb155b9276a0ebd48
-SHA1: ZIP maxbox52.zip 49D49E9DF0E5FFF01D03C91AF4D63365F3BCCC95
-https://metadefender.com/results/file/bzI1MDYwNnZ3anRnZlozX18yczFPaV9nZ244_mdaas
+08.06.2025 17:22
+Release Notes maXbox 5.2.8.160 June 2025 
+SHA1: 5.2.8.160 maXbox5.exe 6b80a390423dd7759fd4ae0f1df72700b82fffe8
+SHA1: ZIP maxbox52.zip 531286300D531038FCB283FD713964EB24B26825 
+https://metadefender.com/results/file/bzI1MDYwOC1QRTRfRXlyUW5ucEM5c1lsV0c_mdaas
+
+![mX528160CompilingScreenshot2025-06-08093823](https://github.com/user-attachments/assets/c9f0c723-1214-4251-905a-dea9ff065855)
+
 
 *****************************************************************
 Release Notes maXbox 5.2.8.160 June 2025 mX528 beta64-bit🐞
