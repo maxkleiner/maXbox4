@@ -26,6 +26,9 @@ https://metadefender.com/results/file/bzI1MDYwOC1QRTRfRXlyUW5ucEM5c1lsV0c_mdaas
 
 ![mX528160CompilingScreenshot2025-06-08093823](https://github.com/user-attachments/assets/c9f0c723-1214-4251-905a-dea9ff065855)
 
+Generally, XMP data is stored in XML format, updated on save/copy, and embedded within.
+![mX52ProjectPathGetitDependencoesScreenshot2025-06-07153401](https://github.com/user-attachments/assets/3b553725-96ae-421c-99d6-19fcb606b93f)
+
 
 *****************************************************************
 Release Notes maXbox 5.2.8.160 June 2025 mX528 beta64-bit🐞
