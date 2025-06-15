@@ -4,10 +4,10 @@ byte-code compiler script studio
 *****************************************************************
 
 *****************************************************************
-Release Notes maXbox 5.2.8.160 June 2025 mX528 beta64-bit🐞
+Release Notes maXbox 5.2.9.160 June 2025 mX528 beta64-bit🐞
 *****************************************************************
 - py2,py3,py4,py5-py9(python3) enhanced template bds_delphi.dci
-- now 144 Tutorials ex.: Geocode Distance maxbox_starter142.pdf
+- now 145 Tutorials ex.: Geocode Distance maxbox_starter142.pdf
 - dmath64.dll renew functions data science package
 - maxbox_starter_testsequence51.bat added listview events
 - new examples on https://sourceforge.net/projects/maxbox5/files/
@@ -16,9 +16,9 @@ Release Notes maXbox 5.2.8.160 June 2025 mX528 beta64-bit🐞
 - source compatible of previous Version (see below)
 - update compatible for Python3.13 and Python3.14 P4D Export
 - GO game menu/view/GoGame5 -TGoForm1-TGoBlock-TGoBoard
-- Modules Count_: 3777 Units maXbox5_28beta160.xml
+- Modules Count_: 3780 Units maXbox5_28beta160.xml
 
-08.06.2025 17:22
+15.06.2025 17:22
 Release Notes maXbox 5.2.8.160 June 2025 
 SHA1: 5.2.8.160 maXbox5.exe 6b80a390423dd7759fd4ae0f1df72700b82fffe8
 SHA1: ZIP maxbox52.zip 531286300D531038FCB283FD713964EB24B26825 
