@@ -10,7 +10,7 @@ as an OpenToolsAPI to modify the maXbox GUI - V3.5 -V3.8.6 , version check
   MBVERIALL, ResetKeyPressed, arduino items, terminal;    4.2.2.90  /95  /98  42425 4.2.4.60  4.2.5.10 42610 42810
                       45810 46210 46310 47110 47120 47180 47182 47282 47360 47460 47462 47464 47520 47580 47590 47620 502028 503 504}
 
-  //locs V5.0.2.28 = 3815   locs V5.0.2.80 = 3821  3825  V50360   3827   V50470  3837- V51470 V51480  V51498 - 3856  - 51698 XVIII-XIX
+  //locs V5.0.2.28 = 3815  locs V5.0.2.80 = 3821  3825  V50360   3827   V50470  3837- V51470 V51480  V51498 - 3856  - 51698 XVIII-XIX  - 517120 -527120 -3863 529170
 
 interface
 
@@ -514,6 +514,7 @@ begin
     RegisterMethod('Procedure HTMLSyntax1Click( Sender : TObject)');
     RegisterMethod('Procedure ShowInterfaces1Click( Sender : TObject)');
     RegisterMethod('Procedure Tutorial5Click( Sender : TObject)');
+    RegisterMethod('Procedure GoogleMaps( Sender : TObject)');
     RegisterMethod('Procedure ShowLastException1Click( Sender : TObject)');
     RegisterMethod('Procedure PlayMP31Click( Sender : TObject)');
     RegisterMethod('Procedure AllFunctionsList1Click( Sender : TObject)');
@@ -721,6 +722,7 @@ begin
      RegisterMethod('procedure GameofLife(Sender: TObject);');
      RegisterMethod('procedure midikeyClick(Sender: TObject);');
       RegisterMethod('procedure MidikeyBoard;');
+      RegisterMethod('procedure GoGameClick(Sender: TObject);');
 
       //RegisterMethod('procedure defFilereadUpdate;');
       //  procedure defFilereadUpdate;
@@ -747,17 +749,20 @@ begin
  CL.AddConstantN('ALLRESOURCELIST','String').SetString( 'docs\upsi_allresourcelist.txt');
  //CL.AddConstantN('ALLUNITLIST','String').SetString( 'docs\maxbox3_9.xml');
  CL.AddConstantN('ALLUNITLIST','String').SetString( 'docs\maxbox5_0.xml');
+ CL.AddConstantN('ALLUNITLIST2','String').SetString( 'docs\maxbox5_2.xml');
 
  CL.AddConstantN('INCLUDEBOX','String').SetString('pas_includebox.inc');
  CL.AddConstantN('BOOTSCRIPT','String').SetString('maxbootscript.txt');
- CL.AddConstantN('MBVERSION','String').SetString('5.1.6.98');
- CL.AddConstantN('VERSION','String').SetString('5.1.6.98');
- CL.AddConstantN('MBVERIALL','Integer').SetInt(51698);
- CL.AddConstantN('MBVER2','String').SetString('51698');
+ CL.AddConstantN('MBVERSION','String').SetString('5.2.9.170');
+ CL.AddConstantN('VERSION','String').SetString('5.2.9.170');
+ CL.AddConstantN('MBVERIALL','Integer').SetInt(529170);
+ CL.AddConstantN('MBVER2','String').SetString('529170');
  CL.AddConstantN('EXENAME','String').SetString('maXbox5.exe');
+ CL.AddConstantN('EXENAME1','String').SetString('maXbox51.exe');
+ CL.AddConstantN('EXENAME2','String').SetString('maXbox52.exe');
  CL.AddConstantN('MXINTERNETCHECK','String').SetString('www.ask.com');
- CL.AddConstantN('MBVER','String').SetString('516');
- CL.AddConstantN('MBVERI','Integer').SetInt(516);
+ CL.AddConstantN('MBVER','String').SetString('529');
+ CL.AddConstantN('MBVERI','Integer').SetInt(529);
  CL.AddConstantN('MXVERSIONFILE','String').SetString('http://www.softwareschule.ch/maxvfile.txt');
  CL.AddConstantN('MXVERSIONFILE2','String').SetString('http://www.softwareschule.ch/maxvfile2.txt');
 
@@ -3617,6 +3622,7 @@ begin
     RegisterMethod(@TMaxForm1.HTMLSyntax1Click, 'HTMLSyntax1Click');
     RegisterMethod(@TMaxForm1.ShowInterfaces1Click, 'ShowInterfaces1Click');
     RegisterMethod(@TMaxForm1.Tutorial5Click, 'Tutorial5Click');
+    RegisterMethod(@TMaxForm1.Tutorial5Click, 'GoogleMaps');
     RegisterMethod(@TMaxForm1.ShowLastException1Click, 'ShowLastException1Click');
     RegisterMethod(@TMaxForm1.PlayMP31Click, 'PlayMP31Click');
     RegisterMethod(@TMaxForm1.AllFunctionsList1Click, 'AllFunctionsList1Click');
@@ -3826,6 +3832,7 @@ begin
      RegisterMethod(@Tmaxform1.Tutorial71Click, 'Gameoflife');
       RegisterMethod(@Tmaxform1.midikeyClick, 'MIDIKeyClick');
         RegisterMethod(@Tmaxform1.midikeyClick, 'MIDIKeyBoard');
+     RegisterMethod(@Tmaxform1.go5click, 'GoGameClick');
 
     //procedure Darkcolor1Click(Sender: TObject);
         //procedure OrangeStyle1Click(Sender: TObject);

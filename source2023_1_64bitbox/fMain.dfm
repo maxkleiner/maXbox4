@@ -40,8 +40,8 @@ object maxform1: Tmaxform1
     ScrollBars = ssVertical
     TabOrder = 2
     OnKeyPress = Memo2KeyPress
-    ExplicitTop = 605
-    ExplicitWidth = 1031
+    ExplicitTop = 606
+    ExplicitWidth = 1035
   end
   object CoolBar1: TCoolBar
     Left = 0
@@ -307,7 +307,7 @@ object maxform1: Tmaxform1
       77777777777777777777777777777777777777777777777777777F7F7F7F7777
       F77F77F777777777777771771717177777777777777777777777777777777777
       7777777777777777777777777777777777777777777177777777}
-    ExplicitWidth = 1031
+    ExplicitWidth = 1035
     object ToolBar1: TToolBar
       Left = 11
       Top = 0
@@ -2923,8 +2923,8 @@ object maxform1: Tmaxform1
     SimpleText = 'StatusLine: OK'
     SizeGrip = False
     OnDblClick = StatusBar1DblClick
-    ExplicitTop = 585
-    ExplicitWidth = 1031
+    ExplicitTop = 586
+    ExplicitWidth = 1035
   end
   object ControlBar1: TControlBar
     AlignWithMargins = True
@@ -2942,7 +2942,7 @@ object maxform1: Tmaxform1
     RowSize = 30
     RowSnap = False
     TabOrder = 3
-    ExplicitWidth = 1025
+    ExplicitWidth = 1029
     object imglogobox: TImage
       Left = 932
       Top = 2
@@ -3904,12 +3904,14 @@ object maxform1: Tmaxform1
       end>
     Lines.Strings = (
       '//maXbox is a scripter tool with a delphi engine in one exe!'
-      '//runs under Win and Linux (CLX) to build Delphi in a Box'
+      
+        '//runs under Win and Linux (CLX) to build Delphi scripts in a Bo' +
+        'x'
       
         '//**************************************************************' +
         '***********'
       ''
-      'Program Delphi_in_a_Box_514;'
+      'Program Delphi_Python_in_a_Box_V529;'
       ''
       'const mys = '#39'CODESIGN!'#39';'
       'var i: byte;'
@@ -3940,13 +3942,16 @@ object maxform1: Tmaxform1
       '//memo2 is output space'
       ''
       
-        'Road to 64-bit box with maXbox5 - 5.1 2024 UC V5.1.6.98 XVI July' +
-        ' 2024'
+        'Road to 64-bit box with maXbox5 - 5.1 2024 UC V5.2.9.170 XVIII J' +
+        'une 2025 mX5.2'
       '****************************************************************'
       
         'Changes in maXbox 3.9.9 and 4.6.3 and 4.7.2.82 / 4.7.5.90  4.7.6' +
         '.10!  4.7.6.50'
       '****************************************************************'
+      
+        '- RegularExpression3, edgeview2 runtime kit VCL.Edge, RichEdit C' +
+        'ontrol5 '
       
         '- over 37400 delphi, pascal, python network, admin, jedi and ind' +
         'y functions built in'
@@ -3956,15 +3961,20 @@ object maxform1: Tmaxform1
       
         '- SMTP, POP3, HTTP, FTP, sysutils, strutils, fileutils,  SocketS' +
         'erver'
-      '- Syntax Check F2 - Java, C Syntax in Context, Syn API, MAPX'
+      
+        '- Syntax Check F2 - Java, C Syntax in Context, Syn API, MAPX, P4' +
+        'D'
       
         '- V3.8 new Compiler mX4, bootscript, internet check, unit suppor' +
-        't'
+        't, mX5 64-bit'
       
         '- CryptoBox AES, FileInfo, Perl RegEx, Serial, Jedi Utils, Systo' +
         'ols4, Orpheus, Indent, D4P'
       ''
-      '{ V5.1.6.98 July 2024'
+      '{  V5.2.9.170 June 2025'
+      '   V5.2.8.140 May 2025'
+      '   V5.2.8.120 May 2025'
+      '   V5.1.6.98 August 2024'
       '   V5.1.4.98 June 2024'
       '   V5.1.4.90 March 2024'
       '   V5.1.4.80 March 2024'
@@ -4010,8 +4020,8 @@ object maxform1: Tmaxform1
     OnReplaceText = Memo1ReplaceText
     OnSpecialLineColors = Memo1SpecialLineColors
     OnStatusChange = Memo1StatusChange
-    ExplicitWidth = 1031
-    ExplicitHeight = 501
+    ExplicitWidth = 1035
+    ExplicitHeight = 502
   end
   object PSScript: TPSScript
     CompilerOptions = [icAllowUnit]
@@ -4026,7 +4036,7 @@ object maxform1: Tmaxform1
         Plugin = PS3DllPlugin
       end>
     UsePreProcessor = True
-    OnNeedFile = PSScriptNeedFile
+    OnNeedFile = PSScript1NeedFile
     Left = 392
     Top = 136
   end
@@ -6240,6 +6250,38 @@ object maxform1: Tmaxform1
         GroupIndex = 1
         OnClick = Chess41Click
       end
+      object midikey: TMenuItem
+        Bitmap.Data = {
+          36030000424D3603000000000000360000002800000010000000100000000100
+          18000000000000030000120B0000120B00000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00000000000000000000000000CFD0D1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1
+          B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1000000000000F0F1F1
+          D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0
+          D0D0D0D0B1B1B1000000000000F0F1F1DFDFDFDFDFDFDFDFDFDFDFDFDFDFDFD0
+          D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0B1B1B1000000000000F0F1F1
+          DFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDF
+          DFD0D0D0B1B1B100000000000068686800000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000E8BC9D
+          E3AD87E3AD87E3AD87DB9565DB9565DB9565DB9565DB9565DB9565DB9565DB95
+          65DB9565D0753600000068686800000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000CFD0D1
+          B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1
+          B1B1B1B1B1B1B1000000000000F0F1F1D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0
+          D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0B1B1B1000000000000F0F1F1
+          DFDFDFDFDFDFDFDFDFD0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0D0
+          D0D0D0D0B1B1B1000000000000F0F1F1DFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDF
+          DFDFDFDFDFD0D0D0D0D0D0D0D0D0D0D0D0D0D0D0B1B1B1000000000000F0F1F1
+          DFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDFDF
+          DFD0D0D0B1B1B100000000000068686800000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000E8BC9D
+          E3AD87E3AD87E3AD87DB9565DB9565DB9565DB9565DB9565DB9565DB9565DB95
+          65DB9565D0753600000068686800000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000}
+        Caption = 'MIDI Keyboard'
+        GroupIndex = 1
+        OnClick = midikeyClick
+      end
     end
     object View1: TMenuItem
       Caption = '&View'
@@ -6490,6 +6532,37 @@ object maxform1: Tmaxform1
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         Caption = 'Pac ManX5'
         OnClick = PacManX51Click
+      end
+      object GoGame51: TMenuItem
+        Bitmap.Data = {
+          36030000424D3603000000000000360000002800000010000000100000000100
+          18000000000000030000120B0000120B00000000000000000000BFBFBF000000
+          2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F0000
+          00BFBFBFBFBFBFBFBFBFBFBFBF000000D1B5A5C09E8BC09E8BC09E8BC09E8BC0
+          9E8BC09E8B9A7F6F9A7F6F876F622F2F2FBFBFBFBFBFBFBFBFBFBFBFBF000000
+          EAD7CCD1B5A5D1B5A5D1B5A5D1B5A5D1B5A50000000000000000000000000000
+          00000000000000BFBFBFBFBFBF000000EAD7CCD1B5A56F56476F5647D1B5A56F
+          5647000000CFCFCFB8B8B8B8B8B8B8B8B8969696000000BFBFBFBFBFBF000000
+          EAD7CCDCC4B6D1B5A5D1B5A5D1B5A5D1B5A5000000F3F3F3DFDFDFCFCFCFCFCF
+          CFB8B8B8000000BFBFBFBFBFBF000000EAD7CCDCC4B66F56476F56476F5647D1
+          B5A5000000F3F3F3DFDFDFDFDFDFDFDFDFB8B8B8000000BFBFBFBFBFBF000000
+          EAD7CCDCC4B6DCC4B6D1B5A5D1B5A5D1B5A5000000FFFFFFF3F3F3F3F3F3F3F3
+          F3DFDFDF000000BFBFBFBFBFBF000000EAD7CCDCC4B66F5647DCC4B66F56476F
+          5647000000000000000000000000000000000000000000BFBFBFBFBFBF000000
+          EAD7CCDCC4B6DCC4B6DCC4B6DCC4B6D1B5A500000000A2FF00A2FF00A2FF00A2
+          FF00A2FF000000BFBFBFBFBFBF000000EAD7CCDCC4B66F56476F5647DCC4B66F
+          5647686868000000000000000000000000000000000000BFBFBFBFBFBF000000
+          EAD7CCDCC4B6DCC4B6DCC4B6DCC4B6DCC4B6D1B5A5D1B5A5D1B5A5C09E8B2F2F
+          2FBFBFBFBFBFBFBFBFBFBFBFBF000000EAD7CCDCC4B66F5647DCC4B66F56476F
+          5647DCC4B66F5647D1B5A5C09E8B2F2F2FBFBFBFBFBFBFBFBFBFBFBFBF000000
+          EAD7CCDCC4B6DCC4B6DCC4B6DCC4B6DCC4B6DCC4B6DCC4B6D1B5A5C09E8B2F2F
+          2FBFBFBFBFBFBFBFBFBFBFBFBF000000EAD7CCDCC4B6DCC4B6DCC4B6DCC4B6DC
+          C4B6DCC4B6DCC4B6DCC4B6C09E8B2F2F2FBFBFBFBFBFBFBFBFBFBFBFBF000000
+          F3E3D9EAD7CCEAD7CCEAD7CCEAD7CCEAD7CCEAD7CCEAD7CCEAD7CCDCC4B62F2F
+          2FBFBFBFBFBFBFBFBFBFBFBFBF6868682F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F
+          2F2F2F2F2F000000000000000000000000BFBFBFBFBFBFBFBFBF}
+        Caption = 'Go Game5'
+        OnClick = Go5Click
       end
       object Terminal1: TMenuItem
         Bitmap.Data = {
@@ -8454,7 +8527,7 @@ object maxform1: Tmaxform1
           FF00FFC56418AF4501DC8840E9A76CEEBB89EBB581DC914DBD590F752D0C9034
           02FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFA646088B350575
           2D0C752D0C8B35059E4006FF00FFFF00FFFF00FFFF00FFFF00FF}
-        Caption = 'Tutorials 1-125'
+        Caption = 'Tutorials 1-152'
         Hint = 'Procedural Programming'
         ImageIndex = 1
         object Tutorial11: TMenuItem
@@ -8630,7 +8703,7 @@ object maxform1: Tmaxform1
             FF00FF681E0B681E0BC59076B68C69A9754E976739825622681E0B681E0BFF00
             FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF681E0B681E0B68
             1E0B681E0B681E0BFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
-          Caption = 'Tutorial 5 Internet'
+          Caption = 'Tutorial 5 InternetVE'
           Hint = 'Internet Coding'
           ShortCut = 16500
           OnClick = Tutorial5Click
@@ -9457,7 +9530,7 @@ object maxform1: Tmaxform1
             307B1925B94E307B19FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00
             FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
             00FFFF00FFFF00FF307B19307B19307B19FF00FFFF00FFFF00FF}
-          Caption = 'Tutorial 22 Services'
+          Caption = 'Tutorial 22 MIDI Services'
           OnClick = Tutorial22Services1Click
         end
         object Tutorial23RealTime1: TMenuItem
@@ -11770,7 +11843,7 @@ object maxform1: Tmaxform1
       item
       end>
     UsePreProcessor = True
-    OnNeedFile = PSScriptNeedFile
+    OnNeedFile = PSScript1NeedFile
     OnIdle = cedebugIdle
     OnLineInfo = cedebugLineInfo
     OnBreakpoint = cedebugBreakpoint
@@ -16265,5 +16338,13 @@ object maxform1: Tmaxform1
       FC24001BE73B00F9FDA5001BE73BE4F9FDA5001BF27BEE73FDFF001BFFFBFFFF
       FFFF001FBFF3FFFFFFFF001F8007FFFF00000000000000000000000000000000
       000000000000}
+  end
+  object PSScript1: TPSScript
+    CompilerOptions = []
+    Plugins = <>
+    UsePreProcessor = False
+    OnNeedFile = PSScript1NeedFile
+    Left = 688
+    Top = 144
   end
 end
