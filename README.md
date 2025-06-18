@@ -4,6 +4,29 @@ byte-code compiler script studio
 *****************************************************************
 
 *****************************************************************
+Release Notes maXbox 5.2.9.170 June 2025 mX529 beta64-bit🐞
+*****************************************************************
+- fixed a bigbug in debugger - see tutorial_146 debugging
+- py2,py3,py4,py5-py9(python3) enhanced template bds_delphi.dci
+- now 146 Tutorials last: maxbox_starter145_JCL_Services.pdf
+- dmath64.dll renew functions data science package
+- maxbox_starter_testsequence51.bat added listview events
+- new examples on https://sourceforge.net/projects/maxbox5/files/
+- ESC song available: examples/Sternenhaufen_Max_SunoAI.mp3
+- Issue BPM 123/124 has been released May 2025
+- source compatible with previous Version (see below)
+- update compatible for Python3.13 and Python3.14 P4D export
+- GO game menu/view/GoGame5 - TGoForm1-TGoBlock-TGoBoard
+- Modules Count__: 3780 Units maXbox5_29beta170.xml
+
+18.06.2025 17:05
+Release Notes maXbox 5.2.9.170 June 2025 
+SHA1: 5.2.9.170 maXbox5.exe c96b027bd4cf1ffb502796e498c3098d1bca8111
+SHA1: ZIP maxbox52.zip D66964DDC9024AE0B34B90A4A4F3DE456EA5C542 
+
+![mX529170CompilerScreenshot2025-06-17_095442](https://github.com/user-attachments/assets/1c70b0bb-b834-4705-8a81-c8f42ff66f38)
+
+*****************************************************************
 Release Notes maXbox 5.2.9.160 June 2025 mX528 beta64-bit🐞
 *****************************************************************
 - py2,py3,py4,py5-py9(python3) enhanced template bds_delphi.dci
