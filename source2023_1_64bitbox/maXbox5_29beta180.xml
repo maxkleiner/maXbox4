@@ -478,6 +478,10 @@
   <contains name="MPCommonUtilities" />
   <contains name="MPResources" />
   <contains name="uPSI_cParameters" />
+  <contains name="uPSI_PyCommon" />
+  <contains name="PyExceptions" />
+  <contains name="PyTools.Exception" />
+  <contains name="PyCommon" />
   <contains name="uPSI_VarPyth" />
   <contains name="VarPyth" />
   <contains name="uPSI_VclPythonGUIInputOutput" />

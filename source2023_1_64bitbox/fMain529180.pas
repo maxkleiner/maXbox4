@@ -230,7 +230,7 @@
           13268   5.2.8.140 May 2025 D12.1 plus 24 units  - python 3.13, 3.14 integration P4D  gogame, jclsysinfo update
           13280   5.2.9.160 June 2025 D12.1 plus 28 units  - http_getstream, jpeg imageclass update fillchar, htm,rtf export fix, synhtml, synunicode
           13286   5.2.9.170 June 2025 fix bug in debug  - jclsvc more methods, funky resource, getjpegfromresname()
-          13295   5.2.9.180 July 2025 fix bug in colorgrid  - minesweeper5, itemheights, mX5 Chess engine, getjpegfromresname()
+          13300   5.2.9.180 II July 2025 fix bug in colorgrid  - minesweeper5, itemheights, mX5 Chess engine, getjpegfromresname()
 
 ************************************************************************************* }
 
@@ -1119,7 +1119,7 @@ uses
   uPSC_forms,
   uPSI_Types, //3.5+3.6  dword-longword
   uPSC_graphics,          //canvas
-  uPSC_controls_orig,   //tcontrol & twincontrol thackclass
+  uPSC_controls_orig,   //tcontrol & twincontrol thackclass  - Tmouseevent
   //uPSC_classes,
   //uPSR_classes,
   uPSComponentExt,
@@ -2484,6 +2484,7 @@ uses
   uPSI_PythonEngine,        //change to 1.12
   uPSI_VclPythonGUIInputOutput,
   uPSI_VarPyth,
+  uPSI_PyCommon,     //pyengine + pyenvironment +pyexceptions
   uPSI_cParameters,  //uPSI_cFileTemplates, *)
   uPSI_uCommonFunctions,        //5.02.40
   uPSI_WDCCMisc,
@@ -2815,7 +2816,7 @@ begin
   SIRegister_Classes(x, true);
   SIRegister_Types(X);       //3.5+3.6
   SIRegister_Graphics(x, true);     //canvas
-  SIRegister_Controls(x);
+  SIRegister_Controls(x);     //Tmouseevent  +SIRegister_Controls_TypesAndConsts
   SIRegister_stdctrls(x);
   SIRegister_extctrls(x);
   SIRegister_Types(X);       //3.5+3.6
@@ -4067,6 +4068,7 @@ SIRegister_cySearchFiles(X);
   SIRegister_PythonEngine(X);
   SIRegister_VclPythonGUIInputOutput(X);
   SIRegister_VarPyth(X);
+  SIRegister_PyCommon(X);
   SIRegister_cParameters(X);
   SIRegister_WDCCMisc(X);
   SIRegister_WDCCWinInet(X);
@@ -4706,6 +4708,7 @@ begin
   RIRegister_PythonEngine(X);
   RIRegister_VclPythonGUIInputOutput(X);
   RIRegister_VarPyth_Routines(Exec);
+  RIRegister_PyCommon(X);
   RIRegister_cParameters_Routines(Exec);
   RIRegister_cParameters(X);
   RIRegister_WDCCMisc_Routines(Exec);
@@ -13291,5 +13294,7 @@ end;
  //https://regex101.com/
  //https://github.com/project-jedi/jcl/blob/master/jcl/source/common/JclCharsets.pas
  //https://github.com/maxkleiner/DelphiGoogleMap/tree/main/Demo
+ //https://github.com/maxkleiner/Pascal-Chess
+ //https://github.com/maxkleiner/PythonEnvironments
 
 End.
