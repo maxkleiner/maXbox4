@@ -4,6 +4,26 @@ byte-code compiler script studio
 *****************************************************************
 
 *****************************************************************
+Release Notes maXbox 5.2.9.196 August 2025 mX529 beta64-bit🐞
+*****************************************************************
+- TProcess3 class with TInput/TOutputPipeStream3 
+  https://github.com/z505/TProcess-Delphi/blob/master/dprocess.pas
+- graphics32/blob/master/DocProcessor /Help/Pas2Doc Processor Demo
+- dll64 import info routines uPSC_dll.pas, GR32_System, GR32_Math
+- more mp3 examples/Sternenhaufen_Max_SunoAI.mp3
+- update compatible for Python3.13 and Python3.14 P4D export
+- Modules Count_: 3845 Units maXbox5_29beta190.xml
+
+05.08.2025 17:25
+Release Notes maXbox 5.2.9.196 August 2025 
+SHA1: 5.2.9.196 maXbox5.exe e4bcc187fa0fd6007be376b20f9f55b8df020acb
+SHA1: ZIP maxbox52.zip 291467F21298C6EB123052236C457455819AB688 
+https://metadefender.com/results/file/bzI1MDgwNU40dWpXQVFEb2Z5WkhHeER2LUc_mdaas
+https://www.virustotal.com/gui/file/e80d61bab6ee0a6e0df30cd96d5f70a07e49e25a613b4f54b6f69925806cf3c5/detection
+
+![meta_fileoverview_05-8-2025_V529196_metadefender com](https://github.com/user-attachments/assets/f22016c6-1993-429a-b494-ae178dc9fcc0)
+
+*****************************************************************
 Release Notes maXbox 5.2.9.185 July 2025 mX529 beta64-bit🐞
 *****************************************************************
 - fixed bigbug in debugger/preprocessor -see tutor_146 debugging
