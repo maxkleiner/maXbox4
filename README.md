@@ -4,6 +4,25 @@ byte-code compiler script studio
 *****************************************************************
 
 *****************************************************************
+Release Notes maXbox 5.2.9.198 September 2025 mX529 beta64-bit🐞
+*****************************************************************
+SynEdit upgrade, DisplayFlowControl, Structural Highlighting
+GeoMap View3 upgrade, Tutorial3 Modular upgrade folding
+SynEdit highlighter updates: JScript, Python, Pascal, C++
+WebView2 loader upgrade getScriptresult() of JavaScript
+Print & Export Rededesign - menu/File/Print Studio5
+maxform1.SystemInfo1Click - menu/Debug/System Info
+Modules Count_: 3860 Units maXbox5_29beta190.xml
+
+03.09.2025 17:25
+Release Notes maXbox 5.2.9.198 September 2025 
+SHA1: 5.2.9.198 maXbox5.exe 5a51dfe26c9f57e6c51f47bc9e72625a79646b51
+SHA1: ZIP maxbox52.zip AAA6C16CC1311A2C0DA28B212A8FBEB12FD9D1EB 
+https://metadefender.com/results/file/bzI1MDkwM29YdEJzNTU0eGhwVGpKRkljX1ln_mdaas
+
+<img width="1597" height="837" alt="mX529198_syneditupgradScreenshot2025-08-31204511" src="https://github.com/user-attachments/assets/82a39a64-3db9-4251-a8a8-028a2b889dd5" />
+
+*****************************************************************
 Release Notes maXbox 5.2.9.196 August 2025 mX529 beta64-bit🐞
 *****************************************************************
 - TProcess3 class with TInput/TOutputPipeStream3 
