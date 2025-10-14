@@ -175,8 +175,22 @@ All maXbox Tutorials Table 2016/2017/2018/2019/2020/2021/2022/2023/2024/2025
     Tutor 140 Data Correlation Analysis, March 2025
     Tutor 141 Multi Pascal Solver, April 2025
     Tutor 142 Geocode Distance Data Art, May 2025
+    Tutor 143 Go Game Board, June 2025
+    Tutor 144 Code Focus, June 2025
+    Tutor 145 Win Services, June 2025
+    Tutor 146 Script Debugging, June 2025
+    Tutor 147 Weatherstation App, June 2025
+    Tutor 148 Gemini Language Model, June 2025
+    Tutor 149 Statistic Package, July 2025
+    Tutor 150 Chess Board, July 2025
+    Tutor 151 DA Checkers & Othello Board, July 2025
+    Tutor 152 MP3 Sound Engine, July 2025
+    Tutor 153 Pas2Doc Processor, August 2025
+    Tutor 154 File Operators, August 2025
+    Tutor 155 Multi-Coding, September 2025
+    Tutor 156 5 Games Collection, September 2025
 
-
+https://maxbox4.wordpress.com/2025/06/05/code-focus/
 https://medium.com/@maxkleiner1/data-correlation-analysis-712e63c8378e
 https://softwareschule.code.blog/2025/01/20/google-gemini-api/
 https://de.scribd.com/document/817944811/Maxbox-Starter136-Google-Gemini-API
@@ -188,10 +202,29 @@ Tutor 134 https://maxbox5.wordpress.com/2024/07/22/beyond-the-obstacle/
 Tutor 126 4 Machine Learning Object Detection Solutions, July 2024
 Tutor 127 Geo Maps Directions Station2Station, October 2024
 Tutor 128 Working with perplexity.ai, October 2024
+https://softwareschule.code.blog/2025/09/05/multi-code/
 	
 Actual Version 32-bit: 4.7.6.50 III June 2023
 Actual Version 64-bit: 5.1.6.98 XX  August 2024 mX516 
-Actual Version 64-bit: 5.2.7.120 X  May 2025 mX527 
+Actual Version 64-bit: 5.2.7.120 X  May 2025 mX527
+Actual Version 64-bit: 5.2.9.198 XXIV September 2025 mX529
+
+03.09.2025 18:00
+Release Notes maXbox 5.2.9.198 September 2025 mX529 64-bit🐞
+SHA1: 5.2.9.198 maXbox5.exe 5a51dfe26c9f57e6c51f47bc9e72625a79646b51
+SHA1: ZIP maxbox52.zip AAA6C16CC1311A2C0DA28B212A8FBEB12FD9D1EB
+
+09.07.2025 18:03
+Release Notes maXbox 5.2.9.180 II July 2025 mX529 64-bit🐞
+SHA1: 5.2.9.180 maXbox5.exe b3f52404118dc61d7be905ac4a6eee4911534e67
+SHA1: ZIP maxbox52.zip 73FC0268D154D9D9BE38FD0066542B4B008A2891
+
+maxkleiner
+08.06.2025 18:40
+Release Notes maXbox 5.2.8.160 June 2025 mX528 beta64-bit🐞
+SHA1: 5.2.8.160 maXbox5.exe 6b80a390423dd7759fd4ae0f1df72700b82fffe8
+SHA1: ZIP maxbox52.zip 531286300D531038FCB283FD713964EB24B26825
+ 
 
 https://archive.org/details/maxbox4
 maXbox 5.0.2.70 Jan. 2024 mX502 beta64-bit uc7
